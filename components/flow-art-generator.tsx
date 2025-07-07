@@ -6,27 +6,43 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Loader2 } from "lucide-react"
+import { Loader2, Download } from "lucide-react" // Import Download icon
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 export function FlowArtGenerator() {
   const [dataset, setDataset] = useState<string>("spirals")
   const [seed, setSeed] = useState<number>(1234)
+  const [colorScheme, setColorScheme] = useState<string>("magma")
+  const [generationMode, setGenerationMode] = useState<"svg" | "ai">("svg")
   const [imageUrl, setImageUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+  const [noise, setNoise] = useState<number>(0.05)
+  const [numSamples, setNumSamples] = useState<number>(1000)
 
   const handleGenerate = async () => {
     setLoading(true)
     setError(null)
-    setImageUrl(null)
+    setImageUrl(null) // Clear previous image when generating new one
     try {
-      const response = await fetch("/api/generate-art", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ dataset, seed }),
-      })
+      let response
+      if (generationMode === "svg") {
+        response = await fetch("/api/generate-art", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ dataset, seed, colorScheme, numSamples, noise }),
+        })
+      } else {
+        response = await fetch("/api/generate-ai-art", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ dataset, seed, colorScheme, numSamples, noise }),
+        })
+      }
 
       if (!response.ok) {
         const errorData = await response.json()
@@ -39,6 +55,19 @@ export function FlowArtGenerator() {
       setError(err.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleDownload = () => {
+    if (imageUrl) {
+      const link = document.createElement("a")
+      link.href = imageUrl
+      // Determine file extension based on generation mode
+      const fileExtension = generationMode === "svg" ? "svg" : "png"
+      link.download = `flowsketch-art-${Date.now()}.${fileExtension}`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
     }
   }
 
@@ -78,7 +107,66 @@ export function FlowArtGenerator() {
                 placeholder="Enter a seed"
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="num-samples">Number of Samples</Label>
+              <Input
+                id="num-samples"
+                type="number"
+                value={numSamples}
+                onChange={(e) => setNumSamples(Number(e.target.value))}
+                placeholder="Enter number of samples"
+                min={100}
+                step={100}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="noise">Noise Level</Label>
+              <Input
+                id="noise"
+                type="number"
+                value={noise}
+                onChange={(e) => setNoise(Number(e.target.value))}
+                placeholder="Enter noise level"
+                step={0.01}
+                min={0}
+                max={1}
+              />
+            </div>
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="color-scheme">Color Scheme</Label>
+            <Select value={colorScheme} onValueChange={setColorScheme}>
+              <SelectTrigger id="color-scheme">
+                <SelectValue placeholder="Select a color scheme" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="magma">Magma</SelectItem>
+                <SelectItem value="viridis">Viridis</SelectItem>
+                <SelectItem value="plasma">Plasma</SelectItem>
+                <SelectItem value="cividis">Cividis</SelectItem>
+                <SelectItem value="grayscale">Grayscale</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Generation Mode</Label>
+            <RadioGroup
+              value={generationMode}
+              onValueChange={(value: "svg" | "ai") => setGenerationMode(value)}
+              className="flex space-x-4"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="svg" id="mode-svg" />
+                <Label htmlFor="mode-svg">SVG Plot</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="ai" id="mode-ai" />
+                <Label htmlFor="mode-ai">AI Generated Image</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
           <Button onClick={handleGenerate} className="w-full" disabled={loading}>
             {loading ? (
               <>
@@ -91,12 +179,16 @@ export function FlowArtGenerator() {
           </Button>
           {error && <p className="text-red-500 text-center">{error}</p>}
           {imageUrl && (
-            <div className="mt-6 flex justify-center">
+            <div className="mt-6 flex flex-col items-center gap-4">
               <img
                 src={imageUrl || "/placeholder.svg"}
                 alt="Generated Flow Art"
                 className="max-w-full h-auto border rounded-lg shadow-md"
               />
+              <Button onClick={handleDownload} className="w-full max-w-xs">
+                <Download className="mr-2 h-4 w-4" />
+                Download Image
+              </Button>
             </div>
           )}
         </CardContent>

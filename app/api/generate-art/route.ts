@@ -4,13 +4,13 @@ import { generateScatterPlotSVG } from "@/lib/plot-utils"
 
 export async function POST(req: Request) {
   try {
-    const { dataset, seed } = await req.json()
+    const { dataset, seed, numSamples, noise } = await req.json()
 
-    if (!dataset || typeof seed === "undefined") {
-      return NextResponse.json({ error: "Missing dataset or seed" }, { status: 400 })
+    if (!dataset || typeof seed === "undefined" || typeof numSamples === "undefined" || typeof noise === "undefined") {
+      return NextResponse.json({ error: "Missing dataset, seed, number of samples, or noise" }, { status: 400 })
     }
 
-    const data = generateDataset(dataset, seed)
+    const data = generateDataset(dataset, seed, numSamples, noise)
     const imageBase64 = generateScatterPlotSVG(data)
 
     return NextResponse.json({ image: imageBase64 })

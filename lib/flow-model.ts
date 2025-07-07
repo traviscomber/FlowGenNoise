@@ -10,26 +10,24 @@ function createPrng(seed: number) {
   }
 }
 
-export function generateDataset(name: string, seed: number): number[][] {
+export function generateDataset(name: string, seed: number, n_samples: number, noise: number): number[][] {
   const prng = createPrng(seed)
-  const n_samples = 1000
-  const noise = 0.05
 
   if (name === "spirals") {
     const data: number[][] = []
     for (let i = 0; i < n_samples; i++) {
       const theta = Math.sqrt(prng()) * 2 * Math.PI
       const r = 2 * theta
-      const x = r * Math.cos(theta)
-      const y = r * Math.sin(theta)
+      const x = r * Math.cos(theta) + (prng() * 2 - 1) * noise
+      const y = r * Math.sin(theta) + (prng() * 2 - 1) * noise
       data.push([x, y])
     }
     return data
   } else if (name === "checkerboard") {
     const data: number[][] = []
     for (let i = 0; i < n_samples; i++) {
-      const x = Math.floor(prng() * 4 - 2) + prng()
-      const y = Math.floor(prng() * 4 - 2) + prng()
+      const x = Math.floor(prng() * 4 - 2) + (prng() * 2 - 1) * noise
+      const y = Math.floor(prng() * 4 - 2) + (prng() * 2 - 1) * noise
       data.push([x, y])
     }
     return data
@@ -54,7 +52,7 @@ export function generateDataset(name: string, seed: number): number[][] {
       const u2 = prng()
       const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2)
       const z2 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2)
-      data.push([z1 * 0.5, z2 * 0.5]) // Scale down for better visualization
+      data.push([z1 * 0.5 + (prng() * 2 - 1) * noise, z2 * 0.5 + (prng() * 2 - 1) * noise]) // Scale down for better visualization
     }
     return data
   } else if (name === "grid") {
@@ -63,7 +61,7 @@ export function generateDataset(name: string, seed: number): number[][] {
     const step = 2 / (numPointsPerSide - 1) // Grid from -1 to 1
     for (let i = 0; i < numPointsPerSide; i++) {
       for (let j = 0; j < numPointsPerSide; j++) {
-        data.push([-1 + i * step, -1 + j * step])
+        data.push([-1 + i * step + (prng() * 2 - 1) * noise, -1 + j * step + (prng() * 2 - 1) * noise])
       }
     }
     return data
