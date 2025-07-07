@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       style: "vivid", // Use a vivid style for more vibrant and dramatic results
     })
 
-    return NextResponse.json({ image: image.base64 })
+    return NextResponse.json({ image: `data:image/png;base64,${image.base64}` })
   } catch (error: any) {
     console.error("Error generating AI art:", error)
     if (error.message.includes("api_key")) {
