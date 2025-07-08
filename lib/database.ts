@@ -107,3 +107,25 @@ export async function getFeaturedArtworks(limit = 6) {
 
   return data
 }
+
+// Featured collections (flagged with `is_featured = true`)
+export async function getFeaturedCollections(limit = 5) {
+  const { data, error } = await supabase
+    .from("collections")
+    .select(
+      `
+        *,
+        artist:artists(*)
+      `,
+    )
+    .eq("is_featured", true)
+    .order("created_at", { ascending: false })
+    .limit(limit)
+
+  if (error) {
+    console.error("Error fetching featured collections:", error)
+    throw error
+  }
+
+  return data
+}
