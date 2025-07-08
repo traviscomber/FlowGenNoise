@@ -1,111 +1,191 @@
+-- Clear existing data (in correct order to avoid foreign key constraints)
+DELETE FROM artwork_views;
+DELETE FROM artwork_likes;
+DELETE FROM follows;
+DELETE FROM bids;
+DELETE FROM transactions;
+DELETE FROM artworks;
+DELETE FROM collections;
+DELETE FROM users;
+DELETE FROM artists;
+
 -- Insert Artists
 INSERT INTO artists (id, wallet_address, username, display_name, bio, avatar_url, banner_url, website_url, twitter_handle, instagram_handle, verified, total_sales, total_artworks) VALUES
-('550e8400-e29b-41d4-a716-446655440000', '0x1234567890123456789012345678901234567890', 'flowmaster', 'FlowMaster', 'Pioneer of spiral flow art, creating mesmerizing mathematical visualizations that bridge the gap between code and canvas.', '/placeholder.svg?height=100&width=100&text=FM', '/placeholder.svg?height=400&width=800&text=FlowMaster+Banner', 'https://flowmaster.art', '@flowmaster_art', 'flowmaster_art', true, 25.7, 18),
-('550e8400-e29b-41d4-a716-446655440001', '0x2345678901234567890123456789012345678901', 'pixelartist', 'PixelArtist', 'Digital grid specialist crafting perfect geometric harmony through algorithmic precision and mathematical beauty.', '/placeholder.svg?height=100&width=100&text=PA', '/placeholder.svg?height=400&width=800&text=PixelArtist+Banner', 'https://pixelartist.io', '@pixel_artist', 'pixel_artist_official', true, 18.3, 14),
-('550e8400-e29b-41d4-a716-446655440002', '0x3456789012345678901234567890123456789012', 'celestialcreator', 'CelestialCreator', 'Exploring cosmic phenomena through generative art, transforming celestial mechanics into stunning visual narratives.', '/placeholder.svg?height=100&width=100&text=CC', '/placeholder.svg?height=400&width=800&text=CelestialCreator+Banner', 'https://celestialcreator.space', '@celestial_creator', 'celestialcreator', true, 22.1, 12),
-('550e8400-e29b-41d4-a716-446655440003', '0x4567890123456789012345678901234567890123', 'mathartist', 'MathArtist', 'Probability visualization expert, turning statistical distributions into captivating artistic expressions.', '/placeholder.svg?height=100&width=100&text=MA', '/placeholder.svg?height=400&width=800&text=MathArtist+Banner', 'https://mathartist.com', '@math_artist', 'mathartist_official', false, 14.2, 10),
-('550e8400-e29b-41d4-a716-446655440004', '0x5678901234567890123456789012345678901234', 'gridmaster', 'GridMaster', 'Minimalist perfectionist creating structured harmony through precise geometric arrangements and clean aesthetics.', '/placeholder.svg?height=100&width=100&text=GM', '/placeholder.svg?height=400&width=800&text=GridMaster+Banner', 'https://gridmaster.design', '@grid_master', 'gridmaster_design', false, 8.8, 8),
-('550e8400-e29b-41d4-a716-446655440005', '0x6789012345678901234567890123456789012345', 'abstractflow', 'AbstractFlow', 'Experimental hybrid artist pushing boundaries between traditional flow fields and AI-generated compositions.', '/placeholder.svg?height=100&width=100&text=AF', '/placeholder.svg?height=400&width=800&text=AbstractFlow+Banner', 'https://abstractflow.xyz', '@abstract_flow', 'abstractflow_art', true, 31.5, 22);
+('550e8400-e29b-41d4-a716-446655440001', '0x1234567890123456789012345678901234567890', 'flowmaster', 'FlowMaster', 'Pioneer of spiral flow art. Creating mesmerizing mathematical beauty since 2021. Each piece explores the infinite dance of curves and colors.', '/placeholder.svg?height=100&width=100&text=FM', '/placeholder.svg?height=400&width=800&text=FlowMaster+Banner', 'https://flowmaster.art', '@flowmaster_art', 'flowmaster_art', true, 25.7, 18),
 
--- Insert Users (Collectors)
+('550e8400-e29b-41d4-a716-446655440002', '0x2345678901234567890123456789012345678901', 'pixelartist', 'PixelArtist', 'Digital grid specialist crafting perfect geometric harmony. My work explores the intersection of order and chaos in digital space.', '/placeholder.svg?height=100&width=100&text=PA', '/placeholder.svg?height=400&width=800&text=PixelArtist+Banner', 'https://pixelartist.digital', '@pixel_artist', 'pixel_artist_official', true, 18.3, 14),
+
+('550e8400-e29b-41d4-a716-446655440003', '0x3456789012345678901234567890123456789012', 'celestialcreator', 'CelestialCreator', 'Capturing cosmic phenomena through generative art. Each piece is a window into the mathematical beauty of the universe.', '/placeholder.svg?height=100&width=100&text=CC', '/placeholder.svg?height=400&width=800&text=Celestial+Creator', 'https://celestialcreator.space', '@celestial_creator', 'celestialcreator', true, 22.1, 12),
+
+('550e8400-e29b-41d4-a716-446655440004', '0x4567890123456789012345678901234567890123', 'mathartist', 'MathArtist', 'Visualizing probability and statistics through beautiful generative algorithms. Making mathematics accessible through art.', '/placeholder.svg?height=100&width=100&text=MA', '/placeholder.svg?height=400&width=800&text=Math+Artist', 'https://mathartist.io', '@math_artist', 'mathartist_viz', false, 14.2, 10),
+
+('550e8400-e29b-41d4-a716-446655440005', '0x5678901234567890123456789012345678901234', 'gridmaster', 'GridMaster', 'Minimalist perfectionist creating clean, structured digital art. Every line has purpose, every space has meaning.', '/placeholder.svg?height=100&width=100&text=GM', '/placeholder.svg?height=400&width=800&text=Grid+Master', 'https://gridmaster.minimal', '@grid_master', 'gridmaster_art', false, 8.8, 8),
+
+('550e8400-e29b-41d4-a716-446655440006', '0x6789012345678901234567890123456789012345', 'abstractflow', 'AbstractFlow', 'Experimental artist pushing the boundaries of generative art. Combining traditional techniques with cutting-edge AI.', '/placeholder.svg?height=100&width=100&text=AF', '/placeholder.svg?height=400&width=800&text=Abstract+Flow', 'https://abstractflow.experimental', '@abstract_flow', 'abstractflow_art', true, 31.5, 22);
+
+-- Insert Users/Collectors
 INSERT INTO users (id, wallet_address, username, display_name, bio, avatar_url, email) VALUES
-('880e8400-e29b-41d4-a716-446655440000', '0x7890123456789012345678901234567890123456', 'artcollector1', 'Digital Connoisseur', 'Passionate collector of generative art and mathematical visualizations.', '/placeholder.svg?height=80&width=80&text=DC', 'collector1@example.com'),
-('880e8400-e29b-41d4-a716-446655440001', '0x8901234567890123456789012345678901234567', 'cryptoart_fan', 'CryptoArt Enthusiast', 'Early adopter of blockchain art, focusing on algorithmic and flow-based pieces.', '/placeholder.svg?height=80&width=80&text=CE', 'cryptofan@example.com'),
-('880e8400-e29b-41d4-a716-446655440002', '0x9012345678901234567890123456789012345678', 'mathvisual', 'Mathematical Visualizer', 'Mathematician turned art collector, drawn to pieces that showcase mathematical beauty.', '/placeholder.svg?height=80&width=80&text=MV', 'mathvisual@example.com'),
-('880e8400-e29b-41d4-a716-446655440003', '0xa123456789012345678901234567890123456789', 'flowenthusiast', 'Flow Enthusiast', 'Dedicated to collecting the finest examples of flow field art and generative design.', '/placeholder.svg?height=80&width=80&text=FE', 'flowfan@example.com'),
-('880e8400-e29b-41d4-a716-446655440004', '0xb234567890123456789012345678901234567890', 'digitalcurator', 'Digital Curator', 'Curating the future of digital art, one algorithmic masterpiece at a time.', '/placeholder.svg?height=80&width=80&text=DC', 'curator@example.com');
+('660e8400-e29b-41d4-a716-446655440001', '0xa123456789012345678901234567890123456789', 'cryptowhale', 'CryptoWhale', 'Passionate collector of generative art. Building the future of digital culture.', '/placeholder.svg?height=80&width=80&text=CW', 'whale@crypto.art'),
+
+('660e8400-e29b-41d4-a716-446655440002', '0xb234567890123456789012345678901234567890', 'artlover2024', 'ArtLover', 'Discovering emerging artists and supporting the digital art revolution.', '/placeholder.svg?height=80&width=80&text=AL', 'lover@art.digital'),
+
+('660e8400-e29b-41d4-a716-446655440003', '0xc345678901234567890123456789012345678901', 'nftcollector', 'NFTCollector', 'Curating the finest pieces in the NFT space. Quality over quantity.', '/placeholder.svg?height=80&width=80&text=NC', 'collector@nft.gallery'),
+
+('660e8400-e29b-41d4-a716-446655440004', '0xd456789012345678901234567890123456789012', 'digitalpatron', 'DigitalPatron', 'Supporting artists and fostering creativity in the digital realm.', '/placeholder.svg?height=80&width=80&text=DP', 'patron@digital.support'),
+
+('660e8400-e29b-41d4-a716-446655440005', '0xe567890123456789012345678901234567890123', 'artinvestor', 'ArtInvestor', 'Strategic collector focused on long-term value and artistic merit.', '/placeholder.svg?height=80&width=80&text=AI', 'investor@art.fund');
 
 -- Insert Collections
 INSERT INTO collections (id, artist_id, name, description, banner_url, slug, is_featured) VALUES
-('770e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440000', 'Cosmic Spirals', 'A mesmerizing collection exploring the infinite beauty of spiral mathematics in cosmic contexts.', '/placeholder.svg?height=300&width=600&text=Cosmic+Spirals', 'cosmic-spirals', true),
-('770e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440001', 'Digital Grids', 'Perfect geometric harmony through algorithmic precision and mathematical beauty.', '/placeholder.svg?height=300&width=600&text=Digital+Grids', 'digital-grids', true),
-('770e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440002', 'Lunar Series', 'Celestial mechanics transformed into stunning visual narratives inspired by lunar phases.', '/placeholder.svg?height=300&width=600&text=Lunar+Series', 'lunar-series', true),
-('770e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440003', 'Probability Clouds', 'Statistical distributions visualized as captivating artistic expressions.', '/placeholder.svg?height=300&width=600&text=Probability+Clouds', 'probability-clouds', false),
-('770e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440005', 'Hybrid Dimensions', 'Experimental fusion of traditional flow fields with AI-generated compositions.', '/placeholder.svg?height=300&width=600&text=Hybrid+Dimensions', 'hybrid-dimensions', true);
+('770e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440001', 'Cosmic Spirals', 'A journey through infinite mathematical beauty, where spirals dance with cosmic energy.', '/placeholder.svg?height=300&width=600&text=Cosmic+Spirals', 'cosmic-spirals', true),
+
+('770e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440002', 'Digital Grids', 'Perfect geometric harmony in digital space. Order emerging from algorithmic chaos.', '/placeholder.svg?height=300&width=600&text=Digital+Grids', 'digital-grids', true),
+
+('770e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440003', 'Lunar Series', 'Capturing the phases and beauty of celestial bodies through generative algorithms.', '/placeholder.svg?height=300&width=600&text=Lunar+Series', 'lunar-series', true),
+
+('770e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440004', 'Probability Clouds', 'Visualizing statistical beauty through color and form. Mathematics made visible.', '/placeholder.svg?height=300&width=600&text=Probability+Clouds', 'probability-clouds', true),
+
+('770e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440006', 'Hybrid Dimensions', 'Experimental fusion of traditional and AI-generated art techniques.', '/placeholder.svg?height=300&width=600&text=Hybrid+Dimensions', 'hybrid-dimensions', true);
 
 -- Insert Artworks
-INSERT INTO artworks (id, artist_id, collection_id, title, description, image_url, dataset, color_scheme, seed, num_samples, noise, generation_mode, price, currency, status, rarity, edition, views, likes, token_id, contract_address, minted_at, listed_at) VALUES
--- FlowMaster's Artworks
-('660e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440000', '770e8400-e29b-41d4-a716-446655440000', 'Golden Spiral Infinity', 'A mesmerizing exploration of the golden ratio manifested through infinite spiral patterns, where mathematics meets cosmic beauty.', '/placeholder.svg?height=800&width=800&text=Golden+Spiral+Art', 'spirals', 'golden', 42, 1000, 0.15, 'svg', 7.77, 'ETH', 'available', 'Legendary', '1 of 1', 6789, 567, 'TK001', '0xABC123...', '2024-01-15 10:30:00', '2024-01-15 12:00:00'),
-('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440000', '770e8400-e29b-41d4-a716-446655440000', 'Cosmic Vortex', 'Deep space spiral formations captured in algorithmic beauty, representing the dance of galaxies through time.', '/placeholder.svg?height=800&width=800&text=Cosmic+Vortex+Art', 'spirals', 'cosmic', 128, 800, 0.12, 'ai', 2.45, 'ETH', 'available', 'Epic', '1 of 3', 4521, 342, 'TK002', '0xDEF456...', '2024-01-20 14:15:00', '2024-01-20 16:00:00'),
-('660e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440000', '770e8400-e29b-41d4-a716-446655440000', 'Fibonacci Dreams', 'Nature\'s mathematical sequence visualized through flowing spiral harmonics and organic color transitions.', '/placeholder.svg?height=800&width=800&text=Fibonacci+Dreams+Art', 'spirals', 'nature', 256, 1200, 0.08, 'svg', 1.89, 'ETH', 'available', 'Rare', '2 of 5', 3210, 198, 'TK003', '0xGHI789...', '2024-01-25 09:45:00', '2024-01-25 11:30:00'),
+INSERT INTO artworks (id, artist_id, collection_id, title, description, image_url, image_ipfs_hash, metadata_url, metadata_ipfs_hash, dataset, color_scheme, seed, num_samples, noise, generation_mode, price, currency, status, rarity, edition, views, likes, token_id, contract_address, blockchain, minted_at, listed_at) VALUES
 
--- PixelArtist's Artworks  
-('660e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440001', 'Digital Grid Symphony', 'Perfect geometric harmony achieved through algorithmic precision, showcasing the beauty of mathematical order.', '/placeholder.svg?height=800&width=800&text=Digital+Grid+Symphony', 'grid', 'monochrome', 512, 900, 0.05, 'svg', 2.90, 'ETH', 'available', 'Epic', '1 of 2', 5432, 423, 'TK004', '0xJKL012...', '2024-02-01 13:20:00', '2024-02-01 15:00:00'),
-('660e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440001', 'Perfect Order', 'Minimalist grid composition demonstrating the elegance of structured mathematical relationships.', '/placeholder.svg?height=800&width=800&text=Perfect+Order+Art', 'grid', 'minimal', 64, 600, 0.02, 'svg', 1.12, 'ETH', 'available', 'Common', '3 of 10', 2876, 156, 'TK005', '0xMNO345...', '2024-02-05 11:10:00', '2024-02-05 12:45:00'),
-('660e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440001', 'Structured Harmony', 'Clean geometric patterns that celebrate the intersection of technology and artistic expression.', '/placeholder.svg?height=800&width=800&text=Structured+Harmony+Art', 'grid', 'tech', 1024, 750, 0.03, 'svg', 0.95, 'ETH', 'available', 'Common', '5 of 15', 1987, 89, 'TK006', '0xPQR678...', '2024-02-10 16:30:00', '2024-02-10 18:00:00'),
+-- Legendary Artworks
+('880e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440001', 'Golden Spiral Infinity', 'A mesmerizing golden spiral that seems to extend into infinity, created using advanced mathematical algorithms and rendered in stunning detail.', '/placeholder.svg?height=800&width=800&text=Golden+Spiral', 'QmX1Y2Z3...GoldenSpiral', 'https://ipfs.io/ipfs/QmX1Y2Z3...GoldenSpiralMeta', 'QmA1B2C3...GoldenSpiralMeta', 'spiral', 'golden', 777, 10000, 0.15, 'svg', 7.77, 'ETH', 'available', 'Legendary', '1/1', 8901, 678, '1001', '0x1a2b3c4d5e6f7890123456789012345678901234', 'ethereum', '2024-01-15 10:30:00+00', '2024-01-15 11:00:00+00'),
 
--- CelestialCreator's Artworks
-('660e8400-e29b-41d4-a716-446655440006', '550e8400-e29b-41d4-a716-446655440002', '770e8400-e29b-41d4-a716-446655440002', 'Eclipse Phenomenon', 'Capturing the rare beauty of celestial alignment through algorithmic interpretation of astronomical data.', '/placeholder.svg?height=800&width=800&text=Eclipse+Phenomenon+Art', 'moons', 'eclipse', 777, 1500, 0.18, 'ai', 5.25, 'ETH', 'available', 'Legendary', '1 of 1', 8901, 678, 'TK007', '0xSTU901...', '2024-02-14 20:00:00', '2024-02-14 21:30:00'),
-('660e8400-e29b-41d4-a716-446655440007', '550e8400-e29b-41d4-a716-446655440002', '770e8400-e29b-41d4-a716-446655440002', 'Celestial Arcs', 'Lunar trajectory patterns transformed into flowing artistic compositions with cosmic color palettes.', '/placeholder.svg?height=800&width=800&text=Celestial+Arcs+Art', 'moons', 'celestial', 333, 1100, 0.14, 'ai', 1.95, 'ETH', 'available', 'Epic', '2 of 4', 4567, 289, 'TK008', '0xVWX234...', '2024-02-18 12:15:00', '2024-02-18 14:00:00'),
-('660e8400-e29b-41d4-a716-446655440008', '550e8400-e29b-41d4-a716-446655440002', '770e8400-e29b-41d4-a716-446655440002', 'Lunar Phases', 'The eternal dance of moon phases captured in flowing mathematical visualizations.', '/placeholder.svg?height=800&width=800&text=Lunar+Phases+Art', 'moons', 'phases', 888, 950, 0.11, 'svg', 1.67, 'ETH', 'available', 'Rare', '3 of 7', 3456, 234, 'TK009', '0xYZA567...', '2024-02-22 08:45:00', '2024-02-22 10:30:00'),
+('880e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440003', '770e8400-e29b-41d4-a716-446655440003', 'Eclipse Phenomenon', 'Capturing the rare beauty of a solar eclipse through generative art, with dynamic light and shadow interplay.', '/placeholder.svg?height=800&width=800&text=Eclipse', 'QmE1C2L3...Eclipse', 'https://ipfs.io/ipfs/QmE1C2L3...EclipseMeta', 'QmE1C2L3...EclipseMeta', 'celestial', 'eclipse', 2024, 8000, 0.12, 'ai', 5.25, 'ETH', 'available', 'Legendary', '1/1', 7234, 567, '1002', '0x2b3c4d5e6f7890123456789012345678901234ab', 'ethereum', '2024-02-01 14:20:00+00', '2024-02-01 15:00:00+00'),
 
--- MathArtist's Artworks
-('660e8400-e29b-41d4-a716-446655440009', '550e8400-e29b-41d4-a716-446655440003', '770e8400-e29b-41d4-a716-446655440003', 'Probability Cloud', 'Statistical beauty revealed through Gaussian distribution visualizations in flowing, organic forms.', '/placeholder.svg?height=800&width=800&text=Probability+Cloud+Art', 'gaussian', 'statistical', 1337, 2000, 0.25, 'ai', 1.45, 'ETH', 'available', 'Rare', '1 of 6', 2345, 167, 'TK010', '0xBCD890...', '2024-02-25 15:20:00', '2024-02-25 17:00:00'),
-('660e8400-e29b-41d4-a716-446655440010', '550e8400-e29b-41d4-a716-446655440003', '770e8400-e29b-41d4-a716-446655440003', 'Statistical Beauty', 'Complex probability distributions transformed into mesmerizing visual narratives.', '/placeholder.svg?height=800&width=800&text=Statistical+Beauty+Art', 'gaussian', 'probability', 2048, 1800, 0.22, 'svg', 1.23, 'ETH', 'available', 'Rare', '2 of 8', 1876, 134, 'TK011', '0xEFG123...', '2024-03-01 10:30:00', '2024-03-01 12:15:00'),
+('880e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440006', '770e8400-e29b-41d4-a716-446655440005', 'Dimensional Fusion', 'An experimental piece that blends multiple dimensional perspectives into a single cohesive artwork.', '/placeholder.svg?height=800&width=800&text=Dimensional+Fusion', 'QmD1F2U3...Fusion', 'https://ipfs.io/ipfs/QmD1F2U3...FusionMeta', 'QmD1F2U3...FusionMeta', 'hybrid', 'prismatic', 3141, 12000, 0.18, 'ai', 3.50, 'ETH', 'available', 'Legendary', '1/1', 6789, 445, '1003', '0x3c4d5e6f7890123456789012345678901234abcd', 'ethereum', '2024-02-10 09:15:00+00', '2024-02-10 10:00:00+00'),
 
--- GridMaster's Artworks
-('660e8400-e29b-41d4-a716-446655440011', '550e8400-e29b-41d4-a716-446655440004', NULL, 'Minimal Grid 01', 'Pure geometric minimalism showcasing the elegance of simple mathematical relationships.', '/placeholder.svg?height=800&width=800&text=Minimal+Grid+01', 'checkerboard', 'minimal', 16, 400, 0.01, 'svg', 0.89, 'ETH', 'available', 'Common', '1 of 20', 1234, 78, 'TK012', '0xHIJ456...', '2024-03-05 14:00:00', '2024-03-05 15:30:00'),
-('660e8400-e29b-41d4-a716-446655440012', '550e8400-e29b-41d4-a716-446655440004', NULL, 'Checkerboard Dreams', 'Classic patterns reimagined through contemporary algorithmic interpretation.', '/placeholder.svg?height=800&width=800&text=Checkerboard+Dreams', 'checkerboard', 'classic', 32, 500, 0.04, 'svg', 1.05, 'ETH', 'available', 'Common', '4 of 12', 987, 56, 'TK013', '0xKLM789...', '2024-03-08 11:45:00', '2024-03-08 13:20:00'),
+-- Epic Artworks
+('880e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440002', '770e8400-e29b-41d4-a716-446655440002', 'Digital Grid Symphony', 'A complex grid pattern that creates visual music through perfect mathematical harmony.', '/placeholder.svg?height=800&width=800&text=Grid+Symphony', 'QmG1R2I3...Symphony', 'https://ipfs.io/ipfs/QmG1R2I3...SymphonyMeta', 'QmG1R2I3...SymphonyMeta', 'grid', 'monochrome', 1618, 5000, 0.08, 'svg', 2.90, 'ETH', 'available', 'Epic', '1/1', 5432, 389, '1004', '0x4d5e6f7890123456789012345678901234abcdef', 'ethereum', '2024-01-20 16:45:00+00', '2024-01-20 17:30:00+00'),
 
--- AbstractFlow's Artworks
-('660e8400-e29b-41d4-a716-446655440013', '550e8400-e29b-41d4-a716-446655440005', '770e8400-e29b-41d4-a716-446655440004', 'Dimensional Fusion', 'Groundbreaking hybrid composition merging traditional flow fields with AI-generated elements.', '/placeholder.svg?height=800&width=800&text=Dimensional+Fusion+Art', 'spirals', 'hybrid', 4096, 2500, 0.30, 'ai', 3.50, 'ETH', 'available', 'Legendary', '1 of 1', 7654, 543, 'TK014', '0xNOP012...', '2024-03-12 18:30:00', '2024-03-12 20:00:00'),
-('660e8400-e29b-41d4-a716-446655440014', '550e8400-e29b-41d4-a716-446655440005', '770e8400-e29b-41d4-a716-446655440004', 'Binary Dreams', 'Digital consciousness explored through the intersection of code, mathematics, and artistic vision.', '/placeholder.svg?height=800&width=800&text=Binary+Dreams+Art', 'grid', 'digital', 8192, 3000, 0.35, 'ai', 2.75, 'ETH', 'Epic', '1 of 2', 5432, 398, 'TK015', '0xQRS345...', '2024-03-15 09:15:00', '2024-03-15 11:00:00'),
-('660e8400-e29b-41d4-a716-446655440015', '550e8400-e29b-41d4-a716-446655440005', '770e8400-e29b-41d4-a716-446655440004', 'Flow State Alpha', 'Experimental composition pushing the boundaries between algorithmic generation and artistic intuition.', '/placeholder.svg?height=800&width=800&text=Flow+State+Alpha', 'moons', 'experimental', 16384, 2200, 0.28, 'ai', 1.88, 'ETH', 'available', 'Rare', '3 of 5', 3210, 245, 'TK016', '0xTUV678...', '2024-03-18 13:45:00', '2024-03-18 15:30:00');
+('880e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440006', '770e8400-e29b-41d4-a716-446655440005', 'Binary Dreams', 'Where digital meets organic - a fusion of binary code and flowing natural forms.', '/placeholder.svg?height=800&width=800&text=Binary+Dreams', 'QmB1N2A3...Dreams', 'https://ipfs.io/ipfs/QmB1N2A3...DreamsMeta', 'QmB1N2A3...DreamsMeta', 'hybrid', 'binary', 1010, 7500, 0.14, 'ai', 2.75, 'ETH', 'available', 'Epic', '1/1', 4987, 334, '1005', '0x5e6f7890123456789012345678901234abcdef12', 'ethereum', '2024-02-05 12:20:00+00', '2024-02-05 13:00:00+00'),
 
--- Insert Artwork Likes
-INSERT INTO artwork_likes (artwork_id, user_id) VALUES
--- Popular artworks get more likes
-('660e8400-e29b-41d4-a716-446655440000', '880e8400-e29b-41d4-a716-446655440000'),
-('660e8400-e29b-41d4-a716-446655440000', '880e8400-e29b-41d4-a716-446655440001'),
-('660e8400-e29b-41d4-a716-446655440000', '880e8400-e29b-41d4-a716-446655440002'),
-('660e8400-e29b-41d4-a716-446655440000', '880e8400-e29b-41d4-a716-446655440003'),
-('660e8400-e29b-41d4-a716-446655440006', '880e8400-e29b-41d4-a716-446655440001'),
-('660e8400-e29b-41d4-a716-446655440006', '880e8400-e29b-41d4-a716-446655440002'),
-('660e8400-e29b-41d4-a716-446655440006', '880e8400-e29b-41d4-a716-446655440004'),
-('660e8400-e29b-41d4-a716-446655440013', '880e8400-e29b-41d4-a716-446655440000'),
-('660e8400-e29b-41d4-a716-446655440013', '880e8400-e29b-41d4-a716-446655440003'),
-('660e8400-e29b-41d4-a716-446655440003', '880e8400-e29b-41d4-a716-446655440002'),
-('660e8400-e29b-41d4-a716-446655440003', '880e8400-e29b-41d4-a716-446655440004'),
-('660e8400-e29b-41d4-a716-446655440014', '880e8400-e29b-41d4-a716-446655440001'),
-('660e8400-e29b-41d4-a716-446655440014', '880e8400-e29b-41d4-a716-446655440003');
+('880e8400-e29b-41d4-a716-446655440006', '550e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440001', 'Cosmic Vortex', 'A swirling vortex of cosmic energy, pulling viewers into its hypnotic mathematical beauty.', '/placeholder.svg?height=800&width=800&text=Cosmic+Vortex', 'QmC1O2S3...Vortex', 'https://ipfs.io/ipfs/QmC1O2S3...VortexMeta', 'QmC1O2S3...VortexMeta', 'spiral', 'cosmic', 2718, 9000, 0.16, 'svg', 2.45, 'ETH', 'available', 'Epic', '1/1', 4321, 298, '1006', '0x6f7890123456789012345678901234abcdef1234', 'ethereum', '2024-01-25 08:10:00+00', '2024-01-25 09:00:00+00'),
 
--- Insert Artwork Views (sample data)
-INSERT INTO artwork_views (artwork_id, user_id, ip_address) VALUES
-('660e8400-e29b-41d4-a716-446655440000', '880e8400-e29b-41d4-a716-446655440000', '192.168.1.100'),
-('660e8400-e29b-41d4-a716-446655440000', '880e8400-e29b-41d4-a716-446655440001', '192.168.1.101'),
-('660e8400-e29b-41d4-a716-446655440000', NULL, '192.168.1.102'),
-('660e8400-e29b-41d4-a716-446655440006', '880e8400-e29b-41d4-a716-446655440002', '192.168.1.103'),
-('660e8400-e29b-41d4-a716-446655440006', '880e8400-e29b-41d4-a716-446655440003', '192.168.1.104'),
-('660e8400-e29b-41d4-a716-446655440013', '880e8400-e29b-41d4-a716-446655440004', '192.168.1.105');
+('880e8400-e29b-41d4-a716-446655440007', '550e8400-e29b-41d4-a716-446655440003', '770e8400-e29b-41d4-a716-446655440003', 'Celestial Arcs', 'Graceful arcs inspired by planetary orbits and celestial mechanics.', '/placeholder.svg?height=800&width=800&text=Celestial+Arcs', 'QmC1E2L3...Arcs', 'https://ipfs.io/ipfs/QmC1E2L3...ArcsMeta', 'QmC1E2L3...ArcsMeta', 'celestial', 'aurora', 1234, 6000, 0.11, 'ai', 1.95, 'ETH', 'available', 'Epic', '1/1', 3876, 267, '1007', '0x7890123456789012345678901234abcdef123456', 'ethereum', '2024-02-12 15:30:00+00', '2024-02-12 16:15:00+00'),
 
--- Insert Follows
-INSERT INTO follows (follower_id, following_id) VALUES
-('880e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440000'),
-('880e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440002'),
-('880e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440005'),
-('880e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440001'),
-('880e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440005'),
-('880e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440003'),
-('880e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440000'),
-('880e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440002'),
-('880e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440004'),
-('880e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440005'),
-('880e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440001');
+-- Rare Artworks
+('880e8400-e29b-41d4-a716-446655440008', '550e8400-e29b-41d4-a716-446655440001', '770e8400-e29b-41d4-a716-446655440001', 'Fibonacci Dreams', 'The famous Fibonacci sequence brought to life through flowing, organic spirals.', '/placeholder.svg?height=600&width=600&text=Fibonacci', 'QmF1I2B3...Fibonacci', 'https://ipfs.io/ipfs/QmF1I2B3...FibonacciMeta', 'QmF1I2B3...FibonacciMeta', 'spiral', 'nature', 1123, 4000, 0.09, 'svg', 1.89, 'ETH', 'available', 'Rare', '1/1', 3245, 234, '1008', '0x90123456789012345678901234abcdef12345678', 'ethereum', '2024-01-30 11:45:00+00', '2024-01-30 12:30:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440009', '550e8400-e29b-41d4-a716-446655440006', '770e8400-e29b-41d4-a716-446655440005', 'Flow State Alpha', 'Capturing the essence of creative flow through dynamic, ever-changing patterns.', '/placeholder.svg?height=600&width=600&text=Flow+State', 'QmF1L2O3...FlowState', 'https://ipfs.io/ipfs/QmF1L2O3...FlowStateMeta', 'QmF1L2O3...FlowStateMeta', 'hybrid', 'flow', 4321, 5500, 0.13, 'ai', 1.88, 'ETH', 'available', 'Rare', '1/1', 2987, 198, '1009', '0x0123456789012345678901234abcdef123456789', 'ethereum', '2024-02-08 13:20:00+00', '2024-02-08 14:00:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440010', '550e8400-e29b-41d4-a716-446655440003', '770e8400-e29b-41d4-a716-446655440003', 'Lunar Phases', 'The complete lunar cycle captured in a single, mesmerizing composition.', '/placeholder.svg?height=600&width=600&text=Lunar+Phases', 'QmL1U2N3...Lunar', 'https://ipfs.io/ipfs/QmL1U2N3...LunarMeta', 'QmL1U2N3...LunarMeta', 'celestial', 'lunar', 2847, 4500, 0.10, 'ai', 1.67, 'ETH', 'available', 'Rare', '1/1', 2654, 187, '1010', '0x123456789012345678901234abcdef1234567890', 'ethereum', '2024-02-15 10:10:00+00', '2024-02-15 11:00:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440011', '550e8400-e29b-41d4-a716-446655440004', '770e8400-e29b-41d4-a716-446655440004', 'Probability Cloud', 'Statistical beauty visualized through color gradients and particle systems.', '/placeholder.svg?height=600&width=600&text=Probability', 'QmP1R2O3...Probability', 'https://ipfs.io/ipfs/QmP1R2O3...ProbabilityMeta', 'QmP1R2O3...ProbabilityMeta', 'probability', 'gradient', 9876, 3500, 0.07, 'svg', 1.45, 'ETH', 'available', 'Rare', '1/1', 2341, 156, '1011', '0x23456789012345678901234abcdef12345678901', 'ethereum', '2024-01-28 14:50:00+00', '2024-01-28 15:30:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440012', '550e8400-e29b-41d4-a716-446655440004', '770e8400-e29b-41d4-a716-446655440004', 'Statistical Beauty', 'Complex statistical distributions rendered as beautiful, flowing forms.', '/placeholder.svg?height=600&width=600&text=Statistical', 'QmS1T2A3...Statistical', 'https://ipfs.io/ipfs/QmS1T2A3...StatisticalMeta', 'QmS1T2A3...StatisticalMeta', 'probability', 'spectrum', 5432, 4200, 0.12, 'svg', 1.23, 'ETH', 'available', 'Rare', '1/1', 1987, 134, '1012', '0x3456789012345678901234abcdef123456789012', 'ethereum', '2024-02-03 09:25:00+00', '2024-02-03 10:15:00+00'),
+
+-- Common Artworks
+('880e8400-e29b-41d4-a716-446655440013', '550e8400-e29b-41d4-a716-446655440002', '770e8400-e29b-41d4-a716-446655440002', 'Perfect Order', 'Clean, minimalist grid showcasing the beauty of perfect mathematical order.', '/placeholder.svg?height=500&width=500&text=Perfect+Order', 'QmP1E2R3...Order', 'https://ipfs.io/ipfs/QmP1E2R3...OrderMeta', 'QmP1E2R3...OrderMeta', 'grid', 'minimal', 1111, 2000, 0.05, 'svg', 1.12, 'ETH', 'available', 'Common', '1/1', 1654, 112, '1013', '0x456789012345678901234abcdef1234567890123', 'ethereum', '2024-01-22 16:00:00+00', '2024-01-22 16:45:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440014', '550e8400-e29b-41d4-a716-446655440002', '770e8400-e29b-41d4-a716-446655440002', 'Checkerboard Dreams', 'Classic checkerboard pattern with a modern, artistic twist.', '/placeholder.svg?height=500&width=500&text=Checkerboard', 'QmC1H2E3...Checkerboard', 'https://ipfs.io/ipfs/QmC1H2E3...CheckerboardMeta', 'QmC1H2E3...CheckerboardMeta', 'grid', 'classic', 2222, 1800, 0.06, 'svg', 1.05, 'ETH', 'available', 'Common', '1/1', 1432, 98, '1014', '0x56789012345678901234abcdef12345678901234', 'ethereum', '2024-01-26 12:15:00+00', '2024-01-26 13:00:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440015', '550e8400-e29b-41d4-a716-446655440005', null, 'Structured Harmony', 'Geometric precision meets artistic expression in this structured composition.', '/placeholder.svg?height=500&width=500&text=Structured', 'QmS1T2R3...Structured', 'https://ipfs.io/ipfs/QmS1T2R3...StructuredMeta', 'QmS1T2R3...StructuredMeta', 'grid', 'harmony', 3333, 2200, 0.04, 'svg', 0.95, 'ETH', 'available', 'Common', '1/1', 1298, 87, '1015', '0x6789012345678901234abcdef123456789012345', 'ethereum', '2024-02-07 11:30:00+00', '2024-02-07 12:15:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440016', '550e8400-e29b-41d4-a716-446655440005', null, 'Minimal Grid 01', 'The first in a series exploring minimalist grid compositions.', '/placeholder.svg?height=500&width=500&text=Minimal+Grid', 'QmM1I2N3...MinimalGrid', 'https://ipfs.io/ipfs/QmM1I2N3...MinimalGridMeta', 'QmM1I2N3...MinimalGridMeta', 'grid', 'minimal', 4444, 1500, 0.03, 'svg', 0.89, 'ETH', 'available', 'Common', '1/1', 987, 76, '1016', '0x789012345678901234abcdef1234567890123456', 'ethereum', '2024-02-11 15:45:00+00', '2024-02-11 16:30:00+00');
 
 -- Insert Transactions (completed sales)
-INSERT INTO transactions (id, artwork_id, seller_id, buyer_id, price, currency, status, tx_hash, block_number, gas_used, gas_price, platform_fee, artist_royalty, completed_at) VALUES
-('990e8400-e29b-41d4-a716-446655440000', '660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440000', '880e8400-e29b-41d4-a716-446655440000', 2.45, 'ETH', 'completed', '0x1a2b3c4d5e6f7890abcdef1234567890abcdef1234567890abcdef1234567890', 18500000, 21000, 20.5, 0.0735, 0.245, '2024-01-21 10:30:00'),
-('990e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440007', '550e8400-e29b-41d4-a716-446655440002', '880e8400-e29b-41d4-a716-446655440001', 1.95, 'ETH', 'completed', '0x2b3c4d5e6f7890abcdef1234567890abcdef1234567890abcdef1234567890ab', 18500100, 21000, 19.8, 0.0585, 0.195, '2024-02-19 14:45:00'),
-('990e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440010', '550e8400-e29b-41d4-a716-446655440003', '880e8400-e29b-41d4-a716-446655440002', 1.23, 'ETH', 'completed', '0x3c4d5e6f7890abcdef1234567890abcdef1234567890abcdef1234567890abcd', 18500200, 21000, 18.2, 0.0369, 0.123, '2024-03-02 16:20:00');
+INSERT INTO transactions (id, artwork_id, seller_id, buyer_id, price, currency, status, tx_hash, block_number, gas_used, gas_price, platform_fee, artist_royalty, created_at, completed_at) VALUES
+('990e8400-e29b-41d4-a716-446655440001', '880e8400-e29b-41d4-a716-446655440013', '550e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440001', 1.12, 'ETH', 'completed', '0xabc123def456789012345678901234567890123456789012345678901234567890', 18500000, 21000, 0.000000020, 0.0336, 0.112, '2024-01-22 17:00:00+00', '2024-01-22 17:05:00+00'),
+
+('990e8400-e29b-41d4-a716-446655440002', '880e8400-e29b-41d4-a716-446655440014', '550e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440002', 1.05, 'ETH', 'completed', '0xdef456789012345678901234567890123456789012345678901234567890abcd', 18500100, 21000, 0.000000019, 0.0315, 0.105, '2024-01-26 13:15:00+00', '2024-01-26 13:20:00+00'),
+
+('990e8400-e29b-41d4-a716-446655440003', '880e8400-e29b-41d4-a716-446655440012', '550e8400-e29b-41d4-a716-446655440004', '660e8400-e29b-41d4-a716-446655440003', 1.23, 'ETH', 'completed', '0x789012345678901234567890123456789012345678901234567890123456cdef', 18500200, 21000, 0.000000021, 0.0369, 0.123, '2024-02-03 10:30:00+00', '2024-02-03 10:35:00+00');
+
+-- Insert Artwork Likes
+INSERT INTO artwork_likes (artwork_id, user_id, created_at) VALUES
+-- Golden Spiral Infinity likes
+('880e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440001', '2024-01-15 12:00:00+00'),
+('880e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440002', '2024-01-15 13:30:00+00'),
+('880e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440003', '2024-01-15 14:15:00+00'),
+('880e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440004', '2024-01-15 15:45:00+00'),
+('880e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440005', '2024-01-15 16:20:00+00'),
+
+-- Eclipse Phenomenon likes
+('880e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440001', '2024-02-01 16:00:00+00'),
+('880e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440002', '2024-02-01 17:30:00+00'),
+('880e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440003', '2024-02-01 18:15:00+00'),
+('880e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440005', '2024-02-01 19:45:00+00'),
+
+-- Add likes for other artworks (sampling)
+('880e8400-e29b-41d4-a716-446655440003', '660e8400-e29b-41d4-a716-446655440001', '2024-02-10 11:00:00+00'),
+('880e8400-e29b-41d4-a716-446655440003', '660e8400-e29b-41d4-a716-446655440002', '2024-02-10 12:30:00+00'),
+('880e8400-e29b-41d4-a716-446655440003', '660e8400-e29b-41d4-a716-446655440004', '2024-02-10 13:15:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440004', '660e8400-e29b-41d4-a716-446655440002', '2024-01-20 18:30:00+00'),
+('880e8400-e29b-41d4-a716-446655440004', '660e8400-e29b-41d4-a716-446655440003', '2024-01-20 19:15:00+00'),
+('880e8400-e29b-41d4-a716-446655440004', '660e8400-e29b-41d4-a716-446655440005', '2024-01-20 20:45:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440005', '660e8400-e29b-41d4-a716-446655440001', '2024-02-05 14:00:00+00'),
+('880e8400-e29b-41d4-a716-446655440005', '660e8400-e29b-41d4-a716-446655440003', '2024-02-05 15:30:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440006', '660e8400-e29b-41d4-a716-446655440002', '2024-01-25 10:00:00+00'),
+('880e8400-e29b-41d4-a716-446655440006', '660e8400-e29b-41d4-a716-446655440004', '2024-01-25 11:30:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440007', '660e8400-e29b-41d4-a716-446655440001', '2024-02-12 17:15:00+00'),
+('880e8400-e29b-41d4-a716-446655440007', '660e8400-e29b-41d4-a716-446655440005', '2024-02-12 18:45:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440008', '660e8400-e29b-41d4-a716-446655440003', '2024-01-30 13:30:00+00'),
+('880e8400-e29b-41d4-a716-446655440008', '660e8400-e29b-41d4-a716-446655440004', '2024-01-30 14:15:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440009', '660e8400-e29b-41d4-a716-446655440002', '2024-02-08 15:00:00+00'),
+('880e8400-e29b-41d4-a716-446655440009', '660e8400-e29b-41d4-a716-446655440005', '2024-02-08 16:30:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440010', '660e8400-e29b-41d4-a716-446655440001', '2024-02-15 12:00:00+00'),
+('880e8400-e29b-41d4-a716-446655440010', '660e8400-e29b-41d4-a716-446655440004', '2024-02-15 13:30:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440011', '660e8400-e29b-41d4-a716-446655440002', '2024-01-28 16:30:00+00'),
+('880e8400-e29b-41d4-a716-446655440011', '660e8400-e29b-41d4-a716-446655440003', '2024-01-28 17:15:00+00');
+
+-- Insert Artwork Views (sample data)
+INSERT INTO artwork_views (artwork_id, user_id, ip_address, user_agent, created_at) VALUES
+-- Views for Golden Spiral Infinity
+('880e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440001', '192.168.1.100', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2024-01-15 11:30:00+00'),
+('880e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440002', '192.168.1.101', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36', '2024-01-15 12:15:00+00'),
+('880e8400-e29b-41d4-a716-446655440001', null, '192.168.1.102', 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15', '2024-01-15 13:00:00+00'),
+('880e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440003', '192.168.1.103', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36', '2024-01-15 14:30:00+00'),
+
+-- Views for Eclipse Phenomenon
+('880e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440001', '192.168.1.104', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', '2024-02-01 15:30:00+00'),
+('880e8400-e29b-41d4-a716-446655440002', null, '192.168.1.105', 'Mozilla/5.0 (Android 14; Mobile; rv:109.0) Gecko/109.0 Firefox/115.0', '2024-02-01 16:15:00+00'),
+('880e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440004', '192.168.1.106', 'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15', '2024-02-01 17:00:00+00');
+
+-- Insert Follows (users following artists)
+INSERT INTO follows (follower_id, following_id, created_at) VALUES
+('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440001', '2024-01-10 10:00:00+00'),
+('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440003', '2024-01-12 14:30:00+00'),
+('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440006', '2024-01-15 09:15:00+00'),
+
+('660e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440002', '2024-01-08 16:45:00+00'),
+('660e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440004', '2024-01-20 11:20:00+00'),
+('660e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440006', '2024-02-01 13:10:00+00'),
+
+('660e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440001', '2024-01-18 12:00:00+00'),
+('660e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440003', '2024-01-25 15:30:00+00'),
+('660e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440005', '2024-02-05 10:45:00+00'),
+
+('660e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440002', '2024-01-14 17:20:00+00'),
+('660e8400-e29b-41d4-a716-446655440004', '550e8400-e29b-41d4-a716-446655440004', '2024-01-28 14:15:00+00'),
+
+('660e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440001', '2024-01-22 11:30:00+00'),
+('660e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440005', '2024-02-08 16:00:00+00'),
+('660e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440006', '2024-02-12 13:45:00+00');
 
 -- Insert Active Bids
-INSERT INTO bids (artwork_id, bidder_id, amount, currency, expires_at, is_active) VALUES
-('660e8400-e29b-41d4-a716-446655440000', '880e8400-e29b-41d4-a716-446655440001', 7.50, 'ETH', '2024-04-01 23:59:59', true),
-('660e8400-e29b-41d4-a716-446655440000', '880e8400-e29b-41d4-a716-446655440002', 7.25, 'ETH', '2024-04-01 23:59:59', true),
-('660e8400-e29b-41d4-a716-446655440006', '880e8400-e29b-41d4-a716-446655440003', 5.00, 'ETH', '2024-03-30 23:59:59', true),
-('660e8400-e29b-41d4-a716-446655440013', '880e8400-e29b-41d4-a716-446655440004', 3.25, 'ETH', '2024-03-28 23:59:59', true),
-('660e8400-e29b-41d4-a716-446655440003', '880e8400-e29b-41d4-a716-446655440000', 2.75, 'ETH', '2024-03-25 23:59:59', true);
+INSERT INTO bids (artwork_id, bidder_id, amount, currency, expires_at, is_active, created_at) VALUES
+('880e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440001', 7.50, 'ETH', '2024-03-15 23:59:59+00', true, '2024-03-01 10:30:00+00'),
+('880e8400-e29b-41d4-a716-446655440001', '660e8400-e29b-41d4-a716-446655440003', 7.25, 'ETH', '2024-03-15 23:59:59+00', true, '2024-02-28 14:15:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440002', 5.00, 'ETH', '2024-03-20 23:59:59+00', true, '2024-03-05 16:20:00+00'),
+('880e8400-e29b-41d4-a716-446655440002', '660e8400-e29b-41d4-a716-446655440004', 4.80, 'ETH', '2024-03-20 23:59:59+00', true, '2024-03-03 12:45:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440003', '660e8400-e29b-41d4-a716-446655440005', 3.25, 'ETH', '2024-03-25 23:59:59+00', true, '2024-03-10 09:10:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440004', '660e8400-e29b-41d4-a716-446655440001', 2.75, 'ETH', '2024-03-18 23:59:59+00', true, '2024-03-08 15:30:00+00'),
+
+('880e8400-e29b-41d4-a716-446655440006', '660e8400-e29b-41d4-a716-446655440003', 2.30, 'ETH', '2024-03-22 23:59:59+00', true, '2024-03-12 11:45:00+00');
 
 -- Update artist total_sales based on completed transactions
 UPDATE artists SET total_sales = (
