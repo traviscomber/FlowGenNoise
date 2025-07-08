@@ -1,13 +1,25 @@
+// Blockchain utilities for Web3 integration with Pinata IPFS
 import { ethers } from "ethers"
-import { supabase } from "@/lib/supabase"
 
-// IPFS configuration for metadata storage
-export const IPFS_GATEWAY = process.env.NEXT_PUBLIC_IPFS_GATEWAY || "https://gateway.pinata.cloud/ipfs/"
-export const PINATA_JWT =
+// Pinata configuration with your JWT token
+const PINATA_JWT =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIyYjk3NGQ3MC04YjY4LTQwYWEtYjAxNi03MDZmZDVkMzgwZDIiLCJlbWFpbCI6InRyYXZpc0BudWFudS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiMTZmOGE1MWQ0MmVlMDMwNTVkYjYiLCJzY29wZWRLZXlTZWNyZXQiOiI5NjBhY2E4ODczZmM0YmJlZDM1ZjI3YjExMzVlNDcwN2E4YmVhMjU4ZmE3ZGM5M2Q5OWI5YjBkMDI3Mjc2MjlkIiwiZXhwIjoxNzgzNTA4MDkzfQ.mtNbbvsudKtYDFyS1NaP0DsmlNW4CMoa1eHLaAoUIAw"
+const PINATA_GATEWAY = "https://gateway.pinata.cloud/ipfs/"
+
+// NFT Contract ABI (simplified)
+const NFT_CONTRACT_ABI = [
+  "function mint(address to, string memory tokenURI) public returns (uint256)",
+  "function tokenURI(uint256 tokenId) public view returns (string memory)",
+  "function ownerOf(uint256 tokenId) public view returns (address)",
+  "function transferFrom(address from, address to, uint256 tokenId) public",
+  "function approve(address to, uint256 tokenId) public",
+  "function getApproved(uint256 tokenId) public view returns (address)",
+  "function setApprovalForAll(address operator, bool approved) public",
+  "function isApprovedForAll(address owner, address operator) public view returns (bool)",
+]
 
 // Contract addresses for different networks
-export const CONTRACT_ADDRESSES = {
+const CONTRACT_ADDRESSES = {
   1: "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6", // Ethereum Mainnet
   11155111: "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6", // Sepolia Testnet
   137: "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6", // Polygon Mainnet
@@ -15,73 +27,53 @@ export const CONTRACT_ADDRESSES = {
 }
 
 // Network configurations
-export const NETWORK_CONFIG = {
+export const SUPPORTED_NETWORKS = {
   1: {
     name: "Ethereum Mainnet",
-    symbol: "ETH",
-    decimals: 18,
-    rpcUrl: "https://mainnet.infura.io/v3/",
-    explorerUrl: "https://etherscan.io",
-    explorerApiUrl: "https://api.etherscan.io/api",
+    rpcUrl: "https://mainnet.infura.io/v3/YOUR_INFURA_KEY",
+    blockExplorer: "https://etherscan.io",
+    currency: "ETH",
   },
   11155111: {
     name: "Sepolia Testnet",
-    symbol: "ETH",
-    decimals: 18,
-    rpcUrl: "https://sepolia.infura.io/v3/",
-    explorerUrl: "https://sepolia.etherscan.io",
-    explorerApiUrl: "https://api-sepolia.etherscan.io/api",
+    rpcUrl: "https://sepolia.infura.io/v3/YOUR_INFURA_KEY",
+    blockExplorer: "https://sepolia.etherscan.io",
+    currency: "ETH",
   },
   137: {
     name: "Polygon Mainnet",
-    symbol: "MATIC",
-    decimals: 18,
-    rpcUrl: "https://polygon-rpc.com/",
-    explorerUrl: "https://polygonscan.com",
-    explorerApiUrl: "https://api.polygonscan.com/api",
+    rpcUrl: "https://polygon-rpc.com",
+    blockExplorer: "https://polygonscan.com",
+    currency: "MATIC",
   },
   80001: {
     name: "Mumbai Testnet",
-    symbol: "MATIC",
-    decimals: 18,
-    rpcUrl: "https://rpc-mumbai.maticvigil.com/",
-    explorerUrl: "https://mumbai.polygonscan.com",
-    explorerApiUrl: "https://api-testnet.polygonscan.com/api",
+    rpcUrl: "https://rpc-mumbai.maticvigil.com",
+    blockExplorer: "https://mumbai.polygonscan.com",
+    currency: "MATIC",
   },
 }
 
-// Check if Pinata is configured
-export function isPinataConfigured(): boolean {
-  return !!PINATA_JWT
-}
-
-// Upload image to IPFS via Pinata
+// Upload file to IPFS via Pinata
 export async function uploadToIPFS(file: File): Promise<string> {
-  if (!isPinataConfigured()) {
-    throw new Error("Pinata JWT token not configured.")
-  }
-
-  const formData = new FormData()
-  formData.append("file", file)
-
-  // Add metadata for better organization
-  const metadata = JSON.stringify({
-    name: `FlowSketch-${file.name}`,
-    keyvalues: {
-      project: "FlowSketch",
-      type: "artwork",
-      timestamp: new Date().toISOString(),
-    },
-  })
-  formData.append("pinataMetadata", metadata)
-
-  // Add options for better performance
-  const options = JSON.stringify({
-    cidVersion: 0,
-  })
-  formData.append("pinataOptions", options)
-
   try {
+    const formData = new FormData()
+    formData.append("file", file)
+
+    const metadata = JSON.stringify({
+      name: file.name,
+      keyvalues: {
+        uploadedBy: "FlowSketch",
+        timestamp: new Date().toISOString(),
+      },
+    })
+    formData.append("pinataMetadata", metadata)
+
+    const options = JSON.stringify({
+      cidVersion: 0,
+    })
+    formData.append("pinataOptions", options)
+
     const response = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
       method: "POST",
       headers: {
@@ -91,43 +83,20 @@ export async function uploadToIPFS(file: File): Promise<string> {
     })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(`Failed to upload to IPFS: ${response.status} ${response.statusText}. ${errorData.error || ""}`)
+      const errorText = await response.text()
+      throw new Error(`Pinata upload failed: ${response.status} ${errorText}`)
     }
 
-    const data = await response.json()
-    console.log("Image uploaded to IPFS:", data.IpfsHash)
-    return data.IpfsHash
+    const result = await response.json()
+    return result.IpfsHash
   } catch (error) {
     console.error("IPFS upload error:", error)
-    throw error
+    throw new Error(`Failed to upload to IPFS: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }
 
 // Upload JSON metadata to IPFS
-export async function uploadMetadataToIPFS(metadata: any): Promise<string> {
-  if (!isPinataConfigured()) {
-    throw new Error("Pinata JWT token not configured.")
-  }
-
-  const pinataMetadata = {
-    name: `FlowSketch-Metadata-${metadata.name || "Unknown"}`,
-    keyvalues: {
-      project: "FlowSketch",
-      type: "metadata",
-      artwork: metadata.name || "Unknown",
-      timestamp: new Date().toISOString(),
-    },
-  }
-
-  const requestBody = {
-    pinataContent: metadata,
-    pinataMetadata,
-    pinataOptions: {
-      cidVersion: 0,
-    },
-  }
-
+export async function uploadMetadataToIPFS(metadata: object): Promise<string> {
   try {
     const response = await fetch("https://api.pinata.cloud/pinning/pinJSONToIPFS", {
       method: "POST",
@@ -135,82 +104,171 @@ export async function uploadMetadataToIPFS(metadata: any): Promise<string> {
         "Content-Type": "application/json",
         Authorization: `Bearer ${PINATA_JWT}`,
       },
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify({
+        pinataContent: metadata,
+        pinataMetadata: {
+          name: "NFT Metadata",
+          keyvalues: {
+            type: "metadata",
+            uploadedBy: "FlowSketch",
+            timestamp: new Date().toISOString(),
+          },
+        },
+      }),
     })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(
-        `Failed to upload metadata to IPFS: ${response.status} ${response.statusText}. ${errorData.error || ""}`,
-      )
+      const errorText = await response.text()
+      throw new Error(`Pinata metadata upload failed: ${response.status} ${errorText}`)
     }
 
-    const data = await response.json()
-    console.log("Metadata uploaded to IPFS:", data.IpfsHash)
-    return data.IpfsHash
+    const result = await response.json()
+    return result.IpfsHash
   } catch (error) {
-    console.error("IPFS metadata upload error:", error)
-    throw error
+    console.error("Metadata upload error:", error)
+    throw new Error(`Failed to upload metadata to IPFS: ${error instanceof Error ? error.message : "Unknown error"}`)
   }
 }
 
-// Create NFT metadata following OpenSea standards
-export function createNFTMetadata(artwork: {
+// Create NFT metadata object
+export function createNFTMetadata({
+  title,
+  description,
+  artist,
+  imageHash,
+  attributes = [],
+}: {
   title: string
   description: string
   artist: string
   imageHash: string
-  attributes: Array<{ trait_type: string; value: string | number }>
+  attributes?: Array<{ trait_type: string; value: string | number }>
 }) {
   return {
-    name: artwork.title,
-    description: artwork.description,
-    image: `${IPFS_GATEWAY}${artwork.imageHash}`,
-    external_url: `${typeof window !== "undefined" ? window.location.origin : ""}/artwork/${encodeURIComponent(artwork.title)}`,
-    artist: artwork.artist,
-    attributes: artwork.attributes,
+    name: title,
+    description,
+    image: `ipfs://${imageHash}`,
+    external_url: "https://flowsketch.art",
+    attributes: [
+      {
+        trait_type: "Artist",
+        value: artist,
+      },
+      {
+        trait_type: "Created With",
+        value: "FlowSketch AI",
+      },
+      {
+        trait_type: "Creation Date",
+        value: new Date().toISOString().split("T")[0],
+      },
+      ...attributes,
+    ],
     properties: {
       category: "Digital Art",
-      creator: artwork.artist,
-      created_with: "FlowSketch AI Art Generator",
+      creator: artist,
+      platform: "FlowSketch",
     },
-    created_at: new Date().toISOString(),
-    version: "1.0",
   }
 }
 
-// Get Pinata usage statistics
-export async function getPinataUsage(): Promise<any> {
-  if (!isPinataConfigured()) {
-    return null
+// Get Web3 provider
+export function getWeb3Provider() {
+  if (typeof window !== "undefined" && window.ethereum) {
+    return new ethers.BrowserProvider(window.ethereum)
+  }
+  throw new Error("No Web3 provider found. Please install MetaMask.")
+}
+
+// Get contract instance
+export function getNFTContract(chainId: number, signer?: ethers.Signer) {
+  const contractAddress = CONTRACT_ADDRESSES[chainId as keyof typeof CONTRACT_ADDRESSES]
+  if (!contractAddress) {
+    throw new Error(`Unsupported network: ${chainId}`)
   }
 
+  const provider = signer || getWeb3Provider()
+  return new ethers.Contract(contractAddress, NFT_CONTRACT_ABI, provider)
+}
+
+// Mint NFT
+export async function mintNFT(tokenURI: string, price: string, chainId: number): Promise<string> {
   try {
-    const response = await fetch("https://api.pinata.cloud/data/userPinnedDataTotal", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${PINATA_JWT}`,
-      },
+    const provider = getWeb3Provider()
+    const signer = await provider.getSigner()
+    const contract = getNFTContract(chainId, signer)
+
+    // Convert price to wei
+    const priceInWei = ethers.parseEther(price)
+
+    // Mint the NFT
+    const tx = await contract.mint(await signer.getAddress(), tokenURI, {
+      value: priceInWei,
+      gasLimit: 300000,
     })
 
+    console.log("Minting transaction sent:", tx.hash)
+
+    // Wait for transaction confirmation
+    const receipt = await tx.wait()
+    console.log("NFT minted successfully:", receipt.hash)
+
+    return tx.hash
+  } catch (error) {
+    console.error("Minting error:", error)
+    throw new Error(`Failed to mint NFT: ${error instanceof Error ? error.message : "Unknown error"}`)
+  }
+}
+
+// Purchase NFT
+export async function purchaseNFT(tokenId: string, price: string, chainId: number): Promise<string> {
+  try {
+    const provider = getWeb3Provider()
+    const signer = await provider.getSigner()
+
+    // Convert price to wei
+    const priceInWei = ethers.parseEther(price)
+
+    // Send transaction to purchase NFT
+    const tx = await signer.sendTransaction({
+      to: CONTRACT_ADDRESSES[chainId as keyof typeof CONTRACT_ADDRESSES],
+      value: priceInWei,
+      gasLimit: 200000,
+    })
+
+    console.log("Purchase transaction sent:", tx.hash)
+
+    // Wait for transaction confirmation
+    const receipt = await tx.wait()
+    console.log("NFT purchased successfully:", receipt?.hash)
+
+    return tx.hash
+  } catch (error) {
+    console.error("Purchase error:", error)
+    throw new Error(`Failed to purchase NFT: ${error instanceof Error ? error.message : "Unknown error"}`)
+  }
+}
+
+// Get NFT metadata from IPFS
+export async function getNFTMetadata(tokenURI: string) {
+  try {
+    // Handle both ipfs:// and https:// URLs
+    const url = tokenURI.startsWith("ipfs://") ? tokenURI.replace("ipfs://", PINATA_GATEWAY) : tokenURI
+
+    const response = await fetch(url)
     if (!response.ok) {
-      throw new Error(`Failed to get Pinata usage: ${response.status}`)
+      throw new Error(`Failed to fetch metadata: ${response.status}`)
     }
 
     return await response.json()
   } catch (error) {
-    console.error("Error getting Pinata usage:", error)
-    return null
+    console.error("Error fetching NFT metadata:", error)
+    throw error
   }
 }
 
 // Test Pinata connection
-export async function testPinataConnection(): Promise<boolean> {
-  if (!isPinataConfigured()) {
-    console.error("Pinata not configured")
-    return false
-  }
-
+export async function testPinataConnection(): Promise<{ success: boolean; message: string }> {
   try {
     const response = await fetch("https://api.pinata.cloud/data/testAuthentication", {
       method: "GET",
@@ -219,179 +277,72 @@ export async function testPinataConnection(): Promise<boolean> {
       },
     })
 
-    const data = await response.json()
-    console.log("Pinata connection test:", data)
-    return response.ok && data.message === "Congratulations! You are communicating with the Pinata API!"
+    if (response.ok) {
+      const data = await response.json()
+      return {
+        success: true,
+        message: `Connected successfully! ${data.message || "Authentication successful"}`,
+      }
+    } else {
+      return {
+        success: false,
+        message: `Connection failed: ${response.status} ${response.statusText}`,
+      }
+    }
   } catch (error) {
-    console.error("Pinata connection test failed:", error)
+    return {
+      success: false,
+      message: `Connection error: ${error instanceof Error ? error.message : "Unknown error"}`,
+    }
+  }
+}
+
+// Format wallet address for display
+export function formatAddress(address: string): string {
+  if (!address) return ""
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
+
+// Format price for display
+export function formatPrice(price: string | number, currency = "ETH"): string {
+  const numPrice = typeof price === "string" ? Number.parseFloat(price) : price
+  return `${numPrice.toFixed(4)} ${currency}`
+}
+
+// Get network name
+export function getNetworkName(chainId: number): string {
+  return SUPPORTED_NETWORKS[chainId as keyof typeof SUPPORTED_NETWORKS]?.name || `Unknown Network (${chainId})`
+}
+
+// Get block explorer URL
+export function getBlockExplorerUrl(chainId: number, txHash: string): string {
+  const network = SUPPORTED_NETWORKS[chainId as keyof typeof SUPPORTED_NETWORKS]
+  return network ? `${network.blockExplorer}/tx/${txHash}` : "#"
+}
+
+// Validate Ethereum address
+export function isValidAddress(address: string): boolean {
+  try {
+    return ethers.isAddress(address)
+  } catch {
     return false
   }
 }
 
-// Get transaction details from blockchain
-export async function getTransactionDetails(txHash: string, chainId: number) {
-  const network = NETWORK_CONFIG[chainId as keyof typeof NETWORK_CONFIG]
-  if (!network) {
-    throw new Error("Unsupported network")
-  }
-
+// Convert Wei to Ether
+export function weiToEther(wei: string): string {
   try {
-    const response = await fetch(
-      `${network.explorerApiUrl}?module=transaction&action=gettxreceiptstatus&txhash=${txHash}&apikey=YourApiKeyToken`,
-    )
-    const data = await response.json()
-    return data.result
-  } catch (error) {
-    console.error("Error fetching transaction details:", error)
-    return null
+    return ethers.formatEther(wei)
+  } catch {
+    return "0"
   }
 }
 
-// Validate Ethereum address
-export function isValidEthereumAddress(address: string): boolean {
-  return ethers.isAddress(address)
-}
-
-// Format ETH amount
-export function formatEthAmount(amount: string | number, decimals = 4): string {
-  const num = typeof amount === "string" ? Number.parseFloat(amount) : amount
-  return num.toFixed(decimals)
-}
-
-// Convert Wei to ETH
-export function weiToEth(wei: string): string {
-  return ethers.formatEther(wei)
-}
-
-// Convert ETH to Wei
-export function ethToWei(eth: string): bigint {
-  return ethers.parseEther(eth)
-}
-
-// Get gas price estimation
-export async function getGasPrice(provider: ethers.BrowserProvider): Promise<bigint> {
+// Convert Ether to Wei
+export function etherToWei(ether: string): string {
   try {
-    const feeData = await provider.getFeeData()
-    return feeData.gasPrice || ethers.parseUnits("20", "gwei")
-  } catch (error) {
-    console.error("Error getting gas price:", error)
-    return ethers.parseUnits("20", "gwei")
+    return ethers.parseEther(ether).toString()
+  } catch {
+    return "0"
   }
-}
-
-// Estimate gas for transaction
-export async function estimateGas(contract: ethers.Contract, method: string, params: any[]): Promise<bigint> {
-  try {
-    return await contract[method].estimateGas(...params)
-  } catch (error) {
-    console.error("Error estimating gas:", error)
-    return BigInt(100000) // Default gas limit
-  }
-}
-
-// Log blockchain transaction to Supabase
-export async function logTransactionToSupabase(transaction: {
-  txHash: string
-  fromAddress: string
-  toAddress: string
-  transactionType: string
-  chainId: number
-  value?: string
-  gasUsed?: string
-  gasPrice?: string
-  tokenId?: string
-  status: string
-}) {
-  try {
-    const { error } = await supabase.from("blockchain_transactions").insert({
-      tx_hash: transaction.txHash,
-      from_address: transaction.fromAddress,
-      to_address: transaction.toAddress,
-      transaction_type: transaction.transactionType,
-      chain_id: transaction.chainId,
-      value: transaction.value,
-      gas_used: transaction.gasUsed,
-      gas_price: transaction.gasPrice,
-      token_id: transaction.tokenId,
-      status: transaction.status,
-      created_at: new Date().toISOString(),
-    })
-
-    if (error) {
-      console.error("Error logging transaction to Supabase:", error)
-    }
-  } catch (error) {
-    console.error("Error logging transaction:", error)
-  }
-}
-
-// Get user's NFT balance
-export async function getUserNFTBalance(address: string, chainId: number): Promise<number> {
-  const contractAddress = CONTRACT_ADDRESSES[chainId as keyof typeof CONTRACT_ADDRESSES]
-  if (!contractAddress) {
-    return 0
-  }
-
-  try {
-    const { data, error } = await supabase
-      .from("blockchain_transactions")
-      .select("*")
-      .eq("to_address", address)
-      .eq("transaction_type", "purchase")
-      .eq("chain_id", chainId)
-      .eq("status", "completed")
-
-    if (error) {
-      console.error("Error fetching NFT balance:", error)
-      return 0
-    }
-
-    return data?.length || 0
-  } catch (error) {
-    console.error("Error getting NFT balance:", error)
-    return 0
-  }
-}
-
-// Get transaction history for user
-export async function getUserTransactionHistory(address: string, chainId?: number) {
-  try {
-    let query = supabase
-      .from("blockchain_transactions")
-      .select("*")
-      .or(`from_address.eq.${address},to_address.eq.${address}`)
-      .order("created_at", { ascending: false })
-
-    if (chainId) {
-      query = query.eq("chain_id", chainId)
-    }
-
-    const { data, error } = await query
-
-    if (error) {
-      console.error("Error fetching transaction history:", error)
-      return []
-    }
-
-    return data || []
-  } catch (error) {
-    console.error("Error getting transaction history:", error)
-    return []
-  }
-}
-
-// Format IPFS URL
-export function formatIPFSUrl(hash: string): string {
-  if (hash.startsWith("http")) {
-    return hash
-  }
-  return `${IPFS_GATEWAY}${hash}`
-}
-
-// Extract IPFS hash from URL
-export function extractIPFSHash(url: string): string {
-  if (url.includes("/ipfs/")) {
-    return url.split("/ipfs/")[1]
-  }
-  return url
 }
