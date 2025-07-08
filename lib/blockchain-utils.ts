@@ -3,8 +3,8 @@ import { supabase } from "@/lib/supabase"
 
 // IPFS configuration for metadata storage
 export const IPFS_GATEWAY = process.env.NEXT_PUBLIC_IPFS_GATEWAY || "https://gateway.pinata.cloud/ipfs/"
-export const PINATA_API_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY
-export const PINATA_SECRET_KEY = process.env.NEXT_PUBLIC_PINATA_SECRET_KEY
+export const PINATA_JWT =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIyYjk3NGQ3MC04YjY4LTQwYWEtYjAxNi03MDZmZDVkMzgwZDIiLCJlbWFpbCI6InRyYXZpc0BudWFudS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiMTZmOGE1MWQ0MmVlMDMwNTVkYjYiLCJzY29wZWRLZXlTZWNyZXQiOiI5NjBhY2E4ODczZmM0YmJlZDM1ZjI3YjExMzVlNDcwN2E4YmVhMjU4ZmE3ZGM5M2Q5OWI5YjBkMDI3Mjc2MjlkIiwiZXhwIjoxNzgzNTA4MDkzfQ.mtNbbvsudKtYDFyS1NaP0DsmlNW4CMoa1eHLaAoUIAw"
 
 // Contract addresses for different networks
 export const CONTRACT_ADDRESSES = {
@@ -52,15 +52,13 @@ export const NETWORK_CONFIG = {
 
 // Check if Pinata is configured
 export function isPinataConfigured(): boolean {
-  return !!(PINATA_API_KEY && PINATA_SECRET_KEY)
+  return !!PINATA_JWT
 }
 
 // Upload image to IPFS via Pinata
 export async function uploadToIPFS(file: File): Promise<string> {
   if (!isPinataConfigured()) {
-    throw new Error(
-      "Pinata API keys not configured. Please add NEXT_PUBLIC_PINATA_API_KEY and NEXT_PUBLIC_PINATA_SECRET_KEY to your environment variables.",
-    )
+    throw new Error("Pinata JWT token not configured.")
   }
 
   const formData = new FormData()
@@ -87,8 +85,7 @@ export async function uploadToIPFS(file: File): Promise<string> {
     const response = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
       method: "POST",
       headers: {
-        pinata_api_key: PINATA_API_KEY!,
-        pinata_secret_api_key: PINATA_SECRET_KEY!,
+        Authorization: `Bearer ${PINATA_JWT}`,
       },
       body: formData,
     })
@@ -110,9 +107,7 @@ export async function uploadToIPFS(file: File): Promise<string> {
 // Upload JSON metadata to IPFS
 export async function uploadMetadataToIPFS(metadata: any): Promise<string> {
   if (!isPinataConfigured()) {
-    throw new Error(
-      "Pinata API keys not configured. Please add NEXT_PUBLIC_PINATA_API_KEY and NEXT_PUBLIC_PINATA_SECRET_KEY to your environment variables.",
-    )
+    throw new Error("Pinata JWT token not configured.")
   }
 
   const pinataMetadata = {
@@ -138,8 +133,7 @@ export async function uploadMetadataToIPFS(metadata: any): Promise<string> {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        pinata_api_key: PINATA_API_KEY!,
-        pinata_secret_api_key: PINATA_SECRET_KEY!,
+        Authorization: `Bearer ${PINATA_JWT}`,
       },
       body: JSON.stringify(requestBody),
     })
@@ -195,8 +189,7 @@ export async function getPinataUsage(): Promise<any> {
     const response = await fetch("https://api.pinata.cloud/data/userPinnedDataTotal", {
       method: "GET",
       headers: {
-        pinata_api_key: PINATA_API_KEY!,
-        pinata_secret_api_key: PINATA_SECRET_KEY!,
+        Authorization: `Bearer ${PINATA_JWT}`,
       },
     })
 
@@ -222,8 +215,7 @@ export async function testPinataConnection(): Promise<boolean> {
     const response = await fetch("https://api.pinata.cloud/data/testAuthentication", {
       method: "GET",
       headers: {
-        pinata_api_key: PINATA_API_KEY!,
-        pinata_secret_api_key: PINATA_SECRET_KEY!,
+        Authorization: `Bearer ${PINATA_JWT}`,
       },
     })
 

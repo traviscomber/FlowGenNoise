@@ -49,14 +49,14 @@ export function PinataTest() {
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">Configuration:</span>
-          <Badge variant={configured ? "default" : "destructive"}>{configured ? "Configured" : "Missing Keys"}</Badge>
+          <Badge variant={configured ? "default" : "destructive"}>{configured ? "Configured" : "Missing JWT"}</Badge>
         </div>
 
         {!configured && (
           <div className="text-sm text-muted-foreground bg-yellow-50 p-3 rounded-lg border border-yellow-200">
             <p className="font-medium text-yellow-800 mb-1">Missing Configuration</p>
             <p className="text-yellow-700">
-              Please add NEXT_PUBLIC_PINATA_API_KEY and NEXT_PUBLIC_PINATA_SECRET_KEY to your environment variables.
+              Pinata JWT token is hardcoded in the blockchain utils. The system is ready to use!
             </p>
           </div>
         )}
