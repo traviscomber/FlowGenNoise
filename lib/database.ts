@@ -1,5 +1,6 @@
 import { supabase } from "./supabase"
 
+// Interfaces
 export interface Artist {
   id: string
   wallet_address: string
@@ -106,7 +107,7 @@ export interface MarketplaceStats {
   totalVolume: number
 }
 
-// Fetch all artworks with artist and collection data
+// Artwork queries
 export async function getArtworks(filters?: {
   rarity?: string
   dataset?: string
@@ -128,39 +129,31 @@ export async function getArtworks(filters?: {
   if (filters?.rarity) {
     query = query.eq("rarity", filters.rarity)
   }
-
   if (filters?.dataset) {
     query = query.eq("dataset", filters.dataset)
   }
-
   if (filters?.minPrice !== undefined) {
     query = query.gte("price", filters.minPrice)
   }
-
   if (filters?.maxPrice !== undefined) {
     query = query.lte("price", filters.maxPrice)
   }
-
   if (filters?.limit) {
     query = query.limit(filters.limit)
   }
-
   if (filters?.offset) {
     query = query.range(filters.offset, filters.offset + (filters.limit || 10) - 1)
   }
 
   const { data, error } = await query
-
   if (error) {
     console.error("Error fetching artworks:", error)
     throw error
   }
-
   return data as Artwork[]
 }
 
-// Fetch featured artworks
-export async function getFeaturedArtworks(limit = 6) {
+export async function getArtworkById(id: string) {
   const { data, error } = await supabase
     .from("artworks")
     .select(`
@@ -168,20 +161,133 @@ export async function getFeaturedArtworks(limit = 6) {
       artist:artists(*),
       collection:collections(*)
     `)
-    .eq("status", "available")
-    .in("rarity", ["Legendary", "Epic"])
-    .order("views", { ascending: false })
-    .limit(limit)
+    .eq("id", id)
+    .single()
 
   if (error) {
-    console.error("Error fetching featured artworks:", error)
+    console.error("Error fetching artwork:", error)
+    throw error
+  }
+
+  return data as Artwork
+}
+
+export async function getArtworksByArtist(artistId: string) {
+  const { data, error } = await supabase
+    .from("artworks")
+    .select(`
+      *,
+      artist:artists(*),
+      collection:collections(*)
+    `)
+    .eq("artist_id", artistId)
+    .order("created_at", { ascending: false })
+
+  if (error) {
+    console.error("Error fetching artworks by artist:", error)
     throw error
   }
 
   return data as Artwork[]
 }
 
-// Fetch all artists
+export async function getArtworksByCollection(collectionId: string) {
+  const { data, error } = await supabase
+    .from("artworks")
+    .select(`
+      *,
+      artist:artists(*),
+      collection:collections(*)
+    `)
+    .eq("collection_id", collectionId)
+    .order("created_at", { ascending: false })
+
+  if (error) {
+    console.error("Error fetching artworks by collection:", error)
+    throw error
+  }
+
+  return data as Artwork[]
+}
+
+export async function addArtworkView(artworkId: string, userId?: string, ipAddress?: string) {
+  const { error } = await supabase.from("artwork_views").insert({
+    artwork_id: artworkId,
+    user_id: userId || null,
+    ip_address: ipAddress || null,
+  })
+
+  if (error) {
+    console.error("Error adding artwork view:", error)
+    throw error
+  }
+}
+
+export async function toggleArtworkLike(artworkId: string, userId: string) {
+  // Check if like exists
+  const { data: existingLike } = await supabase
+    .from("artwork_likes")
+    .select("id")
+    .eq("artwork_id", artworkId)
+    .eq("user_id", userId)
+    .single()
+
+  if (existingLike) {
+    // Remove like
+    const { error } = await supabase.from("artwork_likes").delete().eq("artwork_id", artworkId).eq("user_id", userId)
+
+    if (error) {
+      console.error("Error removing like:", error)
+      throw error
+    }
+    return false
+  } else {
+    // Add like
+    const { error } = await supabase.from("artwork_likes").insert({
+      artwork_id: artworkId,
+      user_id: userId,
+    })
+
+    if (error) {
+      console.error("Error adding like:", error)
+      throw error
+    }
+    return true
+  }
+}
+
+export async function createArtwork(artwork: Omit<Artwork, "id" | "created_at" | "updated_at" | "views" | "likes">) {
+  const { data, error } = await supabase.from("artworks").insert(artwork).select().single()
+
+  if (error) {
+    console.error("Error creating artwork:", error)
+    throw error
+  }
+
+  return data as Artwork
+}
+
+export async function updateArtwork(id: string, updates: Partial<Artwork>) {
+  const { data, error } = await supabase.from("artworks").update(updates).eq("id", id).select().single()
+
+  if (error) {
+    console.error("Error updating artwork:", error)
+    throw error
+  }
+
+  return data as Artwork
+}
+
+export async function deleteArtwork(id: string) {
+  const { error } = await supabase.from("artworks").delete().eq("id", id)
+
+  if (error) {
+    console.error("Error deleting artwork:", error)
+    throw error
+  }
+}
+
+// Artist queries
 export async function getArtists(limit?: number) {
   let query = supabase.from("artists").select("*").order("total_sales", { ascending: false })
 
@@ -199,14 +305,40 @@ export async function getArtists(limit?: number) {
   return data as Artist[]
 }
 
-// Fetch featured collections
+// Featured artworks (top-viewed, still available)
+export async function getFeaturedArtworks(limit = 6) {
+  const { data, error } = await supabase
+    .from("artworks")
+    .select(
+      `
+        *,
+        artist:artists(*),
+        collection:collections(*)
+      `,
+    )
+    .eq("status", "available")
+    .in("rarity", ["Legendary", "Epic"])
+    .order("views", { ascending: false })
+    .limit(limit)
+
+  if (error) {
+    console.error("Error fetching featured artworks:", error)
+    throw error
+  }
+
+  return data as Artwork[]
+}
+
+// Featured collections (flagged with `is_featured = true`)
 export async function getFeaturedCollections(limit = 5) {
   const { data, error } = await supabase
     .from("collections")
-    .select(`
-      *,
-      artist:artists(*)
-    `)
+    .select(
+      `
+        *,
+        artist:artists(*)
+      `,
+    )
     .eq("is_featured", true)
     .order("created_at", { ascending: false })
     .limit(limit)
@@ -219,7 +351,7 @@ export async function getFeaturedCollections(limit = 5) {
   return data as Collection[]
 }
 
-// Fetch marketplace statistics
+// Marketplace aggregate statistics
 export async function getMarketplaceStats(): Promise<MarketplaceStats> {
   try {
     // Get total artworks
@@ -254,47 +386,23 @@ export async function getMarketplaceStats(): Promise<MarketplaceStats> {
   }
 }
 
-// Fetch single artwork by ID
-export async function getArtworkById(id: string) {
+export async function getRecentTransactions(limit = 10) {
   const { data, error } = await supabase
-    .from("artworks")
+    .from("transactions")
     .select(`
       *,
-      artist:artists(*),
-      collection:collections(*)
+      artwork:artworks(*),
+      seller:artists(*),
+      buyer:users(*)
     `)
-    .eq("id", id)
-    .single()
+    .eq("status", "completed")
+    .order("completed_at", { ascending: false })
+    .limit(limit)
 
   if (error) {
-    console.error("Error fetching artwork:", error)
+    console.error("Error fetching recent transactions:", error)
     throw error
   }
 
-  return data as Artwork
+  return data as Transaction[]
 }
-
-// Fetch artworks by artist
-export async function getArtworksByArtist(artistId: string) {
-  const { data, error } = await supabase
-    .from("artworks")
-    .select(`
-      *,
-      artist:artists(*),
-      collection:collections(*)
-    `)
-    .eq("artist_id", artistId)
-    .order("created_at", { ascending: false })
-
-  if (error) {
-    console.error("Error fetching artworks by artist:", error)
-    throw error
-  }
-
-  return data as Artwork[]
-}
-
-// Fetch artworks by collection
-export async function getArtworksByCollection(collectionId: string) {
-  const { data, error } = await supabase
-    .from
