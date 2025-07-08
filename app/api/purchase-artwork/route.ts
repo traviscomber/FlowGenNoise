@@ -1,54 +1,59 @@
-import { NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { type NextRequest, NextResponse } from "next/server"
+import { createClient } from "@supabase/supabase-js"
 
-export async function POST(req: Request) {
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+
+export async function POST(request: NextRequest) {
   try {
-    const { artworkId, status, buyerAddress, txHash, price } = await req.json()
+    const body = await request.json()
+    const { artworkId, buyerAddress, transactionHash, price, chainId } = body
 
-    if (!artworkId || !status || !buyerAddress || !txHash) {
+    // Validate required fields
+    if (!artworkId || !buyerAddress || !transactionHash || !price) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    // Update artwork status
-    const { error: artworkError } = await supabase
-      .from("artworks")
-      .update({
-        status,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", artworkId)
-
-    if (artworkError) {
-      console.error("Error updating artwork:", artworkError)
-      return NextResponse.json({ error: "Failed to update artwork" }, { status: 500 })
-    }
-
-    // Get artwork and artist details for transaction record
-    const { data: artwork } = await supabase
+    // Start a transaction to update multiple tables
+    const { data: artwork, error: artworkError } = await supabase
       .from("artworks")
       .select("*, artist:artists(*)")
       .eq("id", artworkId)
       .single()
 
-    if (!artwork) {
+    if (artworkError || !artwork) {
       return NextResponse.json({ error: "Artwork not found" }, { status: 404 })
     }
 
-    // Create transaction record
-    const platformFee = price * 0.025
-    const artistRoyalty = price * 0.075
+    if (artwork.status !== "available") {
+      return NextResponse.json({ error: "Artwork is no longer available" }, { status: 400 })
+    }
 
+    // Update artwork status to sold
+    const { error: updateError } = await supabase
+      .from("artworks")
+      .update({
+        status: "sold",
+        owner_address: buyerAddress,
+        sold_at: new Date().toISOString(),
+        sale_price: price,
+      })
+      .eq("id", artworkId)
+
+    if (updateError) {
+      console.error("Error updating artwork:", updateError)
+      return NextResponse.json({ error: "Failed to update artwork status" }, { status: 500 })
+    }
+
+    // Create transaction record
     const { error: transactionError } = await supabase.from("transactions").insert({
       artwork_id: artworkId,
-      seller_id: artwork.artist_id,
-      buyer_id: buyerAddress, // In a real app, you'd have user IDs
+      buyer_address: buyerAddress,
+      seller_address: artwork.artist.wallet_address,
+      transaction_hash: transactionHash,
       price: price,
-      currency: "ETH",
+      chain_id: chainId,
       status: "completed",
-      tx_hash: txHash,
-      platform_fee: platformFee,
-      artist_royalty: artistRoyalty,
-      completed_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
     })
 
     if (transactionError) {
@@ -56,20 +61,25 @@ export async function POST(req: Request) {
       // Don't fail the request if transaction logging fails
     }
 
-    // Update artist total sales
+    // Update artist statistics
     const { error: artistError } = await supabase
       .from("artists")
       .update({
-        total_sales: (artwork.artist.total_sales || 0) + price,
+        total_sales: artwork.artist.total_sales + price,
         updated_at: new Date().toISOString(),
       })
       .eq("id", artwork.artist_id)
 
     if (artistError) {
       console.error("Error updating artist stats:", artistError)
+      // Don't fail the request if stats update fails
     }
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({
+      success: true,
+      message: "Purchase completed successfully",
+      transactionHash,
+    })
   } catch (error) {
     console.error("Purchase API error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
