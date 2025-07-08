@@ -7,49 +7,26 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CheckCircle, AlertTriangle, XCircle, RefreshCw, Database, Shield, Zap, BarChart3 } from "lucide-react"
-import { runDatabaseHealthCheck } from "@/lib/database-health-checker"
+import { RefreshCw, CheckCircle, AlertTriangle, XCircle, Wrench } from "lucide-react"
+import { runDatabaseHealthCheck, type HealthReport } from "@/lib/database-health-checker"
 
-interface HealthCheckResult {
-  category: string
-  issue: string
-  severity: "low" | "medium" | "high" | "critical"
-  fixable: boolean
-  sqlFix?: string
-  description: string
-}
-
-interface HealthScore {
-  overall: number
-  categories: {
-    structure: number
-    data: number
-    performance: number
-    security: number
-  }
-}
-
-export default function DatabaseHealthDashboard() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [results, setResults] = useState<HealthCheckResult[]>([])
-  const [score, setScore] = useState<HealthScore | null>(null)
-  const [fixResults, setFixResults] = useState<any>(null)
-  const [lastChecked, setLastChecked] = useState<Date | null>(null)
+export function DatabaseHealthDashboard() {
+  const [healthReport, setHealthReport] = useState<HealthReport | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [autoFixing, setAutoFixing] = useState(false)
 
   const runHealthCheck = async (autoFix = false) => {
-    setIsLoading(true)
-    setFixResults(null)
+    setLoading(true)
+    if (autoFix) setAutoFixing(true)
 
     try {
-      const { results, score, fixResults } = await runDatabaseHealthCheck(autoFix)
-      setResults(results)
-      setScore(score)
-      setFixResults(fixResults)
-      setLastChecked(new Date())
+      const report = await runDatabaseHealthCheck(autoFix)
+      setHealthReport(report)
     } catch (error) {
       console.error("Health check failed:", error)
     } finally {
-      setIsLoading(false)
+      setLoading(false)
+      setAutoFixing(false)
     }
   }
 
@@ -59,8 +36,6 @@ export default function DatabaseHealthDashboard() {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case "critical":
-        return "destructive"
       case "high":
         return "destructive"
       case "medium":
@@ -68,251 +43,175 @@ export default function DatabaseHealthDashboard() {
       case "low":
         return "secondary"
       default:
-        return "secondary"
+        return "default"
     }
   }
 
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
-      case "critical":
-        return <XCircle className="h-4 w-4 text-red-500" />
       case "high":
-        return <AlertTriangle className="h-4 w-4 text-orange-500" />
+        return <XCircle className="h-4 w-4 text-red-500" />
       case "medium":
         return <AlertTriangle className="h-4 w-4 text-yellow-500" />
       case "low":
         return <CheckCircle className="h-4 w-4 text-blue-500" />
       default:
-        return <CheckCircle className="h-4 w-4 text-green-500" />
+        return <CheckCircle className="h-4 w-4 text-gray-500" />
     }
   }
 
   const getScoreColor = (score: number) => {
     if (score >= 90) return "text-green-600"
     if (score >= 70) return "text-yellow-600"
-    if (score >= 50) return "text-orange-600"
     return "text-red-600"
   }
 
-  const getCategoryIcon = (category: string) => {
-    switch (category.toLowerCase()) {
-      case "structure":
-        return <Database className="h-5 w-5" />
-      case "data":
-        return <BarChart3 className="h-5 w-5" />
-      case "performance":
-        return <Zap className="h-5 w-5" />
-      case "security":
-        return <Shield className="h-5 w-5" />
-      default:
-        return <Database className="h-5 w-5" />
-    }
+  const renderIssuesByCategory = (category: keyof HealthReport["categories"]) => {
+    if (!healthReport) return null
+
+    const categoryIssues = healthReport.issues.filter((issue) => issue.category === category)
+    const categoryData = healthReport.categories[category]
+
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold capitalize">{category}</h3>
+          <div className="flex items-center gap-2">
+            <span className={`text-2xl font-bold ${getScoreColor(categoryData.score)}`}>{categoryData.score}%</span>
+            <Progress value={categoryData.score} className="w-24" />
+          </div>
+        </div>
+
+        {categoryIssues.length === 0 ? (
+          <Alert>
+            <CheckCircle className="h-4 w-4" />
+            <AlertDescription>No issues found in this category. Everything looks good!</AlertDescription>
+          </Alert>
+        ) : (
+          <div className="space-y-3">
+            {categoryIssues.map((issue) => (
+              <Card key={issue.id} className="border-l-4 border-l-orange-500">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      {getSeverityIcon(issue.severity)}
+                      {issue.title}
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={getSeverityColor(issue.severity)}>{issue.severity}</Badge>
+                      {issue.canAutoFix && (
+                        <Badge variant="outline" className="text-green-600">
+                          Auto-fixable
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-2">{issue.description}</p>
+                  {issue.fixSql && (
+                    <details className="mt-2">
+                      <summary className="text-sm font-medium cursor-pointer text-blue-600 hover:text-blue-800">
+                        View SQL Fix
+                      </summary>
+                      <pre className="mt-2 p-2 bg-gray-100 rounded text-xs overflow-x-auto">{issue.fixSql}</pre>
+                    </details>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  if (!healthReport && loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <RefreshCw className="h-8 w-8 animate-spin" />
+        <span className="ml-2">Running database health check...</span>
+      </div>
+    )
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Database Health Dashboard</h1>
           <p className="text-muted-foreground">Monitor and maintain your database health</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => runHealthCheck(false)} disabled={isLoading} variant="outline">
-            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-            Scan
+          <Button onClick={() => runHealthCheck(false)} disabled={loading} variant="outline">
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+            Refresh
           </Button>
-          <Button onClick={() => runHealthCheck(true)} disabled={isLoading}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-            Auto-fix Issues
+          <Button onClick={() => runHealthCheck(true)} disabled={loading || autoFixing}>
+            <Wrench className={`h-4 w-4 mr-2 ${autoFixing ? "animate-spin" : ""}`} />
+            {autoFixing ? "Fixing..." : "Auto-fix Issues"}
           </Button>
         </div>
       </div>
 
-      {/* Health Score Overview */}
-      {score && (
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <Card className="md:col-span-1">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Overall Health</CardTitle>
+      {healthReport && (
+        <>
+          {/* Overall Score */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Overall Health Score</CardTitle>
+              <CardDescription>Last checked: {new Date(healthReport.lastChecked).toLocaleString()}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold mb-2">
-                <span className={getScoreColor(score.overall)}>{score.overall}%</span>
+              <div className="flex items-center gap-4">
+                <div className={`text-6xl font-bold ${getScoreColor(healthReport.overallScore)}`}>
+                  {healthReport.overallScore}%
+                </div>
+                <div className="flex-1">
+                  <Progress value={healthReport.overallScore} className="h-4" />
+                  <p className="text-sm text-muted-foreground mt-2">{healthReport.issues.length} total issues found</p>
+                </div>
               </div>
-              <Progress value={score.overall} className="h-2" />
             </CardContent>
           </Card>
 
-          {Object.entries(score.categories).map(([category, categoryScore]) => (
-            <Card key={category}>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  {getCategoryIcon(category)}
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-xl font-bold mb-2">
-                  <span className={getScoreColor(categoryScore)}>{categoryScore}%</span>
-                </div>
-                <Progress value={categoryScore} className="h-2" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-
-      {/* Fix Results */}
-      {fixResults && (
-        <Alert>
-          <CheckCircle className="h-4 w-4" />
-          <AlertDescription>
-            Auto-fix completed: {fixResults.fixed} issues fixed, {fixResults.failed} failed
-            {fixResults.results.length > 0 && (
-              <details className="mt-2">
-                <summary className="cursor-pointer font-medium">View Details</summary>
-                <ul className="mt-2 space-y-1">
-                  {fixResults.results.map((result: string, index: number) => (
-                    <li key={index} className="text-sm">
-                      {result}
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            )}
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {/* Issues List */}
-      <Tabs defaultValue="all" className="w-full">
-        <TabsList>
-          <TabsTrigger value="all">All Issues ({results.length})</TabsTrigger>
-          <TabsTrigger value="critical">
-            Critical ({results.filter((r) => r.severity === "critical").length})
-          </TabsTrigger>
-          <TabsTrigger value="high">High ({results.filter((r) => r.severity === "high").length})</TabsTrigger>
-          <TabsTrigger value="fixable">Auto-fixable ({results.filter((r) => r.fixable).length})</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="all" className="space-y-4">
-          {results.length === 0 ? (
-            <Card>
-              <CardContent className="flex items-center justify-center py-8">
-                <div className="text-center">
-                  <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold">Database is Healthy!</h3>
-                  <p className="text-muted-foreground">No issues detected</p>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            results.map((result, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2">
-                      {getSeverityIcon(result.severity)}
-                      {result.issue}
-                    </CardTitle>
-                    <div className="flex gap-2">
-                      <Badge variant={getSeverityColor(result.severity)}>{result.severity}</Badge>
-                      <Badge variant="outline">{result.category}</Badge>
-                      {result.fixable && <Badge variant="secondary">Auto-fixable</Badge>}
-                    </div>
-                  </div>
-                  <CardDescription>{result.description}</CardDescription>
+          {/* Category Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {Object.entries(healthReport.categories).map(([category, data]) => (
+              <Card key={category}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm capitalize">{category}</CardTitle>
                 </CardHeader>
-                {result.sqlFix && (
-                  <CardContent>
-                    <details>
-                      <summary className="cursor-pointer font-medium text-sm">View SQL Fix</summary>
-                      <pre className="mt-2 p-3 bg-muted rounded text-xs overflow-x-auto">{result.sqlFix}</pre>
-                    </details>
-                  </CardContent>
-                )}
-              </Card>
-            ))
-          )}
-        </TabsContent>
-
-        <TabsContent value="critical" className="space-y-4">
-          {results
-            .filter((r) => r.severity === "critical")
-            .map((result, index) => (
-              <Card key={index}>
-                <CardHeader>
+                <CardContent>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2">
-                      {getSeverityIcon(result.severity)}
-                      {result.issue}
-                    </CardTitle>
-                    <div className="flex gap-2">
-                      <Badge variant="destructive">Critical</Badge>
-                      <Badge variant="outline">{result.category}</Badge>
-                    </div>
+                    <span className={`text-2xl font-bold ${getScoreColor(data.score)}`}>{data.score}%</span>
+                    <Badge variant={data.issues > 0 ? "destructive" : "default"}>{data.issues} issues</Badge>
                   </div>
-                  <CardDescription>{result.description}</CardDescription>
-                </CardHeader>
+                  <Progress value={data.score} className="mt-2" />
+                </CardContent>
               </Card>
             ))}
-        </TabsContent>
+          </div>
 
-        <TabsContent value="high" className="space-y-4">
-          {results
-            .filter((r) => r.severity === "high")
-            .map((result, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2">
-                      {getSeverityIcon(result.severity)}
-                      {result.issue}
-                    </CardTitle>
-                    <div className="flex gap-2">
-                      <Badge variant="destructive">High</Badge>
-                      <Badge variant="outline">{result.category}</Badge>
-                    </div>
-                  </div>
-                  <CardDescription>{result.description}</CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
-        </TabsContent>
+          {/* Detailed Issues */}
+          <Tabs defaultValue="structure" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="structure">Structure</TabsTrigger>
+              <TabsTrigger value="data">Data</TabsTrigger>
+              <TabsTrigger value="performance">Performance</TabsTrigger>
+              <TabsTrigger value="security">Security</TabsTrigger>
+            </TabsList>
 
-        <TabsContent value="fixable" className="space-y-4">
-          {results
-            .filter((r) => r.fixable)
-            .map((result, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2">
-                      {getSeverityIcon(result.severity)}
-                      {result.issue}
-                    </CardTitle>
-                    <div className="flex gap-2">
-                      <Badge variant={getSeverityColor(result.severity)}>{result.severity}</Badge>
-                      <Badge variant="secondary">Auto-fixable</Badge>
-                    </div>
-                  </div>
-                  <CardDescription>{result.description}</CardDescription>
-                </CardHeader>
-                {result.sqlFix && (
-                  <CardContent>
-                    <details>
-                      <summary className="cursor-pointer font-medium text-sm">View SQL Fix</summary>
-                      <pre className="mt-2 p-3 bg-muted rounded text-xs overflow-x-auto">{result.sqlFix}</pre>
-                    </details>
-                  </CardContent>
-                )}
-              </Card>
-            ))}
-        </TabsContent>
-      </Tabs>
+            <TabsContent value="structure">{renderIssuesByCategory("structure")}</TabsContent>
 
-      {lastChecked && (
-        <div className="text-center text-sm text-muted-foreground">Last checked: {lastChecked.toLocaleString()}</div>
+            <TabsContent value="data">{renderIssuesByCategory("data")}</TabsContent>
+
+            <TabsContent value="performance">{renderIssuesByCategory("performance")}</TabsContent>
+
+            <TabsContent value="security">{renderIssuesByCategory("security")}</TabsContent>
+          </Tabs>
+        </>
       )}
     </div>
   )

@@ -1,25 +1,12 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 
 /* -------------------------------------------------------------------------- */
-/*                               Env helpers                                  */
+/*                        Your actual Supabase credentials                    */
 /* -------------------------------------------------------------------------- */
 
-function readEnv(key: string, fatal = true): string {
-  const val = typeof process !== "undefined" ? (process.env as Record<string, string | undefined>)[key] : undefined
-
-  if (!val) {
-    if (fatal) {
-      /* eslint-disable no-console */
-      console.error(
-        `[supabase] Missing required env "${key}". Add it to .env.local or Vercel → Settings → Environment Variables.`,
-      )
-      throw new Error(`Missing environment variable: ${key}`)
-    }
-    return ""
-  }
-
-  return val
-}
+const SUPABASE_URL = "https://ngtfnkcszgnmpddfgdst.supabase.co"
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ndGZua2NzemdubXBkZGZnZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4OTUzNTcsImV4cCI6MjA2NzQ3MTM1N30.Gg-hbKTbSo_M1cUVkwz2gqp1tyyFtqp5UBTG_WI-8bg"
 
 /* -------------------------------------------------------------------------- */
 /*                        Lazy, singleton client loader                       */
@@ -28,19 +15,29 @@ function readEnv(key: string, fatal = true): string {
 let cachedClient: SupabaseClient | null = null
 
 function initClient(): SupabaseClient {
-  const url = readEnv("NEXT_PUBLIC_SUPABASE_URL")
-  const anonKey = readEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+  // Use hardcoded values first, then fall back to env vars
+  const url = SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+  const anonKey = SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  // Basic URL sanity-check so we fail early in dev if it’s malformed
+  if (!url || !anonKey) {
+    throw new Error("[supabase] Missing Supabase credentials")
+  }
+
+  // Basic URL sanity-check
   try {
-    // eslint-disable-next-line no-new
     new URL(url)
   } catch {
-    throw new Error(`[supabase] "${url}" is not a valid URL. Check NEXT_PUBLIC_SUPABASE_URL.`)
+    throw new Error(`[supabase] "${url}" is not a valid URL`)
   }
 
   return createClient(url, anonKey, {
-    auth: { persistSession: true, autoRefreshToken: true },
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+    db: {
+      schema: "public",
+    },
   })
 }
 
@@ -79,7 +76,41 @@ export const supabase = new Proxy({} as SupabaseClient, {
  * Uses the Service-Role key so **never** expose it to the browser.
  */
 export function getSupabaseServerClient(): SupabaseClient {
-  const url = readEnv("NEXT_PUBLIC_SUPABASE_URL")
-  const serviceKey = readEnv("SUPABASE_SERVICE_ROLE_KEY")
-  return createClient(url, serviceKey)
+  const url = SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY
+
+  if (!url || !serviceKey) {
+    throw new Error("[supabase] Missing server credentials")
+  }
+
+  return createClient(url, serviceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  })
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Test functions                                */
+/* -------------------------------------------------------------------------- */
+
+export async function testSupabaseConnection() {
+  try {
+    const { data, error } = await supabase.from("artworks").select("id").limit(1)
+
+    if (error) {
+      console.error("Supabase connection test failed:", error)
+      return { success: false, error: error.message }
+    }
+
+    console.log("✅ Supabase connection successful")
+    return { success: true, data }
+  } catch (error) {
+    console.error("Supabase connection error:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    }
+  }
 }
