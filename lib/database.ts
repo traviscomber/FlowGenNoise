@@ -84,3 +84,26 @@ export async function getArtists(
   }
   return data
 }
+
+// Featured artworks (top-viewed, still available)
+export async function getFeaturedArtworks(limit = 6) {
+  const { data, error } = await supabase
+    .from("artworks")
+    .select(
+      `
+        *,
+        artist:artists(*),
+        collection:collections(*)
+      `,
+    )
+    .eq("status", "available")
+    .order("views", { ascending: false })
+    .limit(limit)
+
+  if (error) {
+    console.error("Error fetching featured artworks:", error)
+    throw error
+  }
+
+  return data
+}
