@@ -15,17 +15,11 @@ import { formatAddress, getNetworkName, SUPPORTED_NETWORKS } from "@/lib/blockch
 import { Wallet, ChevronDown, Copy, ExternalLink, Power, Network } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
-/* -------------------------------------------------------------------------- */
-/*                     Wallet Connect Button Component                        */
-/* -------------------------------------------------------------------------- */
-
 export function WalletConnectButton() {
   const { hasProvider, isConnected, account, chainId, balance, connect, disconnect, switchNetwork, isLoading } =
     useWeb3()
   const { toast } = useToast()
   const [isNetworkMenuOpen, setIsNetworkMenuOpen] = useState(false)
-
-  /* ---------------- copy / explorer helpers ---------------- */
 
   const copyAddress = async () => {
     if (account) {
@@ -46,8 +40,6 @@ export function WalletConnectButton() {
     }
   }
 
-  /* ---------------- network switching ---------------- */
-
   const handleNetworkSwitch = async (targetChainId: number) => {
     try {
       await switchNetwork(targetChainId)
@@ -65,31 +57,29 @@ export function WalletConnectButton() {
     }
   }
 
-  /* ---------------- UI paths ---------------- */
-
-  /* 1. No provider – prompt install */
+  // No MetaMask installed
   if (!hasProvider) {
     return (
       <a href="https://metamask.io/download.html" target="_blank" rel="noopener noreferrer">
-        <Button variant="outline" className="gap-2 bg-transparent">
-          <ExternalLink size={16} />
-          {"Install MetaMask"}
+        <Button variant="outline" className="flex items-center gap-2 bg-transparent">
+          <ExternalLink className="w-4 h-4" />
+          Install MetaMask
         </Button>
       </a>
     )
   }
 
-  /* 2. Not connected yet */
+  // Not connected
   if (!isConnected) {
     return (
-      <Button onClick={connect} disabled={isLoading} className="flex gap-2">
+      <Button onClick={connect} disabled={isLoading} className="flex items-center gap-2">
         <Wallet className="w-4 h-4" />
-        {isLoading ? "Connecting…" : "Connect Wallet"}
+        {isLoading ? "Connecting..." : "Connect Wallet"}
       </Button>
     )
   }
 
-  /* 3. Connected – show menus */
+  // Connected - show full interface
   return (
     <div className="flex items-center gap-2">
       {/* Network Selector */}
@@ -143,12 +133,12 @@ export function WalletConnectButton() {
           </div>
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem onClick={copyAddress} className="flex gap-2">
+          <DropdownMenuItem onClick={copyAddress} className="flex items-center gap-2">
             <Copy className="w-4 h-4" />
             Copy Address
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={openEtherscan} className="flex gap-2">
+          <DropdownMenuItem onClick={openEtherscan} className="flex items-center gap-2">
             <ExternalLink className="w-4 h-4" />
             View on Explorer
           </DropdownMenuItem>
@@ -165,5 +155,5 @@ export function WalletConnectButton() {
   )
 }
 
-/* Named *and* default export for compatibility */
+// Export both named and default for compatibility
 export default WalletConnectButton
