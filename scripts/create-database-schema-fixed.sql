@@ -1,15 +1,11 @@
--- Enable Row Level Security
--- Remove this line entirely:
--- ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
-
--- Start directly with the custom types
+-- Create custom types
 CREATE TYPE rarity_type AS ENUM ('Common', 'Rare', 'Epic', 'Legendary');
 CREATE TYPE currency_type AS ENUM ('ETH', 'USD', 'MATIC');
 CREATE TYPE artwork_status AS ENUM ('available', 'sold', 'reserved', 'auction');
 CREATE TYPE transaction_status AS ENUM ('pending', 'completed', 'failed', 'cancelled');
 
 -- Artists table
-CREATE TABLE artists (
+CREATE TABLE IF NOT EXISTS artists (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     wallet_address TEXT UNIQUE NOT NULL,
     username TEXT UNIQUE NOT NULL,
@@ -28,7 +24,7 @@ CREATE TABLE artists (
 );
 
 -- Users/Collectors table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     wallet_address TEXT UNIQUE NOT NULL,
     username TEXT UNIQUE,
@@ -42,7 +38,7 @@ CREATE TABLE users (
 );
 
 -- Collections table
-CREATE TABLE collections (
+CREATE TABLE IF NOT EXISTS collections (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     artist_id UUID REFERENCES artists(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
@@ -55,7 +51,7 @@ CREATE TABLE collections (
 );
 
 -- Artworks table
-CREATE TABLE artworks (
+CREATE TABLE IF NOT EXISTS artworks (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     artist_id UUID REFERENCES artists(id) ON DELETE CASCADE,
     collection_id UUID REFERENCES collections(id) ON DELETE SET NULL,
@@ -102,7 +98,7 @@ CREATE TABLE artworks (
 );
 
 -- Transactions table
-CREATE TABLE transactions (
+CREATE TABLE IF NOT EXISTS transactions (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     artwork_id UUID REFERENCES artworks(id) ON DELETE CASCADE,
     seller_id UUID REFERENCES artists(id) ON DELETE SET NULL,
@@ -129,7 +125,7 @@ CREATE TABLE transactions (
 );
 
 -- Likes table
-CREATE TABLE artwork_likes (
+CREATE TABLE IF NOT EXISTS artwork_likes (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     artwork_id UUID REFERENCES artworks(id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -139,7 +135,7 @@ CREATE TABLE artwork_likes (
 );
 
 -- Views table
-CREATE TABLE artwork_views (
+CREATE TABLE IF NOT EXISTS artwork_views (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     artwork_id UUID REFERENCES artworks(id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(id) ON DELETE SET NULL,
@@ -149,7 +145,7 @@ CREATE TABLE artwork_views (
 );
 
 -- Follows table (artists following)
-CREATE TABLE artist_follows (
+CREATE TABLE IF NOT EXISTS artist_follows (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     follower_id UUID REFERENCES users(id) ON DELETE CASCADE,
     artist_id UUID REFERENCES artists(id) ON DELETE CASCADE,
@@ -159,7 +155,7 @@ CREATE TABLE artist_follows (
 );
 
 -- Bids table (for auction functionality)
-CREATE TABLE bids (
+CREATE TABLE IF NOT EXISTS bids (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     artwork_id UUID REFERENCES artworks(id) ON DELETE CASCADE,
     bidder_id UUID REFERENCES users(id) ON DELETE CASCADE,
@@ -173,32 +169,32 @@ CREATE TABLE bids (
 );
 
 -- Create indexes for performance
-CREATE INDEX idx_artworks_artist_id ON artworks(artist_id);
-CREATE INDEX idx_artworks_collection_id ON artworks(collection_id);
-CREATE INDEX idx_artworks_status ON artworks(status);
-CREATE INDEX idx_artworks_price ON artworks(price);
-CREATE INDEX idx_artworks_rarity ON artworks(rarity);
-CREATE INDEX idx_artworks_created_at ON artworks(created_at);
-CREATE INDEX idx_artworks_dataset ON artworks(dataset);
+CREATE INDEX IF NOT EXISTS idx_artworks_artist_id ON artworks(artist_id);
+CREATE INDEX IF NOT EXISTS idx_artworks_collection_id ON artworks(collection_id);
+CREATE INDEX IF NOT EXISTS idx_artworks_status ON artworks(status);
+CREATE INDEX IF NOT EXISTS idx_artworks_price ON artworks(price);
+CREATE INDEX IF NOT EXISTS idx_artworks_rarity ON artworks(rarity);
+CREATE INDEX IF NOT EXISTS idx_artworks_created_at ON artworks(created_at);
+CREATE INDEX IF NOT EXISTS idx_artworks_dataset ON artworks(dataset);
 
-CREATE INDEX idx_transactions_artwork_id ON transactions(artwork_id);
-CREATE INDEX idx_transactions_seller_id ON transactions(seller_id);
-CREATE INDEX idx_transactions_buyer_id ON transactions(buyer_id);
-CREATE INDEX idx_transactions_status ON transactions(status);
-CREATE INDEX idx_transactions_created_at ON transactions(created_at);
+CREATE INDEX IF NOT EXISTS idx_transactions_artwork_id ON transactions(artwork_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_seller_id ON transactions(seller_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_buyer_id ON transactions(buyer_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_status ON transactions(status);
+CREATE INDEX IF NOT EXISTS idx_transactions_created_at ON transactions(created_at);
 
-CREATE INDEX idx_artwork_likes_artwork_id ON artwork_likes(artwork_id);
-CREATE INDEX idx_artwork_likes_user_id ON artwork_likes(user_id);
+CREATE INDEX IF NOT EXISTS idx_artwork_likes_artwork_id ON artwork_likes(artwork_id);
+CREATE INDEX IF NOT EXISTS idx_artwork_likes_user_id ON artwork_likes(user_id);
 
-CREATE INDEX idx_artwork_views_artwork_id ON artwork_views(artwork_id);
-CREATE INDEX idx_artwork_views_created_at ON artwork_views(created_at);
+CREATE INDEX IF NOT EXISTS idx_artwork_views_artwork_id ON artwork_views(artwork_id);
+CREATE INDEX IF NOT EXISTS idx_artwork_views_created_at ON artwork_views(created_at);
 
-CREATE INDEX idx_artist_follows_follower_id ON artist_follows(follower_id);
-CREATE INDEX idx_artist_follows_artist_id ON artist_follows(artist_id);
+CREATE INDEX IF NOT EXISTS idx_artist_follows_follower_id ON artist_follows(follower_id);
+CREATE INDEX IF NOT EXISTS idx_artist_follows_artist_id ON artist_follows(artist_id);
 
-CREATE INDEX idx_bids_artwork_id ON bids(artwork_id);
-CREATE INDEX idx_bids_bidder_id ON bids(bidder_id);
-CREATE INDEX idx_bids_is_active ON bids(is_active);
+CREATE INDEX IF NOT EXISTS idx_bids_artwork_id ON bids(artwork_id);
+CREATE INDEX IF NOT EXISTS idx_bids_bidder_id ON bids(bidder_id);
+CREATE INDEX IF NOT EXISTS idx_bids_is_active ON bids(is_active);
 
 -- Create functions for updating timestamps
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -209,18 +205,29 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Create triggers for updated_at
-CREATE TRIGGER update_artists_updated_at BEFORE UPDATE ON artists
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_collections_updated_at BEFORE UPDATE ON collections
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_artworks_updated_at BEFORE UPDATE ON artworks
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+-- Create triggers for updated_at (only if they don't exist)
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_artists_updated_at') THEN
+        CREATE TRIGGER update_artists_updated_at BEFORE UPDATE ON artists
+            FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_users_updated_at') THEN
+        CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
+            FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_collections_updated_at') THEN
+        CREATE TRIGGER update_collections_updated_at BEFORE UPDATE ON collections
+            FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_artworks_updated_at') THEN
+        CREATE TRIGGER update_artworks_updated_at BEFORE UPDATE ON artworks
+            FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    END IF;
+END $$;
 
 -- Function to update artwork metrics
 CREATE OR REPLACE FUNCTION update_artwork_metrics()
@@ -244,14 +251,21 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Create triggers for metrics
-CREATE TRIGGER update_artwork_likes_count 
-    AFTER INSERT OR DELETE ON artwork_likes
-    FOR EACH ROW EXECUTE FUNCTION update_artwork_metrics();
-
-CREATE TRIGGER update_artwork_views_count 
-    AFTER INSERT ON artwork_views
-    FOR EACH ROW EXECUTE FUNCTION update_artwork_metrics();
+-- Create triggers for metrics (only if they don't exist)
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_artwork_likes_count') THEN
+        CREATE TRIGGER update_artwork_likes_count 
+            AFTER INSERT OR DELETE ON artwork_likes
+            FOR EACH ROW EXECUTE FUNCTION update_artwork_metrics();
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_artwork_views_count') THEN
+        CREATE TRIGGER update_artwork_views_count 
+            AFTER INSERT ON artwork_views
+            FOR EACH ROW EXECUTE FUNCTION update_artwork_metrics();
+    END IF;
+END $$;
 
 -- Enable Row Level Security
 ALTER TABLE artists ENABLE ROW LEVEL SECURITY;
@@ -264,39 +278,30 @@ ALTER TABLE artwork_views ENABLE ROW LEVEL SECURITY;
 ALTER TABLE artist_follows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE bids ENABLE ROW LEVEL SECURITY;
 
--- Replace the complex RLS policies with simpler ones
--- Create policies for public read access to artworks and artists
-CREATE POLICY "Public artworks are viewable by everyone" ON artworks
-    FOR SELECT USING (true);
-
-CREATE POLICY "Public artists are viewable by everyone" ON artists
-    FOR SELECT USING (true);
-
-CREATE POLICY "Public collections are viewable by everyone" ON collections
-    FOR SELECT USING (true);
-
--- Allow public read access to users for marketplace functionality
-CREATE POLICY "Public users are viewable by everyone" ON users
-    FOR SELECT USING (true);
-
--- Allow anyone to insert likes and views for now (in production, you'd want proper auth)
-CREATE POLICY "Anyone can like artworks" ON artwork_likes
-    FOR ALL USING (true);
-
-CREATE POLICY "Anyone can view artwork views" ON artwork_views
-    FOR SELECT USING (true);
-
-CREATE POLICY "Anyone can insert artwork views" ON artwork_views
-    FOR INSERT WITH CHECK (true);
-
--- Allow public read access to transactions for marketplace transparency
-CREATE POLICY "Public transactions are viewable by everyone" ON transactions
-    FOR SELECT USING (true);
-
--- Allow public read access to bids
-CREATE POLICY "Public bids are viewable by everyone" ON bids
-    FOR SELECT USING (true);
-
--- Allow public read access to follows
-CREATE POLICY "Public follows are viewable by everyone" ON artist_follows
-    FOR SELECT USING (true);
+-- Create simple policies for public marketplace access
+DO $$ 
+BEGIN
+    -- Drop existing policies if they exist
+    DROP POLICY IF EXISTS "Public artworks are viewable by everyone" ON artworks;
+    DROP POLICY IF EXISTS "Public artists are viewable by everyone" ON artists;
+    DROP POLICY IF EXISTS "Public collections are viewable by everyone" ON collections;
+    DROP POLICY IF EXISTS "Public users are viewable by everyone" ON users;
+    DROP POLICY IF EXISTS "Anyone can like artworks" ON artwork_likes;
+    DROP POLICY IF EXISTS "Anyone can view artwork views" ON artwork_views;
+    DROP POLICY IF EXISTS "Anyone can insert artwork views" ON artwork_views;
+    DROP POLICY IF EXISTS "Public transactions are viewable by everyone" ON transactions;
+    DROP POLICY IF EXISTS "Public bids are viewable by everyone" ON bids;
+    DROP POLICY IF EXISTS "Public follows are viewable by everyone" ON artist_follows;
+    
+    -- Create new policies
+    CREATE POLICY "Public artworks are viewable by everyone" ON artworks FOR SELECT USING (true);
+    CREATE POLICY "Public artists are viewable by everyone" ON artists FOR SELECT USING (true);
+    CREATE POLICY "Public collections are viewable by everyone" ON collections FOR SELECT USING (true);
+    CREATE POLICY "Public users are viewable by everyone" ON users FOR SELECT USING (true);
+    CREATE POLICY "Anyone can like artworks" ON artwork_likes FOR ALL USING (true);
+    CREATE POLICY "Anyone can view artwork views" ON artwork_views FOR SELECT USING (true);
+    CREATE POLICY "Anyone can insert artwork views" ON artwork_views FOR INSERT WITH CHECK (true);
+    CREATE POLICY "Public transactions are viewable by everyone" ON transactions FOR SELECT USING (true);
+    CREATE POLICY "Public bids are viewable by everyone" ON bids FOR SELECT USING (true);
+    CREATE POLICY "Public follows are viewable by everyone" ON artist_follows FOR SELECT USING (true);
+END $$;
