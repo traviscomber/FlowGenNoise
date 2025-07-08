@@ -1,21 +1,23 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+import { supabase } from "@/lib/supabase"
 
 export async function POST(request: NextRequest) {
   try {
-    const { artworkId, buyerAddress, transactionHash, price } = await request.json()
+    const body = await request.json()
+    const { artworkId, buyerAddress, transactionHash, price, chainId } = body
 
     // Validate required fields
     if (!artworkId || !buyerAddress || !transactionHash || !price) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    // Start a transaction
+    // Get artwork details
     const { data: artwork, error: artworkError } = await supabase
       .from("artworks")
-      .select("*")
+      .select(`
+        *,
+        artist:artists(*)
+      `)
       .eq("id", artworkId)
       .single()
 
@@ -24,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (artwork.status !== "available") {
-      return NextResponse.json({ error: "Artwork is not available for purchase" }, { status: 400 })
+      return NextResponse.json({ error: "Artwork is no longer available" }, { status: 400 })
     }
 
     // Update artwork status to sold
@@ -32,54 +34,68 @@ export async function POST(request: NextRequest) {
       .from("artworks")
       .update({
         status: "sold",
-        owner_address: buyerAddress,
-        sold_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       })
       .eq("id", artworkId)
 
     if (updateError) {
-      throw updateError
+      console.error("Error updating artwork:", updateError)
+      return NextResponse.json({ error: "Failed to update artwork status" }, { status: 500 })
     }
 
-    // Record the transaction
+    // Create transaction record
+    const platformFee = price * 0.025
+    const artistRoyalty = price * 0.075
+
     const { error: transactionError } = await supabase.from("transactions").insert({
       artwork_id: artworkId,
-      buyer_address: buyerAddress,
-      seller_address: artwork.artist_address || "0x0000000000000000000000000000000000000000",
-      transaction_hash: transactionHash,
+      seller_id: artwork.artist_id,
+      buyer_id: buyerAddress, // In a real app, you'd map wallet address to user ID
       price: price,
-      platform_fee: price * 0.025,
-      artist_royalty: price * 0.075,
+      currency: "ETH",
       status: "completed",
+      tx_hash: transactionHash,
+      platform_fee: platformFee,
+      artist_royalty: artistRoyalty,
+      completed_at: new Date().toISOString(),
       created_at: new Date().toISOString(),
     })
 
     if (transactionError) {
-      // Rollback artwork update if transaction recording fails
-      await supabase
-        .from("artworks")
-        .update({
-          status: "available",
-          owner_address: null,
-          sold_at: null,
-        })
-        .eq("id", artworkId)
-
-      throw transactionError
+      console.error("Error creating transaction:", transactionError)
+      // Don't fail the request if transaction logging fails
     }
 
     // Update artist statistics
-    const { error: artistError } = await supabase
-      .from("artists")
-      .update({
-        total_sales: artwork.artist_total_sales + 1,
-        total_earnings: artwork.artist_total_earnings + price * 0.925, // Artist gets 92.5% (100% - 2.5% platform - 7.5% royalty)
-      })
-      .eq("wallet_address", artwork.artist_address)
+    if (artwork.artist) {
+      const { error: artistError } = await supabase
+        .from("artists")
+        .update({
+          total_sales: (artwork.artist.total_sales || 0) + price,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", artwork.artist_id)
 
-    if (artistError) {
-      console.error("Failed to update artist stats:", artistError)
-      // Don't rollback the sale for this error, just log it
+      if (artistError) {
+        console.error("Error updating artist stats:", artistError)
+        // Don't fail the request if stats update fails
+      }
+    }
+
+    // Update user purchase history (create user if doesn't exist)
+    const { data: existingUser } = await supabase.from("users").select("id").eq("wallet_address", buyerAddress).single()
+
+    if (!existingUser) {
+      const { error: userError } = await supabase.from("users").insert({
+        wallet_address: buyerAddress,
+        username: `user_${buyerAddress.slice(-6)}`,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+
+      if (userError) {
+        console.error("Error creating user:", userError)
+      }
     }
 
     return NextResponse.json({

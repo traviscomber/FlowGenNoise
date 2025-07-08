@@ -9,8 +9,15 @@ import { Web3Provider } from "@/lib/web3-context"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "FlowSketch - AI Art Generator & Marketplace",
-  description: "Generate beautiful flow-based art using AI and machine learning algorithms",
+  title: "FlowSketch - AI Art Marketplace",
+  description: "Discover, create, and trade unique AI-generated artworks on the blockchain",
+  keywords: ["AI art", "NFT", "blockchain", "digital art", "marketplace"],
+  authors: [{ name: "FlowSketch Team" }],
+  openGraph: {
+    title: "FlowSketch - AI Art Marketplace",
+    description: "Discover, create, and trade unique AI-generated artworks on the blockchain",
+    type: "website",
+  },
     generator: 'v0.dev'
 }
 
