@@ -1,415 +1,518 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { Search, Heart, Share2, TrendingUp, Filter, Eye, Loader2 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Heart, Eye, Search, TrendingUp, Users, Palette, Zap } from "lucide-react"
 import {
   getArtworks,
   getFeaturedArtworks,
-  toggleArtworkLike,
-  recordArtworkView,
-  createTransaction,
+  getArtists,
+  getFeaturedCollections,
+  getMarketplaceStats,
 } from "@/lib/database"
 import type { Artwork, Artist } from "@/lib/supabase"
 
-export function FlowArtMarketplace() {
-  const [artworks, setArtworks] = useState<(Artwork & { artist: Artist })[]>([])
-  const [featuredArtwork, setFeaturedArtwork] = useState<(Artwork & { artist: Artist }) | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [sortBy, setSortBy] = useState<string>("views")
-  const [filterBy, setFilterBy] = useState<string>("all")
-  const [searchQuery, setSearchQuery] = useState<string>("")
+interface MarketplaceStats {
+  totalArtworks: number
+  totalArtists: number
+  totalTransactions: number
+  totalVolume: number
+}
 
-  // Mock user ID - in real app this would come from authentication
-  const currentUserId = "880e8400-e29b-41d4-a716-446655440001"
+export default function FlowArtMarketplace() {
+  const [artworks, setArtworks] = useState<(Artwork & { artist: Artist })[]>([])
+  const [featuredArtworks, setFeaturedArtworks] = useState<(Artwork & { artist: Artist })[]>([])
+  const [artists, setArtists] = useState<Artist[]>([])
+  const [collections, setCollections] = useState<any[]>([])
+  const [stats, setStats] = useState<MarketplaceStats>({
+    totalArtworks: 0,
+    totalArtists: 0,
+    totalTransactions: 0,
+    totalVolume: 0,
+  })
+  const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedRarity, setSelectedRarity] = useState<string>("all")
+  const [selectedDataset, setSelectedDataset] = useState<string>("all")
+  const [sortBy, setSortBy] = useState<"created_at" | "price" | "views" | "likes">("created_at")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
 
   useEffect(() => {
-    loadArtworks()
-    loadFeaturedArtwork()
-  }, [sortBy, filterBy, searchQuery])
+    loadData()
+  }, [searchTerm, selectedRarity, selectedDataset, sortBy, sortOrder])
 
-  const loadArtworks = async () => {
+  const loadData = async () => {
     try {
       setLoading(true)
-      const data = await getArtworks({
-        limit: 20,
-        sortBy: sortBy === "trending" ? "views" : (sortBy as any),
-        sortOrder: "desc",
-        filterBy: filterBy === "all" ? undefined : { dataset: filterBy },
-        search: searchQuery || undefined,
-      })
-      setArtworks(data)
+
+      // Build filter options
+      const filterBy: any = {}
+      if (selectedRarity !== "all") filterBy.rarity = selectedRarity
+      if (selectedDataset !== "all") filterBy.dataset = selectedDataset
+
+      // Load all data in parallel
+      const [artworksData, featuredData, artistsData, collectionsData, statsData] = await Promise.all([
+        getArtworks({
+          limit: 20,
+          search: searchTerm || undefined,
+          filterBy: Object.keys(filterBy).length > 0 ? filterBy : undefined,
+          sortBy,
+          sortOrder,
+        }),
+        getFeaturedArtworks(6),
+        getArtists({ limit: 10, verified: true }),
+        getFeaturedCollections(5),
+        getMarketplaceStats(),
+      ])
+
+      setArtworks(artworksData)
+      setFeaturedArtworks(featuredData)
+      setArtists(artistsData)
+      setCollections(collectionsData)
+      setStats(statsData)
     } catch (error) {
-      console.error("Error loading artworks:", error)
+      console.error("Error loading marketplace data:", error)
     } finally {
       setLoading(false)
     }
   }
 
-  const loadFeaturedArtwork = async () => {
-    try {
-      const featured = await getFeaturedArtworks(1)
-      if (featured.length > 0) {
-        setFeaturedArtwork(featured[0])
-      }
-    } catch (error) {
-      console.error("Error loading featured artwork:", error)
-    }
-  }
-
-  const handleLike = async (artworkId: string) => {
-    try {
-      const isLiked = await toggleArtworkLike(artworkId, currentUserId)
-
-      // Update local state
-      setArtworks((prev) =>
-        prev.map((artwork) =>
-          artwork.id === artworkId
-            ? {
-                ...artwork,
-                is_liked: isLiked,
-                likes: isLiked ? artwork.likes + 1 : artwork.likes - 1,
-              }
-            : artwork,
-        ),
-      )
-
-      if (featuredArtwork?.id === artworkId) {
-        setFeaturedArtwork((prev) =>
-          prev
-            ? {
-                ...prev,
-                is_liked: isLiked,
-                likes: isLiked ? prev.likes + 1 : prev.likes - 1,
-              }
-            : null,
-        )
-      }
-    } catch (error) {
-      console.error("Error toggling like:", error)
-    }
-  }
-
-  const handleBuy = async (artwork: Artwork & { artist: Artist }) => {
-    try {
-      // Record the transaction
-      await createTransaction({
-        artwork_id: artwork.id,
-        seller_id: artwork.artist_id,
-        buyer_id: currentUserId,
-        price: artwork.price,
-        currency: artwork.currency,
-        status: "pending",
-      })
-
-      alert(`Purchase initiated for ${artwork.title}! Transaction is being processed.`)
-      // In a real app, this would integrate with Web3 wallet and smart contracts
-    } catch (error) {
-      console.error("Error creating transaction:", error)
-      alert("Failed to initiate purchase. Please try again.")
-    }
-  }
-
-  const handleArtworkClick = async (artwork: Artwork & { artist: Artist }) => {
-    // Record view
-    await recordArtworkView(artwork.id, currentUserId)
-
-    // Update featured artwork
-    setFeaturedArtwork(artwork)
-
-    // Update view count in local state
-    setArtworks((prev) => prev.map((art) => (art.id === artwork.id ? { ...art, views: art.views + 1 } : art)))
-  }
-
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
       case "Legendary":
-        return "from-yellow-500 to-orange-500"
+        return "bg-gradient-to-r from-yellow-400 to-orange-500 text-white"
       case "Epic":
-        return "from-purple-500 to-pink-500"
+        return "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
       case "Rare":
-        return "from-blue-500 to-cyan-500"
+        return "bg-gradient-to-r from-blue-500 to-cyan-500 text-white"
       default:
-        return "from-gray-500 to-gray-600"
+        return "bg-gray-100 text-gray-800"
     }
   }
 
-  if (loading && artworks.length === 0) {
+  const formatPrice = (price: number) => {
+    return `${price.toFixed(2)} ETH`
+  }
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000) {
+      return `${(num / 1000).toFixed(1)}k`
+    }
+    return num.toString()
+  }
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
-          <p>Loading marketplace...</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400"></div>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
-      <header className="border-b border-gray-800 bg-black/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-8">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">FS</span>
-                </div>
-                <span className="text-xl font-bold">FlowSketch</span>
-              </div>
-              <nav className="hidden md:flex space-x-6">
-                <button className="text-white font-medium">EXPLORE</button>
-                <button className="text-gray-300 hover:text-white transition-colors">ARTISTS</button>
-                <button className="text-gray-300 hover:text-white transition-colors">COLLECTIONS</button>
-                <button className="text-gray-300 hover:text-white transition-colors">EXHIBITIONS</button>
-                <button className="text-gray-300 hover:text-white transition-colors">SALES</button>
-              </nav>
-            </div>
+      <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center space-x-2 bg-gray-900 rounded-full px-4 py-2">
-                <Search className="w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="artworks, artists, collections..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-transparent text-sm text-white placeholder-gray-400 outline-none w-64"
-                />
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                  <Palette className="w-5 h-5 text-white" />
+                </div>
+                <h1 className="text-2xl font-bold text-white">FlowSketch</h1>
               </div>
-              <Button className="bg-white text-black hover:bg-gray-200">Connect Wallet</Button>
+              <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+                Marketplace
+              </Badge>
             </div>
+            <nav className="hidden md:flex items-center space-x-6">
+              <a href="#" className="text-slate-300 hover:text-white transition-colors">
+                Explore
+              </a>
+              <a href="#" className="text-slate-300 hover:text-white transition-colors">
+                Artists
+              </a>
+              <a href="#" className="text-slate-300 hover:text-white transition-colors">
+                Collections
+              </a>
+              <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                Connect Wallet
+              </Button>
+            </nav>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      {featuredArtwork && (
-        <section className="relative h-screen flex items-center justify-center overflow-hidden">
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: `url(${featuredArtwork.image_url})`,
-            }}
-          >
-            <div className="absolute inset-0 bg-black/50" />
-          </div>
-
-          <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-            <h1 className="text-5xl md:text-7xl font-bold mb-4">{featuredArtwork.title}</h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-2">
-              by {featuredArtwork.artist.display_name || featuredArtwork.artist.username}
-            </p>
-            <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">{featuredArtwork.description}</p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-              <Badge
-                className={`bg-gradient-to-r ${getRarityColor(featuredArtwork.rarity)} text-white px-4 py-2 text-lg`}
-              >
-                {featuredArtwork.rarity} • {featuredArtwork.edition}
-              </Badge>
-
-              <div className="flex items-center space-x-4 text-gray-300">
-                <div className="flex items-center space-x-1">
-                  <Eye className="w-4 h-4" />
-                  <span>{featuredArtwork.views.toLocaleString()}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Heart className={`w-4 h-4 ${featuredArtwork.is_liked ? "fill-red-500 text-red-500" : ""}`} />
-                  <span>{featuredArtwork.likes}</span>
+      <div className="container mx-auto px-4 py-8">
+        {/* Hero Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <Palette className="w-5 h-5 text-purple-400" />
+                <div>
+                  <p className="text-sm text-slate-400">Artworks</p>
+                  <p className="text-xl font-bold text-white">{stats.totalArtworks}</p>
                 </div>
               </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <div className="text-3xl font-bold">
-                {featuredArtwork.price} {featuredArtwork.currency}
-              </div>
-
-              <div className="flex gap-3">
-                <Button
-                  onClick={() => handleBuy(featuredArtwork)}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 px-8 py-3 text-lg"
-                >
-                  Buy Now
-                </Button>
-
-                <Button
-                  onClick={() => handleLike(featuredArtwork.id)}
-                  variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-black px-6 py-3"
-                >
-                  <Heart className={`w-5 h-5 mr-2 ${featuredArtwork.is_liked ? "fill-current" : ""}`} />
-                  {featuredArtwork.is_liked ? "Liked" : "Like"}
-                </Button>
-
-                <Button
-                  variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-black px-6 py-3 bg-transparent"
-                >
-                  <Share2 className="w-5 h-5 mr-2" />
-                  Share
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Filters and Sorting */}
-      <section className="border-b border-gray-800 bg-gray-900/30 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="flex items-center space-x-4">
+            </CardContent>
+          </Card>
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardContent className="p-4">
               <div className="flex items-center space-x-2">
-                <Filter className="w-4 h-4 text-gray-400" />
-                <Select value={filterBy} onValueChange={setFilterBy}>
-                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-700">
-                    <SelectItem value="all">All Datasets</SelectItem>
-                    <SelectItem value="spirals">Spirals</SelectItem>
-                    <SelectItem value="checkerboard">Checkerboard</SelectItem>
-                    <SelectItem value="moons">Moons</SelectItem>
-                    <SelectItem value="gaussian">Gaussian</SelectItem>
-                    <SelectItem value="grid">Grid</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Users className="w-5 h-5 text-blue-400" />
+                <div>
+                  <p className="text-sm text-slate-400">Artists</p>
+                  <p className="text-xl font-bold text-white">{stats.totalArtists}</p>
+                </div>
               </div>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-400 text-sm">{artworks.length} artworks</span>
+            </CardContent>
+          </Card>
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardContent className="p-4">
               <div className="flex items-center space-x-2">
-                <TrendingUp className="w-4 h-4 text-gray-400" />
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="bg-gray-800 border-gray-700 text-white w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-700">
-                    <SelectItem value="views">Trending</SelectItem>
-                    <SelectItem value="price">Price: High to Low</SelectItem>
-                    <SelectItem value="likes">Most Liked</SelectItem>
-                    <SelectItem value="created_at">Recently Listed</SelectItem>
-                  </SelectContent>
-                </Select>
+                <TrendingUp className="w-5 h-5 text-green-400" />
+                <div>
+                  <p className="text-sm text-slate-400">Sales</p>
+                  <p className="text-xl font-bold text-white">{stats.totalTransactions}</p>
+                </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-slate-800/50 border-slate-700">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <Zap className="w-5 h-5 text-yellow-400" />
+                <div>
+                  <p className="text-sm text-slate-400">Volume</p>
+                  <p className="text-xl font-bold text-white">{stats.totalVolume.toFixed(1)} ETH</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </section>
 
-      {/* Gallery Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold mb-8">Featured Artworks</h2>
-
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[...Array(6)].map((_, i) => (
-                <Card key={i} className="bg-gray-900 border-gray-800 overflow-hidden">
-                  <div className="aspect-square bg-gray-800 animate-pulse" />
-                  <CardContent className="p-4">
-                    <div className="h-4 bg-gray-800 rounded animate-pulse mb-2" />
-                    <div className="h-3 bg-gray-800 rounded animate-pulse w-2/3" />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {artworks.map((artwork) => (
+        {/* Featured Artworks */}
+        {featuredArtworks.length > 0 && (
+          <section className="mb-12">
+            <h2 className="text-3xl font-bold text-white mb-6">Featured Artworks</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredArtworks.map((artwork) => (
                 <Card
                   key={artwork.id}
-                  className="bg-gray-900 border-gray-800 overflow-hidden hover:border-gray-600 transition-all duration-300 cursor-pointer group hover:scale-105"
-                  onClick={() => handleArtworkClick(artwork)}
+                  className="bg-slate-800/50 border-slate-700 overflow-hidden group hover:bg-slate-800/70 transition-all duration-300"
                 >
-                  <div className="relative aspect-square">
+                  <div className="aspect-square relative overflow-hidden">
                     <img
                       src={artwork.image_url || "/placeholder.svg"}
                       alt={artwork.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    <div className="absolute top-2 left-2">
-                      <Badge className={`bg-gradient-to-r ${getRarityColor(artwork.rarity)} text-white`}>
-                        {artwork.rarity}
+                    <div className="absolute top-3 left-3">
+                      <Badge className={getRarityColor(artwork.rarity)}>{artwork.rarity}</Badge>
+                    </div>
+                    <div className="absolute top-3 right-3 flex space-x-2">
+                      <Badge variant="secondary" className="bg-black/50 text-white border-none">
+                        <Eye className="w-3 h-3 mr-1" />
+                        {formatNumber(artwork.views)}
+                      </Badge>
+                      <Badge variant="secondary" className="bg-black/50 text-white border-none">
+                        <Heart className="w-3 h-3 mr-1" />
+                        {formatNumber(artwork.likes)}
                       </Badge>
                     </div>
-                    <div className="absolute top-2 right-2">
-                      <Badge className="bg-black/70 text-white">{artwork.edition}</Badge>
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <Avatar className="w-6 h-6">
+                        <AvatarImage src={artwork.artist?.avatar_url || "/placeholder.svg"} />
+                        <AvatarFallback>{artwork.artist?.username?.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm text-slate-400">
+                        {artwork.artist?.display_name || artwork.artist?.username}
+                      </span>
+                      {artwork.artist?.verified && (
+                        <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-xs">
+                          ✓
+                        </Badge>
+                      )}
                     </div>
-
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <h3 className="font-semibold text-white mb-2 line-clamp-1">{artwork.title}</h3>
+                    <p className="text-sm text-slate-400 mb-3 line-clamp-2">{artwork.description}</p>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-500">Price</p>
+                        <p className="font-bold text-white">{formatPrice(artwork.price)}</p>
+                      </div>
                       <Button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleBuy(artwork)
-                        }}
+                        size="sm"
                         className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                       >
-                        Buy for {artwork.price} {artwork.currency}
-                      </Button>
-                    </div>
-                  </div>
-
-                  <CardContent className="p-4">
-                    <h3 className="text-lg font-semibold mb-1">{artwork.title}</h3>
-                    <p className="text-gray-400 text-sm mb-3">
-                      by {artwork.artist.display_name || artwork.artist.username}
-                    </p>
-
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="text-xl font-bold">
-                        {artwork.price} {artwork.currency}
-                      </div>
-                      <div className="flex items-center space-x-3 text-sm text-gray-400">
-                        <div className="flex items-center space-x-1">
-                          <Eye className="w-3 h-3" />
-                          <span>{artwork.views}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Heart className={`w-3 h-3 ${artwork.is_liked ? "fill-red-500 text-red-500" : ""}`} />
-                          <span>{artwork.likes}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleBuy(artwork)
-                        }}
-                        className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                      >
                         Buy Now
-                      </Button>
-
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleLike(artwork.id)
-                        }}
-                        className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                      >
-                        <Heart className={`w-3 h-3 ${artwork.is_liked ? "fill-current text-red-500" : ""}`} />
                       </Button>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          )}
-        </div>
-      </section>
+          </section>
+        )}
+
+        {/* Main Content */}
+        <Tabs defaultValue="artworks" className="space-y-6">
+          <TabsList className="bg-slate-800/50 border-slate-700">
+            <TabsTrigger value="artworks" className="data-[state=active]:bg-purple-500">
+              Artworks
+            </TabsTrigger>
+            <TabsTrigger value="artists" className="data-[state=active]:bg-purple-500">
+              Artists
+            </TabsTrigger>
+            <TabsTrigger value="collections" className="data-[state=active]:bg-purple-500">
+              Collections
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="artworks" className="space-y-6">
+            {/* Filters */}
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardContent className="p-4">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+                      <Input
+                        placeholder="Search artworks..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder-slate-400"
+                      />
+                    </div>
+                  </div>
+                  <Select value={selectedRarity} onValueChange={setSelectedRarity}>
+                    <SelectTrigger className="w-full md:w-40 bg-slate-700/50 border-slate-600 text-white">
+                      <SelectValue placeholder="Rarity" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-800 border-slate-700">
+                      <SelectItem value="all">All Rarities</SelectItem>
+                      <SelectItem value="Common">Common</SelectItem>
+                      <SelectItem value="Rare">Rare</SelectItem>
+                      <SelectItem value="Epic">Epic</SelectItem>
+                      <SelectItem value="Legendary">Legendary</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={selectedDataset} onValueChange={setSelectedDataset}>
+                    <SelectTrigger className="w-full md:w-40 bg-slate-700/50 border-slate-600 text-white">
+                      <SelectValue placeholder="Dataset" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-800 border-slate-700">
+                      <SelectItem value="all">All Datasets</SelectItem>
+                      <SelectItem value="spiral">Spirals</SelectItem>
+                      <SelectItem value="grid">Grids</SelectItem>
+                      <SelectItem value="celestial">Celestial</SelectItem>
+                      <SelectItem value="probability">Probability</SelectItem>
+                      <SelectItem value="hybrid">Hybrid</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={`${sortBy}-${sortOrder}`}
+                    onValueChange={(value) => {
+                      const [newSortBy, newSortOrder] = value.split("-") as [typeof sortBy, typeof sortOrder]
+                      setSortBy(newSortBy)
+                      setSortOrder(newSortOrder)
+                    }}
+                  >
+                    <SelectTrigger className="w-full md:w-40 bg-slate-700/50 border-slate-600 text-white">
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-800 border-slate-700">
+                      <SelectItem value="created_at-desc">Newest</SelectItem>
+                      <SelectItem value="created_at-asc">Oldest</SelectItem>
+                      <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                      <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                      <SelectItem value="views-desc">Most Viewed</SelectItem>
+                      <SelectItem value="likes-desc">Most Liked</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Artworks Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {artworks.map((artwork) => (
+                <Card
+                  key={artwork.id}
+                  className="bg-slate-800/50 border-slate-700 overflow-hidden group hover:bg-slate-800/70 transition-all duration-300"
+                >
+                  <div className="aspect-square relative overflow-hidden">
+                    <img
+                      src={artwork.image_url || "/placeholder.svg"}
+                      alt={artwork.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <Badge className={getRarityColor(artwork.rarity)}>{artwork.rarity}</Badge>
+                    </div>
+                    <div className="absolute top-3 right-3 flex space-x-2">
+                      <Badge variant="secondary" className="bg-black/50 text-white border-none">
+                        <Eye className="w-3 h-3 mr-1" />
+                        {formatNumber(artwork.views)}
+                      </Badge>
+                      <Badge variant="secondary" className="bg-black/50 text-white border-none">
+                        <Heart className="w-3 h-3 mr-1" />
+                        {formatNumber(artwork.likes)}
+                      </Badge>
+                    </div>
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <Avatar className="w-6 h-6">
+                        <AvatarImage src={artwork.artist?.avatar_url || "/placeholder.svg"} />
+                        <AvatarFallback>{artwork.artist?.username?.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm text-slate-400">
+                        {artwork.artist?.display_name || artwork.artist?.username}
+                      </span>
+                      {artwork.artist?.verified && (
+                        <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-xs">
+                          ✓
+                        </Badge>
+                      )}
+                    </div>
+                    <h3 className="font-semibold text-white mb-2 line-clamp-1">{artwork.title}</h3>
+                    <p className="text-sm text-slate-400 mb-3 line-clamp-2">{artwork.description}</p>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-500">Price</p>
+                        <p className="font-bold text-white">{formatPrice(artwork.price)}</p>
+                      </div>
+                      <Button
+                        size="sm"
+                        className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                      >
+                        Buy Now
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="artists" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {artists.map((artist) => (
+                <Card key={artist.id} className="bg-slate-800/50 border-slate-700 overflow-hidden">
+                  <div className="h-32 bg-gradient-to-r from-purple-500/20 to-pink-500/20 relative">
+                    {artist.banner_url && (
+                      <img
+                        src={artist.banner_url || "/placeholder.svg"}
+                        alt={`${artist.display_name} banner`}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <CardContent className="p-4 -mt-8 relative">
+                    <div className="flex items-start space-x-4">
+                      <Avatar className="w-16 h-16 border-4 border-slate-800">
+                        <AvatarImage src={artist.avatar_url || "/placeholder.svg"} />
+                        <AvatarFallback>{artist.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 pt-2">
+                        <div className="flex items-center space-x-2">
+                          <h3 className="font-semibold text-white">{artist.display_name || artist.username}</h3>
+                          {artist.verified && (
+                            <Badge
+                              variant="secondary"
+                              className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-xs"
+                            >
+                              ✓
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-slate-400">@{artist.username}</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-300 mt-3 line-clamp-2">{artist.bio}</p>
+                    <div className="flex items-center justify-between mt-4">
+                      <div className="flex space-x-4">
+                        <div>
+                          <p className="text-xs text-slate-500">Artworks</p>
+                          <p className="font-semibold text-white">{artist.total_artworks}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-slate-500">Sales</p>
+                          <p className="font-semibold text-white">{artist.total_sales.toFixed(1)} ETH</p>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-slate-600 text-slate-300 hover:bg-slate-700 bg-transparent"
+                      >
+                        Follow
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="collections" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {collections.map((collection) => (
+                <Card key={collection.id} className="bg-slate-800/50 border-slate-700 overflow-hidden">
+                  <div className="h-48 relative overflow-hidden">
+                    <img
+                      src={collection.banner_url || "/placeholder.svg"}
+                      alt={collection.name}
+                      className="w-full h-full object-cover"
+                    />
+                    {collection.is_featured && (
+                      <div className="absolute top-3 left-3">
+                        <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">Featured</Badge>
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <Avatar className="w-6 h-6">
+                        <AvatarImage src={collection.artist?.avatar_url || "/placeholder.svg"} />
+                        <AvatarFallback>{collection.artist?.username?.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <span className="text-sm text-slate-400">
+                        {collection.artist?.display_name || collection.artist?.username}
+                      </span>
+                      {collection.artist?.verified && (
+                        <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-500/30 text-xs">
+                          ✓
+                        </Badge>
+                      )}
+                    </div>
+                    <h3 className="font-semibold text-white mb-2">{collection.name}</h3>
+                    <p className="text-sm text-slate-400 mb-4 line-clamp-2">{collection.description}</p>
+                    <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                      View Collection
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   )
 }
