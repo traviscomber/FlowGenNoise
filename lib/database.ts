@@ -58,7 +58,10 @@ export async function getArtworks(
 
   const { data, error } = await query
 
-  if (error) throw error
+  if (error) {
+    console.error("Error fetching artworks:", error)
+    throw error
+  }
   return data as (Artwork & { artist: Artist })[]
 }
 
@@ -73,7 +76,10 @@ export async function getArtworkById(id: string, userId?: string) {
     .eq("id", id)
     .single()
 
-  if (error) throw error
+  if (error) {
+    console.error("Error fetching artwork:", error)
+    throw error
+  }
 
   // Check if user has liked this artwork
   if (userId) {
@@ -102,7 +108,10 @@ export async function getFeaturedArtworks(limit = 6) {
     .order("views", { ascending: false })
     .limit(limit)
 
-  if (error) throw error
+  if (error) {
+    console.error("Error fetching featured artworks:", error)
+    throw error
+  }
   return data as (Artwork & { artist: Artist })[]
 }
 
@@ -134,21 +143,30 @@ export async function getArtists(
   }
 
   const { data, error } = await query
-  if (error) throw error
+  if (error) {
+    console.error("Error fetching artists:", error)
+    throw error
+  }
   return data as Artist[]
 }
 
 export async function getArtistById(id: string) {
   const { data, error } = await supabase.from("artists").select("*").eq("id", id).single()
 
-  if (error) throw error
+  if (error) {
+    console.error("Error fetching artist:", error)
+    throw error
+  }
   return data as Artist
 }
 
 export async function getArtistByWallet(walletAddress: string) {
   const { data, error } = await supabase.from("artists").select("*").eq("wallet_address", walletAddress).single()
 
-  if (error && error.code !== "PGRST116") throw error
+  if (error && error.code !== "PGRST116") {
+    console.error("Error fetching artist by wallet:", error)
+    throw error
+  }
   return data as Artist | null
 }
 
@@ -156,14 +174,20 @@ export async function getArtistByWallet(walletAddress: string) {
 export async function getUserByWallet(walletAddress: string) {
   const { data, error } = await supabase.from("users").select("*").eq("wallet_address", walletAddress).single()
 
-  if (error && error.code !== "PGRST116") throw error
+  if (error && error.code !== "PGRST116") {
+    console.error("Error fetching user by wallet:", error)
+    throw error
+  }
   return data as User | null
 }
 
 export async function createUser(userData: Partial<User>) {
   const { data, error } = await supabase.from("users").insert(userData).select().single()
 
-  if (error) throw error
+  if (error) {
+    console.error("Error creating user:", error)
+    throw error
+  }
   return data as User
 }
 
@@ -176,7 +200,10 @@ export async function recordArtworkView(artworkId: string, userId?: string, ipAd
     user_agent: userAgent,
   })
 
-  if (error) throw error
+  if (error) {
+    console.error("Error recording artwork view:", error)
+    throw error
+  }
 }
 
 export async function toggleArtworkLike(artworkId: string, userId: string) {
@@ -192,7 +219,10 @@ export async function toggleArtworkLike(artworkId: string, userId: string) {
     // Remove like
     const { error } = await supabase.from("artwork_likes").delete().eq("artwork_id", artworkId).eq("user_id", userId)
 
-    if (error) throw error
+    if (error) {
+      console.error("Error removing like:", error)
+      throw error
+    }
     return false
   } else {
     // Add like
@@ -201,7 +231,10 @@ export async function toggleArtworkLike(artworkId: string, userId: string) {
       user_id: userId,
     })
 
-    if (error) throw error
+    if (error) {
+      console.error("Error adding like:", error)
+      throw error
+    }
     return true
   }
 }
@@ -210,7 +243,10 @@ export async function toggleArtworkLike(artworkId: string, userId: string) {
 export async function createTransaction(transactionData: Partial<Transaction>) {
   const { data, error } = await supabase.from("transactions").insert(transactionData).select().single()
 
-  if (error) throw error
+  if (error) {
+    console.error("Error creating transaction:", error)
+    throw error
+  }
   return data as Transaction
 }
 
@@ -228,26 +264,77 @@ export async function getTransactionsByUser(userId: string, type: "buyer" | "sel
     .eq(column, userId)
     .order("created_at", { ascending: false })
 
-  if (error) throw error
+  if (error) {
+    console.error("Error fetching transactions:", error)
+    throw error
+  }
   return data as (Transaction & { artwork: Artwork; seller: Artist; buyer: User })[]
 }
 
 // Analytics functions
 export async function getMarketplaceStats() {
-  const [{ count: totalArtworks }, { count: totalArtists }, { count: totalTransactions }, { data: totalVolume }] =
-    await Promise.all([
-      supabase.from("artworks").select("*", { count: "exact", head: true }),
-      supabase.from("artists").select("*", { count: "exact", head: true }),
-      supabase.from("transactions").select("*", { count: "exact", head: true }).eq("status", "completed"),
-      supabase.from("transactions").select("price").eq("status", "completed"),
-    ])
+  try {
+    const [{ count: totalArtworks }, { count: totalArtists }, { count: totalTransactions }, { data: totalVolumeData }] =
+      await Promise.all([
+        supabase.from("artworks").select("*", { count: "exact", head: true }),
+        supabase.from("artists").select("*", { count: "exact", head: true }),
+        supabase.from("transactions").select("*", { count: "exact", head: true }).eq("status", "completed"),
+        supabase.from("transactions").select("price").eq("status", "completed"),
+      ])
 
-  const volume = totalVolume?.reduce((sum, tx) => sum + tx.price, 0) || 0
+    const volume = totalVolumeData?.reduce((sum, tx) => sum + tx.price, 0) || 0
 
-  return {
-    totalArtworks: totalArtworks || 0,
-    totalArtists: totalArtists || 0,
-    totalTransactions: totalTransactions || 0,
-    totalVolume: volume,
+    return {
+      totalArtworks: totalArtworks || 0,
+      totalArtists: totalArtists || 0,
+      totalTransactions: totalTransactions || 0,
+      totalVolume: volume,
+    }
+  } catch (error) {
+    console.error("Error fetching marketplace stats:", error)
+    return {
+      totalArtworks: 0,
+      totalArtists: 0,
+      totalTransactions: 0,
+      totalVolume: 0,
+    }
   }
+}
+
+// Collection functions
+export async function getFeaturedCollections(limit = 5) {
+  const { data, error } = await supabase
+    .from("collections")
+    .select(`
+      *,
+      artist:artists(*)
+    `)
+    .eq("is_featured", true)
+    .order("created_at", { ascending: false })
+    .limit(limit)
+
+  if (error) {
+    console.error("Error fetching featured collections:", error)
+    throw error
+  }
+  return data
+}
+
+export async function getArtworksByCollection(collectionId: string, limit = 10) {
+  const { data, error } = await supabase
+    .from("artworks")
+    .select(`
+      *,
+      artist:artists(*)
+    `)
+    .eq("collection_id", collectionId)
+    .eq("status", "available")
+    .order("created_at", { ascending: false })
+    .limit(limit)
+
+  if (error) {
+    console.error("Error fetching artworks by collection:", error)
+    throw error
+  }
+  return data as (Artwork & { artist: Artist })[]
 }
