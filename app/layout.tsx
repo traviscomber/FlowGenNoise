@@ -10,14 +10,22 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "FlowSketch - AI Art Marketplace",
-  description: "Discover, create, and trade unique AI-generated artworks on the blockchain",
-  keywords: ["AI art", "NFT", "blockchain", "digital art", "marketplace"],
+  description: "Create, mint, and trade AI-generated artworks as NFTs on the blockchain",
+  keywords: ["NFT", "AI Art", "Blockchain", "Marketplace", "Digital Art", "Ethereum"],
   authors: [{ name: "FlowSketch Team" }],
   openGraph: {
     title: "FlowSketch - AI Art Marketplace",
-    description: "Discover, create, and trade unique AI-generated artworks on the blockchain",
+    description: "Create, mint, and trade AI-generated artworks as NFTs on the blockchain",
     type: "website",
+    locale: "en_US",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "FlowSketch - AI Art Marketplace",
+    description: "Create, mint, and trade AI-generated artworks as NFTs on the blockchain",
+  },
+  viewport: "width=device-width, initial-scale=1",
+  robots: "index, follow",
     generator: 'v0.dev'
 }
 

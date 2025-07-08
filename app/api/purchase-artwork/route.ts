@@ -34,6 +34,8 @@ export async function POST(request: NextRequest) {
       .from("artworks")
       .update({
         status: "sold",
+        owner_address: buyerAddress,
+        sold_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
       .eq("id", artworkId)
@@ -50,7 +52,7 @@ export async function POST(request: NextRequest) {
     const { error: transactionError } = await supabase.from("transactions").insert({
       artwork_id: artworkId,
       seller_id: artwork.artist_id,
-      buyer_id: buyerAddress, // In a real app, you'd map wallet address to user ID
+      buyer_id: buyerAddress,
       price: price,
       currency: "ETH",
       status: "completed",
@@ -63,7 +65,6 @@ export async function POST(request: NextRequest) {
 
     if (transactionError) {
       console.error("Error creating transaction:", transactionError)
-      // Don't fail the request if transaction logging fails
     }
 
     // Update artist statistics
@@ -78,11 +79,10 @@ export async function POST(request: NextRequest) {
 
       if (artistError) {
         console.error("Error updating artist stats:", artistError)
-        // Don't fail the request if stats update fails
       }
     }
 
-    // Update user purchase history (create user if doesn't exist)
+    // Create or update user record
     const { data: existingUser } = await supabase.from("users").select("id").eq("wallet_address", buyerAddress).single()
 
     if (!existingUser) {
