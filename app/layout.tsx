@@ -3,15 +3,14 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Web3Provider } from "@/lib/web3-context"
 import { Toaster } from "@/components/ui/toaster"
+import { Web3Provider } from "@/lib/web3-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "FlowSketch - Generative Art Marketplace",
-  description:
-    "Discover and collect unique algorithmic artworks created through mathematical beauty and computational creativity",
+  title: "FlowSketch - AI Art Generator & Marketplace",
+  description: "Generate beautiful flow-based art using AI and machine learning algorithms",
     generator: 'v0.dev'
 }
 
