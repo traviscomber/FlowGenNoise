@@ -29,6 +29,14 @@ export function shortenAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
+/**
+ * Backward-compat alias – many components import { formatAddress }.
+ * It delegates to `shortenAddress` so the behaviour stays the same.
+ */
+export function formatAddress(address: string): string {
+  return shortenAddress(address)
+}
+
 export function getNetworkName(chainId: number): string {
   return SUPPORTED_NETWORKS[chainId as keyof typeof SUPPORTED_NETWORKS]?.name || "Unknown Network"
 }
