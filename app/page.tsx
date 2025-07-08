@@ -1,5 +1,5 @@
-import { FlowArtGallery } from "@/components/flow-art-gallery"
+import { FlowArtMarketplace } from "@/components/flow-art-marketplace"
 
 export default function HomePage() {
-  return <FlowArtGallery />
+  return <FlowArtMarketplace />
 }
