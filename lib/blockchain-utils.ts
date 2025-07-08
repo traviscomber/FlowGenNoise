@@ -370,6 +370,44 @@ export async function purchaseNFT(
   }
 }
 
+/* ------------------------------------------------------------------ */
+/*  IPFS convenience aliases & helpers                                */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Alias kept for backward compatibility – older code calls `uploadToIPFS`
+ * but we renamed the implementation to `uploadImageToPinata`.
+ */
+export const uploadToIPFS = uploadImageToPinata
+
+/**
+ * Alias for code that calls `uploadMetadataToIPFS` instead of the new name.
+ */
+export const uploadMetadataToIPFS = uploadMetadataToPinata
+
+/**
+ * Build the standard ERC-721 metadata JSON object used throughout FlowSketch.
+ * You can pass an already-uploaded image/IPFS hash or an https URL.
+ */
+export function createNFTMetadata({
+  title,
+  description,
+  image,
+  attributes,
+}: {
+  title: string
+  description: string
+  image: string
+  attributes?: any[]
+}) {
+  return {
+    name: title,
+    description,
+    image,
+    attributes: attributes ?? [],
+  }
+}
+
 // Type declarations for window.ethereum
 declare global {
   interface Window {
