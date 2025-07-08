@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Heart, Eye, Zap, TrendingUp, Users, Palette, Star, Verified, ExternalLink } from "lucide-react"
+import { Heart, Eye, Zap, TrendingUp, Users, Palette, Star, Verified, ExternalLink, ShoppingCart } from "lucide-react"
 import {
   getArtworks,
   getFeaturedArtworks,
@@ -20,6 +20,10 @@ import {
   type Collection,
   type MarketplaceStats,
 } from "@/lib/database"
+import { WalletConnectButton } from "./wallet-connect-button"
+import { PurchaseModal } from "./purchase-modal"
+import { useWeb3 } from "@/lib/web3-context"
+import { useToast } from "@/hooks/use-toast"
 
 const rarityColors = {
   Common: "bg-gray-500",
@@ -54,6 +58,11 @@ export default function FlowArtMarketplace() {
     maxPrice: "",
     search: "",
   })
+  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null)
+  const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false)
+
+  const { isConnected } = useWeb3()
+  const { toast } = useToast()
 
   useEffect(() => {
     loadData()
@@ -81,6 +90,11 @@ export default function FlowArtMarketplace() {
       setStats(statsData)
     } catch (error) {
       console.error("Error loading marketplace data:", error)
+      toast({
+        title: "Error loading data",
+        description: "Failed to load marketplace data. Please refresh the page.",
+        variant: "destructive",
+      })
     } finally {
       setLoading(false)
     }
@@ -100,6 +114,38 @@ export default function FlowArtMarketplace() {
     } catch (error) {
       console.error("Error loading filtered artworks:", error)
     }
+  }
+
+  const handlePurchaseClick = (artwork: Artwork) => {
+    if (!isConnected) {
+      toast({
+        title: "Wallet not connected",
+        description: "Please connect your wallet to purchase artworks",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (artwork.status !== "available") {
+      toast({
+        title: "Artwork unavailable",
+        description: "This artwork is no longer available for purchase",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setSelectedArtwork(artwork)
+    setIsPurchaseModalOpen(true)
+  }
+
+  const handlePurchaseSuccess = () => {
+    // Refresh the data to reflect the purchase
+    loadData()
+    toast({
+      title: "Purchase successful!",
+      description: "The artwork has been transferred to your wallet",
+    })
   }
 
   const clearFilters = () => {
@@ -143,9 +189,7 @@ export default function FlowArtMarketplace() {
               </Badge>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" className="border-gray-700 hover:bg-gray-800 bg-transparent">
-                Connect Wallet
-              </Button>
+              <WalletConnectButton />
             </div>
           </div>
         </div>
@@ -231,6 +275,13 @@ export default function FlowArtMarketplace() {
                       {artwork.likes}
                     </Badge>
                   </div>
+                  {artwork.status !== "available" && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                      <Badge variant="secondary" className="bg-red-600 text-white">
+                        {artwork.status === "sold" ? "SOLD" : "UNAVAILABLE"}
+                      </Badge>
+                    </div>
+                  )}
                 </div>
                 <CardContent className="p-4">
                   <div className="flex items-center space-x-2 mb-2">
@@ -249,8 +300,14 @@ export default function FlowArtMarketplace() {
                         {artwork.price} {artwork.currency}
                       </p>
                     </div>
-                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                      Buy Now
+                    <Button
+                      size="sm"
+                      className="bg-blue-600 hover:bg-blue-700"
+                      onClick={() => handlePurchaseClick(artwork)}
+                      disabled={artwork.status !== "available"}
+                    >
+                      <ShoppingCart className="w-4 h-4 mr-1" />
+                      {artwork.status === "available" ? "Buy Now" : "Sold"}
                     </Button>
                   </div>
                 </CardContent>
@@ -367,6 +424,13 @@ export default function FlowArtMarketplace() {
                         {artwork.likes}
                       </Badge>
                     </div>
+                    {artwork.status !== "available" && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                        <Badge variant="secondary" className="bg-red-600 text-white">
+                          {artwork.status === "sold" ? "SOLD" : "UNAVAILABLE"}
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                   <CardContent className="p-3">
                     <div className="flex items-center space-x-2 mb-2">
@@ -390,8 +454,14 @@ export default function FlowArtMarketplace() {
                           {artwork.price} {artwork.currency}
                         </p>
                       </div>
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1">
-                        Buy
+                      <Button
+                        size="sm"
+                        className="bg-blue-600 hover:bg-blue-700 text-xs px-3 py-1"
+                        onClick={() => handlePurchaseClick(artwork)}
+                        disabled={artwork.status !== "available"}
+                      >
+                        <ShoppingCart className="w-3 h-3 mr-1" />
+                        {artwork.status === "available" ? "Buy" : "Sold"}
                       </Button>
                     </div>
                   </CardContent>
@@ -516,6 +586,14 @@ export default function FlowArtMarketplace() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Purchase Modal */}
+      <PurchaseModal
+        artwork={selectedArtwork}
+        isOpen={isPurchaseModalOpen}
+        onClose={() => setIsPurchaseModalOpen(false)}
+        onSuccess={handlePurchaseSuccess}
+      />
     </div>
   )
 }

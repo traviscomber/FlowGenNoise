@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Web3Provider } from "@/lib/web3-context"
 import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -10,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "FlowSketch - Generative Art Marketplace",
   description:
-    "Discover and collect unique generative artworks created with mathematical precision and artistic vision.",
+    "Discover and collect unique algorithmic artworks created through mathematical beauty and computational creativity",
     generator: 'v0.dev'
 }
 
@@ -23,8 +24,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          {children}
-          <Toaster />
+          <Web3Provider>
+            {children}
+            <Toaster />
+          </Web3Provider>
         </ThemeProvider>
       </body>
     </html>
