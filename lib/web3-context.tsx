@@ -1,293 +1,175 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode, useCallback } from "react"
+import type React from "react"
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { ethers } from "ethers"
-import { mintNFT as mintNFTUtil, purchaseNFT as purchaseNFTUtil, SUPPORTED_NETWORKS } from "./blockchain-utils"
+import { useToast } from "@/hooks/use-toast"
 
 /* -------------------------------------------------------------------------- */
-/*                               Context types                                */
+/*                              Types / Helpers                               */
 /* -------------------------------------------------------------------------- */
 
-interface Web3ContextType {
-  /* Connection state ------------------------------------------------------- */
+type Web3ContextValue = {
+  /* environment */
   hasProvider: boolean
+  /* connection state */
   isConnected: boolean
+  isLoading: boolean
   account: string | null
   chainId: number | null
   balance: string | null
-
-  /* Connection helpers ----------------------------------------------------- */
+  /* actions */
   connect: () => Promise<void>
   disconnect: () => void
-  switchNetwork: (chainId: number) => Promise<void>
-
-  /* Transaction helpers ---------------------------------------------------- */
-  mintNFT: (tokenURI: string, price: string) => Promise<string>
-  purchaseNFT: (tokenId: string, price: string) => Promise<string>
-
-  /* UI helpers ------------------------------------------------------------- */
-  isLoading: boolean
-  error: string | null
+  switchNetwork: (targetChainId: number) => Promise<void>
 }
 
-const Web3Context = createContext<Web3ContextType | undefined>(undefined)
+const Web3Context = createContext<Web3ContextValue | undefined>(undefined)
 
 /* -------------------------------------------------------------------------- */
-/*                               Provider                                     */
+/*                          Provider implementation                           */
 /* -------------------------------------------------------------------------- */
 
-interface Web3ProviderProps {
-  children: ReactNode
-}
+export function Web3Provider({ children }: { children: React.ReactNode }) {
+  const { toast } = useToast()
+  const hasProvider = useMemo(() => typeof window !== "undefined" && Boolean((window as any).ethereum), [])
 
-export function Web3Provider({ children }: Web3ProviderProps) {
-  /* ----------------------------- local state ------------------------------ */
-  const [hasProvider, setHasProvider] = useState(false)
-  const [isConnected, setIsConnected] = useState(false)
   const [account, setAccount] = useState<string | null>(null)
   const [chainId, setChainId] = useState<number | null>(null)
   const [balance, setBalance] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  /* --------------------------- side-effects ------------------------------- */
-  useEffect(() => {
-    const hasMetaMask =
-      typeof window !== "undefined" && !!(window as any).ethereum && (window as any).ethereum.isMetaMask
-    setHasProvider(hasMetaMask)
+  /* ---------------------------------------------------------------------- */
+  /*                                helpers                                 */
+  /* ---------------------------------------------------------------------- */
 
-    if (hasMetaMask) {
-      checkConnection()
-
-      /* --- event listeners ------------------------------------------------ */
-      const { ethereum } = window as any
-      ethereum.on("accountsChanged", handleAccountsChanged)
-      ethereum.on("chainChanged", handleChainChanged)
-      ethereum.on("disconnect", handleDisconnect)
-
-      return () => {
-        ethereum.removeListener("accountsChanged", handleAccountsChanged)
-        ethereum.removeListener("chainChanged", handleChainChanged)
-        ethereum.removeListener("disconnect", handleDisconnect)
+  const refreshBalance = useCallback(
+    async (acct: string) => {
+      try {
+        const provider = new ethers.BrowserProvider((window as any).ethereum as any)
+        const rawBal = await provider.getBalance(acct)
+        setBalance(ethers.formatEther(rawBal))
+      } catch {
+        setBalance(null)
       }
-    }
-  }, [])
+    },
+    [setBalance],
+  )
 
-  /* --------------------------- helpers ------------------------------------ */
-
-  const checkConnection = async () => {
-    try {
-      const provider = new ethers.BrowserProvider((window as any).ethereum)
-      const accounts = await provider.listAccounts()
-
-      if (accounts.length > 0) {
-        const signer = await provider.getSigner()
-        const address = await signer.getAddress()
-        const network = await provider.getNetwork()
-        const balance = await provider.getBalance(address)
-
-        setAccount(address)
-        setChainId(Number(network.chainId))
-        setBalance(ethers.formatEther(balance))
-        setIsConnected(true)
-      }
-    } catch (err) {
-      console.error("Error checking connection:", err)
-    }
-  }
-
-  const handleAccountsChanged = (accounts: string[]) => {
-    if (accounts.length === 0) {
-      disconnect()
-    } else {
-      setAccount(accounts[0])
-      updateBalance(accounts[0])
-    }
-  }
-
-  const handleChainChanged = (hexChainId: string) => {
-    setChainId(Number.parseInt(hexChainId, 16))
-    if (account) updateBalance(account)
-  }
-
-  const handleDisconnect = () => disconnect()
-
-  const updateBalance = async (address: string) => {
-    try {
-      const provider = new ethers.BrowserProvider((window as any).ethereum)
-      const balance = await provider.getBalance(address)
-      setBalance(ethers.formatEther(balance))
-    } catch (err) {
-      console.error("Error updating balance:", err)
-    }
-  }
-
-  /* --------------------------- public API --------------------------------- */
+  /* ---------------------------------------------------------------------- */
+  /*                                actions                                 */
+  /* ---------------------------------------------------------------------- */
 
   const connect = useCallback(async () => {
-    setIsLoading(true)
-    setError(null)
-
+    if (!hasProvider) return
     try {
-      if (!hasProvider) {
-        throw new Error("MetaMask is not installed. Please install MetaMask to continue.")
-      }
-
-      await (window as any).ethereum.request({ method: "eth_requestAccounts" })
-
-      const provider = new ethers.BrowserProvider((window as any).ethereum)
-      const signer = await provider.getSigner()
-      const address = await signer.getAddress()
-      const network = await provider.getNetwork()
-      const balance = await provider.getBalance(address)
-
-      setAccount(address)
-      setChainId(Number(network.chainId))
-      setBalance(ethers.formatEther(balance))
-      setIsConnected(true)
-
-      console.info("[Web3] Connected:", address)
-    } catch (err: any) {
-      console.error("Connection error:", err)
-      setError(err.message)
+      setIsLoading(true)
+      const provider = new ethers.BrowserProvider((window as any).ethereum as any)
+      const accounts = await provider.send("eth_requestAccounts", [])
+      if (accounts.length === 0) throw new Error("No accounts returned")
+      const acct = accounts[0] as string
+      setAccount(acct)
+      const { chainId } = await provider.getNetwork()
+      setChainId(Number(chainId))
+      await refreshBalance(acct)
+    } catch (err) {
+      toast({
+        title: "Connection error",
+        description: err instanceof Error ? err.message : "Failed to connect wallet",
+        variant: "destructive",
+      })
     } finally {
       setIsLoading(false)
     }
-  }, [hasProvider])
+  }, [hasProvider, refreshBalance, toast])
 
-  const disconnect = () => {
-    setIsConnected(false)
+  const disconnect = useCallback(() => {
     setAccount(null)
     setChainId(null)
     setBalance(null)
-    setError(null)
-  }
+  }, [])
 
-  const switchNetwork = async (targetChainId: number) => {
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      if (!hasProvider) {
-        throw new Error("MetaMask is not installed")
-      }
-
-      const chainIdHex = `0x${targetChainId.toString(16)}`
-
+  const switchNetwork = useCallback(
+    async (targetChainId: number) => {
+      if (!hasProvider) return
       try {
         await (window as any).ethereum.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: chainIdHex }],
+          params: [{ chainId: `0x${targetChainId.toString(16)}` }],
         })
-      } catch (switchError: any) {
-        if (switchError.code === 4902) {
-          const cfg = SUPPORTED_NETWORKS[targetChainId as keyof typeof SUPPORTED_NETWORKS]
-          if (cfg) {
-            await (window as any).ethereum.request({
-              method: "wallet_addEthereumChain",
-              params: [
-                {
-                  chainId: chainIdHex,
-                  chainName: cfg.name,
-                  rpcUrls: [cfg.rpcUrl],
-                  blockExplorerUrls: [cfg.blockExplorer],
-                  nativeCurrency: {
-                    name: cfg.currency,
-                    symbol: cfg.currency,
-                    decimals: 18,
-                  },
-                },
-              ],
-            })
-          }
-        } else {
-          throw switchError
-        }
+        setChainId(targetChainId)
+      } catch (err) {
+        toast({
+          title: "Network switch failed",
+          description: err instanceof Error ? err.message : "Could not switch network",
+          variant: "destructive",
+        })
       }
+    },
+    [hasProvider, toast],
+  )
 
-      setChainId(targetChainId)
-      if (account) updateBalance(account)
-    } catch (err: any) {
-      console.error("Network switch error:", err)
-      setError(err.message)
-    } finally {
-      setIsLoading(false)
+  /* ---------------------------------------------------------------------- */
+  /*                          event listeners setup                         */
+  /* ---------------------------------------------------------------------- */
+
+  useEffect(() => {
+    if (!hasProvider) return
+
+    const { ethereum } = window as any
+
+    const handleAccountsChanged = (accounts: string[]) => {
+      if (accounts.length === 0) disconnect()
+      else {
+        setAccount(accounts[0])
+        refreshBalance(accounts[0])
+      }
     }
-  }
 
-  const mintNFT = async (tokenURI: string, price: string) => {
-    if (!isConnected || !chainId) throw new Error("Wallet not connected")
-    setIsLoading(true)
-    setError(null)
-
-    try {
-      const txHash = await mintNFTUtil(tokenURI, price, chainId)
-      if (account) setTimeout(() => updateBalance(account), 2_000)
-      return txHash
-    } catch (err: any) {
-      setError(err.message)
-      throw err
-    } finally {
-      setIsLoading(false)
+    const handleChainChanged = (hexChainId: string) => {
+      setChainId(Number.parseInt(hexChainId, 16))
+      /* Optional: reload the page so the dApp re-initialises */
+      // window.location.reload()
     }
-  }
 
-  const purchaseNFT = async (tokenId: string, price: string) => {
-    if (!isConnected || !chainId) throw new Error("Wallet not connected")
-    setIsLoading(true)
-    setError(null)
+    ethereum.on("accountsChanged", handleAccountsChanged)
+    ethereum.on("chainChanged", handleChainChanged)
 
-    try {
-      const txHash = await purchaseNFTUtil(tokenId, price, chainId)
-      if (account) setTimeout(() => updateBalance(account), 2_000)
-      return txHash
-    } catch (err: any) {
-      setError(err.message)
-      throw err
-    } finally {
-      setIsLoading(false)
+    return () => {
+      ethereum.removeListener("accountsChanged", handleAccountsChanged)
+      ethereum.removeListener("chainChanged", handleChainChanged)
     }
-  }
+  }, [hasProvider, disconnect, refreshBalance])
 
-  /* ----------------------------- provider value --------------------------- */
+  /* ---------------------------------------------------------------------- */
+  /*                              context value                             */
+  /* ---------------------------------------------------------------------- */
 
-  const value: Web3ContextType = {
-    hasProvider,
-    isConnected,
-    account,
-    chainId,
-    balance,
-    connect,
-    disconnect,
-    switchNetwork,
-    mintNFT,
-    purchaseNFT,
-    isLoading,
-    error,
-  }
+  const value = useMemo<Web3ContextValue>(
+    () => ({
+      hasProvider,
+      isConnected: Boolean(account),
+      isLoading,
+      account,
+      chainId,
+      balance,
+      connect,
+      disconnect,
+      switchNetwork,
+    }),
+    [hasProvider, isLoading, account, chainId, balance, connect, disconnect, switchNetwork],
+  )
 
   return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>
 }
 
 /* -------------------------------------------------------------------------- */
-/*                               Hook                                         */
+/*                               useWeb3 hook                                 */
 /* -------------------------------------------------------------------------- */
-
 export function useWeb3() {
   const ctx = useContext(Web3Context)
-  if (!ctx) throw new Error("useWeb3 must be used within a Web3Provider")
-  return ctx
-}
-
-/* ----------------------------- global types ------------------------------ */
-
-declare global {
-  interface Window {
-    ethereum?: {
-      isMetaMask?: boolean
-      request: (args: { method: string; params?: any[] }) => Promise<unknown>
-      on: (ev: string, cb: (...a: any[]) => void) => void
-      removeListener: (ev: string, cb: (...a: any[]) => void) => void
-    }
+  if (!ctx) {
+    throw new Error("useWeb3 must be used within a Web3Provider")
   }
+  return ctx
 }
