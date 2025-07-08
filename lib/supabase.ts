@@ -1,40 +1,85 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 
-/**
- * Singleton pattern - ensures we don’t create more than one client
- * on the client side.  On the server each request gets its own.
- */
-let supabaseClient: SupabaseClient | null = null
+/* -------------------------------------------------------------------------- */
+/*                               Env helpers                                  */
+/* -------------------------------------------------------------------------- */
 
-function getEnv(name: string) {
-  if (typeof process === "undefined") return ""
-  return (process.env as Record<string, string | undefined>)[name] ?? ""
+function readEnv(key: string, fatal = true): string {
+  const val = typeof process !== "undefined" ? (process.env as Record<string, string | undefined>)[key] : undefined
+
+  if (!val) {
+    if (fatal) {
+      /* eslint-disable no-console */
+      console.error(
+        `[supabase] Missing required env "${key}". Add it to .env.local or Vercel → Settings → Environment Variables.`,
+      )
+      throw new Error(`Missing environment variable: ${key}`)
+    }
+    return ""
+  }
+
+  return val
 }
 
-export function getSupabaseClient(): SupabaseClient {
-  if (supabaseClient) return supabaseClient
+/* -------------------------------------------------------------------------- */
+/*                        Lazy, singleton client loader                       */
+/* -------------------------------------------------------------------------- */
 
-  const url = getEnv("NEXT_PUBLIC_SUPABASE_URL")
-  const anon = getEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+let cachedClient: SupabaseClient | null = null
 
-  if (!url || !anon) {
-    /* eslint-disable no-console */
-    console.error("[Supabase] Missing env vars. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.")
-    throw new Error("Supabase environment variables are not configured")
-  }
+function initClient(): SupabaseClient {
+  const url = readEnv("NEXT_PUBLIC_SUPABASE_URL")
+  const anonKey = readEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 
+  // Basic URL sanity-check so we fail early in dev if it’s malformed
   try {
-    // basic sanity check for URL format
-    // throws if malformed (matches browser’s URL constructor behaviour)
+    // eslint-disable-next-line no-new
     new URL(url)
   } catch {
-    console.error("[Supabase] Invalid URL provided:", url)
-    throw new Error("Invalid Supabase URL")
+    throw new Error(`[supabase] "${url}" is not a valid URL. Check NEXT_PUBLIC_SUPABASE_URL.`)
   }
 
-  supabaseClient = createClient(url, anon, {
+  return createClient(url, anonKey, {
     auth: { persistSession: true, autoRefreshToken: true },
   })
+}
 
-  return supabaseClient
+/**
+ * Returns a memoised browser client.
+ * Safe to call in React components, Server Actions, Route Handlers etc.
+ */
+export function getSupabaseClient(): SupabaseClient {
+  if (!cachedClient) cachedClient = initClient()
+  return cachedClient
+}
+
+/* -------------------------------------------------------------------------- */
+/*                    Classic named export used around the app                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Many files do `import { supabase } from "@/lib/supabase"`.
+ * We keep that API by exporting a Proxy that delegates property access to the
+ * lazily-initialised real client, ensuring zero work at module evaluation time.
+ */
+export const supabase = new Proxy({} as SupabaseClient, {
+  get(_t, prop) {
+    const client = getSupabaseClient()
+    // @ts-expect-error – dynamic access is fine here
+    return client[prop]
+  },
+}) as SupabaseClient
+
+/* -------------------------------------------------------------------------- */
+/*                        Optional server-side admin client                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * ONLY call this from the server (e.g. Server Actions / Route Handlers).
+ * Uses the Service-Role key so **never** expose it to the browser.
+ */
+export function getSupabaseServerClient(): SupabaseClient {
+  const url = readEnv("NEXT_PUBLIC_SUPABASE_URL")
+  const serviceKey = readEnv("SUPABASE_SERVICE_ROLE_KEY")
+  return createClient(url, serviceKey)
 }
