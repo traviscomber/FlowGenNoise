@@ -1,4 +1,5 @@
 import { ethers } from "ethers"
+import { supabase } from "@/lib/supabase"
 
 // Network configurations
 export const SUPPORTED_NETWORKS = {
@@ -239,6 +240,46 @@ export async function estimateGas(to: string, value: string): Promise<string> {
   } catch (error) {
     console.error("Error estimating gas:", error)
     return "21000"
+  }
+}
+
+/**
+ * Persist a blockchain transaction record to the `blockchain_transactions` table.
+ * Components use this for analytics & history.  Safe to call from either client
+ * or server code (Supabase js-client is isomorphic).
+ */
+export async function logTransactionToSupabase(tx: {
+  txHash: string
+  fromAddress: string
+  toAddress: string
+  transactionType: string
+  chainId: number
+  value?: string
+  gasUsed?: string
+  gasPrice?: string
+  tokenId?: string
+  status: string
+}) {
+  try {
+    const { error } = await supabase.from("blockchain_transactions").insert({
+      tx_hash: tx.txHash,
+      from_address: tx.fromAddress,
+      to_address: tx.toAddress,
+      transaction_type: tx.transactionType,
+      chain_id: tx.chainId,
+      value: tx.value,
+      gas_used: tx.gasUsed,
+      gas_price: tx.gasPrice,
+      token_id: tx.tokenId,
+      status: tx.status,
+      created_at: new Date().toISOString(),
+    })
+
+    if (error) {
+      console.error("supabase:insert blockchain_transactions", error)
+    }
+  } catch (err) {
+    console.error("logTransactionToSupabase", err)
   }
 }
 
