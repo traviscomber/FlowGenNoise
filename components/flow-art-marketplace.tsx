@@ -1,165 +1,127 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { Search, Heart, Share2, TrendingUp, Filter, Eye } from "lucide-react"
+import { Search, Heart, Share2, TrendingUp, Filter, Eye, Loader2 } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-interface Artwork {
-  id: string
-  title: string
-  artist: string
-  price: number
-  currency: "ETH" | "USD"
-  imageUrl: string
-  dataset: string
-  colorScheme: string
-  views: number
-  likes: number
-  isLiked: boolean
-  rarity: "Common" | "Rare" | "Epic" | "Legendary"
-  edition: string
-  description: string
-  tags: string[]
-}
-
-// Mock data for the marketplace
-const mockArtworks: Artwork[] = [
-  {
-    id: "1",
-    title: "Cosmic Spiral #1234",
-    artist: "FlowMaster",
-    price: 2.5,
-    currency: "ETH",
-    imageUrl: "/placeholder.svg?height=400&width=400",
-    dataset: "spirals",
-    colorScheme: "magma",
-    views: 1247,
-    likes: 89,
-    isLiked: false,
-    rarity: "Legendary",
-    edition: "1/1",
-    description:
-      "A mesmerizing spiral pattern generated using advanced mathematical algorithms with magma color palette.",
-    tags: ["generative", "spiral", "cosmic", "rare"],
-  },
-  {
-    id: "2",
-    title: "Digital Grid Symphony #5678",
-    artist: "PixelArtist",
-    price: 1.8,
-    currency: "ETH",
-    imageUrl: "/placeholder.svg?height=400&width=400",
-    dataset: "checkerboard",
-    colorScheme: "viridis",
-    views: 892,
-    likes: 67,
-    isLiked: true,
-    rarity: "Epic",
-    edition: "1/1",
-    description: "Structured chaos meets digital perfection in this unique checkerboard composition.",
-    tags: ["geometric", "digital", "structured", "viridis"],
-  },
-  {
-    id: "3",
-    title: "Lunar Dance #9012",
-    artist: "CelestialCreator",
-    price: 3.2,
-    currency: "ETH",
-    imageUrl: "/placeholder.svg?height=400&width=400",
-    dataset: "moons",
-    colorScheme: "plasma",
-    views: 2156,
-    likes: 134,
-    isLiked: false,
-    rarity: "Legendary",
-    edition: "1/1",
-    description: "Celestial bodies in eternal dance, captured through generative algorithms.",
-    tags: ["celestial", "moons", "dance", "plasma"],
-  },
-  {
-    id: "4",
-    title: "Probability Cloud #3456",
-    artist: "MathArtist",
-    price: 1.2,
-    currency: "ETH",
-    imageUrl: "/placeholder.svg?height=400&width=400",
-    dataset: "gaussian",
-    colorScheme: "cividis",
-    views: 654,
-    likes: 45,
-    isLiked: false,
-    rarity: "Rare",
-    edition: "1/1",
-    description: "Mathematical beauty emerges from random distributions in this gaussian masterpiece.",
-    tags: ["mathematical", "gaussian", "probability", "scientific"],
-  },
-  {
-    id: "5",
-    title: "Perfect Order #7890",
-    artist: "GridMaster",
-    price: 0.9,
-    currency: "ETH",
-    imageUrl: "/placeholder.svg?height=400&width=400",
-    dataset: "grid",
-    colorScheme: "grayscale",
-    views: 423,
-    likes: 28,
-    isLiked: false,
-    rarity: "Common",
-    edition: "1/1",
-    description: "Minimalist perfection through structured grid patterns and monochromatic elegance.",
-    tags: ["minimalist", "grid", "order", "monochrome"],
-  },
-  {
-    id: "6",
-    title: "Infinite Vortex #2468",
-    artist: "FlowMaster",
-    price: 4.1,
-    currency: "ETH",
-    imageUrl: "/placeholder.svg?height=400&width=400",
-    dataset: "spirals",
-    colorScheme: "magma",
-    views: 3421,
-    likes: 198,
-    isLiked: true,
-    rarity: "Legendary",
-    edition: "1/1",
-    description: "A hypnotic vortex that draws the viewer into infinite mathematical beauty.",
-    tags: ["vortex", "infinite", "hypnotic", "premium"],
-  },
-]
+import {
+  getArtworks,
+  getFeaturedArtworks,
+  toggleArtworkLike,
+  recordArtworkView,
+  createTransaction,
+} from "@/lib/database"
+import type { Artwork, Artist } from "@/lib/supabase"
 
 export function FlowArtMarketplace() {
-  const [artworks, setArtworks] = useState<Artwork[]>(mockArtworks)
-  const [featuredArtwork, setFeaturedArtwork] = useState<Artwork>(mockArtworks[0])
-  const [sortBy, setSortBy] = useState<string>("trending")
+  const [artworks, setArtworks] = useState<(Artwork & { artist: Artist })[]>([])
+  const [featuredArtwork, setFeaturedArtwork] = useState<(Artwork & { artist: Artist }) | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [sortBy, setSortBy] = useState<string>("views")
   const [filterBy, setFilterBy] = useState<string>("all")
   const [searchQuery, setSearchQuery] = useState<string>("")
 
-  const handleLike = (artworkId: string) => {
-    setArtworks((prev) =>
-      prev.map((artwork) =>
-        artwork.id === artworkId
-          ? { ...artwork, isLiked: !artwork.isLiked, likes: artwork.isLiked ? artwork.likes - 1 : artwork.likes + 1 }
-          : artwork,
-      ),
-    )
+  // Mock user ID - in real app this would come from authentication
+  const currentUserId = "880e8400-e29b-41d4-a716-446655440001"
 
-    if (featuredArtwork.id === artworkId) {
-      setFeaturedArtwork((prev) => ({
-        ...prev,
-        isLiked: !prev.isLiked,
-        likes: prev.isLiked ? prev.likes - 1 : prev.likes + 1,
-      }))
+  useEffect(() => {
+    loadArtworks()
+    loadFeaturedArtwork()
+  }, [sortBy, filterBy, searchQuery])
+
+  const loadArtworks = async () => {
+    try {
+      setLoading(true)
+      const data = await getArtworks({
+        limit: 20,
+        sortBy: sortBy === "trending" ? "views" : (sortBy as any),
+        sortOrder: "desc",
+        filterBy: filterBy === "all" ? undefined : { dataset: filterBy },
+        search: searchQuery || undefined,
+      })
+      setArtworks(data)
+    } catch (error) {
+      console.error("Error loading artworks:", error)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleBuy = (artwork: Artwork) => {
-    alert(`Purchasing ${artwork.title} for ${artwork.price} ${artwork.currency}`)
-    // In a real app, this would integrate with Web3 wallet
+  const loadFeaturedArtwork = async () => {
+    try {
+      const featured = await getFeaturedArtworks(1)
+      if (featured.length > 0) {
+        setFeaturedArtwork(featured[0])
+      }
+    } catch (error) {
+      console.error("Error loading featured artwork:", error)
+    }
+  }
+
+  const handleLike = async (artworkId: string) => {
+    try {
+      const isLiked = await toggleArtworkLike(artworkId, currentUserId)
+
+      // Update local state
+      setArtworks((prev) =>
+        prev.map((artwork) =>
+          artwork.id === artworkId
+            ? {
+                ...artwork,
+                is_liked: isLiked,
+                likes: isLiked ? artwork.likes + 1 : artwork.likes - 1,
+              }
+            : artwork,
+        ),
+      )
+
+      if (featuredArtwork?.id === artworkId) {
+        setFeaturedArtwork((prev) =>
+          prev
+            ? {
+                ...prev,
+                is_liked: isLiked,
+                likes: isLiked ? prev.likes + 1 : prev.likes - 1,
+              }
+            : null,
+        )
+      }
+    } catch (error) {
+      console.error("Error toggling like:", error)
+    }
+  }
+
+  const handleBuy = async (artwork: Artwork & { artist: Artist }) => {
+    try {
+      // Record the transaction
+      await createTransaction({
+        artwork_id: artwork.id,
+        seller_id: artwork.artist_id,
+        buyer_id: currentUserId,
+        price: artwork.price,
+        currency: artwork.currency,
+        status: "pending",
+      })
+
+      alert(`Purchase initiated for ${artwork.title}! Transaction is being processed.`)
+      // In a real app, this would integrate with Web3 wallet and smart contracts
+    } catch (error) {
+      console.error("Error creating transaction:", error)
+      alert("Failed to initiate purchase. Please try again.")
+    }
+  }
+
+  const handleArtworkClick = async (artwork: Artwork & { artist: Artist }) => {
+    // Record view
+    await recordArtworkView(artwork.id, currentUserId)
+
+    // Update featured artwork
+    setFeaturedArtwork(artwork)
+
+    // Update view count in local state
+    setArtworks((prev) => prev.map((art) => (art.id === artwork.id ? { ...art, views: art.views + 1 } : art)))
   }
 
   const getRarityColor = (rarity: string) => {
@@ -175,31 +137,16 @@ export function FlowArtMarketplace() {
     }
   }
 
-  const filteredArtworks = artworks.filter((artwork) => {
-    const matchesSearch =
-      artwork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      artwork.artist.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      artwork.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-
-    const matchesFilter = filterBy === "all" || artwork.dataset === filterBy
-
-    return matchesSearch && matchesFilter
-  })
-
-  const sortedArtworks = [...filteredArtworks].sort((a, b) => {
-    switch (sortBy) {
-      case "price-high":
-        return b.price - a.price
-      case "price-low":
-        return a.price - b.price
-      case "likes":
-        return b.likes - a.likes
-      case "views":
-        return b.views - a.views
-      default:
-        return b.views - a.views // trending
-    }
-  })
+  if (loading && artworks.length === 0) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+          <p>Loading marketplace...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -240,73 +187,77 @@ export function FlowArtMarketplace() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url(${featuredArtwork.imageUrl})`,
-          }}
-        >
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
+      {featuredArtwork && (
+        <section className="relative h-screen flex items-center justify-center overflow-hidden">
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${featuredArtwork.image_url})`,
+            }}
+          >
+            <div className="absolute inset-0 bg-black/50" />
+          </div>
 
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-          <h1 className="text-5xl md:text-7xl font-bold mb-4">{featuredArtwork.title}</h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-2">by {featuredArtwork.artist}</p>
-          <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">{featuredArtwork.description}</p>
+          <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
+            <h1 className="text-5xl md:text-7xl font-bold mb-4">{featuredArtwork.title}</h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-2">
+              by {featuredArtwork.artist.display_name || featuredArtwork.artist.username}
+            </p>
+            <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">{featuredArtwork.description}</p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-            <Badge
-              className={`bg-gradient-to-r ${getRarityColor(featuredArtwork.rarity)} text-white px-4 py-2 text-lg`}
-            >
-              {featuredArtwork.rarity} • {featuredArtwork.edition}
-            </Badge>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+              <Badge
+                className={`bg-gradient-to-r ${getRarityColor(featuredArtwork.rarity)} text-white px-4 py-2 text-lg`}
+              >
+                {featuredArtwork.rarity} • {featuredArtwork.edition}
+              </Badge>
 
-            <div className="flex items-center space-x-4 text-gray-300">
-              <div className="flex items-center space-x-1">
-                <Eye className="w-4 h-4" />
-                <span>{featuredArtwork.views.toLocaleString()}</span>
+              <div className="flex items-center space-x-4 text-gray-300">
+                <div className="flex items-center space-x-1">
+                  <Eye className="w-4 h-4" />
+                  <span>{featuredArtwork.views.toLocaleString()}</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Heart className={`w-4 h-4 ${featuredArtwork.is_liked ? "fill-red-500 text-red-500" : ""}`} />
+                  <span>{featuredArtwork.likes}</span>
+                </div>
               </div>
-              <div className="flex items-center space-x-1">
-                <Heart className={`w-4 h-4 ${featuredArtwork.isLiked ? "fill-red-500 text-red-500" : ""}`} />
-                <span>{featuredArtwork.likes}</span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="text-3xl font-bold">
+                {featuredArtwork.price} {featuredArtwork.currency}
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  onClick={() => handleBuy(featuredArtwork)}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 px-8 py-3 text-lg"
+                >
+                  Buy Now
+                </Button>
+
+                <Button
+                  onClick={() => handleLike(featuredArtwork.id)}
+                  variant="outline"
+                  className="border-white text-white hover:bg-white hover:text-black px-6 py-3"
+                >
+                  <Heart className={`w-5 h-5 mr-2 ${featuredArtwork.is_liked ? "fill-current" : ""}`} />
+                  {featuredArtwork.is_liked ? "Liked" : "Like"}
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="border-white text-white hover:bg-white hover:text-black px-6 py-3 bg-transparent"
+                >
+                  <Share2 className="w-5 h-5 mr-2" />
+                  Share
+                </Button>
               </div>
             </div>
           </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <div className="text-3xl font-bold">
-              {featuredArtwork.price} {featuredArtwork.currency}
-            </div>
-
-            <div className="flex gap-3">
-              <Button
-                onClick={() => handleBuy(featuredArtwork)}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 px-8 py-3 text-lg"
-              >
-                Buy Now
-              </Button>
-
-              <Button
-                onClick={() => handleLike(featuredArtwork.id)}
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-black px-6 py-3"
-              >
-                <Heart className={`w-5 h-5 mr-2 ${featuredArtwork.isLiked ? "fill-current" : ""}`} />
-                {featuredArtwork.isLiked ? "Liked" : "Like"}
-              </Button>
-
-              <Button
-                variant="outline"
-                className="border-white text-white hover:bg-white hover:text-black px-6 py-3 bg-transparent"
-              >
-                <Share2 className="w-5 h-5 mr-2" />
-                Share
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Filters and Sorting */}
       <section className="border-b border-gray-800 bg-gray-900/30 backdrop-blur-sm">
@@ -332,7 +283,7 @@ export function FlowArtMarketplace() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <span className="text-gray-400 text-sm">{sortedArtworks.length} artworks</span>
+              <span className="text-gray-400 text-sm">{artworks.length} artworks</span>
               <div className="flex items-center space-x-2">
                 <TrendingUp className="w-4 h-4 text-gray-400" />
                 <Select value={sortBy} onValueChange={setSortBy}>
@@ -340,11 +291,10 @@ export function FlowArtMarketplace() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-800 border-gray-700">
-                    <SelectItem value="trending">Trending</SelectItem>
-                    <SelectItem value="price-high">Price: High to Low</SelectItem>
-                    <SelectItem value="price-low">Price: Low to High</SelectItem>
+                    <SelectItem value="views">Trending</SelectItem>
+                    <SelectItem value="price">Price: High to Low</SelectItem>
                     <SelectItem value="likes">Most Liked</SelectItem>
-                    <SelectItem value="views">Most Viewed</SelectItem>
+                    <SelectItem value="created_at">Recently Listed</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -358,90 +308,106 @@ export function FlowArtMarketplace() {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-8">Featured Artworks</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {sortedArtworks.map((artwork) => (
-              <Card
-                key={artwork.id}
-                className="bg-gray-900 border-gray-800 overflow-hidden hover:border-gray-600 transition-all duration-300 cursor-pointer group hover:scale-105"
-                onClick={() => setFeaturedArtwork(artwork)}
-              >
-                <div className="relative aspect-square">
-                  <img
-                    src={artwork.imageUrl || "/placeholder.svg"}
-                    alt={artwork.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-2 left-2">
-                    <Badge className={`bg-gradient-to-r ${getRarityColor(artwork.rarity)} text-white`}>
-                      {artwork.rarity}
-                    </Badge>
-                  </div>
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-black/70 text-white">{artwork.edition}</Badge>
-                  </div>
-
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleBuy(artwork)
-                      }}
-                      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                    >
-                      Buy for {artwork.price} {artwork.currency}
-                    </Button>
-                  </div>
-                </div>
-
-                <CardContent className="p-4">
-                  <h3 className="text-lg font-semibold mb-1">{artwork.title}</h3>
-                  <p className="text-gray-400 text-sm mb-3">by {artwork.artist}</p>
-
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="text-xl font-bold">
-                      {artwork.price} {artwork.currency}
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <Card key={i} className="bg-gray-900 border-gray-800 overflow-hidden">
+                  <div className="aspect-square bg-gray-800 animate-pulse" />
+                  <CardContent className="p-4">
+                    <div className="h-4 bg-gray-800 rounded animate-pulse mb-2" />
+                    <div className="h-3 bg-gray-800 rounded animate-pulse w-2/3" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {artworks.map((artwork) => (
+                <Card
+                  key={artwork.id}
+                  className="bg-gray-900 border-gray-800 overflow-hidden hover:border-gray-600 transition-all duration-300 cursor-pointer group hover:scale-105"
+                  onClick={() => handleArtworkClick(artwork)}
+                >
+                  <div className="relative aspect-square">
+                    <img
+                      src={artwork.image_url || "/placeholder.svg"}
+                      alt={artwork.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2 left-2">
+                      <Badge className={`bg-gradient-to-r ${getRarityColor(artwork.rarity)} text-white`}>
+                        {artwork.rarity}
+                      </Badge>
                     </div>
-                    <div className="flex items-center space-x-3 text-sm text-gray-400">
-                      <div className="flex items-center space-x-1">
-                        <Eye className="w-3 h-3" />
-                        <span>{artwork.views}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Heart className={`w-3 h-3 ${artwork.isLiked ? "fill-red-500 text-red-500" : ""}`} />
-                        <span>{artwork.likes}</span>
-                      </div>
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-black/70 text-white">{artwork.edition}</Badge>
+                    </div>
+
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleBuy(artwork)
+                        }}
+                        className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                      >
+                        Buy for {artwork.price} {artwork.currency}
+                      </Button>
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleBuy(artwork)
-                      }}
-                      className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                    >
-                      Buy Now
-                    </Button>
+                  <CardContent className="p-4">
+                    <h3 className="text-lg font-semibold mb-1">{artwork.title}</h3>
+                    <p className="text-gray-400 text-sm mb-3">
+                      by {artwork.artist.display_name || artwork.artist.username}
+                    </p>
 
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleLike(artwork.id)
-                      }}
-                      className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                    >
-                      <Heart className={`w-3 h-3 ${artwork.isLiked ? "fill-current text-red-500" : ""}`} />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="text-xl font-bold">
+                        {artwork.price} {artwork.currency}
+                      </div>
+                      <div className="flex items-center space-x-3 text-sm text-gray-400">
+                        <div className="flex items-center space-x-1">
+                          <Eye className="w-3 h-3" />
+                          <span>{artwork.views}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Heart className={`w-3 h-3 ${artwork.is_liked ? "fill-red-500 text-red-500" : ""}`} />
+                          <span>{artwork.likes}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleBuy(artwork)
+                        }}
+                        className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                      >
+                        Buy Now
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleLike(artwork.id)
+                        }}
+                        className="border-gray-600 text-gray-300 hover:bg-gray-800"
+                      >
+                        <Heart className={`w-3 h-3 ${artwork.is_liked ? "fill-current text-red-500" : ""}`} />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>
