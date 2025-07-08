@@ -15,52 +15,28 @@ function isValidUrl(url: string): boolean {
   }
 }
 
-// Create and validate the Supabase client
+// Create the client with validation
 function createSupabaseClient() {
-  // Validate URL
   if (!isValidUrl(supabaseUrl)) {
     console.error("[Supabase] Invalid URL:", supabaseUrl)
-    throw new Error(`Invalid Supabase URL: ${supabaseUrl}`)
+    throw new Error("Invalid Supabase URL configuration")
   }
 
-  // Validate anon key
   if (!supabaseAnonKey || supabaseAnonKey.length < 10) {
-    console.error("[Supabase] Invalid anon key")
-    throw new Error("Invalid Supabase anon key")
+    console.error("[Supabase] Invalid or missing anon key")
+    throw new Error("Invalid Supabase anon key configuration")
   }
 
-  console.log("[Supabase] Initializing client with URL:", supabaseUrl)
-
-  return createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-    },
-  })
+  return createClient(supabaseUrl, supabaseAnonKey)
 }
 
-// Create the client instance
+// Export the client instance
 export const supabase = createSupabaseClient()
 
-// Alternative getter function for explicit access
+// Also export a getter function for explicit access
 export function getSupabaseClient() {
   return supabase
 }
 
-// Test connection function
-export async function testSupabaseConnection() {
-  try {
-    const { data, error } = await supabase.from("artworks").select("count").limit(1)
-
-    if (error) {
-      console.error("[Supabase] Connection test failed:", error.message)
-      return false
-    }
-
-    console.log("[Supabase] Connection test successful")
-    return true
-  } catch (error) {
-    console.error("[Supabase] Connection test error:", error)
-    return false
-  }
-}
+// Export URL and key for other utilities that might need them
+export { supabaseUrl, supabaseAnonKey }
