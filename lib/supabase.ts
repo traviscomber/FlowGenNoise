@@ -5,61 +5,96 @@ const supabaseUrl = "https://ngtfnkcszgnmpddfgdst.supabase.co"
 const supabaseAnonKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ndGZua2NzemdubXBkZGZnZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4OTUzNTcsImV4cCI6MjA2NzQ3MTM1N30.Gg-hbKTbSo_M1cUVkwz2gqp1tyyFtqp5UBTG_WI-8bg"
 
-// Create the main Supabase client for client-side operations
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-  },
-})
-
-// Create server-side client with service role key (for admin operations)
-export function getSupabaseServerClient() {
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-  if (!serviceKey) {
-    console.warn("SUPABASE_SERVICE_ROLE_KEY not found, using anon key")
-    return createClient(supabaseUrl, supabaseAnonKey)
+// Validate environment variables
+function validateSupabaseConfig() {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error("Missing Supabase configuration")
   }
 
-  return createClient(supabaseUrl, serviceKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  })
+  try {
+    new URL(supabaseUrl)
+  } catch {
+    throw new Error("Invalid Supabase URL")
+  }
 }
 
-// Create admin client for database operations
-export function getSupabaseAdminClient() {
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+// Initialize Supabase client with error handling
+let supabaseClient: ReturnType<typeof createClient> | null = null
 
-  if (!serviceKey) {
-    throw new Error("SUPABASE_SERVICE_ROLE_KEY is required for admin operations")
+function initializeSupabase() {
+  if (!supabaseClient) {
+    try {
+      validateSupabaseConfig()
+      supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+        },
+        db: {
+          schema: "public",
+        },
+        global: {
+          headers: {
+            "X-Client-Info": "flowsketch-marketplace",
+          },
+        },
+      })
+    } catch (error) {
+      console.error("Failed to initialize Supabase client:", error)
+      throw error
+    }
   }
+  return supabaseClient
+}
 
-  return createClient(supabaseUrl, serviceKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  })
+// Export the client
+export const supabase = initializeSupabase()
+
+// Server-side client for admin operations
+export function getSupabaseServerClient() {
+  return supabase
 }
 
 // Test connection function
 export async function testSupabaseConnection() {
   try {
-    const { data, error } = await supabase.from("artworks").select("count").limit(1)
+    const { data, error } = await supabase
+      .from("information_schema.tables")
+      .select("table_name")
+      .eq("table_schema", "public")
+      .limit(1)
 
     if (error) {
-      console.error("Supabase connection error:", error)
-      return false
+      console.error("Supabase connection test failed:", error)
+      return { success: false, error: error.message }
     }
 
-    console.log("Supabase connection successful")
-    return true
-  } catch (err) {
-    console.error("Supabase connection failed:", err)
-    return false
+    return { success: true, data }
+  } catch (error) {
+    console.error("Supabase connection test error:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    }
+  }
+}
+
+// Health check function
+export async function checkDatabaseHealth() {
+  try {
+    const { data, error } = await supabase.rpc("get_table_columns", {
+      tbl_name: "artworks",
+    })
+
+    if (error) {
+      return { healthy: false, error: error.message }
+    }
+
+    return { healthy: true, tablesFound: data?.length || 0 }
+  } catch (error) {
+    return {
+      healthy: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    }
   }
 }

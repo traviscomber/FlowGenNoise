@@ -2,30 +2,55 @@
 
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { CheckCircle, AlertTriangle, XCircle, RefreshCw, ExternalLink } from "lucide-react"
-import { runDatabaseHealthCheck, type HealthScore } from "@/lib/database-health-checker"
+import { Database, CheckCircle, AlertTriangle, XCircle, RefreshCw, ExternalLink } from "lucide-react"
+import { runDatabaseHealthCheck } from "@/lib/database-health-checker"
 import Link from "next/link"
 
-export function DatabaseStatusWidget() {
-  const [score, setScore] = useState<HealthScore | null>(null)
-  const [issueCount, setIssueCount] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [lastCheck, setLastCheck] = useState<Date | null>(null)
+interface HealthSummary {
+  score: number
+  status: "healthy" | "warning" | "critical"
+  totalIssues: number
+  criticalIssues: number
+  lastChecked: Date
+}
+
+export default function DatabaseStatusWidget() {
+  const [summary, setSummary] = useState<HealthSummary | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const checkHealth = async () => {
-    setLoading(true)
+    setIsLoading(true)
     try {
       const { results, score } = await runDatabaseHealthCheck(false)
-      setScore(score)
-      setIssueCount(results.length)
-      setLastCheck(new Date())
+
+      const criticalIssues = results.filter((r) => r.severity === "critical").length
+      const highIssues = results.filter((r) => r.severity === "high").length
+
+      let status: "healthy" | "warning" | "critical" = "healthy"
+      if (criticalIssues > 0) status = "critical"
+      else if (highIssues > 0 || results.length > 3) status = "warning"
+
+      setSummary({
+        score: score.overall,
+        status,
+        totalIssues: results.length,
+        criticalIssues,
+        lastChecked: new Date(),
+      })
     } catch (error) {
       console.error("Health check failed:", error)
+      setSummary({
+        score: 0,
+        status: "critical",
+        totalIssues: 1,
+        criticalIssues: 1,
+        lastChecked: new Date(),
+      })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -36,63 +61,123 @@ export function DatabaseStatusWidget() {
     return () => clearInterval(interval)
   }, [])
 
-  const getHealthStatus = () => {
-    if (!score) return { status: "unknown", color: "secondary", icon: RefreshCw }
+  const getStatusIcon = () => {
+    if (isLoading) return <RefreshCw className="h-4 w-4 animate-spin" />
 
-    if (score.overall >= 90) {
-      return { status: "excellent", color: "default", icon: CheckCircle }
-    } else if (score.overall >= 70) {
-      return { status: "good", color: "secondary", icon: CheckCircle }
-    } else if (score.overall >= 50) {
-      return { status: "warning", color: "default", icon: AlertTriangle }
-    } else {
-      return { status: "critical", color: "destructive", icon: XCircle }
+    switch (summary?.status) {
+      case "healthy":
+        return <CheckCircle className="h-4 w-4 text-green-500" />
+      case "warning":
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />
+      case "critical":
+        return <XCircle className="h-4 w-4 text-red-500" />
+      default:
+        return <Database className="h-4 w-4" />
     }
   }
 
-  const { status, color, icon: StatusIcon } = getHealthStatus()
+  const getStatusColor = () => {
+    switch (summary?.status) {
+      case "healthy":
+        return "text-green-600"
+      case "warning":
+        return "text-yellow-600"
+      case "critical":
+        return "text-red-600"
+      default:
+        return "text-gray-600"
+    }
+  }
+
+  const getStatusBadge = () => {
+    switch (summary?.status) {
+      case "healthy":
+        return (
+          <Badge variant="secondary" className="bg-green-100 text-green-800">
+            Healthy
+          </Badge>
+        )
+      case "warning":
+        return (
+          <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+            Warning
+          </Badge>
+        )
+      case "critical":
+        return <Badge variant="destructive">Critical</Badge>
+      default:
+        return <Badge variant="outline">Unknown</Badge>
+    }
+  }
 
   return (
     <Card className="w-full">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Database Health</CardTitle>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={checkHealth} disabled={loading}>
-            <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-          </Button>
-          <Link href="/admin/database-health">
-            <Button variant="ghost" size="sm">
-              <ExternalLink className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center justify-between">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center justify-between text-sm font-medium">
           <div className="flex items-center gap-2">
-            <StatusIcon className="h-5 w-5" />
+            <Database className="h-4 w-4" />
+            Database Health
+          </div>
+          <div className="flex items-center gap-2">
+            {getStatusIcon()}
+            {summary && getStatusBadge()}
+          </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {summary ? (
+          <>
+            {/* Health Score */}
             <div>
-              <div className="text-2xl font-bold">{score ? `${score.overall}%` : "--"}</div>
-              <p className="text-xs text-muted-foreground">{issueCount} issues found</p>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-muted-foreground">Health Score</span>
+                <span className={`text-lg font-bold ${getStatusColor()}`}>{summary.score}%</span>
+              </div>
+              <Progress value={summary.score} className="h-2" />
             </div>
-          </div>
-          <Badge variant={color as any} className="capitalize">
-            {status}
-          </Badge>
-        </div>
 
-        {score && (
-          <div className="mt-4">
-            <Progress value={score.overall} className="h-2" />
-            <div className="flex justify-between text-xs text-muted-foreground mt-2">
-              <span>Structure: {score.categories.structure}%</span>
-              <span>Security: {score.categories.security}%</span>
+            {/* Issues Summary */}
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <div className="text-muted-foreground">Total Issues</div>
+                <div className="font-semibold">{summary.totalIssues}</div>
+              </div>
+              <div>
+                <div className="text-muted-foreground">Critical</div>
+                <div className="font-semibold text-red-600">{summary.criticalIssues}</div>
+              </div>
             </div>
-          </div>
-        )}
 
-        {lastCheck && (
-          <p className="text-xs text-muted-foreground mt-2">Last check: {lastCheck.toLocaleTimeString()}</p>
+            {/* Actions */}
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={checkHealth}
+                disabled={isLoading}
+                className="flex-1 bg-transparent"
+              >
+                <RefreshCw className={`h-3 w-3 mr-1 ${isLoading ? "animate-spin" : ""}`} />
+                Refresh
+              </Button>
+              <Button size="sm" asChild className="flex-1">
+                <Link href="/admin/database-health">
+                  <ExternalLink className="h-3 w-3 mr-1" />
+                  Details
+                </Link>
+              </Button>
+            </div>
+
+            {/* Last Checked */}
+            <div className="text-xs text-muted-foreground text-center">
+              Last checked: {summary.lastChecked.toLocaleTimeString()}
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-4">
+            <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2" />
+            <div className="text-sm text-muted-foreground">Checking database health...</div>
+          </div>
         )}
       </CardContent>
     </Card>

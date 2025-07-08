@@ -94,23 +94,55 @@ GRANT EXECUTE ON FUNCTION get_table_columns(TEXT) TO authenticated;
 GRANT EXECUTE ON FUNCTION check_index_exists(TEXT) TO authenticated;
 GRANT EXECUTE ON FUNCTION check_rls_enabled(TEXT) TO authenticated;
 
--- Create essential indexes for performance
-CREATE INDEX IF NOT EXISTS idx_artworks_created_at ON artworks(created_at);
-CREATE INDEX IF NOT EXISTS idx_artworks_price ON artworks(price);
-CREATE INDEX IF NOT EXISTS idx_artworks_status ON artworks(status);
-CREATE INDEX IF NOT EXISTS idx_transactions_artwork_id ON transactions(artwork_id);
-CREATE INDEX IF NOT EXISTS idx_transactions_buyer_address ON transactions(buyer_address);
-CREATE INDEX IF NOT EXISTS idx_transactions_created_at ON transactions(created_at);
+-- Grant execute permissions to anon users for read-only functions
+GRANT EXECUTE ON FUNCTION get_table_columns(TEXT) TO anon;
+GRANT EXECUTE ON FUNCTION check_index_exists(TEXT) TO anon;
+GRANT EXECUTE ON FUNCTION check_rls_enabled(TEXT) TO anon;
 
--- Enable RLS on critical tables
-ALTER TABLE artworks ENABLE ROW LEVEL SECURITY;
-ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
+-- Create essential indexes for performance (only if tables exist)
+DO $$
+BEGIN
+    -- Check if artworks table exists before creating indexes
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'artworks' AND table_schema = 'public') THEN
+        CREATE INDEX IF NOT EXISTS idx_artworks_created_at ON artworks(created_at);
+        CREATE INDEX IF NOT EXISTS idx_artworks_price ON artworks(price);
+        CREATE INDEX IF NOT EXISTS idx_artworks_status ON artworks(status);
+    END IF;
+    
+    -- Check if transactions table exists before creating indexes
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'transactions' AND table_schema = 'public') THEN
+        CREATE INDEX IF NOT EXISTS idx_transactions_artwork_id ON transactions(artwork_id);
+        CREATE INDEX IF NOT EXISTS idx_transactions_created_at ON transactions(created_at);
+    END IF;
+END
+$$;
 
--- Create basic RLS policies for public read access
-CREATE POLICY IF NOT EXISTS "Public artworks are viewable by everyone" 
-ON artworks FOR SELECT 
-USING (status = 'available');
+-- Enable RLS on critical tables (only if they exist)
+DO $$
+BEGIN
+    -- Enable RLS on artworks if it exists
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'artworks' AND table_schema = 'public') THEN
+        ALTER TABLE artworks ENABLE ROW LEVEL SECURITY;
+        
+        -- Create basic RLS policy for public read access
+        DROP POLICY IF EXISTS "Public artworks are viewable by everyone" ON artworks;
+        CREATE POLICY "Public artworks are viewable by everyone" 
+        ON artworks FOR SELECT 
+        USING (true);
+    END IF;
+    
+    -- Enable RLS on transactions if it exists
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'transactions' AND table_schema = 'public') THEN
+        ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
+        
+        -- Create basic RLS policy for public read access
+        DROP POLICY IF EXISTS "Transactions are viewable by everyone" ON transactions;
+        CREATE POLICY "Transactions are viewable by everyone" 
+        ON transactions FOR SELECT 
+        USING (true);
+    END IF;
+END
+$$;
 
-CREATE POLICY IF NOT EXISTS "Transactions are viewable by everyone" 
-ON transactions FOR SELECT 
-USING (true);
+-- Test the functions
+SELECT 'Database functions created successfully!' as status;

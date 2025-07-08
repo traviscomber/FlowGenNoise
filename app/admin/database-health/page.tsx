@@ -1,4 +1,4 @@
-import { DatabaseHealthDashboard } from "@/components/database-health-dashboard"
+import DatabaseHealthDashboard from "@/components/database-health-dashboard"
 
 export default function DatabaseHealthPage() {
   return <DatabaseHealthDashboard />
