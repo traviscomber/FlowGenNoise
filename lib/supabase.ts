@@ -19,23 +19,20 @@ function safeEnv(key: string, fallback: string): string {
 }
 
 /* -------------------------------------------------------------------------- */
+/*                             Default Browser Client                         */
+/* -------------------------------------------------------------------------- */
+
+export const supabase = createClient(
+  safeEnv("NEXT_PUBLIC_SUPABASE_URL", "https://preview-project.supabase.co"),
+  safeEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "public-anon-key"),
+)
+
+/* -------------------------------------------------------------------------- */
 /*                               Browser Client                               */
 /* -------------------------------------------------------------------------- */
 
-/**
- * We keep the singleton inside a closure so we don’t try to construct it
- * before the env vars are evaluated / inlined on the client bundle.
- */
-let browserClient: ReturnType<typeof createClient> | null = null
-
 export function getSupabaseBrowserClient() {
-  if (!browserClient) {
-    const supabaseUrl = safeEnv("NEXT_PUBLIC_SUPABASE_URL", "https://preview-project.supabase.co")
-    const supabaseAnonKey = safeEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "public-anon-key")
-
-    browserClient = createClient(supabaseUrl, supabaseAnonKey)
-  }
-  return browserClient
+  return supabase
 }
 
 /* -------------------------------------------------------------------------- */
