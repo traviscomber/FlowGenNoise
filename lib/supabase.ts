@@ -12,13 +12,27 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 function readEnv(key: string, fallback: string): string {
   const value = process.env[key as keyof NodeJS.ProcessEnv]
   if (!value || value.trim() === "") {
-    if (process.env.NODE_ENV !== "production") {
-      // eslint-disable-next-line no-console
-      console.warn(`[supabase] Missing env "${key}". Using fallback "${fallback}" so the build keeps working.`)
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(`Missing required environment variable: ${key}`)
     }
+    // eslint-disable-next-line no-console
+    console.warn(`[supabase] Missing env "${key}". Using fallback "${fallback}" so the build keeps working.`)
     return fallback
   }
   return value
+}
+
+function validateUrl(url: string, name: string): string {
+  try {
+    new URL(url)
+    return url
+  } catch {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(`Invalid URL for ${name}: ${url}`)
+    }
+    // Return a valid placeholder URL for development
+    return "https://placeholder.supabase.co"
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -26,8 +40,14 @@ function readEnv(key: string, fallback: string): string {
 /* -------------------------------------------------------------------------- */
 
 function initClient(): SupabaseClient {
-  const url = readEnv("NEXT_PUBLIC_SUPABASE_URL", "https://preview-project.supabase.co")
-  const anonKey = readEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "public-anon-key-placeholder")
+  const url = validateUrl(
+    readEnv("NEXT_PUBLIC_SUPABASE_URL", "https://placeholder.supabase.co"),
+    "NEXT_PUBLIC_SUPABASE_URL",
+  )
+  const anonKey = readEnv(
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NDUxOTI4MDAsImV4cCI6MTk2MDc2ODgwMH0.placeholder",
+  )
   return createClient(url, anonKey)
 }
 
@@ -74,7 +94,13 @@ export function getSupabaseClient(): SupabaseClient {
  * actions, **never** bundle it to the client.
  */
 export function getSupabaseServerClient(): SupabaseClient {
-  const url = readEnv("NEXT_PUBLIC_SUPABASE_URL", "https://preview-project.supabase.co")
-  const serviceKey = readEnv("SUPABASE_SERVICE_ROLE_KEY", "service-role-key-placeholder")
+  const url = validateUrl(
+    readEnv("NEXT_PUBLIC_SUPABASE_URL", "https://placeholder.supabase.co"),
+    "NEXT_PUBLIC_SUPABASE_URL",
+  )
+  const serviceKey = readEnv(
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY0NTE5MjgwMCwiZXhwIjoxOTYwNzY4ODAwfQ.placeholder",
+  )
   return createClient(url, serviceKey)
 }

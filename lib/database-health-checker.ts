@@ -1,504 +1,347 @@
-import { supabase } from "@/lib/supabase"
+import { getSupabaseServerClient } from "./supabase"
 
 export interface DatabaseIssue {
-  type: "missing_table" | "missing_column" | "invalid_constraint" | "missing_index" | "data_inconsistency"
-  severity: "critical" | "warning" | "info"
-  table: string
-  column?: string
+  id: string
+  type: "error" | "warning" | "info"
+  category: "structure" | "data" | "performance" | "security"
+  title: string
   description: string
-  sqlFix?: string
+  fixSql?: string
   autoFixable: boolean
+  severity: "critical" | "high" | "medium" | "low"
 }
 
 export interface HealthCheckResult {
-  status: "healthy" | "issues_found" | "critical_errors"
+  status: "healthy" | "warning" | "critical"
+  score: number
   issues: DatabaseIssue[]
-  fixedIssues: DatabaseIssue[]
   summary: {
-    totalIssues: number
-    criticalIssues: number
-    autoFixedIssues: number
+    total: number
+    critical: number
+    high: number
+    medium: number
+    low: number
   }
+  lastChecked: string
 }
 
-/**
- * Comprehensive database health checker and auto-fixer
- */
-export class DatabaseHealthChecker {
-  private issues: DatabaseIssue[] = []
-  private fixedIssues: DatabaseIssue[] = []
+class DatabaseHealthChecker {
+  private serverClient = getSupabaseServerClient()
 
-  /**
-   * Run complete database health check
-   */
-  async runHealthCheck(autoFix = true): Promise<HealthCheckResult> {
-    console.log("🔍 Starting database health check...")
-
-    this.issues = []
-    this.fixedIssues = []
-
-    // Check all database components
-    await this.checkRequiredTables()
-    await this.checkTableColumns()
-    await this.checkConstraints()
-    await this.checkIndexes()
-    await this.checkDataConsistency()
-    await this.checkRLSPolicies()
-
-    // Auto-fix issues if requested
-    if (autoFix) {
-      await this.autoFixIssues()
-    }
-
-    const result: HealthCheckResult = {
-      status: this.getOverallStatus(),
-      issues: this.issues,
-      fixedIssues: this.fixedIssues,
-      summary: {
-        totalIssues: this.issues.length + this.fixedIssues.length,
-        criticalIssues: this.issues.filter((i) => i.severity === "critical").length,
-        autoFixedIssues: this.fixedIssues.length,
-      },
-    }
-
-    console.log("✅ Database health check complete:", result.summary)
-    return result
-  }
-
-  /**
-   * Check if all required tables exist
-   */
-  private async checkRequiredTables() {
-    const requiredTables = [
-      "artists",
-      "users",
-      "collections",
-      "artworks",
-      "transactions",
-      "bids",
-      "artwork_likes",
-      "artwork_views",
-      "follows",
-      "purchases",
-      "wallet_connections",
-      "blockchain_transactions",
-    ]
+  async runFullHealthCheck(autoFix = false): Promise<HealthCheckResult> {
+    const issues: DatabaseIssue[] = []
 
     try {
-      const { data: tables, error } = await supabase
-        .from("information_schema.tables")
-        .select("table_name")
-        .eq("table_schema", "public")
+      // Check table structure
+      const structureIssues = await this.checkTableStructure()
+      issues.push(...structureIssues)
 
-      if (error) {
-        this.addIssue({
-          type: "missing_table",
-          severity: "critical",
-          table: "information_schema",
-          description: "Cannot access database schema information",
-          autoFixable: false,
-        })
-        return
-      }
+      // Check data consistency
+      const dataIssues = await this.checkDataConsistency()
+      issues.push(...dataIssues)
 
-      const existingTables = tables?.map((t) => t.table_name) || []
+      // Check performance
+      const performanceIssues = await this.checkPerformance()
+      issues.push(...performanceIssues)
 
-      for (const tableName of requiredTables) {
-        if (!existingTables.includes(tableName)) {
-          this.addIssue({
-            type: "missing_table",
-            severity: "critical",
-            table: tableName,
-            description: `Required table '${tableName}' is missing`,
-            sqlFix: this.getCreateTableSQL(tableName),
-            autoFixable: true,
-          })
-        }
+      // Check security
+      const securityIssues = await this.checkSecurity()
+      issues.push(...securityIssues)
+
+      // Auto-fix if requested
+      if (autoFix) {
+        await this.autoFixIssues(issues)
       }
     } catch (error) {
-      console.error("Error checking tables:", error)
-      this.addIssue({
-        type: "missing_table",
-        severity: "critical",
-        table: "unknown",
-        description: "Failed to check table existence",
+      console.error("Health check failed:", error)
+      issues.push({
+        id: "health-check-error",
+        type: "error",
+        category: "structure",
+        title: "Health Check Failed",
+        description: `Failed to run health check: ${error instanceof Error ? error.message : "Unknown error"}`,
         autoFixable: false,
+        severity: "critical",
       })
     }
+
+    return this.generateReport(issues)
   }
 
-  /**
-   * Check if all required columns exist in tables
-   */
-  private async checkTableColumns() {
-    const tableColumns = {
-      artworks: [
-        "id",
-        "artist_id",
-        "collection_id",
-        "title",
-        "description",
-        "image_url",
-        "image_ipfs_hash",
-        "metadata_url",
-        "metadata_ipfs_hash",
-        "dataset",
-        "color_scheme",
-        "seed",
-        "num_samples",
-        "noise",
-        "generation_mode",
-        "price",
-        "currency",
-        "status",
-        "rarity",
-        "edition",
-        "views",
-        "likes",
-        "token_id",
-        "contract_address",
-        "blockchain",
-        "owner_address",
-        "purchase_transaction_hash",
-        "sold_at",
-        "minted_at",
-        "listed_at",
-        "created_at",
-        "updated_at",
-      ],
-      artists: [
-        "id",
-        "wallet_address",
-        "username",
-        "display_name",
-        "bio",
-        "avatar_url",
-        "banner_url",
-        "website_url",
-        "twitter_handle",
-        "instagram_handle",
-        "verified",
-        "total_sales",
-        "total_artworks",
-        "created_at",
-        "updated_at",
-      ],
-      users: [
-        "id",
-        "wallet_address",
-        "username",
-        "display_name",
-        "bio",
-        "avatar_url",
-        "email",
-        "notification_preferences",
-        "created_at",
-        "updated_at",
-      ],
-      blockchain_transactions: [
-        "id",
-        "transaction_hash",
-        "from_address",
-        "to_address",
-        "value_eth",
-        "gas_used",
-        "gas_price",
-        "block_number",
-        "transaction_type",
-        "artwork_id",
-        "status",
-        "created_at",
-        "completed_at",
-      ],
+  private async checkTableStructure(): Promise<DatabaseIssue[]> {
+    const issues: DatabaseIssue[] = []
+
+    // Required tables and their essential columns
+    const requiredTables = {
+      artists: ["id", "wallet_address", "username", "created_at"],
+      artworks: ["id", "artist_id", "title", "price", "status", "created_at"],
+      users: ["id", "wallet_address", "created_at"],
+      collections: ["id", "artist_id", "name", "created_at"],
+      transactions: ["id", "artwork_id", "seller_id", "buyer_id", "price", "status"],
+      artwork_views: ["id", "artwork_id", "created_at"],
+      artwork_likes: ["id", "artwork_id", "user_id", "created_at"],
     }
 
-    for (const [tableName, requiredColumns] of Object.entries(tableColumns)) {
+    for (const [tableName, requiredColumns] of Object.entries(requiredTables)) {
       try {
-        const { data: columns, error } = await supabase
-          .from("information_schema.columns")
-          .select("column_name")
-          .eq("table_name", tableName)
-          .eq("table_schema", "public")
+        // Check if table exists
+        const { data: tableExists, error: tableError } = await this.serverClient.from(tableName).select("*").limit(1)
 
-        if (error) {
-          this.addIssue({
-            type: "missing_column",
-            severity: "warning",
-            table: tableName,
-            description: `Cannot check columns for table '${tableName}'`,
-            autoFixable: false,
+        if (tableError && tableError.code === "PGRST116") {
+          issues.push({
+            id: `missing-table-${tableName}`,
+            type: "error",
+            category: "structure",
+            title: `Missing Table: ${tableName}`,
+            description: `Required table '${tableName}' does not exist`,
+            fixSql: this.generateCreateTableSQL(tableName),
+            autoFixable: true,
+            severity: "critical",
           })
           continue
         }
 
-        const existingColumns = columns?.map((c) => c.column_name) || []
+        // Check columns if table exists
+        const { data: columns } = await this.serverClient
+          .rpc("get_table_columns", { table_name: tableName })
+          .catch(() => ({ data: null }))
 
-        for (const columnName of requiredColumns) {
-          if (!existingColumns.includes(columnName)) {
-            this.addIssue({
-              type: "missing_column",
-              severity: "critical",
-              table: tableName,
-              column: columnName,
-              description: `Missing column '${columnName}' in table '${tableName}'`,
-              sqlFix: this.getAddColumnSQL(tableName, columnName),
+        if (columns) {
+          const existingColumns = columns.map((col: any) => col.column_name)
+          const missingColumns = requiredColumns.filter((col) => !existingColumns.includes(col))
+
+          for (const missingCol of missingColumns) {
+            issues.push({
+              id: `missing-column-${tableName}-${missingCol}`,
+              type: "error",
+              category: "structure",
+              title: `Missing Column: ${tableName}.${missingCol}`,
+              description: `Required column '${missingCol}' is missing from table '${tableName}'`,
+              fixSql: this.generateAddColumnSQL(tableName, missingCol),
               autoFixable: true,
+              severity: "high",
             })
           }
         }
       } catch (error) {
-        console.error(`Error checking columns for ${tableName}:`, error)
+        issues.push({
+          id: `table-check-error-${tableName}`,
+          type: "warning",
+          category: "structure",
+          title: `Cannot Check Table: ${tableName}`,
+          description: `Failed to check table structure: ${error instanceof Error ? error.message : "Unknown error"}`,
+          autoFixable: false,
+          severity: "medium",
+        })
       }
     }
+
+    return issues
   }
 
-  /**
-   * Check database constraints
-   */
-  private async checkConstraints() {
-    const requiredConstraints = [
-      {
-        table: "artworks",
-        constraint: "artworks_artist_id_fkey",
-        type: "foreign_key",
-        description: "Foreign key constraint for artist_id",
-      },
-      {
-        table: "transactions",
-        constraint: "transactions_artwork_id_fkey",
-        type: "foreign_key",
-        description: "Foreign key constraint for artwork_id",
-      },
-    ]
+  private async checkDataConsistency(): Promise<DatabaseIssue[]> {
+    const issues: DatabaseIssue[] = []
 
     try {
-      const { data: constraints, error } = await supabase
-        .from("information_schema.table_constraints")
-        .select("constraint_name, table_name, constraint_type")
-        .eq("table_schema", "public")
+      // Check for orphaned artworks (artist doesn't exist)
+      const { data: orphanedArtworks } = await this.serverClient
+        .from("artworks")
+        .select("id, artist_id")
+        .not("artist_id", "in", `(SELECT id FROM artists)`)
+        .limit(10)
 
-      if (error) {
-        this.addIssue({
-          type: "invalid_constraint",
-          severity: "warning",
-          table: "information_schema",
-          description: "Cannot check database constraints",
-          autoFixable: false,
+      if (orphanedArtworks && orphanedArtworks.length > 0) {
+        issues.push({
+          id: "orphaned-artworks",
+          type: "warning",
+          category: "data",
+          title: "Orphaned Artworks",
+          description: `Found ${orphanedArtworks.length} artworks with invalid artist references`,
+          fixSql: `DELETE FROM artworks WHERE artist_id NOT IN (SELECT id FROM artists);`,
+          autoFixable: true,
+          severity: "medium",
         })
-        return
       }
 
-      const existingConstraints = constraints?.map((c) => c.constraint_name) || []
+      // Check for negative prices
+      const { data: negativePrice } = await this.serverClient
+        .from("artworks")
+        .select("id, price")
+        .lt("price", 0)
+        .limit(10)
 
-      for (const constraint of requiredConstraints) {
-        if (!existingConstraints.includes(constraint.constraint)) {
-          this.addIssue({
-            type: "invalid_constraint",
-            severity: "warning",
-            table: constraint.table,
-            description: `Missing constraint: ${constraint.description}`,
-            sqlFix: this.getAddConstraintSQL(constraint),
-            autoFixable: true,
+      if (negativePrice && negativePrice.length > 0) {
+        issues.push({
+          id: "negative-prices",
+          type: "error",
+          category: "data",
+          title: "Invalid Prices",
+          description: `Found ${negativePrice.length} artworks with negative prices`,
+          fixSql: `UPDATE artworks SET price = 0.01 WHERE price < 0;`,
+          autoFixable: true,
+          severity: "high",
+        })
+      }
+
+      // Check for duplicate wallet addresses in artists
+      const { data: duplicateWallets } = await this.serverClient
+        .from("artists")
+        .select("wallet_address")
+        .not("wallet_address", "is", null)
+
+      if (duplicateWallets) {
+        const walletCounts = duplicateWallets.reduce((acc: any, artist) => {
+          acc[artist.wallet_address] = (acc[artist.wallet_address] || 0) + 1
+          return acc
+        }, {})
+
+        const duplicates = Object.entries(walletCounts).filter(([_, count]) => (count as number) > 1)
+
+        if (duplicates.length > 0) {
+          issues.push({
+            id: "duplicate-wallet-addresses",
+            type: "warning",
+            category: "data",
+            title: "Duplicate Wallet Addresses",
+            description: `Found ${duplicates.length} duplicate wallet addresses in artists table`,
+            autoFixable: false,
+            severity: "medium",
           })
         }
       }
     } catch (error) {
-      console.error("Error checking constraints:", error)
+      issues.push({
+        id: "data-consistency-error",
+        type: "warning",
+        category: "data",
+        title: "Data Consistency Check Failed",
+        description: `Failed to check data consistency: ${error instanceof Error ? error.message : "Unknown error"}`,
+        autoFixable: false,
+        severity: "low",
+      })
     }
+
+    return issues
   }
 
-  /**
-   * Check database indexes for performance
-   */
-  private async checkIndexes() {
+  private async checkPerformance(): Promise<DatabaseIssue[]> {
+    const issues: DatabaseIssue[] = []
+
+    // Check for missing indexes
     const recommendedIndexes = [
       { table: "artworks", columns: ["artist_id"], name: "idx_artworks_artist_id" },
       { table: "artworks", columns: ["status"], name: "idx_artworks_status" },
       { table: "artworks", columns: ["rarity"], name: "idx_artworks_rarity" },
+      { table: "artworks", columns: ["price"], name: "idx_artworks_price" },
+      { table: "artworks", columns: ["created_at"], name: "idx_artworks_created_at" },
       { table: "transactions", columns: ["artwork_id"], name: "idx_transactions_artwork_id" },
-      { table: "blockchain_transactions", columns: ["transaction_hash"], name: "idx_blockchain_tx_hash" },
+      { table: "transactions", columns: ["status"], name: "idx_transactions_status" },
+      { table: "artwork_views", columns: ["artwork_id"], name: "idx_artwork_views_artwork_id" },
+      { table: "artwork_likes", columns: ["artwork_id"], name: "idx_artwork_likes_artwork_id" },
     ]
 
-    try {
-      const { data: indexes, error } = await supabase
-        .from("pg_indexes")
-        .select("indexname, tablename")
-        .eq("schemaname", "public")
+    for (const index of recommendedIndexes) {
+      try {
+        const { data: indexExists } = await this.serverClient
+          .rpc("check_index_exists", { index_name: index.name })
+          .catch(() => ({ data: false }))
 
-      if (error) {
-        this.addIssue({
-          type: "missing_index",
-          severity: "info",
-          table: "pg_indexes",
-          description: "Cannot check database indexes",
-          autoFixable: false,
-        })
-        return
-      }
-
-      const existingIndexes = indexes?.map((i) => i.indexname) || []
-
-      for (const index of recommendedIndexes) {
-        if (!existingIndexes.includes(index.name)) {
-          this.addIssue({
-            type: "missing_index",
-            severity: "info",
-            table: index.table,
-            description: `Missing performance index on ${index.table}(${index.columns.join(", ")})`,
-            sqlFix: `CREATE INDEX IF NOT EXISTS ${index.name} ON ${index.table} (${index.columns.join(", ")});`,
+        if (!indexExists) {
+          issues.push({
+            id: `missing-index-${index.name}`,
+            type: "info",
+            category: "performance",
+            title: `Missing Index: ${index.name}`,
+            description: `Recommended index on ${index.table}(${index.columns.join(", ")}) is missing`,
+            fixSql: `CREATE INDEX IF NOT EXISTS ${index.name} ON ${index.table} (${index.columns.join(", ")});`,
             autoFixable: true,
+            severity: "low",
           })
         }
+      } catch (error) {
+        // Ignore index check errors
       }
-    } catch (error) {
-      console.error("Error checking indexes:", error)
     }
+
+    return issues
   }
 
-  /**
-   * Check data consistency
-   */
-  private async checkDataConsistency() {
-    try {
-      // Check for orphaned artworks (artist doesn't exist)
-      const { data: orphanedArtworks, error: orphanError } = await supabase
-        .from("artworks")
-        .select("id, artist_id")
-        .not("artist_id", "in", `(SELECT id FROM artists)`)
+  private async checkSecurity(): Promise<DatabaseIssue[]> {
+    const issues: DatabaseIssue[] = []
 
-      if (!orphanError && orphanedArtworks && orphanedArtworks.length > 0) {
-        this.addIssue({
-          type: "data_inconsistency",
-          severity: "warning",
-          table: "artworks",
-          description: `Found ${orphanedArtworks.length} artworks with invalid artist_id references`,
-          autoFixable: false,
-        })
-      }
+    // Check RLS policies
+    const tablesNeedingRLS = ["artworks", "artists", "users", "transactions"]
 
-      // Check for invalid price values
-      const { data: invalidPrices, error: priceError } = await supabase
-        .from("artworks")
-        .select("id, price")
-        .lt("price", 0)
+    for (const table of tablesNeedingRLS) {
+      try {
+        const { data: rlsEnabled } = await this.serverClient
+          .rpc("check_rls_enabled", { table_name: table })
+          .catch(() => ({ data: false }))
 
-      if (!priceError && invalidPrices && invalidPrices.length > 0) {
-        this.addIssue({
-          type: "data_inconsistency",
-          severity: "warning",
-          table: "artworks",
-          description: `Found ${invalidPrices.length} artworks with negative prices`,
-          sqlFix: "UPDATE artworks SET price = 0 WHERE price < 0;",
-          autoFixable: true,
-        })
-      }
-    } catch (error) {
-      console.error("Error checking data consistency:", error)
-    }
-  }
-
-  /**
-   * Check Row Level Security policies
-   */
-  private async checkRLSPolicies() {
-    const requiredPolicies = [
-      { table: "artworks", policy: "artworks_select_policy" },
-      { table: "artists", policy: "artists_select_policy" },
-      { table: "users", policy: "users_select_policy" },
-    ]
-
-    try {
-      const { data: policies, error } = await supabase.from("pg_policies").select("policyname, tablename")
-
-      if (error) {
-        this.addIssue({
-          type: "invalid_constraint",
-          severity: "info",
-          table: "pg_policies",
-          description: "Cannot check RLS policies",
-          autoFixable: false,
-        })
-        return
-      }
-
-      const existingPolicies = policies?.map((p) => p.policyname) || []
-
-      for (const policy of requiredPolicies) {
-        if (!existingPolicies.includes(policy.policy)) {
-          this.addIssue({
-            type: "invalid_constraint",
-            severity: "info",
-            table: policy.table,
-            description: `Missing RLS policy '${policy.policy}' for table '${policy.table}'`,
-            sqlFix: this.getRLSPolicySQL(policy.table, policy.policy),
+        if (!rlsEnabled) {
+          issues.push({
+            id: `missing-rls-${table}`,
+            type: "warning",
+            category: "security",
+            title: `RLS Not Enabled: ${table}`,
+            description: `Row Level Security is not enabled on table '${table}'`,
+            fixSql: `ALTER TABLE ${table} ENABLE ROW LEVEL SECURITY;`,
             autoFixable: true,
+            severity: "medium",
           })
         }
+      } catch (error) {
+        // Ignore RLS check errors
       }
-    } catch (error) {
-      console.error("Error checking RLS policies:", error)
     }
+
+    return issues
   }
 
-  /**
-   * Auto-fix issues that can be automatically resolved
-   */
-  private async autoFixIssues() {
-    const fixableIssues = this.issues.filter((issue) => issue.autoFixable && issue.sqlFix)
+  private async autoFixIssues(issues: DatabaseIssue[]): Promise<void> {
+    const fixableIssues = issues.filter((issue) => issue.autoFixable && issue.fixSql)
 
     for (const issue of fixableIssues) {
       try {
-        console.log(`🔧 Auto-fixing: ${issue.description}`)
-
-        // Execute the SQL fix
-        const { error } = await supabase.rpc("execute_sql", { sql: issue.sqlFix })
-
-        if (!error) {
-          // Move from issues to fixed issues
-          this.fixedIssues.push(issue)
-          this.issues = this.issues.filter((i) => i !== issue)
-          console.log(`✅ Fixed: ${issue.description}`)
-        } else {
-          console.error(`❌ Failed to fix: ${issue.description}`, error)
-          issue.autoFixable = false
+        if (issue.fixSql) {
+          await this.serverClient.rpc("execute_sql", { sql_query: issue.fixSql })
+          console.log(`Fixed issue: ${issue.title}`)
         }
       } catch (error) {
-        console.error(`❌ Error auto-fixing issue: ${issue.description}`, error)
-        issue.autoFixable = false
+        console.error(`Failed to fix issue ${issue.id}:`, error)
       }
     }
   }
 
-  /**
-   * Add an issue to the list
-   */
-  private addIssue(issue: DatabaseIssue) {
-    this.issues.push(issue)
-  }
+  private generateReport(issues: DatabaseIssue[]): HealthCheckResult {
+    const summary = {
+      total: issues.length,
+      critical: issues.filter((i) => i.severity === "critical").length,
+      high: issues.filter((i) => i.severity === "high").length,
+      medium: issues.filter((i) => i.severity === "medium").length,
+      low: issues.filter((i) => i.severity === "low").length,
+    }
 
-  /**
-   * Get overall health status
-   */
-  private getOverallStatus(): "healthy" | "issues_found" | "critical_errors" {
-    const criticalIssues = this.issues.filter((i) => i.severity === "critical")
+    let status: "healthy" | "warning" | "critical" = "healthy"
+    if (summary.critical > 0) status = "critical"
+    else if (summary.high > 0 || summary.medium > 2) status = "warning"
 
-    if (criticalIssues.length > 0) {
-      return "critical_errors"
-    } else if (this.issues.length > 0) {
-      return "issues_found"
-    } else {
-      return "healthy"
+    const score = Math.max(0, 100 - (summary.critical * 25 + summary.high * 10 + summary.medium * 5 + summary.low * 1))
+
+    return {
+      status,
+      score,
+      issues,
+      summary,
+      lastChecked: new Date().toISOString(),
     }
   }
 
-  /**
-   * Generate CREATE TABLE SQL for missing tables
-   */
-  private getCreateTableSQL(tableName: string): string {
+  private generateCreateTableSQL(tableName: string): string {
     const tableSchemas: Record<string, string> = {
       artists: `
-        CREATE TABLE IF NOT EXISTS artists (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        CREATE TABLE artists (
+          id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
           wallet_address TEXT UNIQUE NOT NULL,
           username TEXT UNIQUE NOT NULL,
           display_name TEXT,
@@ -509,31 +352,17 @@ export class DatabaseHealthChecker {
           twitter_handle TEXT,
           instagram_handle TEXT,
           verified BOOLEAN DEFAULT false,
-          total_sales DECIMAL DEFAULT 0,
+          total_sales DECIMAL(20,8) DEFAULT 0,
           total_artworks INTEGER DEFAULT 0,
-          created_at TIMESTAMPTZ DEFAULT NOW(),
-          updated_at TIMESTAMPTZ DEFAULT NOW()
-        );
-      `,
-      users: `
-        CREATE TABLE IF NOT EXISTS users (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          wallet_address TEXT UNIQUE NOT NULL,
-          username TEXT,
-          display_name TEXT,
-          bio TEXT,
-          avatar_url TEXT,
-          email TEXT,
-          notification_preferences JSONB DEFAULT '{}',
-          created_at TIMESTAMPTZ DEFAULT NOW(),
-          updated_at TIMESTAMPTZ DEFAULT NOW()
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         );
       `,
       artworks: `
-        CREATE TABLE IF NOT EXISTS artworks (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          artist_id UUID REFERENCES artists(id),
-          collection_id UUID,
+        CREATE TABLE artworks (
+          id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+          artist_id UUID REFERENCES artists(id) ON DELETE CASCADE,
+          collection_id UUID REFERENCES collections(id) ON DELETE SET NULL,
           title TEXT NOT NULL,
           description TEXT,
           image_url TEXT NOT NULL,
@@ -543,43 +372,23 @@ export class DatabaseHealthChecker {
           dataset TEXT NOT NULL,
           color_scheme TEXT NOT NULL,
           seed INTEGER NOT NULL,
-          num_samples INTEGER DEFAULT 100,
-          noise DECIMAL DEFAULT 0.1,
+          num_samples INTEGER DEFAULT 1000,
+          noise DECIMAL(3,2) DEFAULT 0.1,
           generation_mode TEXT CHECK (generation_mode IN ('svg', 'ai')) DEFAULT 'svg',
-          price DECIMAL NOT NULL CHECK (price >= 0),
+          price DECIMAL(20,8) NOT NULL CHECK (price >= 0),
           currency TEXT CHECK (currency IN ('ETH', 'USD', 'MATIC')) DEFAULT 'ETH',
           status TEXT CHECK (status IN ('available', 'sold', 'reserved', 'auction')) DEFAULT 'available',
           rarity TEXT CHECK (rarity IN ('Common', 'Rare', 'Epic', 'Legendary')) DEFAULT 'Common',
-          edition TEXT DEFAULT '1/1',
+          edition TEXT,
           views INTEGER DEFAULT 0,
           likes INTEGER DEFAULT 0,
           token_id TEXT,
           contract_address TEXT,
           blockchain TEXT DEFAULT 'ethereum',
-          owner_address TEXT,
-          purchase_transaction_hash TEXT,
-          sold_at TIMESTAMPTZ,
-          minted_at TIMESTAMPTZ,
-          listed_at TIMESTAMPTZ DEFAULT NOW(),
-          created_at TIMESTAMPTZ DEFAULT NOW(),
-          updated_at TIMESTAMPTZ DEFAULT NOW()
-        );
-      `,
-      blockchain_transactions: `
-        CREATE TABLE IF NOT EXISTS blockchain_transactions (
-          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-          transaction_hash TEXT UNIQUE NOT NULL,
-          from_address TEXT NOT NULL,
-          to_address TEXT NOT NULL,
-          value_eth DECIMAL,
-          gas_used BIGINT,
-          gas_price BIGINT,
-          block_number BIGINT,
-          transaction_type TEXT CHECK (transaction_type IN ('mint', 'purchase', 'transfer')),
-          artwork_id UUID,
-          status TEXT CHECK (status IN ('pending', 'completed', 'failed')) DEFAULT 'pending',
-          created_at TIMESTAMPTZ DEFAULT NOW(),
-          completed_at TIMESTAMPTZ
+          minted_at TIMESTAMP WITH TIME ZONE,
+          listed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+          updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         );
       `,
     }
@@ -587,53 +396,29 @@ export class DatabaseHealthChecker {
     return tableSchemas[tableName] || `-- No schema defined for table: ${tableName}`
   }
 
-  /**
-   * Generate ADD COLUMN SQL for missing columns
-   */
-  private getAddColumnSQL(tableName: string, columnName: string): string {
+  private generateAddColumnSQL(tableName: string, columnName: string): string {
     const columnDefinitions: Record<string, Record<string, string>> = {
+      artists: {
+        wallet_address: "ALTER TABLE artists ADD COLUMN wallet_address TEXT UNIQUE NOT NULL;",
+        username: "ALTER TABLE artists ADD COLUMN username TEXT UNIQUE NOT NULL;",
+        created_at: "ALTER TABLE artists ADD COLUMN created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();",
+      },
       artworks: {
-        owner_address: "ALTER TABLE artworks ADD COLUMN IF NOT EXISTS owner_address TEXT;",
-        purchase_transaction_hash: "ALTER TABLE artworks ADD COLUMN IF NOT EXISTS purchase_transaction_hash TEXT;",
-        sold_at: "ALTER TABLE artworks ADD COLUMN IF NOT EXISTS sold_at TIMESTAMPTZ;",
+        artist_id: "ALTER TABLE artworks ADD COLUMN artist_id UUID REFERENCES artists(id) ON DELETE CASCADE;",
+        title: "ALTER TABLE artworks ADD COLUMN title TEXT NOT NULL;",
+        price: "ALTER TABLE artworks ADD COLUMN price DECIMAL(20,8) NOT NULL CHECK (price >= 0);",
+        status:
+          "ALTER TABLE artworks ADD COLUMN status TEXT CHECK (status IN ('available', 'sold', 'reserved', 'auction')) DEFAULT 'available';",
+        created_at: "ALTER TABLE artworks ADD COLUMN created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();",
       },
     }
 
-    return (
-      columnDefinitions[tableName]?.[columnName] ||
-      `ALTER TABLE ${tableName} ADD COLUMN IF NOT EXISTS ${columnName} TEXT;`
-    )
-  }
-
-  /**
-   * Generate constraint SQL
-   */
-  private getAddConstraintSQL(constraint: any): string {
-    const constraintSQL: Record<string, string> = {
-      artworks_artist_id_fkey:
-        "ALTER TABLE artworks ADD CONSTRAINT artworks_artist_id_fkey FOREIGN KEY (artist_id) REFERENCES artists(id);",
-      transactions_artwork_id_fkey:
-        "ALTER TABLE transactions ADD CONSTRAINT transactions_artwork_id_fkey FOREIGN KEY (artwork_id) REFERENCES artworks(id);",
-    }
-
-    return constraintSQL[constraint.constraint] || `-- No SQL defined for constraint: ${constraint.constraint}`
-  }
-
-  /**
-   * Generate RLS policy SQL
-   */
-  private getRLSPolicySQL(tableName: string, policyName: string): string {
-    return `
-      ALTER TABLE ${tableName} ENABLE ROW LEVEL SECURITY;
-      CREATE POLICY IF NOT EXISTS ${policyName} ON ${tableName} FOR SELECT USING (true);
-    `
+    return columnDefinitions[tableName]?.[columnName] || `ALTER TABLE ${tableName} ADD COLUMN ${columnName} TEXT;`
   }
 }
 
-/**
- * Quick health check function for easy use
- */
-export async function runDatabaseHealthCheck(autoFix = true): Promise<HealthCheckResult> {
-  const checker = new DatabaseHealthChecker()
-  return await checker.runHealthCheck(autoFix)
+export const databaseHealthChecker = new DatabaseHealthChecker()
+
+export async function runDatabaseHealthCheck(autoFix = false): Promise<HealthCheckResult> {
+  return await databaseHealthChecker.runFullHealthCheck(autoFix)
 }
