@@ -7,26 +7,40 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CheckCircle, AlertTriangle, XCircle, RefreshCw, Database, Shield, Zap, Info } from "lucide-react"
-import { runDatabaseHealthCheck, type HealthCheckResult, type DatabaseIssue } from "@/lib/database-health-checker"
+import { CheckCircle, AlertTriangle, XCircle, RefreshCw, Database, Shield, Zap, BarChart3 } from "lucide-react"
+import { runDatabaseHealthCheck, type HealthCheckResult, type HealthScore } from "@/lib/database-health-checker"
 
 export function DatabaseHealthDashboard() {
-  const [healthResult, setHealthResult] = useState<HealthCheckResult | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isAutoFixing, setIsAutoFixing] = useState(false)
+  const [results, setResults] = useState<HealthCheckResult[]>([])
+  const [score, setScore] = useState<HealthScore | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [autoFixing, setAutoFixing] = useState(false)
+  const [fixResults, setFixResults] = useState<any>(null)
 
-  const runHealthCheck = async (autoFix = false) => {
-    setIsLoading(true)
-    if (autoFix) setIsAutoFixing(true)
-
+  const runHealthCheck = async () => {
+    setLoading(true)
     try {
-      const result = await runDatabaseHealthCheck(autoFix)
-      setHealthResult(result)
+      const { results, score } = await runDatabaseHealthCheck(false)
+      setResults(results)
+      setScore(score)
     } catch (error) {
       console.error("Health check failed:", error)
     } finally {
-      setIsLoading(false)
-      setIsAutoFixing(false)
+      setLoading(false)
+    }
+  }
+
+  const runAutoFix = async () => {
+    setAutoFixing(true)
+    try {
+      const { results, score, fixResults } = await runDatabaseHealthCheck(true)
+      setResults(results)
+      setScore(score)
+      setFixResults(fixResults)
+    } catch (error) {
+      console.error("Auto-fix failed:", error)
+    } finally {
+      setAutoFixing(false)
     }
   }
 
@@ -34,243 +48,255 @@ export function DatabaseHealthDashboard() {
     runHealthCheck()
   }, [])
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "healthy":
-        return <CheckCircle className="h-5 w-5 text-green-500" />
-      case "warning":
-        return <AlertTriangle className="h-5 w-5 text-yellow-500" />
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
       case "critical":
-        return <XCircle className="h-5 w-5 text-red-500" />
+        return "destructive"
+      case "high":
+        return "destructive"
+      case "medium":
+        return "default"
+      case "low":
+        return "secondary"
       default:
-        return <Info className="h-5 w-5 text-gray-500" />
+        return "secondary"
     }
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "healthy":
-        return "bg-green-500"
-      case "warning":
-        return "bg-yellow-500"
+  const getSeverityIcon = (severity: string) => {
+    switch (severity) {
       case "critical":
-        return "bg-red-500"
+        return <XCircle className="h-4 w-4 text-red-500" />
+      case "high":
+        return <AlertTriangle className="h-4 w-4 text-orange-500" />
+      case "medium":
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />
+      case "low":
+        return <CheckCircle className="h-4 w-4 text-blue-500" />
       default:
-        return "bg-gray-500"
+        return <CheckCircle className="h-4 w-4 text-green-500" />
     }
-  }
-
-  const getSeverityBadge = (severity: string) => {
-    const colors = {
-      critical: "bg-red-100 text-red-800 border-red-200",
-      high: "bg-orange-100 text-orange-800 border-orange-200",
-      medium: "bg-yellow-100 text-yellow-800 border-yellow-200",
-      low: "bg-blue-100 text-blue-800 border-blue-200",
-    }
-
-    return (
-      <Badge variant="outline" className={colors[severity as keyof typeof colors] || colors.low}>
-        {severity.toUpperCase()}
-      </Badge>
-    )
   }
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case "structure":
+      case "Structure":
         return <Database className="h-4 w-4" />
-      case "security":
-        return <Shield className="h-4 w-4" />
-      case "performance":
+      case "Data":
+        return <BarChart3 className="h-4 w-4" />
+      case "Performance":
         return <Zap className="h-4 w-4" />
+      case "Security":
+        return <Shield className="h-4 w-4" />
       default:
-        return <Info className="h-4 w-4" />
+        return <Database className="h-4 w-4" />
     }
   }
 
-  const groupIssuesByCategory = (issues: DatabaseIssue[]) => {
-    return issues.reduce(
-      (acc, issue) => {
-        if (!acc[issue.category]) {
-          acc[issue.category] = []
-        }
-        acc[issue.category].push(issue)
-        return acc
-      },
-      {} as Record<string, DatabaseIssue[]>,
-    )
-  }
-
-  if (!healthResult) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <RefreshCw className="h-6 w-6 animate-spin mr-2" />
-        <span>Running initial health check...</span>
-      </div>
-    )
-  }
-
-  const groupedIssues = groupIssuesByCategory(healthResult.issues)
+  const groupedResults = results.reduce(
+    (acc, result) => {
+      if (!acc[result.category]) {
+        acc[result.category] = []
+      }
+      acc[result.category].push(result)
+      return acc
+    },
+    {} as Record<string, HealthCheckResult[]>,
+  )
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Database Health Dashboard</h1>
           <p className="text-muted-foreground">Monitor and maintain your database health</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => runHealthCheck(false)} disabled={isLoading} variant="outline">
-            {isLoading ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <RefreshCw className="h-4 w-4 mr-2" />}
-            Scan Again
+          <Button onClick={runHealthCheck} disabled={loading} variant="outline">
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+            Scan
           </Button>
-          <Button onClick={() => runHealthCheck(true)} disabled={isLoading || isAutoFixing}>
-            {isAutoFixing ? (
-              <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-            ) : (
-              <CheckCircle className="h-4 w-4 mr-2" />
-            )}
+          <Button onClick={runAutoFix} disabled={autoFixing || results.length === 0}>
+            <CheckCircle className={`h-4 w-4 mr-2 ${autoFixing ? "animate-spin" : ""}`} />
             Auto-fix Issues
           </Button>
         </div>
       </div>
 
-      {/* Status Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Overall Health</CardTitle>
-            {getStatusIcon(healthResult.status)}
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{healthResult.score}/100</div>
-            <Progress value={healthResult.score} className="mt-2" />
-          </CardContent>
-        </Card>
+      {/* Health Score Overview */}
+      {score && (
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Overall Health</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{score.overall}%</div>
+              <Progress value={score.overall} className="mt-2" />
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Issues</CardTitle>
-            <Info className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{healthResult.summary.total}</div>
-            <p className="text-xs text-muted-foreground">Found in last scan</p>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <Database className="h-4 w-4" />
+                Structure
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{score.categories.structure}%</div>
+              <Progress value={score.categories.structure} className="mt-2" />
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Critical Issues</CardTitle>
-            <XCircle className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{healthResult.summary.critical}</div>
-            <p className="text-xs text-muted-foreground">Require immediate attention</p>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <BarChart3 className="h-4 w-4" />
+                Data
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{score.categories.data}%</div>
+              <Progress value={score.categories.data} className="mt-2" />
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Last Checked</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm font-medium">{new Date(healthResult.lastChecked).toLocaleTimeString()}</div>
-            <p className="text-xs text-muted-foreground">{new Date(healthResult.lastChecked).toLocaleDateString()}</p>
-          </CardContent>
-        </Card>
-      </div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <Zap className="h-4 w-4" />
+                Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{score.categories.performance}%</div>
+              <Progress value={score.categories.performance} className="mt-2" />
+            </CardContent>
+          </Card>
 
-      {/* Issues Details */}
-      {healthResult.issues.length > 0 ? (
-        <Tabs defaultValue="all" className="w-full">
-          <TabsList>
-            <TabsTrigger value="all">All Issues ({healthResult.issues.length})</TabsTrigger>
-            <TabsTrigger value="structure">Structure ({groupedIssues.structure?.length || 0})</TabsTrigger>
-            <TabsTrigger value="data">Data ({groupedIssues.data?.length || 0})</TabsTrigger>
-            <TabsTrigger value="performance">Performance ({groupedIssues.performance?.length || 0})</TabsTrigger>
-            <TabsTrigger value="security">Security ({groupedIssues.security?.length || 0})</TabsTrigger>
-          </TabsList>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Security
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{score.categories.security}%</div>
+              <Progress value={score.categories.security} className="mt-2" />
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
-          <TabsContent value="all" className="space-y-4">
-            {healthResult.issues.map((issue) => (
-              <IssueCard key={issue.id} issue={issue} />
-            ))}
-          </TabsContent>
-
-          {Object.entries(groupedIssues).map(([category, issues]) => (
-            <TabsContent key={category} value={category} className="space-y-4">
-              {issues.map((issue) => (
-                <IssueCard key={issue.id} issue={issue} />
-              ))}
-            </TabsContent>
-          ))}
-        </Tabs>
-      ) : (
+      {/* Fix Results */}
+      {fixResults && (
         <Alert>
           <CheckCircle className="h-4 w-4" />
-          <AlertDescription>🎉 Great! No issues found. Your database is healthy and optimized.</AlertDescription>
+          <AlertDescription>
+            Auto-fix completed: {fixResults.fixed} issues fixed, {fixResults.failed} failed.
+            {fixResults.results.length > 0 && (
+              <details className="mt-2">
+                <summary className="cursor-pointer">View details</summary>
+                <ul className="mt-2 space-y-1">
+                  {fixResults.results.map((result: string, index: number) => (
+                    <li key={index} className="text-sm">
+                      {result}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )}
+          </AlertDescription>
         </Alert>
       )}
+
+      {/* Issues by Category */}
+      <Tabs defaultValue="all" className="w-full">
+        <TabsList>
+          <TabsTrigger value="all">All Issues ({results.length})</TabsTrigger>
+          {Object.entries(groupedResults).map(([category, issues]) => (
+            <TabsTrigger key={category} value={category}>
+              {category} ({issues.length})
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        <TabsContent value="all" className="space-y-4">
+          {results.length === 0 ? (
+            <Card>
+              <CardContent className="flex items-center justify-center py-8">
+                <div className="text-center">
+                  <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold">All Good!</h3>
+                  <p className="text-muted-foreground">No database issues detected.</p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            results.map((result, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      {getSeverityIcon(result.severity)}
+                      {result.issue}
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={getSeverityColor(result.severity)}>{result.severity}</Badge>
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        {getCategoryIcon(result.category)}
+                        {result.category}
+                      </Badge>
+                      {result.fixable && <Badge variant="secondary">Auto-fixable</Badge>}
+                    </div>
+                  </div>
+                  <CardDescription>{result.description}</CardDescription>
+                </CardHeader>
+                {result.sqlFix && (
+                  <CardContent>
+                    <details>
+                      <summary className="cursor-pointer text-sm font-medium">View SQL Fix</summary>
+                      <pre className="mt-2 p-3 bg-muted rounded text-sm overflow-x-auto">{result.sqlFix}</pre>
+                    </details>
+                  </CardContent>
+                )}
+              </Card>
+            ))
+          )}
+        </TabsContent>
+
+        {Object.entries(groupedResults).map(([category, issues]) => (
+          <TabsContent key={category} value={category} className="space-y-4">
+            {issues.map((result, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      {getSeverityIcon(result.severity)}
+                      {result.issue}
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={getSeverityColor(result.severity)}>{result.severity}</Badge>
+                      {result.fixable && <Badge variant="secondary">Auto-fixable</Badge>}
+                    </div>
+                  </div>
+                  <CardDescription>{result.description}</CardDescription>
+                </CardHeader>
+                {result.sqlFix && (
+                  <CardContent>
+                    <details>
+                      <summary className="cursor-pointer text-sm font-medium">View SQL Fix</summary>
+                      <pre className="mt-2 p-3 bg-muted rounded text-sm overflow-x-auto">{result.sqlFix}</pre>
+                    </details>
+                  </CardContent>
+                )}
+              </Card>
+            ))}
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
-  )
-}
-
-function IssueCard({ issue }: { issue: DatabaseIssue }) {
-  const [showSql, setShowSql] = useState(false)
-
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2">
-              {issue.category === "structure" && <Database className="h-4 w-4" />}
-              {issue.category === "security" && <Shield className="h-4 w-4" />}
-              {issue.category === "performance" && <Zap className="h-4 w-4" />}
-              {issue.category === "data" && <Info className="h-4 w-4" />}
-              <CardTitle className="text-lg">{issue.title}</CardTitle>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant={issue.type === "error" ? "destructive" : "secondary"}>{issue.type.toUpperCase()}</Badge>
-              <Badge
-                variant="outline"
-                className={
-                  issue.severity === "critical"
-                    ? "border-red-500 text-red-700"
-                    : issue.severity === "high"
-                      ? "border-orange-500 text-orange-700"
-                      : issue.severity === "medium"
-                        ? "border-yellow-500 text-yellow-700"
-                        : "border-blue-500 text-blue-700"
-                }
-              >
-                {issue.severity.toUpperCase()}
-              </Badge>
-            </div>
-          </div>
-          {issue.autoFixable && (
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-              Auto-fixable
-            </Badge>
-          )}
-        </div>
-        <CardDescription>{issue.description}</CardDescription>
-      </CardHeader>
-      {issue.fixSql && (
-        <CardContent>
-          <Button variant="outline" size="sm" onClick={() => setShowSql(!showSql)}>
-            {showSql ? "Hide" : "Show"} SQL Fix
-          </Button>
-          {showSql && (
-            <pre className="mt-2 p-3 bg-gray-100 rounded text-sm overflow-x-auto">
-              <code>{issue.fixSql}</code>
-            </pre>
-          )}
-        </CardContent>
-      )}
-    </Card>
   )
 }
