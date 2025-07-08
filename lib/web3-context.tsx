@@ -1,37 +1,48 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useState, useEffect, type ReactNode, useCallback } from "react"
 import { ethers } from "ethers"
 import { mintNFT as mintNFTUtil, purchaseNFT as purchaseNFTUtil, SUPPORTED_NETWORKS } from "./blockchain-utils"
 
+/* -------------------------------------------------------------------------- */
+/*                               Context types                                */
+/* -------------------------------------------------------------------------- */
+
 interface Web3ContextType {
-  // Connection state
+  /* Connection state ------------------------------------------------------- */
+  hasProvider: boolean
   isConnected: boolean
   account: string | null
   chainId: number | null
   balance: string | null
 
-  // Connection methods
+  /* Connection helpers ----------------------------------------------------- */
   connect: () => Promise<void>
   disconnect: () => void
   switchNetwork: (chainId: number) => Promise<void>
 
-  // Transaction methods
+  /* Transaction helpers ---------------------------------------------------- */
   mintNFT: (tokenURI: string, price: string) => Promise<string>
   purchaseNFT: (tokenId: string, price: string) => Promise<string>
 
-  // State
+  /* UI helpers ------------------------------------------------------------- */
   isLoading: boolean
   error: string | null
 }
 
 const Web3Context = createContext<Web3ContextType | undefined>(undefined)
 
+/* -------------------------------------------------------------------------- */
+/*                               Provider                                     */
+/* -------------------------------------------------------------------------- */
+
 interface Web3ProviderProps {
   children: ReactNode
 }
 
 export function Web3Provider({ children }: Web3ProviderProps) {
+  /* ----------------------------- local state ------------------------------ */
+  const [hasProvider, setHasProvider] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
   const [account, setAccount] = useState<string | null>(null)
   const [chainId, setChainId] = useState<number | null>(null)
@@ -39,46 +50,49 @@ export function Web3Provider({ children }: Web3ProviderProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Check if wallet is already connected
+  /* --------------------------- side-effects ------------------------------- */
   useEffect(() => {
-    checkConnection()
+    const hasMetaMask =
+      typeof window !== "undefined" && !!(window as any).ethereum && (window as any).ethereum.isMetaMask
+    setHasProvider(hasMetaMask)
 
-    // Listen for account changes
-    if (typeof window !== "undefined" && window.ethereum) {
-      window.ethereum.on("accountsChanged", handleAccountsChanged)
-      window.ethereum.on("chainChanged", handleChainChanged)
-      window.ethereum.on("disconnect", handleDisconnect)
-    }
+    if (hasMetaMask) {
+      checkConnection()
 
-    return () => {
-      if (typeof window !== "undefined" && window.ethereum) {
-        window.ethereum.removeListener("accountsChanged", handleAccountsChanged)
-        window.ethereum.removeListener("chainChanged", handleChainChanged)
-        window.ethereum.removeListener("disconnect", handleDisconnect)
+      /* --- event listeners ------------------------------------------------ */
+      const { ethereum } = window as any
+      ethereum.on("accountsChanged", handleAccountsChanged)
+      ethereum.on("chainChanged", handleChainChanged)
+      ethereum.on("disconnect", handleDisconnect)
+
+      return () => {
+        ethereum.removeListener("accountsChanged", handleAccountsChanged)
+        ethereum.removeListener("chainChanged", handleChainChanged)
+        ethereum.removeListener("disconnect", handleDisconnect)
       }
     }
   }, [])
 
+  /* --------------------------- helpers ------------------------------------ */
+
   const checkConnection = async () => {
     try {
-      if (typeof window !== "undefined" && window.ethereum) {
-        const provider = new ethers.BrowserProvider(window.ethereum)
-        const accounts = await provider.listAccounts()
+      const provider = new ethers.BrowserProvider((window as any).ethereum)
+      const accounts = await provider.listAccounts()
 
-        if (accounts.length > 0) {
-          const signer = await provider.getSigner()
-          const address = await signer.getAddress()
-          const network = await provider.getNetwork()
-          const balance = await provider.getBalance(address)
+      if (accounts.length > 0) {
+        const signer = await provider.getSigner()
+        const address = await signer.getAddress()
+        const network = await provider.getNetwork()
+        const balance = await provider.getBalance(address)
 
-          setAccount(address)
-          setChainId(Number(network.chainId))
-          setBalance(ethers.formatEther(balance))
-          setIsConnected(true)
-        }
+        setAccount(address)
+        setChainId(Number(network.chainId))
+        setBalance(ethers.formatEther(balance))
+        setIsConnected(true)
       }
-    } catch (error) {
-      console.error("Error checking connection:", error)
+    } catch (err) {
+      console.error("Error checking connection:", err)
     }
   }
 
@@ -91,42 +105,37 @@ export function Web3Provider({ children }: Web3ProviderProps) {
     }
   }
 
-  const handleChainChanged = (chainId: string) => {
-    setChainId(Number.parseInt(chainId, 16))
-    if (account) {
-      updateBalance(account)
-    }
+  const handleChainChanged = (hexChainId: string) => {
+    setChainId(Number.parseInt(hexChainId, 16))
+    if (account) updateBalance(account)
   }
 
-  const handleDisconnect = () => {
-    disconnect()
-  }
+  const handleDisconnect = () => disconnect()
 
   const updateBalance = async (address: string) => {
     try {
-      if (typeof window !== "undefined" && window.ethereum) {
-        const provider = new ethers.BrowserProvider(window.ethereum)
-        const balance = await provider.getBalance(address)
-        setBalance(ethers.formatEther(balance))
-      }
-    } catch (error) {
-      console.error("Error updating balance:", error)
+      const provider = new ethers.BrowserProvider((window as any).ethereum)
+      const balance = await provider.getBalance(address)
+      setBalance(ethers.formatEther(balance))
+    } catch (err) {
+      console.error("Error updating balance:", err)
     }
   }
 
-  const connect = async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
+  /* --------------------------- public API --------------------------------- */
 
-      if (typeof window === "undefined" || !window.ethereum) {
+  const connect = useCallback(async () => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      if (!hasProvider) {
         throw new Error("MetaMask is not installed. Please install MetaMask to continue.")
       }
 
-      // Request account access
-      await window.ethereum.request({ method: "eth_requestAccounts" })
+      await (window as any).ethereum.request({ method: "eth_requestAccounts" })
 
-      const provider = new ethers.BrowserProvider(window.ethereum)
+      const provider = new ethers.BrowserProvider((window as any).ethereum)
       const signer = await provider.getSigner()
       const address = await signer.getAddress()
       const network = await provider.getNetwork()
@@ -137,14 +146,14 @@ export function Web3Provider({ children }: Web3ProviderProps) {
       setBalance(ethers.formatEther(balance))
       setIsConnected(true)
 
-      console.log("Connected to wallet:", address)
-    } catch (error: any) {
-      console.error("Connection error:", error)
-      setError(error.message || "Failed to connect wallet")
+      console.info("[Web3] Connected:", address)
+    } catch (err: any) {
+      console.error("Connection error:", err)
+      setError(err.message)
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [hasProvider])
 
   const disconnect = () => {
     setIsConnected(false)
@@ -152,42 +161,39 @@ export function Web3Provider({ children }: Web3ProviderProps) {
     setChainId(null)
     setBalance(null)
     setError(null)
-    console.log("Wallet disconnected")
   }
 
   const switchNetwork = async (targetChainId: number) => {
-    try {
-      setIsLoading(true)
-      setError(null)
+    setIsLoading(true)
+    setError(null)
 
-      if (typeof window === "undefined" || !window.ethereum) {
+    try {
+      if (!hasProvider) {
         throw new Error("MetaMask is not installed")
       }
 
       const chainIdHex = `0x${targetChainId.toString(16)}`
 
       try {
-        // Try to switch to the network
-        await window.ethereum.request({
+        await (window as any).ethereum.request({
           method: "wallet_switchEthereumChain",
           params: [{ chainId: chainIdHex }],
         })
       } catch (switchError: any) {
-        // If the network doesn't exist, add it
         if (switchError.code === 4902) {
-          const networkConfig = SUPPORTED_NETWORKS[targetChainId as keyof typeof SUPPORTED_NETWORKS]
-          if (networkConfig) {
-            await window.ethereum.request({
+          const cfg = SUPPORTED_NETWORKS[targetChainId as keyof typeof SUPPORTED_NETWORKS]
+          if (cfg) {
+            await (window as any).ethereum.request({
               method: "wallet_addEthereumChain",
               params: [
                 {
                   chainId: chainIdHex,
-                  chainName: networkConfig.name,
-                  rpcUrls: [networkConfig.rpcUrl],
-                  blockExplorerUrls: [networkConfig.blockExplorer],
+                  chainName: cfg.name,
+                  rpcUrls: [cfg.rpcUrl],
+                  blockExplorerUrls: [cfg.blockExplorer],
                   nativeCurrency: {
-                    name: networkConfig.currency,
-                    symbol: networkConfig.currency,
+                    name: cfg.currency,
+                    symbol: cfg.currency,
                     decimals: 18,
                   },
                 },
@@ -200,68 +206,53 @@ export function Web3Provider({ children }: Web3ProviderProps) {
       }
 
       setChainId(targetChainId)
-      if (account) {
-        updateBalance(account)
-      }
-    } catch (error: any) {
-      console.error("Network switch error:", error)
-      setError(error.message || "Failed to switch network")
+      if (account) updateBalance(account)
+    } catch (err: any) {
+      console.error("Network switch error:", err)
+      setError(err.message)
     } finally {
       setIsLoading(false)
     }
   }
 
-  const mintNFT = async (tokenURI: string, price: string): Promise<string> => {
-    if (!isConnected || !chainId) {
-      throw new Error("Wallet not connected")
-    }
-
+  const mintNFT = async (tokenURI: string, price: string) => {
+    if (!isConnected || !chainId) throw new Error("Wallet not connected")
     setIsLoading(true)
     setError(null)
 
     try {
       const txHash = await mintNFTUtil(tokenURI, price, chainId)
-
-      // Update balance after transaction
-      if (account) {
-        setTimeout(() => updateBalance(account), 2000)
-      }
-
+      if (account) setTimeout(() => updateBalance(account), 2_000)
       return txHash
-    } catch (error: any) {
-      setError(error.message || "Failed to mint NFT")
-      throw error
+    } catch (err: any) {
+      setError(err.message)
+      throw err
     } finally {
       setIsLoading(false)
     }
   }
 
-  const purchaseNFT = async (tokenId: string, price: string): Promise<string> => {
-    if (!isConnected || !chainId) {
-      throw new Error("Wallet not connected")
-    }
-
+  const purchaseNFT = async (tokenId: string, price: string) => {
+    if (!isConnected || !chainId) throw new Error("Wallet not connected")
     setIsLoading(true)
     setError(null)
 
     try {
       const txHash = await purchaseNFTUtil(tokenId, price, chainId)
-
-      // Update balance after transaction
-      if (account) {
-        setTimeout(() => updateBalance(account), 2000)
-      }
-
+      if (account) setTimeout(() => updateBalance(account), 2_000)
       return txHash
-    } catch (error: any) {
-      setError(error.message || "Failed to purchase NFT")
-      throw error
+    } catch (err: any) {
+      setError(err.message)
+      throw err
     } finally {
       setIsLoading(false)
     }
   }
 
+  /* ----------------------------- provider value --------------------------- */
+
   const value: Web3ContextType = {
+    hasProvider,
     isConnected,
     account,
     chainId,
@@ -278,22 +269,25 @@ export function Web3Provider({ children }: Web3ProviderProps) {
   return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>
 }
 
+/* -------------------------------------------------------------------------- */
+/*                               Hook                                         */
+/* -------------------------------------------------------------------------- */
+
 export function useWeb3() {
-  const context = useContext(Web3Context)
-  if (context === undefined) {
-    throw new Error("useWeb3 must be used within a Web3Provider")
-  }
-  return context
+  const ctx = useContext(Web3Context)
+  if (!ctx) throw new Error("useWeb3 must be used within a Web3Provider")
+  return ctx
 }
 
-// Type declaration for window.ethereum
+/* ----------------------------- global types ------------------------------ */
+
 declare global {
   interface Window {
     ethereum?: {
-      request: (args: { method: string; params?: any[] }) => Promise<any>
-      on: (event: string, callback: (...args: any[]) => void) => void
-      removeListener: (event: string, callback: (...args: any[]) => void) => void
       isMetaMask?: boolean
+      request: (args: { method: string; params?: any[] }) => Promise<unknown>
+      on: (ev: string, cb: (...a: any[]) => void) => void
+      removeListener: (ev: string, cb: (...a: any[]) => void) => void
     }
   }
 }
