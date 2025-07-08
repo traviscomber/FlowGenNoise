@@ -2,7 +2,7 @@ import { ethers } from "ethers"
 import { supabase } from "@/lib/supabase"
 
 // IPFS configuration for metadata storage
-export const IPFS_GATEWAY = "https://gateway.pinata.cloud/ipfs/"
+export const IPFS_GATEWAY = process.env.NEXT_PUBLIC_IPFS_GATEWAY || "https://gateway.pinata.cloud/ipfs/"
 export const PINATA_API_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY
 export const PINATA_SECRET_KEY = process.env.NEXT_PUBLIC_PINATA_SECRET_KEY
 
@@ -50,72 +50,189 @@ export const NETWORK_CONFIG = {
   },
 }
 
+// Check if Pinata is configured
+export function isPinataConfigured(): boolean {
+  return !!(PINATA_API_KEY && PINATA_SECRET_KEY)
+}
+
 // Upload image to IPFS via Pinata
 export async function uploadToIPFS(file: File): Promise<string> {
-  if (!PINATA_API_KEY || !PINATA_SECRET_KEY) {
-    throw new Error("IPFS configuration missing")
+  if (!isPinataConfigured()) {
+    throw new Error(
+      "Pinata API keys not configured. Please add NEXT_PUBLIC_PINATA_API_KEY and NEXT_PUBLIC_PINATA_SECRET_KEY to your environment variables.",
+    )
   }
 
   const formData = new FormData()
   formData.append("file", file)
 
-  const response = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
-    method: "POST",
-    headers: {
-      pinata_api_key: PINATA_API_KEY,
-      pinata_secret_api_key: PINATA_SECRET_KEY,
+  // Add metadata for better organization
+  const metadata = JSON.stringify({
+    name: `FlowSketch-${file.name}`,
+    keyvalues: {
+      project: "FlowSketch",
+      type: "artwork",
+      timestamp: new Date().toISOString(),
     },
-    body: formData,
   })
+  formData.append("pinataMetadata", metadata)
 
-  if (!response.ok) {
-    throw new Error("Failed to upload to IPFS")
+  // Add options for better performance
+  const options = JSON.stringify({
+    cidVersion: 0,
+  })
+  formData.append("pinataOptions", options)
+
+  try {
+    const response = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
+      method: "POST",
+      headers: {
+        pinata_api_key: PINATA_API_KEY!,
+        pinata_secret_api_key: PINATA_SECRET_KEY!,
+      },
+      body: formData,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(`Failed to upload to IPFS: ${response.status} ${response.statusText}. ${errorData.error || ""}`)
+    }
+
+    const data = await response.json()
+    console.log("Image uploaded to IPFS:", data.IpfsHash)
+    return data.IpfsHash
+  } catch (error) {
+    console.error("IPFS upload error:", error)
+    throw error
   }
-
-  const data = await response.json()
-  return data.IpfsHash
 }
 
 // Upload JSON metadata to IPFS
 export async function uploadMetadataToIPFS(metadata: any): Promise<string> {
-  if (!PINATA_API_KEY || !PINATA_SECRET_KEY) {
-    throw new Error("IPFS configuration missing")
+  if (!isPinataConfigured()) {
+    throw new Error(
+      "Pinata API keys not configured. Please add NEXT_PUBLIC_PINATA_API_KEY and NEXT_PUBLIC_PINATA_SECRET_KEY to your environment variables.",
+    )
   }
 
-  const response = await fetch("https://api.pinata.cloud/pinning/pinJSONToIPFS", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      pinata_api_key: PINATA_API_KEY,
-      pinata_secret_api_key: PINATA_SECRET_KEY,
+  const pinataMetadata = {
+    name: `FlowSketch-Metadata-${metadata.name || "Unknown"}`,
+    keyvalues: {
+      project: "FlowSketch",
+      type: "metadata",
+      artwork: metadata.name || "Unknown",
+      timestamp: new Date().toISOString(),
     },
-    body: JSON.stringify(metadata),
-  })
-
-  if (!response.ok) {
-    throw new Error("Failed to upload metadata to IPFS")
   }
 
-  const data = await response.json()
-  return data.IpfsHash
+  const requestBody = {
+    pinataContent: metadata,
+    pinataMetadata,
+    pinataOptions: {
+      cidVersion: 0,
+    },
+  }
+
+  try {
+    const response = await fetch("https://api.pinata.cloud/pinning/pinJSONToIPFS", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        pinata_api_key: PINATA_API_KEY!,
+        pinata_secret_api_key: PINATA_SECRET_KEY!,
+      },
+      body: JSON.stringify(requestBody),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(
+        `Failed to upload metadata to IPFS: ${response.status} ${response.statusText}. ${errorData.error || ""}`,
+      )
+    }
+
+    const data = await response.json()
+    console.log("Metadata uploaded to IPFS:", data.IpfsHash)
+    return data.IpfsHash
+  } catch (error) {
+    console.error("IPFS metadata upload error:", error)
+    throw error
+  }
 }
 
-// Create NFT metadata
+// Create NFT metadata following OpenSea standards
 export function createNFTMetadata(artwork: {
   title: string
   description: string
   artist: string
   imageHash: string
-  attributes: Array<{ trait_type: string; value: string }>
+  attributes: Array<{ trait_type: string; value: string | number }>
 }) {
   return {
     name: artwork.title,
     description: artwork.description,
     image: `${IPFS_GATEWAY}${artwork.imageHash}`,
+    external_url: `${typeof window !== "undefined" ? window.location.origin : ""}/artwork/${encodeURIComponent(artwork.title)}`,
     artist: artwork.artist,
     attributes: artwork.attributes,
-    external_url: `${window.location.origin}/artwork/${artwork.title}`,
+    properties: {
+      category: "Digital Art",
+      creator: artwork.artist,
+      created_with: "FlowSketch AI Art Generator",
+    },
     created_at: new Date().toISOString(),
+    version: "1.0",
+  }
+}
+
+// Get Pinata usage statistics
+export async function getPinataUsage(): Promise<any> {
+  if (!isPinataConfigured()) {
+    return null
+  }
+
+  try {
+    const response = await fetch("https://api.pinata.cloud/data/userPinnedDataTotal", {
+      method: "GET",
+      headers: {
+        pinata_api_key: PINATA_API_KEY!,
+        pinata_secret_api_key: PINATA_SECRET_KEY!,
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to get Pinata usage: ${response.status}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error("Error getting Pinata usage:", error)
+    return null
+  }
+}
+
+// Test Pinata connection
+export async function testPinataConnection(): Promise<boolean> {
+  if (!isPinataConfigured()) {
+    console.error("Pinata not configured")
+    return false
+  }
+
+  try {
+    const response = await fetch("https://api.pinata.cloud/data/testAuthentication", {
+      method: "GET",
+      headers: {
+        pinata_api_key: PINATA_API_KEY!,
+        pinata_secret_api_key: PINATA_SECRET_KEY!,
+      },
+    })
+
+    const data = await response.json()
+    console.log("Pinata connection test:", data)
+    return response.ok && data.message === "Congratulations! You are communicating with the Pinata API!"
+  } catch (error) {
+    console.error("Pinata connection test failed:", error)
+    return false
   }
 }
 
@@ -269,4 +386,20 @@ export async function getUserTransactionHistory(address: string, chainId?: numbe
     console.error("Error getting transaction history:", error)
     return []
   }
+}
+
+// Format IPFS URL
+export function formatIPFSUrl(hash: string): string {
+  if (hash.startsWith("http")) {
+    return hash
+  }
+  return `${IPFS_GATEWAY}${hash}`
+}
+
+// Extract IPFS hash from URL
+export function extractIPFSHash(url: string): string {
+  if (url.includes("/ipfs/")) {
+    return url.split("/ipfs/")[1]
+  }
+  return url
 }
