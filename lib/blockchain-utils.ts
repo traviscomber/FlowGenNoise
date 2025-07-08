@@ -346,3 +346,36 @@ export function etherToWei(ether: string): string {
     return "0"
   }
 }
+
+// -----------------------------------------------------------------------------
+// Compatibility helpers (used by existing components)
+// -----------------------------------------------------------------------------
+
+/**
+ * Format an ETH amount to a fixed-decimal string (default 4 decimals).
+ */
+export function formatEthAmount(amount: string | number, decimals = 4): string {
+  const num = typeof amount === "string" ? Number.parseFloat(amount) : amount
+  return Number.isFinite(num) ? num.toFixed(decimals) : "0.0000"
+}
+
+/**
+ * Convert Ether → Wei (bigint).
+ * Wrapper kept for backward compatibility with older components.
+ */
+export function ethToWei(eth: string): bigint {
+  return ethers.parseEther(eth)
+}
+
+/**
+ * Convert Wei (hex / string / bigint) → Ether (string).
+ * Wrapper kept for backward compatibility with older components.
+ */
+export function weiToEth(wei: string | bigint): string {
+  try {
+    // ethers.formatEther accepts bigint or hex-string
+    return ethers.formatEther(wei as any)
+  } catch {
+    return "0"
+  }
+}
