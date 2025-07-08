@@ -4,7 +4,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js"
  * Singleton pattern - ensures we don’t create more than one client
  * on the client side.  On the server each request gets its own.
  */
-let supabase: SupabaseClient | null = null
+let supabaseClient: SupabaseClient | null = null
 
 function getEnv(name: string) {
   if (typeof process === "undefined") return ""
@@ -12,7 +12,7 @@ function getEnv(name: string) {
 }
 
 export function getSupabaseClient(): SupabaseClient {
-  if (supabase) return supabase
+  if (supabaseClient) return supabaseClient
 
   const url = getEnv("NEXT_PUBLIC_SUPABASE_URL")
   const anon = getEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
@@ -32,9 +32,9 @@ export function getSupabaseClient(): SupabaseClient {
     throw new Error("Invalid Supabase URL")
   }
 
-  supabase = createClient(url, anon, {
+  supabaseClient = createClient(url, anon, {
     auth: { persistSession: true, autoRefreshToken: true },
   })
 
-  return supabase
+  return supabaseClient
 }
