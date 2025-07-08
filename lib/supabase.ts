@@ -1,100 +1,40 @@
-import { createClient } from "@supabase/supabase-js"
+import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 
-// Your actual Supabase credentials
-const supabaseUrl = "https://ngtfnkcszgnmpddfgdst.supabase.co"
-const supabaseAnonKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ndGZua2NzemdubXBkZGZnZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4OTUzNTcsImV4cCI6MjA2NzQ3MTM1N30.Gg-hbKTbSo_M1cUVkwz2gqp1tyyFtqp5UBTG_WI-8bg"
+/**
+ * Singleton pattern - ensures we don’t create more than one client
+ * on the client side.  On the server each request gets its own.
+ */
+let supabase: SupabaseClient | null = null
 
-// Validate environment variables
-function validateSupabaseConfig() {
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing Supabase configuration")
+function getEnv(name: string) {
+  if (typeof process === "undefined") return ""
+  return (process.env as Record<string, string | undefined>)[name] ?? ""
+}
+
+export function getSupabaseClient(): SupabaseClient {
+  if (supabase) return supabase
+
+  const url = getEnv("NEXT_PUBLIC_SUPABASE_URL")
+  const anon = getEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+
+  if (!url || !anon) {
+    /* eslint-disable no-console */
+    console.error("[Supabase] Missing env vars. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.")
+    throw new Error("Supabase environment variables are not configured")
   }
 
   try {
-    new URL(supabaseUrl)
+    // basic sanity check for URL format
+    // throws if malformed (matches browser’s URL constructor behaviour)
+    new URL(url)
   } catch {
+    console.error("[Supabase] Invalid URL provided:", url)
     throw new Error("Invalid Supabase URL")
   }
-}
 
-// Initialize Supabase client with error handling
-let supabaseClient: ReturnType<typeof createClient> | null = null
+  supabase = createClient(url, anon, {
+    auth: { persistSession: true, autoRefreshToken: true },
+  })
 
-function initializeSupabase() {
-  if (!supabaseClient) {
-    try {
-      validateSupabaseConfig()
-      supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-        },
-        db: {
-          schema: "public",
-        },
-        global: {
-          headers: {
-            "X-Client-Info": "flowsketch-marketplace",
-          },
-        },
-      })
-    } catch (error) {
-      console.error("Failed to initialize Supabase client:", error)
-      throw error
-    }
-  }
-  return supabaseClient
-}
-
-// Export the client
-export const supabase = initializeSupabase()
-
-// Server-side client for admin operations
-export function getSupabaseServerClient() {
   return supabase
-}
-
-// Test connection function
-export async function testSupabaseConnection() {
-  try {
-    const { data, error } = await supabase
-      .from("information_schema.tables")
-      .select("table_name")
-      .eq("table_schema", "public")
-      .limit(1)
-
-    if (error) {
-      console.error("Supabase connection test failed:", error)
-      return { success: false, error: error.message }
-    }
-
-    return { success: true, data }
-  } catch (error) {
-    console.error("Supabase connection test error:", error)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error",
-    }
-  }
-}
-
-// Health check function
-export async function checkDatabaseHealth() {
-  try {
-    const { data, error } = await supabase.rpc("get_table_columns", {
-      tbl_name: "artworks",
-    })
-
-    if (error) {
-      return { healthy: false, error: error.message }
-    }
-
-    return { healthy: true, tablesFound: data?.length || 0 }
-  } catch (error) {
-    return {
-      healthy: false,
-      error: error instanceof Error ? error.message : "Unknown error",
-    }
-  }
 }
