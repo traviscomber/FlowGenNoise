@@ -1,139 +1,129 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle, AlertTriangle, XCircle, RefreshCw, Database } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { CheckCircle, AlertTriangle, XCircle, RefreshCw, ExternalLink } from "lucide-react"
 import { runDatabaseHealthCheck, type HealthCheckResult } from "@/lib/database-health-checker"
+import Link from "next/link"
 
-export default function DatabaseStatusWidget() {
+export function DatabaseStatusWidget() {
   const [healthResult, setHealthResult] = useState<HealthCheckResult | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  useEffect(() => {
-    checkHealth()
-    // Check health every 5 minutes
-    const interval = setInterval(checkHealth, 5 * 60 * 1000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const checkHealth = async () => {
+  const runQuickCheck = async () => {
+    setIsLoading(true)
     try {
-      setLoading(true)
-      const result = await runDatabaseHealthCheck()
+      const result = await runDatabaseHealthCheck(false)
       setHealthResult(result)
     } catch (error) {
-      console.error("Health check failed:", error)
+      console.error("Quick health check failed:", error)
     } finally {
-      setLoading(false)
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    runQuickCheck()
+  }, [])
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "healthy":
+        return <CheckCircle className="h-4 w-4 text-green-500" />
+      case "warning":
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />
+      case "critical":
+        return <XCircle className="h-4 w-4 text-red-500" />
+      default:
+        return <RefreshCw className="h-4 w-4 text-gray-500" />
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "healthy":
-        return "text-green-400"
+        return "text-green-600"
       case "warning":
-        return "text-yellow-400"
+        return "text-yellow-600"
       case "critical":
-        return "text-red-400"
+        return "text-red-600"
       default:
-        return "text-gray-400"
+        return "text-gray-600"
     }
   }
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "healthy":
-        return CheckCircle
-      case "warning":
-        return AlertTriangle
-      case "critical":
-        return XCircle
-      default:
-        return Database
-    }
-  }
-
-  if (!healthResult && !loading) {
+  if (!healthResult) {
     return (
-      <Card className="bg-gray-900/50 border-gray-800">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Database className="w-5 h-5 text-gray-400" />
-              <span className="text-sm font-medium">Database Status</span>
-            </div>
-            <Button size="sm" onClick={checkHealth} variant="outline" className="border-gray-700 bg-transparent">
-              <RefreshCw className="w-4 h-4" />
-            </Button>
-          </div>
+      <Card className="w-full max-w-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <RefreshCw className="h-4 w-4 animate-spin" />
+            Database Status
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-sm text-muted-foreground">Checking database health...</div>
         </CardContent>
       </Card>
     )
   }
 
   return (
-    <Card className="bg-gray-900/50 border-gray-800">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center space-x-2">
-            <Database className="w-5 h-5 text-blue-400" />
-            <span className="text-sm font-medium">Database Health</span>
-          </div>
-          <Button
-            size="sm"
-            onClick={checkHealth}
-            disabled={loading}
-            variant="outline"
-            className="border-gray-700 bg-transparent"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+    <Card className="w-full max-w-sm">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm font-medium flex items-center gap-2">
+            {getStatusIcon(healthResult.status)}
+            Database Status
+          </CardTitle>
+          <Button variant="ghost" size="sm" onClick={runQuickCheck} disabled={isLoading}>
+            {isLoading ? <RefreshCw className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
           </Button>
         </div>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Health Score</span>
+          <span className={`text-sm font-medium ${getStatusColor(healthResult.status)}`}>{healthResult.score}/100</span>
+        </div>
+        <Progress value={healthResult.score} className="h-2" />
 
-        {healthResult && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                {(() => {
-                  const StatusIcon = getStatusIcon(healthResult.status)
-                  return <StatusIcon className={`w-4 h-4 ${getStatusColor(healthResult.status)}`} />
-                })()}
-                <span className={`text-sm font-medium capitalize ${getStatusColor(healthResult.status)}`}>
-                  {healthResult.status}
-                </span>
-              </div>
-              <Badge variant="secondary" className="text-xs">
-                {healthResult.score}/100
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Issues Found</span>
+          <div className="flex items-center gap-1">
+            {healthResult.summary.critical > 0 && (
+              <Badge variant="destructive" className="text-xs px-1">
+                {healthResult.summary.critical}
               </Badge>
-            </div>
-
-            {healthResult.summary.total > 0 && (
-              <div className="flex items-center space-x-2 text-xs">
-                <span className="text-gray-400">Issues:</span>
-                {healthResult.summary.critical > 0 && (
-                  <Badge className="bg-red-500 text-white text-xs px-1 py-0">
-                    {healthResult.summary.critical} Critical
-                  </Badge>
-                )}
-                {healthResult.summary.high > 0 && (
-                  <Badge className="bg-orange-500 text-white text-xs px-1 py-0">{healthResult.summary.high} High</Badge>
-                )}
-                {healthResult.summary.medium > 0 && (
-                  <Badge className="bg-yellow-500 text-white text-xs px-1 py-0">
-                    {healthResult.summary.medium} Medium
-                  </Badge>
-                )}
-              </div>
             )}
-
-            <div className="text-xs text-gray-500">
-              Last checked: {new Date(healthResult.lastChecked).toLocaleTimeString()}
-            </div>
+            {healthResult.summary.high > 0 && (
+              <Badge variant="secondary" className="text-xs px-1 bg-orange-100 text-orange-800">
+                {healthResult.summary.high}
+              </Badge>
+            )}
+            {healthResult.summary.total === 0 && (
+              <Badge variant="outline" className="text-xs px-1 bg-green-50 text-green-700">
+                None
+              </Badge>
+            )}
           </div>
-        )}
+        </div>
+
+        <div className="pt-2 border-t">
+          <Link href="/admin/database-health">
+            <Button variant="outline" size="sm" className="w-full bg-transparent">
+              <ExternalLink className="h-3 w-3 mr-1" />
+              View Details
+            </Button>
+          </Link>
+        </div>
+
+        <div className="text-xs text-muted-foreground">
+          Last checked: {new Date(healthResult.lastChecked).toLocaleTimeString()}
+        </div>
       </CardContent>
     </Card>
   )
