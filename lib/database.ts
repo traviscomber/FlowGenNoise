@@ -129,3 +129,25 @@ export async function getFeaturedCollections(limit = 5) {
 
   return data
 }
+
+// Marketplace aggregate statistics
+export async function getMarketplaceStats() {
+  // Run the four expensive count/aggregation queries in parallel.
+  const [{ count: artworksCount }, { count: artistsCount }, { count: completedTxCount }, { data: completedTxVolume }] =
+    await Promise.all([
+      supabase.from("artworks").select("*", { head: true, count: "exact" }),
+      supabase.from("artists").select("*", { head: true, count: "exact" }),
+      supabase.from("transactions").select("*", { head: true, count: "exact" }).eq("status", "completed"),
+      supabase.from("transactions").select("price").eq("status", "completed"),
+    ])
+
+  // Calculate total volume from the list of completed transactions.
+  const totalVolume = completedTxVolume?.reduce((sum: number, tx: { price: number }) => sum + (tx?.price ?? 0), 0) ?? 0
+
+  return {
+    totalArtworks: artworksCount ?? 0,
+    totalArtists: artistsCount ?? 0,
+    totalTransactions: completedTxCount ?? 0,
+    totalVolume,
+  }
+}
