@@ -186,7 +186,7 @@
 }
 
 .artwork-card {
-  @apply bg-gray-900/50 border-gray-800 hover:border-gray-700 transition-all duration-300 group overflow-hidden;
+  @apply bg-gray-900/50 border-gray-800 hover:border-gray-700 transition-all duration-300 overflow-hidden;
 }
 
 .artwork-image {
