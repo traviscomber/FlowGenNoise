@@ -1,6 +1,112 @@
 import { supabase } from "./supabase"
 
-// Artwork queries
+export interface Artist {
+  id: string
+  wallet_address: string
+  username: string
+  display_name: string | null
+  bio: string | null
+  avatar_url: string | null
+  banner_url: string | null
+  website_url: string | null
+  twitter_handle: string | null
+  instagram_handle: string | null
+  verified: boolean
+  total_sales: number
+  total_artworks: number
+  created_at: string
+  updated_at: string
+}
+
+export interface Collection {
+  id: string
+  artist_id: string
+  name: string
+  description: string | null
+  banner_url: string | null
+  slug: string
+  is_featured: boolean
+  created_at: string
+  updated_at: string
+  artist?: Artist
+}
+
+export interface Artwork {
+  id: string
+  artist_id: string
+  collection_id: string | null
+  title: string
+  description: string | null
+  image_url: string
+  image_ipfs_hash: string | null
+  metadata_url: string | null
+  metadata_ipfs_hash: string | null
+  dataset: string
+  color_scheme: string
+  seed: number
+  num_samples: number
+  noise: number
+  generation_mode: "svg" | "ai"
+  price: number
+  currency: "ETH" | "USD" | "MATIC"
+  status: "available" | "sold" | "reserved" | "auction"
+  rarity: "Common" | "Rare" | "Epic" | "Legendary"
+  edition: string
+  views: number
+  likes: number
+  token_id: string | null
+  contract_address: string | null
+  blockchain: string
+  minted_at: string | null
+  listed_at: string
+  created_at: string
+  updated_at: string
+  artist?: Artist
+  collection?: Collection
+}
+
+export interface User {
+  id: string
+  wallet_address: string
+  username: string | null
+  display_name: string | null
+  bio: string | null
+  avatar_url: string | null
+  email: string | null
+  notification_preferences: Record<string, any>
+  created_at: string
+  updated_at: string
+}
+
+export interface Transaction {
+  id: string
+  artwork_id: string
+  seller_id: string
+  buyer_id: string
+  price: number
+  currency: "ETH" | "USD" | "MATIC"
+  status: "pending" | "completed" | "failed" | "cancelled"
+  tx_hash: string | null
+  block_number: number | null
+  gas_used: number | null
+  gas_price: number | null
+  platform_fee: number
+  artist_royalty: number
+  created_at: string
+  completed_at: string | null
+  artwork?: Artwork
+  seller?: Artist
+  buyer?: User
+}
+
+export interface MarketplaceStats {
+  totalArtworks: number
+  totalArtists: number
+  totalSales: number
+  totalVolume: number
+}
+
+// Fetch all artworks with artist and collection data
 export async function getArtworks(filters?: {
   rarity?: string
   dataset?: string
@@ -9,7 +115,7 @@ export async function getArtworks(filters?: {
   limit?: number
   offset?: number
 }) {
-  const query = supabase
+  let query = supabase
     .from("artworks")
     .select(`
       *,
@@ -20,83 +126,50 @@ export async function getArtworks(filters?: {
     .order("created_at", { ascending: false })
 
   if (filters?.rarity) {
-    query.eq("rarity", filters.rarity)
+    query = query.eq("rarity", filters.rarity)
   }
+
   if (filters?.dataset) {
-    query.eq("dataset", filters.dataset)
+    query = query.eq("dataset", filters.dataset)
   }
+
   if (filters?.minPrice !== undefined) {
-    query.gte("price", filters.minPrice)
+    query = query.gte("price", filters.minPrice)
   }
+
   if (filters?.maxPrice !== undefined) {
-    query.lte("price", filters.maxPrice)
+    query = query.lte("price", filters.maxPrice)
   }
+
   if (filters?.limit) {
-    query.limit(filters.limit)
+    query = query.limit(filters.limit)
   }
+
   if (filters?.offset) {
-    query.range(filters.offset, filters.offset + filters.limit - 1)
+    query = query.range(filters.offset, filters.offset + (filters.limit || 10) - 1)
   }
 
   const { data, error } = await query
+
   if (error) {
     console.error("Error fetching artworks:", error)
     throw error
   }
-  return data
+
+  return data as Artwork[]
 }
 
-// Artist queries
-export async function getArtists(
-  options: {
-    limit?: number
-    offset?: number
-    sortBy?: "created_at" | "total_sales" | "total_artworks"
-    sortOrder?: "asc" | "desc"
-    verified?: boolean
-  } = {},
-) {
-  let query = supabase.from("artists").select("*")
-
-  // filter by verification badge if specified
-  if (options.verified !== undefined) {
-    query = query.eq("verified", options.verified)
-  }
-
-  // apply sorting
-  const sortBy = options.sortBy || "total_sales"
-  const sortOrder = options.sortOrder || "desc"
-  query = query.order(sortBy, { ascending: sortOrder === "asc" })
-
-  // apply pagination
-  if (options.limit) {
-    query = query.limit(options.limit)
-  }
-  if (options.offset) {
-    query = query.range(options.offset, options.offset + (options.limit || 10) - 1)
-  }
-
-  // execute the query
-  const { data, error } = await query
-  if (error) {
-    console.error("Error fetching artists:", error)
-    throw error
-  }
-  return data
-}
-
-// Featured artworks (top-viewed, still available)
+// Fetch featured artworks
 export async function getFeaturedArtworks(limit = 6) {
   const { data, error } = await supabase
     .from("artworks")
-    .select(
-      `
-        *,
-        artist:artists(*),
-        collection:collections(*)
-      `,
-    )
+    .select(`
+      *,
+      artist:artists(*),
+      collection:collections(*)
+    `)
     .eq("status", "available")
+    .in("rarity", ["Legendary", "Epic"])
     .order("views", { ascending: false })
     .limit(limit)
 
@@ -105,19 +178,35 @@ export async function getFeaturedArtworks(limit = 6) {
     throw error
   }
 
-  return data
+  return data as Artwork[]
 }
 
-// Featured collections (flagged with `is_featured = true`)
+// Fetch all artists
+export async function getArtists(limit?: number) {
+  let query = supabase.from("artists").select("*").order("total_sales", { ascending: false })
+
+  if (limit) {
+    query = query.limit(limit)
+  }
+
+  const { data, error } = await query
+
+  if (error) {
+    console.error("Error fetching artists:", error)
+    throw error
+  }
+
+  return data as Artist[]
+}
+
+// Fetch featured collections
 export async function getFeaturedCollections(limit = 5) {
   const { data, error } = await supabase
     .from("collections")
-    .select(
-      `
-        *,
-        artist:artists(*)
-      `,
-    )
+    .select(`
+      *,
+      artist:artists(*)
+    `)
     .eq("is_featured", true)
     .order("created_at", { ascending: false })
     .limit(limit)
@@ -127,27 +216,85 @@ export async function getFeaturedCollections(limit = 5) {
     throw error
   }
 
-  return data
+  return data as Collection[]
 }
 
-// Marketplace aggregate statistics
-export async function getMarketplaceStats() {
-  // Run the four expensive count/aggregation queries in parallel.
-  const [{ count: artworksCount }, { count: artistsCount }, { count: completedTxCount }, { data: completedTxVolume }] =
-    await Promise.all([
-      supabase.from("artworks").select("*", { head: true, count: "exact" }),
-      supabase.from("artists").select("*", { head: true, count: "exact" }),
-      supabase.from("transactions").select("*", { head: true, count: "exact" }).eq("status", "completed"),
-      supabase.from("transactions").select("price").eq("status", "completed"),
-    ])
+// Fetch marketplace statistics
+export async function getMarketplaceStats(): Promise<MarketplaceStats> {
+  try {
+    // Get total artworks
+    const { count: totalArtworks } = await supabase.from("artworks").select("*", { count: "exact", head: true })
 
-  // Calculate total volume from the list of completed transactions.
-  const totalVolume = completedTxVolume?.reduce((sum: number, tx: { price: number }) => sum + (tx?.price ?? 0), 0) ?? 0
+    // Get total artists
+    const { count: totalArtists } = await supabase.from("artists").select("*", { count: "exact", head: true })
 
-  return {
-    totalArtworks: artworksCount ?? 0,
-    totalArtists: artistsCount ?? 0,
-    totalTransactions: completedTxCount ?? 0,
-    totalVolume,
+    // Get completed transactions for sales count and volume
+    const { data: transactions } = await supabase
+      .from("transactions")
+      .select("price, currency")
+      .eq("status", "completed")
+
+    const totalSales = transactions?.length || 0
+    const totalVolume = transactions?.reduce((sum, tx) => sum + tx.price, 0) || 0
+
+    return {
+      totalArtworks: totalArtworks || 0,
+      totalArtists: totalArtists || 0,
+      totalSales,
+      totalVolume,
+    }
+  } catch (error) {
+    console.error("Error fetching marketplace stats:", error)
+    return {
+      totalArtworks: 0,
+      totalArtists: 0,
+      totalSales: 0,
+      totalVolume: 0,
+    }
   }
 }
+
+// Fetch single artwork by ID
+export async function getArtworkById(id: string) {
+  const { data, error } = await supabase
+    .from("artworks")
+    .select(`
+      *,
+      artist:artists(*),
+      collection:collections(*)
+    `)
+    .eq("id", id)
+    .single()
+
+  if (error) {
+    console.error("Error fetching artwork:", error)
+    throw error
+  }
+
+  return data as Artwork
+}
+
+// Fetch artworks by artist
+export async function getArtworksByArtist(artistId: string) {
+  const { data, error } = await supabase
+    .from("artworks")
+    .select(`
+      *,
+      artist:artists(*),
+      collection:collections(*)
+    `)
+    .eq("artist_id", artistId)
+    .order("created_at", { ascending: false })
+
+  if (error) {
+    console.error("Error fetching artworks by artist:", error)
+    throw error
+  }
+
+  return data as Artwork[]
+}
+
+// Fetch artworks by collection
+export async function getArtworksByCollection(collectionId: string) {
+  const { data, error } = await supabase
+    .from
