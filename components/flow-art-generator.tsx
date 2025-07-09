@@ -32,7 +32,7 @@ const colorSchemes = [
 ]
 
 const scenarios = [
-  { value: "", label: "None", description: "Pure mathematical patterns", icon: Palette },
+  { value: "none", label: "None", description: "Pure mathematical patterns", icon: Palette },
   {
     value: "forest",
     label: "Enchanted Forest",
@@ -55,7 +55,7 @@ export default function FlowArtGenerator() {
   const [samples, setSamples] = useState([500])
   const [noise, setNoise] = useState([0.05])
   const [colorScheme, setColorScheme] = useState("viridis")
-  const [scenario, setScenario] = useState("")
+  const [scenario, setScenario] = useState("none")
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [isUpscaling, setIsUpscaling] = useState(false)
@@ -66,7 +66,7 @@ export default function FlowArtGenerator() {
     try {
       if (generationMode === "svg") {
         // Generate SVG plot with scenario blending
-        const data = generateDataset(dataset, seed[0], samples[0], noise[0], scenario || undefined)
+        const data = generateDataset(dataset, seed[0], samples[0], noise[0], scenario !== "none" ? scenario : undefined)
         const svgContent = createSVGPlot(data, {
           colorScheme,
           width: 1792,
@@ -126,7 +126,7 @@ export default function FlowArtGenerator() {
 
     const link = document.createElement("a")
     link.href = generatedImage
-    const scenarioSuffix = scenario ? `-${scenario}` : ""
+    const scenarioSuffix = scenario !== "none" ? `-${scenario}` : ""
     link.download = `flowsketch-${dataset}${scenarioSuffix}-${seed[0]}-${Date.now()}.${generationMode === "svg" ? "svg" : "png"}`
     document.body.appendChild(link)
     link.click()
@@ -229,7 +229,7 @@ export default function FlowArtGenerator() {
                   ))}
                 </SelectContent>
               </Select>
-              {selectedScenario && selectedScenario.value && (
+              {selectedScenario && selectedScenario.value !== "none" && (
                 <Badge variant="outline" className="w-fit">
                   <selectedScenario.icon className="h-3 w-3 mr-1" />
                   {selectedScenario.description}
@@ -322,7 +322,7 @@ export default function FlowArtGenerator() {
                 <div className="text-center text-muted-foreground">
                   <Palette className="h-12 w-12 mx-auto mb-2 opacity-50" />
                   <p>Click "Generate Flow Art" to create your artwork</p>
-                  {scenario && (
+                  {scenario !== "none" && (
                     <p className="text-sm mt-2">
                       Ready to blend with {scenarios.find((s) => s.value === scenario)?.label}
                     </p>
