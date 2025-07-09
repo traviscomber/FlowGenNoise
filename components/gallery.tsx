@@ -21,7 +21,7 @@ import { Heart, Download, Trash2, Grid3X3, List, Star, Settings, Archive, Eye, C
 import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
 import { cn } from "@/lib/utils"
 import { CloudSync } from "@/components/cloud-sync"
-import { ImageCompressor } from "@/lib/image-compressor"
+import { ImageCompressor } from "@/lib/image-compression"
 
 interface GalleryProps {
   onImageSelect?: (image: GalleryImage) => void
