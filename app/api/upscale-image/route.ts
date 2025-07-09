@@ -115,18 +115,25 @@ export async function POST(req: Request) {
     // For client-side upscaling, we'll return the original image with instructions
     // The actual upscaling will happen in the browser using Canvas API
     return NextResponse.json({
-      requiresClientUpscaling: true,
+      success: true,
+      image: imageData, // Original image
       metadata: {
         originalSize: "1792x1024",
-        upscaledSize: `${1792 * (scaleFactor || 4)}x${1024 * (scaleFactor || 4)}`,
-        scaleFactor: scaleFactor || 4,
-        model: "Client-side Bicubic + Enhancement",
+        upscaledSize: `${1792 * scaleFactor}x${1024 * scaleFactor}`,
+        scaleFactor: scaleFactor,
+        model: "Bicubic Interpolation",
         quality: "High Quality Upscaled",
-        method: "client-side-fallback",
+        method: "client-side",
       },
+      requiresClientUpscaling: true,
     })
-  } catch (error) {
-    console.error("Error in upscale API:", error)
-    return NextResponse.json({ error: "Failed to process upscale request" }, { status: 500 })
+  } catch (error: any) {
+    console.error("Error in upscaling:", error)
+    return NextResponse.json(
+      {
+        error: "Upscaling failed: " + error.message,
+      },
+      { status: 500 },
+    )
   }
 }
