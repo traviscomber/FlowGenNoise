@@ -1,66 +1,79 @@
-export function createSVGPlot(data: number[][], colorScheme = "magma", width = 800, height = 600): string {
-  if (!data?.length) {
-    const empty =
-      '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><text x="200" y="150" text-anchor="middle">No data</text></svg>'
-    return "data:image/svg+xml;base64," + btoa(empty)
-  }
+import type { DataPoint } from "./flow-model"
 
-  /* ---------- bounds & scaling ---------- */
-  const xs = data.map((d) => d[0])
-  const ys = data.map((d) => d[1])
-  const [minX, maxX] = [Math.min(...xs), Math.max(...xs)]
-  const [minY, maxY] = [Math.min(...ys), Math.max(...ys)]
-  const padX = (maxX - minX) * 0.1
-  const padY = (maxY - minY) * 0.1
-  const padding = 50
-
-  const scaleX = (x: number) => ((x - minX + padX) / (maxX - minX + 2 * padX)) * (width - 2 * padding) + padding
-  const scaleY = (y: number) =>
-    height - padding - ((y - minY + padY) / (maxY - minY + 2 * padY)) * (height - 2 * padding)
-
-  /* ---------- SVG assembly ---------- */
-  let svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
-    `<rect width="${width}" height="${height}" fill="#1a1a1a"/>` +
-    `<defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">` +
-    `<path d="M40 0 L0 0 0 40" fill="none" stroke="#333" stroke-width="1" opacity="0.3"/></pattern></defs>` +
-    `<rect width="${width}" height="${height}" fill="url(#grid)"/>`
-
-  data.forEach((p, idx) => {
-    const [x, y] = p
-    const cVal = idx / (data.length - 1)
-    const colour = getColorFromScheme(colorScheme, cVal)
-    const r = Math.max(1, 3 - data.length / 1000)
-    svg += `<circle cx="${scaleX(x)}" cy="${scaleY(y)}" r="${r}" fill="${colour}" opacity="0.8"/>`
-  })
-
-  svg += "</svg>"
-  return "data:image/svg+xml;base64," + btoa(svg)
+const colorSchemes = {
+  viridis: ["#440154", "#31688e", "#35b779", "#fde725"],
+  plasma: ["#0d0887", "#7e03a8", "#cc4778", "#f89441", "#f0f921"],
+  magma: ["#000004", "#3b0f70", "#8c2981", "#de4968", "#fe9f6d", "#fcfdbf"],
+  inferno: ["#000004", "#420a68", "#932667", "#dd513a", "#fca50a", "#fcffa4"],
+  cool: ["#00ffff", "#0080ff", "#0000ff", "#8000ff"],
+  warm: ["#ff0000", "#ff8000", "#ffff00", "#80ff00"],
+  grayscale: ["#000000", "#404040", "#808080", "#c0c0c0", "#ffffff"],
 }
 
-function getColorFromScheme(scheme: string, value: number): string {
-  switch (scheme) {
-    case "magma": {
-      // Approximating magma colormap with a gradient from purple to yellow
-      const r = Math.floor(255 * value)
-      const g = Math.floor(255 * value)
-      const b = Math.floor(255 * (1 - value))
-      return `rgb(${r}, ${g}, ${b})`
-    }
-    case "viridis": {
-      // A more complex but visually appealing colormap (approximation)
-      const r = Math.floor(255 * Math.pow(value, 2))
-      const g = Math.floor(255 * value)
-      const b = Math.floor(255 * Math.pow(1 - value, 2))
-      return `rgb(${r}, ${g}, ${b})`
-    }
-    case "plasma": {
-      const r = Math.floor(255 * Math.pow(value, 3))
-      const g = Math.floor(255 * Math.pow(value, 0.5))
-      const b = Math.floor(255 * Math.pow(1 - value, 3))
-      return `rgb(${r}, ${g}, ${b})`
-    }
-    default:
-      return "white"
+function getColor(value: number, scheme: string): string {
+  const colors = colorSchemes[scheme as keyof typeof colorSchemes] || colorSchemes.viridis
+  const index = Math.floor(value * (colors.length - 1))
+  return colors[Math.max(0, Math.min(index, colors.length - 1))]
+}
+
+export function createSVGPlot(data: DataPoint[], colorScheme = "magma", width = 800, height = 600): string {
+  if (!data || data.length === 0) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+      <rect width="${width}" height="${height}" fill="#f8f9fa"/>
+      <text x="${width / 2}" y="${height / 2}" text-anchor="middle" fill="#666">No data to display</text>
+    </svg>`
   }
+
+  // Find data bounds
+  const xValues = data.map((d) => d.x)
+  const yValues = data.map((d) => d.y)
+  const xMin = Math.min(...xValues)
+  const xMax = Math.max(...xValues)
+  const yMin = Math.min(...yValues)
+  const yMax = Math.max(...yValues)
+
+  // Add padding
+  const padding = 40
+  const plotWidth = width - 2 * padding
+  const plotHeight = height - 2 * padding
+
+  // Scale functions
+  const scaleX = (x: number) => padding + ((x - xMin) / (xMax - xMin)) * plotWidth
+  const scaleY = (y: number) => padding + ((yMax - y) / (yMax - yMin)) * plotHeight
+
+  // Generate SVG
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    <rect width="${width}" height="${height}" fill="#ffffff"/>
+    <defs>
+      <style>
+        .point { opacity: 0.7; }
+        .point:hover { opacity: 1; stroke: #000; stroke-width: 1; }
+      </style>
+    </defs>`
+
+  // Add grid
+  svg += `<g stroke="#e0e0e0" stroke-width="0.5" opacity="0.5">`
+  for (let i = 0; i <= 10; i++) {
+    const x = padding + (i / 10) * plotWidth
+    const y = padding + (i / 10) * plotHeight
+    svg += `<line x1="${x}" y1="${padding}" x2="${x}" y2="${height - padding}"/>`
+    svg += `<line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}"/>`
+  }
+  svg += `</g>`
+
+  // Add data points
+  data.forEach((point, i) => {
+    const x = scaleX(point.x)
+    const y = scaleY(point.y)
+    const colorValue =
+      point.label !== undefined
+        ? point.label / Math.max(1, Math.max(...data.map((d) => d.label || 0)))
+        : i / data.length
+    const color = getColor(colorValue, colorScheme)
+
+    svg += `<circle cx="${x}" cy="${y}" r="2" fill="${color}" class="point"/>`
+  })
+
+  svg += `</svg>`
+  return svg
 }

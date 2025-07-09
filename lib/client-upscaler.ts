@@ -21,7 +21,7 @@ export class ClientUpscaler {
    * Upscale an image using canvas bicubic-like interpolation and an
    * optional sharpening pass.
    */
-  static async upscaleImage(imageDataUrl: string, scaleFactor = 2): Promise<string> {
+  static async upscaleImage(imageUrl: string, scaleFactor = 4): Promise<string> {
     return new Promise((resolve, reject) => {
       const img = new Image()
       img.crossOrigin = "anonymous"
@@ -30,36 +30,43 @@ export class ClientUpscaler {
         try {
           const canvas = document.createElement("canvas")
           const ctx = canvas.getContext("2d")
-          if (!ctx) return reject(new Error("Could not get canvas context"))
 
-          const newWidth = img.width * scaleFactor
-          const newHeight = img.height * scaleFactor
-          canvas.width = newWidth
-          canvas.height = newHeight
+          if (!ctx) {
+            reject(new Error("Could not get canvas context"))
+            return
+          }
 
+          // Set new dimensions
+          canvas.width = img.width * scaleFactor
+          canvas.height = img.height * scaleFactor
+
+          // Use bicubic-like interpolation by enabling image smoothing
           ctx.imageSmoothingEnabled = true
           ctx.imageSmoothingQuality = "high"
-          ctx.drawImage(img, 0, 0, newWidth, newHeight)
 
-          // Optional: sharpening filter
-          const sharpened = this.applySharpeningFilter(ctx.getImageData(0, 0, newWidth, newHeight))
-          ctx.putImageData(sharpened, 0, 0)
+          // Draw scaled image
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 
-          resolve(canvas.toDataURL("image/png", 1))
-        } catch (err) {
-          reject(err)
+          // Convert to data URL
+          const upscaledDataUrl = canvas.toDataURL("image/png", 1.0)
+          resolve(upscaledDataUrl)
+        } catch (error) {
+          reject(error)
         }
       }
 
-      img.onerror = () => reject(new Error("Failed to load source image"))
-      img.src = imageDataUrl
+      img.onerror = () => {
+        reject(new Error("Failed to load image for upscaling"))
+      }
+
+      img.src = imageUrl
     })
   }
 
   /**
    * Lightweight colour / contrast enhancement.
    */
-  static async enhanceImage(imageDataUrl: string): Promise<string> {
+  static async enhanceImage(imageUrl: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const img = new Image()
       img.crossOrigin = "anonymous"
@@ -68,23 +75,46 @@ export class ClientUpscaler {
         try {
           const canvas = document.createElement("canvas")
           const ctx = canvas.getContext("2d")
-          if (!ctx) return reject(new Error("Could not get canvas context"))
+
+          if (!ctx) {
+            reject(new Error("Could not get canvas context"))
+            return
+          }
 
           canvas.width = img.width
           canvas.height = img.height
+
+          // Draw original image
           ctx.drawImage(img, 0, 0)
 
-          const enhanced = this.applyEnhancementFilters(ctx.getImageData(0, 0, canvas.width, canvas.height))
-          ctx.putImageData(enhanced, 0, 0)
+          // Get image data for processing
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+          const data = imageData.data
 
-          resolve(canvas.toDataURL("image/png", 1))
-        } catch (err) {
-          reject(err)
+          // Apply enhancement filters
+          for (let i = 0; i < data.length; i += 4) {
+            // Increase contrast slightly
+            data[i] = Math.min(255, data[i] * 1.1) // Red
+            data[i + 1] = Math.min(255, data[i + 1] * 1.1) // Green
+            data[i + 2] = Math.min(255, data[i + 2] * 1.1) // Blue
+            // Alpha stays the same
+          }
+
+          // Put enhanced data back
+          ctx.putImageData(imageData, 0, 0)
+
+          const enhancedDataUrl = canvas.toDataURL("image/png", 1.0)
+          resolve(enhancedDataUrl)
+        } catch (error) {
+          reject(error)
         }
       }
 
-      img.onerror = () => reject(new Error("Failed to load source image"))
-      img.src = imageDataUrl
+      img.onerror = () => {
+        reject(new Error("Failed to load image for enhancement"))
+      }
+
+      img.src = imageUrl
     })
   }
 
@@ -136,11 +166,11 @@ export class ClientUpscaler {
 // -----------------------------------------------------------------------------
 
 /** Upscale an image (wrapper around ClientUpscaler.upscaleImage). */
-export async function upscaleImageClient(imageDataUrl: string, scaleFactor = 2): Promise<string> {
-  return ClientUpscaler.upscaleImage(imageDataUrl, scaleFactor)
+export async function upscaleImageClient(imageUrl: string, scaleFactor = 4): Promise<string> {
+  return ClientUpscaler.upscaleImage(imageUrl, scaleFactor)
 }
 
 /** Enhance an image (wrapper around ClientUpscaler.enhanceImage). */
-export async function enhanceImageClient(imageDataUrl: string): Promise<string> {
-  return ClientUpscaler.enhanceImage(imageDataUrl)
+export async function enhanceImageClient(imageUrl: string): Promise<string> {
+  return ClientUpscaler.enhanceImage(imageUrl)
 }
