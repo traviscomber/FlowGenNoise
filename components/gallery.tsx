@@ -17,11 +17,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Heart, Download, Trash2, Grid3X3, List, Star, Settings, Archive, Eye, Copy, Cloud } from "lucide-react"
+import { Heart, Download, Trash2, Grid3X3, List, Star, Settings, Archive, Eye, Copy, Cloud, Zap } from "lucide-react"
 import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
 import { cn } from "@/lib/utils"
 import { CloudSync } from "@/components/cloud-sync"
-import { ImageCompressor } from "@/lib/image-compression"
 
 interface GalleryProps {
   onImageSelect?: (image: GalleryImage) => void
@@ -140,7 +139,10 @@ export function Gallery({ onImageSelect }: GalleryProps) {
               <Archive className="h-5 w-5" />
               Gallery ({filteredAndSortedImages.length})
             </CardTitle>
-            <CardDescription>Your generated artworks • {storageInfo.imageCount} total images</CardDescription>
+            <CardDescription>
+              Your generated artworks • {storageInfo.imageCount} total images • Full resolution preserved for 8K
+              enhancement
+            </CardDescription>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}>
@@ -158,11 +160,11 @@ export function Gallery({ onImageSelect }: GalleryProps) {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Gallery Settings</DialogTitle>
-                  <DialogDescription>Manage your gallery and storage</DialogDescription>
+                  <DialogDescription>Manage your high-resolution gallery and storage</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label>Storage Usage & Optimization</Label>
+                    <Label>High-Resolution Storage</Label>
                     <div className="mt-2 space-y-2">
                       <div className="flex justify-between text-sm">
                         <span>Local Images:</span>
@@ -174,11 +176,15 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Total Size:</span>
-                        <span>{ImageCompressor.formatFileSize(storageStats.totalSize)}</span>
+                        <span>{GalleryStorage.formatFileSize(storageStats.totalSize)}</span>
                       </div>
-                      <div className="flex justify-between text-sm text-green-600">
-                        <span>Compression Savings:</span>
-                        <span>{ImageCompressor.formatFileSize(storageStats.compressionSavings)}</span>
+                      <div className="flex justify-between text-sm">
+                        <span>Average Size:</span>
+                        <span>{GalleryStorage.formatFileSize(storageStats.averageSize)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Largest Image:</span>
+                        <span>{GalleryStorage.formatFileSize(storageStats.largestImage)}</span>
                       </div>
                       <div className="flex justify-between text-sm text-muted-foreground mb-1">
                         <span>Local Storage: {(storageInfo.used / 1024).toFixed(1)} KB used</span>
@@ -191,6 +197,15 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                         />
                       </div>
                     </div>
+                  </div>
+                  <div className="bg-blue-50 p-3 rounded-lg">
+                    <div className="flex items-center gap-2 text-blue-700 text-sm font-medium mb-1">
+                      <Zap className="h-4 w-4" />
+                      8K Enhancement Ready
+                    </div>
+                    <p className="text-blue-600 text-xs">
+                      All images stored at full resolution for optimal AI upscaling and enhancement to 8K quality.
+                    </p>
                   </div>
                   <Separator />
                   <div className="flex gap-2">
@@ -335,7 +350,12 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                       <Star className="absolute top-2 left-2 h-4 w-4 fill-yellow-400 text-yellow-400" />
                     )}
 
-                    {image.metadata.cloudStored && <Cloud className="absolute bottom-2 left-2 h-4 w-4 text-blue-500" />}
+                    {image.metadata.cloudStored && (
+                      <div className="absolute bottom-2 left-2 flex items-center gap-1">
+                        <Cloud className="h-4 w-4 text-blue-500" />
+                        <Zap className="h-3 w-3 text-green-500" title="8K Ready" />
+                      </div>
+                    )}
                   </div>
 
                   <div className={cn("p-3", viewMode === "list" && "flex-1 p-0")}>
@@ -346,6 +366,11 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                       {image.metadata.scenario !== "none" && (
                         <Badge variant="outline" className="text-xs">
                           {image.metadata.scenario}
+                        </Badge>
+                      )}
+                      {image.metadata.fileSize && (
+                        <Badge variant="outline" className="text-xs text-green-600">
+                          {GalleryStorage.formatFileSize(image.metadata.fileSize)}
                         </Badge>
                       )}
                     </div>
@@ -398,9 +423,18 @@ export function Gallery({ onImageSelect }: GalleryProps) {
               <DialogTitle className="flex items-center gap-2">
                 <Eye className="h-5 w-5" />
                 {selectedImage.metadata.filename.replace(/\.[^/.]+$/, "")}
+                {selectedImage.metadata.cloudStored && (
+                  <Badge variant="outline" className="text-green-600">
+                    <Zap className="h-3 w-3 mr-1" />
+                    8K Ready
+                  </Badge>
+                )}
               </DialogTitle>
               <DialogDescription>
                 Generated on {new Date(selectedImage.metadata.createdAt).toLocaleString()}
+                {selectedImage.metadata.fileSize && (
+                  <span className="ml-2">• {GalleryStorage.formatFileSize(selectedImage.metadata.fileSize)}</span>
+                )}
               </DialogDescription>
             </DialogHeader>
 
@@ -447,6 +481,15 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                         {selectedImage.metadata.generationMode.toUpperCase()}
                       </Badge>
                     </div>
+                    {selectedImage.metadata.cloudStored && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Storage:</span>
+                        <Badge variant="outline" className="text-green-600">
+                          <Cloud className="h-3 w-3 mr-1" />
+                          Cloud (Full Res)
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -455,7 +498,7 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                 <div className="flex flex-col gap-2">
                   <Button onClick={() => handleDownloadImage(selectedImage)} className="w-full">
                     <Download className="h-4 w-4 mr-2" />
-                    Download Image
+                    Download Full Resolution
                   </Button>
 
                   <Button variant="outline" onClick={() => handleToggleFavorite(selectedImage.id)} className="w-full">

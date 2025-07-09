@@ -26,7 +26,7 @@ export class CloudSyncService {
     lastSync: null,
     pendingUploads: 0,
     storageUsed: 0,
-    storageQuota: 100 * 1024 * 1024, // 100MB default
+    storageQuota: 500 * 1024 * 1024, // 500MB default for high-res images
     conflictCount: 0,
   }
 
@@ -135,7 +135,7 @@ export class CloudSyncService {
       email,
       display_name: displayName || null,
       sync_enabled: true,
-      storage_quota: 100 * 1024 * 1024, // 100MB
+      storage_quota: 500 * 1024 * 1024, // 500MB for high-res images
       storage_used: 0,
     })
 
@@ -204,62 +204,10 @@ export class CloudSyncService {
     this.notifyListeners()
   }
 
-  static async uploadImage(image: GalleryImage): Promise<{ success: boolean; error?: string }> {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) {
-        return { success: false, error: "Not authenticated" }
-      }
-
-      // Upload image file to Supabase Storage
-      const imageBlob = await fetch(image.imageUrl).then((r) => r.blob())
-      const fileName = `${user.id}/${image.id}.${image.metadata.generationMode === "svg" ? "svg" : "png"}`
-
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("gallery-images")
-        .upload(fileName, imageBlob, {
-          contentType: image.metadata.generationMode === "svg" ? "image/svg+xml" : "image/png",
-          upsert: true,
-        })
-
-      if (uploadError) {
-        return { success: false, error: uploadError.message }
-      }
-
-      // Get public URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("gallery-images").getPublicUrl(fileName)
-
-      // Save to database
-      const { error: dbError } = await supabase.from("gallery_images").upsert({
-        id: image.id,
-        user_id: user.id,
-        image_url: publicUrl,
-        metadata: image.metadata,
-        is_favorite: image.isFavorite,
-        tags: image.tags,
-      })
-
-      if (dbError) {
-        return { success: false, error: dbError.message }
-      }
-
-      // Update storage usage
-      await this.updateStorageUsage()
-
-      return { success: true }
-    } catch (error: any) {
-      return { success: false, error: error.message }
-    }
-  }
-
-  static async uploadImageWithProgress(
+  static async uploadImageFullResolution(
     image: GalleryImage,
     onProgress?: (progress: number) => void,
-  ): Promise<{ success: boolean; error?: string; cloudUrl?: string }> {
+  ): Promise<{ success: boolean; error?: string; cloudUrl?: string; thumbnailUrl?: string }> {
     try {
       const {
         data: { user },
@@ -270,18 +218,20 @@ export class CloudSyncService {
 
       onProgress?.(10)
 
-      // Compress image for upload
-      const { ImageCompressor } = await import("./image-compression")
-      const compressionResult = await ImageCompressor.compressForUpload(image.imageUrl)
+      // Get the original image blob
+      const imageBlob = await fetch(image.imageUrl).then((r) => r.blob())
+      const fileSize = imageBlob.size
 
       onProgress?.(30)
 
-      // Upload main image
-      const mainFileName = `${user.id}/${image.id}.jpg`
+      // Upload full resolution image
+      const fileExtension = image.metadata.generationMode === "svg" ? "svg" : "png"
+      const mainFileName = `${user.id}/${image.id}.${fileExtension}`
+
       const { data: mainUpload, error: mainError } = await supabase.storage
         .from("gallery-images")
-        .upload(mainFileName, compressionResult.compressedImage, {
-          contentType: "image/jpeg",
+        .upload(mainFileName, imageBlob, {
+          contentType: image.metadata.generationMode === "svg" ? "image/svg+xml" : "image/png",
           upsert: true,
         })
 
@@ -289,44 +239,55 @@ export class CloudSyncService {
         return { success: false, error: mainError.message }
       }
 
-      onProgress?.(60)
+      onProgress?.(70)
 
-      // Upload thumbnail
-      const thumbFileName = `${user.id}/thumbs/${image.id}.jpg`
-      const { data: thumbUpload, error: thumbError } = await supabase.storage
-        .from("gallery-images")
-        .upload(thumbFileName, compressionResult.thumbnail, {
-          contentType: "image/jpeg",
-          upsert: true,
-        })
+      // Create thumbnail for gallery view only (not for storage optimization)
+      let thumbnailUrl: string | undefined
+      if (image.metadata.generationMode !== "svg") {
+        try {
+          const thumbnailBlob = await this.createThumbnail(image.imageUrl)
+          const thumbFileName = `${user.id}/thumbs/${image.id}.jpg`
 
-      onProgress?.(80)
+          const { data: thumbUpload, error: thumbError } = await supabase.storage
+            .from("gallery-images")
+            .upload(thumbFileName, thumbnailBlob, {
+              contentType: "image/jpeg",
+              upsert: true,
+            })
 
-      // Get public URLs
+          if (!thumbError) {
+            const {
+              data: { publicUrl: thumbUrl },
+            } = supabase.storage.from("gallery-images").getPublicUrl(thumbFileName)
+            thumbnailUrl = thumbUrl
+          }
+        } catch (thumbError) {
+          console.warn("Failed to create thumbnail:", thumbError)
+          // Continue without thumbnail - not critical
+        }
+      }
+
+      onProgress?.(90)
+
+      // Get public URL for main image
       const {
         data: { publicUrl: mainUrl },
       } = supabase.storage.from("gallery-images").getPublicUrl(mainFileName)
 
-      const {
-        data: { publicUrl: thumbUrl },
-      } = supabase.storage.from("gallery-images").getPublicUrl(thumbFileName)
-
-      // Save to database with compression info
+      // Save to database with full metadata
       const enhancedMetadata = {
         ...image.metadata,
-        compression: {
-          originalSize: compressionResult.originalSize,
-          compressedSize: compressionResult.compressedSize,
-          compressionRatio: compressionResult.compressionRatio,
-          uploadedAt: Date.now(),
-        },
+        cloudStored: true,
+        uploadedAt: Date.now(),
+        originalSize: fileSize,
+        fileSize: fileSize,
       }
 
       const { error: dbError } = await supabase.from("gallery_images").upsert({
         id: image.id,
         user_id: user.id,
         image_url: mainUrl,
-        thumbnail_url: thumbUrl,
+        thumbnail_url: thumbnailUrl,
         metadata: enhancedMetadata,
         is_favorite: image.isFavorite,
         tags: image.tags,
@@ -341,10 +302,57 @@ export class CloudSyncService {
       // Update storage usage
       await this.updateStorageUsage()
 
-      return { success: true, cloudUrl: mainUrl }
+      return { success: true, cloudUrl: mainUrl, thumbnailUrl }
     } catch (error: any) {
       return { success: false, error: error.message }
     }
+  }
+
+  private static async createThumbnail(imageUrl: string, size = 400): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.crossOrigin = "anonymous"
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas")
+        const ctx = canvas.getContext("2d")!
+
+        // Calculate thumbnail dimensions maintaining aspect ratio
+        const { width, height } = img
+        const aspectRatio = width / height
+
+        let thumbWidth = size
+        let thumbHeight = size
+
+        if (aspectRatio > 1) {
+          thumbHeight = size / aspectRatio
+        } else {
+          thumbWidth = size * aspectRatio
+        }
+
+        canvas.width = thumbWidth
+        canvas.height = thumbHeight
+
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = "high"
+        ctx.drawImage(img, 0, 0, thumbWidth, thumbHeight)
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              resolve(blob)
+            } else {
+              reject(new Error("Failed to create thumbnail"))
+            }
+          },
+          "image/jpeg",
+          0.8,
+        )
+      }
+
+      img.onerror = () => reject(new Error("Failed to load image for thumbnail"))
+      img.src = imageUrl
+    })
   }
 
   static async autoUploadNewGeneration(
@@ -358,13 +366,14 @@ export class CloudSyncService {
     }
 
     try {
-      const result = await this.uploadImageWithProgress(image, onProgress)
+      const result = await this.uploadImageFullResolution(image, onProgress)
 
       if (result.success && result.cloudUrl) {
-        // Update the image with cloud URL
+        // Update the image with cloud URL and thumbnail
         const cloudImage: GalleryImage = {
           ...image,
           imageUrl: result.cloudUrl,
+          thumbnail: result.thumbnailUrl,
           metadata: {
             ...image.metadata,
             cloudStored: true,
@@ -380,16 +389,6 @@ export class CloudSyncService {
       console.error("Auto-upload failed:", error)
       return { success: false, error: error.message }
     }
-  }
-
-  static async getOptimizedImageUrl(image: GalleryImage, preferThumbnail = false): Promise<string> {
-    // If cloud stored and we want thumbnail, try to get it
-    if (image.thumbnail && preferThumbnail) {
-      return image.thumbnail
-    }
-
-    // Return the main image URL
-    return image.imageUrl
   }
 
   static async downloadImages(): Promise<GalleryImage[]> {
@@ -433,12 +432,16 @@ export class CloudSyncService {
         return { success: false, error: "Not authenticated" }
       }
 
-      // Delete from storage
-      const fileName = `${user.id}/${imageId}.png` // Try PNG first
-      await supabase.storage.from("gallery-images").remove([fileName])
+      // Delete main image from storage
+      const mainFileName = `${user.id}/${imageId}.png`
+      await supabase.storage.from("gallery-images").remove([mainFileName])
 
-      const svgFileName = `${user.id}/${imageId}.svg` // Try SVG
+      const svgFileName = `${user.id}/${imageId}.svg`
       await supabase.storage.from("gallery-images").remove([svgFileName])
+
+      // Delete thumbnail
+      const thumbFileName = `${user.id}/thumbs/${imageId}.jpg`
+      await supabase.storage.from("gallery-images").remove([thumbFileName])
 
       // Delete from database
       const { error } = await supabase.from("gallery_images").delete().eq("id", imageId).eq("user_id", user.id)
@@ -501,9 +504,9 @@ export class CloudSyncService {
         }
       }
 
-      // Upload local images
+      // Upload local images at full resolution
       for (const image of toUpload) {
-        await this.uploadImage(image)
+        await this.uploadImageFullResolution(image)
       }
 
       // Download cloud images
@@ -531,16 +534,18 @@ export class CloudSyncService {
       } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data, error } = await supabase.from("gallery_images").select("image_url").eq("user_id", user.id)
+      // Get actual storage usage from Supabase
+      const { data: files, error } = await supabase.storage.from("gallery-images").list(user.id, {
+        limit: 1000,
+      })
 
       if (error) return
 
-      // Estimate storage usage (this is approximate)
-      const estimatedUsage = data.length * 500 * 1024 // Assume ~500KB per image
+      const totalSize = files.reduce((sum, file) => sum + (file.metadata?.size || 0), 0)
 
-      await supabase.from("user_profiles").update({ storage_used: estimatedUsage }).eq("id", user.id)
+      await supabase.from("user_profiles").update({ storage_used: totalSize }).eq("id", user.id)
 
-      this.syncStatus.storageUsed = estimatedUsage
+      this.syncStatus.storageUsed = totalSize
       this.notifyListeners()
     } catch (error) {
       console.error("Failed to update storage usage:", error)
@@ -553,7 +558,7 @@ export class CloudSyncService {
 
   static async resolveConflict(conflict: SyncConflict, resolution: "keep_local" | "keep_cloud"): Promise<void> {
     if (resolution === "keep_local") {
-      await this.uploadImage(conflict.localImage)
+      await this.uploadImageFullResolution(conflict.localImage)
     } else {
       // Update local storage with cloud version
       const localImages = JSON.parse(localStorage.getItem("flowsketch-gallery") || "[]") as GalleryImage[]

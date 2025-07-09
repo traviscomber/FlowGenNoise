@@ -13,35 +13,63 @@ export interface GalleryImage {
     createdAt: number
     filename: string
     cloudStored?: boolean
-    compression?: {
-      originalSize: number
-      compressedSize: number
-    }
+    uploadedAt?: number
+    originalSize?: number
+    fileSize?: number
   }
   isFavorite: boolean
   tags: string[]
 }
 
+export interface StorageInfo {
+  used: number
+  available: number
+  imageCount: number
+}
+
+export interface StorageStats {
+  localImages: number
+  cloudImages: number
+  totalSize: number
+  averageSize: number
+  largestImage: number
+}
+
 export class GalleryStorage {
   private static readonly STORAGE_KEY = "flowsketch-gallery"
-  private static readonly MAX_IMAGES = 100 // Prevent storage overflow
+  private static readonly MAX_LOCAL_STORAGE = 50 * 1024 * 1024 // 50MB for local storage
 
   static saveImage(image: GalleryImage): void {
-    try {
-      const gallery = this.getGallery()
+    const gallery = this.getGallery()
+    const existingIndex = gallery.findIndex((img) => img.id === image.id)
 
-      // Remove oldest images if we exceed the limit
-      if (gallery.length >= this.MAX_IMAGES) {
-        const sortedByDate = gallery.sort((a, b) => a.metadata.createdAt - b.metadata.createdAt)
-        const toRemove = sortedByDate.slice(0, gallery.length - this.MAX_IMAGES + 1)
-        toRemove.forEach((img) => this.deleteImage(img.id))
-      }
-
-      const updatedGallery = [image, ...this.getGallery()]
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedGallery))
-    } catch (error) {
-      console.error("Failed to save image to gallery:", error)
+    if (existingIndex >= 0) {
+      gallery[existingIndex] = image
+    } else {
+      gallery.unshift(image) // Add to beginning for newest first
     }
+
+    this.saveGallery(gallery)
+  }
+
+  static async saveImageWithCloudUpload(
+    image: GalleryImage,
+    onProgress?: (progress: number) => void,
+  ): Promise<{ success: boolean; error?: string; cloudImage?: GalleryImage }> {
+    // Save locally first
+    this.saveImage(image)
+
+    // Try cloud upload
+    const { CloudSyncService } = await import("./cloud-sync")
+    const result = await CloudSyncService.autoUploadNewGeneration(image, onProgress)
+
+    if (result.success && result.cloudImage) {
+      // Update local storage with cloud version
+      this.saveImage(result.cloudImage)
+      return { success: true, cloudImage: result.cloudImage }
+    }
+
+    return result
   }
 
   static getGallery(): GalleryImage[] {
@@ -55,141 +83,114 @@ export class GalleryStorage {
   }
 
   static deleteImage(id: string): void {
-    try {
-      const gallery = this.getGallery()
-      const filtered = gallery.filter((img) => img.id !== id)
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filtered))
-    } catch (error) {
-      console.error("Failed to delete image:", error)
-    }
+    const gallery = this.getGallery().filter((img) => img.id !== id)
+    this.saveGallery(gallery)
   }
 
   static toggleFavorite(id: string): void {
-    try {
-      const gallery = this.getGallery()
-      const updated = gallery.map((img) => (img.id === id ? { ...img, isFavorite: !img.isFavorite } : img))
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updated))
-    } catch (error) {
-      console.error("Failed to toggle favorite:", error)
-    }
-  }
-
-  static updateTags(id: string, tags: string[]): void {
-    try {
-      const gallery = this.getGallery()
-      const updated = gallery.map((img) => (img.id === id ? { ...img, tags } : img))
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updated))
-    } catch (error) {
-      console.error("Failed to update tags:", error)
+    const gallery = this.getGallery()
+    const image = gallery.find((img) => img.id === id)
+    if (image) {
+      image.isFavorite = !image.isFavorite
+      this.saveGallery(gallery)
     }
   }
 
   static clearGallery(): void {
-    try {
-      localStorage.removeItem(this.STORAGE_KEY)
-    } catch (error) {
-      console.error("Failed to clear gallery:", error)
-    }
+    localStorage.removeItem(this.STORAGE_KEY)
   }
 
   static exportGallery(): string {
     return JSON.stringify(this.getGallery(), null, 2)
   }
 
-  static getStorageInfo(): { used: number; available: number; imageCount: number } {
+  static importGallery(data: string): boolean {
     try {
-      const gallery = this.getGallery()
-      const used = new Blob([JSON.stringify(gallery)]).size
-      const available = 5 * 1024 * 1024 // Approximate 5MB limit
-
-      return {
-        used,
-        available,
-        imageCount: gallery.length,
+      const imported = JSON.parse(data) as GalleryImage[]
+      if (Array.isArray(imported)) {
+        this.saveGallery(imported)
+        return true
       }
+      return false
     } catch (error) {
-      return { used: 0, available: 5 * 1024 * 1024, imageCount: 0 }
+      console.error("Failed to import gallery:", error)
+      return false
     }
   }
 
-  static async saveImageWithCloudUpload(
-    image: GalleryImage,
-    onProgress?: (progress: number) => void,
-  ): Promise<{ success: boolean; error?: string }> {
-    try {
-      // Save locally first
-      this.saveImage(image)
-      onProgress?.(20)
-
-      // Try to upload to cloud
-      const { CloudSyncService } = await import("./cloud-sync")
-      const uploadResult = await CloudSyncService.autoUploadNewGeneration(image, (progress) => {
-        // Map upload progress to 20-100 range
-        onProgress?.(20 + progress * 0.8)
-      })
-
-      if (uploadResult.success && uploadResult.cloudImage) {
-        // Update local storage with cloud image
-        const gallery = this.getGallery()
-        const updatedGallery = gallery.map((img) => (img.id === image.id ? uploadResult.cloudImage! : img))
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedGallery))
-      }
-
-      return { success: true }
-    } catch (error: any) {
-      console.error("Failed to save image with cloud upload:", error)
-      return { success: false, error: error.message }
-    }
-  }
-
-  static getImageWithOptimization(id: string, preferThumbnail = false): GalleryImage | null {
+  static getStorageInfo(): StorageInfo {
     const gallery = this.getGallery()
-    const image = gallery.find((img) => img.id === id)
+    const serialized = JSON.stringify(gallery)
+    const used = new Blob([serialized]).size
 
-    if (!image) return null
-
-    // Return optimized version if available
-    if (preferThumbnail && image.thumbnail) {
-      return {
-        ...image,
-        imageUrl: image.thumbnail,
-      }
+    return {
+      used,
+      available: this.MAX_LOCAL_STORAGE,
+      imageCount: gallery.length,
     }
-
-    return image
   }
 
-  static getStorageStats(): {
-    localImages: number
-    cloudImages: number
-    totalSize: number
-    compressionSavings: number
-  } {
+  static getStorageStats(): StorageStats {
     const gallery = this.getGallery()
+    const localImages = gallery.filter((img) => !img.metadata.cloudStored).length
+    const cloudImages = gallery.filter((img) => img.metadata.cloudStored).length
 
-    let localImages = 0
-    let cloudImages = 0
-    let totalSize = 0
-    let compressionSavings = 0
+    const imageSizes = gallery
+      .map((img) => img.metadata.fileSize || this.estimateImageSize(img))
+      .filter((size) => size > 0)
 
-    gallery.forEach((image) => {
-      if (image.metadata.cloudStored) {
-        cloudImages++
-      } else {
-        localImages++
-      }
-
-      if (image.metadata.compression) {
-        totalSize += image.metadata.compression.compressedSize
-        compressionSavings += image.metadata.compression.originalSize - image.metadata.compression.compressedSize
-      }
-    })
+    const totalSize = imageSizes.reduce((sum, size) => sum + size, 0)
+    const averageSize = imageSizes.length > 0 ? totalSize / imageSizes.length : 0
+    const largestImage = imageSizes.length > 0 ? Math.max(...imageSizes) : 0
 
     return {
       localImages,
       cloudImages,
       totalSize,
-      compressionSavings,
+      averageSize,
+      largestImage,
     }
+  }
+
+  private static estimateImageSize(image: GalleryImage): number {
+    // Estimate based on generation mode and parameters
+    if (image.metadata.generationMode === "svg") {
+      return 50 * 1024 // ~50KB for SVG
+    } else {
+      // AI generated images are typically larger
+      const baseSize = 2 * 1024 * 1024 // 2MB base
+      const sampleMultiplier = image.metadata.samples / 1000 // More samples = larger
+      return Math.floor(baseSize * (1 + sampleMultiplier))
+    }
+  }
+
+  private static saveGallery(gallery: GalleryImage[]): void {
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(gallery))
+    } catch (error) {
+      console.error("Failed to save gallery:", error)
+      // If storage is full, try to clean up old images
+      this.cleanupOldImages(gallery)
+    }
+  }
+
+  private static cleanupOldImages(gallery: GalleryImage[]): void {
+    // Keep only the 50 most recent images if storage is full
+    const sorted = gallery.sort((a, b) => b.metadata.createdAt - a.metadata.createdAt)
+    const cleaned = sorted.slice(0, 50)
+
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(cleaned))
+    } catch (error) {
+      console.error("Failed to cleanup gallery:", error)
+    }
+  }
+
+  static formatFileSize(bytes: number): string {
+    if (bytes === 0) return "0 Bytes"
+    const k = 1024
+    const sizes = ["Bytes", "KB", "MB", "GB"]
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
   }
 }
