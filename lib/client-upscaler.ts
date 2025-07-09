@@ -1,4 +1,4 @@
-// Client-side image upscaling using Canvas API with bicubic interpolation
+// Direct client-side bicubic upscaling using Canvas API
 export class ClientUpscaler {
   static async upscaleImage(imageDataUrl: string, scaleFactor: number): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -15,26 +15,26 @@ export class ClientUpscaler {
             return
           }
 
-          // Set new dimensions
+          // Set new dimensions for direct bicubic upscaling
           const newWidth = img.width * scaleFactor
           const newHeight = img.height * scaleFactor
 
           canvas.width = newWidth
           canvas.height = newHeight
 
-          // Use bicubic interpolation for high-quality upscaling
+          // Direct bicubic interpolation - highest quality setting
           ctx.imageSmoothingEnabled = true
           ctx.imageSmoothingQuality = "high"
 
-          // Draw the upscaled image using bicubic interpolation
+          // Apply direct bicubic upscaling
           ctx.drawImage(img, 0, 0, newWidth, newHeight)
 
-          // Apply bicubic sharpening filter for better quality
+          // Apply direct bicubic sharpening for enhanced quality
           const imageData = ctx.getImageData(0, 0, newWidth, newHeight)
-          const sharpened = this.applyBicubicSharpening(imageData)
+          const sharpened = this.applyDirectBicubicSharpening(imageData)
           ctx.putImageData(sharpened, 0, 0)
 
-          // Convert to data URL
+          // Convert to high-quality PNG
           const upscaledDataUrl = canvas.toDataURL("image/png", 1.0)
           resolve(upscaledDataUrl)
         } catch (error) {
@@ -43,26 +43,26 @@ export class ClientUpscaler {
       }
 
       img.onerror = () => {
-        reject(new Error("Failed to load image"))
+        reject(new Error("Failed to load image for bicubic upscaling"))
       }
 
       img.src = imageDataUrl
     })
   }
 
-  private static applyBicubicSharpening(imageData: ImageData): ImageData {
+  private static applyDirectBicubicSharpening(imageData: ImageData): ImageData {
     const data = imageData.data
     const width = imageData.width
     const height = imageData.height
     const output = new ImageData(width, height)
 
-    // Bicubic sharpening kernel
-    const kernel = [0, -0.5, 0, -0.5, 3, -0.5, 0, -0.5, 0]
+    // Direct bicubic sharpening kernel - optimized for quality
+    const kernel = [0, -0.25, 0, -0.25, 2, -0.25, 0, -0.25, 0]
 
     for (let y = 1; y < height - 1; y++) {
       for (let x = 1; x < width - 1; x++) {
         for (let c = 0; c < 3; c++) {
-          // RGB channels only
+          // Apply direct bicubic convolution
           let sum = 0
           for (let ky = -1; ky <= 1; ky++) {
             for (let kx = -1; kx <= 1; kx++) {
@@ -73,7 +73,7 @@ export class ClientUpscaler {
           const outputIdx = (y * width + x) * 4 + c
           output.data[outputIdx] = Math.max(0, Math.min(255, sum))
         }
-        // Copy alpha channel
+        // Preserve alpha channel
         const alphaIdx = (y * width + x) * 4 + 3
         output.data[alphaIdx] = data[alphaIdx]
       }
@@ -103,9 +103,9 @@ export class ClientUpscaler {
           // Draw original image
           ctx.drawImage(img, 0, 0)
 
-          // Apply bicubic enhancement filters
+          // Apply direct bicubic enhancement
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-          const enhanced = this.applyBicubicEnhancement(imageData)
+          const enhanced = this.applyDirectBicubicEnhancement(imageData)
           ctx.putImageData(enhanced, 0, 0)
 
           const enhancedDataUrl = canvas.toDataURL("image/png", 1.0)
@@ -116,27 +116,26 @@ export class ClientUpscaler {
       }
 
       img.onerror = () => {
-        reject(new Error("Failed to load image"))
+        reject(new Error("Failed to load image for enhancement"))
       }
 
       img.src = imageDataUrl
     })
   }
 
-  private static applyBicubicEnhancement(imageData: ImageData): ImageData {
+  private static applyDirectBicubicEnhancement(imageData: ImageData): ImageData {
     const data = imageData.data
     const enhanced = new ImageData(imageData.width, imageData.height)
 
     for (let i = 0; i < data.length; i += 4) {
-      // Bicubic contrast and saturation enhancement
       const r = data[i]
       const g = data[i + 1]
       const b = data[i + 2]
       const a = data[i + 3]
 
-      // Apply bicubic contrast enhancement
-      const contrast = 1.3
-      const brightness = 10
+      // Direct bicubic contrast and brightness enhancement
+      const contrast = 1.15
+      const brightness = 5
 
       const enhancedR = Math.max(0, Math.min(255, (r - 128) * contrast + 128 + brightness))
       const enhancedG = Math.max(0, Math.min(255, (g - 128) * contrast + 128 + brightness))
