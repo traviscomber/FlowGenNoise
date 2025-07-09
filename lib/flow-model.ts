@@ -66,39 +66,111 @@ export function generateDataset(name: string, seed: number, n_samples: number, n
     }
     return data
   } else if (name === "neural") {
-    // Neural network-inspired dataset with interconnected nodes and layers
+    // Advanced neural network-inspired dataset with realistic brain-like architecture
     const data: number[][] = []
-    const layers = 4
-    const nodesPerLayer = Math.ceil(n_samples / layers)
+
+    // Define neural network architecture with varying layer sizes (mimicking real networks)
+    const layerSizes = [
+      Math.floor(n_samples * 0.15), // Input layer (15%)
+      Math.floor(n_samples * 0.35), // Hidden layer 1 (35% - largest)
+      Math.floor(n_samples * 0.25), // Hidden layer 2 (25%)
+      Math.floor(n_samples * 0.15), // Hidden layer 3 (15%)
+      Math.floor(n_samples * 0.1), // Output layer (10% - smallest)
+    ]
+
+    // Adjust to match exact sample count
+    const totalAllocated = layerSizes.reduce((sum, size) => sum + size, 0)
+    const remaining = n_samples - totalAllocated
+    layerSizes[1] += remaining // Add remainder to largest hidden layer
+
+    const layers = layerSizes.length
+    let currentSampleIndex = 0
 
     for (let layer = 0; layer < layers; layer++) {
-      const layerX = (layer / (layers - 1)) * 4 - 2 // Spread layers from -2 to 2
-      const nodesInThisLayer = Math.min(nodesPerLayer, n_samples - layer * nodesPerLayer)
+      const layerSize = layerSizes[layer]
+      const layerX = (layer / (layers - 1)) * 6 - 3 // Spread layers from -3 to 3 for better spacing
 
-      for (let node = 0; node < nodesInThisLayer; node++) {
-        // Create vertical distribution of nodes in each layer
-        const nodeY = (node / Math.max(1, nodesInThisLayer - 1)) * 3 - 1.5 // Spread from -1.5 to 1.5
+      // Create different node arrangements for different layer types
+      for (let node = 0; node < layerSize; node++) {
+        let nodeY: number
 
-        // Add some organic variation to make it look more neural
-        const organicX = layerX + Math.sin(node * 0.5 + layer) * 0.3
-        const organicY = nodeY + Math.cos(node * 0.7 + layer) * 0.2
+        if (layerSize === 1) {
+          // Single node (centered)
+          nodeY = 0
+        } else {
+          // Multiple nodes distributed vertically
+          nodeY = (node / (layerSize - 1)) * 4 - 2 // Spread from -2 to 2
+        }
 
-        // Add noise and random connections
-        const finalX = organicX + (prng() * 2 - 1) * noise
-        const finalY = organicY + (prng() * 2 - 1) * noise
+        // Add organic brain-like clustering and variation
+        const clusterInfluence = Math.sin(node * 0.3 + layer * 0.7) * 0.4
+        const organicX = layerX + clusterInfluence + Math.sin(node * 0.8 + layer * 1.2) * 0.2
+        const organicY = nodeY + Math.cos(node * 0.6 + layer * 0.9) * 0.3 + clusterInfluence * 0.5
+
+        // Add dendrite-like branching patterns
+        const branchingX = organicX + Math.sin(node * 2.1 + layer * 1.7) * 0.15
+        const branchingY = organicY + Math.cos(node * 1.9 + layer * 2.3) * 0.15
+
+        // Apply noise for natural variation
+        const finalX = branchingX + (prng() * 2 - 1) * noise
+        const finalY = branchingY + (prng() * 2 - 1) * noise
 
         data.push([finalX, finalY])
 
-        // Add some "synaptic" connections as additional points
-        if (layer < layers - 1 && prng() > 0.7) {
-          const connectionX = layerX + (prng() * 0.8 + 0.1) // Partial connection to next layer
-          const connectionY = nodeY + (prng() * 0.4 - 0.2)
-          data.push([connectionX + (prng() * 2 - 1) * noise, connectionY + (prng() * 2 - 1) * noise])
+        // Add synaptic connections and axon terminals
+        if (layer < layers - 1) {
+          const connectionProbability = 0.3 + prng() * 0.4 // 30-70% connection rate
+
+          if (prng() < connectionProbability) {
+            // Create connection points between current and next layer
+            const nextLayerX = ((layer + 1) / (layers - 1)) * 6 - 3
+            const connectionProgress = prng() * 0.7 + 0.15 // 15-85% along the connection
+
+            const synapseX = layerX + (nextLayerX - layerX) * connectionProgress
+            const synapseY = nodeY + (prng() * 0.6 - 0.3) // Slight vertical variation
+
+            // Add synaptic terminal with organic shape
+            const terminalX = synapseX + Math.sin(node * 3.2 + layer * 2.1) * 0.1
+            const terminalY = synapseY + Math.cos(node * 2.8 + layer * 1.9) * 0.1
+
+            data.push([terminalX + (prng() * 2 - 1) * noise * 0.5, terminalY + (prng() * 2 - 1) * noise * 0.5])
+          }
+
+          // Add dendritic branches (input connections)
+          if (prng() > 0.6) {
+            const branchLength = prng() * 0.3 + 0.1
+            const branchAngle = prng() * Math.PI * 2
+
+            const dendriteTipX = finalX + Math.cos(branchAngle) * branchLength
+            const dendriteTipY = finalY + Math.sin(branchAngle) * branchLength
+
+            data.push([dendriteTipX + (prng() * 2 - 1) * noise * 0.3, dendriteTipY + (prng() * 2 - 1) * noise * 0.3])
+          }
         }
+
+        // Add axon terminals for output layer
+        if (layer === layers - 1 && prng() > 0.5) {
+          const axonLength = prng() * 0.4 + 0.2
+          const axonX = finalX + axonLength
+          const axonY = finalY + (prng() * 0.2 - 0.1)
+
+          data.push([axonX + (prng() * 2 - 1) * noise * 0.4, axonY + (prng() * 2 - 1) * noise * 0.4])
+        }
+
+        currentSampleIndex++
+        if (currentSampleIndex >= n_samples) break
       }
+
+      if (currentSampleIndex >= n_samples) break
     }
 
-    // Trim to exact sample count
+    // Trim to exact sample count and add any remaining as neural noise/glial cells
+    while (data.length < n_samples) {
+      const randomX = prng() * 6 - 3 + (prng() * 2 - 1) * noise
+      const randomY = prng() * 4 - 2 + (prng() * 2 - 1) * noise
+      data.push([randomX, randomY])
+    }
+
     return data.slice(0, n_samples)
   }
   // Default to random noise if name is not recognized
