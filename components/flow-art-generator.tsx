@@ -205,6 +205,7 @@ export function FlowArtGenerator() {
                   <SelectItem value="moons">Moons</SelectItem>
                   <SelectItem value="gaussian">Gaussian</SelectItem>
                   <SelectItem value="grid">Grid</SelectItem>
+                  <SelectItem value="neural">Neural Network</SelectItem>
                 </SelectContent>
               </Select>
             </div>

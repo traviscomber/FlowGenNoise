@@ -65,6 +65,41 @@ export function generateDataset(name: string, seed: number, n_samples: number, n
       }
     }
     return data
+  } else if (name === "neural") {
+    // Neural network-inspired dataset with interconnected nodes and layers
+    const data: number[][] = []
+    const layers = 4
+    const nodesPerLayer = Math.ceil(n_samples / layers)
+
+    for (let layer = 0; layer < layers; layer++) {
+      const layerX = (layer / (layers - 1)) * 4 - 2 // Spread layers from -2 to 2
+      const nodesInThisLayer = Math.min(nodesPerLayer, n_samples - layer * nodesPerLayer)
+
+      for (let node = 0; node < nodesInThisLayer; node++) {
+        // Create vertical distribution of nodes in each layer
+        const nodeY = (node / Math.max(1, nodesInThisLayer - 1)) * 3 - 1.5 // Spread from -1.5 to 1.5
+
+        // Add some organic variation to make it look more neural
+        const organicX = layerX + Math.sin(node * 0.5 + layer) * 0.3
+        const organicY = nodeY + Math.cos(node * 0.7 + layer) * 0.2
+
+        // Add noise and random connections
+        const finalX = organicX + (prng() * 2 - 1) * noise
+        const finalY = organicY + (prng() * 2 - 1) * noise
+
+        data.push([finalX, finalY])
+
+        // Add some "synaptic" connections as additional points
+        if (layer < layers - 1 && prng() > 0.7) {
+          const connectionX = layerX + (prng() * 0.8 + 0.1) // Partial connection to next layer
+          const connectionY = nodeY + (prng() * 0.4 - 0.2)
+          data.push([connectionX + (prng() * 2 - 1) * noise, connectionY + (prng() * 2 - 1) * noise])
+        }
+      }
+    }
+
+    // Trim to exact sample count
+    return data.slice(0, n_samples)
   }
   // Default to random noise if name is not recognized
   return Array.from({ length: n_samples }, () => [prng() * 2 - 1, prng() * 2 - 1])
