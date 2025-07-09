@@ -304,3 +304,6 @@ export default function FlowArtGenerator() {
     </div>
   )
 }
+
+// Allow both `import FlowArtGenerator` and `import { FlowArtGenerator }`
+export { FlowArtGenerator }
