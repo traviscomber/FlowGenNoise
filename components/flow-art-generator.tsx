@@ -79,87 +79,40 @@ export function FlowArtGenerator() {
     }
   }
 
-  const handleFreeUpscale = async () => {
+  const handleDirectBicubicUpscale = async () => {
     if (!baseImageUrl) return
 
     setUpscaling(true)
     setUpscaleProgress(0)
-    setUpscaleStatus("Trying free AI upscaling services...")
+    setUpscaleStatus("Using direct client-side bicubic upscaling...")
     setError(null)
 
     try {
-      // Try server-side free upscaling first
-      setUpscaleProgress(20)
-      setUpscaleStatus("Connecting to free AI upscaling services...")
+      setUpscaleProgress(25)
+      setUpscaleStatus("Applying direct bicubic interpolation...")
 
-      const response = await fetch("/api/upscale-image", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          imageData: baseImageUrl,
-          scaleFactor: 4,
-          upscaleModel: "real-esrgan",
-        }),
+      // Direct bicubic upscaling - no server calls, no fallbacks
+      const upscaledImage = await ClientUpscaler.upscaleImage(baseImageUrl, 4)
+
+      setUpscaleProgress(75)
+      setUpscaleStatus("Enhancing with direct bicubic filters...")
+
+      const enhancedImage = await ClientUpscaler.enhanceImage(upscaledImage)
+
+      setUpscaledImageUrl(enhancedImage)
+      setUpscaleMetadata({
+        originalSize: "1792x1024",
+        upscaledSize: "7168x4096",
+        scaleFactor: 4,
+        model: "Direct Client-side Bicubic",
+        quality: "High Quality Direct Bicubic",
+        method: "direct-bicubic-only",
       })
 
-      if (!response.ok) {
-        throw new Error("Server upscaling failed")
-      }
-
-      const data = await response.json()
-
-      if (data.requiresClientUpscaling) {
-        // Fallback to client-side upscaling
-        setUpscaleProgress(50)
-        setUpscaleStatus("Using high-quality client-side upscaling...")
-
-        const upscaledImage = await ClientUpscaler.upscaleImage(baseImageUrl, 4)
-
-        setUpscaleProgress(80)
-        setUpscaleStatus("Applying enhancement filters...")
-
-        const enhancedImage = await ClientUpscaler.enhanceImage(upscaledImage)
-
-        setUpscaledImageUrl(enhancedImage)
-        setUpscaleMetadata(data.metadata)
-      } else {
-        // Server-side upscaling succeeded
-        setUpscaledImageUrl(data.image)
-        setUpscaleMetadata(data.metadata)
-      }
-
       setUpscaleProgress(100)
-      setUpscaleStatus("Free upscaling complete!")
+      setUpscaleStatus("Direct bicubic upscaling complete!")
     } catch (err: any) {
-      // Final fallback to client-side only
-      try {
-        setUpscaleProgress(30)
-        setUpscaleStatus("Using client-side upscaling...")
-
-        const upscaledImage = await ClientUpscaler.upscaleImage(baseImageUrl, 4)
-
-        setUpscaleProgress(70)
-        setUpscaleStatus("Enhancing image quality...")
-
-        const enhancedImage = await ClientUpscaler.enhanceImage(upscaledImage)
-
-        setUpscaledImageUrl(enhancedImage)
-        setUpscaleMetadata({
-          originalSize: "1792x1024",
-          upscaledSize: "7168x4096",
-          scaleFactor: 4,
-          model: "Client-side Bicubic + Enhancement",
-          quality: "High Quality Upscaled",
-          method: "client-side",
-        })
-
-        setUpscaleProgress(100)
-        setUpscaleStatus("Client-side upscaling complete!")
-      } catch (clientError: any) {
-        setError("All upscaling methods failed: " + clientError.message)
-      }
+      setError("Direct bicubic upscaling failed: " + err.message)
     } finally {
       setUpscaling(false)
     }
@@ -171,7 +124,7 @@ export function FlowArtGenerator() {
       const link = document.createElement("a")
       link.href = downloadUrl
       const fileExtension = generationMode === "svg" ? "svg" : "png"
-      const suffix = isUpscaled ? "-upscaled-4x" : "-base"
+      const suffix = isUpscaled ? "-direct-bicubic-4x" : "-base"
       link.download = `flowsketch-art${suffix}-${Date.now()}.${fileExtension}`
       document.body.appendChild(link)
       link.click()
@@ -180,7 +133,6 @@ export function FlowArtGenerator() {
   }
 
   const currentImage = upscaledImageUrl || baseImageUrl
-  const isAIMode = generationMode === "ai"
 
   return (
     <div className="flex flex-col items-center justify-center w-full p-4">
@@ -188,7 +140,7 @@ export function FlowArtGenerator() {
         <CardHeader>
           <CardTitle className="text-center text-2xl">FlowSketch Art Generator</CardTitle>
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-            Create structured art using toy datasets. Free AI upscaling available for all images.
+            Create structured art using toy datasets. Direct client-side bicubic upscaling only.
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -303,7 +255,7 @@ export function FlowArtGenerator() {
                   {upscaledImageUrl ? (
                     <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
                       <Sparkles className="w-3 h-3 mr-1" />
-                      4x Upscaled
+                      Direct Bicubic 4x
                     </Badge>
                   ) : (
                     <Badge className="bg-blue-500">Base Resolution</Badge>
@@ -345,12 +297,12 @@ export function FlowArtGenerator() {
 
                 {!upscaledImageUrl && baseImageUrl && (
                   <Button
-                    onClick={handleFreeUpscale}
+                    onClick={handleDirectBicubicUpscale}
                     disabled={upscaling}
                     className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                   >
                     {upscaling ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4" />}
-                    Free 4x Upscale
+                    Direct Bicubic 4x
                   </Button>
                 )}
 
@@ -360,14 +312,14 @@ export function FlowArtGenerator() {
                     className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
                   >
                     <Download className="mr-2 h-4 w-4" />
-                    Download 4x
+                    Download Direct 4x
                   </Button>
                 )}
               </div>
 
               {!upscaledImageUrl && baseImageUrl && (
                 <p className="text-xs text-gray-500 text-center max-w-md">
-                  Free upscaling tries AI services first, then falls back to high-quality client-side processing
+                  Using direct client-side bicubic upscaling - no server dependencies
                 </p>
               )}
             </div>
