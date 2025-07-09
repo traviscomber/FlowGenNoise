@@ -1,9 +1,11 @@
 import { FlowArtGenerator } from "@/components/flow-art-generator"
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <FlowArtGenerator />
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <div className="container mx-auto py-8">
+        <FlowArtGenerator />
+      </div>
     </main>
   )
 }

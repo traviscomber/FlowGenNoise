@@ -1,83 +1,73 @@
-/**
- * Cloudinary REST helpers (SDK-free).
- *
- * This version avoids the Node “crypto.createHash” issue by using Cloudinary’s
- * unsigned upload preset workflow.  Make sure you have an unsigned preset and
- * the env var  NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET  available (already in
- * this project’s env list).
- *
- * Required env vars (server-side):
- *   CLOUDINARY_CLOUD_NAME
- *   NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
- */
+interface CloudinaryUploadOptions {
+  folder?: string
+  public_id?: string
+  tags?: string[]
+}
 
-export interface CloudinaryUploadResult {
+interface CloudinaryResponse {
   public_id: string
   secure_url: string
   width: number
   height: number
   format: string
-  resource_type: string
-  created_at: string
   bytes: number
 }
 
-const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME
-const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
-
-if (!CLOUD_NAME || !UPLOAD_PRESET) {
-  console.warn("[cloudinary-utils] CLOUDINARY_CLOUD_NAME or NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET is missing.")
-}
-
-/**
- * Low-level unsigned upload.
- * Accepts a base64 data URL or an https URL in `imageData`.
- */
 export async function uploadImageToCloudinary(
   imageData: string,
-  options: {
-    folder?: string
-    public_id?: string
-    tags?: string[]
-  } = {},
-): Promise<CloudinaryUploadResult> {
-  if (!CLOUD_NAME || !UPLOAD_PRESET) {
-    throw new Error("Cloudinary environment variables are not configured.")
+  options: CloudinaryUploadOptions = {},
+): Promise<CloudinaryResponse> {
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+
+  if (!cloudName || !uploadPreset) {
+    throw new Error("Cloudinary configuration missing")
   }
 
-  const endpoint = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`
+  // Convert base64 to blob if needed
   const formData = new FormData()
 
-  formData.append("file", imageData)
-  formData.append("upload_preset", UPLOAD_PRESET)
+  if (imageData.startsWith("data:")) {
+    formData.append("file", imageData)
+  } else {
+    formData.append("file", imageData)
+  }
 
-  if (options.folder) formData.append("folder", options.folder)
-  if (options.public_id) formData.append("public_id", options.public_id)
-  if (options.tags?.length) formData.append("tags", options.tags.join(","))
+  formData.append("upload_preset", uploadPreset)
 
-  const res = await fetch(endpoint, {
+  if (options.folder) {
+    formData.append("folder", options.folder)
+  }
+
+  if (options.public_id) {
+    formData.append("public_id", options.public_id)
+  }
+
+  if (options.tags && options.tags.length > 0) {
+    formData.append("tags", options.tags.join(","))
+  }
+
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
     method: "POST",
     body: formData,
   })
 
-  if (!res.ok) {
-    const err = await res.text()
-    console.error("Cloudinary upload failed:", err)
-    throw new Error("Failed to upload image to Cloudinary")
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`Cloudinary upload failed: ${error}`)
   }
 
-  return (await res.json()) as CloudinaryUploadResult
+  const result = await response.json()
+  return result
 }
 
-/**
- * Convenience helper for storing upscaled images.
- */
 export async function uploadUpscaledImageToCloudinary(
   imageData: string,
   originalPublicId: string,
-  scaleFactor = 4,
-): Promise<CloudinaryUploadResult> {
+  scaleFactor: number,
+): Promise<CloudinaryResponse> {
   const upscaledPublicId = `${originalPublicId}_upscaled_${scaleFactor}x`
+
   return uploadImageToCloudinary(imageData, {
     folder: "flowsketch-generations/upscaled",
     public_id: upscaledPublicId,
@@ -85,13 +75,21 @@ export async function uploadUpscaledImageToCloudinary(
   })
 }
 
-/**
- * Build a Cloudinary delivery URL for an already-uploaded asset.
- * Useful if you want to apply on-the-fly transformations.
- */
-export function generateCloudinaryUrl(publicId: string, transformations = ""): string {
-  if (!CLOUD_NAME) return ""
+export function getCloudinaryUrl(publicId: string, transformations?: string): string {
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME
+  if (!cloudName) {
+    throw new Error("Cloudinary cloud name not configured")
+  }
 
-  // Example: transformations = "q_auto,f_auto,w_800"
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/${publicId}`
+  const baseUrl = `https://res.cloudinary.com/${cloudName}/image/upload`
+
+  if (transformations) {
+    return `${baseUrl}/${transformations}/${publicId}`
+  }
+
+  return `${baseUrl}/${publicId}`
+}
+
+export function getUpscaledCloudinaryUrl(publicId: string): string {
+  return getCloudinaryUrl(publicId, "e_upscale")
 }
