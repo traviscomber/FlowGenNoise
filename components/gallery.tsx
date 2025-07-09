@@ -17,9 +17,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Heart, Download, Trash2, Grid3X3, List, Star, Settings, Archive, Eye, Copy } from "lucide-react"
+import { Heart, Download, Trash2, Grid3X3, List, Star, Settings, Archive, Eye, Copy, Cloud } from "lucide-react"
 import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
 import { cn } from "@/lib/utils"
+import { CloudSync } from "@/components/cloud-sync"
 
 interface GalleryProps {
   onImageSelect?: (image: GalleryImage) => void
@@ -34,6 +35,7 @@ export function Gallery({ onImageSelect }: GalleryProps) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "favorites">("newest")
+  const [showCloudSync, setShowCloudSync] = useState(false)
 
   useEffect(() => {
     loadGallery()
@@ -137,6 +139,9 @@ export function Gallery({ onImageSelect }: GalleryProps) {
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}>
               {viewMode === "grid" ? <List className="h-4 w-4" /> : <Grid3X3 className="h-4 w-4" />}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setShowCloudSync(!showCloudSync)}>
+              <Cloud className="h-4 w-4" />
             </Button>
             <Dialog>
               <DialogTrigger asChild>
@@ -244,6 +249,12 @@ export function Gallery({ onImageSelect }: GalleryProps) {
             </Select>
           </div>
         </div>
+
+        {showCloudSync && (
+          <div className="px-6 pb-4">
+            <CloudSync onSyncComplete={loadGallery} />
+          </div>
+        )}
 
         {/* Image Grid/List */}
         <ScrollArea className="h-[600px] px-6">
