@@ -8,8 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Download, Sparkles, Palette, Zap } from "lucide-react"
-import { generateDataset } from "@/lib/flow-model"
+import { Download, Sparkles, Palette, Zap, TreePine, Waves, Rocket, Building } from "lucide-react"
+import { generateDataset, SCENARIOS } from "@/lib/flow-model"
 import { createSVGPlot } from "@/lib/plot-utils"
 import { upscaleImageClient } from "@/lib/client-upscaler"
 
@@ -31,12 +31,31 @@ const colorSchemes = [
   { value: "warm", label: "Warm", colors: ["#ff0000", "#ff8000", "#ffff00", "#80ff00"] },
 ]
 
+const scenarios = [
+  { value: "", label: "None", description: "Pure mathematical patterns", icon: Palette },
+  {
+    value: "forest",
+    label: "Enchanted Forest",
+    description: "Trees, mushrooms, flowers & butterflies",
+    icon: TreePine,
+  },
+  { value: "ocean", label: "Deep Ocean", description: "Fish, coral, seaweed & jellyfish", icon: Waves },
+  { value: "space", label: "Cosmic Nebula", description: "Stars, planets, asteroids & nebulae", icon: Rocket },
+  {
+    value: "city",
+    label: "Cyberpunk City",
+    description: "Buildings, vehicles, neon signs & holograms",
+    icon: Building,
+  },
+]
+
 export default function FlowArtGenerator() {
   const [dataset, setDataset] = useState("spirals")
   const [seed, setSeed] = useState([42])
   const [samples, setSamples] = useState([500])
   const [noise, setNoise] = useState([0.05])
   const [colorScheme, setColorScheme] = useState("viridis")
+  const [scenario, setScenario] = useState("")
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [isUpscaling, setIsUpscaling] = useState(false)
@@ -46,14 +65,19 @@ export default function FlowArtGenerator() {
     setIsGenerating(true)
     try {
       if (generationMode === "svg") {
-        // Generate SVG plot
-        const data = generateDataset(dataset, seed[0], samples[0], noise[0])
-        const svgContent = createSVGPlot(data, colorScheme, 800, 600)
+        // Generate SVG plot with scenario blending
+        const data = generateDataset(dataset, seed[0], samples[0], noise[0], scenario || undefined)
+        const svgContent = createSVGPlot(data, {
+          colorScheme,
+          width: 1792,
+          height: 1024,
+          backgroundColor: scenario && SCENARIOS[scenario] ? SCENARIOS[scenario].backgroundColor : "#ffffff",
+        })
         const blob = new Blob([svgContent], { type: "image/svg+xml" })
         const url = URL.createObjectURL(blob)
         setGeneratedImage(url)
       } else {
-        // Generate AI art
+        // Generate AI art with scenario context
         const response = await fetch("/api/generate-ai-art", {
           method: "POST",
           headers: {
@@ -65,6 +89,7 @@ export default function FlowArtGenerator() {
             numSamples: samples[0],
             noise: noise[0],
             colorScheme,
+            scenario: scenario || undefined,
           }),
         })
 
@@ -80,14 +105,14 @@ export default function FlowArtGenerator() {
     } finally {
       setIsGenerating(false)
     }
-  }, [dataset, seed, samples, noise, colorScheme, generationMode])
+  }, [dataset, seed, samples, noise, colorScheme, scenario, generationMode])
 
   const upscaleImage = useCallback(async () => {
     if (!generatedImage) return
 
     setIsUpscaling(true)
     try {
-      const upscaledUrl = await upscaleImageClient(generatedImage)
+      const upscaledUrl = await upscaleImageClient(generatedImage, 4)
       setGeneratedImage(upscaledUrl)
     } catch (error) {
       console.error("Error upscaling image:", error)
@@ -101,14 +126,15 @@ export default function FlowArtGenerator() {
 
     const link = document.createElement("a")
     link.href = generatedImage
-    link.download = `flowsketch-${dataset}-${seed[0]}-${Date.now()}.${generationMode === "svg" ? "svg" : "png"}`
+    const scenarioSuffix = scenario ? `-${scenario}` : ""
+    link.download = `flowsketch-${dataset}${scenarioSuffix}-${seed[0]}-${Date.now()}.${generationMode === "svg" ? "svg" : "png"}`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }, [generatedImage, dataset, seed, generationMode])
+  }, [generatedImage, dataset, scenario, seed, generationMode])
 
   const selectedDataset = datasets.find((d) => d.value === dataset)
-  const selectedColorScheme = colorSchemes.find((c) => c.value === colorScheme)
+  const selectedScenario = scenarios.find((s) => s.value === scenario)
 
   return (
     <div className="container mx-auto p-6 max-w-6xl">
@@ -116,7 +142,7 @@ export default function FlowArtGenerator() {
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
           FlowSketch Art Generator
         </h1>
-        <p className="text-muted-foreground text-lg">Create beautiful mathematical art from data patterns</p>
+        <p className="text-muted-foreground text-lg">Create beautiful mathematical art with immersive scenarios</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -127,7 +153,7 @@ export default function FlowArtGenerator() {
               <Palette className="h-5 w-5" />
               Art Configuration
             </CardTitle>
-            <CardDescription>Customize your mathematical art generation</CardDescription>
+            <CardDescription>Customize your mathematical art generation with creative scenarios</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Generation Mode */}
@@ -178,6 +204,35 @@ export default function FlowArtGenerator() {
               {selectedDataset && (
                 <Badge variant="secondary" className="w-fit">
                   {selectedDataset.description}
+                </Badge>
+              )}
+            </div>
+
+            {/* Scenario Selection */}
+            <div className="space-y-2">
+              <Label htmlFor="scenario">Creative Scenario</Label>
+              <Select value={scenario} onValueChange={setScenario}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a scenario" />
+                </SelectTrigger>
+                <SelectContent>
+                  {scenarios.map((sc) => (
+                    <SelectItem key={sc.value} value={sc.value}>
+                      <div className="flex items-center gap-2">
+                        <sc.icon className="h-4 w-4" />
+                        <div className="flex flex-col">
+                          <span className="font-medium">{sc.label}</span>
+                          <span className="text-xs text-muted-foreground">{sc.description}</span>
+                        </div>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedScenario && selectedScenario.value && (
+                <Badge variant="outline" className="w-fit">
+                  <selectedScenario.icon className="h-3 w-3 mr-1" />
+                  {selectedScenario.description}
                 </Badge>
               )}
             </div>
@@ -256,7 +311,7 @@ export default function FlowArtGenerator() {
             <CardDescription>Your mathematical art will appear here</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="aspect-[4/3] bg-muted rounded-lg flex items-center justify-center mb-4">
+            <div className="aspect-[16/9] bg-muted rounded-lg flex items-center justify-center mb-4">
               {generatedImage ? (
                 <img
                   src={generatedImage || "/placeholder.svg"}
@@ -267,6 +322,11 @@ export default function FlowArtGenerator() {
                 <div className="text-center text-muted-foreground">
                   <Palette className="h-12 w-12 mx-auto mb-2 opacity-50" />
                   <p>Click "Generate Flow Art" to create your artwork</p>
+                  {scenario && (
+                    <p className="text-sm mt-2">
+                      Ready to blend with {scenarios.find((s) => s.value === scenario)?.label}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -291,7 +351,7 @@ export default function FlowArtGenerator() {
                   ) : (
                     <>
                       <Zap className="h-4 w-4 mr-2" />
-                      Upscale
+                      Pro Upscale
                     </>
                   )}
                 </Button>
@@ -304,5 +364,4 @@ export default function FlowArtGenerator() {
   )
 }
 
-// Allow both `import FlowArtGenerator` and `import { FlowArtGenerator }`
 export { FlowArtGenerator }
