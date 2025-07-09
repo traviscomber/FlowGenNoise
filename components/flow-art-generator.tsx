@@ -62,7 +62,7 @@ export default function FlowArtGenerator() {
           body: JSON.stringify({
             dataset,
             seed: seed[0],
-            samples: samples[0],
+            numSamples: samples[0],
             noise: noise[0],
             colorScheme,
           }),
@@ -72,9 +72,8 @@ export default function FlowArtGenerator() {
           throw new Error("Failed to generate AI art")
         }
 
-        const blob = await response.blob()
-        const url = URL.createObjectURL(blob)
-        setGeneratedImage(url)
+        const { image } = await response.json()
+        setGeneratedImage(image)
       }
     } catch (error) {
       console.error("Error generating art:", error)
