@@ -19,6 +19,12 @@ export interface GalleryImage {
   }
   isFavorite: boolean
   tags: string[]
+  aestheticScore?: {
+    score: number
+    rating: string
+    method: string
+    scoredAt: number
+  }
 }
 
 export interface StorageInfo {
@@ -33,6 +39,8 @@ export interface StorageStats {
   totalSize: number
   averageSize: number
   largestImage: number
+  averageScore: number
+  topRatedImages: number
 }
 
 export class GalleryStorage {
@@ -70,6 +78,76 @@ export class GalleryStorage {
     }
 
     return result
+  }
+
+  static async scoreImage(id: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const gallery = this.getGallery()
+      const image = gallery.find((img) => img.id === id)
+
+      if (!image) {
+        return { success: false, error: "Image not found" }
+      }
+
+      if (image.aestheticScore) {
+        return { success: true } // Already scored
+      }
+
+      const response = await fetch("/api/score-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          imageUrl: image.imageUrl,
+          metadata: image.metadata,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to score image")
+      }
+
+      const { score, rating, method } = await response.json()
+
+      // Update image with score
+      image.aestheticScore = {
+        score,
+        rating,
+        method: method || "replicate",
+        scoredAt: Date.now(),
+      }
+
+      this.saveImage(image)
+      return { success: true }
+    } catch (error: any) {
+      console.error("Failed to score image:", error)
+      return { success: false, error: error.message }
+    }
+  }
+
+  static async batchScoreImages(onProgress?: (progress: number) => void): Promise<{ scored: number; failed: number }> {
+    const gallery = this.getGallery()
+    const unscored = gallery.filter((img) => !img.aestheticScore)
+
+    let scored = 0
+    let failed = 0
+
+    for (let i = 0; i < unscored.length; i++) {
+      const result = await this.scoreImage(unscored[i].id)
+      if (result.success) {
+        scored++
+      } else {
+        failed++
+      }
+
+      onProgress?.(((i + 1) / unscored.length) * 100)
+
+      // Small delay to avoid rate limiting
+      await new Promise((resolve) => setTimeout(resolve, 500))
+    }
+
+    return { scored, failed }
   }
 
   static getGallery(): GalleryImage[] {
@@ -143,12 +221,22 @@ export class GalleryStorage {
     const averageSize = imageSizes.length > 0 ? totalSize / imageSizes.length : 0
     const largestImage = imageSizes.length > 0 ? Math.max(...imageSizes) : 0
 
+    // Calculate aesthetic stats
+    const scoredImages = gallery.filter((img) => img.aestheticScore)
+    const averageScore =
+      scoredImages.length > 0
+        ? scoredImages.reduce((sum, img) => sum + img.aestheticScore!.score, 0) / scoredImages.length
+        : 0
+    const topRatedImages = gallery.filter((img) => img.aestheticScore && img.aestheticScore.score >= 7.0).length
+
     return {
       localImages,
       cloudImages,
       totalSize,
       averageSize,
       largestImage,
+      averageScore: Number(averageScore.toFixed(1)),
+      topRatedImages,
     }
   }
 
@@ -192,5 +280,21 @@ export class GalleryStorage {
     const sizes = ["Bytes", "KB", "MB", "GB"]
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+  }
+
+  static getScoreColor(score: number): string {
+    if (score >= 8.0) return "text-green-600"
+    if (score >= 7.0) return "text-green-500"
+    if (score >= 6.0) return "text-blue-500"
+    if (score >= 5.0) return "text-yellow-500"
+    if (score >= 4.0) return "text-orange-500"
+    return "text-red-500"
+  }
+
+  static getScoreBadgeVariant(score: number): "default" | "secondary" | "destructive" | "outline" {
+    if (score >= 7.0) return "default"
+    if (score >= 5.0) return "secondary"
+    if (score >= 4.0) return "outline"
+    return "destructive"
   }
 }

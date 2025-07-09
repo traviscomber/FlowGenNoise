@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Download, Sparkles, Palette, Zap, TreePine, Waves, Rocket, Building, Archive, Cloud } from "lucide-react"
+import { Sparkles, Palette, Zap, TreePine, Waves, Rocket, Building, Archive } from "lucide-react"
 import { generateDataset, SCENARIOS } from "@/lib/flow-model"
 import { createSVGPlot } from "@/lib/plot-utils"
 import { upscaleImageClient } from "@/lib/client-upscaler"
@@ -67,6 +67,8 @@ export default function FlowArtGenerator() {
 
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
+  const [isScoring, setIsScoring] = useState(false)
+  const [currentScore, setCurrentScore] = useState<{ score: number; rating: string } | null>(null)
 
   const saveToGallery = useCallback(
     async (imageUrl: string) => {
@@ -110,11 +112,27 @@ export default function FlowArtGenerator() {
           console.error("Upload failed:", result.error)
           // Still saved locally at full resolution, so not a complete failure
         }
+
+        // Auto-score the image after upload
+        setIsScoring(true)
+        const scoreResult = await GalleryStorage.scoreImage(galleryImage.id)
+        if (scoreResult.success) {
+          // Get the updated image with score
+          const updatedGallery = GalleryStorage.getGallery()
+          const scoredImage = updatedGallery.find(img => img.id === galleryImage.id)
+          if (scoredImage?.aestheticScore) {
+            setCurrentScore({
+              score: scoredImage.aestheticScore.score,
+              rating: scoredImage.aestheticScore.rating
+            })
+          }
+        }
       } catch (error) {
-        console.error("Upload error:", error)
+        console.error("Upload/scoring error:", error)
       } finally {
         setIsUploading(false)
         setUploadProgress(0)
+        setIsScoring(false)
       }
     },
     [dataset, scenario, colorScheme, seed, samples, noise, generationMode],
@@ -134,6 +152,7 @@ export default function FlowArtGenerator() {
 
   const generateArt = useCallback(async () => {
     setIsGenerating(true)
+    setCurrentScore(null)
     try {
       let imageUrl: string
 
@@ -224,7 +243,7 @@ export default function FlowArtGenerator() {
           </Button>
         </div>
         <p className="text-muted-foreground text-lg">
-          Create beautiful mathematical art with immersive scenarios • Full resolution preserved for 8K enhancement
+          Create beautiful mathematical art with immersive scenarios • Full resolution with aesthetic scoring
         </p>
       </div>
 
@@ -242,7 +261,7 @@ export default function FlowArtGenerator() {
                 Art Configuration
               </CardTitle>
               <CardDescription>
-                Customize your mathematical art generation with creative scenarios • Full resolution output
+                Customize your mathematical art generation with creative scenarios • Auto-scored for quality
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -388,101 +407,4 @@ export default function FlowArtGenerator() {
               <Separator />
 
               {/* Generate Button */}
-              <Button onClick={generateArt} disabled={isGenerating} className="w-full" size="lg">
-                {isGenerating ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Generate Art
-                  </>
-                )}
-              </Button>
-
-              {/* Upload Progress */}
-              {isUploading && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-2">
-                      <Cloud className="h-4 w-4" />
-                      Uploading full resolution...
-                    </span>
-                    <span>{uploadProgress}%</span>
-                  </div>
-                  <div className="w-full bg-muted rounded-full h-2">
-                    <div
-                      className="bg-blue-500 h-2 rounded-full transition-all"
-                      style={{ width: `${uploadProgress}%` }}
-                    />
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Preview Panel */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5" />
-                Generated Artwork
-              </CardTitle>
-              <CardDescription>Your mathematical art creation • Full resolution preserved</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4 overflow-hidden">
-                {generatedImage ? (
-                  <img
-                    src={generatedImage || "/placeholder.svg"}
-                    alt="Generated art"
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <div className="text-center text-muted-foreground">
-                    <Palette className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                    <p>Your artwork will appear here</p>
-                  </div>
-                )}
-              </div>
-
-              {generatedImage && (
-                <div className="flex gap-2">
-                  <Button onClick={downloadImage} variant="outline" className="flex-1 bg-transparent">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download
-                  </Button>
-                  {generationMode === "ai" && (
-                    <Button
-                      onClick={upscaleImage}
-                      disabled={isUpscaling}
-                      variant="outline"
-                      className="flex-1 bg-transparent"
-                    >
-                      {isUpscaling ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
-                          Upscaling...
-                        </>
-                      ) : (
-                        <>
-                          <Zap className="h-4 w-4 mr-2" />
-                          Upscale 4x
-                        </>
-                      )}
-                    </Button>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      )}
-    </div>
-  )
-}
-
-// Re-export as a named export so both default and named imports work
-export { FlowArtGenerator }
+              <Button onClick={generateArt} disabled={isGenerating} className="w-full" size="\

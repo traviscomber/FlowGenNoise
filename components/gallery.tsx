@@ -17,7 +17,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Heart, Download, Trash2, Grid3X3, List, Star, Settings, Archive, Eye, Copy, Cloud, Zap } from "lucide-react"
+import {
+  Heart,
+  Download,
+  Trash2,
+  Grid3X3,
+  List,
+  Star,
+  Settings,
+  Archive,
+  Eye,
+  Copy,
+  Cloud,
+  Zap,
+  Award,
+} from "lucide-react"
 import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
 import { cn } from "@/lib/utils"
 import { CloudSync } from "@/components/cloud-sync"
@@ -34,9 +48,11 @@ export function Gallery({ onImageSelect }: GalleryProps) {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
-  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "favorites">("newest")
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "favorites" | "score">("newest")
   const [showCloudSync, setShowCloudSync] = useState(false)
   const [storageStats, setStorageStats] = useState(GalleryStorage.getStorageStats())
+  const [isScoring, setIsScoring] = useState(false)
+  const [scoringProgress, setScoringProgress] = useState(0)
 
   useEffect(() => {
     loadGallery()
@@ -73,6 +89,11 @@ export function Gallery({ onImageSelect }: GalleryProps) {
           if (a.isFavorite && !b.isFavorite) return -1
           if (!a.isFavorite && b.isFavorite) return 1
           return b.metadata.createdAt - a.metadata.createdAt
+        case "score":
+          const scoreA = a.aestheticScore?.score || 0
+          const scoreB = b.aestheticScore?.score || 0
+          if (scoreA !== scoreB) return scoreB - scoreA
+          return b.metadata.createdAt - a.metadata.createdAt
         default:
           return 0
       }
@@ -103,6 +124,32 @@ export function Gallery({ onImageSelect }: GalleryProps) {
     document.body.removeChild(link)
   }
 
+  const handleScoreImage = async (id: string) => {
+    const result = await GalleryStorage.scoreImage(id)
+    if (result.success) {
+      loadGallery()
+    }
+  }
+
+  const handleBatchScore = async () => {
+    setIsScoring(true)
+    setScoringProgress(0)
+
+    try {
+      const result = await GalleryStorage.batchScoreImages((progress) => {
+        setScoringProgress(progress)
+      })
+
+      loadGallery()
+      console.log(`Scored ${result.scored} images, ${result.failed} failed`)
+    } catch (error) {
+      console.error("Batch scoring failed:", error)
+    } finally {
+      setIsScoring(false)
+      setScoringProgress(0)
+    }
+  }
+
   const handleClearGallery = () => {
     if (confirm("Are you sure you want to delete all images? This cannot be undone.")) {
       GalleryStorage.clearGallery()
@@ -130,6 +177,8 @@ export function Gallery({ onImageSelect }: GalleryProps) {
   const uniqueDatasets = [...new Set(images.map((img) => img.metadata.dataset))]
   const uniqueScenarios = [...new Set(images.map((img) => img.metadata.scenario))]
 
+  const unscoredCount = images.filter((img) => !img.aestheticScore).length
+
   return (
     <Card className="h-full">
       <CardHeader>
@@ -138,10 +187,16 @@ export function Gallery({ onImageSelect }: GalleryProps) {
             <CardTitle className="flex items-center gap-2">
               <Archive className="h-5 w-5" />
               Gallery ({filteredAndSortedImages.length})
+              {storageStats.averageScore > 0 && (
+                <Badge variant="outline" className="ml-2">
+                  <Award className="h-3 w-3 mr-1" />
+                  Avg: {storageStats.averageScore}/10
+                </Badge>
+              )}
             </CardTitle>
             <CardDescription>
-              Your generated artworks • {storageInfo.imageCount} total images • Full resolution preserved for 8K
-              enhancement
+              Your generated artworks • {storageInfo.imageCount} total images • {storageStats.topRatedImages} top-rated
+              (7.0+)
             </CardDescription>
           </div>
           <div className="flex gap-2">
@@ -151,6 +206,21 @@ export function Gallery({ onImageSelect }: GalleryProps) {
             <Button variant="outline" size="sm" onClick={() => setShowCloudSync(!showCloudSync)}>
               <Cloud className="h-4 w-4" />
             </Button>
+            {unscoredCount > 0 && (
+              <Button variant="outline" size="sm" onClick={handleBatchScore} disabled={isScoring}>
+                {isScoring ? (
+                  <>
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-current mr-1" />
+                    {Math.round(scoringProgress)}%
+                  </>
+                ) : (
+                  <>
+                    <Award className="h-4 w-4 mr-1" />
+                    Score All ({unscoredCount})
+                  </>
+                )}
+              </Button>
+            )}
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -160,11 +230,11 @@ export function Gallery({ onImageSelect }: GalleryProps) {
               <DialogContent>
                 <DialogHeader>
                   <DialogTitle>Gallery Settings</DialogTitle>
-                  <DialogDescription>Manage your high-resolution gallery and storage</DialogDescription>
+                  <DialogDescription>Manage your high-resolution gallery and aesthetic scoring</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label>High-Resolution Storage</Label>
+                    <Label>High-Resolution Storage & Scoring</Label>
                     <div className="mt-2 space-y-2">
                       <div className="flex justify-between text-sm">
                         <span>Local Images:</span>
@@ -175,12 +245,18 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                         <span>{storageStats.cloudImages}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span>Total Size:</span>
-                        <span>{GalleryStorage.formatFileSize(storageStats.totalSize)}</span>
+                        <span>Average Score:</span>
+                        <span className={cn("font-medium", GalleryStorage.getScoreColor(storageStats.averageScore))}>
+                          {storageStats.averageScore > 0 ? `${storageStats.averageScore}/10` : "Not scored"}
+                        </span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span>Average Size:</span>
-                        <span>{GalleryStorage.formatFileSize(storageStats.averageSize)}</span>
+                        <span>Top Rated (7.0+):</span>
+                        <span className="text-green-600 font-medium">{storageStats.topRatedImages}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Total Size:</span>
+                        <span>{GalleryStorage.formatFileSize(storageStats.totalSize)}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Largest Image:</span>
@@ -204,7 +280,7 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                       8K Enhancement Ready
                     </div>
                     <p className="text-blue-600 text-xs">
-                      All images stored at full resolution for optimal AI upscaling and enhancement to 8K quality.
+                      All images stored at full resolution with aesthetic scoring for optimal AI upscaling.
                     </p>
                   </div>
                   <Separator />
@@ -282,6 +358,12 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                 <SelectItem value="newest">Newest</SelectItem>
                 <SelectItem value="oldest">Oldest</SelectItem>
                 <SelectItem value="favorites">Favorites</SelectItem>
+                <SelectItem value="score">
+                  <div className="flex items-center gap-1">
+                    <Award className="h-3 w-3" />
+                    Score
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -344,6 +426,19 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                       >
                         <Heart className={cn("h-4 w-4", image.isFavorite && "fill-red-500 text-red-500")} />
                       </Button>
+                      {!image.aestheticScore && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="h-8 w-8 p-0"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleScoreImage(image.id)
+                          }}
+                        >
+                          <Award className="h-4 w-4" />
+                        </Button>
+                      )}
                     </div>
 
                     {image.isFavorite && (
@@ -356,10 +451,23 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                         <Zap className="h-3 w-3 text-green-500" title="8K Ready" />
                       </div>
                     )}
+
+                    {/* Aesthetic Score Badge */}
+                    {image.aestheticScore && (
+                      <div className="absolute bottom-2 right-2">
+                        <Badge
+                          variant={GalleryStorage.getScoreBadgeVariant(image.aestheticScore.score)}
+                          className="text-xs"
+                        >
+                          <Award className="h-3 w-3 mr-1" />
+                          {image.aestheticScore.score}
+                        </Badge>
+                      </div>
+                    )}
                   </div>
 
                   <div className={cn("p-3", viewMode === "list" && "flex-1 p-0")}>
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <Badge variant="secondary" className="text-xs">
                         {image.metadata.dataset}
                       </Badge>
@@ -373,6 +481,14 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                           {GalleryStorage.formatFileSize(image.metadata.fileSize)}
                         </Badge>
                       )}
+                      {image.aestheticScore && (
+                        <Badge
+                          variant={GalleryStorage.getScoreBadgeVariant(image.aestheticScore.score)}
+                          className="text-xs"
+                        >
+                          {image.aestheticScore.score}/10
+                        </Badge>
+                      )}
                     </div>
 
                     <p className="text-sm font-medium truncate mb-1">
@@ -381,6 +497,13 @@ export function Gallery({ onImageSelect }: GalleryProps) {
 
                     <p className="text-xs text-muted-foreground">
                       {new Date(image.metadata.createdAt).toLocaleDateString()}
+                      {image.aestheticScore && (
+                        <span
+                          className={cn("ml-2 font-medium", GalleryStorage.getScoreColor(image.aestheticScore.score))}
+                        >
+                          • {image.aestheticScore.rating}
+                        </span>
+                      )}
                     </p>
 
                     {viewMode === "list" && (
@@ -429,11 +552,20 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                     8K Ready
                   </Badge>
                 )}
+                {selectedImage.aestheticScore && (
+                  <Badge variant={GalleryStorage.getScoreBadgeVariant(selectedImage.aestheticScore.score)}>
+                    <Award className="h-3 w-3 mr-1" />
+                    {selectedImage.aestheticScore.score}/10 • {selectedImage.aestheticScore.rating}
+                  </Badge>
+                )}
               </DialogTitle>
               <DialogDescription>
                 Generated on {new Date(selectedImage.metadata.createdAt).toLocaleString()}
                 {selectedImage.metadata.fileSize && (
                   <span className="ml-2">• {GalleryStorage.formatFileSize(selectedImage.metadata.fileSize)}</span>
+                )}
+                {selectedImage.aestheticScore && (
+                  <span className="ml-2">• Scored via {selectedImage.aestheticScore.method}</span>
                 )}
               </DialogDescription>
             </DialogHeader>
@@ -490,6 +622,21 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                         </Badge>
                       </div>
                     )}
+                    {selectedImage.aestheticScore && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Aesthetic Score:</span>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={GalleryStorage.getScoreBadgeVariant(selectedImage.aestheticScore.score)}>
+                            {selectedImage.aestheticScore.score}/10
+                          </Badge>
+                          <span
+                            className={cn("text-xs", GalleryStorage.getScoreColor(selectedImage.aestheticScore.score))}
+                          >
+                            {selectedImage.aestheticScore.rating}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -505,6 +652,13 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                     <Heart className={cn("h-4 w-4 mr-2", selectedImage.isFavorite && "fill-current")} />
                     {selectedImage.isFavorite ? "Remove from Favorites" : "Add to Favorites"}
                   </Button>
+
+                  {!selectedImage.aestheticScore && (
+                    <Button variant="outline" onClick={() => handleScoreImage(selectedImage.id)} className="w-full">
+                      <Award className="h-4 w-4 mr-2" />
+                      Score Aesthetic Quality
+                    </Button>
+                  )}
 
                   {onImageSelect && (
                     <Button
