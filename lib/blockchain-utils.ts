@@ -1,5 +1,22 @@
 import { supabase } from "./supabase"
 
+/** ------------------------------------------------------------------
+ *  Address helpers
+ *  -----------------------------------------------------------------*/
+
+/** Shorten a 0x-address for UI display (0x1234…ABCD). */
+export function shortenAddress(address = ""): string {
+  return address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ""
+}
+
+/**
+ *  Back-compat alias – many components still import { formatAddress }.
+ *  It delegates to shortenAddress so behaviour stays the same.
+ */
+export function formatAddress(address = ""): string {
+  return shortenAddress(address)
+}
+
 // IPFS Upload Functions
 export async function uploadImageToPinata(imageData: string): Promise<string> {
   try {
@@ -143,10 +160,6 @@ export async function logTransactionToSupabase(transaction: any): Promise<void> 
 // Utility Functions
 export function formatEthAmount(amount: number): string {
   return `${amount.toFixed(4)} ETH`
-}
-
-export function shortenAddress(address: string): string {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
 // Test Pinata Connection
