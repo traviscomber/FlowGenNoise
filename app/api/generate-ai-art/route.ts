@@ -2,8 +2,11 @@ import { NextResponse } from "next/server"
 import { generateText, experimental_generateImage } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { uploadImageToCloudinary } from "@/lib/cloudinary-utils"
+import { saveGeneration } from "@/lib/supabase"
 
 export async function POST(req: Request) {
+  const startTime = Date.now()
+
   try {
     const { dataset, seed, colorScheme, numSamples, noise } = await req.json()
 
@@ -51,46 +54,69 @@ The image should be optimized as a base for AI upscaling to 8K resolution, with 
     })
 
     const baseImage = `data:image/png;base64,${image.base64}`
+    const generationTime = Date.now() - startTime
 
-    // Step 3: Upload to Cloudinary
+    // Prepare generation record
+    const generationData = {
+      dataset,
+      seed,
+      num_samples: numSamples,
+      noise,
+      color_scheme: colorScheme,
+      generation_type: "ai" as const,
+      ai_prompt: imagePrompt,
+      is_upscaled: false,
+      generation_time_ms: generationTime,
+      base64_fallback: baseImage, // Always store base64 as fallback
+    }
+
+    // Try to upload to Cloudinary
+    let cloudinaryResult = null
     try {
-      const cloudinaryResult = await uploadImageToCloudinary(baseImage, {
+      cloudinaryResult = await uploadImageToCloudinary(baseImage, {
         folder: "flowsketch-generations/ai",
         public_id: `ai_${dataset}_${seed}_${Date.now()}`,
         tags: ["flowsketch", "ai-generated", dataset, colorScheme],
       })
 
-      return NextResponse.json({
-        image: cloudinaryResult.secure_url,
-        baseResolution: "1792x1024",
-        readyForUpscaling: true,
-        recommendedUpscale: "4x",
-        cloudinary: {
-          public_id: cloudinaryResult.public_id,
-          width: cloudinaryResult.width,
-          height: cloudinaryResult.height,
-          format: cloudinaryResult.format,
-          bytes: cloudinaryResult.bytes,
-        },
-        generation_params: {
-          dataset,
-          seed,
-          colorScheme,
-          numSamples,
-          noise,
-          type: "ai",
-          prompt: imagePrompt,
-        },
+      // Update generation data with Cloudinary info
+      Object.assign(generationData, {
+        cloudinary_public_id: cloudinaryResult.public_id,
+        cloudinary_url: cloudinaryResult.secure_url,
+        image_width: cloudinaryResult.width,
+        image_height: cloudinaryResult.height,
+        image_format: cloudinaryResult.format,
+        image_bytes: cloudinaryResult.bytes,
       })
     } catch (cloudinaryError) {
-      console.error("Cloudinary upload failed, returning base64:", cloudinaryError)
-      // Fallback to base64 if Cloudinary fails
+      console.error("Cloudinary upload failed:", cloudinaryError)
+      // Continue without Cloudinary - we have base64 fallback
+    }
+
+    // Save to Supabase database
+    try {
+      const savedGeneration = await saveGeneration(generationData)
+
       return NextResponse.json({
-        image: baseImage,
+        id: savedGeneration.id,
+        image: cloudinaryResult?.secure_url || baseImage,
         baseResolution: "1792x1024",
         readyForUpscaling: true,
         recommendedUpscale: "4x",
-        cloudinary_error: "Upload failed, using base64 fallback",
+        storage: {
+          database: "supabase",
+          cloudinary: cloudinaryResult ? "uploaded" : "failed",
+          fallback: "base64",
+        },
+        cloudinary: cloudinaryResult
+          ? {
+              public_id: cloudinaryResult.public_id,
+              width: cloudinaryResult.width,
+              height: cloudinaryResult.height,
+              format: cloudinaryResult.format,
+              bytes: cloudinaryResult.bytes,
+            }
+          : null,
         generation_params: {
           dataset,
           seed,
@@ -99,6 +125,34 @@ The image should be optimized as a base for AI upscaling to 8K resolution, with 
           noise,
           type: "ai",
           prompt: imagePrompt,
+          generation_time_ms: generationTime,
+        },
+      })
+    } catch (dbError) {
+      console.error("Database save failed:", dbError)
+
+      // Return image even if database fails
+      return NextResponse.json({
+        image: cloudinaryResult?.secure_url || baseImage,
+        baseResolution: "1792x1024",
+        readyForUpscaling: true,
+        recommendedUpscale: "4x",
+        storage: {
+          database: "failed",
+          cloudinary: cloudinaryResult ? "uploaded" : "failed",
+          fallback: "base64",
+        },
+        error: "Failed to save to database, but image generated successfully",
+        cloudinary: cloudinaryResult,
+        generation_params: {
+          dataset,
+          seed,
+          colorScheme,
+          numSamples,
+          noise,
+          type: "ai",
+          prompt: imagePrompt,
+          generation_time_ms: generationTime,
         },
       })
     }

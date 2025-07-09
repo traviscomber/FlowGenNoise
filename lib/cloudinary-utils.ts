@@ -24,15 +24,8 @@ export async function uploadImageToCloudinary(
     throw new Error("Cloudinary configuration missing")
   }
 
-  // Convert base64 to blob if needed
   const formData = new FormData()
-
-  if (imageData.startsWith("data:")) {
-    formData.append("file", imageData)
-  } else {
-    formData.append("file", imageData)
-  }
-
+  formData.append("file", imageData)
   formData.append("upload_preset", uploadPreset)
 
   if (options.folder) {
