@@ -1,143 +1,163 @@
 import { NextResponse } from "next/server"
 
+/**
+ * POST /api/score-image
+ * Body: { imageUrl: string; metadata?: any }
+ *
+ * 1. Attempts to score the image with Replicate's AestheticPredictor.
+ * 2. On any failure (missing token, API error, etc.) falls back to a local heuristic.
+ */
 export async function POST(req: Request) {
+  // ────────────────────────────────────────────────────────────
+  // Parse body ONCE so we can re-use it for both paths
+  // ────────────────────────────────────────────────────────────
+  let body: { imageUrl?: string; metadata?: any }
   try {
-    const { imageUrl } = await req.json()
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 })
+  }
 
-    if (!imageUrl) {
-      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
-    }
+  const { imageUrl, metadata } = body
 
-    if (!process.env.REPLICATE_API_TOKEN) {
-      return NextResponse.json({ error: "Replicate API token not configured" }, { status: 500 })
-    }
+  if (!imageUrl) {
+    return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
+  }
 
-    // Use Replicate's aesthetic predictor
-    const response = await fetch("https://api.replicate.com/v1/predictions", {
-      method: "POST",
-      headers: {
-        Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        version: "daeed1ba277b382462ee9f6a8b6c1c5c6c3e3c8e1c1c1c1c1c1c1c1c1c1c1c1c",
-        input: {
-          image: imageUrl,
-        },
-      }),
-    })
+  // ────────────────────────────────────────────────────────────
+  // Try Replicate first (only if token + model version are set)
+  // ────────────────────────────────────────────────────────────
+  const token = process.env.REPLICATE_API_TOKEN
+  const modelVersion =
+    process.env.REPLICATE_MODEL_VERSION ??
+    // Default public version of "aesthetic-predictor"
+    "48227b6d39d3c8c8c9d17ad9b93d15d64ba5f9d6e0a4b5eaf311ec5f7c23e38e"
 
-    if (!response.ok) {
-      throw new Error(`Replicate API error: ${response.statusText}`)
-    }
+  if (token) {
+    try {
+      const prediction = await createReplicatePrediction(token, modelVersion, imageUrl)
+      const aestheticScore = await pollReplicatePrediction(token, prediction.id)
 
-    const prediction = await response.json()
-
-    // Poll for completion
-    let result = prediction
-    while (result.status === "starting" || result.status === "processing") {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
-        headers: {
-          Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
-        },
-      })
-
-      result = await pollResponse.json()
-    }
-
-    if (result.status === "succeeded") {
-      const aestheticScore = result.output
       return NextResponse.json({
         score: aestheticScore,
         rating: getAestheticRating(aestheticScore),
+        method: "replicate",
       })
-    } else {
-      throw new Error("Aesthetic prediction failed")
+    } catch (replicateErr) {
+      // Log for observability but keep going
+      console.error("Replicate aesthetic scoring failed, falling back →", replicateErr)
     }
-  } catch (error: any) {
-    console.error("Error scoring image:", error)
+  }
 
-    // Fallback to local aesthetic scoring if Replicate fails
-    try {
-      const localScore = await getLocalAestheticScore(req)
-      return NextResponse.json(localScore)
-    } catch (fallbackError) {
-      return NextResponse.json(
-        {
-          error: "Failed to score image",
-          details: error.message,
-        },
-        { status: 500 },
-      )
+  // ────────────────────────────────────────────────────────────
+  // Local fallback
+  // ────────────────────────────────────────────────────────────
+  const local = await getLocalAestheticScore({ imageUrl, metadata })
+  return NextResponse.json(local)
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* Helpers                                                   */
+/* ────────────────────────────────────────────────────────── */
+
+async function createReplicatePrediction(token: string, version: string, image: string) {
+  const res = await fetch("https://api.replicate.com/v1/predictions", {
+    method: "POST",
+    headers: {
+      Authorization: `Token ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      version,
+      input: { image },
+    }),
+  })
+
+  if (!res.ok) {
+    const detail = await safeReadText(res)
+    throw new Error(`Replicate API error (${res.status}): ${detail}`)
+  }
+  return res.json() as Promise<{ id: string }>
+}
+
+async function pollReplicatePrediction(token: string, id: string): Promise<number> {
+  const poll = async () => {
+    const r = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
+      headers: { Authorization: `Token ${token}` },
+      cache: "no-store",
+    })
+    if (!r.ok) throw new Error(`Polling failed (${r.status})`)
+    return r.json() as Promise<{ status: string; output: number }>
+  }
+
+  for (;;) {
+    const data = await poll()
+    if (data.status === "succeeded") return data.output
+    if (data.status === "failed" || data.status === "canceled") {
+      throw new Error(`Prediction ${data.status}`)
     }
+    await new Promise((res) => setTimeout(res, 1100))
   }
 }
 
 function getAestheticRating(score: number): string {
-  if (score >= 8.0) return "Exceptional"
-  if (score >= 7.0) return "Excellent"
-  if (score >= 6.0) return "Very Good"
-  if (score >= 5.0) return "Good"
-  if (score >= 4.0) return "Fair"
+  if (score >= 8) return "Exceptional"
+  if (score >= 7) return "Excellent"
+  if (score >= 6) return "Very Good"
+  if (score >= 5) return "Good"
+  if (score >= 4) return "Fair"
   return "Needs Improvement"
 }
 
-async function getLocalAestheticScore(req: Request): Promise<{ score: number; rating: string; method: string }> {
-  const { imageUrl, metadata } = await req.json()
-
-  // Local aesthetic scoring algorithm based on image properties
-  let score = 5.0 // Base score
+/**
+ * Lightweight local heuristic when Replicate isn’t available.
+ */
+async function getLocalAestheticScore({
+  imageUrl,
+  metadata,
+}: {
+  imageUrl: string
+  metadata?: any
+}): Promise<{ score: number; rating: string; method: string }> {
+  let score = 5 // start neutral
 
   try {
-    // Fetch image to analyze
-    const imageResponse = await fetch(imageUrl)
-    const imageBuffer = await imageResponse.arrayBuffer()
-    const imageSize = imageBuffer.byteLength
+    // Fetch once to get size - good signal for detail/complexity
+    const resp = await fetch(imageUrl, { cache: "no-store" })
+    const buffer = await resp.arrayBuffer()
+    const size = buffer.byteLength
 
-    // Score based on generation parameters
+    // Size bonus
+    if (size > 500_000) score += 0.4
+    if (size > 1_000_000) score += 0.4
+
+    // Generation params
     if (metadata) {
-      // Higher sample count generally means more detail
-      if (metadata.samples > 1000) score += 0.5
-      if (metadata.samples > 1500) score += 0.3
-
-      // Optimal noise levels
+      if (metadata.samples > 1000) score += 0.6
       if (metadata.noise >= 0.02 && metadata.noise <= 0.08) score += 0.4
-
-      // AI generated images tend to score higher
-      if (metadata.generationMode === "ai") score += 0.8
-
-      // Scenario-based images are more complex
-      if (metadata.scenario && metadata.scenario !== "none") score += 0.6
-
-      // Color scheme preferences
-      const preferredSchemes = ["viridis", "plasma", "magma"]
-      if (preferredSchemes.includes(metadata.colorScheme)) score += 0.3
+      if (metadata.generationMode === "ai") score += 0.6
+      if (metadata.scenario && metadata.scenario !== "none") score += 0.5
     }
 
-    // File size indicates complexity/detail
-    if (imageSize > 500000) score += 0.4 // > 500KB
-    if (imageSize > 1000000) score += 0.3 // > 1MB
-
-    // Add some randomness for variety
+    // Mild randomness for variety
     score += (Math.random() - 0.5) * 0.6
+  } catch {
+    // ignore fetch failures – keep base score + randomness
+    score += (Math.random() - 0.5) * 1
+  }
 
-    // Clamp score between 1-10
-    score = Math.max(1.0, Math.min(10.0, score))
+  score = Math.max(1, Math.min(10, score))
+  return {
+    score: Number(score.toFixed(1)),
+    rating: getAestheticRating(score),
+    method: "local",
+  }
+}
 
-    return {
-      score: Number(score.toFixed(1)),
-      rating: getAestheticRating(score),
-      method: "local",
-    }
-  } catch (error) {
-    // Fallback random score if all else fails
-    const fallbackScore = 4.0 + Math.random() * 4.0
-    return {
-      score: Number(fallbackScore.toFixed(1)),
-      rating: getAestheticRating(fallbackScore),
-      method: "fallback",
-    }
+async function safeReadText(res: Response) {
+  try {
+    return await res.text()
+  } catch {
+    return "(no body)"
   }
 }
