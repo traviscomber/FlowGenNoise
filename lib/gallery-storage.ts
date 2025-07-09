@@ -12,6 +12,11 @@ export interface GalleryImage {
     generationMode: "svg" | "ai"
     createdAt: number
     filename: string
+    cloudStored?: boolean
+    compression?: {
+      originalSize: number
+      compressedSize: number
+    }
   }
   isFavorite: boolean
   tags: string[]
@@ -104,6 +109,87 @@ export class GalleryStorage {
       }
     } catch (error) {
       return { used: 0, available: 5 * 1024 * 1024, imageCount: 0 }
+    }
+  }
+
+  static async saveImageWithCloudUpload(
+    image: GalleryImage,
+    onProgress?: (progress: number) => void,
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      // Save locally first
+      this.saveImage(image)
+      onProgress?.(20)
+
+      // Try to upload to cloud
+      const { CloudSyncService } = await import("./cloud-sync")
+      const uploadResult = await CloudSyncService.autoUploadNewGeneration(image, (progress) => {
+        // Map upload progress to 20-100 range
+        onProgress?.(20 + progress * 0.8)
+      })
+
+      if (uploadResult.success && uploadResult.cloudImage) {
+        // Update local storage with cloud image
+        const gallery = this.getGallery()
+        const updatedGallery = gallery.map((img) => (img.id === image.id ? uploadResult.cloudImage! : img))
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(updatedGallery))
+      }
+
+      return { success: true }
+    } catch (error: any) {
+      console.error("Failed to save image with cloud upload:", error)
+      return { success: false, error: error.message }
+    }
+  }
+
+  static getImageWithOptimization(id: string, preferThumbnail = false): GalleryImage | null {
+    const gallery = this.getGallery()
+    const image = gallery.find((img) => img.id === id)
+
+    if (!image) return null
+
+    // Return optimized version if available
+    if (preferThumbnail && image.thumbnail) {
+      return {
+        ...image,
+        imageUrl: image.thumbnail,
+      }
+    }
+
+    return image
+  }
+
+  static getStorageStats(): {
+    localImages: number
+    cloudImages: number
+    totalSize: number
+    compressionSavings: number
+  } {
+    const gallery = this.getGallery()
+
+    let localImages = 0
+    let cloudImages = 0
+    let totalSize = 0
+    let compressionSavings = 0
+
+    gallery.forEach((image) => {
+      if (image.metadata.cloudStored) {
+        cloudImages++
+      } else {
+        localImages++
+      }
+
+      if (image.metadata.compression) {
+        totalSize += image.metadata.compression.compressedSize
+        compressionSavings += image.metadata.compression.originalSize - image.metadata.compression.compressedSize
+      }
+    })
+
+    return {
+      localImages,
+      cloudImages,
+      totalSize,
+      compressionSavings,
     }
   }
 }

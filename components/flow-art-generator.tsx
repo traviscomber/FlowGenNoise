@@ -65,8 +65,11 @@ export default function FlowArtGenerator() {
 
   const [showGallery, setShowGallery] = useState(false)
 
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
+
   const saveToGallery = useCallback(
-    (imageUrl: string) => {
+    async (imageUrl: string) => {
       const scenarioSuffix = scenario !== "none" ? `-${scenario}` : ""
       const filename = `flowsketch-${dataset}${scenarioSuffix}-${seed[0]}-${Date.now()}.${generationMode === "svg" ? "svg" : "png"}`
 
@@ -83,12 +86,31 @@ export default function FlowArtGenerator() {
           generationMode,
           createdAt: Date.now(),
           filename,
+          cloudStored: false,
         },
         isFavorite: false,
         tags: [],
       }
 
-      GalleryStorage.saveImage(galleryImage)
+      // Auto-upload to cloud with progress
+      setIsUploading(true)
+      setUploadProgress(0)
+
+      try {
+        const result = await GalleryStorage.saveImageWithCloudUpload(galleryImage, (progress) =>
+          setUploadProgress(progress),
+        )
+
+        if (!result.success) {
+          console.error("Upload failed:", result.error)
+          // Still saved locally, so not a complete failure
+        }
+      } catch (error) {
+        console.error("Upload error:", error)
+      } finally {
+        setIsUploading(false)
+        setUploadProgress(0)
+      }
     },
     [dataset, scenario, colorScheme, seed, samples, noise, generationMode],
   )
@@ -354,11 +376,16 @@ export default function FlowArtGenerator() {
               <Separator />
 
               {/* Generate Button */}
-              <Button onClick={generateArt} disabled={isGenerating} className="w-full" size="lg">
+              <Button onClick={generateArt} disabled={isGenerating || isUploading} className="w-full" size="lg">
                 {isGenerating ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
                     Generating...
+                  </>
+                ) : isUploading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                    Uploading... {uploadProgress}%
                   </>
                 ) : (
                   <>
@@ -367,6 +394,15 @@ export default function FlowArtGenerator() {
                   </>
                 )}
               </Button>
+
+              {isUploading && (
+                <div className="w-full bg-muted rounded-full h-2 mt-2">
+                  <div
+                    className="bg-primary h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
 

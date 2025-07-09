@@ -256,6 +256,142 @@ export class CloudSyncService {
     }
   }
 
+  static async uploadImageWithProgress(
+    image: GalleryImage,
+    onProgress?: (progress: number) => void,
+  ): Promise<{ success: boolean; error?: string; cloudUrl?: string }> {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user) {
+        return { success: false, error: "Not authenticated" }
+      }
+
+      onProgress?.(10)
+
+      // Compress image for upload
+      const { ImageCompressor } = await import("./image-compression")
+      const compressionResult = await ImageCompressor.compressForUpload(image.imageUrl)
+
+      onProgress?.(30)
+
+      // Upload main image
+      const mainFileName = `${user.id}/${image.id}.jpg`
+      const { data: mainUpload, error: mainError } = await supabase.storage
+        .from("gallery-images")
+        .upload(mainFileName, compressionResult.compressedImage, {
+          contentType: "image/jpeg",
+          upsert: true,
+        })
+
+      if (mainError) {
+        return { success: false, error: mainError.message }
+      }
+
+      onProgress?.(60)
+
+      // Upload thumbnail
+      const thumbFileName = `${user.id}/thumbs/${image.id}.jpg`
+      const { data: thumbUpload, error: thumbError } = await supabase.storage
+        .from("gallery-images")
+        .upload(thumbFileName, compressionResult.thumbnail, {
+          contentType: "image/jpeg",
+          upsert: true,
+        })
+
+      onProgress?.(80)
+
+      // Get public URLs
+      const {
+        data: { publicUrl: mainUrl },
+      } = supabase.storage.from("gallery-images").getPublicUrl(mainFileName)
+
+      const {
+        data: { publicUrl: thumbUrl },
+      } = supabase.storage.from("gallery-images").getPublicUrl(thumbFileName)
+
+      // Save to database with compression info
+      const enhancedMetadata = {
+        ...image.metadata,
+        compression: {
+          originalSize: compressionResult.originalSize,
+          compressedSize: compressionResult.compressedSize,
+          compressionRatio: compressionResult.compressionRatio,
+          uploadedAt: Date.now(),
+        },
+      }
+
+      const { error: dbError } = await supabase.from("gallery_images").upsert({
+        id: image.id,
+        user_id: user.id,
+        image_url: mainUrl,
+        thumbnail_url: thumbUrl,
+        metadata: enhancedMetadata,
+        is_favorite: image.isFavorite,
+        tags: image.tags,
+      })
+
+      if (dbError) {
+        return { success: false, error: dbError.message }
+      }
+
+      onProgress?.(100)
+
+      // Update storage usage
+      await this.updateStorageUsage()
+
+      return { success: true, cloudUrl: mainUrl }
+    } catch (error: any) {
+      return { success: false, error: error.message }
+    }
+  }
+
+  static async autoUploadNewGeneration(
+    image: GalleryImage,
+    onProgress?: (progress: number) => void,
+  ): Promise<{ success: boolean; error?: string; cloudImage?: GalleryImage }> {
+    // Check if user is authenticated and sync is enabled
+    if (!this.syncStatus.isAuthenticated || !this.syncStatus.isEnabled) {
+      // Save locally only
+      return { success: true }
+    }
+
+    try {
+      const result = await this.uploadImageWithProgress(image, onProgress)
+
+      if (result.success && result.cloudUrl) {
+        // Update the image with cloud URL
+        const cloudImage: GalleryImage = {
+          ...image,
+          imageUrl: result.cloudUrl,
+          metadata: {
+            ...image.metadata,
+            cloudStored: true,
+            uploadedAt: Date.now(),
+          },
+        }
+
+        return { success: true, cloudImage }
+      }
+
+      return result
+    } catch (error: any) {
+      console.error("Auto-upload failed:", error)
+      return { success: false, error: error.message }
+    }
+  }
+
+  static async getOptimizedImageUrl(image: GalleryImage, preferThumbnail = false): Promise<string> {
+    // If cloud stored and we want thumbnail, try to get it
+    if (image.thumbnail && preferThumbnail) {
+      return image.thumbnail
+    }
+
+    // Return the main image URL
+    return image.imageUrl
+  }
+
   static async downloadImages(): Promise<GalleryImage[]> {
     try {
       const {

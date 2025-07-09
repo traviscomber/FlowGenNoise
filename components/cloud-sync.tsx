@@ -199,11 +199,19 @@ export function CloudSync({ onSyncComplete }: CloudSyncProps) {
                     </span>
                   </div>
                   <Progress value={storagePercentage} className="h-2" />
+
+                  <div className="text-xs text-muted-foreground">
+                    <div className="flex justify-between">
+                      <span>Images compressed automatically</span>
+                      <span className="text-green-600">Space saved</span>
+                    </div>
+                  </div>
+
                   {storagePercentage > 80 && (
                     <Alert>
                       <AlertTriangle className="h-4 w-4" />
                       <AlertDescription>
-                        You're running low on storage space. Consider deleting old images or upgrading your plan.
+                        You're running low on storage space. Images are automatically compressed to save space.
                       </AlertDescription>
                     </Alert>
                   )}

@@ -21,6 +21,7 @@ import { Heart, Download, Trash2, Grid3X3, List, Star, Settings, Archive, Eye, C
 import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
 import { cn } from "@/lib/utils"
 import { CloudSync } from "@/components/cloud-sync"
+import { ImageCompressor } from "@/lib/image-compressor"
 
 interface GalleryProps {
   onImageSelect?: (image: GalleryImage) => void
@@ -36,10 +37,15 @@ export function Gallery({ onImageSelect }: GalleryProps) {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "favorites">("newest")
   const [showCloudSync, setShowCloudSync] = useState(false)
+  const [storageStats, setStorageStats] = useState(GalleryStorage.getStorageStats())
 
   useEffect(() => {
     loadGallery()
   }, [])
+
+  useEffect(() => {
+    setStorageStats(GalleryStorage.getStorageStats())
+  }, [images])
 
   const loadGallery = () => {
     setImages(GalleryStorage.getGallery())
@@ -156,10 +162,26 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label>Storage Usage</Label>
-                    <div className="mt-2">
+                    <Label>Storage Usage & Optimization</Label>
+                    <div className="mt-2 space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Local Images:</span>
+                        <span>{storageStats.localImages}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Cloud Images:</span>
+                        <span>{storageStats.cloudImages}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Total Size:</span>
+                        <span>{ImageCompressor.formatFileSize(storageStats.totalSize)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm text-green-600">
+                        <span>Compression Savings:</span>
+                        <span>{ImageCompressor.formatFileSize(storageStats.compressionSavings)}</span>
+                      </div>
                       <div className="flex justify-between text-sm text-muted-foreground mb-1">
-                        <span>{(storageInfo.used / 1024).toFixed(1)} KB used</span>
+                        <span>Local Storage: {(storageInfo.used / 1024).toFixed(1)} KB used</span>
                         <span>{(storageInfo.available / 1024 / 1024).toFixed(1)} MB available</span>
                       </div>
                       <div className="w-full bg-muted rounded-full h-2">
@@ -286,7 +308,9 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                 >
                   <div className={cn("relative", viewMode === "grid" ? "aspect-video" : "w-24 h-16 flex-shrink-0")}>
                     <img
-                      src={image.imageUrl || "/placeholder.svg"}
+                      src={
+                        viewMode === "grid" && image.thumbnail ? image.thumbnail : image.imageUrl || "/placeholder.svg"
+                      }
                       alt={image.metadata.filename}
                       className="w-full h-full object-cover"
                     />
@@ -310,6 +334,8 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                     {image.isFavorite && (
                       <Star className="absolute top-2 left-2 h-4 w-4 fill-yellow-400 text-yellow-400" />
                     )}
+
+                    {image.metadata.cloudStored && <Cloud className="absolute bottom-2 left-2 h-4 w-4 text-blue-500" />}
                   </div>
 
                   <div className={cn("p-3", viewMode === "list" && "flex-1 p-0")}>
