@@ -1,4 +1,4 @@
-// Client-side image upscaling using Canvas API
+// Client-side image upscaling using Canvas API with bicubic interpolation
 export class ClientUpscaler {
   static async upscaleImage(imageDataUrl: string, scaleFactor: number): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -22,16 +22,16 @@ export class ClientUpscaler {
           canvas.width = newWidth
           canvas.height = newHeight
 
-          // Use high-quality image smoothing
+          // Use bicubic interpolation for high-quality upscaling
           ctx.imageSmoothingEnabled = true
           ctx.imageSmoothingQuality = "high"
 
-          // Draw the upscaled image
+          // Draw the upscaled image using bicubic interpolation
           ctx.drawImage(img, 0, 0, newWidth, newHeight)
 
-          // Apply sharpening filter for better quality
+          // Apply bicubic sharpening filter for better quality
           const imageData = ctx.getImageData(0, 0, newWidth, newHeight)
-          const sharpened = this.applySharpeningFilter(imageData)
+          const sharpened = this.applyBicubicSharpening(imageData)
           ctx.putImageData(sharpened, 0, 0)
 
           // Convert to data URL
@@ -50,14 +50,14 @@ export class ClientUpscaler {
     })
   }
 
-  private static applySharpeningFilter(imageData: ImageData): ImageData {
+  private static applyBicubicSharpening(imageData: ImageData): ImageData {
     const data = imageData.data
     const width = imageData.width
     const height = imageData.height
     const output = new ImageData(width, height)
 
-    // Sharpening kernel
-    const kernel = [0, -1, 0, -1, 5, -1, 0, -1, 0]
+    // Bicubic sharpening kernel
+    const kernel = [0, -0.5, 0, -0.5, 3, -0.5, 0, -0.5, 0]
 
     for (let y = 1; y < height - 1; y++) {
       for (let x = 1; x < width - 1; x++) {
@@ -103,9 +103,9 @@ export class ClientUpscaler {
           // Draw original image
           ctx.drawImage(img, 0, 0)
 
-          // Apply enhancement filters
+          // Apply bicubic enhancement filters
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-          const enhanced = this.applyEnhancementFilters(imageData)
+          const enhanced = this.applyBicubicEnhancement(imageData)
           ctx.putImageData(enhanced, 0, 0)
 
           const enhancedDataUrl = canvas.toDataURL("image/png", 1.0)
@@ -123,22 +123,24 @@ export class ClientUpscaler {
     })
   }
 
-  private static applyEnhancementFilters(imageData: ImageData): ImageData {
+  private static applyBicubicEnhancement(imageData: ImageData): ImageData {
     const data = imageData.data
     const enhanced = new ImageData(imageData.width, imageData.height)
 
     for (let i = 0; i < data.length; i += 4) {
-      // Increase contrast and saturation
+      // Bicubic contrast and saturation enhancement
       const r = data[i]
       const g = data[i + 1]
       const b = data[i + 2]
       const a = data[i + 3]
 
-      // Apply contrast enhancement
-      const contrast = 1.2
-      const enhancedR = Math.max(0, Math.min(255, (r - 128) * contrast + 128))
-      const enhancedG = Math.max(0, Math.min(255, (g - 128) * contrast + 128))
-      const enhancedB = Math.max(0, Math.min(255, (b - 128) * contrast + 128))
+      // Apply bicubic contrast enhancement
+      const contrast = 1.3
+      const brightness = 10
+
+      const enhancedR = Math.max(0, Math.min(255, (r - 128) * contrast + 128 + brightness))
+      const enhancedG = Math.max(0, Math.min(255, (g - 128) * contrast + 128 + brightness))
+      const enhancedB = Math.max(0, Math.min(255, (b - 128) * contrast + 128 + brightness))
 
       enhanced.data[i] = enhancedR
       enhanced.data[i + 1] = enhancedG

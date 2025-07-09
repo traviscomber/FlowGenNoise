@@ -1,29 +1,16 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode, useCallback } from "react"
-import { ethers } from "ethers"
-import { mintNFT as mintNFTUtil, purchaseNFT as purchaseNFTUtil, SUPPORTED_NETWORKS } from "./blockchain-utils"
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 
 interface Web3ContextType {
-  // Connection state
-  hasProvider: boolean
-  isConnected: boolean
   account: string | null
-  chainId: number | null
-  balance: string | null
-
-  // Connection methods
+  isConnected: boolean
+  isLoading: boolean
+  hasProvider: boolean
   connect: () => Promise<void>
   disconnect: () => void
-  switchNetwork: (chainId: number) => Promise<void>
-
-  // Transaction methods
-  mintNFT: (tokenURI: string, price: string) => Promise<string>
-  purchaseNFT: (tokenId: string, price: string) => Promise<string>
-
-  // State
-  isLoading: boolean
-  error: string | null
+  switchNetwork: (chainId: string) => Promise<void>
+  getBalance: () => Promise<string>
 }
 
 const Web3Context = createContext<Web3ContextType | undefined>(undefined)
@@ -33,255 +20,132 @@ interface Web3ProviderProps {
 }
 
 export function Web3Provider({ children }: Web3ProviderProps) {
-  const [hasProvider, setHasProvider] = useState(false)
-  const [isConnected, setIsConnected] = useState(false)
   const [account, setAccount] = useState<string | null>(null)
-  const [chainId, setChainId] = useState<number | null>(null)
-  const [balance, setBalance] = useState<string | null>(null)
+  const [isConnected, setIsConnected] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [hasProvider, setHasProvider] = useState(false)
 
-  // Check if wallet is available and already connected
   useEffect(() => {
+    // Check if MetaMask is installed
     const checkProvider = () => {
-      const hasMetaMask =
-        typeof window !== "undefined" && !!(window as any).ethereum && (window as any).ethereum.isMetaMask
-      setHasProvider(hasMetaMask)
-      return hasMetaMask
+      if (typeof window !== "undefined" && window.ethereum) {
+        setHasProvider(true)
+
+        // Check if already connected
+        window.ethereum
+          .request({ method: "eth_accounts" })
+          .then((accounts: string[]) => {
+            if (accounts.length > 0) {
+              setAccount(accounts[0])
+              setIsConnected(true)
+            }
+          })
+          .catch(console.error)
+      } else {
+        setHasProvider(false)
+      }
     }
 
-    if (checkProvider()) {
-      checkConnection()
+    checkProvider()
 
-      // Listen for account changes
-      const { ethereum } = window as any
-      ethereum.on("accountsChanged", handleAccountsChanged)
-      ethereum.on("chainChanged", handleChainChanged)
-      ethereum.on("disconnect", handleDisconnect)
+    // Listen for account changes
+    if (window.ethereum) {
+      window.ethereum.on("accountsChanged", (accounts: string[]) => {
+        if (accounts.length > 0) {
+          setAccount(accounts[0])
+          setIsConnected(true)
+        } else {
+          setAccount(null)
+          setIsConnected(false)
+        }
+      })
 
-      return () => {
-        ethereum.removeListener("accountsChanged", handleAccountsChanged)
-        ethereum.removeListener("chainChanged", handleChainChanged)
-        ethereum.removeListener("disconnect", handleDisconnect)
+      window.ethereum.on("chainChanged", () => {
+        window.location.reload()
+      })
+    }
+
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeAllListeners("accountsChanged")
+        window.ethereum.removeAllListeners("chainChanged")
       }
     }
   }, [])
 
-  const checkConnection = async () => {
+  const connect = async () => {
+    if (!hasProvider) {
+      throw new Error("MetaMask is not installed. Please install MetaMask to continue.")
+    }
+
+    setIsLoading(true)
     try {
-      if (typeof window !== "undefined" && (window as any).ethereum) {
-        const provider = new ethers.BrowserProvider((window as any).ethereum)
-        const accounts = await provider.listAccounts()
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      })
 
-        if (accounts.length > 0) {
-          const signer = await provider.getSigner()
-          const address = await signer.getAddress()
-          const network = await provider.getNetwork()
-          const balance = await provider.getBalance(address)
-
-          setAccount(address)
-          setChainId(Number(network.chainId))
-          setBalance(ethers.formatEther(balance))
-          setIsConnected(true)
-        }
+      if (accounts.length > 0) {
+        setAccount(accounts[0])
+        setIsConnected(true)
       }
     } catch (error) {
-      console.error("Error checking connection:", error)
-    }
-  }
-
-  const handleAccountsChanged = (accounts: string[]) => {
-    if (accounts.length === 0) {
-      disconnect()
-    } else {
-      setAccount(accounts[0])
-      updateBalance(accounts[0])
-    }
-  }
-
-  const handleChainChanged = (chainId: string) => {
-    setChainId(Number.parseInt(chainId, 16))
-    if (account) {
-      updateBalance(account)
-    }
-  }
-
-  const handleDisconnect = () => {
-    disconnect()
-  }
-
-  const updateBalance = async (address: string) => {
-    try {
-      if (typeof window !== "undefined" && (window as any).ethereum) {
-        const provider = new ethers.BrowserProvider((window as any).ethereum)
-        const balance = await provider.getBalance(address)
-        setBalance(ethers.formatEther(balance))
-      }
-    } catch (error) {
-      console.error("Error updating balance:", error)
-    }
-  }
-
-  const connect = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      if (!hasProvider) {
-        throw new Error("MetaMask is not installed. Please install MetaMask to continue.")
-      }
-
-      // Request account access
-      await (window as any).ethereum.request({ method: "eth_requestAccounts" })
-
-      const provider = new ethers.BrowserProvider((window as any).ethereum)
-      const signer = await provider.getSigner()
-      const address = await signer.getAddress()
-      const network = await provider.getNetwork()
-      const balance = await provider.getBalance(address)
-
-      setAccount(address)
-      setChainId(Number(network.chainId))
-      setBalance(ethers.formatEther(balance))
-      setIsConnected(true)
-
-      console.log("Connected to wallet:", address)
-    } catch (error: any) {
-      console.error("Connection error:", error)
-      setError(error.message || "Failed to connect wallet")
+      console.error("Failed to connect wallet:", error)
+      throw error
     } finally {
       setIsLoading(false)
     }
-  }, [hasProvider])
+  }
 
   const disconnect = () => {
-    setIsConnected(false)
     setAccount(null)
-    setChainId(null)
-    setBalance(null)
-    setError(null)
-    console.log("Wallet disconnected")
+    setIsConnected(false)
   }
 
-  const switchNetwork = async (targetChainId: number) => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      if (!hasProvider) {
-        throw new Error("MetaMask is not installed")
-      }
-
-      const chainIdHex = `0x${targetChainId.toString(16)}`
-
-      try {
-        // Try to switch to the network
-        await (window as any).ethereum.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: chainIdHex }],
-        })
-      } catch (switchError: any) {
-        // If the network doesn't exist, add it
-        if (switchError.code === 4902) {
-          const networkConfig = SUPPORTED_NETWORKS[targetChainId as keyof typeof SUPPORTED_NETWORKS]
-          if (networkConfig) {
-            await (window as any).ethereum.request({
-              method: "wallet_addEthereumChain",
-              params: [
-                {
-                  chainId: chainIdHex,
-                  chainName: networkConfig.name,
-                  rpcUrls: [networkConfig.rpcUrl],
-                  blockExplorerUrls: [networkConfig.blockExplorer],
-                  nativeCurrency: {
-                    name: networkConfig.currency,
-                    symbol: networkConfig.currency,
-                    decimals: 18,
-                  },
-                },
-              ],
-            })
-          }
-        } else {
-          throw switchError
-        }
-      }
-
-      setChainId(targetChainId)
-      if (account) {
-        updateBalance(account)
-      }
-    } catch (error: any) {
-      console.error("Network switch error:", error)
-      setError(error.message || "Failed to switch network")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const mintNFT = async (tokenURI: string, price: string): Promise<string> => {
-    if (!isConnected || !chainId) {
-      throw new Error("Wallet not connected")
+  const switchNetwork = async (chainId: string) => {
+    if (!hasProvider) {
+      throw new Error("MetaMask is not installed")
     }
 
-    setIsLoading(true)
-    setError(null)
-
     try {
-      const txHash = await mintNFTUtil(tokenURI, price, chainId)
-
-      // Update balance after transaction
-      if (account) {
-        setTimeout(() => updateBalance(account), 2000)
-      }
-
-      return txHash
-    } catch (error: any) {
-      setError(error.message || "Failed to mint NFT")
+      await window.ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId }],
+      })
+    } catch (error) {
+      console.error("Failed to switch network:", error)
       throw error
-    } finally {
-      setIsLoading(false)
     }
   }
 
-  const purchaseNFT = async (tokenId: string, price: string): Promise<string> => {
-    if (!isConnected || !chainId) {
-      throw new Error("Wallet not connected")
+  const getBalance = async (): Promise<string> => {
+    if (!hasProvider || !account) {
+      return "0"
     }
 
-    setIsLoading(true)
-    setError(null)
-
     try {
-      const txHash = await purchaseNFTUtil(tokenId, price, chainId)
+      const balance = await window.ethereum.request({
+        method: "eth_getBalance",
+        params: [account, "latest"],
+      })
 
-      // Update balance after transaction
-      if (account) {
-        setTimeout(() => updateBalance(account), 2000)
-      }
-
-      return txHash
-    } catch (error: any) {
-      setError(error.message || "Failed to purchase NFT")
-      throw error
-    } finally {
-      setIsLoading(false)
+      // Convert from wei to ETH
+      const ethBalance = Number.parseInt(balance, 16) / Math.pow(10, 18)
+      return ethBalance.toFixed(4)
+    } catch (error) {
+      console.error("Failed to get balance:", error)
+      return "0"
     }
   }
 
   const value: Web3ContextType = {
-    hasProvider,
-    isConnected,
     account,
-    chainId,
-    balance,
+    isConnected,
+    isLoading,
+    hasProvider,
     connect,
     disconnect,
     switchNetwork,
-    mintNFT,
-    purchaseNFT,
-    isLoading,
-    error,
+    getBalance,
   }
 
   return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>
@@ -295,14 +159,9 @@ export function useWeb3() {
   return context
 }
 
-// Type declaration for window.ethereum
+// Extend Window interface for TypeScript
 declare global {
   interface Window {
-    ethereum?: {
-      request: (args: { method: string; params?: any[] }) => Promise<any>
-      on: (event: string, callback: (...args: any[]) => void) => void
-      removeListener: (event: string, callback: (...args: any[]) => void) => void
-      isMetaMask?: boolean
-    }
+    ethereum?: any
   }
 }

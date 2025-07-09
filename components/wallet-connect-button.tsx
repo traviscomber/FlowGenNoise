@@ -2,158 +2,120 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
+import { Wallet, ExternalLink, Copy, LogOut, AlertCircle } from "lucide-react"
 import { useWeb3 } from "@/lib/web3-context"
-import { formatAddress, getNetworkName, SUPPORTED_NETWORKS } from "@/lib/blockchain-utils"
-import { Wallet, ChevronDown, Copy, ExternalLink, Power, Network } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "@/hooks/use-toast"
 
 export function WalletConnectButton() {
-  const { hasProvider, isConnected, account, chainId, balance, connect, disconnect, switchNetwork, isLoading } =
-    useWeb3()
-  const { toast } = useToast()
-  const [isNetworkMenuOpen, setIsNetworkMenuOpen] = useState(false)
+  const { account, isConnected, isLoading, hasProvider, connect, disconnect, getBalance } = useWeb3()
+  const [balance, setBalance] = useState<string>("0")
 
-  const copyAddress = async () => {
-    if (account) {
-      await navigator.clipboard.writeText(account)
-      toast({
-        title: "Address copied",
-        description: "Wallet address copied to clipboard",
-      })
-    }
-  }
-
-  const openEtherscan = () => {
-    if (account && chainId) {
-      const network = SUPPORTED_NETWORKS[chainId as keyof typeof SUPPORTED_NETWORKS]
-      if (network) {
-        window.open(`${network.blockExplorer}/address/${account}`, "_blank")
-      }
-    }
-  }
-
-  const handleNetworkSwitch = async (targetChainId: number) => {
+  const handleConnect = async () => {
     try {
-      await switchNetwork(targetChainId)
-      setIsNetworkMenuOpen(false)
+      await connect()
+      const userBalance = await getBalance()
+      setBalance(userBalance)
       toast({
-        title: "Network switched",
-        description: `Switched to ${getNetworkName(targetChainId)}`,
+        title: "Wallet Connected",
+        description: "Successfully connected to MetaMask",
       })
-    } catch (error) {
+    } catch (error: any) {
       toast({
-        title: "Network switch failed",
-        description: "Failed to switch network. Please try again.",
+        title: "Connection Failed",
+        description: error.message,
         variant: "destructive",
       })
     }
   }
 
-  // No MetaMask installed
+  const handleDisconnect = () => {
+    disconnect()
+    setBalance("0")
+    toast({
+      title: "Wallet Disconnected",
+      description: "Successfully disconnected from MetaMask",
+    })
+  }
+
+  const copyAddress = () => {
+    if (account) {
+      navigator.clipboard.writeText(account)
+      toast({
+        title: "Address Copied",
+        description: "Wallet address copied to clipboard",
+      })
+    }
+  }
+
+  const shortenAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
+  }
+
+  // Show install MetaMask button if no provider
   if (!hasProvider) {
     return (
-      <a href="https://metamask.io/download.html" target="_blank" rel="noopener noreferrer">
-        <Button variant="outline" className="flex items-center gap-2 bg-transparent">
-          <ExternalLink className="w-4 h-4" />
-          Install MetaMask
-        </Button>
-      </a>
+      <Button
+        variant="outline"
+        onClick={() => window.open("https://metamask.io/download/", "_blank")}
+        className="flex items-center gap-2"
+      >
+        <AlertCircle className="w-4 h-4" />
+        Install MetaMask
+        <ExternalLink className="w-3 h-3" />
+      </Button>
     )
   }
 
-  // Not connected
+  // Show connect button if not connected
   if (!isConnected) {
     return (
-      <Button onClick={connect} disabled={isLoading} className="flex items-center gap-2">
+      <Button onClick={handleConnect} disabled={isLoading} className="flex items-center gap-2">
         <Wallet className="w-4 h-4" />
         {isLoading ? "Connecting..." : "Connect Wallet"}
       </Button>
     )
   }
 
-  // Connected - show full interface
+  // Show connected wallet dropdown
   return (
-    <div className="flex items-center gap-2">
-      {/* Network Selector */}
-      <DropdownMenu open={isNetworkMenuOpen} onOpenChange={setIsNetworkMenuOpen}>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="flex items-center gap-1 bg-transparent">
-            <Network className="w-3 h-3" />
-            <span className="hidden sm:inline">{chainId ? getNetworkName(chainId) : "Unknown"}</span>
-            <ChevronDown className="w-3 h-3" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {Object.entries(SUPPORTED_NETWORKS).map(([id, network]) => (
-            <DropdownMenuItem
-              key={id}
-              onClick={() => handleNetworkSwitch(Number(id))}
-              className="flex items-center justify-between"
-            >
-              <span>{network.name}</span>
-              {chainId === Number(id) && (
-                <Badge variant="secondary" className="ml-2 text-xs">
-                  Current
-                </Badge>
-              )}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      {/* Wallet Menu */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="flex items-center gap-2 bg-transparent">
-            <Wallet className="w-4 h-4" />
-            <div className="flex flex-col items-start">
-              <span className="text-sm font-medium">{formatAddress(account || "")}</span>
-              {balance && (
-                <span className="text-xs text-muted-foreground">
-                  {Number.parseFloat(balance).toFixed(4)}{" "}
-                  {chainId && SUPPORTED_NETWORKS[chainId as keyof typeof SUPPORTED_NETWORKS]?.currency}
-                </span>
-              )}
-            </div>
-            <ChevronDown className="w-4 h-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <div className="px-2 py-1.5">
-            <p className="text-sm font-medium">Connected Wallet</p>
-            <p className="text-xs text-muted-foreground">{account}</p>
-          </div>
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem onClick={copyAddress} className="flex items-center gap-2">
-            <Copy className="w-4 h-4" />
-            Copy Address
-          </DropdownMenuItem>
-
-          <DropdownMenuItem onClick={openEtherscan} className="flex items-center gap-2">
-            <ExternalLink className="w-4 h-4" />
-            View on Explorer
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem onClick={disconnect} className="flex items-center gap-2 text-red-600 focus:text-red-600">
-            <Power className="w-4 h-4" />
-            Disconnect
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="flex items-center gap-2 bg-transparent">
+          <Wallet className="w-4 h-4" />
+          <span className="hidden sm:inline">{shortenAddress(account!)}</span>
+          <Badge variant="secondary" className="ml-2">
+            {balance} ETH
+          </Badge>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-64">
+        <div className="px-3 py-2 border-b">
+          <p className="text-sm font-medium">Connected Wallet</p>
+          <p className="text-xs text-gray-500 font-mono">{account}</p>
+        </div>
+        <div className="px-3 py-2 border-b">
+          <p className="text-sm">Balance: {balance} ETH</p>
+        </div>
+        <DropdownMenuItem onClick={copyAddress} className="cursor-pointer">
+          <Copy className="w-4 h-4 mr-2" />
+          Copy Address
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => window.open(`https://etherscan.io/address/${account}`, "_blank")}
+          className="cursor-pointer"
+        >
+          <ExternalLink className="w-4 h-4 mr-2" />
+          View on Etherscan
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleDisconnect} className="cursor-pointer text-red-600">
+          <LogOut className="w-4 h-4 mr-2" />
+          Disconnect
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
-// Export both named and default for compatibility
 export default WalletConnectButton

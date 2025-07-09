@@ -1,181 +1,171 @@
-import { ethers } from "ethers"
+import { supabase } from "./supabase"
 
-// Network configurations
-export const SUPPORTED_NETWORKS = {
-  1: {
-    name: "Ethereum Mainnet",
-    rpcUrl: "https://mainnet.infura.io/v3/YOUR_INFURA_KEY",
-    blockExplorer: "https://etherscan.io",
-    currency: "ETH",
-  },
-  11155111: {
-    name: "Sepolia Testnet",
-    rpcUrl: "https://sepolia.infura.io/v3/YOUR_INFURA_KEY",
-    blockExplorer: "https://sepolia.etherscan.io",
-    currency: "ETH",
-  },
-  137: {
-    name: "Polygon Mainnet",
-    rpcUrl: "https://polygon-rpc.com",
-    blockExplorer: "https://polygonscan.com",
-    currency: "MATIC",
-  },
-}
-
-// Contract addresses (replace with your actual deployed contracts)
-const CONTRACT_ADDRESSES = {
-  1: "0x0000000000000000000000000000000000000000", // Ethereum Mainnet
-  11155111: "0x0000000000000000000000000000000000000000", // Sepolia
-  137: "0x0000000000000000000000000000000000000000", // Polygon
-}
-
-// Utility functions
-export function formatAddress(address: string): string {
-  if (!address) return ""
-  return `${address.slice(0, 6)}...${address.slice(-4)}`
-}
-
-export function formatEthAmount(amount: string): string {
+// IPFS Upload Functions
+export async function uploadImageToPinata(imageData: string): Promise<string> {
   try {
-    const parsed = ethers.parseEther(amount)
-    return ethers.formatEther(parsed)
-  } catch {
-    return "0"
-  }
-}
+    // Convert data URL to blob
+    const response = await fetch(imageData)
+    const blob = await response.blob()
 
-export function getNetworkName(chainId: number): string {
-  return SUPPORTED_NETWORKS[chainId as keyof typeof SUPPORTED_NETWORKS]?.name || "Unknown Network"
-}
-
-// IPFS/Pinata functions
-export async function uploadImageToPinata(file: File): Promise<string> {
-  try {
     const formData = new FormData()
-    formData.append("file", file)
+    formData.append("file", blob, "artwork.png")
 
-    const response = await fetch("/api/upload-to-pinata", {
+    const pinataResponse = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_API_KEY}`,
+      },
       body: formData,
     })
 
-    if (!response.ok) {
+    if (!pinataResponse.ok) {
       throw new Error("Failed to upload to Pinata")
     }
 
-    const data = await response.json()
-    return data.ipfsHash
+    const result = await pinataResponse.json()
+    return `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`
   } catch (error) {
     console.error("Error uploading to Pinata:", error)
     throw error
   }
 }
 
-export async function uploadMetadataToPinata(metadata: object): Promise<string> {
+export async function uploadMetadataToPinata(metadata: any): Promise<string> {
   try {
-    const response = await fetch("/api/upload-metadata-to-pinata", {
+    const pinataResponse = await fetch("https://api.pinata.cloud/pinning/pinJSONToIPFS", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_API_KEY}`,
       },
       body: JSON.stringify(metadata),
     })
 
-    if (!response.ok) {
+    if (!pinataResponse.ok) {
       throw new Error("Failed to upload metadata to Pinata")
     }
 
-    const data = await response.json()
-    return data.ipfsHash
+    const result = await pinataResponse.json()
+    return `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`
   } catch (error) {
     console.error("Error uploading metadata to Pinata:", error)
     throw error
   }
 }
 
-export function createNFTMetadata(name: string, description: string, imageUrl: string, attributes?: any[]) {
+// NFT Metadata Creation
+export function createNFTMetadata(artwork: any): any {
   return {
-    name,
-    description,
-    image: imageUrl,
-    attributes: attributes || [],
-    external_url: "",
-    background_color: "",
-    animation_url: "",
-    youtube_url: "",
+    name: artwork.title,
+    description: `A generative art piece created using ${artwork.dataset} dataset with ${artwork.colorScheme} color scheme.`,
+    image: artwork.ipfs_url,
+    attributes: [
+      {
+        trait_type: "Dataset",
+        value: artwork.dataset,
+      },
+      {
+        trait_type: "Color Scheme",
+        value: artwork.colorScheme,
+      },
+      {
+        trait_type: "Generation Mode",
+        value: artwork.generationMode,
+      },
+      {
+        trait_type: "Seed",
+        value: artwork.seed,
+      },
+    ],
   }
 }
 
-// Blockchain transaction functions
-export async function mintNFT(tokenURI: string, price: string, chainId: number): Promise<string> {
+// Blockchain Transaction Functions
+export async function mintNFT(artworkId: string, walletAddress: string): Promise<string> {
   try {
-    if (typeof window === "undefined" || !(window as any).ethereum) {
-      throw new Error("MetaMask not available")
-    }
+    // This would interact with your smart contract
+    // For now, return a mock transaction hash
+    const mockTxHash = `0x${Math.random().toString(16).substr(2, 64)}`
 
-    const provider = new ethers.BrowserProvider((window as any).ethereum)
-    const signer = await provider.getSigner()
+    // Log transaction to database
+    await logTransactionToSupabase({
+      artwork_id: artworkId,
+      wallet_address: walletAddress,
+      transaction_hash: mockTxHash,
+      transaction_type: "mint",
+      status: "completed",
+    })
 
-    // This is a placeholder - replace with your actual contract interaction
-    console.log("Minting NFT:", { tokenURI, price, chainId })
-
-    // Simulate transaction hash
-    return "0x" + Math.random().toString(16).substring(2, 66)
+    return mockTxHash
   } catch (error) {
     console.error("Error minting NFT:", error)
     throw error
   }
 }
 
-export async function purchaseNFT(tokenId: string, price: string, chainId: number): Promise<string> {
+export async function purchaseArtwork(artworkId: string, walletAddress: string, priceInEth: number): Promise<string> {
   try {
-    if (typeof window === "undefined" || !(window as any).ethereum) {
-      throw new Error("MetaMask not available")
-    }
+    // This would interact with your smart contract
+    // For now, return a mock transaction hash
+    const mockTxHash = `0x${Math.random().toString(16).substr(2, 64)}`
 
-    const provider = new ethers.BrowserProvider((window as any).ethereum)
-    const signer = await provider.getSigner()
-
-    // This is a placeholder - replace with your actual contract interaction
-    console.log("Purchasing NFT:", { tokenId, price, chainId })
-
-    // Simulate transaction hash
-    return "0x" + Math.random().toString(16).substring(2, 66)
-  } catch (error) {
-    console.error("Error purchasing NFT:", error)
-    throw error
-  }
-}
-
-// Database logging function
-export async function logTransactionToSupabase(transactionData: {
-  txHash: string
-  type: "mint" | "purchase"
-  tokenId?: string
-  price: string
-  userAddress: string
-  chainId: number
-}) {
-  try {
-    const response = await fetch("/api/log-transaction", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(transactionData),
+    // Log transaction to database
+    await logTransactionToSupabase({
+      artwork_id: artworkId,
+      wallet_address: walletAddress,
+      transaction_hash: mockTxHash,
+      transaction_type: "purchase",
+      amount_eth: priceInEth,
+      status: "completed",
     })
 
-    if (!response.ok) {
-      throw new Error("Failed to log transaction")
-    }
-
-    return await response.json()
+    return mockTxHash
   } catch (error) {
-    console.error("Error logging transaction:", error)
+    console.error("Error purchasing artwork:", error)
     throw error
   }
 }
 
-// Export aliases for compatibility with existing imports
+// Database Logging Functions
+export async function logTransactionToSupabase(transaction: any): Promise<void> {
+  try {
+    const { error } = await supabase.from("blockchain_transactions").insert([transaction])
+
+    if (error) {
+      throw error
+    }
+  } catch (error) {
+    console.error("Error logging transaction to Supabase:", error)
+    throw error
+  }
+}
+
+// Utility Functions
+export function formatEthAmount(amount: number): string {
+  return `${amount.toFixed(4)} ETH`
+}
+
+export function shortenAddress(address: string): string {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
+
+// Test Pinata Connection
+export async function testPinataConnection(): Promise<boolean> {
+  try {
+    const response = await fetch("https://api.pinata.cloud/data/testAuthentication", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_API_KEY}`,
+      },
+    })
+
+    return response.ok
+  } catch (error) {
+    console.error("Pinata connection test failed:", error)
+    return false
+  }
+}
+
+// Export aliases for compatibility
 export const uploadToIPFS = uploadImageToPinata
 export const uploadMetadataToIPFS = uploadMetadataToPinata
