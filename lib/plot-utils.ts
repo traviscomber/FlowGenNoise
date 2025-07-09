@@ -12,127 +12,134 @@ export interface DataPoint {
   category?: number
 }
 
+export interface PlotConfig {
+  width?: number
+  height?: number
+  colorScheme?: string
+  backgroundColor?: string
+  strokeWidth?: number
+}
+
 /* ---------- Colour maps -------------------------------------------------- */
-const colorSchemes = {
-  magma: ["#000004", "#1b0c41", "#4a0c6b", "#781c6d", "#a52c60", "#cf4446", "#ed6925", "#fb9b06", "#f7d03c", "#fcffa4"],
+const COLOR_SCHEMES = {
   viridis: ["#440154", "#482777", "#3f4a8a", "#31678e", "#26838f", "#1f9d8a", "#6cce5a", "#b6de2b", "#fee825"],
-  plasma: ["#0d0887", "#5302a3", "#8b0aa5", "#b83289", "#db5c68", "#f48849", "#febd2a", "#f0f921"],
-  inferno: [
-    "#000004",
-    "#1b0c41",
-    "#4a0c6b",
-    "#781c6d",
-    "#a52c60",
-    "#cf4446",
-    "#ed6925",
-    "#fb9b06",
-    "#f7d03c",
+  plasma: [
+    "#0c0786",
+    "#40039c",
+    "#6a00a7",
+    "#8f0da4",
+    "#b12a90",
+    "#cc4778",
+    "#e16462",
+    "#f2844b",
+    "#fca636",
+    "#fcce25",
+  ],
+  magma: [
+    "#000003",
+    "#0b0927",
+    "#231151",
+    "#410f75",
+    "#5f187f",
+    "#7b2382",
+    "#982d80",
+    "#b73779",
+    "#d3436e",
+    "#eb5760",
+    "#f8765c",
+    "#fca50a",
     "#fcffa4",
   ],
-  grayscale: [
-    "#000000",
-    "#1a1a1a",
-    "#333333",
-    "#4d4d4d",
-    "#666666",
-    "#808080",
-    "#999999",
-    "#b3b3b3",
-    "#cccccc",
-    "#ffffff",
+  inferno: [
+    "#000003",
+    "#0b0924",
+    "#230c4c",
+    "#410967",
+    "#5f187f",
+    "#7b2382",
+    "#982d80",
+    "#b73779",
+    "#d3436e",
+    "#eb5760",
+    "#f8765c",
+    "#fca50a",
+    "#fcffa4",
   ],
-} as const
+  cool: ["#00ffff", "#0080ff", "#0000ff", "#8000ff", "#ff00ff"],
+  warm: ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00"],
+  rainbow: [
+    "#ff0000",
+    "#ff8000",
+    "#ffff00",
+    "#80ff00",
+    "#00ff00",
+    "#00ff80",
+    "#00ffff",
+    "#0080ff",
+    "#0000ff",
+    "#8000ff",
+    "#ff00ff",
+    "#ff0080",
+  ],
+}
 
-type SchemeName = keyof typeof colorSchemes
-
-function getColorFromScheme(scheme: SchemeName, t: number): string {
-  const colors = colorSchemes[scheme] ?? colorSchemes.magma
-  const idx = Math.floor(t * (colors.length - 1))
-  return colors[Math.max(0, Math.min(idx, colors.length - 1))]
+function getColorFromScheme(scheme: string, value: number): string {
+  const colors = COLOR_SCHEMES[scheme as keyof typeof COLOR_SCHEMES] || COLOR_SCHEMES.viridis
+  const index = Math.floor(value * (colors.length - 1))
+  return colors[Math.min(index, colors.length - 1)]
 }
 
 /* ========================================================================== */
 /* Scatter-plot generator (legacy helper used elsewhere in the code-base)     */
 /* ========================================================================== */
-export function generateScatterPlotSVG(
-  data: number[][],
-  colorScheme: SchemeName = "magma",
-  width = 800,
-  height = 600,
-): string {
-  if (!data?.length) {
-    const empty =
-      '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><text x="200" y="150" text-anchor="middle">No data</text></svg>'
-    return "data:image/svg+xml;base64," + btoa(empty)
+export function generateScatterPlotSVG(data: DataPoint[], config: PlotConfig = {}): string {
+  const { width = 1792, height = 1024, colorScheme = "viridis", backgroundColor = "#000000", strokeWidth = 1 } = config
+
+  if (!data || data.length === 0) {
+    return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100%" height="100%" fill="${backgroundColor}"/>
+      <text x="50%" y="50%" text-anchor="middle" fill="white" font-size="24">No data to display</text>
+    </svg>`
   }
 
+  // Find data bounds
+  const xValues = data.map((d) => d.x)
+  const yValues = data.map((d) => d.y)
+  const xMin = Math.min(...xValues)
+  const xMax = Math.max(...xValues)
+  const yMin = Math.min(...yValues)
+  const yMax = Math.max(...yValues)
+
+  // Add padding
   const padding = 50
+  const plotWidth = width - 2 * padding
+  const plotHeight = height - 2 * padding
 
-  // Bounds
-  const xs = data.map((d) => d[0])
-  const ys = data.map((d) => d[1])
-  const [minX, maxX] = [Math.min(...xs), Math.max(...xs)]
-  const [minY, maxY] = [Math.min(...ys), Math.max(...ys)]
+  // Scale functions
+  const scaleX = (x: number) => padding + ((x - xMin) / (xMax - xMin)) * plotWidth
+  const scaleY = (y: number) => padding + ((yMax - y) / (yMax - yMin)) * plotHeight
 
-  const padX = (maxX - minX) * 0.1
-  const padY = (maxY - minY) * 0.1
+  // Generate SVG elements
+  const circles = data
+    .map((point, index) => {
+      const x = scaleX(point.x)
+      const y = scaleY(point.y)
+      const colorValue = index / (data.length - 1)
+      const color = getColorFromScheme(colorScheme, colorValue)
 
-  const scaleX = (x: number) => ((x - minX + padX) / (maxX - minX + 2 * padX)) * (width - 2 * padding) + padding
-  const scaleY = (y: number) =>
-    height - padding - ((y - minY + padY) / (maxY - minY + 2 * padY)) * (height - 2 * padding)
+      return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="2" fill="${color}" stroke="none" opacity="0.8"/>`
+    })
+    .join("\n  ")
 
-  /* ---------- SVG assembly ---------- */
-  let svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
-    `<rect width="${width}" height="${height}" fill="#1a1a1a"/>` +
-    `<defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">` +
-    `<path d="M40 0 L0 0 0 40" fill="none" stroke="#333" stroke-width="1" opacity="0.3"/></pattern></defs>` +
-    `<rect width="${width}" height="${height}" fill="url(#grid)"/>`
-
-  data.forEach((pt, i) => {
-    const [x, y] = pt
-    const cx = scaleX(x)
-    const cy = scaleY(y)
-    const colour = getColorFromScheme(colorScheme, i / (data.length - 1))
-    const r = Math.max(1, 3 - data.length / 1000)
-
-    svg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${colour}" opacity="0.8"/>`
-  })
-
-  svg += "</svg>"
-  return "data:image/svg+xml;base64," + btoa(svg)
+  return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="${backgroundColor}"/>
+  ${circles}
+</svg>`
 }
 
 /* ========================================================================== */
 /* High-level plot helper used by newer code                                  */
 /* ========================================================================== */
-export function createSVGPlot(data: DataPoint[], colorScheme: SchemeName = "magma", width = 800, height = 600): string {
-  if (!data?.length) {
-    const empty =
-      '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><text x="200" y="150" text-anchor="middle">No data</text></svg>'
-    return empty
-  }
-
-  const padding = 40
-  const xs = data.map((d) => d.x)
-  const ys = data.map((d) => d.y)
-  const [minX, maxX] = [Math.min(...xs), Math.max(...xs)]
-  const [minY, maxY] = [Math.min(...ys), Math.max(...ys)]
-
-  const scaleX = (x: number) => padding + ((x - minX) / (maxX - minX || 1)) * (width - 2 * padding)
-  const scaleY = (y: number) => padding + ((maxY - y) / (maxY - minY || 1)) * (height - 2 * padding)
-
-  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`
-  svg += `<rect width="${width}" height="${height}" fill="#ffffff"/>`
-
-  data.forEach((p, i) => {
-    const colour =
-      p.category !== undefined
-        ? getColorFromScheme(colorScheme, (p.category % 10) / 9)
-        : getColorFromScheme(colorScheme, i / (data.length - 1))
-    svg += `<circle cx="${scaleX(p.x)}" cy="${scaleY(p.y)}" r="2" fill="${colour}" opacity="0.75"/>`
-  })
-
-  svg += "</svg>"
-  return svg
+export function createSVGPlot(data: DataPoint[], config: PlotConfig = {}): string {
+  return generateScatterPlotSVG(data, config)
 }
