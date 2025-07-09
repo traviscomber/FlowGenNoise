@@ -1,41 +1,30 @@
-# FlowSketch Art Generator
+# FlowSketch Deployment
 
-A Next.js application that generates beautiful flow-based artwork using toy datasets and AI, with direct client-side bicubic upscaling and Cloudinary storage.
+*Automatically synced with your [v0.dev](https://v0.dev) deployments*
 
-## Features
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/travis-projects-c14a785a/v0-flow-sketch-deployment)
+[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/tLz33TUZDhy)
 
-- **Dataset-based Art Generation**: Create art from mathematical datasets (spirals, checkerboard, moons, gaussian, grid)
-- **AI-Powered Generation**: Use DALL-E 3 to create high-quality base images
-- **Direct Client-side Upscaling**: 4x bicubic upscaling without server dependencies
-- **Cloudinary Integration**: Automatic storage and management of generated artwork
-- **Multiple Color Schemes**: Choose from magma, viridis, plasma, cividis, and grayscale
-- **Responsive Design**: Works on desktop and mobile devices
+## Overview
 
-## Getting Started
+This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
+Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Set up environment variables:
-   - `OPENAI_API_KEY`: Your OpenAI API key
-   - `CLOUDINARY_CLOUD_NAME`: Your Cloudinary cloud name
-   - `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET`: Your Cloudinary upload preset
-4. Run the development server: `npm run dev`
-5. Open [http://localhost:3000](http://localhost:3000)
+## Deployment
 
-## Environment Variables
+Your project is live at:
 
-\`\`\`env
-OPENAI_API_KEY=your_openai_api_key
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_upload_preset
-\`\`\`
+**[https://vercel.com/travis-projects-c14a785a/v0-flow-sketch-deployment](https://vercel.com/travis-projects-c14a785a/v0-flow-sketch-deployment)**
 
-## Technologies Used
+## Build your app
 
-- Next.js 14 with App Router
-- TypeScript
-- Tailwind CSS
-- shadcn/ui components
-- OpenAI API (DALL-E 3)
-- Cloudinary for image storage
-- Canvas API for client-side upscaling
+Continue building your app on:
+
+**[https://v0.dev/chat/projects/tLz33TUZDhy](https://v0.dev/chat/projects/tLz33TUZDhy)**
+
+## How It Works
+
+1. Create and modify your project using [v0.dev](https://v0.dev)
+2. Deploy your chats from the v0 interface
+3. Changes are automatically pushed to this repository
+4. Vercel deploys the latest version from this repository

@@ -1,70 +1,101 @@
-export function upscaleImageBicubic(
-  imageElement: HTMLImageElement,
-  scaleFactor = 4,
-  onProgress?: (progress: number) => void,
-): Promise<string> {
-  return new Promise((resolve, reject) => {
-    try {
-      const canvas = document.createElement("canvas")
-      const ctx = canvas.getContext("2d")
+// Client-side image upscaling using Canvas API
+export class ClientUpscaler {
+  static async upscaleImage(imageDataUrl: string, scaleFactor: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.crossOrigin = "anonymous"
 
-      if (!ctx) {
-        reject(new Error("Could not get canvas context"))
-        return
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas")
+          const ctx = canvas.getContext("2d")
+
+          if (!ctx) {
+            reject(new Error("Could not get canvas context"))
+            return
+          }
+
+          // Set new dimensions
+          const newWidth = img.width * scaleFactor
+          const newHeight = img.height * scaleFactor
+
+          canvas.width = newWidth
+          canvas.height = newHeight
+
+          // Use bicubic-like interpolation by enabling image smoothing
+          ctx.imageSmoothingEnabled = true
+          ctx.imageSmoothingQuality = "high"
+
+          // Draw the upscaled image
+          ctx.drawImage(img, 0, 0, newWidth, newHeight)
+
+          resolve(canvas.toDataURL("image/png"))
+        } catch (error) {
+          reject(error)
+        }
       }
 
-      const originalWidth = imageElement.naturalWidth
-      const originalHeight = imageElement.naturalHeight
-      const newWidth = originalWidth * scaleFactor
-      const newHeight = originalHeight * scaleFactor
+      img.onerror = () => reject(new Error("Failed to load image"))
+      img.src = imageDataUrl
+    })
+  }
 
-      canvas.width = newWidth
-      canvas.height = newHeight
+  static async enhanceImage(imageDataUrl: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.crossOrigin = "anonymous"
 
-      // Enable image smoothing for bicubic-like interpolation
-      ctx.imageSmoothingEnabled = true
-      ctx.imageSmoothingQuality = "high"
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas")
+          const ctx = canvas.getContext("2d")
 
-      onProgress?.(25)
+          if (!ctx) {
+            reject(new Error("Could not get canvas context"))
+            return
+          }
 
-      // Draw the upscaled image
-      ctx.drawImage(imageElement, 0, 0, newWidth, newHeight)
+          canvas.width = img.width
+          canvas.height = img.height
 
-      onProgress?.(50)
+          // Draw original image
+          ctx.drawImage(img, 0, 0)
 
-      // Apply post-processing for better quality
-      const imageData = ctx.getImageData(0, 0, newWidth, newHeight)
-      const data = imageData.data
+          // Get image data for enhancement
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+          const data = imageData.data
 
-      onProgress?.(75)
+          // Apply enhancement filters
+          for (let i = 0; i < data.length; i += 4) {
+            // Increase contrast slightly
+            const contrast = 1.1
+            data[i] = Math.min(255, Math.max(0, (data[i] - 128) * contrast + 128)) // Red
+            data[i + 1] = Math.min(255, Math.max(0, (data[i + 1] - 128) * contrast + 128)) // Green
+            data[i + 2] = Math.min(255, Math.max(0, (data[i + 2] - 128) * contrast + 128)) // Blue
 
-      // Apply subtle sharpening and contrast enhancement
-      for (let i = 0; i < data.length; i += 4) {
-        // Increase contrast slightly
-        data[i] = Math.min(255, data[i] * 1.1) // Red
-        data[i + 1] = Math.min(255, data[i + 1] * 1.1) // Green
-        data[i + 2] = Math.min(255, data[i + 2] * 1.1) // Blue
+            // Slight sharpening effect
+            const sharpening = 1.05
+            data[i] *= sharpening
+            data[i + 1] *= sharpening
+            data[i + 2] *= sharpening
+
+            // Clamp values
+            data[i] = Math.min(255, data[i])
+            data[i + 1] = Math.min(255, data[i + 1])
+            data[i + 2] = Math.min(255, data[i + 2])
+          }
+
+          // Put enhanced image data back
+          ctx.putImageData(imageData, 0, 0)
+
+          resolve(canvas.toDataURL("image/png"))
+        } catch (error) {
+          reject(error)
+        }
       }
 
-      ctx.putImageData(imageData, 0, 0)
-
-      onProgress?.(100)
-
-      // Convert to base64
-      const upscaledDataUrl = canvas.toDataURL("image/png", 1.0)
-      resolve(upscaledDataUrl)
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-export function createImageFromDataUrl(dataUrl: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.crossOrigin = "anonymous"
-    img.onload = () => resolve(img)
-    img.onerror = reject
-    img.src = dataUrl
-  })
+      img.onerror = () => reject(new Error("Failed to load image for enhancement"))
+      img.src = imageDataUrl
+    })
+  }
 }

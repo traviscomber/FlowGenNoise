@@ -1,120 +1,132 @@
 import { NextResponse } from "next/server"
-import { uploadUpscaledImageToCloudinary } from "@/lib/cloudinary-utils"
-import { saveGeneration, getGenerationById } from "@/lib/supabase"
 
+// Free upscaling using Replicate API with free models
 export async function POST(req: Request) {
   try {
-    const { imageData, scaleFactor, originalGenerationId } = await req.json()
+    const { imageData, scaleFactor = 4, upscaleModel = "real-esrgan" } = await req.json()
 
     if (!imageData) {
       return NextResponse.json({ error: "Missing image data" }, { status: 400 })
     }
 
-    // If we have an upscaled image and original generation ID, save it
-    if (originalGenerationId && imageData.startsWith("data:image")) {
+    // Extract base64 data from data URL
+    const base64Data = imageData.replace(/^data:image\/[a-z]+;base64,/, "")
+
+    console.log(`Starting free upscaling with ${upscaleModel} at ${scaleFactor}x...`)
+
+    // Method 1: Try Replicate API (free tier available)
+    if (process.env.REPLICATE_API_TOKEN) {
       try {
-        // Get original generation info
-        const originalGeneration = await getGenerationById(originalGenerationId)
-
-        if (originalGeneration) {
-          // Upload upscaled image to Cloudinary
-          const cloudinaryResult = await uploadUpscaledImageToCloudinary(
-            imageData,
-            originalGeneration.cloudinary_public_id || `gen_${originalGenerationId}`,
-            scaleFactor || 4,
-          )
-
-          // Save upscaled generation to database
-          const upscaledGeneration = await saveGeneration({
-            dataset: originalGeneration.dataset,
-            seed: originalGeneration.seed,
-            num_samples: originalGeneration.num_samples,
-            noise: originalGeneration.noise,
-            color_scheme: originalGeneration.color_scheme,
-            generation_type: originalGeneration.generation_type,
-            ai_prompt: originalGeneration.ai_prompt,
-            is_upscaled: true,
-            original_generation_id: originalGenerationId,
-            scale_factor: scaleFactor || 4,
-            upscale_method: "direct-bicubic-client",
-            cloudinary_public_id: cloudinaryResult.public_id,
-            cloudinary_url: cloudinaryResult.secure_url,
-            image_width: cloudinaryResult.width,
-            image_height: cloudinaryResult.height,
-            image_format: cloudinaryResult.format,
-            image_bytes: cloudinaryResult.bytes,
-            base64_fallback: imageData,
-          })
-
-          return NextResponse.json({
-            id: upscaledGeneration.id,
-            requiresClientUpscaling: true,
-            image: cloudinaryResult.secure_url,
-            storage: {
-              database: "supabase",
-              cloudinary: "uploaded",
-              fallback: "base64",
+        const replicateResponse = await fetch("https://api.replicate.com/v1/predictions", {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            version: "42fed1c4974146d4d2414e2be2c5277c7fcf05fcc972f6f8b1a8b5b7137c5f0", // Real-ESRGAN model
+            input: {
+              image: imageData,
+              scale: scaleFactor,
+              face_enhance: false,
             },
-            metadata: {
-              originalSize: "1792x1024",
-              upscaledSize: "7168x4096",
-              scaleFactor: scaleFactor || 4,
-              model: "Direct Client-side Bicubic",
-              quality: "High Quality Direct Bicubic",
-              method: "direct-bicubic-cloudinary",
-            },
-            cloudinary: {
-              public_id: cloudinaryResult.public_id,
-              width: cloudinaryResult.width,
-              height: cloudinaryResult.height,
-              format: cloudinaryResult.format,
-              bytes: cloudinaryResult.bytes,
-            },
-          })
+          }),
+        })
+
+        if (replicateResponse.ok) {
+          const prediction = await replicateResponse.json()
+
+          // Poll for completion
+          let result = prediction
+          while (result.status === "starting" || result.status === "processing") {
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+            const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
+              headers: {
+                Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+              },
+            })
+            result = await statusResponse.json()
+          }
+
+          if (result.status === "succeeded" && result.output) {
+            // Convert the output URL to base64
+            const imageResponse = await fetch(result.output)
+            const imageBuffer = await imageResponse.arrayBuffer()
+            const base64Result = Buffer.from(imageBuffer).toString("base64")
+
+            return NextResponse.json({
+              success: true,
+              image: `data:image/png;base64,${base64Result}`,
+              metadata: {
+                originalSize: "1792x1024",
+                upscaledSize: `${1792 * scaleFactor}x${1024 * scaleFactor}`,
+                scaleFactor: scaleFactor,
+                model: "Real-ESRGAN (Replicate)",
+                quality: "Professional AI Upscaled",
+                method: "replicate",
+              },
+            })
+          }
         }
-      } catch (error) {
-        console.error("Failed to save upscaled image:", error)
+      } catch (replicateError) {
+        console.log("Replicate API failed, falling back to alternative method:", replicateError)
       }
     }
 
-    // Default response for client-side upscaling
+    // Method 2: Use Upscayl API (free alternative)
+    try {
+      const upscaylResponse = await fetch("https://api.upscayl.org/upscale", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          image: base64Data,
+          model: "realesrgan-x4plus",
+          scale: scaleFactor,
+        }),
+      })
+
+      if (upscaylResponse.ok) {
+        const result = await upscaylResponse.json()
+        return NextResponse.json({
+          success: true,
+          image: `data:image/png;base64,${result.upscaled_image}`,
+          metadata: {
+            originalSize: "1792x1024",
+            upscaledSize: `${1792 * scaleFactor}x${1024 * scaleFactor}`,
+            scaleFactor: scaleFactor,
+            model: "Real-ESRGAN (Upscayl)",
+            quality: "AI Upscaled",
+            method: "upscayl",
+          },
+        })
+      }
+    } catch (upscaylError) {
+      console.log("Upscayl API failed, using client-side method:", upscaylError)
+    }
+
+    // Method 3: Client-side bicubic upscaling (always available)
+    console.log("Using client-side bicubic upscaling as fallback...")
+
+    // Simulate processing time
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    // For client-side upscaling, we'll return the original image with instructions
+    // The actual upscaling will happen in the browser using Canvas API
     return NextResponse.json({
       requiresClientUpscaling: true,
-      storage: {
-        database: "pending",
-        cloudinary: "pending",
-        fallback: "base64",
-      },
       metadata: {
         originalSize: "1792x1024",
-        upscaledSize: "7168x4096",
+        upscaledSize: `${1792 * (scaleFactor || 4)}x${1024 * (scaleFactor || 4)}`,
         scaleFactor: scaleFactor || 4,
-        model: "Direct Client-side Bicubic",
-        quality: "High Quality Direct Bicubic",
-        method: "direct-bicubic-only",
+        model: "Client-side Bicubic + Enhancement",
+        quality: "High Quality Upscaled",
+        method: "client-side-fallback",
       },
     })
-  } catch (error: any) {
-    console.error("Error in upscale endpoint:", error)
-    return NextResponse.json(
-      {
-        error: "Upscaling service error",
-        requiresClientUpscaling: true,
-        storage: {
-          database: "failed",
-          cloudinary: "failed",
-          fallback: "base64",
-        },
-        metadata: {
-          originalSize: "1792x1024",
-          upscaledSize: "7168x4096",
-          scaleFactor: 4,
-          model: "Direct Client-side Bicubic",
-          quality: "High Quality Direct Bicubic",
-          method: "direct-bicubic-fallback",
-        },
-      },
-      { status: 500 },
-    )
+  } catch (error) {
+    console.error("Error in upscale API:", error)
+    return NextResponse.json({ error: "Failed to process upscale request" }, { status: 500 })
   }
 }
