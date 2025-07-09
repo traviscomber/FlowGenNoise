@@ -149,4 +149,34 @@ export class ClientUpscaler {
 
     return enhanced
   }
+
+  // New method to upload upscaled image to Cloudinary
+  static async uploadUpscaledToCloudinary(
+    upscaledDataUrl: string,
+    originalPublicId: string,
+    scaleFactor = 4,
+  ): Promise<any> {
+    try {
+      const response = await fetch("/api/upscale-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          imageData: upscaledDataUrl,
+          originalPublicId,
+          scaleFactor,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to upload to Cloudinary")
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error("Error uploading upscaled image to Cloudinary:", error)
+      return null
+    }
+  }
 }

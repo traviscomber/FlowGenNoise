@@ -1,65 +1,53 @@
-export function generateScatterPlotSVG(data: number[][]): string {
-  const width = 600
-  const height = 400
-  const margin = 40 // Margin for padding
+import type { DataPoint } from "./flow-model"
 
-  // Find min/max for scaling
-  let minX = Number.POSITIVE_INFINITY,
-    maxX = Number.NEGATIVE_INFINITY,
-    minY = Number.POSITIVE_INFINITY,
-    maxY = Number.NEGATIVE_INFINITY
-  for (const [x, y] of data) {
-    minX = Math.min(minX, x)
-    maxX = Math.max(maxX, x)
-    minY = Math.min(minY, y)
-    maxY = Math.max(maxY, y)
-  }
+export function generateScatterPlotSVG(data: DataPoint[]): string {
+  const width = 800
+  const height = 600
+  const margin = 50
 
-  // Add some padding to the data range
-  const paddingFactor = 0.1
-  const rangeX = maxX - minX
-  const rangeY = maxY - minY
-  minX -= rangeX * paddingFactor
-  maxX += rangeX * paddingFactor
-  minY -= rangeY * paddingFactor
-  maxY += rangeY * paddingFactor
+  // Find data bounds
+  const xExtent = data.reduce(
+    (acc, d) => [Math.min(acc[0], d.x), Math.max(acc[1], d.x)],
+    [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY],
+  )
+  const yExtent = data.reduce(
+    (acc, d) => [Math.min(acc[0], d.y), Math.max(acc[1], d.y)],
+    [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY],
+  )
 
-  // Scaling functions to map data coordinates to SVG pixel coordinates
-  const scaleX = (val: number) => margin + ((val - minX) / (maxX - minX)) * (width - 2 * margin)
-  const scaleY = (val: number) => height - margin - ((val - minY) / (maxY - minY)) * (height - 2 * margin) // Invert Y for SVG
+  // Scale functions
+  const xScale = (x: number) => margin + ((x - xExtent[0]) / (xExtent[1] - xExtent[0])) * (width - 2 * margin)
+  const yScale = (y: number) => height - margin - ((y - yExtent[0]) / (yExtent[1] - yExtent[0])) * (height - 2 * margin)
 
-  // For color mapping (c=np.linalg.norm(X, axis=1), cmap='magma')
-  const norms = data.map(([x, y]) => Math.sqrt(x * x + y * y))
-  const minNorm = Math.min(...norms)
-  const maxNorm = Math.max(...norms)
+  // Color palette
+  const colors = ["#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4", "#ffeaa7"]
 
-  const getColor = (norm: number) => {
-    // Simple linear interpolation for a 'magma' like effect
-    // Approximating magma colormap with a gradient from purple to yellow
-    const t = (norm - minNorm) / (maxNorm - minNorm)
-    const r = Math.floor(255 * t)
-    const g = Math.floor(255 * t)
-    const b = Math.floor(255 * (1 - t))
-    return `rgb(${r}, ${g}, ${b})`
-  }
+  // Generate SVG
+  let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+    <rect width="${width}" height="${height}" fill="white"/>
+    <defs>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+        <feMerge> 
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>`
 
-  let circles = ""
-  const pointRadius = 2 // Radius for SVG points
+  // Add data points
+  data.forEach((point) => {
+    const x = xScale(point.x)
+    const y = yScale(point.y)
+    const color = colors[point.category || 0]
+    const radius = 3 + Math.random() * 2
 
-  for (let i = 0; i < data.length; i++) {
-    const [x, y] = data[i]
-    const norm = norms[i]
-    const color = getColor(norm)
-    circles += `<circle cx="${scaleX(x)}" cy="${scaleY(y)}" r="${pointRadius}" fill="${color}" fill-opacity="0.8" />`
-  }
+    svg += `<circle cx="${x}" cy="${y}" r="${radius}" fill="${color}" opacity="0.7" filter="url(#glow)"/>`
+  })
 
-  const svgContent = `
-        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="0" width="${width}" height="${height}" fill="white"/>
-          ${circles}
-        </svg>
-      `
+  svg += "</svg>"
 
-  // Encode SVG to base64 data URL
-  return `data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`
+  // Convert to base64 data URL
+  const base64 = Buffer.from(svg).toString("base64")
+  return `data:image/svg+xml;base64,${base64}`
 }

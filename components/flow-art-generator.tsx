@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Loader2, Download, Zap, Info, Sparkles } from "lucide-react"
+import { Loader2, Download, Zap, Info, Sparkles, Cloud } from "lucide-react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -20,6 +20,14 @@ interface UpscaleMetadata {
   model: string
   quality: string
   method: string
+}
+
+interface CloudinaryData {
+  public_id: string
+  width: number
+  height: number
+  format: string
+  bytes: number
 }
 
 export function FlowArtGenerator() {
@@ -37,6 +45,8 @@ export function FlowArtGenerator() {
   const [upscaleProgress, setUpscaleProgress] = useState<number>(0)
   const [upscaleStatus, setUpscaleStatus] = useState<string>("")
   const [upscaleMetadata, setUpscaleMetadata] = useState<UpscaleMetadata | null>(null)
+  const [cloudinaryData, setCloudinaryData] = useState<CloudinaryData | null>(null)
+  const [upscaledCloudinaryData, setUpscaledCloudinaryData] = useState<CloudinaryData | null>(null)
 
   const handleGenerate = async () => {
     setLoading(true)
@@ -44,6 +54,8 @@ export function FlowArtGenerator() {
     setBaseImageUrl(null)
     setUpscaledImageUrl(null)
     setUpscaleMetadata(null)
+    setCloudinaryData(null)
+    setUpscaledCloudinaryData(null)
 
     try {
       let response
@@ -72,6 +84,11 @@ export function FlowArtGenerator() {
 
       const data = await response.json()
       setBaseImageUrl(data.image)
+
+      // Store Cloudinary data if available
+      if (data.cloudinary) {
+        setCloudinaryData(data.cloudinary)
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -94,10 +111,23 @@ export function FlowArtGenerator() {
       // Direct bicubic upscaling - no server calls, no fallbacks
       const upscaledImage = await ClientUpscaler.upscaleImage(baseImageUrl, 4)
 
-      setUpscaleProgress(75)
+      setUpscaleProgress(60)
       setUpscaleStatus("Enhancing with direct bicubic filters...")
 
       const enhancedImage = await ClientUpscaler.enhanceImage(upscaledImage)
+
+      setUpscaleProgress(80)
+      setUpscaleStatus("Storing upscaled image in Cloudinary...")
+
+      // Try to upload upscaled image to Cloudinary
+      let cloudinaryUploadResult = null
+      if (cloudinaryData?.public_id) {
+        cloudinaryUploadResult = await ClientUpscaler.uploadUpscaledToCloudinary(
+          enhancedImage,
+          cloudinaryData.public_id,
+          4,
+        )
+      }
 
       setUpscaledImageUrl(enhancedImage)
       setUpscaleMetadata({
@@ -106,8 +136,14 @@ export function FlowArtGenerator() {
         scaleFactor: 4,
         model: "Direct Client-side Bicubic",
         quality: "High Quality Direct Bicubic",
-        method: "direct-bicubic-only",
+        method: cloudinaryUploadResult ? "direct-bicubic-cloudinary" : "direct-bicubic-only",
       })
+
+      // Store upscaled Cloudinary data if upload succeeded
+      if (cloudinaryUploadResult?.cloudinary) {
+        setUpscaledCloudinaryData(cloudinaryUploadResult.cloudinary)
+        setUpscaledImageUrl(cloudinaryUploadResult.image) // Use Cloudinary URL if available
+      }
 
       setUpscaleProgress(100)
       setUpscaleStatus("Direct bicubic upscaling complete!")
@@ -140,7 +176,7 @@ export function FlowArtGenerator() {
         <CardHeader>
           <CardTitle className="text-center text-2xl">FlowSketch Art Generator</CardTitle>
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-            Create structured art using toy datasets. Direct client-side bicubic upscaling only.
+            Create structured art using toy datasets. Direct client-side bicubic upscaling with Cloudinary storage.
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -234,7 +270,7 @@ export function FlowArtGenerator() {
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating Base Image...
+                Generating & Storing in Cloudinary...
               </>
             ) : (
               "Generate Flow Art"
@@ -252,6 +288,12 @@ export function FlowArtGenerator() {
                   className="max-w-full h-auto border rounded-lg shadow-md"
                 />
                 <div className="absolute top-2 right-2 flex gap-2">
+                  {cloudinaryData && (
+                    <Badge className="bg-blue-600 text-white">
+                      <Cloud className="w-3 h-3 mr-1" />
+                      Cloudinary
+                    </Badge>
+                  )}
                   {upscaledImageUrl ? (
                     <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
                       <Sparkles className="w-3 h-3 mr-1" />
@@ -282,8 +324,13 @@ export function FlowArtGenerator() {
                         <strong>Method:</strong> {upscaleMetadata.model}
                       </div>
                       <div>
-                        <strong>Quality:</strong> {upscaleMetadata.quality}
+                        <strong>Storage:</strong> {upscaledCloudinaryData ? "Cloudinary" : "Local"}
                       </div>
+                      {upscaledCloudinaryData && (
+                        <div>
+                          <strong>Size:</strong> {Math.round(upscaledCloudinaryData.bytes / 1024)} KB
+                        </div>
+                      )}
                     </div>
                   </AlertDescription>
                 </Alert>
@@ -319,7 +366,7 @@ export function FlowArtGenerator() {
 
               {!upscaledImageUrl && baseImageUrl && (
                 <p className="text-xs text-gray-500 text-center max-w-md">
-                  Using direct client-side bicubic upscaling - no server dependencies
+                  Direct client-side bicubic upscaling with automatic Cloudinary storage
                 </p>
               )}
             </div>

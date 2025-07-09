@@ -1,36 +1,70 @@
 import { NextResponse } from "next/server"
+import { uploadUpscaledImageToCloudinary } from "@/lib/cloudinary-utils"
 
-// Direct client-side bicubic upscaling only - no server processing
 export async function POST(req: Request) {
   try {
-    const { imageData, scaleFactor = 4 } = await req.json()
+    const { imageData, scaleFactor, originalPublicId } = await req.json()
 
     if (!imageData) {
       return NextResponse.json({ error: "Missing image data" }, { status: 400 })
     }
 
-    console.log("Directing to client-side bicubic upscaling only...")
+    // Always return client-side upscaling flag since we're using direct bicubic only
+    // But if we have an upscaled image, try to store it in Cloudinary
+    if (originalPublicId && imageData.startsWith("data:image")) {
+      try {
+        const cloudinaryResult = await uploadUpscaledImageToCloudinary(imageData, originalPublicId, scaleFactor || 4)
 
-    // Always return original image with client-side upscaling flag
-    // No server-side processing, no external APIs
+        return NextResponse.json({
+          requiresClientUpscaling: true,
+          image: cloudinaryResult.secure_url,
+          metadata: {
+            originalSize: "1792x1024",
+            upscaledSize: "7168x4096",
+            scaleFactor: scaleFactor || 4,
+            model: "Direct Client-side Bicubic",
+            quality: "High Quality Direct Bicubic",
+            method: "direct-bicubic-cloudinary",
+          },
+          cloudinary: {
+            public_id: cloudinaryResult.public_id,
+            width: cloudinaryResult.width,
+            height: cloudinaryResult.height,
+            format: cloudinaryResult.format,
+            bytes: cloudinaryResult.bytes,
+          },
+        })
+      } catch (cloudinaryError) {
+        console.error("Failed to upload upscaled image to Cloudinary:", cloudinaryError)
+      }
+    }
+
+    // Default response for client-side upscaling
     return NextResponse.json({
-      success: true,
-      image: imageData, // Original image
+      requiresClientUpscaling: true,
       metadata: {
         originalSize: "1792x1024",
-        upscaledSize: `${1792 * scaleFactor}x${1024 * scaleFactor}`,
-        scaleFactor: scaleFactor,
+        upscaledSize: "7168x4096",
+        scaleFactor: scaleFactor || 4,
         model: "Direct Client-side Bicubic",
         quality: "High Quality Direct Bicubic",
         method: "direct-bicubic-only",
       },
-      requiresClientUpscaling: true,
     })
   } catch (error: any) {
-    console.error("Error in upscaling route:", error)
+    console.error("Error in upscale endpoint:", error)
     return NextResponse.json(
       {
-        error: "Upscaling route failed: " + error.message,
+        error: "Upscaling service error",
+        requiresClientUpscaling: true,
+        metadata: {
+          originalSize: "1792x1024",
+          upscaledSize: "7168x4096",
+          scaleFactor: 4,
+          model: "Direct Client-side Bicubic",
+          quality: "High Quality Direct Bicubic",
+          method: "direct-bicubic-fallback",
+        },
       },
       { status: 500 },
     )

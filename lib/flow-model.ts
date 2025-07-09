@@ -1,71 +1,120 @@
-/**
- * A simple seeded pseudo-random number generator (PRNG).
- * Not cryptographically secure, but sufficient for reproducible dataset generation.
- */
-function createPrng(seed: number) {
-  let s = seed
-  return () => {
-    s = (s * 9301 + 49297) % 233280
-    return s / 233280
-  }
+// Toy dataset generation for flow-based art
+export interface DataPoint {
+  x: number
+  y: number
+  category?: number
 }
 
-export function generateDataset(name: string, seed: number, n_samples: number, noise: number): number[][] {
-  const prng = createPrng(seed)
-
-  if (name === "spirals") {
-    const data: number[][] = []
-    for (let i = 0; i < n_samples; i++) {
-      const theta = Math.sqrt(prng()) * 2 * Math.PI
-      const r = 2 * theta
-      const x = r * Math.cos(theta) + (prng() * 2 - 1) * noise
-      const y = r * Math.sin(theta) + (prng() * 2 - 1) * noise
-      data.push([x, y])
-    }
-    return data
-  } else if (name === "checkerboard") {
-    const data: number[][] = []
-    for (let i = 0; i < n_samples; i++) {
-      const x = Math.floor(prng() * 4 - 2) + (prng() * 2 - 1) * noise
-      const y = Math.floor(prng() * 4 - 2) + (prng() * 2 - 1) * noise
-      data.push([x, y])
-    }
-    return data
-  } else if (name === "moons") {
-    // Simplified implementation of make_moons, aiming for similar visual output
-    const X: number[][] = []
-
-    for (let i = 0; i < n_samples / 2; i++) {
-      const angle = (Math.PI * i) / (n_samples / 2 - 1)
-      X.push([Math.cos(angle) + (prng() * 2 - 1) * noise, Math.sin(angle) + (prng() * 2 - 1) * noise])
-    }
-    for (let i = 0; i < n_samples / 2; i++) {
-      const angle = (Math.PI * i) / (n_samples / 2 - 1) + Math.PI
-      X.push([1 - Math.cos(angle) + (prng() * 2 - 1) * noise, 1 - Math.sin(angle) + (prng() * 2 - 1) * noise])
-    }
-    return X
-  } else if (name === "gaussian") {
-    const data: number[][] = []
-    for (let i = 0; i < n_samples; i++) {
-      // Using Box-Muller transform for Gaussian distribution
-      const u1 = prng()
-      const u2 = prng()
-      const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2)
-      const z2 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2)
-      data.push([z1 * 0.5 + (prng() * 2 - 1) * noise, z2 * 0.5 + (prng() * 2 - 1) * noise]) // Scale down for better visualization
-    }
-    return data
-  } else if (name === "grid") {
-    const data: number[][] = []
-    const numPointsPerSide = Math.floor(Math.sqrt(n_samples))
-    const step = 2 / (numPointsPerSide - 1) // Grid from -1 to 1
-    for (let i = 0; i < numPointsPerSide; i++) {
-      for (let j = 0; j < numPointsPerSide; j++) {
-        data.push([-1 + i * step + (prng() * 2 - 1) * noise, -1 + j * step + (prng() * 2 - 1) * noise])
-      }
-    }
-    return data
+export function generateDataset(datasetType: string, seed: number, numSamples: number, noise: number): DataPoint[] {
+  // Simple seeded random number generator
+  let randomSeed = seed
+  const seededRandom = () => {
+    randomSeed = (randomSeed * 9301 + 49297) % 233280
+    return randomSeed / 233280
   }
-  // Default to random noise if name is not recognized
-  return Array.from({ length: n_samples }, () => [prng() * 2 - 1, prng() * 2 - 1])
+
+  const data: DataPoint[] = []
+
+  switch (datasetType) {
+    case "spirals":
+      for (let i = 0; i < numSamples; i++) {
+        const t = (i / numSamples) * 4 * Math.PI
+        const r = t / (4 * Math.PI)
+        const category = Math.floor(i / (numSamples / 2))
+        const angle = t + category * Math.PI
+
+        data.push({
+          x: r * Math.cos(angle) + (seededRandom() - 0.5) * noise,
+          y: r * Math.sin(angle) + (seededRandom() - 0.5) * noise,
+          category,
+        })
+      }
+      break
+
+    case "moons":
+      for (let i = 0; i < numSamples; i++) {
+        const category = i < numSamples / 2 ? 0 : 1
+        const t = ((i % (numSamples / 2)) / (numSamples / 2)) * Math.PI
+
+        if (category === 0) {
+          data.push({
+            x: Math.cos(t) + (seededRandom() - 0.5) * noise,
+            y: Math.sin(t) + (seededRandom() - 0.5) * noise,
+            category,
+          })
+        } else {
+          data.push({
+            x: 1 - Math.cos(t) + (seededRandom() - 0.5) * noise,
+            y: 0.5 - Math.sin(t) + (seededRandom() - 0.5) * noise,
+            category,
+          })
+        }
+      }
+      break
+
+    case "checkerboard":
+      for (let i = 0; i < numSamples; i++) {
+        const x = seededRandom() * 4 - 2
+        const y = seededRandom() * 4 - 2
+        const category = (Math.floor(x + 2) + Math.floor(y + 2)) % 2
+
+        data.push({
+          x: x + (seededRandom() - 0.5) * noise,
+          y: y + (seededRandom() - 0.5) * noise,
+          category,
+        })
+      }
+      break
+
+    case "gaussian":
+      for (let i = 0; i < numSamples; i++) {
+        const category = Math.floor(seededRandom() * 3)
+        const centers = [
+          [-1, -1],
+          [1, 1],
+          [0, 0],
+        ]
+        const center = centers[category]
+
+        // Box-Muller transform for Gaussian
+        const u1 = seededRandom()
+        const u2 = seededRandom()
+        const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)
+        const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.sin(2 * Math.PI * u2)
+
+        data.push({
+          x: center[0] + z0 * 0.5 + (seededRandom() - 0.5) * noise,
+          y: center[1] + z1 * 0.5 + (seededRandom() - 0.5) * noise,
+          category,
+        })
+      }
+      break
+
+    case "grid":
+      const gridSize = Math.ceil(Math.sqrt(numSamples))
+      for (let i = 0; i < numSamples; i++) {
+        const row = Math.floor(i / gridSize)
+        const col = i % gridSize
+        const category = (row + col) % 3
+
+        data.push({
+          x: (col / gridSize) * 4 - 2 + (seededRandom() - 0.5) * noise,
+          y: (row / gridSize) * 4 - 2 + (seededRandom() - 0.5) * noise,
+          category,
+        })
+      }
+      break
+
+    default:
+      // Default to random points
+      for (let i = 0; i < numSamples; i++) {
+        data.push({
+          x: (seededRandom() - 0.5) * 4,
+          y: (seededRandom() - 0.5) * 4,
+          category: Math.floor(seededRandom() * 3),
+        })
+      }
+  }
+
+  return data
 }

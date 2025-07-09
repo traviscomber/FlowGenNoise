@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { generateText, experimental_generateImage } from "ai"
 import { openai } from "@ai-sdk/openai"
+import { uploadImageToCloudinary } from "@/lib/cloudinary-utils"
 
 export async function POST(req: Request) {
   try {
@@ -51,12 +52,56 @@ The image should be optimized as a base for AI upscaling to 8K resolution, with 
 
     const baseImage = `data:image/png;base64,${image.base64}`
 
-    return NextResponse.json({
-      image: baseImage,
-      baseResolution: "1792x1024",
-      readyForUpscaling: true,
-      recommendedUpscale: "4x",
-    })
+    // Step 3: Upload to Cloudinary
+    try {
+      const cloudinaryResult = await uploadImageToCloudinary(baseImage, {
+        folder: "flowsketch-generations/ai",
+        public_id: `ai_${dataset}_${seed}_${Date.now()}`,
+        tags: ["flowsketch", "ai-generated", dataset, colorScheme],
+      })
+
+      return NextResponse.json({
+        image: cloudinaryResult.secure_url,
+        baseResolution: "1792x1024",
+        readyForUpscaling: true,
+        recommendedUpscale: "4x",
+        cloudinary: {
+          public_id: cloudinaryResult.public_id,
+          width: cloudinaryResult.width,
+          height: cloudinaryResult.height,
+          format: cloudinaryResult.format,
+          bytes: cloudinaryResult.bytes,
+        },
+        generation_params: {
+          dataset,
+          seed,
+          colorScheme,
+          numSamples,
+          noise,
+          type: "ai",
+          prompt: imagePrompt,
+        },
+      })
+    } catch (cloudinaryError) {
+      console.error("Cloudinary upload failed, returning base64:", cloudinaryError)
+      // Fallback to base64 if Cloudinary fails
+      return NextResponse.json({
+        image: baseImage,
+        baseResolution: "1792x1024",
+        readyForUpscaling: true,
+        recommendedUpscale: "4x",
+        cloudinary_error: "Upload failed, using base64 fallback",
+        generation_params: {
+          dataset,
+          seed,
+          colorScheme,
+          numSamples,
+          noise,
+          type: "ai",
+          prompt: imagePrompt,
+        },
+      })
+    }
   } catch (error: any) {
     console.error("Error generating base AI art:", error)
     if (error.message.includes("api_key")) {
