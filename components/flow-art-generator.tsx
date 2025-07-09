@@ -483,3 +483,6 @@ export default function FlowArtGenerator() {
     </div>
   )
 }
+
+// Re-export as a named export so both default and named imports work
+export { FlowArtGenerator }
