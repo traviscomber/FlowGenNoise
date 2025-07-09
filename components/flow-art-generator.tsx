@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Sparkles, Palette, Zap, TreePine, Waves, Rocket, Building, Archive } from "lucide-react"
+import { Download, Sparkles, Palette, Zap, TreePine, Waves, Rocket, Building, Archive, Cloud } from "lucide-react"
 import { generateDataset, SCENARIOS } from "@/lib/flow-model"
 import { createSVGPlot } from "@/lib/plot-utils"
 import { upscaleImageClient } from "@/lib/client-upscaler"
@@ -311,4 +312,174 @@ export default function FlowArtGenerator() {
                           <sc.icon className="h-4 w-4" />
                           <div className="flex flex-col">
                             <span className="font-medium">{sc.label}</span>
-                            <span className="text-\
+                            <span className="text-xs text-muted-foreground">{sc.description}</span>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {selectedScenario && (
+                  <Badge variant="outline" className="w-fit">
+                    <selectedScenario.icon className="h-3 w-3 mr-1" />
+                    {selectedScenario.description}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Color Scheme */}
+              <div className="space-y-2">
+                <Label htmlFor="colorScheme">Color Palette</Label>
+                <Select value={colorScheme} onValueChange={setColorScheme}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select colors" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {colorSchemes.map((scheme) => (
+                      <SelectItem key={scheme.value} value={scheme.value}>
+                        <div className="flex items-center gap-2">
+                          <div className="flex gap-1">
+                            {scheme.colors.map((color, i) => (
+                              <div key={i} className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
+                            ))}
+                          </div>
+                          <span>{scheme.label}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Separator />
+
+              {/* Parameters */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="seed">Random Seed: {seed[0]}</Label>
+                  <Slider value={seed} onValueChange={setSeed} min={1} max={1000} step={1} className="w-full" />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="samples">Sample Points: {samples[0]}</Label>
+                  <Slider
+                    value={samples}
+                    onValueChange={setSamples}
+                    min={100}
+                    max={2000}
+                    step={50}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="noise">Noise Level: {noise[0].toFixed(3)}</Label>
+                  <Slider
+                    value={noise}
+                    onValueChange={setNoise}
+                    min={0.001}
+                    max={0.2}
+                    step={0.001}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+
+              <Separator />
+
+              {/* Generate Button */}
+              <Button onClick={generateArt} disabled={isGenerating} className="w-full" size="lg">
+                {isGenerating ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Generate Art
+                  </>
+                )}
+              </Button>
+
+              {/* Upload Progress */}
+              {isUploading && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2">
+                      <Cloud className="h-4 w-4" />
+                      Uploading full resolution...
+                    </span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div
+                      className="bg-blue-500 h-2 rounded-full transition-all"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Preview Panel */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="h-5 w-5" />
+                Generated Artwork
+              </CardTitle>
+              <CardDescription>Your mathematical art creation • Full resolution preserved</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4 overflow-hidden">
+                {generatedImage ? (
+                  <img
+                    src={generatedImage || "/placeholder.svg"}
+                    alt="Generated art"
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="text-center text-muted-foreground">
+                    <Palette className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                    <p>Your artwork will appear here</p>
+                  </div>
+                )}
+              </div>
+
+              {generatedImage && (
+                <div className="flex gap-2">
+                  <Button onClick={downloadImage} variant="outline" className="flex-1 bg-transparent">
+                    <Download className="h-4 w-4 mr-2" />
+                    Download
+                  </Button>
+                  {generationMode === "ai" && (
+                    <Button
+                      onClick={upscaleImage}
+                      disabled={isUpscaling}
+                      variant="outline"
+                      className="flex-1 bg-transparent"
+                    >
+                      {isUpscaling ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
+                          Upscaling...
+                        </>
+                      ) : (
+                        <>
+                          <Zap className="h-4 w-4 mr-2" />
+                          Upscale 4x
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  )
+}
