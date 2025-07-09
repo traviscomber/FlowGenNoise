@@ -1,65 +1,66 @@
-export function generateScatterPlotSVG(data: number[][]): string {
-  const width = 600
-  const height = 400
-  const margin = 40 // Margin for padding
-
-  // Find min/max for scaling
-  let minX = Number.POSITIVE_INFINITY,
-    maxX = Number.NEGATIVE_INFINITY,
-    minY = Number.POSITIVE_INFINITY,
-    maxY = Number.NEGATIVE_INFINITY
-  for (const [x, y] of data) {
-    minX = Math.min(minX, x)
-    maxX = Math.max(maxX, x)
-    minY = Math.min(minY, y)
-    maxY = Math.max(maxY, y)
+export function createSVGPlot(data: number[][], colorScheme = "magma", width = 800, height = 600): string {
+  if (!data?.length) {
+    const empty =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><text x="200" y="150" text-anchor="middle">No data</text></svg>'
+    return "data:image/svg+xml;base64," + btoa(empty)
   }
 
-  // Add some padding to the data range
-  const paddingFactor = 0.1
-  const rangeX = maxX - minX
-  const rangeY = maxY - minY
-  minX -= rangeX * paddingFactor
-  maxX += rangeX * paddingFactor
-  minY -= rangeY * paddingFactor
-  maxY += rangeY * paddingFactor
+  /* ---------- bounds & scaling ---------- */
+  const xs = data.map((d) => d[0])
+  const ys = data.map((d) => d[1])
+  const [minX, maxX] = [Math.min(...xs), Math.max(...xs)]
+  const [minY, maxY] = [Math.min(...ys), Math.max(...ys)]
+  const padX = (maxX - minX) * 0.1
+  const padY = (maxY - minY) * 0.1
+  const padding = 50
 
-  // Scaling functions to map data coordinates to SVG pixel coordinates
-  const scaleX = (val: number) => margin + ((val - minX) / (maxX - minX)) * (width - 2 * margin)
-  const scaleY = (val: number) => height - margin - ((val - minY) / (maxY - minY)) * (height - 2 * margin) // Invert Y for SVG
+  const scaleX = (x: number) => ((x - minX + padX) / (maxX - minX + 2 * padX)) * (width - 2 * padding) + padding
+  const scaleY = (y: number) =>
+    height - padding - ((y - minY + padY) / (maxY - minY + 2 * padY)) * (height - 2 * padding)
 
-  // For color mapping (c=np.linalg.norm(X, axis=1), cmap='magma')
-  const norms = data.map(([x, y]) => Math.sqrt(x * x + y * y))
-  const minNorm = Math.min(...norms)
-  const maxNorm = Math.max(...norms)
+  /* ---------- SVG assembly ---------- */
+  let svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
+    `<rect width="${width}" height="${height}" fill="#1a1a1a"/>` +
+    `<defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">` +
+    `<path d="M40 0 L0 0 0 40" fill="none" stroke="#333" stroke-width="1" opacity="0.3"/></pattern></defs>` +
+    `<rect width="${width}" height="${height}" fill="url(#grid)"/>`
 
-  const getColor = (norm: number) => {
-    // Simple linear interpolation for a 'magma' like effect
-    // Approximating magma colormap with a gradient from purple to yellow
-    const t = (norm - minNorm) / (maxNorm - minNorm)
-    const r = Math.floor(255 * t)
-    const g = Math.floor(255 * t)
-    const b = Math.floor(255 * (1 - t))
-    return `rgb(${r}, ${g}, ${b})`
+  data.forEach((p, idx) => {
+    const [x, y] = p
+    const cVal = idx / (data.length - 1)
+    const colour = getColorFromScheme(colorScheme, cVal)
+    const r = Math.max(1, 3 - data.length / 1000)
+    svg += `<circle cx="${scaleX(x)}" cy="${scaleY(y)}" r="${r}" fill="${colour}" opacity="0.8"/>`
+  })
+
+  svg += "</svg>"
+  return "data:image/svg+xml;base64," + btoa(svg)
+}
+
+function getColorFromScheme(scheme: string, value: number): string {
+  switch (scheme) {
+    case "magma": {
+      // Approximating magma colormap with a gradient from purple to yellow
+      const r = Math.floor(255 * value)
+      const g = Math.floor(255 * value)
+      const b = Math.floor(255 * (1 - value))
+      return `rgb(${r}, ${g}, ${b})`
+    }
+    case "viridis": {
+      // A more complex but visually appealing colormap (approximation)
+      const r = Math.floor(255 * Math.pow(value, 2))
+      const g = Math.floor(255 * value)
+      const b = Math.floor(255 * Math.pow(1 - value, 2))
+      return `rgb(${r}, ${g}, ${b})`
+    }
+    case "plasma": {
+      const r = Math.floor(255 * Math.pow(value, 3))
+      const g = Math.floor(255 * Math.pow(value, 0.5))
+      const b = Math.floor(255 * Math.pow(1 - value, 3))
+      return `rgb(${r}, ${g}, ${b})`
+    }
+    default:
+      return "white"
   }
-
-  let circles = ""
-  const pointRadius = 2 // Radius for SVG points
-
-  for (let i = 0; i < data.length; i++) {
-    const [x, y] = data[i]
-    const norm = norms[i]
-    const color = getColor(norm)
-    circles += `<circle cx="${scaleX(x)}" cy="${scaleY(y)}" r="${pointRadius}" fill="${color}" fill-opacity="0.8" />`
-  }
-
-  const svgContent = `
-        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="0" width="${width}" height="${height}" fill="white"/>
-          ${circles}
-        </svg>
-      `
-
-  // Encode SVG to base64 data URL
-  return `data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`
 }
