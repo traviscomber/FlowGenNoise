@@ -149,3 +149,22 @@ export class ClientUpscaler {
     return enhanced
   }
 }
+
+/**
+ * Convenience wrapper so consumers can `import { upscaleImageClient }`
+ * instead of instantiating/using the class directly.
+ *
+ * @param imageDataUrl – data-url (or remote URL) of the source image
+ * @param scaleFactor  – how much to upscale (defaults to 2×)
+ * @returns            – a Promise that resolves to a PNG data-url
+ */
+export async function upscaleImageClient(imageDataUrl: string, scaleFactor = 2): Promise<string> {
+  return ClientUpscaler.upscaleImage(imageDataUrl, scaleFactor)
+}
+
+/**
+ * Optional alias for enhancement (keeps tree-shaking intact but offers symmetry).
+ */
+export async function enhanceImageClient(imageDataUrl: string): Promise<string> {
+  return ClientUpscaler.enhanceImage(imageDataUrl)
+}
