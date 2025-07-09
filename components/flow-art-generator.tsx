@@ -8,7 +8,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Sparkles, Palette, Zap, TreePine, Waves, Rocket, Building, Archive } from "lucide-react"
+import {
+  Download,
+  Sparkles,
+  Palette,
+  Zap,
+  TreePine,
+  Waves,
+  Rocket,
+  Building,
+  Archive,
+  Cloud,
+  Award,
+} from "lucide-react"
 import { generateDataset, SCENARIOS } from "@/lib/flow-model"
 import { createSVGPlot } from "@/lib/plot-utils"
 import { upscaleImageClient } from "@/lib/client-upscaler"
@@ -119,11 +131,11 @@ export default function FlowArtGenerator() {
         if (scoreResult.success) {
           // Get the updated image with score
           const updatedGallery = GalleryStorage.getGallery()
-          const scoredImage = updatedGallery.find(img => img.id === galleryImage.id)
+          const scoredImage = updatedGallery.find((img) => img.id === galleryImage.id)
           if (scoredImage?.aestheticScore) {
             setCurrentScore({
               score: scoredImage.aestheticScore.score,
-              rating: scoredImage.aestheticScore.rating
+              rating: scoredImage.aestheticScore.rating,
             })
           }
         }
@@ -407,4 +419,128 @@ export default function FlowArtGenerator() {
               <Separator />
 
               {/* Generate Button */}
-              <Button onClick={generateArt} disabled={isGenerating} className="w-full" size="\
+              <Button onClick={generateArt} disabled={isGenerating} className="w-full" size="lg">
+                {isGenerating ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Generate Art
+                  </>
+                )}
+              </Button>
+
+              {/* Upload Progress */}
+              {isUploading && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2">
+                      <Cloud className="h-4 w-4 text-blue-500" />
+                      Uploading to cloud...
+                    </span>
+                    <span>{Math.round(uploadProgress)}%</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div
+                      className="bg-blue-500 h-2 rounded-full transition-all"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Scoring Progress */}
+              {isScoring && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-current" />
+                  <Award className="h-4 w-4" />
+                  Scoring aesthetic quality...
+                </div>
+              )}
+
+              {/* Current Score Display */}
+              {currentScore && (
+                <div className="bg-green-50 p-3 rounded-lg">
+                  <div className="flex items-center gap-2 text-green-700 text-sm font-medium mb-1">
+                    <Award className="h-4 w-4" />
+                    Aesthetic Score: {currentScore.score}/10
+                  </div>
+                  <p className="text-green-600 text-xs">Quality Rating: {currentScore.rating}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Preview Panel */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5" />
+                Generated Artwork
+                {currentScore && (
+                  <Badge variant="outline" className="ml-2">
+                    <Award className="h-3 w-3 mr-1" />
+                    {currentScore.score}/10
+                  </Badge>
+                )}
+              </CardTitle>
+              <CardDescription>
+                Your mathematical art creation • Full resolution preserved for 8K enhancement
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4 overflow-hidden">
+                {generatedImage ? (
+                  <img
+                    src={generatedImage || "/placeholder.svg"}
+                    alt="Generated art"
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="text-center text-muted-foreground">
+                    <Palette className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p className="text-lg font-medium mb-2">Ready to Create</p>
+                    <p className="text-sm">Configure your settings and generate your first artwork</p>
+                  </div>
+                )}
+              </div>
+
+              {generatedImage && (
+                <div className="flex gap-2">
+                  <Button onClick={downloadImage} variant="outline" className="flex-1 bg-transparent">
+                    <Download className="h-4 w-4 mr-2" />
+                    Download
+                  </Button>
+                  <Button
+                    onClick={upscaleImage}
+                    disabled={isUpscaling}
+                    variant="outline"
+                    className="flex-1 bg-transparent"
+                  >
+                    {isUpscaling ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
+                        Upscaling...
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="h-4 w-4 mr-2" />
+                        Upscale 4x
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Export both default and named export for compatibility
+export { FlowArtGenerator }
