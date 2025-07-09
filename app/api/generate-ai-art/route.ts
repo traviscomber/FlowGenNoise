@@ -19,28 +19,37 @@ export async function POST(req: Request) {
       )
     }
 
-    // Step 1: Generate enhanced prompt for high-quality base image
+    // Create detailed, structured prompt like your example
     const { text: imagePrompt } = await generateText({
       model: openai("gpt-4o"),
-      prompt: `Create a highly detailed image generation prompt for DALL-E 3 that will serve as a base for professional 8K upscaling. The artwork should be a generative art masterpiece inspired by a '${dataset}' dataset with a '${colorScheme}' color scheme.
+      prompt: `*Image Generation Prompt for DALL-E 3:*
 
-Requirements for upscaling-ready image:
-- Clean, sharp edges and well-defined structures
-- Rich detail that will enhance beautifully when upscaled
-- Professional composition suitable for large format printing
-- Mathematical precision with ${numSamples} elements arranged organically
-- Subtle noise texture of ${noise} that adds visual interest
-- High contrast and vibrant colors that will scale well
-- Complex patterns and textures that reward close inspection
-- Gallery-quality artistic composition
+Create an intricate generative art masterpiece inspired by a '${dataset}' dataset, employing a '${colorScheme}' color scheme. The artwork should serve as an ideal base for professional 8K upscaling, focusing on clean, sharp edges and well-defined structures.
 
-The image should be optimized as a base for AI upscaling to 8K resolution, with every element designed to enhance beautifully when processed through professional upscaling algorithms.`,
+### Elements:
+1. *Mathematical Precision*: Arrange exactly ${numSamples} ${dataset} elements organically across the canvas, ensuring each one is unique yet harmoniously integrated with the others. The elements should vary in size and density, creating a dynamic flow throughout the piece.
+
+2. *Color Palette*: Utilize a vibrant and high-contrast ${colorScheme} color scheme to emphasize the patterns. Create depth and dimension with strategic color gradients and transitions.
+
+3. *Textures and Patterns*: Introduce complex textures within the ${dataset} patterns, such as fine lines, cross-hatching, or dotting, which will reveal new details upon close inspection. Ensure that these intricate patterns are meticulously crafted to reward viewers and enhance during upscaling.
+
+4. *Noise Texture*: Apply a subtle noise texture of ${noise} to the entire image, giving it a tactile surface that adds sophistication and visual interest without overwhelming the primary elements.
+
+### Composition:
+- *Professional Composition*: Design the composition with a balance that suits large-format printing. The ${dataset} elements should guide the viewer's eye seamlessly across the canvas, creating a sense of movement and energy.
+- *Gallery-Quality*: Ensure that the overall artwork exudes a refined, gallery-quality aesthetic suitable for exhibition, with each element contributing to a cohesive and engaging visual narrative.
+
+### Optimization for Upscaling:
+- *Edge Definition*: Focus on maintaining sharp, clean edges around each element and between color transitions to ensure clarity and precision are preserved during upscaling.
+- *Detail Enhancement*: Design with rich detail that enhances beautifully when processed through AI upscaling algorithms, emphasizing the depth and complexity of the piece.
+
+By adhering to these guidelines, the resulting image will be an exquisite generative art masterpiece, optimized for professional 8K upscaling and perfect for large-format, gallery-quality display.`,
       temperature: 0.8,
     })
 
     console.log("Generated Base Image Prompt:", imagePrompt)
 
-    // Step 2: Generate high-quality base image
+    // Generate high-quality base image
     const { image } = await experimental_generateImage({
       model: openai.image("dall-e-3"),
       prompt: imagePrompt,
