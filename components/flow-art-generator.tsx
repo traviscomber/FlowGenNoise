@@ -8,10 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Download, Sparkles, Palette, Zap, TreePine, Waves, Rocket, Building } from "lucide-react"
+import { Download, Sparkles, Palette, Zap, TreePine, Waves, Rocket, Building, Archive } from "lucide-react"
 import { generateDataset, SCENARIOS } from "@/lib/flow-model"
 import { createSVGPlot } from "@/lib/plot-utils"
 import { upscaleImageClient } from "@/lib/client-upscaler"
+import { Gallery } from "@/components/gallery"
+import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
 
 const datasets = [
   { value: "spirals", label: "Spirals", description: "Flowing spiral patterns" },
@@ -61,9 +63,53 @@ export default function FlowArtGenerator() {
   const [isUpscaling, setIsUpscaling] = useState(false)
   const [generationMode, setGenerationMode] = useState<"svg" | "ai">("svg")
 
+  const [showGallery, setShowGallery] = useState(false)
+
+  const saveToGallery = useCallback(
+    (imageUrl: string) => {
+      const scenarioSuffix = scenario !== "none" ? `-${scenario}` : ""
+      const filename = `flowsketch-${dataset}${scenarioSuffix}-${seed[0]}-${Date.now()}.${generationMode === "svg" ? "svg" : "png"}`
+
+      const galleryImage: GalleryImage = {
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        imageUrl,
+        metadata: {
+          dataset,
+          scenario: scenario || "none",
+          colorScheme,
+          seed: seed[0],
+          samples: samples[0],
+          noise: noise[0],
+          generationMode,
+          createdAt: Date.now(),
+          filename,
+        },
+        isFavorite: false,
+        tags: [],
+      }
+
+      GalleryStorage.saveImage(galleryImage)
+    },
+    [dataset, scenario, colorScheme, seed, samples, noise, generationMode],
+  )
+
+  const handleImageSelect = useCallback((image: GalleryImage) => {
+    // Load settings from selected gallery image
+    setDataset(image.metadata.dataset)
+    setScenario(image.metadata.scenario)
+    setColorScheme(image.metadata.colorScheme)
+    setSeed([image.metadata.seed])
+    setSamples([image.metadata.samples])
+    setNoise([image.metadata.noise])
+    setGenerationMode(image.metadata.generationMode)
+    setShowGallery(false)
+  }, [])
+
   const generateArt = useCallback(async () => {
     setIsGenerating(true)
     try {
+      let imageUrl: string
+
       if (generationMode === "svg") {
         // Generate SVG plot with scenario blending
         const data = generateDataset(dataset, seed[0], samples[0], noise[0], scenario !== "none" ? scenario : undefined)
@@ -74,8 +120,7 @@ export default function FlowArtGenerator() {
           backgroundColor: scenario && SCENARIOS[scenario] ? SCENARIOS[scenario].backgroundColor : "#ffffff",
         })
         const blob = new Blob([svgContent], { type: "image/svg+xml" })
-        const url = URL.createObjectURL(blob)
-        setGeneratedImage(url)
+        imageUrl = URL.createObjectURL(blob)
       } else {
         // Generate AI art with scenario context
         const response = await fetch("/api/generate-ai-art", {
@@ -98,14 +143,17 @@ export default function FlowArtGenerator() {
         }
 
         const { image } = await response.json()
-        setGeneratedImage(image)
+        imageUrl = image
       }
+
+      setGeneratedImage(imageUrl)
+      saveToGallery(imageUrl)
     } catch (error) {
       console.error("Error generating art:", error)
     } finally {
       setIsGenerating(false)
     }
-  }, [dataset, seed, samples, noise, colorScheme, scenario, generationMode])
+  }, [dataset, seed, samples, noise, colorScheme, scenario, generationMode, saveToGallery])
 
   const upscaleImage = useCallback(async () => {
     if (!generatedImage) return
@@ -139,227 +187,246 @@ export default function FlowArtGenerator() {
   return (
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-          FlowSketch Art Generator
-        </h1>
+        <div className="flex items-center justify-center gap-4 mb-4">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            FlowSketch Art Generator
+          </h1>
+          <Button variant="outline" onClick={() => setShowGallery(!showGallery)} className="ml-4">
+            <Archive className="h-4 w-4 mr-2" />
+            Gallery
+          </Button>
+        </div>
         <p className="text-muted-foreground text-lg">Create beautiful mathematical art with immersive scenarios</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Controls Panel */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Palette className="h-5 w-5" />
-              Art Configuration
-            </CardTitle>
-            <CardDescription>Customize your mathematical art generation with creative scenarios</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Generation Mode */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Generation Mode</Label>
-              <div className="flex gap-2">
-                <Button
-                  variant={generationMode === "svg" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setGenerationMode("svg")}
-                  className="flex-1"
-                >
-                  <Zap className="h-4 w-4 mr-2" />
-                  SVG Plot
-                </Button>
-                <Button
-                  variant={generationMode === "ai" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setGenerationMode("ai")}
-                  className="flex-1"
-                >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  AI Generated
-                </Button>
+      {showGallery ? (
+        <div className="max-w-7xl mx-auto">
+          <Gallery onImageSelect={handleImageSelect} />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Controls Panel */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Palette className="h-5 w-5" />
+                Art Configuration
+              </CardTitle>
+              <CardDescription>Customize your mathematical art generation with creative scenarios</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Generation Mode */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Generation Mode</Label>
+                <div className="flex gap-2">
+                  <Button
+                    variant={generationMode === "svg" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setGenerationMode("svg")}
+                    className="flex-1"
+                  >
+                    <Zap className="h-4 w-4 mr-2" />
+                    SVG Plot
+                  </Button>
+                  <Button
+                    variant={generationMode === "ai" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setGenerationMode("ai")}
+                    className="flex-1"
+                  >
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    AI Generated
+                  </Button>
+                </div>
               </div>
-            </div>
 
-            <Separator />
+              <Separator />
 
-            {/* Dataset Selection */}
-            <div className="space-y-2">
-              <Label htmlFor="dataset">Dataset Pattern</Label>
-              <Select value={dataset} onValueChange={setDataset}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a dataset" />
-                </SelectTrigger>
-                <SelectContent>
-                  {datasets.map((ds) => (
-                    <SelectItem key={ds.value} value={ds.value}>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{ds.label}</span>
-                        <span className="text-xs text-muted-foreground">{ds.description}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {selectedDataset && (
-                <Badge variant="secondary" className="w-fit">
-                  {selectedDataset.description}
-                </Badge>
-              )}
-            </div>
-
-            {/* Scenario Selection */}
-            <div className="space-y-2">
-              <Label htmlFor="scenario">Creative Scenario</Label>
-              <Select value={scenario} onValueChange={setScenario}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a scenario" />
-                </SelectTrigger>
-                <SelectContent>
-                  {scenarios.map((sc) => (
-                    <SelectItem key={sc.value} value={sc.value}>
-                      <div className="flex items-center gap-2">
-                        <sc.icon className="h-4 w-4" />
+              {/* Dataset Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="dataset">Dataset Pattern</Label>
+                <Select value={dataset} onValueChange={setDataset}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a dataset" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {datasets.map((ds) => (
+                      <SelectItem key={ds.value} value={ds.value}>
                         <div className="flex flex-col">
-                          <span className="font-medium">{sc.label}</span>
-                          <span className="text-xs text-muted-foreground">{sc.description}</span>
+                          <span className="font-medium">{ds.label}</span>
+                          <span className="text-xs text-muted-foreground">{ds.description}</span>
                         </div>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {selectedScenario && selectedScenario.value !== "none" && (
-                <Badge variant="outline" className="w-fit">
-                  <selectedScenario.icon className="h-3 w-3 mr-1" />
-                  {selectedScenario.description}
-                </Badge>
-              )}
-            </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {selectedDataset && (
+                  <Badge variant="secondary" className="w-fit">
+                    {selectedDataset.description}
+                  </Badge>
+                )}
+              </div>
 
-            {/* Color Scheme */}
-            <div className="space-y-2">
-              <Label htmlFor="colorScheme">Color Palette</Label>
-              <Select value={colorScheme} onValueChange={setColorScheme}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select colors" />
-                </SelectTrigger>
-                <SelectContent>
-                  {colorSchemes.map((scheme) => (
-                    <SelectItem key={scheme.value} value={scheme.value}>
-                      <div className="flex items-center gap-2">
-                        <div className="flex gap-1">
-                          {scheme.colors.slice(0, 4).map((color, i) => (
-                            <div
-                              key={i}
-                              className="w-3 h-3 rounded-full border border-gray-300"
-                              style={{ backgroundColor: color }}
-                            />
-                          ))}
+              {/* Scenario Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="scenario">Creative Scenario</Label>
+                <Select value={scenario} onValueChange={setScenario}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a scenario" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {scenarios.map((sc) => (
+                      <SelectItem key={sc.value} value={sc.value}>
+                        <div className="flex items-center gap-2">
+                          <sc.icon className="h-4 w-4" />
+                          <div className="flex flex-col">
+                            <span className="font-medium">{sc.label}</span>
+                            <span className="text-xs text-muted-foreground">{sc.description}</span>
+                          </div>
                         </div>
-                        <span>{scheme.label}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Separator />
-
-            {/* Parameters */}
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Seed: {seed[0]}</Label>
-                <Slider value={seed} onValueChange={setSeed} min={1} max={1000} step={1} className="w-full" />
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {selectedScenario && selectedScenario.value !== "none" && (
+                  <Badge variant="outline" className="w-fit">
+                    <selectedScenario.icon className="h-3 w-3 mr-1" />
+                    {selectedScenario.description}
+                  </Badge>
+                )}
               </div>
 
+              {/* Color Scheme */}
               <div className="space-y-2">
-                <Label>Samples: {samples[0]}</Label>
-                <Slider value={samples} onValueChange={setSamples} min={100} max={2000} step={50} className="w-full" />
+                <Label htmlFor="colorScheme">Color Palette</Label>
+                <Select value={colorScheme} onValueChange={setColorScheme}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select colors" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {colorSchemes.map((scheme) => (
+                      <SelectItem key={scheme.value} value={scheme.value}>
+                        <div className="flex items-center gap-2">
+                          <div className="flex gap-1">
+                            {scheme.colors.slice(0, 4).map((color, i) => (
+                              <div
+                                key={i}
+                                className="w-3 h-3 rounded-full border border-gray-300"
+                                style={{ backgroundColor: color }}
+                              />
+                            ))}
+                          </div>
+                          <span>{scheme.label}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label>Noise: {noise[0].toFixed(3)}</Label>
-                <Slider value={noise} onValueChange={setNoise} min={0} max={0.2} step={0.005} className="w-full" />
+              <Separator />
+
+              {/* Parameters */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Seed: {seed[0]}</Label>
+                  <Slider value={seed} onValueChange={setSeed} min={1} max={1000} step={1} className="w-full" />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Samples: {samples[0]}</Label>
+                  <Slider
+                    value={samples}
+                    onValueChange={setSamples}
+                    min={100}
+                    max={2000}
+                    step={50}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Noise: {noise[0].toFixed(3)}</Label>
+                  <Slider value={noise} onValueChange={setNoise} min={0} max={0.2} step={0.005} className="w-full" />
+                </div>
               </div>
-            </div>
 
-            <Separator />
+              <Separator />
 
-            {/* Generate Button */}
-            <Button onClick={generateArt} disabled={isGenerating} className="w-full" size="lg">
-              {isGenerating ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Generate Flow Art
-                </>
-              )}
-            </Button>
-          </CardContent>
-        </Card>
+              {/* Generate Button */}
+              <Button onClick={generateArt} disabled={isGenerating} className="w-full" size="lg">
+                {isGenerating ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Generate Flow Art
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
 
-        {/* Preview Panel */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Generated Artwork</CardTitle>
-            <CardDescription>Your mathematical art will appear here</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="aspect-[16/9] bg-muted rounded-lg flex items-center justify-center mb-4">
-              {generatedImage ? (
-                <img
-                  src={generatedImage || "/placeholder.svg"}
-                  alt="Generated Flow Art"
-                  className="max-w-full max-h-full object-contain rounded-lg"
-                />
-              ) : (
-                <div className="text-center text-muted-foreground">
-                  <Palette className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p>Click "Generate Flow Art" to create your artwork</p>
-                  {scenario !== "none" && (
-                    <p className="text-sm mt-2">
-                      Ready to blend with {scenarios.find((s) => s.value === scenario)?.label}
-                    </p>
-                  )}
+          {/* Preview Panel */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Generated Artwork</CardTitle>
+              <CardDescription>Your mathematical art will appear here</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="aspect-[16/9] bg-muted rounded-lg flex items-center justify-center mb-4">
+                {generatedImage ? (
+                  <img
+                    src={generatedImage || "/placeholder.svg"}
+                    alt="Generated Flow Art"
+                    className="max-w-full max-h-full object-contain rounded-lg"
+                  />
+                ) : (
+                  <div className="text-center text-muted-foreground">
+                    <Palette className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                    <p>Click "Generate Flow Art" to create your artwork</p>
+                    {scenario !== "none" && (
+                      <p className="text-sm mt-2">
+                        Ready to blend with {scenarios.find((s) => s.value === scenario)?.label}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {generatedImage && (
+                <div className="flex gap-2">
+                  <Button onClick={downloadImage} variant="outline" className="flex-1 bg-transparent">
+                    <Download className="h-4 w-4 mr-2" />
+                    Download
+                  </Button>
+                  <Button
+                    onClick={upscaleImage}
+                    disabled={isUpscaling}
+                    variant="outline"
+                    className="flex-1 bg-transparent"
+                  >
+                    {isUpscaling ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
+                        Upscaling...
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="h-4 w-4 mr-2" />
+                        Pro Upscale
+                      </>
+                    )}
+                  </Button>
                 </div>
               )}
-            </div>
-
-            {generatedImage && (
-              <div className="flex gap-2">
-                <Button onClick={downloadImage} variant="outline" className="flex-1 bg-transparent">
-                  <Download className="h-4 w-4 mr-2" />
-                  Download
-                </Button>
-                <Button
-                  onClick={upscaleImage}
-                  disabled={isUpscaling}
-                  variant="outline"
-                  className="flex-1 bg-transparent"
-                >
-                  {isUpscaling ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
-                      Upscaling...
-                    </>
-                  ) : (
-                    <>
-                      <Zap className="h-4 w-4 mr-2" />
-                      Pro Upscale
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }
