@@ -404,5 +404,7 @@ export function FlowArtGenerator() {
   )
 }
 
-// keep default export so the component can also be imported without braces
+// keep default export (keep this line)
 export default FlowArtGenerator
+
+// NEW - ensure the file also provides a named export
