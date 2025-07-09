@@ -35,7 +35,7 @@ interface GenerationResult {
   recommendedUpscale?: string
 }
 
-export default function FlowArtGenerator() {
+export function FlowArtGenerator() {
   const [dataset, setDataset] = useState("spiral")
   const [seed, setSeed] = useState(42)
   const [numSamples, setNumSamples] = useState(1000)
@@ -403,3 +403,6 @@ export default function FlowArtGenerator() {
     </div>
   )
 }
+
+// keep default export so the component can also be imported without braces
+export default FlowArtGenerator
