@@ -1,92 +1,77 @@
 /**
- * PlotUtils – converts a dataset (array of points) into an SVG string.
+ * FlowSketch – SVG rendering helpers
+ *
  * Exports:
- *   • createSVGPlot(...)          – main function used by FlowArtGenerator
- *   • generateScatterPlotSVG(...) – alias kept for back-compat
- *   • PlotUtils object            – bundled export with both helpers
+ *   • createSVGPlot            – main helper (width/height configurable)
+ *   • generateScatterPlotSVG   – alias (kept for backwards compatibility)
+ *   • PlotUtils                – object bundling the helpers
  */
 
-type Point = { x: number; y: number }
+import type { Point } from "./flow-model"
 
-interface PlotOptions {
-  width?: number
-  height?: number
-  colorScheme?: string
-  backgroundColor?: string
-  pointRadius?: number
+/* Basic palettes – used when a colour scheme string doesn’t match */
+const DEFAULT_PALETTE = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
+
+function getPalette(scheme: string): string[] {
+  switch (scheme) {
+    case "viridis":
+      return ["#440154", "#31688e", "#35b779", "#fde725"]
+    case "plasma":
+      return ["#0d0887", "#7e03a8", "#cc4778", "#f89441", "#f0f921"]
+    case "inferno":
+      return ["#000004", "#420a68", "#932667", "#dd513a", "#fca50a", "#fcffa4"]
+    case "magma":
+      return ["#000004", "#3b0f70", "#8c2981", "#de4968", "#fe9f6d", "#fcfdbf"]
+    case "cool":
+      return ["#00ffff", "#0080ff", "#0000ff", "#8000ff"]
+    case "warm":
+      return ["#ff0000", "#ff8000", "#ffff00", "#80ff00"]
+    case "turbo":
+      return ["#30123b", "#4140ba", "#2e9df5", "#4bd276", "#f3f34c", "#f79a23", "#ca2928"]
+    default:
+      return DEFAULT_PALETTE
+  }
 }
 
-/* Simple colour palettes (matching FlowArtGenerator’s list) */
-const PALETTES: Record<string, string[]> = {
-  viridis: ["#440154", "#443983", "#31688e", "#21908d", "#35b779", "#8fd744", "#fde725"],
-  plasma: ["#0d0887", "#5b02a3", "#9a179b", "#cb4679", "#ed7953", "#fdb42f", "#f0f921"],
-  magma: ["#000004", "#180f3d", "#451077", "#721f81", "#9f2f7f", "#cd4071", "#f3785b", "#fca50a", "#f6e620"],
-  inferno: ["#000004", "#180b3a", "#400b6f", "#6a176e", "#932667", "#bc3754", "#e55035", "#f77f0e", "#f9c932"],
-  cool: ["#00ffff", "#0080ff", "#0000ff", "#8000ff"],
-  warm: ["#ff0000", "#ff8000", "#ffff00", "#80ff00"],
-}
+/**
+ * Create a simple scatter-plot SVG string for a list of points
+ */
+export function createSVGPlot(points: Point[], colorScheme: string, width = 800, height = 600): string {
+  if (!points.length) return "<svg xmlns='http://www.w3.org/2000/svg'/>"
 
-function interpolateColor(colors: string[], t: number) {
-  const n = colors.length - 1
-  const i = Math.floor(t * n)
-  const f = t * n - i
-  const c1 = colors[i]
-  const c2 = colors[i + 1] ?? colors[i]
-  const toRGB = (hex: string) =>
-    hex
-      .slice(1)
-      .match(/.{2}/g)!
-      .map((v) => Number.parseInt(v, 16))
-  const [r1, g1, b1] = toRGB(c1)
-  const [r2, g2, b2] = toRGB(c2)
-  const r = Math.round(r1 + (r2 - r1) * f)
-  const g = Math.round(g1 + (g2 - g1) * f)
-  const b = Math.round(b1 + (b2 - b1) * f)
-  return `rgb(${r},${g},${b})`
-}
-
-export function createSVGPlot(
-  data: Point[],
-  {
-    width = 800,
-    height = 600,
-    colorScheme = "viridis",
-    backgroundColor = "#ffffff",
-    pointRadius = 2,
-  }: PlotOptions = {},
-): string {
-  // Normalise points to [0-1] range
-  const xs = data.map((p) => p.x)
-  const ys = data.map((p) => p.y)
+  // Get bounds
+  const xs = points.map((p) => p.x)
+  const ys = points.map((p) => p.y)
   const minX = Math.min(...xs)
   const maxX = Math.max(...xs)
   const minY = Math.min(...ys)
   const maxY = Math.max(...ys)
 
-  const colors = PALETTES[colorScheme] ?? PALETTES.viridis
+  const palette = getPalette(colorScheme)
+  const radius = Math.max(1, Math.min(width, height) / 300)
 
-  const circles = data
-    .map((p, i) => {
-      const t = i / (data.length - 1)
-      const cx = ((p.x - minX) / (maxX - minX || 1)) * width
-      const cy = ((p.y - minY) / (maxY - minY || 1)) * height
-      const fill = interpolateColor(colors, t)
-      return `<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${pointRadius}" fill="${fill}" />`
+  const circles = points
+    .map((p, idx) => {
+      const cx = ((p.x - minX) / (maxX - minX)) * width
+      // Flip y so origin is bottom-left
+      const cy = height - ((p.y - minY) / (maxY - minY)) * height
+      const fill = palette[idx % palette.length]
+      return `<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${radius}" fill="${fill}" />`
     })
     .join("")
 
-  return `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-      <rect width="100%" height="100%" fill="${backgroundColor}" />
-      ${circles}
-    </svg>
-  `
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${circles}</svg>`
 }
 
-/* ------------------------------------------------------------------ */
-/* Backwards-compat alias – some older components still import this   */
-/* ------------------------------------------------------------------ */
+/* -------------------------------------------------------------------------- */
+/*  Alias kept to satisfy any legacy import/usage                            */
+/* -------------------------------------------------------------------------- */
 export const generateScatterPlotSVG = createSVGPlot
 
-/* Bundle helper */
-export const PlotUtils = { createSVGPlot, generateScatterPlotSVG }
+/* -------------------------------------------------------------------------- */
+/*  Bundle helpers for the `{ PlotUtils }` named import in FlowArtGenerator   */
+/* -------------------------------------------------------------------------- */
+export const PlotUtils = {
+  createSVGPlot,
+  generateScatterPlotSVG,
+}

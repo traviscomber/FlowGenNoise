@@ -1,15 +1,20 @@
 /**
- * FlowSketch - mathematical dataset generator + scenario catalogue
+ * FlowSketch – lightweight mathematical dataset generator
  *
- * 1.  SCENARIOS – list of creative overlays (incl. background colours)
- * 2.  generateDataset(...) – pure-function that returns an array of 2-D points
- * 3.  FlowModel class – OO wrapper used by FlowArtGenerator (static helpers)
- *
- * NOTE: this is intentionally lightweight (no heavy math deps) but produces
- * visually interesting distributions good enough for demos / testing.
+ * Provides:
+ *   • SCENARIOS – palette of background colours (used by UI)
+ *   • generateDataset(...) – returns an array of { x, y } points
+ *   • FlowModel.generateDataset – wrapper for legacy code paths
  */
 
-/* ---------- 1. Scenario catalogue ---------- */
+export interface Point {
+  x: number
+  y: number
+}
+
+/* -------------------------------------------------------------------------- */
+/* 1. Creative scenario catalogue (UI can read background colours if desired) */
+/* -------------------------------------------------------------------------- */
 export const SCENARIOS = {
   none: { label: "None", backgroundColor: "#ffffff" },
   forest: { label: "Enchanted Forest", backgroundColor: "#183a1d" },
@@ -18,7 +23,9 @@ export const SCENARIOS = {
   city: { label: "Cyberpunk City", backgroundColor: "#1a001a" },
 } as const
 
-/* ---------- 2. Simple deterministic PRNG ---------- */
+/* -------------------------------------------------------------------------- */
+/* 2. Small deterministic PRNG (Mulberry32)                                   */
+/* -------------------------------------------------------------------------- */
 function mulberry32(seed: number) {
   return () => {
     let t = (seed += 0x6d2b79f5)
@@ -28,96 +35,106 @@ function mulberry32(seed: number) {
   }
 }
 
-/* ---------- 3. Dataset generators ---------- */
-type Point = { x: number; y: number }
-
+/* -------------------------------------------------------------------------- */
+/* 3. Individual pattern generators                                           */
+/* -------------------------------------------------------------------------- */
 function genSpirals(n: number, rng: () => number, noise = 0.01): Point[] {
-  const points: Point[] = []
-  const turns = 5
+  // two-armed spiral
+  const pts: Point[] = []
   for (let i = 0; i < n; i++) {
     const r = i / n
-    const angle = turns * 2 * Math.PI * r
-    points.push({
+    const angle = 4 * Math.PI * r // two full turns
+    pts.push({
       x: r * Math.cos(angle) + (rng() - 0.5) * noise,
       y: r * Math.sin(angle) + (rng() - 0.5) * noise,
     })
   }
-  return points
+  return pts
 }
 
 function genMoons(n: number, rng: () => number, noise = 0.05): Point[] {
-  const points: Point[] = []
-  for (let i = 0; i < n; i++) {
+  const pts: Point[] = []
+  const half = Math.floor(n / 2)
+
+  // upper moon
+  for (let i = 0; i < half; i++) {
     const angle = Math.PI * rng()
-    const radius = 0.5 + (rng() - 0.5) * noise
-    const offset = i < n / 2 ? 0 : 0.55 // split into two half-circles
-    points.push({ x: Math.cos(angle) * radius + offset, y: Math.sin(angle) * radius })
+    pts.push({
+      x: Math.cos(angle) + (rng() - 0.5) * noise,
+      y: Math.sin(angle) + (rng() - 0.5) * noise,
+    })
   }
-  return points
+
+  // lower moon (offset)
+  for (let i = 0; i < n - half; i++) {
+    const angle = Math.PI * rng()
+    pts.push({
+      x: 1 - Math.cos(angle) + (rng() - 0.5) * noise,
+      y: -Math.sin(angle) + 0.5 + (rng() - 0.5) * noise,
+    })
+  }
+  return pts
 }
 
 function genCheckerboard(n: number, rng: () => number): Point[] {
-  const side = Math.ceil(Math.sqrt(n))
-  const points: Point[] = []
-  for (let i = 0; i < n; i++) {
-    points.push({
-      x: (i % side) / side + 0.5 / side,
-      y: Math.floor(i / side) / side + 0.5 / side,
-    })
+  const size = Math.ceil(Math.sqrt(n))
+  const pts: Point[] = []
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      if (pts.length >= n) break
+      pts.push({ x: col, y: row })
+    }
   }
-  return points
+  return pts
 }
 
 function genGaussian(n: number, rng: () => number, noise = 0.08): Point[] {
-  const points: Point[] = []
+  const pts: Point[] = []
   const gaussian = () => {
-    // Box-Muller
+    // Box-Muller transform
     const u = 1 - rng()
     const v = 1 - rng()
     return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v)
   }
   for (let i = 0; i < n; i++) {
-    points.push({ x: gaussian() * noise, y: gaussian() * noise })
+    pts.push({ x: gaussian() * noise, y: gaussian() * noise })
   }
-  return points
+  return pts
 }
 
 function genGrid(n: number): Point[] {
   const side = Math.ceil(Math.sqrt(n))
-  const points: Point[] = []
-  for (let row = 0; row < side; row++) {
-    for (let col = 0; col < side; col++) {
-      points.push({ x: col / (side - 1), y: row / (side - 1) })
+  const pts: Point[] = []
+  for (let r = 0; r < side; r++) {
+    for (let c = 0; c < side; c++) {
+      if (pts.length >= n) break
+      pts.push({ x: c / (side - 1), y: r / (side - 1) })
     }
   }
-  return points.slice(0, n)
+  return pts
 }
 
 function genNeural(n: number, rng: () => number): Point[] {
-  // “Neural” pattern – sinusoidal band
-  const points: Point[] = []
+  // sinusoid “ridge” pattern
+  const pts: Point[] = []
   for (let i = 0; i < n; i++) {
     const t = (i / n) * 4 * Math.PI
-    points.push({
+    pts.push({
       x: t / (4 * Math.PI),
       y: 0.5 + Math.sin(t * 2) * 0.3 + (rng() - 0.5) * 0.05,
     })
   }
-  return points
+  return pts
 }
 
-/* ---------- 4. Public API ---------- */
-export function generateDataset(
-  dataset: string,
-  seed = 42,
-  numSamples = 1000,
-  noise = 0.05,
-  scenario?: keyof typeof SCENARIOS,
-): Point[] {
+/* -------------------------------------------------------------------------- */
+/* 4. Public generator – used across the app                                  */
+/* -------------------------------------------------------------------------- */
+export function generateDataset(dataset: string, seed = 42, numSamples = 1000, noise = 0.05): Point[] {
   const rng = mulberry32(seed)
   switch (dataset) {
-    case "spirals":
     case "spiral":
+    case "spirals":
       return genSpirals(numSamples, rng, noise)
     case "moons":
       return genMoons(numSamples, rng, noise)
@@ -131,14 +148,13 @@ export function generateDataset(
     case "neural":
       return genNeural(numSamples, rng)
     default:
-      // fallback to gaussian
       return genGaussian(numSamples, rng, noise)
   }
 }
 
-/**
- * OO wrapper used by FlowArtGenerator (kept for backwards compatibility)
- */
+/* -------------------------------------------------------------------------- */
+/* 5. Wrapper class (legacy API the UI already imports)                       */
+/* -------------------------------------------------------------------------- */
 export class FlowModel {
   static generateDataset = generateDataset
 }
