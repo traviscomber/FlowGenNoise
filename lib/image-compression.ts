@@ -140,3 +140,13 @@ export class ImageCompressor {
     return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
   }
 }
+
+// --- Convenience re-exports --------------------------------------------------
+
+/**
+ * Convenience wrapper so callers can `import { compressImage }` directly.
+ * Internally it forwards to `ImageCompressor.compressImage`.
+ */
+export async function compressImage(imageUrl: string, options: CompressionOptions = {}) {
+  return ImageCompressor.compressImage(imageUrl, options)
+}
