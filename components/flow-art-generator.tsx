@@ -31,6 +31,7 @@ import {
   Eye,
   EyeOff,
   Zap,
+  ImagePlus,
 } from "lucide-react"
 import { generateFlowArt, generateAIArt, type FlowArtSettings } from "@/lib/flow-model"
 import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
@@ -75,6 +76,7 @@ export function FlowArtGenerator() {
   const [authError, setAuthError] = useState<string | null>(null)
   const [syncConflicts, setSyncConflicts] = useState<SyncConflict[]>([])
   const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null)
+  const [prompt, setPrompt] = useState("")
 
   /* load the current user once and keep it updated */
   useEffect(() => {
@@ -402,8 +404,44 @@ export function FlowArtGenerator() {
     // For now, rely on the listener.
   }
 
-  // Delete the old (unused) line farther down that reads
-  // `const currentAuthUser = useMemo(() => supabase.auth.getUser(), [])`
+  const handleDownloadImage = (imageUrl: string, type: "svg" | "png") => {
+    const link = document.createElement("a")
+    link.href = imageUrl
+    link.download = `flowsketch-art-${Date.now()}.${type}`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const handleAIImageGenerate = async () => {
+    if (!prompt.trim()) {
+      toast({ title: "Prompt required", variant: "destructive" })
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      const res = await fetch("/api/generate-ai-art", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      })
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err?.error || "Failed to generate image")
+      }
+
+      const { imageUrl } = (await res.json()) as { imageUrl: string }
+      // Bubble the new image up to any listeners (e.g. <Gallery />)
+      window.dispatchEvent(new CustomEvent("new-image", { detail: imageUrl }))
+      setGeneratedImageUrl(imageUrl)
+    } catch (err: any) {
+      toast({ title: err.message ?? "Unknown error", variant: "destructive" })
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <TooltipProvider>
@@ -826,19 +864,29 @@ export function FlowArtGenerator() {
                 </CardContent>
               </Card>
             )}
+
+            {/* AI Image Generation Section */}
+            <Card>
+              <CardContent className="flex flex-col gap-4 p-6 sm:flex-row">
+                <Input
+                  placeholder="Describe the artwork you want..."
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  className="flex-1"
+                />
+                <Button onClick={handleAIImageGenerate} disabled={isLoading} className="shrink-0">
+                  {isLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <ImagePlus className="mr-2 h-4 w-4" />
+                  )}
+                  {isLoading ? "Generating…" : "Generate"}
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </CardContent>
       </Card>
     </TooltipProvider>
   )
-}
-
-// Helper function for downloading images
-function handleDownloadImage(imageUrl: string, type: "svg" | "png") {
-  const link = document.createElement("a")
-  link.href = imageUrl
-  link.download = `flowsketch-art-${Date.now()}.${type}`
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
 }

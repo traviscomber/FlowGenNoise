@@ -1,16 +1,12 @@
 "use client"
 
 import { DialogDescription } from "@/components/ui/dialog"
-
-import { useState, useEffect, useCallback } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/use-toast"
-import { ImageIcon, Trash2, Star, StarOff, Info, Cloud, Download, Loader2, Sparkles, Palette } from "lucide-react"
+import { Trash2, Star, StarOff, Cloud, Download, Loader2, Sparkles, Palette } from "lucide-react"
 import { GalleryStorage, type GalleryImage, type GalleryStats } from "@/lib/gallery-storage"
 import { CloudSyncService, type CloudSyncStatus } from "@/lib/cloud-sync"
 
@@ -18,7 +14,7 @@ interface GalleryProps {
   onImageSelect: (image: GalleryImage) => void
 }
 
-export function Gallery({ onImageSelect }: GalleryProps) {
+export default function Gallery({ onImageSelect }: GalleryProps) {
   const { toast } = useToast()
   const [images, setImages] = useState<GalleryImage[]>([])
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
@@ -28,6 +24,14 @@ export function Gallery({ onImageSelect }: GalleryProps) {
   const [isScoring, setIsScoring] = useState(false)
   const [scoreProgress, setScoreProgress] = useState(0)
   const [isBatchScoring, setIsBatchScoring] = useState(false)
+
+  useEffect(() => {
+    function addImage(e: any) {
+      setImages((prev) => [{ imageUrl: e.detail as string }, ...prev])
+    }
+    window.addEventListener("new-image", addImage)
+    return () => window.removeEventListener("new-image", addImage)
+  }, [])
 
   const loadGallery = useCallback(async () => {
     const localImages = GalleryStorage.getGallery()
@@ -284,155 +288,46 @@ export function Gallery({ onImageSelect }: GalleryProps) {
     loadGallery()
   }, [images, loadGallery, toast])
 
+  if (images.length === 0) return null
+
   return (
-    <Card className="col-span-1 flex flex-col">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <ImageIcon className="h-5 w-5" /> Gallery
-        </CardTitle>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="sm">
-              <Info className="h-4 w-4 mr-2" /> Settings
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Gallery Settings</DialogTitle>
-              <DialogDescription>Manage your local and cloud gallery settings.</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="local-images">Local Images</Label>
-                <span>{galleryStats.localImages}</span>
+    <section className="w-full">
+      <h2 className="mb-4 text-xl font-semibold">Recent&nbsp;Images</h2>
+      <ScrollArea className="h-[400px] w-full rounded-md border">
+        <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3">
+          {images.map((image, i) => (
+            <div
+              key={image.id}
+              className="relative group cursor-pointer rounded-lg overflow-hidden border hover:border-primary transition-colors"
+              onClick={() => setSelectedImage(image)}
+            >
+              <img
+                src={image.imageUrl || "/placeholder.png"}
+                alt={image.metadata.filename || "Generated Art"}
+                className="w-full h-32 object-cover"
+              />
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button variant="secondary" size="sm" onClick={() => onImageSelect(image)}>
+                  Select
+                </Button>
               </div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="cloud-images">Cloud Images</Label>
-                <span>{galleryStats.cloudImages}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="total-size">Total Local Size</Label>
-                <span>{GalleryStorage.formatFileSize(galleryStats.totalLocalSize)}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor="cloud-storage-used">Cloud Storage Used</Label>
-                <span>
-                  {GalleryStorage.formatFileSize(cloudSyncStatus.storageUsed)} /{" "}
-                  {GalleryStorage.formatFileSize(cloudSyncStatus.storageQuota)}
-                </span>
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <Label htmlFor="cloud-sync-status">Cloud Sync Status</Label>
-                <span
-                  className={`font-medium ${
-                    cloudSyncStatus.isAuthenticated && cloudSyncStatus.isEnabled ? "text-green-600" : "text-red-600"
-                  }`}
-                >
-                  {cloudSyncStatus.isAuthenticated
-                    ? cloudSyncStatus.isEnabled
-                      ? "Enabled"
-                      : "Disabled"
-                    : "Not Signed In"}
-                </span>
-              </div>
-              <Button
-                onClick={handleBatchScore}
-                disabled={
-                  isBatchScoring || images.filter((img) => img.metadata.aestheticScore === undefined).length === 0
-                }
-              >
-                {isBatchScoring ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Scoring... ({scoreProgress}%)
-                  </>
+              <div className="absolute top-2 right-2 flex gap-1">
+                {image.isFavorite ? (
+                  <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
                 ) : (
-                  <>
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    Batch Score Unscored
-                  </>
+                  <StarOff className="h-5 w-5 text-gray-300" />
                 )}
-              </Button>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="destructive" className="w-full">
-                    <Trash2 className="h-4 w-4 mr-2" /> Clear All Images
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Confirm Clear Gallery</DialogTitle>
-                    <DialogDescription>
-                      Are you sure you want to clear all images from your local gallery?
-                      {cloudSyncStatus.isEnabled && cloudSyncStatus.isAuthenticated && (
-                        <span className="font-bold text-red-500">
-                          {" "}
-                          This will also attempt to delete all images from your cloud storage. This action cannot be
-                          undone.
-                        </span>
-                      )}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsConfirmingClear(false)}>
-                      Cancel
-                    </Button>
-                    <Button variant="destructive" onClick={handleClearGallery}>
-                      Clear All
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </CardHeader>
-      <CardContent className="flex-1 overflow-hidden">
-        {images.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-            <ImageIcon className="h-12 w-12 mb-2" />
-            <p>Your gallery is empty.</p>
-            <p>Generate some art to get started!</p>
-          </div>
-        ) : (
-          <ScrollArea className="h-[calc(100vh-250px)] pr-4">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {images.map((image) => (
-                <div
-                  key={image.id}
-                  className="relative group cursor-pointer rounded-lg overflow-hidden border hover:border-primary transition-colors"
-                  onClick={() => setSelectedImage(image)}
-                >
-                  <img
-                    src={image.imageUrl || "/placeholder.png"}
-                    alt={image.metadata.filename || "Generated Art"}
-                    className="w-full h-32 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="secondary" size="sm" onClick={() => onImageSelect(image)}>
-                      Select
-                    </Button>
-                  </div>
-                  <div className="absolute top-2 right-2 flex gap-1">
-                    {image.isFavorite ? (
-                      <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-                    ) : (
-                      <StarOff className="h-5 w-5 text-gray-300" />
-                    )}
-                    {image.metadata.cloudStored && <Cloud className="h-5 w-5 text-blue-400" title="Cloud Synced" />}
-                  </div>
-                  {image.metadata.aestheticScore !== undefined && (
-                    <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
-                      Score: {image.metadata.aestheticScore.toFixed(2)}
-                    </div>
-                  )}
+                {image.metadata.cloudStored && <Cloud className="h-5 w-5 text-blue-400" title="Cloud Synced" />}
+              </div>
+              {image.metadata.aestheticScore !== undefined && (
+                <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                  Score: {image.metadata.aestheticScore.toFixed(2)}
                 </div>
-              ))}
+              )}
             </div>
-          </ScrollArea>
-        )}
-      </CardContent>
+          ))}
+        </div>
+      </ScrollArea>
 
       {selectedImage && (
         <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
@@ -550,7 +445,7 @@ export function Gallery({ onImageSelect }: GalleryProps) {
           </DialogContent>
         </Dialog>
       )}
-    </Card>
+    </section>
   )
 }
 
