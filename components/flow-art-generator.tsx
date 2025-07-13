@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
-import { Wand2, Download, Archive } from "lucide-react"
+import { Wand2, Download, Archive, Palette, Sparkles, RefreshCw, Zap } from "lucide-react"
 import { generateDataset } from "@/lib/flow-model"
 import { PlotUtils } from "@/lib/plot-utils"
 import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
@@ -76,6 +76,15 @@ const SCENARIOS = {
   neural_connections: { label: "Neural Connections", backgroundColor: "#FFD700" },
 } as const
 
+const DATASETS = [
+  { value: "gaussian", label: "Gaussian Blobs" },
+  { value: "spirals", label: "Spirals" },
+  { value: "moons", label: "Moons" },
+  { value: "checkerboard", label: "Checkerboard" },
+  { value: "grid", label: "Grid" },
+  { value: "neural", label: "Neural Connection" },
+]
+
 export function FlowArtGenerator() {
   const [settings, setSettings] = useState<GenerationSettings>({
     dataset: "gaussian",
@@ -108,6 +117,8 @@ export function FlowArtGenerator() {
     setProgress(0)
     setGeneratedImage(null)
     setUpscaledImage(null)
+
+    console.log("Generating with mode:", settings.generationMode) // Added for debugging
 
     try {
       if (settings.generationMode === "svg") {
@@ -195,7 +206,7 @@ export function FlowArtGenerator() {
       setIsGenerating(false)
       setProgress(0)
     }
-  }, [settings])
+  }, [settings, toast]) // Added toast to useCallback dependencies
 
   const handleUpscale = async () => {
     if (!generatedImage) return
@@ -236,7 +247,8 @@ export function FlowArtGenerator() {
     setSettings({
       ...settings,
       seed: Math.floor(Math.random() * 100000),
-      dataset: Object.keys(SCENARIOS)[Math.floor(Math.random() * Object.keys(SCENARIOS).length)],
+      // FIX: Randomize dataset from the DATASETS array
+      dataset: DATASETS[Math.floor(Math.random() * DATASETS.length)].value,
       scenario: Object.keys(SCENARIOS)[Math.floor(Math.random() * Object.keys(SCENARIOS).length)],
       colorScheme: Object.keys(COLOR_SCHEMES)[Math.floor(Math.random() * Object.keys(COLOR_SCHEMES).length)],
     })
@@ -290,6 +302,33 @@ export function FlowArtGenerator() {
         </CardHeader>
         <CardContent className="grid md:grid-cols-2 gap-6">
           <div className="flex flex-col gap-4">
+            {/* Generation Mode */}
+            <div className="space-y-2">
+              <Label>Generation Mode</Label>
+              <Select
+                value={settings.generationMode}
+                onValueChange={(value: "svg" | "ai") => setSettings({ ...settings, generationMode: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="svg">
+                    <div className="flex items-center gap-2">
+                      <Palette className="h-4 w-4" />
+                      Mathematical SVG
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="ai">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-4 w-4" />
+                      AI Enhanced
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="grid gap-2">
               <Label htmlFor="dataset">Mathematical Dataset</Label>
               <Select value={settings.dataset} onValueChange={(value) => setSettings({ ...settings, dataset: value })}>
@@ -297,12 +336,11 @@ export function FlowArtGenerator() {
                   <SelectValue placeholder="Select a dataset" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="gaussian">Gaussian Blobs</SelectItem>
-                  <SelectItem value="spirals">Spirals</SelectItem>
-                  <SelectItem value="moons">Moons</SelectItem>
-                  <SelectItem value="checkerboard">Checkerboard</SelectItem>
-                  <SelectItem value="grid">Grid</SelectItem>
-                  <SelectItem value="neural">Neural Connection</SelectItem> {/* Added Neural Connection */}
+                  {DATASETS.map((dataset) => (
+                    <SelectItem key={dataset.value} value={dataset.value}>
+                      {dataset.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -363,24 +401,26 @@ export function FlowArtGenerator() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="scenario">Creative Scenario</Label>
-              <Select
-                value={settings.scenario}
-                onValueChange={(value) => setSettings({ ...settings, scenario: value })}
-              >
-                <SelectTrigger id="scenario">
-                  <SelectValue placeholder="Select a scenario" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(SCENARIOS).map(([key, value]) => (
-                    <SelectItem key={key} value={key}>
-                      {value.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {settings.generationMode === "ai" && (
+              <div className="grid gap-2">
+                <Label htmlFor="scenario">Creative Scenario</Label>
+                <Select
+                  value={settings.scenario}
+                  onValueChange={(value) => setSettings({ ...settings, scenario: value })}
+                >
+                  <SelectTrigger id="scenario">
+                    <SelectValue placeholder="Select a scenario" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(SCENARIOS).map(([key, value]) => (
+                      <SelectItem key={key} value={key}>
+                        {value.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <Button onClick={handleGenerate} disabled={isGenerating || isUpscaling}>
               {isGenerating || isUpscaling ? (
                 <>
@@ -393,6 +433,10 @@ export function FlowArtGenerator() {
                   Generate Art
                 </>
               )}
+            </Button>
+            <Button onClick={handleRandomize} variant="outline">
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Randomize Settings
             </Button>
             {generatedImage && (
               <Button onClick={handleSaveToGallery} disabled={isGenerating || isUpscaling}>
@@ -409,11 +453,28 @@ export function FlowArtGenerator() {
                   </div>
                 )}
                 {generatedImage ? (
-                  <img
-                    src={generatedImage || "/placeholder.svg"}
-                    alt="Generated artwork"
-                    className="w-full h-full object-cover"
-                  />
+                  <>
+                    <img
+                      src={generatedImage || "/placeholder.svg"}
+                      alt="Generated artwork"
+                      className="w-full h-full object-cover"
+                    />
+                    {!upscaledImage && settings.generationMode === "ai" && (
+                      <Button onClick={handleUpscale} disabled={isUpscaling} className="absolute bottom-4 right-4">
+                        {isUpscaling ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Upscaling...
+                          </>
+                        ) : (
+                          <>
+                            <Zap className="mr-2 h-4 w-4" />
+                            Upscale to 4K
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </>
                 ) : (
                   <div className="flex items-center justify-center w-full h-full text-muted-foreground">
                     No art generated yet.
