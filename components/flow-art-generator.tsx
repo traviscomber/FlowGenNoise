@@ -57,7 +57,7 @@ export function FlowArtGenerator() {
     { value: "s_curve", label: "S-Curve" },
     { value: "blobs", label: "Gaussian Blobs" },
     { value: "rings", label: "Nested Rings" },
-    { value: "neural", label: "Neural Connection" }, // Added Neural Connection
+    { value: "neural", label: "Neural Connection" },
   ]
 
   const scenarios = [
@@ -126,37 +126,40 @@ export function FlowArtGenerator() {
       } else {
         // Generate AI-enhanced version
         setProgress(10)
-        const data = FlowModel.generateDataset(settings.dataset, settings.samples, settings.seed, settings.noise)
-
-        setProgress(30)
-        const svg = PlotUtils.createSVGPlot(data, settings.colorScheme, 1024, 1024)
+        // No need to generate SVG data on the client if the API doesn't use it for DALL-E 3 prompt
+        // const data = FlowModel.generateDataset(settings.dataset, settings.samples, settings.seed, settings.noise)
+        // const svg = PlotUtils.createSVGPlot(data, settings.colorScheme, 1024, 1024)
 
         setProgress(50)
         const response = await fetch("/api/generate-ai-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            svgData: svg,
-            scenario: settings.scenario,
+            // Removed svgData as the API route doesn't use it for DALL-E 3 prompt generation
             dataset: settings.dataset,
+            seed: settings.seed,
             colorScheme: settings.colorScheme,
+            numSamples: settings.samples, // Corrected parameter name
+            noise: settings.noise,
+            scenario: settings.scenario,
           }),
         })
 
         if (!response.ok) {
-          throw new Error("Failed to generate AI art")
+          const errorData = await response.json()
+          throw new Error(errorData.error || "Failed to generate AI art")
         }
 
         setProgress(80)
         const result = await response.json()
 
         setProgress(100)
-        setGeneratedImage(result.imageUrl)
+        setGeneratedImage(result.image) // Changed from result.imageUrl to result.image as per API response
 
         // Save to gallery
         const image: GalleryImage = {
           id: `ai-flow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          imageUrl: result.imageUrl,
+          imageUrl: result.image, // Changed from result.imageUrl to result.image
           metadata: {
             ...settings,
             createdAt: Date.now(),
