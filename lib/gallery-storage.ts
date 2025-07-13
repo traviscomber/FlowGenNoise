@@ -188,15 +188,14 @@ export class GalleryStorage {
     }
   }
 
-  static getStorageStats(): StorageStats {
-    const gallery = this.getGallery()
-    const localImages = gallery.length // All images are local now
-    const cloudImages = 0 // No cloud storage without auth
+  static getStorageStats(images: GalleryImage[]): StorageStats {
+    const localImages = images.filter((img) => !img.metadata.cloudStored).length
+    const cloudImages = images.filter((img) => img.metadata.cloudStored).length
 
-    const imageSizes = gallery
+    const imageSizes = images
       .map((img) => {
-        // Gracefully handle images that might not have metadata or fileSize
-        if (img.metadata?.fileSize && typeof img.metadata.fileSize === "number") {
+        // Ensure metadata exists and fileSize is a number, otherwise estimate
+        if (img.metadata && typeof img.metadata.fileSize === "number") {
           return img.metadata.fileSize
         }
         return this.estimateImageSize(img)
@@ -208,12 +207,12 @@ export class GalleryStorage {
     const largestImage = imageSizes.length > 0 ? Math.max(...imageSizes) : 0
 
     // Calculate aesthetic stats
-    const scoredImages = gallery.filter((img) => img.aestheticScore)
+    const scoredImages = images.filter((img) => img.aestheticScore)
     const averageScore =
       scoredImages.length > 0
         ? scoredImages.reduce((sum, img) => sum + img.aestheticScore!.score, 0) / scoredImages.length
         : 0
-    const topRatedImages = gallery.filter((img) => img.aestheticScore && img.aestheticScore.score >= 7.0).length
+    const topRatedImages = images.filter((img) => img.aestheticScore && img.aestheticScore.score >= 7.0).length
 
     return {
       localImages,
