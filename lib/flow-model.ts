@@ -1,18 +1,4 @@
-/**
- * FlowSketch – lightweight mathematical dataset generator
- *
- * Provides:
- *   • SCENARIOS – palette of background colours (used by UI)
- *   • generateDataset(...) – returns an array of { x, y } points
- *   • FlowModel.generateDataset – wrapper for legacy code paths
- */
-
-import { PlotUtils } from "@/lib/plot-utils"
-
-export interface Point {
-  x: number
-  y: number
-}
+import { PlotUtils } from "./plot-utils"
 
 export interface FlowArtSettings {
   dataset: string
@@ -22,180 +8,248 @@ export interface FlowArtSettings {
   samples: number
   noise: number
   generationMode: "svg" | "ai"
-  upscale?: boolean
-}
-
-/* -------------------------------------------------------------------------- */
-/* 1. Creative scenario catalogue (UI can read background colours if desired) */
-/* -------------------------------------------------------------------------- */
-export const SCENARIOS = {
-  none: { label: "None", backgroundColor: "#ffffff" },
-  forest: { label: "Enchanted Forest", backgroundColor: "#183a1d" },
-  ocean: { label: "Deep Ocean", backgroundColor: "#012b52" },
-  space: { label: "Cosmic Nebula", backgroundColor: "#0b0d17" },
-  city: { label: "Cyberpunk City", backgroundColor: "#1a001a" },
-  ancient_temple: { label: "Ancient Temple", backgroundColor: "#8B4513" }, // Example color, adjust as needed
-  crystal_cave: { label: "Crystal Cave", backgroundColor: "#2F4F4F" }, // Example color, adjust as needed
-  aurora_borealis: { label: "Aurora Borealis", backgroundColor: "#0A192F" }, // Example color, adjust as needed
-  volcanic_landscape: { label: "Volcanic Landscape", backgroundColor: "#361D1D" }, // Example color, adjust as needed
-  neural_connections: { label: "Neural Connections", backgroundColor: "#2A0A2A" }, // New scenario for UI
-} as const
-
-/* -------------------------------------------------------------------------- */
-/* 2. Small deterministic PRNG (Mulberry32)                                   */
-/* -------------------------------------------------------------------------- */
-function mulberry32(seed: number) {
-  return () => {
-    let t = (seed += 0x6d2b79f5)
-    t = Math.imul(t ^ (t >>> 15), t | 1)
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/* 3. Individual pattern generators                                           */
-/* -------------------------------------------------------------------------- */
-function genSpirals(n: number, rng: () => number, noise = 0.01): Point[] {
-  // two-armed spiral
-  const pts: Point[] = []
-  for (let i = 0; i < n; i++) {
-    const r = i / n
-    const angle = 4 * Math.PI * r // two full turns
-    pts.push({
-      x: r * Math.cos(angle) + (rng() - 0.5) * noise,
-      y: r * Math.sin(angle) + (rng() - 0.5) * noise,
-    })
-  }
-  return pts
-}
-
-function genMoons(n: number, rng: () => number, noise = 0.05): Point[] {
-  const pts: Point[] = []
-  const half = Math.floor(n / 2)
-
-  // upper moon
-  for (let i = 0; i < half; i++) {
-    const angle = Math.PI * rng()
-    pts.push({
-      x: Math.cos(angle) + (rng() - 0.5) * noise,
-      y: Math.sin(angle) + (rng() - 0.5) * noise,
-    })
-  }
-
-  // lower moon (offset)
-  for (let i = 0; i < n - half; i++) {
-    const angle = Math.PI * rng()
-    pts.push({
-      x: 1 - Math.cos(angle) + (rng() - 0.5) * noise,
-      y: -Math.sin(angle) + 0.5 + (rng() - 0.5) * noise,
-    })
-  }
-  return pts
-}
-
-function genCheckerboard(n: number, rng: () => number): Point[] {
-  const size = Math.ceil(Math.sqrt(n))
-  const pts: Point[] = []
-  for (let row = 0; row < size; row++) {
-    for (let col = 0; col < size; col++) {
-      if (pts.length >= n) break
-      pts.push({ x: col, y: row })
-    }
-  }
-  return pts
-}
-
-function genGaussian(n: number, rng: () => number, noise = 0.08): Point[] {
-  const pts: Point[] = []
-  const gaussian = () => {
-    // Box-Muller transform
-    const u = 1 - rng()
-    const v = 1 - rng()
-    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v)
-  }
-  for (let i = 0; i < n; i++) {
-    pts.push({ x: gaussian() * noise, y: gaussian() * noise })
-  }
-  return pts
-}
-
-function genGrid(n: number): Point[] {
-  const side = Math.ceil(Math.sqrt(n))
-  const pts: Point[] = []
-  for (let r = 0; r < side; r++) {
-    for (let c = 0; c < side; c++) {
-      if (pts.length >= n) break
-      pts.push({ x: c / (side - 1), y: r / (side - 1) })
-    }
-  }
-  return pts
-}
-
-function genNeural(n: number, rng: () => number): Point[] {
-  // sinusoid “ridge” pattern
-  const pts: Point[] = []
-  for (let i = 0; i < n; i++) {
-    const t = (i / n) * 4 * Math.PI
-    pts.push({
-      x: t / (4 * Math.PI),
-      y: 0.5 + Math.sin(t * 2) * 0.3 + (rng() - 0.5) * 0.05,
-    })
-  }
-  return pts
-}
-
-/* -------------------------------------------------------------------------- */
-/* 4. Public generator – used across the app                                  */
-/* -------------------------------------------------------------------------- */
-export function generateDataset(dataset: string, seed = 42, numSamples = 1000, noise = 0.05): Point[] {
-  const rng = mulberry32(seed)
-  switch (dataset) {
-    case "spiral":
-    case "spirals":
-      return genSpirals(numSamples, rng, noise)
-    case "moons":
-      return genMoons(numSamples, rng, noise)
-    case "checkerboard":
-      return genCheckerboard(numSamples, rng)
-    case "gaussian":
-    case "blobs":
-      return genGaussian(numSamples, rng, noise)
-    case "grid":
-      return genGrid(numSamples)
-    case "neural":
-      return genNeural(numSamples, rng)
-    default:
-      return genGaussian(numSamples, rng, noise)
-  }
+  upscale: boolean
 }
 
 /**
- * Generates mathematical SVG art and returns an object-URL to that SVG.
- * `onProgress` is optional (0 – 100).
+ * Generates mathematical flow art as an SVG.
+ * @param settings - The generation settings.
+ * @param onProgress - Callback for progress updates (0-100).
+ * @returns A data URL for the generated SVG image.
  */
-export function generateFlowArt(settings: FlowArtSettings, onProgress?: (p: number) => void): string {
+export function generateFlowArt(settings: FlowArtSettings, onProgress?: (progress: number) => void): string {
   onProgress?.(10)
-  const data = generateDataset(settings.dataset, settings.seed, settings.samples, settings.noise)
+
+  // Simulate data generation based on dataset
+  let data: { x: number; y: number }[] = []
+  const numPoints = settings.samples
+
+  // Simple pseudo-random number generator for deterministic results based on seed
+  const mulberry32 = (a: number) => {
+    return () => {
+      let t = (a += 0x6d2b79f5)
+      t = Math.imul(t ^ (t >>> 15), t | 1)
+      t = (t ^ (t >>> 7)) + (t >>> 3)
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+    }
+  }
+
+  const random = mulberry32(settings.seed)
+
+  const generateGaussianBlobs = (count: number, noise: number) => {
+    const blobs = []
+    for (let i = 0; i < 3; i++) {
+      const centerX = random() * 2 - 1
+      const centerY = random() * 2 - 1
+      for (let j = 0; j < count / 3; j++) {
+        const angle = random() * Math.PI * 2
+        const radius = random() * 0.5 + noise
+        blobs.push({
+          x: centerX + Math.cos(angle) * radius,
+          y: centerY + Math.sin(angle) * radius,
+        })
+      }
+    }
+    return blobs
+  }
+
+  const generateSpirals = (count: number, noise: number) => {
+    const spirals = []
+    for (let i = 0; i < count; i++) {
+      const angle = i * 0.1 + random() * noise * 10
+      const radius = i * 0.001 + random() * noise
+      spirals.push({
+        x: Math.cos(angle) * radius,
+        y: Math.sin(angle) * radius,
+      })
+    }
+    return spirals
+  }
+
+  const generateMoons = (count: number, noise: number) => {
+    const moons = []
+    for (let i = 0; i < count / 2; i++) {
+      moons.push({
+        x: Math.cos(i * 0.1) + random() * noise,
+        y: Math.sin(i * 0.1) + random() * noise,
+      })
+    }
+    for (let i = 0; i < count / 2; i++) {
+      moons.push({
+        x: Math.cos(i * 0.1) + 1 + random() * noise,
+        y: Math.sin(i * 0.1) + random() * noise,
+      })
+    }
+    return moons
+  }
+
+  const generateCheckerboard = (count: number, noise: number) => {
+    const checkerboard = []
+    const gridSize = Math.sqrt(count)
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        checkerboard.push({
+          x: i / gridSize + (random() - 0.5) * noise,
+          y: j / gridSize + (random() - 0.5) * noise,
+        })
+      }
+    }
+    return checkerboard
+  }
+
+  const generateGrid = (count: number, noise: number) => {
+    const grid = []
+    const numRowsCols = Math.floor(Math.sqrt(count))
+    for (let i = 0; i < numRowsCols; i++) {
+      for (let j = 0; j < numRowsCols; j++) {
+        grid.push({
+          x: (i / (numRowsCols - 1)) * 2 - 1 + (random() - 0.5) * noise,
+          y: (j / (numRowsCols - 1)) * 2 - 1 + (random() - 0.5) * noise,
+        })
+      }
+    }
+    return grid
+  }
+
+  const generateNeuralConnections = (count: number, noise: number) => {
+    const nodes = []
+    for (let i = 0; i < count; i++) {
+      nodes.push({
+        x: random() * 2 - 1 + (random() - 0.5) * noise,
+        y: random() * 2 - 1 + (random() - 0.5) * noise,
+      })
+    }
+    return nodes
+  }
+
+  switch (settings.dataset) {
+    case "gaussian":
+      data = generateGaussianBlobs(numPoints, settings.noise)
+      break
+    case "spirals":
+      data = generateSpirals(numPoints, settings.noise)
+      break
+    case "moons":
+      data = generateMoons(numPoints, settings.noise)
+      break
+    case "checkerboard":
+      data = generateCheckerboard(numPoints, settings.noise)
+      break
+    case "grid":
+      data = generateGrid(numPoints, settings.noise)
+      break
+    case "neural":
+      data = generateNeuralConnections(numPoints, settings.noise)
+      break
+    case "mandelbrot":
+      // Simplified Mandelbrot set points (not actual fractal generation)
+      for (let i = 0; i < numPoints; i++) {
+        const cx = random() * 3.5 - 2.5 // Real part range
+        const cy = random() * 2.5 - 1.25 // Imaginary part range
+        data.push({ x: cx + (random() - 0.5) * settings.noise, y: cy + (random() - 0.5) * settings.noise })
+      }
+      break
+    case "julia":
+      // Simplified Julia set points
+      for (let i = 0; i < numPoints; i++) {
+        const zx = random() * 4 - 2
+        const zy = random() * 4 - 2
+        data.push({ x: zx + (random() - 0.5) * settings.noise, y: zy + (random() - 0.5) * settings.noise })
+      }
+      break
+    case "sierpinski":
+      // Simplified Sierpinski triangle points
+      let x = 0,
+        y = 0
+      for (let i = 0; i < numPoints; i++) {
+        const r = random()
+        if (r < 1 / 3) {
+          x /= 2
+          y /= 2
+        } else if (r < 2 / 3) {
+          x = (x + 1) / 2
+          y /= 2
+        } else {
+          x = (x + 0.5) / 2
+          y = (y + Math.sqrt(3) / 2) / 2
+        }
+        data.push({ x: x + (random() - 0.5) * settings.noise, y: y + (random() - 0.5) * settings.noise })
+      }
+      break
+    case "barnsley":
+      // Simplified Barnsley fern points
+      let fx = 0,
+        fy = 0
+      for (let i = 0; i < numPoints; i++) {
+        const r = random()
+        let newFx, newFy
+        if (r < 0.01) {
+          // Stem
+          newFx = 0
+          newFy = 0.16 * fy
+        } else if (r < 0.86) {
+          // Successively smaller leaflets
+          newFx = 0.85 * fx + 0.04 * fy
+          newFy = -0.04 * fx + 0.85 * fy + 1.6
+        } else if (r < 0.93) {
+          // Largest left-hand leaflet
+          newFx = 0.2 * fx - 0.26 * fy
+          newFy = 0.23 * fx + 0.22 * fy + 1.6
+        } else {
+          // Largest right-hand leaflet
+          newFx = -0.15 * fx + 0.28 * fy
+          newFy = 0.26 * fx + 0.24 * fy + 0.44
+        }
+        fx = newFx
+        fy = newFy
+        data.push({ x: fx + (random() - 0.5) * settings.noise, y: fy + (random() - 0.5) * settings.noise })
+      }
+      break
+    case "newton":
+      // Simplified Newton fractal points
+      for (let i = 0; i < numPoints; i++) {
+        const zx = random() * 4 - 2
+        const zy = random() * 4 - 2
+        data.push({ x: zx + (random() - 0.5) * settings.noise, y: zy + (random() - 0.5) * settings.noise })
+      }
+      break
+    default:
+      // Default to random points if dataset is unknown
+      for (let i = 0; i < numPoints; i++) {
+        data.push({
+          x: random() * 2 - 1 + (random() - 0.5) * settings.noise,
+          y: random() * 2 - 1 + (random() - 0.5) * settings.noise,
+        })
+      }
+      break
+  }
+
   onProgress?.(50)
+
   const svg = PlotUtils.createSVGPlot(data, settings.colorScheme, 800, 600)
-  onProgress?.(80)
+
+  onProgress?.(90)
+
   const blob = new Blob([svg], { type: "image/svg+xml" })
   const url = URL.createObjectURL(blob)
+
   onProgress?.(100)
   return url
 }
 
 /**
- * Calls the /api/generate-ai-art route and streams progress.
- * Returns the final image URL plus a filename and (potentially updated) settings.
+ * Generates AI-enhanced art by calling an external API.
+ * @param settings - The generation settings.
+ * @param onProgress - Callback for progress updates (0-100).
+ * @returns A promise that resolves to an object containing the image URL, filename, and potentially updated settings.
  */
 export async function generateAIArt(
   settings: FlowArtSettings,
-  onProgress?: (p: number) => void,
+  onProgress?: (progress: number) => void,
 ): Promise<{ imageUrl: string; filename: string; settings: FlowArtSettings }> {
   onProgress?.(10)
-  const res = await fetch("/api/generate-ai-art", {
+
+  const response = await fetch("/api/generate-ai-art", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -207,26 +261,21 @@ export async function generateAIArt(
       scenario: settings.scenario,
     }),
   })
-  onProgress?.(60)
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error(err.error || "Failed to generate AI art")
-  }
-  const data = await res.json()
-  onProgress?.(90)
 
-  const updatedSettings = { ...settings } // could merge more fields if the API returns them
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || "Failed to generate AI art")
+  }
+
+  onProgress?.(70)
+
+  const result = await response.json()
+
   onProgress?.(100)
-  return {
-    imageUrl: data.image,
-    filename: `ai-flow-art-${settings.dataset}-${Date.now()}.png`,
-    settings: updatedSettings,
-  }
-}
 
-/* -------------------------------------------------------------------------- */
-/* 5. Wrapper class (legacy API the UI already imports)                       */
-/* -------------------------------------------------------------------------- */
-export class FlowModel {
-  static generateDataset = generateDataset
+  return {
+    imageUrl: result.image,
+    filename: result.filename,
+    settings: result.settings, // Use settings returned by API, which might include actual seed used by AI model
+  }
 }

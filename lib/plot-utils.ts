@@ -1,77 +1,88 @@
-/**
- * FlowSketch – SVG rendering helpers
- *
- * Exports:
- *   • createSVGPlot            – main helper (width/height configurable)
- *   • generateScatterPlotSVG   – alias (kept for backwards compatibility)
- *   • PlotUtils                – object bundling the helpers
- */
-
-import type { Point } from "./flow-model"
-
-/* Basic palettes – used when a colour scheme string doesn’t match */
-const DEFAULT_PALETTE = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
-
-function getPalette(scheme: string): string[] {
-  switch (scheme) {
-    case "viridis":
-      return ["#440154", "#31688e", "#35b779", "#fde725"]
-    case "plasma":
-      return ["#0d0887", "#7e03a8", "#cc4778", "#f89441", "#f0f921"]
-    case "inferno":
-      return ["#000004", "#420a68", "#932667", "#dd513a", "#fca50a", "#fcffa4"]
-    case "magma":
-      return ["#000004", "#3b0f70", "#8c2981", "#de4968", "#fe9f6d", "#fcfdbf"]
-    case "cool":
-      return ["#00ffff", "#0080ff", "#0000ff", "#8000ff"]
-    case "warm":
-      return ["#ff0000", "#ff8000", "#ffff00", "#80ff00"]
-    case "turbo":
-      return ["#30123b", "#4140ba", "#2e9df5", "#4bd276", "#f3f34c", "#f79a23", "#ca2928"]
-    default:
-      return DEFAULT_PALETTE
-  }
-}
-
-/**
- * Create a simple scatter-plot SVG string for a list of points
- */
-export function createSVGPlot(points: Point[], colorScheme: string, width = 800, height = 600): string {
-  if (!points.length) return "<svg xmlns='http://www.w3.org/2000/svg'/>"
-
-  // Get bounds
-  const xs = points.map((p) => p.x)
-  const ys = points.map((p) => p.y)
-  const minX = Math.min(...xs)
-  const maxX = Math.max(...xs)
-  const minY = Math.min(...ys)
-  const maxY = Math.max(...ys)
-
-  const palette = getPalette(colorScheme)
-  const radius = Math.max(1, Math.min(width, height) / 300)
-
-  const circles = points
-    .map((p, idx) => {
-      const cx = ((p.x - minX) / (maxX - minX)) * width
-      // Flip y so origin is bottom-left
-      const cy = height - ((p.y - minY) / (maxY - minY)) * height
-      const fill = palette[idx % palette.length]
-      return `<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${radius}" fill="${fill}" />`
-    })
-    .join("")
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${circles}</svg>`
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Alias kept to satisfy any legacy import/usage                            */
-/* -------------------------------------------------------------------------- */
-export const generateScatterPlotSVG = createSVGPlot
-
-/* -------------------------------------------------------------------------- */
-/*  Bundle helpers for the `{ PlotUtils }` named import in FlowArtGenerator   */
-/* -------------------------------------------------------------------------- */
+// lib/plot-utils.ts
 export const PlotUtils = {
-  createSVGPlot,
-  generateScatterPlotSVG,
+  createSVGPlot: (data: { x: number; y: number }[], colorScheme: string, width: number, height: number): string => {
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 }
+    const innerWidth = width - margin.left - margin.right
+    const innerHeight = height - margin.top - margin.bottom
+
+    // Find min/max for scaling
+    const xMin = Math.min(...data.map((d) => d.x))
+    const xMax = Math.max(...data.map((d) => d.x))
+    const yMin = Math.min(...data.map((d) => d.y))
+    const yMax = Math.max(...data.map((d) => d.y))
+
+    // Simple linear scaling
+    const xScale = (value: number) => ((value - xMin) / (xMax - xMin)) * innerWidth
+    const yScale = (value: number) => innerHeight - ((value - yMin) / (yMax - yMin)) * innerHeight // Invert Y for SVG
+
+    // Determine color based on a simple gradient or fixed colors for now
+    // In a real implementation, you'd map data values to a color scale
+    const getColor = (index: number) => {
+      const colors: { [key: string]: string[] } = {
+        plasma: ["#0d0887", "#6a00a8", "#b12a90", "#e16462", "#fca636", "#fcce2b"],
+        viridis: [
+          "#440154",
+          "#482878",
+          "#3e4989",
+          "#31688e",
+          "#26828e",
+          "#1f9e89",
+          "#35b779",
+          "#6ece58",
+          "#b5de2b",
+          "#fde725",
+        ],
+        cividis: [
+          "#00204d",
+          "#003366",
+          "#004780",
+          "#005a99",
+          "#006eb3",
+          "#0082cc",
+          "#0096e6",
+          "#00aaff",
+          "#00bfff",
+          "#00d4ff",
+        ],
+        magma: ["#000004", "#1d1147", "#51127c", "#87258e", "#bc378c", "#e75e6f", "#f9945d", "#fecf4f", "#fcffa4"],
+        inferno: ["#000004", "#2c105c", "#680f6b", "#9e175a", "#cd2e43", "#f16024", "#fca50a", "#fcf823"],
+        twilight: [
+          "#000000",
+          "#2d004b",
+          "#5c0096",
+          "#8b00e0",
+          "#b900ff",
+          "#e800ff",
+          "#ff00e8",
+          "#ff00b9",
+          "#ff008b",
+          "#ff005c",
+          "#ff002d",
+          "#ff0000",
+        ],
+        hsv: ["#FF0000", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#FF00FF"], // Simplified HSV
+        rainbow: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#9400D3"],
+        grayscale: ["#000000", "#333333", "#666666", "#999999", "#CCCCCC", "#FFFFFF"],
+      }
+      const schemeColors = colors[colorScheme] || colors.plasma // Default to plasma
+      return schemeColors[index % schemeColors.length]
+    }
+
+    let circles = ""
+    data.forEach((d, i) => {
+      const cx = xScale(d.x)
+      const cy = yScale(d.y)
+      const color = getColor(i)
+      circles += `<circle cx="${cx}" cy="${cy}" r="2" fill="${color}" />`
+    })
+
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+        <rect width="${width}" height="${height}" fill="#f8f8f8"/>
+        <g transform="translate(${margin.left},${margin.top})">
+          ${circles}
+        </g>
+      </svg>
+    `
+  },
 }

@@ -1,8 +1,3 @@
-/**
- * Professional Image Enhancement for Large Format Printing
- * Implements industry-standard algorithms for gallery-quality output
- */
-
 export interface EnhancementOptions {
   scaleFactor?: number
   sharpening?: number
@@ -279,4 +274,9 @@ export async function upscaleImageClient(imageUrl: string, scaleFactor = 4): Pro
 
 export async function enhanceImageClient(imageUrl: string): Promise<string> {
   return ClientUpscaler.enhanceImage(imageUrl)
+}
+
+export function clientUpscaler() {
+  // Placeholder for client-side upscaling logic
+  return { upscale: () => Promise.resolve(""), isLoading: false }
 }

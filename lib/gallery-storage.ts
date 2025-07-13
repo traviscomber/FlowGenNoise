@@ -1,7 +1,6 @@
 export interface GalleryImage {
   id: string
   imageUrl: string
-  thumbnail?: string
   metadata: {
     dataset: string
     scenario: string
@@ -12,290 +11,150 @@ export interface GalleryImage {
     generationMode: "svg" | "ai"
     createdAt: number
     filename: string
-    cloudStored?: boolean
-    uploadedAt?: number
-    originalSize?: number
-    fileSize?: number
+    fileSize?: number // Size in bytes
+    aestheticScore?: number // 0-1 score
+    cloudStored?: boolean // Indicates if the image is synced to cloud
   }
   isFavorite: boolean
   tags: string[]
-  aestheticScore?: {
-    score: number
-    rating: string
-    method: string
-    scoredAt: number
-  }
 }
 
-export interface StorageInfo {
-  used: number
-  available: number
-  imageCount: number
-}
-
-export interface StorageStats {
+export interface GalleryStats {
+  totalImages: number
   localImages: number
   cloudImages: number
-  totalSize: number
-  averageSize: number
-  largestImage: number
-  averageScore: number
-  topRatedImages: number
+  totalLocalSize: number
+  totalCloudSize: number // Estimated from local metadata
+  favoriteImages: number
+  averageScore: number | null
 }
 
-export class GalleryStorage {
-  private static readonly STORAGE_KEY = "flowsketch-gallery"
-  private static readonly MAX_LOCAL_STORAGE = 50 * 1024 * 1024 // 50MB for local storage
+const GALLERY_STORAGE_KEY = "flowsketch_gallery_images"
 
-  static saveImage(image: GalleryImage): void {
-    const gallery = this.getGallery()
-    const existingIndex = gallery.findIndex((img) => img.id === image.id)
-
-    if (existingIndex >= 0) {
-      gallery[existingIndex] = image
-    } else {
-      gallery.unshift(image) // Add to beginning for newest first
-    }
-
-    this.saveGallery(gallery)
-  }
-
-  static async scoreImage(id: string): Promise<{ success: boolean; error?: string }> {
+export const GalleryStorage = {
+  getGallery: (): GalleryImage[] => {
+    if (typeof window === "undefined") return []
     try {
-      const gallery = this.getGallery()
-      const image = gallery.find((img) => img.id === id)
-
-      if (!image) {
-        return { success: false, error: "Image not found" }
-      }
-
-      if (image.aestheticScore) {
-        return { success: true } // Already scored
-      }
-
-      const response = await fetch("/api/score-image", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          imageUrl: image.imageUrl,
-          metadata: image.metadata,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to score image")
-      }
-
-      const { score, rating, method } = await response.json()
-
-      // Update image with score
-      image.aestheticScore = {
-        score,
-        rating,
-        method: method || "local",
-        scoredAt: Date.now(),
-      }
-
-      this.saveImage(image)
-      return { success: true }
-    } catch (error: any) {
-      console.error("Failed to score image:", error)
-      return { success: false, error: error.message }
-    }
-  }
-
-  static async batchScoreImages(onProgress?: (progress: number) => void): Promise<{ scored: number; failed: number }> {
-    const gallery = this.getGallery()
-    const unscored = gallery.filter((img) => !img.aestheticScore)
-
-    let scored = 0
-    let failed = 0
-
-    for (let i = 0; i < unscored.length; i++) {
-      const result = await this.scoreImage(unscored[i].id)
-      if (result.success) {
-        scored++
-      } else {
-        failed++
-      }
-
-      onProgress?.(((i + 1) / unscored.length) * 100)
-
-      // Small delay to avoid rate limiting
-      await new Promise((resolve) => setTimeout(resolve, 500))
-    }
-
-    return { scored, failed }
-  }
-
-  static getGallery(): GalleryImage[] {
-    try {
-      const stored = localStorage.getItem(this.STORAGE_KEY)
+      const stored = localStorage.getItem(GALLERY_STORAGE_KEY)
       return stored ? JSON.parse(stored) : []
     } catch (error) {
-      console.error("Failed to load gallery:", error)
+      console.error("Failed to parse gallery from localStorage:", error)
       return []
     }
-  }
+  },
 
-  static deleteImage(id: string): void {
-    const gallery = this.getGallery().filter((img) => img.id !== id)
-    this.saveGallery(gallery)
-  }
-
-  static toggleFavorite(id: string): void {
-    const gallery = this.getGallery()
-    const image = gallery.find((img) => img.id === id)
-    if (image) {
-      image.isFavorite = !image.isFavorite
-      this.saveGallery(gallery)
-    }
-  }
-
-  static clearGallery(): void {
-    localStorage.removeItem(this.STORAGE_KEY)
-  }
-
-  static exportGallery(): string {
-    return JSON.stringify(this.getGallery(), null, 2)
-  }
-
-  static importGallery(data: string): boolean {
+  saveGallery: (images: GalleryImage[]) => {
+    if (typeof window === "undefined") return
     try {
-      const imported = JSON.parse(data) as GalleryImage[]
-      if (Array.isArray(imported)) {
-        this.saveGallery(imported)
-        return true
+      localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(images))
+    } catch (error) {
+      console.error("Failed to save gallery to localStorage:", error)
+    }
+  },
+
+  saveImage: (image: GalleryImage) => {
+    const images = GalleryStorage.getGallery()
+    const existingIndex = images.findIndex((img) => img.id === image.id)
+    if (existingIndex > -1) {
+      images[existingIndex] = image
+    } else {
+      images.unshift(image) // Add new images to the beginning
+    }
+    GalleryStorage.saveGallery(images)
+  },
+
+  deleteImage: (id: string) => {
+    const images = GalleryStorage.getGallery().filter((img) => img.id !== id)
+    GalleryStorage.saveGallery(images)
+  },
+
+  clearGallery: () => {
+    if (typeof window === "undefined") return
+    localStorage.removeItem(GALLERY_STORAGE_KEY)
+  },
+
+  toggleFavorite: (id: string): GalleryImage | undefined => {
+    const images = GalleryStorage.getGallery()
+    const imageIndex = images.findIndex((img) => img.id === id)
+    if (imageIndex > -1) {
+      images[imageIndex].isFavorite = !images[imageIndex].isFavorite
+      GalleryStorage.saveGallery(images)
+      return images[imageIndex]
+    }
+    return undefined
+  },
+
+  updateImageMetadata: (id: string, newMetadata: Partial<GalleryImage["metadata"]>): GalleryImage | undefined => {
+    const images = GalleryStorage.getGallery()
+    const imageIndex = images.findIndex((img) => img.id === id)
+    if (imageIndex > -1) {
+      images[imageIndex].metadata = {
+        ...images[imageIndex].metadata,
+        ...newMetadata,
       }
-      return false
-    } catch (error) {
-      console.error("Failed to import gallery:", error)
-      return false
+      GalleryStorage.saveGallery(images)
+      return images[imageIndex]
     }
-  }
+    return undefined
+  },
 
-  static getStorageInfo(): StorageInfo {
-    const gallery = this.getGallery()
-    const serialized = JSON.stringify(gallery)
-    const used = new Blob([serialized]).size
+  getStorageStats: (images: GalleryImage[]): GalleryStats => {
+    let totalLocalSize = 0
+    let favoriteImages = 0
+    let totalScore = 0
+    let scoredImagesCount = 0
+    let localImagesCount = 0
+    let cloudImagesCount = 0
 
-    return {
-      used,
-      available: this.MAX_LOCAL_STORAGE,
-      imageCount: gallery.length,
-    }
-  }
-
-  static getStorageStats(images: GalleryImage[]): StorageStats {
-    const localImages = images.filter((img) => !img.metadata.cloudStored).length
-    const cloudImages = images.filter((img) => img.metadata.cloudStored).length
-
-    const imageSizes = images
-      .map((img) => {
-        // Ensure metadata exists and fileSize is a number, otherwise estimate
-        if (img.metadata && typeof img.metadata.fileSize === "number") {
-          return img.metadata.fileSize
+    images.forEach((img) => {
+      if (img.metadata && typeof img.metadata.fileSize === "number") {
+        // Only count local size for images that are not cloud-stored, or if they are the primary local copy
+        // This logic might need refinement based on exact sync strategy
+        if (!img.metadata.cloudStored) {
+          totalLocalSize += img.metadata.fileSize
+          localImagesCount++
+        } else {
+          // If it's cloud stored, it's still "local" in the sense it's cached, but we track cloud count
+          cloudImagesCount++
         }
-        return this.estimateImageSize(img)
-      })
-      .filter((size) => size > 0)
+      } else if (!img.metadata.cloudStored) {
+        // If no fileSize, but it's a local-only image, estimate a small size
+        totalLocalSize += 1024 * 50 // 50KB estimate for images without size
+        localImagesCount++
+      } else {
+        cloudImagesCount++
+      }
 
-    const totalSize = imageSizes.reduce((sum, size) => sum + size, 0)
-    const averageSize = imageSizes.length > 0 ? totalSize / imageSizes.length : 0
-    const largestImage = imageSizes.length > 0 ? Math.max(...imageSizes) : 0
+      if (img.isFavorite) {
+        favoriteImages++
+      }
+      if (typeof img.metadata.aestheticScore === "number") {
+        totalScore += img.metadata.aestheticScore
+        scoredImagesCount++
+      }
+    })
 
-    // Calculate aesthetic stats
-    const scoredImages = images.filter((img) => img.aestheticScore)
-    const averageScore =
-      scoredImages.length > 0
-        ? scoredImages.reduce((sum, img) => sum + img.aestheticScore!.score, 0) / scoredImages.length
-        : 0
-    const topRatedImages = images.filter((img) => img.aestheticScore && img.aestheticScore.score >= 7.0).length
+    const totalCloudSize = images
+      .filter((img) => img.metadata.cloudStored && typeof img.metadata.fileSize === "number")
+      .reduce((sum, img) => sum + (img.metadata.fileSize || 0), 0)
 
     return {
-      localImages,
-      cloudImages,
-      totalSize,
-      averageSize,
-      largestImage,
-      averageScore: Number(averageScore.toFixed(1)),
-      topRatedImages,
+      totalImages: images.length,
+      localImages: localImagesCount,
+      cloudImages: cloudImagesCount,
+      totalLocalSize: totalLocalSize,
+      totalCloudSize: totalCloudSize,
+      favoriteImages: favoriteImages,
+      averageScore: scoredImagesCount > 0 ? totalScore / scoredImagesCount : null,
     }
-  }
+  },
 
-  private static estimateImageSize(image: GalleryImage): number {
-    if (!image.metadata) {
-      return 0 // Unable to estimate without metadata
-    }
-
-    // SVGs are tiny, AI images are larger
-    if (image.metadata.generationMode === "svg") {
-      return 50 * 1024 // ≈ 50 KB
-    }
-
-    const baseSize = 2 * 1024 * 1024 // 2 MB
-    const sampleMultiplier = (image.metadata.samples ?? 0) / 1000
-    return Math.floor(baseSize * (1 + sampleMultiplier))
-  }
-
-  private static saveGallery(gallery: GalleryImage[]): void {
-    try {
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(gallery))
-    } catch (error) {
-      console.error("Failed to save gallery:", error)
-      // If storage is full, try to clean up old images
-      this.cleanupOldImages(gallery)
-    }
-  }
-
-  private static cleanupOldImages(gallery: GalleryImage[]): void {
-    // Keep only the 50 most recent images if storage is full
-    const sorted = gallery.sort((a, b) => b.metadata.createdAt - a.metadata.createdAt)
-    const cleaned = sorted.slice(0, 50)
-
-    try {
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(cleaned))
-    } catch (error) {
-      console.error("Failed to cleanup gallery:", error)
-    }
-  }
-
-  static formatFileSize(bytes: number): string {
+  formatFileSize: (bytes: number, decimals = 2) => {
     if (bytes === 0) return "0 Bytes"
     const k = 1024
-    const sizes = ["Bytes", "KB", "MB", "GB"]
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB"]
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
-  }
-
-  static getScoreColor(score: number): string {
-    if (score >= 8.0) return "text-green-600"
-    if (score >= 7.0) return "text-green-500"
-    if (score >= 6.0) return "text-blue-500"
-    if (score >= 5.0) return "text-yellow-500"
-    if (score >= 4.0) return "text-orange-500"
-    return "text-red-500"
-  }
-
-  static getScoreBadgeVariant(score: number): "default" | "secondary" | "destructive" | "outline" {
-    if (score >= 7.0) return "default"
-    if (score >= 5.0) return "secondary"
-    if (score >= 4.0) return "outline"
-    return "destructive"
-  }
-}
-
-// -----------------------------------------------------------------------------
-// Helper function for modules that expect a named export instead of the class.
-// Returns the full gallery array, delegating to GalleryStorage.getGallery().
-// -----------------------------------------------------------------------------
-export function getGalleryImages(): GalleryImage[] {
-  return GalleryStorage.getGallery()
-}
-
-// Save a single image object to local storage (wrapper for GalleryStorage.saveImage)
-export function saveImageToGallery(image: GalleryImage): void {
-  GalleryStorage.saveImage(image)
+    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+  },
 }

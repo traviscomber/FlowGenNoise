@@ -1,29 +1,14 @@
--- Step 3: Create storage bucket and policies
-INSERT INTO storage.buckets (id, name, public) 
-VALUES ('gallery-images', 'gallery-images', true)
-ON CONFLICT (id) DO NOTHING;
+-- Step 3: Enable Row Level Security (RLS) for 'gallery_images' and define policies
+ALTER TABLE public.gallery_images ENABLE ROW LEVEL SECURITY;
 
--- Storage policies
-CREATE POLICY "Users can upload own images" ON storage.objects
-    FOR INSERT WITH CHECK (
-        bucket_id = 'gallery-images' AND 
-        auth.uid()::text = (storage.foldername(name))[1]
-    );
+CREATE POLICY "Users can view their own gallery images." ON public.gallery_images
+FOR SELECT USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can view own images" ON storage.objects
-    FOR SELECT USING (
-        bucket_id = 'gallery-images' AND 
-        auth.uid()::text = (storage.foldername(name))[1]
-    );
+CREATE POLICY "Users can insert their own gallery images." ON public.gallery_images
+FOR INSERT WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Users can update own images" ON storage.objects
-    FOR UPDATE USING (
-        bucket_id = 'gallery-images' AND 
-        auth.uid()::text = (storage.foldername(name))[1]
-    );
+CREATE POLICY "Users can update their own gallery images." ON public.gallery_images
+FOR UPDATE USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can delete own images" ON storage.objects
-    FOR DELETE USING (
-        bucket_id = 'gallery-images' AND 
-        auth.uid()::text = (storage.foldername(name))[1]
-    );
+CREATE POLICY "Users can delete their own gallery images." ON public.gallery_images
+FOR DELETE USING (auth.uid() = user_id);

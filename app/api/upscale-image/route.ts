@@ -1,139 +1,72 @@
 import { NextResponse } from "next/server"
 
-// Free upscaling using Replicate API with free models
 export async function POST(req: Request) {
   try {
-    const { imageData, scaleFactor = 4, upscaleModel = "real-esrgan" } = await req.json()
+    const { imageUrl } = await req.json()
 
-    if (!imageData) {
-      return NextResponse.json({ error: "Missing image data" }, { status: 400 })
+    if (!imageUrl) {
+      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
     }
 
-    // Extract base64 data from data URL
-    const base64Data = imageData.replace(/^data:image\/[a-z]+;base64,/, "")
+    // Use Replicate API for upscaling
+    const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN
 
-    console.log(`Starting free upscaling with ${upscaleModel} at ${scaleFactor}x...`)
-
-    // Method 1: Try Replicate API (free tier available)
-    if (process.env.REPLICATE_API_TOKEN) {
-      try {
-        const replicateResponse = await fetch("https://api.replicate.com/v1/predictions", {
-          method: "POST",
-          headers: {
-            Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            version: "42fed1c4974146d4d2414e2be2c5277c7fcf05fcc972f6f8b1a8b5b7137c5f0", // Real-ESRGAN model
-            input: {
-              image: imageData,
-              scale: scaleFactor,
-              face_enhance: false,
-            },
-          }),
-        })
-
-        if (replicateResponse.ok) {
-          const prediction = await replicateResponse.json()
-
-          // Poll for completion
-          let result = prediction
-          while (result.status === "starting" || result.status === "processing") {
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-            const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
-              headers: {
-                Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
-              },
-            })
-            result = await statusResponse.json()
-          }
-
-          if (result.status === "succeeded" && result.output) {
-            // Convert the output URL to base64
-            const imageResponse = await fetch(result.output)
-            const imageBuffer = await imageResponse.arrayBuffer()
-            const base64Result = Buffer.from(imageBuffer).toString("base64")
-
-            return NextResponse.json({
-              success: true,
-              image: `data:image/png;base64,${base64Result}`,
-              metadata: {
-                originalSize: "1792x1024",
-                upscaledSize: `${1792 * scaleFactor}x${1024 * scaleFactor}`,
-                scaleFactor: scaleFactor,
-                model: "Real-ESRGAN (Replicate)",
-                quality: "Professional AI Upscaled",
-                method: "replicate",
-              },
-            })
-          }
-        }
-      } catch (replicateError) {
-        console.log("Replicate API failed, falling back to alternative method:", replicateError)
-      }
+    if (!REPLICATE_API_TOKEN) {
+      return NextResponse.json({ error: "REPLICATE_API_TOKEN is not set" }, { status: 500 })
     }
 
-    // Method 2: Use Upscayl API (free alternative)
-    try {
-      const upscaylResponse = await fetch("https://api.upscayl.org/upscale", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    const response = await fetch("https://api.replicate.com/v1/predictions", {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${REPLICATE_API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        version: "9283608cc6b7be6b65a8e44983db012355f47434166ef1660a933dbf0535f9c3", // RealESRGAN
+        input: {
+          image: imageUrl,
+          scale: 4, // Upscale by 4x
         },
-        body: JSON.stringify({
-          image: base64Data,
-          model: "realesrgan-x4plus",
-          scale: scaleFactor,
-        }),
-      })
+      }),
+    })
 
-      if (upscaylResponse.ok) {
-        const result = await upscaylResponse.json()
-        return NextResponse.json({
-          success: true,
-          image: `data:image/png;base64,${result.upscaled_image}`,
-          metadata: {
-            originalSize: "1792x1024",
-            upscaledSize: `${1792 * scaleFactor}x${1024 * scaleFactor}`,
-            scaleFactor: scaleFactor,
-            model: "Real-ESRGAN (Upscayl)",
-            quality: "AI Upscaled",
-            method: "upscayl",
-          },
-        })
-      }
-    } catch (upscaylError) {
-      console.log("Upscayl API failed, using client-side method:", upscaylError)
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error("Replicate API error:", errorData)
+      return NextResponse.json(
+        { error: errorData.detail || "Failed to start upscaling job" },
+        { status: response.status },
+      )
     }
 
-    // Method 3: Client-side bicubic upscaling (always available)
-    console.log("Using client-side bicubic upscaling as fallback...")
+    const prediction = await response.json()
+    const predictionId = prediction.id
 
-    // Simulate processing time
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    // Poll for the result
+    let upscaledUrl = null
+    let status = prediction.status
 
-    // For client-side upscaling, we'll return the original image with instructions
-    // The actual upscaling will happen in the browser using Canvas API
-    return NextResponse.json({
-      success: true,
-      image: imageData, // Original image
-      metadata: {
-        originalSize: "1792x1024",
-        upscaledSize: `${1792 * scaleFactor}x${1024 * scaleFactor}`,
-        scaleFactor: scaleFactor,
-        model: "Bicubic Interpolation",
-        quality: "High Quality Upscaled",
-        method: "client-side",
-      },
-      requiresClientUpscaling: true,
-    })
-  } catch (error: any) {
-    console.error("Error in upscaling:", error)
-    return NextResponse.json(
-      {
-        error: "Upscaling failed: " + error.message,
-      },
-      { status: 500 },
-    )
+    while (status !== "succeeded" && status !== "failed" && status !== "canceled") {
+      await new Promise((resolve) => setTimeout(resolve, 2000)) // Wait for 2 seconds
+      const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${predictionId}`, {
+        headers: {
+          Authorization: `Token ${REPLICATE_API_TOKEN}`,
+        },
+      })
+      const pollResult = await pollResponse.json()
+      status = pollResult.status
+      if (status === "succeeded" && pollResult.output && pollResult.output.length > 0) {
+        upscaledUrl = pollResult.output[0]
+      }
+    }
+
+    if (status === "succeeded" && upscaledUrl) {
+      return NextResponse.json({ upscaledImageUrl: upscaledUrl })
+    } else {
+      return NextResponse.json({ error: `Upscaling failed with status: ${status}` }, { status: 500 })
+    }
+  } catch (error) {
+    console.error("Error in upscale-image API:", error)
+    return NextResponse.json({ error: "Internal server error during upscaling" }, { status: 500 })
   }
 }

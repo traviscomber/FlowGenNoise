@@ -1,3 +1,6 @@
+-- Step 1: Enable uuid-ossp extension for uuid_generate_v4()
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Step 1: Create the basic tables
 CREATE TABLE IF NOT EXISTS user_profiles (
     id UUID REFERENCES auth.users(id) PRIMARY KEY,

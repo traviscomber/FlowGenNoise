@@ -1,4 +1,15 @@
--- Step 2: Enable Row Level Security
+-- Step 2: Create the 'gallery_images' table
+CREATE TABLE public.gallery_images (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
+    image_url text NOT NULL,
+    metadata jsonb, -- Stores generation settings, filename, fileSize, aestheticScore, etc.
+    is_favorite boolean DEFAULT FALSE,
+    tags text[], -- Array of tags for categorization
+    created_at timestamp with time zone DEFAULT now()
+);
+
+-- Enable Row Level Security
 ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE gallery_images ENABLE ROW LEVEL SECURITY;
 

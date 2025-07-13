@@ -1,37 +1,16 @@
--- Step 4: Create functions and triggers
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO public.user_profiles (id, email, display_name)
-    VALUES (
-        NEW.id,
-        NEW.email,
-        NEW.raw_user_meta_data->>'display_name'
-    );
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- Step 4: Create a storage bucket for gallery images and define RLS policies for storage
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('flowsketch-gallery', 'flowsketch-gallery', TRUE)
+ON CONFLICT (id) DO NOTHING;
 
--- Create trigger for new user signup
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-CREATE TRIGGER on_auth_user_created
-    AFTER INSERT ON auth.users
-    FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+CREATE POLICY "Allow authenticated users to upload their own files." ON storage.objects
+FOR INSERT WITH CHECK (bucket_id = 'flowsketch-gallery' AND auth.uid()::text = (storage.foldername(name))[1]);
 
--- Create function to update updated_at timestamp
-CREATE OR REPLACE FUNCTION public.update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+CREATE POLICY "Allow authenticated users to view their own files." ON storage.objects
+FOR SELECT USING (bucket_id = 'flowsketch-gallery' AND auth.uid()::text = (storage.foldername(name))[1]);
 
--- Create triggers for updated_at
-CREATE TRIGGER update_user_profiles_updated_at
-    BEFORE UPDATE ON user_profiles
-    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+CREATE POLICY "Allow authenticated users to update their own files." ON storage.objects
+FOR UPDATE USING (bucket_id = 'flowsketch-gallery' AND auth.uid()::text = (storage.foldername(name))[1]);
 
-CREATE TRIGGER update_gallery_images_updated_at
-    BEFORE UPDATE ON gallery_images
-    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+CREATE POLICY "Allow authenticated users to delete their own files." ON storage.objects
+FOR DELETE USING (bucket_id = 'flowsketch-gallery' AND auth.uid()::text = (storage.foldername(name))[1]);

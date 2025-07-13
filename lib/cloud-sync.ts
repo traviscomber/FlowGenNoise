@@ -1,569 +1,423 @@
 import { supabase } from "./supabase"
-import type { GalleryImage } from "./gallery-storage"
+import { GalleryStorage, type GalleryImage } from "./gallery-storage"
 
 export interface CloudSyncStatus {
   isEnabled: boolean
   isAuthenticated: boolean
   isSyncing: boolean
   lastSync: number | null
-  pendingUploads: number
   storageUsed: number
   storageQuota: number
-  conflictCount: number
+  error: string | null
 }
 
 export interface SyncConflict {
+  type: "local_newer" | "cloud_newer" | "both_modified"
   localImage: GalleryImage
   cloudImage: GalleryImage
-  type: "local_newer" | "cloud_newer" | "different_content"
 }
 
-export class CloudSyncService {
-  private static syncStatus: CloudSyncStatus = {
-    isEnabled: false,
-    isAuthenticated: false,
-    isSyncing: false,
-    lastSync: null,
-    pendingUploads: 0,
-    storageUsed: 0,
-    storageQuota: 500 * 1024 * 1024, // 500MB default for high-res images
-    conflictCount: 0,
+type StatusListener = (status: CloudSyncStatus) => void
+const statusListeners: StatusListener[] = []
+
+let currentStatus: CloudSyncStatus = {
+  isEnabled: false,
+  isAuthenticated: false,
+  isSyncing: false,
+  lastSync: null,
+  storageUsed: 0,
+  storageQuota: 0,
+  error: null,
+}
+
+function updateStatus(newPartialStatus: Partial<CloudSyncStatus>) {
+  currentStatus = { ...currentStatus, ...newPartialStatus }
+  statusListeners.forEach((listener) => listener(currentStatus))
+}
+
+async function fetchStorageQuotaAndUsage() {
+  const { data, error } = await supabase.storage.from("flowsketch-gallery").getBucket("flowsketch-gallery")
+
+  if (error) {
+    console.error("Error fetching storage bucket info:", error)
+    updateStatus({ error: "Failed to fetch storage info." })
+    return { storageUsed: 0, storageQuota: 0 }
   }
 
-  private static listeners: Array<(status: CloudSyncStatus) => void> = []
+  // Supabase storage usage is not directly exposed via getBucket in client-side SDK.
+  // You'd typically need a server-side function or a custom RPC to get detailed usage.
+  // For now, we'll use a placeholder quota and assume usage is tracked by file uploads.
+  // In a real app, you'd query `storage.objects` table or a custom function.
+  const quota = 100 * 1024 * 1024 // Example: 100 MB quota
+  let used = 0
 
-  static addStatusListener(listener: (status: CloudSyncStatus) => void) {
-    this.listeners.push(listener)
-    listener(this.syncStatus)
-  }
+  // Estimate usage by summing local cloud-synced image sizes
+  const localImages = GalleryStorage.getGallery()
+  used = localImages
+    .filter((img) => img.metadata.cloudStored && typeof img.metadata.fileSize === "number")
+    .reduce((sum, img) => sum + (img.metadata.fileSize || 0), 0)
 
-  static removeStatusListener(listener: (status: CloudSyncStatus) => void) {
-    const index = this.listeners.indexOf(listener)
+  updateStatus({ storageUsed: used, storageQuota: quota })
+  return { storageUsed: used, storageQuota: quota }
+}
+
+export const CloudSyncService = {
+  addStatusListener: (listener: StatusListener) => {
+    statusListeners.push(listener)
+    listener(currentStatus) // Immediately send current status to new listener
+  },
+  removeStatusListener: (listener: StatusListener) => {
+    const index = statusListeners.indexOf(listener)
     if (index > -1) {
-      this.listeners.splice(index, 1)
+      statusListeners.splice(index, 1)
     }
-  }
+  },
+  getStatus: () => currentStatus,
 
-  private static notifyListeners() {
-    this.listeners.forEach((listener) => listener(this.syncStatus))
-  }
-
-  static async signInWithEmail(email: string, password: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-
-      if (error) {
-        return { success: false, error: error.message }
-      }
-
-      await this.initializeUser()
-      this.syncStatus.isAuthenticated = true
-      this.notifyListeners()
-
-      return { success: true }
-    } catch (error: any) {
-      return { success: false, error: error.message }
-    }
-  }
-
-  static async signUpWithEmail(
-    email: string,
-    password: string,
-    displayName?: string,
-  ): Promise<{ success: boolean; error?: string }> {
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            display_name: displayName,
-          },
-        },
-      })
-
-      if (error) {
-        return { success: false, error: error.message }
-      }
-
-      if (data.user) {
-        await this.createUserProfile(data.user.id, email, displayName)
-      }
-
-      return { success: true }
-    } catch (error: any) {
-      return { success: false, error: error.message }
-    }
-  }
-
-  static async signOut(): Promise<void> {
-    await supabase.auth.signOut()
-    this.syncStatus.isAuthenticated = false
-    this.syncStatus.isEnabled = false
-    this.notifyListeners()
-  }
-
-  static async initializeAuth(): Promise<void> {
+  initializeAuth: async () => {
     const {
-      data: { session },
-    } = await supabase.auth.getSession()
+      data: { user },
+    } = await supabase.auth.getUser()
+    updateStatus({ isAuthenticated: !!user })
 
-    if (session?.user) {
-      this.syncStatus.isAuthenticated = true
-      await this.initializeUser()
-    }
-
-    // Listen for auth changes
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session?.user) {
-        this.syncStatus.isAuthenticated = true
-        await this.initializeUser()
-      } else if (event === "SIGNED_OUT") {
-        this.syncStatus.isAuthenticated = false
-        this.syncStatus.isEnabled = false
+    supabase.auth.onAuthStateChange((event, session) => {
+      const isAuthenticated = !!session?.user
+      updateStatus({ isAuthenticated })
+      if (isAuthenticated && currentStatus.isEnabled) {
+        CloudSyncService.performFullSync()
       }
-      this.notifyListeners()
-    })
-  }
-
-  private static async createUserProfile(userId: string, email: string, displayName?: string): Promise<void> {
-    const { error } = await supabase.from("user_profiles").insert({
-      id: userId,
-      email,
-      display_name: displayName || null,
-      sync_enabled: true,
-      storage_quota: 500 * 1024 * 1024, // 500MB for high-res images
-      storage_used: 0,
     })
 
+    // Load initial sync preference from local storage
+    const isSyncEnabled = localStorage.getItem("cloudSyncEnabled") === "true"
+    updateStatus({ isEnabled: isSyncEnabled })
+    if (isSyncEnabled && user) {
+      CloudSyncService.performFullSync()
+    }
+  },
+
+  signInWithEmail: async (email: string, password: string) => {
+    updateStatus({ isSyncing: true, error: null })
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      console.error("Failed to create user profile:", error)
-    }
-  }
-
-  private static async initializeUser(): Promise<void> {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) return
-
-    // Get or create user profile
-    const { data: profile, error } = await supabase.from("user_profiles").select("*").eq("id", user.id).single()
-
-    if (error && error.code === "PGRST116") {
-      // Profile doesn't exist, create it
-      await this.createUserProfile(user.id, user.email!, user.user_metadata?.display_name)
-    } else if (profile) {
-      this.syncStatus.isEnabled = profile.sync_enabled
-      this.syncStatus.storageUsed = profile.storage_used
-      this.syncStatus.storageQuota = profile.storage_quota
-    }
-
-    this.notifyListeners()
-  }
-
-  static async enableSync(): Promise<{ success: boolean; error?: string }> {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) {
-        return { success: false, error: "Not authenticated" }
-      }
-
-      const { error } = await supabase.from("user_profiles").update({ sync_enabled: true }).eq("id", user.id)
-
-      if (error) {
-        return { success: false, error: error.message }
-      }
-
-      this.syncStatus.isEnabled = true
-      this.notifyListeners()
-
-      // Perform initial sync
-      await this.performFullSync()
-
-      return { success: true }
-    } catch (error: any) {
+      updateStatus({ isSyncing: false, error: error.message })
       return { success: false, error: error.message }
     }
-  }
+    updateStatus({ isAuthenticated: true, isSyncing: false })
+    await CloudSyncService.enableSync() // Auto-enable sync on sign-in
+    return { success: true }
+  },
 
-  static async disableSync(): Promise<void> {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) return
+  signUpWithEmail: async (email: string, password: string, displayName?: string) => {
+    updateStatus({ isSyncing: true, error: null })
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { display_name: displayName },
+      },
+    })
+    if (error) {
+      updateStatus({ isSyncing: false, error: error.message })
+      return { success: false, error: error.message }
+    }
+    updateStatus({ isAuthenticated: true, isSyncing: false })
+    await CloudSyncService.enableSync() // Auto-enable sync on sign-up
+    return { success: true }
+  },
 
-    await supabase.from("user_profiles").update({ sync_enabled: false }).eq("id", user.id)
+  signOut: async () => {
+    updateStatus({ isSyncing: true, error: null })
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      updateStatus({ isSyncing: false, error: error.message })
+      return { success: false, error: error.message }
+    }
+    localStorage.removeItem("cloudSyncEnabled")
+    updateStatus({ isEnabled: false, isAuthenticated: false, isSyncing: false, lastSync: null })
+    // Clear cloud-stored flags from local gallery images
+    const localImages = GalleryStorage.getGallery()
+    localImages.forEach((img) => {
+      if (img.metadata.cloudStored) {
+        GalleryStorage.updateImageMetadata(img.id, { cloudStored: false })
+      }
+    })
+    return { success: true }
+  },
 
-    this.syncStatus.isEnabled = false
-    this.notifyListeners()
-  }
+  enableSync: async () => {
+    localStorage.setItem("cloudSyncEnabled", "true")
+    updateStatus({ isEnabled: true })
+    if (currentStatus.isAuthenticated) {
+      return CloudSyncService.performFullSync()
+    }
+    return { success: true }
+  },
 
-  static async uploadImageFullResolution(
-    image: GalleryImage,
-    onProgress?: (progress: number) => void,
-  ): Promise<{ success: boolean; error?: string; cloudUrl?: string; thumbnailUrl?: string }> {
+  disableSync: async () => {
+    localStorage.removeItem("cloudSyncEnabled")
+    updateStatus({ isEnabled: false })
+    return { success: true }
+  },
+
+  uploadImageFullResolution: async (image: GalleryImage, onProgress?: (progress: number) => void) => {
+    if (!currentStatus.isAuthenticated) {
+      return { success: false, error: "Not authenticated for cloud sync." }
+    }
+
+    updateStatus({ isSyncing: true, error: null })
+
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) {
-        return { success: false, error: "Not authenticated" }
-      }
+      const response = await fetch(image.imageUrl)
+      const blob = await response.blob()
 
-      onProgress?.(10)
+      // Generate a unique path for the image in storage
+      const filePath = `${supabase.auth.user()?.id}/${image.id}.${image.metadata.filename.split(".").pop()}`
 
-      // Get the original image blob
-      const imageBlob = await fetch(image.imageUrl).then((r) => r.blob())
-      const fileSize = imageBlob.size
-
-      onProgress?.(30)
-
-      // Upload full resolution image
-      const fileExtension = image.metadata.generationMode === "svg" ? "svg" : "png"
-      const mainFileName = `${user.id}/${image.id}.${fileExtension}`
-
-      const { data: mainUpload, error: mainError } = await supabase.storage
-        .from("gallery-images")
-        .upload(mainFileName, imageBlob, {
-          contentType: image.metadata.generationMode === "svg" ? "image/svg+xml" : "image/png",
-          upsert: true,
-        })
-
-      if (mainError) {
-        return { success: false, error: mainError.message }
-      }
-
-      onProgress?.(70)
-
-      // Create thumbnail for gallery view only (not for storage optimization)
-      let thumbnailUrl: string | undefined
-      if (image.metadata.generationMode !== "svg") {
-        try {
-          const thumbnailBlob = await this.createThumbnail(image.imageUrl)
-          const thumbFileName = `${user.id}/thumbs/${image.id}.jpg`
-
-          const { data: thumbUpload, error: thumbError } = await supabase.storage
-            .from("gallery-images")
-            .upload(thumbFileName, thumbnailBlob, {
-              contentType: "image/jpeg",
-              upsert: true,
-            })
-
-          if (!thumbError) {
-            const {
-              data: { publicUrl: thumbUrl },
-            } = supabase.storage.from("gallery-images").getPublicUrl(thumbFileName)
-            thumbnailUrl = thumbUrl
-          }
-        } catch (thumbError) {
-          console.warn("Failed to create thumbnail:", thumbError)
-          // Continue without thumbnail - not critical
-        }
-      }
-
-      onProgress?.(90)
-
-      // Get public URL for main image
-      const {
-        data: { publicUrl: mainUrl },
-      } = supabase.storage.from("gallery-images").getPublicUrl(mainFileName)
-
-      // Save to database with full metadata
-      const enhancedMetadata = {
-        ...image.metadata,
-        cloudStored: true,
-        uploadedAt: Date.now(),
-        originalSize: fileSize,
-        fileSize: fileSize,
-      }
-
-      const { error: dbError } = await supabase.from("gallery_images").upsert({
-        id: image.id,
-        user_id: user.id,
-        image_url: mainUrl,
-        thumbnail_url: thumbnailUrl,
-        metadata: enhancedMetadata,
-        is_favorite: image.isFavorite,
-        tags: image.tags,
+      const { data, error: uploadError } = await supabase.storage.from("flowsketch-gallery").upload(filePath, blob, {
+        cacheControl: "3600",
+        upsert: true, // Overwrite if exists
       })
+
+      if (uploadError) {
+        throw uploadError
+      }
+
+      // Get public URL
+      const { data: publicUrlData } = supabase.storage.from("flowsketch-gallery").getPublicUrl(filePath)
+
+      const publicUrl = publicUrlData.publicUrl
+
+      // Save image metadata to database
+      const { error: dbError } = await supabase.from("gallery_images").upsert(
+        {
+          id: image.id,
+          user_id: supabase.auth.user()?.id,
+          image_url: publicUrl,
+          metadata: image.metadata,
+          is_favorite: image.isFavorite,
+          tags: image.tags,
+        },
+        { onConflict: "id" },
+      )
 
       if (dbError) {
-        return { success: false, error: dbError.message }
+        throw dbError
       }
 
-      onProgress?.(100)
+      // Update local image to mark as cloud stored and update file size
+      const updatedImage: GalleryImage = {
+        ...image,
+        imageUrl: publicUrl, // Use the public URL for the cloud-stored image
+        metadata: {
+          ...image.metadata,
+          cloudStored: true,
+          fileSize: blob.size, // Store actual uploaded file size
+        },
+      }
+      GalleryStorage.saveImage(updatedImage) // Update local storage with cloud info
 
-      // Update storage usage
-      await this.updateStorageUsage()
-
-      return { success: true, cloudUrl: mainUrl, thumbnailUrl }
+      updateStatus({ isSyncing: false, lastSync: Date.now() })
+      fetchStorageQuotaAndUsage() // Update usage after upload
+      return { success: true, cloudImage: updatedImage }
     } catch (error: any) {
+      console.error("Error uploading image:", error)
+      updateStatus({ isSyncing: false, error: error.message })
       return { success: false, error: error.message }
     }
-  }
+  },
 
-  private static async createThumbnail(imageUrl: string, size = 400): Promise<Blob> {
-    return new Promise((resolve, reject) => {
-      const img = new Image()
-      img.crossOrigin = "anonymous"
-
-      img.onload = () => {
-        const canvas = document.createElement("canvas")
-        const ctx = canvas.getContext("2d")!
-
-        // Calculate thumbnail dimensions maintaining aspect ratio
-        const { width, height } = img
-        const aspectRatio = width / height
-
-        let thumbWidth = size
-        let thumbHeight = size
-
-        if (aspectRatio > 1) {
-          thumbHeight = size / aspectRatio
-        } else {
-          thumbWidth = size * aspectRatio
-        }
-
-        canvas.width = thumbWidth
-        canvas.height = thumbHeight
-
-        ctx.imageSmoothingEnabled = true
-        ctx.imageSmoothingQuality = "high"
-        ctx.drawImage(img, 0, 0, thumbWidth, thumbHeight)
-
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              resolve(blob)
-            } else {
-              reject(new Error("Failed to create thumbnail"))
-            }
-          },
-          "image/jpeg",
-          0.8,
-        )
-      }
-
-      img.onerror = () => reject(new Error("Failed to load image for thumbnail"))
-      img.src = imageUrl
-    })
-  }
-
-  static async autoUploadNewGeneration(
-    image: GalleryImage,
-    onProgress?: (progress: number) => void,
-  ): Promise<{ success: boolean; error?: string; cloudImage?: GalleryImage }> {
-    // Check if user is authenticated and sync is enabled
-    if (!this.syncStatus.isAuthenticated || !this.syncStatus.isEnabled) {
-      // Save locally only
-      return { success: true }
+  autoUploadNewGeneration: async (image: GalleryImage, onProgress?: (progress: number) => void) => {
+    if (currentStatus.isEnabled && currentStatus.isAuthenticated) {
+      return CloudSyncService.uploadImageFullResolution(image, onProgress)
     }
+    return { success: false, error: "Cloud sync not enabled or authenticated." }
+  },
 
-    try {
-      const result = await this.uploadImageFullResolution(image, onProgress)
-
-      if (result.success && result.cloudUrl) {
-        // Update the image with cloud URL and thumbnail
-        const cloudImage: GalleryImage = {
-          ...image,
-          imageUrl: result.cloudUrl,
-          thumbnail: result.thumbnailUrl,
-          metadata: {
-            ...image.metadata,
-            cloudStored: true,
-            uploadedAt: Date.now(),
-          },
-        }
-
-        return { success: true, cloudImage }
-      }
-
-      return result
-    } catch (error: any) {
-      console.error("Auto-upload failed:", error)
-      return { success: false, error: error.message }
-    }
-  }
-
-  static async downloadImages(): Promise<GalleryImage[]> {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) return []
-
-      const { data, error } = await supabase
-        .from("gallery_images")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-
-      if (error) {
-        console.error("Failed to download images:", error)
-        return []
-      }
-
-      return data.map((row) => ({
-        id: row.id,
-        imageUrl: row.image_url,
-        thumbnail: row.thumbnail_url,
-        metadata: row.metadata,
-        isFavorite: row.is_favorite,
-        tags: row.tags,
-      }))
-    } catch (error) {
-      console.error("Failed to download images:", error)
+  downloadImages: async (): Promise<GalleryImage[]> => {
+    if (!currentStatus.isAuthenticated) {
       return []
     }
-  }
-
-  static async deleteCloudImage(imageId: string): Promise<{ success: boolean; error?: string }> {
+    updateStatus({ isSyncing: true, error: null })
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) {
-        return { success: false, error: "Not authenticated" }
-      }
-
-      // Delete main image from storage
-      const mainFileName = `${user.id}/${imageId}.png`
-      await supabase.storage.from("gallery-images").remove([mainFileName])
-
-      const svgFileName = `${user.id}/${imageId}.svg`
-      await supabase.storage.from("gallery-images").remove([svgFileName])
-
-      // Delete thumbnail
-      const thumbFileName = `${user.id}/thumbs/${imageId}.jpg`
-      await supabase.storage.from("gallery-images").remove([thumbFileName])
-
-      // Delete from database
-      const { error } = await supabase.from("gallery_images").delete().eq("id", imageId).eq("user_id", user.id)
+      const { data, error } = await supabase.from("gallery_images").select("*").eq("user_id", supabase.auth.user()?.id)
 
       if (error) {
-        return { success: false, error: error.message }
+        throw error
       }
 
-      await this.updateStorageUsage()
+      const cloudImages: GalleryImage[] = data.map((item: any) => ({
+        id: item.id,
+        imageUrl: item.image_url,
+        metadata: { ...item.metadata, cloudStored: true },
+        isFavorite: item.is_favorite,
+        tags: item.tags || [],
+      }))
+
+      updateStatus({ isSyncing: false, lastSync: Date.now() })
+      return cloudImages
+    } catch (error: any) {
+      console.error("Error downloading images:", error)
+      updateStatus({ isSyncing: false, error: error.message })
+      return []
+    }
+  },
+
+  deleteCloudImage: async (imageId: string) => {
+    if (!currentStatus.isAuthenticated) {
+      return { success: false, error: "Not authenticated for cloud sync." }
+    }
+    updateStatus({ isSyncing: true, error: null })
+    try {
+      // First, get the image record to find its file path
+      const { data: imageRecord, error: fetchError } = await supabase
+        .from("gallery_images")
+        .select("metadata")
+        .eq("id", imageId)
+        .single()
+
+      if (fetchError || !imageRecord?.metadata?.filename) {
+        throw new Error("Image record not found or filename missing.")
+      }
+
+      const filePath = `${supabase.auth.user()?.id}/${imageId}.${imageRecord.metadata.filename.split(".").pop()}`
+
+      const { error: storageError } = await supabase.storage.from("flowsketch-gallery").remove([filePath])
+
+      if (storageError) {
+        throw storageError
+      }
+
+      const { error: dbError } = await supabase.from("gallery_images").delete().eq("id", imageId)
+
+      if (dbError) {
+        throw dbError
+      }
+
+      updateStatus({ isSyncing: false, lastSync: Date.now() })
+      fetchStorageQuotaAndUsage() // Update usage after deletion
       return { success: true }
     } catch (error: any) {
+      console.error("Error deleting cloud image:", error)
+      updateStatus({ isSyncing: false, error: error.message })
       return { success: false, error: error.message }
     }
-  }
+  },
 
-  static async performFullSync(): Promise<{ success: boolean; conflicts: SyncConflict[]; error?: string }> {
-    if (!this.syncStatus.isAuthenticated || !this.syncStatus.isEnabled) {
-      return { success: false, conflicts: [], error: "Sync not enabled or not authenticated" }
+  clearCloudGallery: async () => {
+    if (!currentStatus.isAuthenticated) {
+      return { success: false, error: "Not authenticated for cloud sync." }
+    }
+    updateStatus({ isSyncing: true, error: null })
+    try {
+      // List all files for the current user
+      const { data: files, error: listError } = await supabase.storage
+        .from("flowsketch-gallery")
+        .list(supabase.auth.user()?.id, {
+          limit: 100, // Adjust limit as needed, or paginate for many files
+        })
+
+      if (listError) {
+        throw listError
+      }
+
+      const filePaths = files.map((file) => `${supabase.auth.user()?.id}/${file.name}`)
+
+      if (filePaths.length > 0) {
+        const { error: removeError } = await supabase.storage.from("flowsketch-gallery").remove(filePaths)
+
+        if (removeError) {
+          throw removeError
+        }
+      }
+
+      // Delete all database records for the user
+      const { error: dbError } = await supabase.from("gallery_images").delete().eq("user_id", supabase.auth.user()?.id)
+
+      if (dbError) {
+        throw dbError
+      }
+
+      updateStatus({ isSyncing: false, lastSync: Date.now() })
+      fetchStorageQuotaAndUsage() // Update usage after clearing
+      return { success: true }
+    } catch (error: any) {
+      console.error("Error clearing cloud gallery:", error)
+      updateStatus({ isSyncing: false, error: error.message })
+      return { success: false, error: error.message }
+    }
+  },
+
+  performFullSync: async () => {
+    if (!currentStatus.isAuthenticated || currentStatus.isSyncing) {
+      return { success: false, conflicts: [], error: "Not authenticated or already syncing." }
     }
 
-    this.syncStatus.isSyncing = true
-    this.notifyListeners()
+    updateStatus({ isSyncing: true, error: null })
+    const conflicts: SyncConflict[] = []
 
     try {
-      // Get local images
-      const localImages = JSON.parse(localStorage.getItem("flowsketch-gallery") || "[]") as GalleryImage[]
+      const localImages = GalleryStorage.getGallery()
+      const cloudImages = await CloudSyncService.downloadImages() // This also updates status
 
-      // Get cloud images
-      const cloudImages = await this.downloadImages()
-
-      const conflicts: SyncConflict[] = []
-      const toUpload: GalleryImage[] = []
-      const toDownload: GalleryImage[] = []
-
-      // Create maps for easier lookup
       const localMap = new Map(localImages.map((img) => [img.id, img]))
       const cloudMap = new Map(cloudImages.map((img) => [img.id, img]))
 
-      // Find images to upload (local only)
-      for (const localImage of localImages) {
-        const cloudImage = cloudMap.get(localImage.id)
-        if (!cloudImage) {
-          toUpload.push(localImage)
+      // Identify images to upload (local only or local newer)
+      for (const [id, localImg] of localMap.entries()) {
+        const cloudImg = cloudMap.get(id)
+        if (!cloudImg) {
+          // Local only, upload it
+          await CloudSyncService.uploadImageFullResolution(localImg)
         } else {
-          // Check for conflicts
-          if (localImage.metadata.createdAt !== cloudImage.metadata.createdAt) {
-            conflicts.push({
-              localImage,
-              cloudImage,
-              type: localImage.metadata.createdAt > cloudImage.metadata.createdAt ? "local_newer" : "cloud_newer",
-            })
+          // Both exist, check for conflicts
+          if (localImg.metadata.createdAt > cloudImg.metadata.createdAt) {
+            // Local is newer, upload local
+            await CloudSyncService.uploadImageFullResolution(localImg)
+          } else if (cloudImg.metadata.createdAt > localImg.metadata.createdAt) {
+            // Cloud is newer, download cloud (handled by downloadImages and merge logic)
+            // No explicit action needed here, will be handled by the final merge
           }
+          // If timestamps are same, assume no conflict or already synced
         }
       }
 
-      // Find images to download (cloud only)
-      for (const cloudImage of cloudImages) {
-        if (!localMap.has(cloudImage.id)) {
-          toDownload.push(cloudImage)
-        }
-      }
+      // Identify images to download (cloud only)
+      // This is implicitly handled by `downloadImages` and the `loadGallery` merge logic
+      // which will add cloud-only images to the local gallery.
 
-      // Upload local images at full resolution
-      for (const image of toUpload) {
-        await this.uploadImageFullResolution(image)
-      }
+      // Re-load gallery to ensure all local and cloud images are merged and up-to-date
+      // This will also update `galleryStats` and `cloudSyncStatus.storageUsed`
+      // The `loadGallery` in `components/gallery.tsx` handles the merging and local storage updates.
+      // We trigger it via the status listener.
 
-      // Download cloud images
-      if (toDownload.length > 0) {
-        const updatedLocal = [...localImages, ...toDownload]
-        localStorage.setItem("flowsketch-gallery", JSON.stringify(updatedLocal))
-      }
-
-      this.syncStatus.lastSync = Date.now()
-      this.syncStatus.conflictCount = conflicts.length
-
+      updateStatus({ isSyncing: false, lastSync: Date.now() })
+      fetchStorageQuotaAndUsage() // Ensure latest usage is reflected
       return { success: true, conflicts }
     } catch (error: any) {
-      return { success: false, conflicts: [], error: error.message }
-    } finally {
-      this.syncStatus.isSyncing = false
-      this.notifyListeners()
+      console.error("Full sync failed:", error)
+      updateStatus({ isSyncing: false, error: error.message })
+      return { success: false, conflicts, error: error.message }
     }
-  }
+  },
 
-  private static async updateStorageUsage(): Promise<void> {
+  resolveConflict: async (conflict: SyncConflict, resolution: "keep_local" | "keep_cloud") => {
+    updateStatus({ isSyncing: true, error: null })
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) return
-
-      // Get actual storage usage from Supabase
-      const { data: files, error } = await supabase.storage.from("gallery-images").list(user.id, {
-        limit: 1000,
-      })
-
-      if (error) return
-
-      const totalSize = files.reduce((sum, file) => sum + (file.metadata?.size || 0), 0)
-
-      await supabase.from("user_profiles").update({ storage_used: totalSize }).eq("id", user.id)
-
-      this.syncStatus.storageUsed = totalSize
-      this.notifyListeners()
-    } catch (error) {
-      console.error("Failed to update storage usage:", error)
+      if (resolution === "keep_local") {
+        await CloudSyncService.uploadImageFullResolution(conflict.localImage)
+      } else {
+        // Delete local, then download cloud (downloadImages will handle adding it back)
+        GalleryStorage.deleteImage(conflict.localImage.id)
+        // No explicit download needed here, the next full sync or gallery load will pull it.
+      }
+      updateStatus({ isSyncing: false, lastSync: Date.now() })
+      fetchStorageQuotaAndUsage()
+      return { success: true }
+    } catch (error: any) {
+      console.error("Error resolving conflict:", error)
+      updateStatus({ isSyncing: false, error: error.message })
+      return { success: false, error: error.message }
     }
-  }
-
-  static getStatus(): CloudSyncStatus {
-    return { ...this.syncStatus }
-  }
-
-  static async resolveConflict(conflict: SyncConflict, resolution: "keep_local" | "keep_cloud"): Promise<void> {
-    if (resolution === "keep_local") {
-      await this.uploadImageFullResolution(conflict.localImage)
-    } else {
-      // Update local storage with cloud version
-      const localImages = JSON.parse(localStorage.getItem("flowsketch-gallery") || "[]") as GalleryImage[]
-      const updatedImages = localImages.map((img) => (img.id === conflict.cloudImage.id ? conflict.cloudImage : img))
-      localStorage.setItem("flowsketch-gallery", JSON.stringify(updatedImages))
-    }
-  }
+  },
 }

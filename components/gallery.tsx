@@ -1,716 +1,565 @@
 "use client"
 
-import { useState, useEffect, useMemo, useCallback } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { DialogDescription } from "@/components/ui/dialog"
+
+import { useState, useEffect, useCallback } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Heart, Download, Trash2, Grid3X3, List, Star, Settings, Archive, Eye, Copy, Zap, Award } from "lucide-react"
-import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
-import { CloudSyncService, type CloudSyncStatus } from "@/lib/cloud-sync" // Import CloudSyncService
-import { cn } from "@/lib/utils"
+import { Separator } from "@/components/ui/separator"
+import { Label } from "@/components/ui/label"
+import { useToast } from "@/components/ui/use-toast"
+import { ImageIcon, Trash2, Star, StarOff, Info, Cloud, Download, Loader2, Sparkles, Palette } from "lucide-react"
+import { GalleryStorage, type GalleryImage, type GalleryStats } from "@/lib/gallery-storage"
+import { CloudSyncService, type CloudSyncStatus } from "@/lib/cloud-sync"
 
 interface GalleryProps {
-  onImageSelect?: (image: GalleryImage) => void
+  onImageSelect: (image: GalleryImage) => void
 }
 
 export function Gallery({ onImageSelect }: GalleryProps) {
+  const { toast } = useToast()
   const [images, setImages] = useState<GalleryImage[]>([])
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterDataset, setFilterDataset] = useState("all")
-  const [filterScenario, setFilterScenario] = useState("all")
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
-  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "favorites" | "score">("newest")
-  const [storageStats, setStorageStats] = useState(GalleryStorage.getStorageStats([])) // Initialize with empty array
-  const [isScoring, setIsScoring] = useState(false)
-  const [scoringProgress, setScoringProgress] = useState(0)
+  const [isConfirmingClear, setIsConfirmingClear] = useState(false)
+  const [galleryStats, setGalleryStats] = useState<GalleryStats>(GalleryStorage.getStorageStats([]))
   const [cloudSyncStatus, setCloudSyncStatus] = useState<CloudSyncStatus>(CloudSyncService.getStatus())
-
-  // Listen for cloud sync status changes
-  useEffect(() => {
-    const listener = (status: CloudSyncStatus) => {
-      setCloudSyncStatus(status)
-      // If sync status changes (e.g., signed in/out, enabled/disabled), reload gallery
-      loadGallery()
-    }
-    CloudSyncService.addStatusListener(listener)
-    return () => CloudSyncService.removeStatusListener(listener)
-  }, [])
-
-  useEffect(() => {
-    loadGallery()
-  }, [cloudSyncStatus.isAuthenticated, cloudSyncStatus.isEnabled]) // Reload when auth/sync status changes
-
-  useEffect(() => {
-    setStorageStats(GalleryStorage.getStorageStats(images)) // Pass current images to getStorageStats
-  }, [images])
+  const [isScoring, setIsScoring] = useState(false)
+  const [scoreProgress, setScoreProgress] = useState(0)
+  const [isBatchScoring, setIsBatchScoring] = useState(false)
 
   const loadGallery = useCallback(async () => {
     const localImages = GalleryStorage.getGallery()
-    let cloudImages: GalleryImage[] = []
+    let combinedImages = [...localImages]
 
     if (cloudSyncStatus.isAuthenticated && cloudSyncStatus.isEnabled) {
-      cloudImages = await CloudSyncService.downloadImages()
-    }
+      try {
+        const cloudImages = await CloudSyncService.downloadImages()
+        // Merge: prioritize cloud version if ID matches, otherwise add
+        const cloudImageMap = new Map(
+          cloudImages.map((img) => [img.id, { ...img, metadata: { ...img.metadata, cloudStored: true } }]),
+        )
 
-    // Merge local and cloud images
-    const mergedImagesMap = new Map<string, GalleryImage>()
+        combinedImages = localImages.map((localImg) => {
+          if (cloudImageMap.has(localImg.id)) {
+            const cloudImg = cloudImageMap.get(localImg.id)!
+            cloudImageMap.delete(localImg.id) // Remove from map as it's handled
+            // Simple merge: prefer cloud version if it exists, or a more complex conflict resolution
+            // For now, if it's in cloud, use the cloud version and mark it.
+            return { ...cloudImg, metadata: { ...cloudImg.metadata, cloudStored: true } }
+          }
+          return { ...localImg, metadata: { ...localImg.metadata, cloudStored: false } }
+        })
 
-    // Add local images first
-    localImages.forEach((img) => mergedImagesMap.set(img.id, img))
-
-    // Add/update with cloud images (cloud takes precedence for cloud-stored items)
-    cloudImages.forEach((cloudImg) => {
-      mergedImagesMap.set(cloudImg.id, {
-        ...cloudImg,
-        metadata: {
-          ...cloudImg.metadata,
-          cloudStored: true, // Ensure cloudStored is true for cloud images
-        },
-      })
-    })
-
-    const finalImages = Array.from(mergedImagesMap.values()).sort((a, b) => b.metadata.createdAt - a.metadata.createdAt) // Sort by newest first
-
-    setImages(finalImages)
-  }, [cloudSyncStatus.isAuthenticated, cloudSyncStatus.isEnabled])
-
-  const filteredAndSortedImages = useMemo(() => {
-    const filtered = images.filter((image) => {
-      const matchesSearch =
-        image.metadata.filename.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        image.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      const matchesDataset = filterDataset === "all" || image.metadata.dataset === filterDataset
-      const matchesScenario = filterScenario === "all" || image.metadata.scenario === filterScenario
-      const matchesFavorites = !showFavoritesOnly || image.isFavorite
-
-      return matchesSearch && matchesDataset && matchesScenario && matchesFavorites
-    })
-
-    // Sort images
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case "newest":
-          return b.metadata.createdAt - a.metadata.createdAt
-        case "oldest":
-          return a.metadata.createdAt - b.metadata.createdAt
-        case "favorites":
-          if (a.isFavorite && !b.isFavorite) return -1
-          if (!a.isFavorite && b.isFavorite) return 1
-          return b.metadata.createdAt - a.metadata.createdAt
-        case "score":
-          const scoreA = a.aestheticScore?.score || 0
-          const scoreB = b.aestheticScore?.score || 0
-          if (scoreA !== scoreB) return scoreB - scoreA
-          return b.metadata.createdAt - a.metadata.createdAt
-        default:
-          return 0
+        // Add any remaining cloud-only images
+        for (const cloudImg of cloudImageMap.values()) {
+          combinedImages.push({ ...cloudImg, metadata: { ...cloudImg.metadata, cloudStored: true } })
+        }
+      } catch (error) {
+        console.error("Failed to load cloud images:", error)
+        toast({
+          title: "Cloud Sync Error",
+          description: "Could not load images from cloud. Displaying local gallery.",
+          variant: "destructive",
+        })
       }
-    })
-
-    return filtered
-  }, [images, searchTerm, filterDataset, filterScenario, showFavoritesOnly, sortBy])
-
-  const handleToggleFavorite = async (id: string) => {
-    GalleryStorage.toggleFavorite(id) // Update local storage
-    const imageToUpdate = images.find((img) => img.id === id)
-    if (imageToUpdate && imageToUpdate.metadata.cloudStored) {
-      // If cloud-stored, re-upload to update favorite status in Supabase metadata
-      await CloudSyncService.uploadImageFullResolution({
-        ...imageToUpdate,
-        isFavorite: !imageToUpdate.isFavorite, // Toggle the favorite status for upload
-      })
+    } else {
+      combinedImages = localImages.map((img) => ({ ...img, metadata: { ...img.metadata, cloudStored: false } }))
     }
-    loadGallery() // Reload to reflect changes
-  }
 
-  const handleDeleteImage = async (id: string) => {
-    const imageToDelete = images.find((img) => img.id === id)
-    if (imageToDelete?.metadata.cloudStored) {
-      await CloudSyncService.deleteCloudImage(id)
-    }
-    GalleryStorage.deleteImage(id) // Delete from local storage
+    // Sort by creation date, newest first
+    combinedImages.sort((a, b) => (b.metadata.createdAt || 0) - (a.metadata.createdAt || 0))
+
+    setImages(combinedImages)
+    setGalleryStats(GalleryStorage.getStorageStats(combinedImages))
+  }, [cloudSyncStatus.isAuthenticated, cloudSyncStatus.isEnabled, toast])
+
+  useEffect(() => {
     loadGallery()
-    if (selectedImage?.id === id) {
-      setSelectedImage(null)
+    const listener = (status: CloudSyncStatus) => {
+      setCloudSyncStatus(status)
+      loadGallery() // Reload gallery when sync status changes
     }
-  }
+    CloudSyncService.addStatusListener(listener)
+    return () => CloudSyncService.removeStatusListener(listener)
+  }, [loadGallery])
 
-  const handleDownloadImage = (image: GalleryImage) => {
-    const link = document.createElement("a")
-    link.href = image.imageUrl
-    link.download = image.metadata.filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
+  const handleDeleteImage = useCallback(
+    async (id: string) => {
+      const imageToDelete = images.find((img) => img.id === id)
+      if (!imageToDelete) return
 
-  const handleScoreImage = async (id: string) => {
-    const result = await GalleryStorage.scoreImage(id)
-    if (result.success) {
-      const scoredImage = images.find((img) => img.id === id)
-      if (scoredImage && scoredImage.metadata.cloudStored) {
-        // If cloud-stored, re-upload to update score in Supabase metadata
-        await CloudSyncService.uploadImageFullResolution(scoredImage)
-      }
-      loadGallery()
-    }
-  }
-
-  const handleBatchScore = async () => {
-    setIsScoring(true)
-    setScoringProgress(0)
-
-    try {
-      const result = await GalleryStorage.batchScoreImages((progress) => {
-        setScoringProgress(progress)
-      })
-
-      // After batch scoring, re-upload cloud-stored images to update their metadata
-      const scoredCloudImages = images.filter(
-        (img) => img.aestheticScore && img.metadata.cloudStored && !img.metadata.uploadedAt, // Only re-upload if newly scored and cloud-stored
-      )
-      for (const img of scoredCloudImages) {
-        await CloudSyncService.uploadImageFullResolution(img)
-      }
-
-      loadGallery()
-      console.log(`Scored ${result.scored} images, ${result.failed} failed`)
-    } catch (error) {
-      console.error("Batch scoring failed:", error)
-    } finally {
-      setIsScoring(false)
-      setScoringProgress(0)
-    }
-  }
-
-  const handleClearGallery = async () => {
-    if (confirm("Are you sure you want to delete all images? This cannot be undone.")) {
-      // Delete all cloud images first if sync is enabled
-      if (cloudSyncStatus.isAuthenticated && cloudSyncStatus.isEnabled) {
-        for (const image of images.filter((img) => img.metadata.cloudStored)) {
-          await CloudSyncService.deleteCloudImage(image.id)
+      if (imageToDelete.metadata.cloudStored) {
+        try {
+          await CloudSyncService.deleteCloudImage(id)
+          toast({
+            title: "Image Deleted",
+            description: "Image removed from cloud and local gallery.",
+            variant: "success",
+          })
+        } catch (error) {
+          console.error("Failed to delete cloud image:", error)
+          toast({
+            title: "Cloud Delete Failed",
+            description: "Could not delete image from cloud. Please try again.",
+            variant: "destructive",
+          })
+          return // Prevent local deletion if cloud deletion fails
         }
       }
-      GalleryStorage.clearGallery() // Clear local storage
-      loadGallery()
+
+      GalleryStorage.deleteImage(id)
       setSelectedImage(null)
+      loadGallery()
+      toast({
+        title: "Image Deleted",
+        description: "Image removed from local gallery.",
+        variant: "success",
+      })
+    },
+    [images, loadGallery, toast],
+  )
+
+  const handleClearGallery = useCallback(async () => {
+    if (cloudSyncStatus.isEnabled && cloudSyncStatus.isAuthenticated) {
+      try {
+        await CloudSyncService.clearCloudGallery()
+        toast({
+          title: "Cloud Gallery Cleared",
+          description: "All images removed from cloud storage.",
+          variant: "success",
+        })
+      } catch (error) {
+        console.error("Failed to clear cloud gallery:", error)
+        toast({
+          title: "Cloud Clear Failed",
+          description: "Could not clear cloud gallery. Please try again.",
+          variant: "destructive",
+        })
+        // Continue to clear local even if cloud fails, but warn user
+      }
     }
-  }
 
-  const handleExportGallery = () => {
-    const data = GalleryStorage.exportGallery()
-    const blob = new Blob([data], { type: "application/json" })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = `flowsketch-gallery-${Date.now()}.json`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }
+    GalleryStorage.clearGallery()
+    setSelectedImage(null)
+    setIsConfirmingClear(false)
+    loadGallery()
+    toast({
+      title: "Gallery Cleared",
+      description: "All images removed from local gallery.",
+      variant: "success",
+    })
+  }, [cloudSyncStatus.isEnabled, cloudSyncStatus.isAuthenticated, loadGallery, toast])
 
-  const storageInfo = GalleryStorage.getStorageInfo()
-  const storagePercentage = (storageInfo.used / storageInfo.available) * 100
+  const handleToggleFavorite = useCallback(
+    async (id: string) => {
+      const updatedImage = GalleryStorage.toggleFavorite(id)
+      if (updatedImage) {
+        if (updatedImage.metadata.cloudStored) {
+          // If cloud stored, re-upload to update favorite status
+          try {
+            await CloudSyncService.uploadImageFullResolution(updatedImage)
+            toast({
+              title: "Favorite Updated",
+              description: "Image favorite status synced to cloud.",
+              variant: "success",
+            })
+          } catch (error) {
+            console.error("Failed to sync favorite status:", error)
+            toast({
+              title: "Sync Failed",
+              description: "Could not sync favorite status to cloud.",
+              variant: "destructive",
+            })
+          }
+        }
+        loadGallery()
+      }
+    },
+    [loadGallery, toast],
+  )
 
-  const uniqueDatasets = [...new Set(images.map((img) => img.metadata.dataset))]
-  const uniqueScenarios = [...new Set(images.map((img) => img.metadata.scenario))]
+  const handleScoreImage = useCallback(
+    async (image: GalleryImage) => {
+      setIsScoring(true)
+      setScoreProgress(0)
+      try {
+        const response = await fetch("/api/score-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageUrl: image.imageUrl }),
+        })
 
-  const unscoredCount = images.filter((img) => !img.aestheticScore).length
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || "Failed to score image")
+        }
+
+        const { aestheticScore } = await response.json()
+        const updatedImage = GalleryStorage.updateImageMetadata(image.id, { aestheticScore })
+
+        if (updatedImage && updatedImage.metadata.cloudStored) {
+          await CloudSyncService.uploadImageFullResolution(updatedImage)
+        }
+
+        toast({
+          title: "Image Scored!",
+          description: `Aesthetic score: ${aestheticScore.toFixed(2)}`,
+          variant: "success",
+        })
+        loadGallery()
+      } catch (error: any) {
+        console.error("Error scoring image:", error)
+        toast({
+          title: "Scoring Failed",
+          description: error.message || "Could not score image.",
+          variant: "destructive",
+        })
+      } finally {
+        setIsScoring(false)
+        setScoreProgress(0)
+      }
+    },
+    [loadGallery, toast],
+  )
+
+  const handleBatchScore = useCallback(async () => {
+    setIsBatchScoring(true)
+    setScoreProgress(0)
+    const imagesToScore = images.filter((img) => img.metadata.aestheticScore === undefined)
+    let scoredCount = 0
+
+    if (imagesToScore.length === 0) {
+      toast({ title: "No Images to Score", description: "All images already have an aesthetic score." })
+      setIsBatchScoring(false)
+      return
+    }
+
+    toast({
+      title: "Batch Scoring Started",
+      description: `Scoring ${imagesToScore.length} images. This may take a while.`,
+      duration: 5000,
+    })
+
+    for (const image of imagesToScore) {
+      try {
+        const response = await fetch("/api/score-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ imageUrl: image.imageUrl }),
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || `Failed to score image ${image.metadata.filename}`)
+        }
+
+        const { aestheticScore } = await response.json()
+        const updatedImage = GalleryStorage.updateImageMetadata(image.id, { aestheticScore })
+
+        if (updatedImage && updatedImage.metadata.cloudStored) {
+          await CloudSyncService.uploadImageFullResolution(updatedImage)
+        }
+
+        scoredCount++
+        setScoreProgress(Math.floor((scoredCount / imagesToScore.length) * 100))
+      } catch (error: any) {
+        console.error(`Error scoring image ${image.metadata.filename}:`, error)
+        toast({
+          title: "Batch Scoring Error",
+          description: `Failed to score ${image.metadata.filename}: ${error.message}`,
+          variant: "destructive",
+        })
+      }
+    }
+
+    toast({
+      title: "Batch Scoring Complete",
+      description: `Scored ${scoredCount} out of ${imagesToScore.length} images.`,
+      variant: "success",
+    })
+    setIsBatchScoring(false)
+    setScoreProgress(0)
+    loadGallery()
+  }, [images, loadGallery, toast])
 
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="flex items-center gap-2">
-              <Archive className="h-5 w-5" />
-              Gallery ({filteredAndSortedImages.length})
-              {storageStats.averageScore > 0 && (
-                <Badge variant="outline" className="ml-2">
-                  <Award className="h-3 w-3 mr-1" />
-                  Avg: {storageStats.averageScore}/10
-                </Badge>
-              )}
-            </CardTitle>
-            <CardDescription>
-              Your generated artworks • {storageStats.localImages + storageStats.cloudImages} total images •{" "}
-              {storageStats.topRatedImages} top-rated (7.0+)
-            </CardDescription>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}>
-              {viewMode === "grid" ? <List className="h-4 w-4" /> : <Grid3X3 className="h-4 w-4" />}
+    <Card className="col-span-1 flex flex-col">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-lg font-semibold flex items-center gap-2">
+          <ImageIcon className="h-5 w-5" /> Gallery
+        </CardTitle>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Info className="h-4 w-4 mr-2" /> Settings
             </Button>
-            {unscoredCount > 0 && (
-              <Button variant="outline" size="sm" onClick={handleBatchScore} disabled={isScoring}>
-                {isScoring ? (
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Gallery Settings</DialogTitle>
+              <DialogDescription>Manage your local and cloud gallery settings.</DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="local-images">Local Images</Label>
+                <span>{galleryStats.localImages}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="cloud-images">Cloud Images</Label>
+                <span>{galleryStats.cloudImages}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="total-size">Total Local Size</Label>
+                <span>{GalleryStorage.formatFileSize(galleryStats.totalLocalSize)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="cloud-storage-used">Cloud Storage Used</Label>
+                <span>
+                  {GalleryStorage.formatFileSize(cloudSyncStatus.storageUsed)} /{" "}
+                  {GalleryStorage.formatFileSize(cloudSyncStatus.storageQuota)}
+                </span>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <Label htmlFor="cloud-sync-status">Cloud Sync Status</Label>
+                <span
+                  className={`font-medium ${
+                    cloudSyncStatus.isAuthenticated && cloudSyncStatus.isEnabled ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  {cloudSyncStatus.isAuthenticated
+                    ? cloudSyncStatus.isEnabled
+                      ? "Enabled"
+                      : "Disabled"
+                    : "Not Signed In"}
+                </span>
+              </div>
+              <Button
+                onClick={handleBatchScore}
+                disabled={
+                  isBatchScoring || images.filter((img) => img.metadata.aestheticScore === undefined).length === 0
+                }
+              >
+                {isBatchScoring ? (
                   <>
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-current mr-1" />
-                    {Math.round(scoringProgress)}%
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Scoring... ({scoreProgress}%)
                   </>
                 ) : (
                   <>
-                    <Award className="h-4 w-4 mr-1" />
-                    Score All ({unscoredCount})
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Batch Score Unscored
                   </>
                 )}
               </Button>
-            )}
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Gallery Settings</DialogTitle>
-                  <DialogDescription>Manage your high-resolution gallery and aesthetic scoring</DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label>High-Resolution Storage & Scoring</Label>
-                    <div className="mt-2 space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Local Images:</span>
-                        <span>{storageStats.localImages}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>Cloud Images:</span>
-                        <span>{storageStats.cloudImages}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>Average Score:</span>
-                        <span className={cn("font-medium", GalleryStorage.getScoreColor(storageStats.averageScore))}>
-                          {storageStats.averageScore > 0 ? `${storageStats.averageScore}/10` : "Not scored"}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="destructive" className="w-full">
+                    <Trash2 className="h-4 w-4 mr-2" /> Clear All Images
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Confirm Clear Gallery</DialogTitle>
+                    <DialogDescription>
+                      Are you sure you want to clear all images from your local gallery?
+                      {cloudSyncStatus.isEnabled && cloudSyncStatus.isAuthenticated && (
+                        <span className="font-bold text-red-500">
+                          {" "}
+                          This will also attempt to delete all images from your cloud storage. This action cannot be
+                          undone.
                         </span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>Top Rated (7.0+):</span>
-                        <span className="text-green-600 font-medium">{storageStats.topRatedImages}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>Total Size:</span>
-                        <span>{GalleryStorage.formatFileSize(storageStats.totalSize)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span>Largest Image:</span>
-                        <span>{GalleryStorage.formatFileSize(storageStats.largestImage)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm text-muted-foreground mb-1">
-                        <span>Local Storage: {(storageInfo.used / 1024).toFixed(1)} KB used</span>
-                        <span>{(storageInfo.available / 1024 / 1024).toFixed(1)} MB available</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div
-                          className="bg-primary h-2 rounded-full transition-all"
-                          style={{ width: `${Math.min(storagePercentage, 100)}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-blue-50 p-3 rounded-lg">
-                    <div className="flex items-center gap-2 text-blue-700 text-sm font-medium mb-1">
-                      <Zap className="h-4 w-4" />
-                      {cloudSyncStatus.isAuthenticated ? "Cloud Sync Enabled" : "No Authentication Required"}
-                    </div>
-                    <p className="text-blue-600 text-xs">
-                      {cloudSyncStatus.isAuthenticated
-                        ? `Images stored locally and synced to cloud. Used: ${GalleryStorage.formatFileSize(
-                            cloudSyncStatus.storageUsed,
-                          )} / ${GalleryStorage.formatFileSize(cloudSyncStatus.storageQuota)}`
-                        : "All images stored locally with aesthetic scoring. Works completely offline!"}
-                    </p>
-                  </div>
-                  <Separator />
-                  <div className="flex gap-2">
-                    <Button onClick={handleExportGallery} variant="outline" className="flex-1 bg-transparent">
-                      <Download className="h-4 w-4 mr-2" />
-                      Export Gallery
+                      )}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsConfirmingClear(false)}>
+                      Cancel
                     </Button>
-                    <Button onClick={handleClearGallery} variant="destructive" className="flex-1">
-                      <Trash2 className="h-4 w-4 mr-2" />
+                    <Button variant="destructive" onClick={handleClearGallery}>
                       Clear All
                     </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </div>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </DialogContent>
+        </Dialog>
       </CardHeader>
-      <CardContent className="p-0">
-        {/* Filters */}
-        <div className="p-6 pb-4 space-y-4">
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <Input
-                placeholder="Search images..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full"
-              />
-            </div>
-            <Button
-              variant={showFavoritesOnly ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-            >
-              <Heart className={cn("h-4 w-4", showFavoritesOnly && "fill-current")} />
-            </Button>
+      <CardContent className="flex-1 overflow-hidden">
+        {images.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+            <ImageIcon className="h-12 w-12 mb-2" />
+            <p>Your gallery is empty.</p>
+            <p>Generate some art to get started!</p>
           </div>
-
-          <div className="flex gap-2 flex-wrap">
-            <Select value={filterDataset} onValueChange={setFilterDataset}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Dataset" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Datasets</SelectItem>
-                {uniqueDatasets.map((dataset) => (
-                  <SelectItem key={dataset} value={dataset}>
-                    {dataset}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={filterScenario} onValueChange={setFilterScenario}>
-              <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="Scenario" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Scenarios</SelectItem>
-                {uniqueScenarios.map((scenario) => (
-                  <SelectItem key={scenario} value={scenario}>
-                    {scenario}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-              <SelectTrigger className="w-[120px]">
-                <SelectValue placeholder="Sort" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="newest">Newest</SelectItem>
-                <SelectItem value="oldest">Oldest</SelectItem>
-                <SelectItem value="favorites">Favorites</SelectItem>
-                <SelectItem value="score">
-                  <div className="flex items-center gap-1">
-                    <Award className="h-3 w-3" />
-                    Score
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Image Grid/List */}
-        <ScrollArea className="h-[600px] px-6">
-          {filteredAndSortedImages.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <Archive className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium mb-2">No images found</p>
-              <p className="text-sm">
-                {images.length === 0
-                  ? "Generate your first artwork to start building your gallery"
-                  : "Try adjusting your search or filters"}
-              </p>
-            </div>
-          ) : (
-            <div
-              className={cn(
-                "pb-6",
-                viewMode === "grid" ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" : "space-y-4",
-              )}
-            >
-              {filteredAndSortedImages.map((image) => (
+        ) : (
+          <ScrollArea className="h-[calc(100vh-250px)] pr-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {images.map((image) => (
                 <div
                   key={image.id}
-                  className={cn(
-                    "group relative border rounded-lg overflow-hidden hover:shadow-md transition-all cursor-pointer",
-                    viewMode === "list" && "flex gap-4 p-4",
-                  )}
+                  className="relative group cursor-pointer rounded-lg overflow-hidden border hover:border-primary transition-colors"
                   onClick={() => setSelectedImage(image)}
                 >
-                  <div className={cn("relative", viewMode === "grid" ? "aspect-video" : "w-24 h-16 flex-shrink-0")}>
-                    <img
-                      src={
-                        viewMode === "grid" && image.thumbnail ? image.thumbnail : image.imageUrl || "/placeholder.svg"
-                      }
-                      alt={image.metadata.filename}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-
-                    {/* Overlay buttons */}
-                    <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="h-8 w-8 p-0"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleToggleFavorite(image.id)
-                        }}
-                      >
-                        <Heart className={cn("h-4 w-4", image.isFavorite && "fill-red-500 text-red-500")} />
-                      </Button>
-                      {!image.aestheticScore && (
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="h-8 w-8 p-0"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleScoreImage(image.id)
-                          }}
-                        >
-                          <Award className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-
-                    {image.isFavorite && (
-                      <Star className="absolute top-2 left-2 h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    )}
-
-                    {/* Aesthetic Score Badge */}
-                    {image.aestheticScore && (
-                      <div className="absolute bottom-2 right-2">
-                        <Badge
-                          variant={GalleryStorage.getScoreBadgeVariant(image.aestheticScore.score)}
-                          className="text-xs"
-                        >
-                          <Award className="h-3 w-3 mr-1" />
-                          {image.aestheticScore.score}
-                        </Badge>
-                      </div>
-                    )}
+                  <img
+                    src={image.imageUrl || "/placeholder.png"}
+                    alt={image.metadata.filename || "Generated Art"}
+                    className="w-full h-32 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="secondary" size="sm" onClick={() => onImageSelect(image)}>
+                      Select
+                    </Button>
                   </div>
-
-                  <div className={cn("p-3", viewMode === "list" && "flex-1 p-0")}>
-                    <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <Badge variant="secondary" className="text-xs">
-                        {image.metadata.dataset}
-                      </Badge>
-                      {image.metadata.scenario !== "none" && (
-                        <Badge variant="outline" className="text-xs">
-                          {image.metadata.scenario}
-                        </Badge>
-                      )}
-                      {image.metadata.fileSize && (
-                        <Badge variant="outline" className="text-xs text-green-600">
-                          {GalleryStorage.formatFileSize(image.metadata.fileSize)}
-                        </Badge>
-                      )}
-                      {image.aestheticScore && (
-                        <Badge
-                          variant={GalleryStorage.getScoreBadgeVariant(image.aestheticScore.score)}
-                          className="text-xs"
-                        >
-                          {image.aestheticScore.score}/10
-                        </Badge>
-                      )}
-                    </div>
-
-                    <p className="text-sm font-medium truncate mb-1">
-                      {image.metadata.filename.replace(/\.[^/.]+$/, "")}
-                    </p>
-
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(image.metadata.createdAt).toLocaleDateString()}
-                      {image.aestheticScore && (
-                        <span
-                          className={cn("ml-2 font-medium", GalleryStorage.getScoreColor(image.aestheticScore.score))}
-                        >
-                          • {image.aestheticScore.rating}
-                        </span>
-                      )}
-                    </p>
-
-                    {viewMode === "list" && (
-                      <div className="flex gap-2 mt-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleDownloadImage(image)
-                          }}
-                        >
-                          <Download className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleDeleteImage(image.id)
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                  <div className="absolute top-2 right-2 flex gap-1">
+                    {image.isFavorite ? (
+                      <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                    ) : (
+                      <StarOff className="h-5 w-5 text-gray-300" />
                     )}
+                    {image.metadata.cloudStored && <Cloud className="h-5 w-5 text-blue-400" title="Cloud Synced" />}
                   </div>
+                  {image.metadata.aestheticScore !== undefined && (
+                    <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+                      Score: {image.metadata.aestheticScore.toFixed(2)}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
-          )}
-        </ScrollArea>
+          </ScrollArea>
+        )}
       </CardContent>
 
-      {/* Image Detail Modal */}
       {selectedImage && (
         <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+          <DialogContent className="sm:max-w-[800px]">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Eye className="h-5 w-5" />
-                {selectedImage.metadata.filename.replace(/\.[^/.]+$/, "")}
-                {selectedImage.aestheticScore && (
-                  <Badge variant={GalleryStorage.getScoreBadgeVariant(selectedImage.aestheticScore.score)}>
-                    <Award className="h-3 w-3 mr-1" />
-                    {selectedImage.aestheticScore.score}/10 • {selectedImage.aestheticScore.rating}
-                  </Badge>
-                )}
-              </DialogTitle>
+              <DialogTitle>{selectedImage.metadata.filename || "Generated Art"}</DialogTitle>
               <DialogDescription>
-                Generated on {new Date(selectedImage.metadata.createdAt).toLocaleString()}
-                {selectedImage.metadata.fileSize && (
-                  <span className="ml-2">• {GalleryStorage.formatFileSize(selectedImage.metadata.fileSize)}</span>
-                )}
-                {selectedImage.aestheticScore && (
-                  <span className="ml-2">• Scored via {selectedImage.aestheticScore.method}</span>
-                )}
+                Generated on: {new Date(selectedImage.metadata.createdAt).toLocaleString()}
               </DialogDescription>
             </DialogHeader>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="relative">
                 <img
-                  src={selectedImage.imageUrl || "/placeholder.svg"}
-                  alt={selectedImage.metadata.filename}
-                  className="w-full h-auto rounded-lg border"
+                  src={selectedImage.imageUrl || "/placeholder.png"}
+                  alt={selectedImage.metadata.filename || "Generated Art"}
+                  className="w-full h-auto object-contain rounded-md"
                 />
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-sm font-medium">Settings</Label>
-                  <div className="mt-2 space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Dataset:</span>
-                      <Badge variant="secondary">{selectedImage.metadata.dataset}</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Scenario:</span>
-                      <Badge variant="outline">{selectedImage.metadata.scenario}</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Color Scheme:</span>
-                      <span>{selectedImage.metadata.colorScheme}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Seed:</span>
-                      <span>{selectedImage.metadata.seed}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Samples:</span>
-                      <span>{selectedImage.metadata.samples}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Noise:</span>
-                      <span>{selectedImage.metadata.noise.toFixed(3)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Mode:</span>
-                      <Badge variant={selectedImage.metadata.generationMode === "ai" ? "default" : "secondary"}>
-                        {selectedImage.metadata.generationMode.toUpperCase()}
-                      </Badge>
-                    </div>
-                    {selectedImage.aestheticScore && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Aesthetic Score:</span>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={GalleryStorage.getScoreBadgeVariant(selectedImage.aestheticScore.score)}>
-                            {selectedImage.aestheticScore.score}/10
-                          </Badge>
-                          <span
-                            className={cn("text-xs", GalleryStorage.getScoreColor(selectedImage.aestheticScore.score))}
-                          >
-                            {selectedImage.aestheticScore.rating}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                <div className="absolute top-2 right-2 flex gap-1">
+                  {selectedImage.isFavorite ? (
+                    <Star className="h-6 w-6 text-yellow-400 fill-yellow-400" />
+                  ) : (
+                    <StarOff className="h-6 w-6 text-gray-300" />
+                  )}
+                  {selectedImage.metadata.cloudStored && (
+                    <Cloud className="h-6 w-6 text-blue-400" title="Cloud Synced" />
+                  )}
                 </div>
-
-                <Separator />
-
-                <div className="flex flex-col gap-2">
-                  <Button onClick={() => handleDownloadImage(selectedImage)} className="w-full">
-                    <Download className="h-4 w-4 mr-2" />
-                    Download Full Resolution
-                  </Button>
-
-                  <Button variant="outline" onClick={() => handleToggleFavorite(selectedImage.id)} className="w-full">
-                    <Heart className={cn("h-4 w-4 mr-2", selectedImage.isFavorite && "fill-current")} />
-                    {selectedImage.isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-                  </Button>
-
-                  {!selectedImage.aestheticScore && (
-                    <Button variant="outline" onClick={() => handleScoreImage(selectedImage.id)} className="w-full">
-                      <Award className="h-4 w-4 mr-2" />
-                      Score Aesthetic Quality
-                    </Button>
-                  )}
-
-                  {onImageSelect && (
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        onImageSelect(selectedImage)
-                        setSelectedImage(null)
-                      }}
-                      className="w-full"
-                    >
-                      <Copy className="h-4 w-4 mr-2" />
-                      Use These Settings
-                    </Button>
-                  )}
-
-                  <Button variant="destructive" onClick={() => handleDeleteImage(selectedImage.id)} className="w-full">
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete Image
-                  </Button>
+              </div>
+              <div className="space-y-4 text-sm">
+                <h3 className="font-semibold">Details:</h3>
+                <p>
+                  <strong>Dataset:</strong> {selectedImage.metadata.dataset}
+                </p>
+                <p>
+                  <strong>Scenario:</strong> {selectedImage.metadata.scenario}
+                </p>
+                <p>
+                  <strong>Color Scheme:</strong> {selectedImage.metadata.colorScheme}
+                </p>
+                <p>
+                  <strong>Seed:</strong> {selectedImage.metadata.seed}
+                </p>
+                <p>
+                  <strong>Samples:</strong> {selectedImage.metadata.samples}
+                </p>
+                <p>
+                  <strong>Noise:</strong> {selectedImage.metadata.noise}
+                </p>
+                <p>
+                  <strong>Generation Mode:</strong> {selectedImage.metadata.generationMode?.toUpperCase()}
+                </p>
+                {selectedImage.metadata.aestheticScore !== undefined && (
+                  <p>
+                    <strong>Aesthetic Score:</strong> {selectedImage.metadata.aestheticScore.toFixed(2)}
+                  </p>
+                )}
+                <p>
+                  <strong>File Size:</strong> {GalleryStorage.formatFileSize(selectedImage.metadata.fileSize || 0)}
+                </p>
+                <h3 className="font-semibold mt-4">Tags:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedImage.tags.map((tag, index) => (
+                    <span key={index} className="bg-muted px-2 py-1 rounded-full text-xs">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
+            <DialogFooter className="flex flex-col sm:flex-row sm:justify-end sm:space-x-2 pt-4">
+              <Button variant="outline" onClick={() => onImageSelect(selectedImage)}>
+                <Palette className="h-4 w-4 mr-2" /> Use Settings
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  handleDownloadImage(
+                    selectedImage.imageUrl,
+                    selectedImage.metadata.generationMode === "svg" ? "svg" : "png",
+                  )
+                }
+              >
+                <Download className="h-4 w-4 mr-2" /> Download
+              </Button>
+              {selectedImage.metadata.aestheticScore === undefined && (
+                <Button onClick={() => handleScoreImage(selectedImage)} disabled={isScoring}>
+                  {isScoring ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Scoring...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-4 w-4" />
+                      Score Image
+                    </>
+                  )}
+                </Button>
+              )}
+              <Button variant="outline" onClick={() => handleToggleFavorite(selectedImage.id)}>
+                {selectedImage.isFavorite ? (
+                  <>
+                    <StarOff className="h-4 w-4 mr-2" /> Unfavorite
+                  </>
+                ) : (
+                  <>
+                    <Star className="h-4 w-4 mr-2" /> Favorite
+                  </>
+                )}
+              </Button>
+              <Button variant="destructive" onClick={() => handleDeleteImage(selectedImage.id)}>
+                <Trash2 className="h-4 w-4 mr-2" /> Delete
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       )}
     </Card>
   )
+}
+
+// Helper function for downloading images (duplicated for convenience, consider centralizing)
+function handleDownloadImage(imageUrl: string, type: "svg" | "png") {
+  const link = document.createElement("a")
+  link.href = imageUrl
+  link.download = `flowsketch-art-${Date.now()}.${type}`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
 }
