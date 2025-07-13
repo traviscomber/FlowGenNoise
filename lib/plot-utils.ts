@@ -1,145 +1,65 @@
-/* ------------------------------------------------------------------
-   FlowSketch – Plot utilities
-   Exports:
-     - generateScatterPlotSVG : original helper used throughout the app
-     - createSVGPlot          : higher-level helper (kept for new code)
-   ------------------------------------------------------------------ */
+export function generateScatterPlotSVG(data: number[][]): string {
+  const width = 600
+  const height = 400
+  const margin = 40 // Margin for padding
 
-export interface DataPoint {
-  x: number
-  y: number
-  /** Optional category / label used for colour maps */
-  category?: number
-}
-
-export interface PlotConfig {
-  width?: number
-  height?: number
-  colorScheme?: string
-  backgroundColor?: string
-  strokeWidth?: number
-}
-
-/* ---------- Colour maps -------------------------------------------------- */
-const COLOR_SCHEMES = {
-  viridis: ["#440154", "#482777", "#3f4a8a", "#31678e", "#26838f", "#1f9d8a", "#6cce5a", "#b6de2b", "#fee825"],
-  plasma: [
-    "#0c0786",
-    "#40039c",
-    "#6a00a7",
-    "#8f0da4",
-    "#b12a90",
-    "#cc4778",
-    "#e16462",
-    "#f2844b",
-    "#fca636",
-    "#fcce25",
-  ],
-  magma: [
-    "#000003",
-    "#0b0927",
-    "#231151",
-    "#410f75",
-    "#5f187f",
-    "#7b2382",
-    "#982d80",
-    "#b73779",
-    "#d3436e",
-    "#eb5760",
-    "#f8765c",
-    "#fca50a",
-    "#fcffa4",
-  ],
-  inferno: [
-    "#000003",
-    "#0b0924",
-    "#230c4c",
-    "#410967",
-    "#5f187f",
-    "#7b2382",
-    "#982d80",
-    "#b73779",
-    "#d3436e",
-    "#eb5760",
-    "#f8765c",
-    "#fca50a",
-    "#fcffa4",
-  ],
-  cool: ["#00ffff", "#0080ff", "#0000ff", "#8000ff", "#ff00ff"],
-  warm: ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00"],
-  rainbow: [
-    "#ff0000",
-    "#ff8000",
-    "#ffff00",
-    "#80ff00",
-    "#00ff00",
-    "#00ff80",
-    "#00ffff",
-    "#0080ff",
-    "#0000ff",
-    "#8000ff",
-    "#ff00ff",
-    "#ff0080",
-  ],
-}
-
-function getColorFromScheme(scheme: string, value: number): string {
-  const colors = COLOR_SCHEMES[scheme as keyof typeof COLOR_SCHEMES] || COLOR_SCHEMES.viridis
-  const index = Math.floor(value * (colors.length - 1))
-  return colors[Math.min(index, colors.length - 1)]
-}
-
-/* ========================================================================== */
-/* Scatter-plot generator (legacy helper used elsewhere in the code-base)     */
-/* ========================================================================== */
-export function generateScatterPlotSVG(data: DataPoint[], config: PlotConfig = {}): string {
-  const { width = 1792, height = 1024, colorScheme = "viridis", backgroundColor = "#000000", strokeWidth = 1 } = config
-
-  if (!data || data.length === 0) {
-    return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100%" height="100%" fill="${backgroundColor}"/>
-      <text x="50%" y="50%" text-anchor="middle" fill="white" font-size="24">No data to display</text>
-    </svg>`
+  // Find min/max for scaling
+  let minX = Number.POSITIVE_INFINITY,
+    maxX = Number.NEGATIVE_INFINITY,
+    minY = Number.POSITIVE_INFINITY,
+    maxY = Number.NEGATIVE_INFINITY
+  for (const [x, y] of data) {
+    minX = Math.min(minX, x)
+    maxX = Math.max(maxX, x)
+    minY = Math.min(minY, y)
+    maxY = Math.max(maxY, y)
   }
 
-  // Find data bounds
-  const xValues = data.map((d) => d.x)
-  const yValues = data.map((d) => d.y)
-  const xMin = Math.min(...xValues)
-  const xMax = Math.max(...xValues)
-  const yMin = Math.min(...yValues)
-  const yMax = Math.max(...yValues)
+  // Add some padding to the data range
+  const paddingFactor = 0.1
+  const rangeX = maxX - minX
+  const rangeY = maxY - minY
+  minX -= rangeX * paddingFactor
+  maxX += rangeX * paddingFactor
+  minY -= rangeY * paddingFactor
+  maxY += rangeY * paddingFactor
 
-  // Add padding
-  const padding = 50
-  const plotWidth = width - 2 * padding
-  const plotHeight = height - 2 * padding
+  // Scaling functions to map data coordinates to SVG pixel coordinates
+  const scaleX = (val: number) => margin + ((val - minX) / (maxX - minX)) * (width - 2 * margin)
+  const scaleY = (val: number) => height - margin - ((val - minY) / (maxY - minY)) * (height - 2 * margin) // Invert Y for SVG
 
-  // Scale functions
-  const scaleX = (x: number) => padding + ((x - xMin) / (xMax - xMin)) * plotWidth
-  const scaleY = (y: number) => padding + ((yMax - y) / (yMax - yMin)) * plotHeight
+  // For color mapping (c=np.linalg.norm(X, axis=1), cmap='magma')
+  const norms = data.map(([x, y]) => Math.sqrt(x * x + y * y))
+  const minNorm = Math.min(...norms)
+  const maxNorm = Math.max(...norms)
 
-  // Generate SVG elements
-  const circles = data
-    .map((point, index) => {
-      const x = scaleX(point.x)
-      const y = scaleY(point.y)
-      const colorValue = index / (data.length - 1)
-      const color = getColorFromScheme(colorScheme, colorValue)
+  const getColor = (norm: number) => {
+    // Simple linear interpolation for a 'magma' like effect
+    // Approximating magma colormap with a gradient from purple to yellow
+    const t = (norm - minNorm) / (maxNorm - minNorm)
+    const r = Math.floor(255 * t)
+    const g = Math.floor(255 * t)
+    const b = Math.floor(255 * (1 - t))
+    return `rgb(${r}, ${g}, ${b})`
+  }
 
-      return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="2" fill="${color}" stroke="none" opacity="0.8"/>`
-    })
-    .join("\n  ")
+  let circles = ""
+  const pointRadius = 2 // Radius for SVG points
 
-  return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100%" height="100%" fill="${backgroundColor}"/>
-  ${circles}
-</svg>`
-}
+  for (let i = 0; i < data.length; i++) {
+    const [x, y] = data[i]
+    const norm = norms[i]
+    const color = getColor(norm)
+    circles += `<circle cx="${scaleX(x)}" cy="${scaleY(y)}" r="${pointRadius}" fill="${color}" fill-opacity="0.8" />`
+  }
 
-/* ========================================================================== */
-/* High-level plot helper used by newer code                                  */
-/* ========================================================================== */
-export function createSVGPlot(data: DataPoint[], config: PlotConfig = {}): string {
-  return generateScatterPlotSVG(data, config)
+  const svgContent = `
+        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="${width}" height="${height}" fill="white"/>
+          ${circles}
+        </svg>
+      `
+
+  // Encode SVG to base64 data URL
+  return `data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`
 }
