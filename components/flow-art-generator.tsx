@@ -890,3 +890,6 @@ export function FlowArtGenerator() {
     </TooltipProvider>
   )
 }
+
+// 👇 add this as the last line of the file
+export default FlowArtGenerator
