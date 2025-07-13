@@ -1,7 +1,98 @@
 import { NextResponse } from "next/server"
 import { generateText, experimental_generateImage } from "ai"
 import { openai } from "@ai-sdk/openai"
-import { SCENARIOS } from "@/lib/flow-model"
+
+// Define scenarios directly in the API route to ensure they match the component
+const SCENARIOS = {
+  enchanted_forest: {
+    name: "Enchanted Forest",
+    objects: [
+      { type: "mystical trees", shapes: ["spiraling branches", "glowing leaves", "twisted trunks"] },
+      { type: "magical creatures", shapes: ["fairy lights", "ethereal wisps", "forest spirits"] },
+      { type: "ancient stones", shapes: ["moss-covered rocks", "runic circles", "crystal formations"] },
+    ],
+    backgroundColor: "deep forest green",
+    ambientColor: "golden sunlight filtering through canopy",
+    density: 0.7,
+  },
+  deep_ocean: {
+    name: "Deep Ocean",
+    objects: [
+      { type: "marine life", shapes: ["flowing jellyfish", "coral formations", "sea anemones"] },
+      { type: "underwater currents", shapes: ["swirling water", "bubble streams", "kelp forests"] },
+      { type: "bioluminescent organisms", shapes: ["glowing plankton", "light trails", "phosphorescent waves"] },
+    ],
+    backgroundColor: "deep ocean blue",
+    ambientColor: "bioluminescent blue-green glow",
+    density: 0.6,
+  },
+  cosmic_nebula: {
+    name: "Cosmic Nebula",
+    objects: [
+      { type: "stellar formations", shapes: ["star clusters", "gas clouds", "cosmic dust"] },
+      { type: "celestial bodies", shapes: ["distant planets", "asteroid fields", "comet trails"] },
+      { type: "energy phenomena", shapes: ["plasma streams", "magnetic fields", "gravitational waves"] },
+    ],
+    backgroundColor: "deep space black",
+    ambientColor: "cosmic purple and pink nebula glow",
+    density: 0.5,
+  },
+  cyberpunk_city: {
+    name: "Cyberpunk City",
+    objects: [
+      { type: "neon structures", shapes: ["holographic displays", "data streams", "circuit patterns"] },
+      { type: "urban elements", shapes: ["skyscrapers", "flying vehicles", "digital billboards"] },
+      { type: "tech interfaces", shapes: ["glowing terminals", "laser grids", "virtual reality portals"] },
+    ],
+    backgroundColor: "dark urban night",
+    ambientColor: "neon pink and cyan lighting",
+    density: 0.8,
+  },
+  ancient_temple: {
+    name: "Ancient Temple",
+    objects: [
+      { type: "architectural elements", shapes: ["stone pillars", "carved reliefs", "sacred geometries"] },
+      { type: "mystical artifacts", shapes: ["glowing orbs", "ancient symbols", "ritual circles"] },
+      { type: "natural overgrowth", shapes: ["climbing vines", "moss patterns", "weathered stones"] },
+    ],
+    backgroundColor: "warm sandstone",
+    ambientColor: "golden torch light and shadows",
+    density: 0.6,
+  },
+  crystal_cave: {
+    name: "Crystal Cave",
+    objects: [
+      { type: "crystal formations", shapes: ["prismatic clusters", "refracting surfaces", "geometric crystals"] },
+      { type: "mineral deposits", shapes: ["stalactites", "stalagmites", "mineral veins"] },
+      { type: "light phenomena", shapes: ["rainbow refractions", "crystal reflections", "inner glow"] },
+    ],
+    backgroundColor: "deep cave darkness",
+    ambientColor: "prismatic crystal light",
+    density: 0.7,
+  },
+  aurora_borealis: {
+    name: "Aurora Borealis",
+    objects: [
+      { type: "atmospheric phenomena", shapes: ["dancing lights", "magnetic field lines", "particle streams"] },
+      { type: "arctic landscape", shapes: ["ice formations", "snow drifts", "frozen lakes"] },
+      { type: "celestial elements", shapes: ["star fields", "moon phases", "cosmic radiation"] },
+    ],
+    backgroundColor: "arctic night sky",
+    ambientColor: "green and purple aurora light",
+    density: 0.4,
+  },
+  volcanic_landscape: {
+    name: "Volcanic Landscape",
+    objects: [
+      { type: "volcanic features", shapes: ["lava flows", "volcanic rock", "steam vents"] },
+      { type: "thermal phenomena", shapes: ["heat waves", "molten streams", "glowing embers"] },
+      { type: "geological formations", shapes: ["basalt columns", "crater rims", "ash clouds"] },
+    ],
+    backgroundColor: "dark volcanic rock",
+    ambientColor: "orange and red lava glow",
+    density: 0.6,
+  },
+}
 
 export async function POST(req: Request) {
   try {
@@ -19,8 +110,8 @@ export async function POST(req: Request) {
 
     // Create scenario-enhanced prompt
     let scenarioContext = ""
-    if (scenario && SCENARIOS[scenario]) {
-      const scenarioConfig = SCENARIOS[scenario]
+    if (scenario && scenario !== "none" && SCENARIOS[scenario as keyof typeof SCENARIOS]) {
+      const scenarioConfig = SCENARIOS[scenario as keyof typeof SCENARIOS]
       const objectTypes = scenarioConfig.objects.map((obj) => `${obj.type} (${obj.shapes.join(", ")})`).join(", ")
 
       scenarioContext = `
@@ -31,7 +122,7 @@ Blend the mathematical ${dataset} patterns with immersive ${scenarioConfig.name.
 - **Environment**: Use ${scenarioConfig.backgroundColor} as base with ${scenarioConfig.ambientColor} ambient lighting
 - **Density**: Apply ${Math.round(scenarioConfig.density * 100)}% object placement density
 - **Creative Fusion**: Transform data points into scenario objects while maintaining mathematical structure
-- **Atmospheric Details**: Add environmental effects like ${scenario === "forest" ? "dappled sunlight, mist" : scenario === "ocean" ? "water currents, bioluminescence" : scenario === "space" ? "cosmic dust, stellar radiation" : "neon reflections, holographic effects"}`
+- **Atmospheric Details**: Add environmental effects like ${scenario === "enchanted_forest" ? "dappled sunlight, mist, magical sparkles" : scenario === "deep_ocean" ? "water currents, bioluminescence, flowing movements" : scenario === "cosmic_nebula" ? "cosmic dust, stellar radiation, gravitational lensing" : scenario === "cyberpunk_city" ? "neon reflections, holographic effects, digital glitches" : scenario === "ancient_temple" ? "torch shadows, stone textures, mystical auras" : scenario === "crystal_cave" ? "light refractions, crystal echoes, prismatic effects" : scenario === "aurora_borealis" ? "magnetic field visualization, particle interactions, atmospheric glow" : "heat distortion, volcanic ash, molten textures"}`
     }
 
     const { text: imagePrompt } = await generateText({
