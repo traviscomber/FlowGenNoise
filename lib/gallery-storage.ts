@@ -194,7 +194,13 @@ export class GalleryStorage {
     const cloudImages = 0 // No cloud storage without auth
 
     const imageSizes = gallery
-      .map((img) => img.metadata.fileSize || this.estimateImageSize(img))
+      .map((img) => {
+        // Gracefully handle images that might not have metadata or fileSize
+        if (img.metadata?.fileSize && typeof img.metadata.fileSize === "number") {
+          return img.metadata.fileSize
+        }
+        return this.estimateImageSize(img)
+      })
       .filter((size) => size > 0)
 
     const totalSize = imageSizes.reduce((sum, size) => sum + size, 0)
@@ -221,15 +227,18 @@ export class GalleryStorage {
   }
 
   private static estimateImageSize(image: GalleryImage): number {
-    // Estimate based on generation mode and parameters
-    if (image.metadata.generationMode === "svg") {
-      return 50 * 1024 // ~50KB for SVG
-    } else {
-      // AI generated images are typically larger
-      const baseSize = 2 * 1024 * 1024 // 2MB base
-      const sampleMultiplier = image.metadata.samples / 1000 // More samples = larger
-      return Math.floor(baseSize * (1 + sampleMultiplier))
+    if (!image.metadata) {
+      return 0 // Unable to estimate without metadata
     }
+
+    // SVGs are tiny, AI images are larger
+    if (image.metadata.generationMode === "svg") {
+      return 50 * 1024 // ≈ 50 KB
+    }
+
+    const baseSize = 2 * 1024 * 1024 // 2 MB
+    const sampleMultiplier = (image.metadata.samples ?? 0) / 1000
+    return Math.floor(baseSize * (1 + sampleMultiplier))
   }
 
   private static saveGallery(gallery: GalleryImage[]): void {
