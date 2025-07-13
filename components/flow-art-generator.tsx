@@ -76,7 +76,7 @@ const SCENARIOS = {
   neural_connections: { label: "Neural Connections", backgroundColor: "#FFD700" },
 } as const
 
-export default function FlowArtGenerator() {
+export function FlowArtGenerator() {
   const [settings, setSettings] = useState<GenerationSettings>({
     dataset: "gaussian",
     scenario: "none",
