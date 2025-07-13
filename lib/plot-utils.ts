@@ -1,65 +1,99 @@
-export function generateScatterPlotSVG(data: number[][]): string {
-  const width = 600
-  const height = 400
-  const margin = 40 // Margin for padding
+import type { DataPoint } from "./flow-model"
 
-  // Find min/max for scaling
-  let minX = Number.POSITIVE_INFINITY,
-    maxX = Number.NEGATIVE_INFINITY,
-    minY = Number.POSITIVE_INFINITY,
-    maxY = Number.NEGATIVE_INFINITY
-  for (const [x, y] of data) {
-    minX = Math.min(minX, x)
-    maxX = Math.max(maxX, x)
-    minY = Math.min(minY, y)
-    maxY = Math.max(maxY, y)
+export interface ColorScheme {
+  name: string
+  colors: string[]
+}
+
+const COLOR_SCHEMES: Record<string, string[]> = {
+  viridis: ["#440154", "#482777", "#3f4a8a", "#31678e", "#26838f", "#1f9d8a", "#6cce5a", "#b6de2b", "#fee825"],
+  plasma: [
+    "#0c0786",
+    "#40039c",
+    "#6a00a7",
+    "#8f0da4",
+    "#b12a90",
+    "#cc4778",
+    "#e16462",
+    "#fb9b06",
+    "#f7d13d",
+    "#fcce25",
+  ],
+  inferno: [
+    "#000003",
+    "#1b0c41",
+    "#4a0c6b",
+    "#781c6d",
+    "#a52c60",
+    "#cf4446",
+    "#ed6925",
+    "#fb9b06",
+    "#f7d13d",
+    "#fcffa4",
+  ],
+  magma: ["#000003", "#1c1044", "#4f127b", "#812581", "#b5367a", "#e55964", "#fb8761", "#fec287", "#fcfdbf"],
+  cividis: ["#00204c", "#00336f", "#39486b", "#575d6d", "#707173", "#8a8678", "#a69c75", "#c4b56c", "#e4cf5b"],
+  turbo: ["#23171b", "#271a28", "#2d1e3e", "#3e2357", "#52286f", "#662d91", "#7b31b2", "#9035d3", "#a53af2"],
+  rainbow: ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80", "#00ffff", "#0080ff", "#0000ff"],
+  cool: ["#00ffff", "#40bfff", "#8080ff", "#bf40ff", "#ff00ff"],
+  warm: ["#ff0000", "#ff4000", "#ff8000", "#ffbf00", "#ffff00"],
+}
+
+export function generateScatterPlotSVG(data: DataPoint[]): string {
+  if (!data || data.length === 0) {
+    return ""
   }
 
-  // Add some padding to the data range
-  const paddingFactor = 0.1
-  const rangeX = maxX - minX
-  const rangeY = maxY - minY
-  minX -= rangeX * paddingFactor
-  maxX += rangeX * paddingFactor
-  minY -= rangeY * paddingFactor
-  maxY += rangeY * paddingFactor
+  // Calculate bounds
+  const xValues = data.map((d) => d.x)
+  const yValues = data.map((d) => d.y)
+  const xMin = Math.min(...xValues)
+  const xMax = Math.max(...xValues)
+  const yMin = Math.min(...yValues)
+  const yMax = Math.max(...yValues)
 
-  // Scaling functions to map data coordinates to SVG pixel coordinates
-  const scaleX = (val: number) => margin + ((val - minX) / (maxX - minX)) * (width - 2 * margin)
-  const scaleY = (val: number) => height - margin - ((val - minY) / (maxY - minY)) * (height - 2 * margin) // Invert Y for SVG
+  // Add padding
+  const padding = 0.1
+  const xRange = xMax - xMin
+  const yRange = yMax - yMin
+  const xPadding = xRange * padding
+  const yPadding = yRange * padding
 
-  // For color mapping (c=np.linalg.norm(X, axis=1), cmap='magma')
-  const norms = data.map(([x, y]) => Math.sqrt(x * x + y * y))
-  const minNorm = Math.min(...norms)
-  const maxNorm = Math.max(...norms)
+  const viewBoxXMin = xMin - xPadding
+  const viewBoxXMax = xMax + xPadding
+  const viewBoxYMin = yMin - yPadding
+  const viewBoxYMax = yMax + yPadding
 
-  const getColor = (norm: number) => {
-    // Simple linear interpolation for a 'magma' like effect
-    // Approximating magma colormap with a gradient from purple to yellow
-    const t = (norm - minNorm) / (maxNorm - minNorm)
-    const r = Math.floor(255 * t)
-    const g = Math.floor(255 * t)
-    const b = Math.floor(255 * (1 - t))
-    return `rgb(${r}, ${g}, ${b})`
-  }
+  const viewBoxWidth = viewBoxXMax - viewBoxXMin
+  const viewBoxHeight = viewBoxYMax - viewBoxYMin
 
-  let circles = ""
-  const pointRadius = 2 // Radius for SVG points
+  // SVG dimensions
+  const svgWidth = 800
+  const svgHeight = 600
 
-  for (let i = 0; i < data.length; i++) {
-    const [x, y] = data[i]
-    const norm = norms[i]
-    const color = getColor(norm)
-    circles += `<circle cx="${scaleX(x)}" cy="${scaleY(y)}" r="${pointRadius}" fill="${color}" fill-opacity="0.8" />`
-  }
+  // Get unique clusters
+  const clusters = [...new Set(data.map((d) => d.cluster || 0))]
+  const colors = COLOR_SCHEMES.viridis
 
-  const svgContent = `
-        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="0" width="${width}" height="${height}" fill="white"/>
-          ${circles}
-        </svg>
-      `
+  // Create SVG
+  let svg = `<svg width="${svgWidth}" height="${svgHeight}" viewBox="${viewBoxXMin} ${viewBoxYMin} ${viewBoxWidth} ${viewBoxHeight}" xmlns="http://www.w3.org/2000/svg">`
 
-  // Encode SVG to base64 data URL
-  return `data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`
+  // Add background
+  svg += `<rect x="${viewBoxXMin}" y="${viewBoxYMin}" width="${viewBoxWidth}" height="${viewBoxHeight}" fill="#1a1a1a"/>`
+
+  // Add points
+  data.forEach((point, index) => {
+    const cluster = point.cluster || 0
+    const colorIndex = cluster % colors.length
+    const color = colors[colorIndex]
+    const radius = 0.02 * Math.min(viewBoxWidth, viewBoxHeight)
+
+    svg += `<circle cx="${point.x}" cy="${point.y}" r="${radius}" fill="${color}" opacity="0.8"/>`
+  })
+
+  svg += "</svg>"
+
+  // Convert to base64 data URL
+  const base64 = btoa(svg)
+  return `data:image/svg+xml;base64,${base64}`
 }
