@@ -21,7 +21,7 @@ export type SyncConflict = {
 const CLOUD_SYNC_ENABLED_KEY = "flowsketch_cloud_sync_enabled"
 const BUCKET_NAME = "flowsketch-gallery-images"
 
-class CloudSyncService {
+export class CloudSyncService {
   private static instance: CloudSyncService
   private status: CloudSyncStatus
   private statusListeners: ((status: CloudSyncStatus) => void)[] = []
