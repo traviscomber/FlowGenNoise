@@ -125,32 +125,31 @@ export function FlowArtGenerator() {
       } else {
         // Generate AI-enhanced version
         setProgress(10)
-        const data = FlowModel.generateDataset(settings.dataset, settings.samples, settings.seed, settings.noise)
-
-        setProgress(30)
-        const svg = PlotUtils.createSVGPlot(data, settings.colorScheme, 1024, 1024)
 
         setProgress(50)
         const response = await fetch("/api/generate-ai-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            svgData: svg,
-            scenario: settings.scenario,
             dataset: settings.dataset,
+            seed: settings.seed,
             colorScheme: settings.colorScheme,
+            numSamples: settings.samples,
+            noise: settings.noise,
+            scenario: settings.scenario,
           }),
         })
 
         if (!response.ok) {
-          throw new Error("Failed to generate AI art")
+          const errorData = await response.json()
+          throw new Error(errorData.error || "Failed to generate AI art")
         }
 
         setProgress(80)
         const result = await response.json()
 
         setProgress(100)
-        setGeneratedImage(result.imageUrl)
+        setGeneratedImage(result.image)
 
         // Save to gallery
         const image: GalleryImage = {
