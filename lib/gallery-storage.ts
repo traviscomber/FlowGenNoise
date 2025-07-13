@@ -278,3 +278,11 @@ export class GalleryStorage {
     return "destructive"
   }
 }
+
+// -----------------------------------------------------------------------------
+// Helper function for modules that expect a named export instead of the class.
+// Returns the full gallery array, delegating to GalleryStorage.getGallery().
+// -----------------------------------------------------------------------------
+export function getGalleryImages(): GalleryImage[] {
+  return GalleryStorage.getGallery()
+}
