@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server"
 import { generateText, experimental_generateImage } from "ai"
 import { openai } from "@ai-sdk/openai"
+import { SCENARIOS } from "@/lib/flow-model"
 
 export async function POST(req: Request) {
   try {
-    const { dataset, seed, colorScheme, numSamples, noise } = await req.json()
+    const { dataset, seed, colorScheme, numSamples, noise, scenario } = await req.json()
 
     if (
       !dataset ||
@@ -13,39 +14,60 @@ export async function POST(req: Request) {
       typeof numSamples === "undefined" ||
       typeof noise === "undefined"
     ) {
-      return NextResponse.json(
-        { error: "Missing dataset, seed, color scheme, number of samples, or noise" },
-        { status: 400 },
-      )
+      return NextResponse.json({ error: "Missing required parameters" }, { status: 400 })
     }
 
-    // Step 1: Generate enhanced prompt for high-quality base image
+    // Create scenario-enhanced prompt
+    let scenarioContext = ""
+    if (scenario && SCENARIOS[scenario]) {
+      const scenarioConfig = SCENARIOS[scenario]
+      const objectTypes = scenarioConfig.objects.map((obj) => `${obj.type} (${obj.shapes.join(", ")})`).join(", ")
+
+      scenarioContext = `
+
+### Scenario Integration: ${scenarioConfig.name}
+Blend the mathematical ${dataset} patterns with immersive ${scenarioConfig.name.toLowerCase()} elements:
+- **Objects**: Incorporate ${objectTypes} shaped and positioned according to the mathematical data points
+- **Environment**: Use ${scenarioConfig.backgroundColor} as base with ${scenarioConfig.ambientColor} ambient lighting
+- **Density**: Apply ${Math.round(scenarioConfig.density * 100)}% object placement density
+- **Creative Fusion**: Transform data points into scenario objects while maintaining mathematical structure
+- **Atmospheric Details**: Add environmental effects like ${scenario === "forest" ? "dappled sunlight, mist" : scenario === "ocean" ? "water currents, bioluminescence" : scenario === "space" ? "cosmic dust, stellar radiation" : "neon reflections, holographic effects"}`
+    }
+
     const { text: imagePrompt } = await generateText({
       model: openai("gpt-4o"),
-      prompt: `Create a highly detailed image generation prompt for DALL-E 3 that will serve as a base for professional 8K upscaling. The artwork should be a generative art masterpiece inspired by a '${dataset}' dataset with a '${colorScheme}' color scheme.
+      prompt: `*Image Generation Prompt for DALL-E 3:*
 
-Requirements for upscaling-ready image:
-- Clean, sharp edges and well-defined structures
-- Rich detail that will enhance beautifully when upscaled
-- Professional composition suitable for large format printing
-- Mathematical precision with ${numSamples} elements arranged organically
-- Subtle noise texture of ${noise} that adds visual interest
-- High contrast and vibrant colors that will scale well
-- Complex patterns and textures that reward close inspection
-- Gallery-quality artistic composition
+Create an intricate generative art masterpiece inspired by a '${dataset}' dataset, employing a '${colorScheme}' color scheme. The artwork should serve as an ideal base for professional 8K upscaling, focusing on clean, sharp edges and well-defined structures.${scenarioContext}
 
-The image should be optimized as a base for AI upscaling to 8K resolution, with every element designed to enhance beautifully when processed through professional upscaling algorithms.`,
+### Elements:
+1. *Mathematical Precision*: Arrange exactly ${numSamples} ${dataset} elements organically across the canvas, ensuring each one is unique yet harmoniously integrated with the others. The elements should vary in size and density, creating a dynamic flow throughout the piece.
+
+2. *Color Palette*: Utilize a vibrant and high-contrast ${colorScheme} color scheme to emphasize the patterns. Create depth and dimension with strategic color gradients and transitions.
+
+3. *Textures and Patterns*: Introduce complex textures within the ${dataset} patterns, such as fine lines, cross-hatching, or dotting, which will reveal new details upon close inspection. Ensure that these intricate patterns are meticulously crafted to reward viewers and enhance during upscaling.
+
+4. *Noise Texture*: Apply a subtle noise texture of ${noise} to the entire image, giving it a tactile surface that adds sophistication and visual interest without overwhelming the primary elements.
+
+### Composition:
+- *Professional Composition*: Design the composition with a balance that suits large-format printing. The ${dataset} elements should guide the viewer's eye seamlessly across the canvas, creating a sense of movement and energy.
+- *Gallery-Quality*: Ensure that the overall artwork exudes a refined, gallery-quality aesthetic suitable for exhibition, with each element contributing to a cohesive and engaging visual narrative.
+
+### Optimization for Upscaling:
+- *Edge Definition*: Focus on maintaining sharp, clean edges around each element and between color transitions to ensure clarity and precision are preserved during upscaling.
+- *Detail Enhancement*: Design with rich detail that enhances beautifully when processed through AI upscaling algorithms, emphasizing the depth and complexity of the piece.
+
+By adhering to these guidelines, the resulting image will be an exquisite generative art masterpiece, optimized for professional 8K upscaling and perfect for large-format, gallery-quality display.`,
       temperature: 0.8,
     })
 
-    console.log("Generated Base Image Prompt:", imagePrompt)
+    console.log("Generated Enhanced Prompt:", imagePrompt)
 
-    // Step 2: Generate high-quality base image
     const { image } = await experimental_generateImage({
       model: openai.image("dall-e-3"),
       prompt: imagePrompt,
       quality: "hd",
-      size: "1792x1024", // Maximum DALL-E 3 resolution
+      size: "1792x1024",
       style: "vivid",
     })
 
@@ -56,9 +78,10 @@ The image should be optimized as a base for AI upscaling to 8K resolution, with 
       baseResolution: "1792x1024",
       readyForUpscaling: true,
       recommendedUpscale: "4x",
+      scenario: scenario || null,
     })
   } catch (error: any) {
-    console.error("Error generating base AI art:", error)
+    console.error("Error generating AI art:", error)
     if (error.message.includes("api_key")) {
       return NextResponse.json(
         { error: "OpenAI API key is missing or invalid. Please set OPENAI_API_KEY." },
