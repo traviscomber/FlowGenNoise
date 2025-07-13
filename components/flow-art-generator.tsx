@@ -35,7 +35,7 @@ import {
 } from "lucide-react"
 import { generateFlowArt, generateAIArt, type FlowArtSettings } from "@/lib/flow-model"
 import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
-import { CloudSyncService, type CloudSyncStatus, type SyncConflict } from "@/lib/cloud-sync"
+import { CloudSync, type CloudSyncStatus, type SyncConflict } from "@/lib/cloud-sync"
 import { supabase } from "@/lib/supabase"
 
 // Constants for datasets and scenarios
@@ -68,7 +68,7 @@ export function FlowArtGenerator() {
   const [upscaleProgress, setUpscaleProgress] = useState(0)
   const [upscaling, setUpscaling] = useState(false)
   const [currentImageId, setCurrentImageId] = useState<string | null>(null)
-  const [cloudSyncStatus, setCloudSyncStatus] = useState<CloudSyncStatus>(CloudSyncService.getStatus())
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<CloudSyncStatus>(CloudSync.getStatus())
   const [showPassword, setShowPassword] = useState(false)
   const [authForm, setAuthForm] = useState({ email: "", password: "", displayName: "" })
   const [authMode, setAuthMode] = useState<"signIn" | "signUp">("signIn")
@@ -95,9 +95,9 @@ export function FlowArtGenerator() {
     const listener = (status: CloudSyncStatus) => {
       setCloudSyncStatus(status)
     }
-    CloudSyncService.addStatusListener(listener)
-    CloudSyncService.initializeAuth() // Initialize auth state on component mount
-    return () => CloudSyncService.removeStatusListener(listener)
+    CloudSync.addStatusListener(listener)
+    CloudSync.initializeAuth() // Initialize auth state on component mount
+    return () => CloudSync.removeStatusListener(listener)
   }, [])
 
   useEffect(() => {
@@ -152,7 +152,7 @@ export function FlowArtGenerator() {
       setCurrentImageId(newImage.id)
 
       // Auto-upload to cloud if enabled
-      const uploadResult = await CloudSyncService.autoUploadNewGeneration(newImage, (p) => setUpscaleProgress(p))
+      const uploadResult = await CloudSync.autoUploadNewGeneration(newImage, (p) => setUpscaleProgress(p))
       if (uploadResult.success && uploadResult.cloudImage) {
         GalleryStorage.saveImage(uploadResult.cloudImage) // Save cloud version to local gallery
         toast({
@@ -229,9 +229,7 @@ export function FlowArtGenerator() {
 
       // Re-upload the upscaled image to cloud if it was cloud-stored
       if (updatedImage.metadata.cloudStored) {
-        const uploadResult = await CloudSyncService.uploadImageFullResolution(updatedImage, (p) =>
-          setUpscaleProgress(p),
-        )
+        const uploadResult = await CloudSync.uploadImageFullResolution(updatedImage, (p) => setUpscaleProgress(p))
         if (uploadResult.success && uploadResult.cloudImage) {
           GalleryStorage.saveImage(uploadResult.cloudImage)
           toast({
@@ -299,9 +297,9 @@ export function FlowArtGenerator() {
     let result: { success: boolean; error?: string }
 
     if (authMode === "signIn") {
-      result = await CloudSyncService.signInWithEmail(authForm.email, authForm.password)
+      result = await CloudSync.signInWithEmail(authForm.email, authForm.password)
     } else {
-      result = await CloudSyncService.signUpWithEmail(authForm.email, authForm.password, authForm.displayName)
+      result = await CloudSync.signUpWithEmail(authForm.email, authForm.password, authForm.displayName)
     }
 
     if (result.success) {
@@ -324,7 +322,7 @@ export function FlowArtGenerator() {
   }
 
   const handleSignOut = async () => {
-    await CloudSyncService.signOut()
+    await CloudSync.signOut()
     toast({
       title: "Signed Out",
       description: "Cloud sync has been disabled.",
@@ -334,7 +332,7 @@ export function FlowArtGenerator() {
 
   const handleToggleSync = async (checked: boolean) => {
     if (checked) {
-      const result = await CloudSyncService.enableSync()
+      const result = await CloudSync.enableSync()
       if (result.success) {
         toast({
           title: "Cloud Sync Enabled",
@@ -349,7 +347,7 @@ export function FlowArtGenerator() {
         })
       }
     } else {
-      await CloudSyncService.disableSync()
+      await CloudSync.disableSync()
       toast({
         title: "Cloud Sync Disabled",
         description: "Your gallery will no longer sync with the cloud.",
@@ -365,7 +363,7 @@ export function FlowArtGenerator() {
       description: "Comparing local and cloud galleries.",
       duration: 3000,
     })
-    const result = await CloudSyncService.performFullSync()
+    const result = await CloudSync.performFullSync()
     if (result.success) {
       if (result.conflicts.length > 0) {
         setSyncConflicts(result.conflicts)
@@ -392,7 +390,7 @@ export function FlowArtGenerator() {
   }
 
   const handleResolveConflict = async (conflict: SyncConflict, resolution: "keep_local" | "keep_cloud") => {
-    await CloudSyncService.resolveConflict(conflict, resolution)
+    await CloudSync.resolveConflict(conflict, resolution)
     setSyncConflicts((prev) => prev.filter((c) => c.localImage.id !== conflict.localImage.id))
     toast({
       title: "Conflict Resolved",
