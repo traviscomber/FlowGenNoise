@@ -57,6 +57,7 @@ export function FlowArtGenerator() {
     { value: "s_curve", label: "S-Curve" },
     { value: "blobs", label: "Gaussian Blobs" },
     { value: "rings", label: "Nested Rings" },
+    { value: "neural", label: "Neural Connection" }, // Added Neural Connection
   ]
 
   const scenarios = [

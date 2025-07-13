@@ -145,7 +145,7 @@ export function generateDataset(dataset: string, seed = 42, numSamples = 1000, n
       return genGaussian(numSamples, rng, noise)
     case "grid":
       return genGrid(numSamples)
-    case "neural":
+    case "neural": // Added neural case
       return genNeural(numSamples, rng)
     default:
       return genGaussian(numSamples, rng, noise)
