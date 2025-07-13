@@ -1,501 +1,827 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import type React from "react"
+
+import { useState, useMemo, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { Slider } from "@/components/ui/slider"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Wand2, Download, Archive, Palette, Sparkles, RefreshCw, Zap } from "lucide-react"
-import { generateDataset } from "@/lib/flow-model"
-import { PlotUtils } from "@/lib/plot-utils"
-import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
-import { Gallery } from "@/components/gallery"
-import { compressImage } from "@/lib/image-compression"
-import { saveImageToGallery, getGalleryImages } from "@/lib/gallery-storage"
-import { CloudSync } from "./cloud-sync"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Switch } from "@/components/ui/switch"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/components/ui/use-toast"
-import { Loader2 } from "lucide-react"
+import {
+  Shuffle,
+  Download,
+  ImageIcon,
+  Sparkles,
+  Cloud,
+  UploadCloud,
+  CheckCircle,
+  Loader2,
+  Info,
+  RefreshCcw,
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Zap,
+} from "lucide-react"
+import { generateFlowArt, generateAIArt, type FlowArtSettings } from "@/lib/flow-model"
+import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
+import { CloudSyncService, type CloudSyncStatus, type SyncConflict } from "@/lib/cloud-sync"
+import { supabase } from "@/lib/supabase"
 
-interface GenerationSettings {
-  dataset: string
-  scenario: string
-  colorScheme: string
-  seed: number
-  samples: number
-  noise: number
-  generationMode: "svg" | "ai"
-}
-
-const COLOR_SCHEMES = {
-  viridis: "Viridis (Green-Purple)",
-  plasma: "Plasma (Purple-Yellow)",
-  inferno: "Inferno (Red-Yellow)",
-  magma: "Magma (Purple-Red)",
-  cividis: "Cividis (Blue-Green)",
-  rainbow: "Rainbow (Full Spectrum)",
-  grayscale: "Grayscale (Black-White)",
-  cool: "Cool (Blue-Green)",
-  hot: "Hot (Red-Yellow)",
-  spring: "Spring (Pink-Yellow)",
-  summer: "Summer (Green-Yellow)",
-  autumn: "Autumn (Red-Orange)",
-  winter: "Winter (Blue-Purple)",
-  spectral: "Spectral (Diverging)",
-  RdYlGn: "Red-Yellow-Green",
-  PuOr: "Purple-Orange",
-  BrBG: "Brown-Green",
-  PiYG: "Pink-Yellow-Green",
-  PRGn: "Purple-Green",
-  RdBu: "Red-Blue",
-  RdGy: "Red-Gray",
-  RdPu: "Red-Purple",
-  YlGnBu: "Yellow-Green-Blue",
-  GnBu: "Green-Blue",
-  OrRd: "Orange-Red",
-  PuBuGn: "Purple-Blue-Green",
-  YlOrRd: "Yellow-Orange-Red",
-  Blues: "Blues",
-  Greens: "Greens",
-  Greys: "Greys",
-  Oranges: "Oranges",
-  Purples: "Purples",
-  Reds: "Reds",
-} as const
-
+// Constants for datasets and scenarios
+const DATASETS = ["mandelbrot", "julia", "sierpinski", "barnsley", "newton"]
 const SCENARIOS = {
-  none: { label: "Pure Mathematical", backgroundColor: "white" },
-  enchanted_forest: { label: "Enchanted Forest", backgroundColor: "#8A2BE2" },
-  deep_ocean: { label: "Deep Ocean", backgroundColor: "#00008B" },
-  cosmic_nebula: { label: "Cosmic Nebula", backgroundColor: "#FF4500" },
-  cyberpunk_city: { label: "Cyberpunk City", backgroundColor: "#808080" },
-  ancient_temple: { label: "Ancient Temple", backgroundColor: "#A52A2A" },
-  crystal_cave: { label: "Crystal Cave", backgroundColor: "#ADD8E6" },
-  aurora_borealis: { label: "Aurora Borealis", backgroundColor: "#FF00FF" },
-  volcanic_landscape: { label: "Volcanic Landscape", backgroundColor: "#A0522D" },
-  neural_connections: { label: "Neural Connections", backgroundColor: "#FFD700" },
-} as const
-
-const DATASETS = [
-  { value: "gaussian", label: "Gaussian Blobs" },
-  { value: "spirals", label: "Spirals" },
-  { value: "moons", label: "Moons" },
-  { value: "checkerboard", label: "Checkerboard" },
-  { value: "grid", label: "Grid" },
-  { value: "neural", label: "Neural Connection" },
-]
+  none: "None",
+  "abstract-patterns": "Abstract Patterns",
+  "organic-forms": "Organic Forms",
+  "futuristic-landscapes": "Futuristic Landscapes",
+  "celestial-bodies": "Celestial Bodies",
+  "geometric-abstractions": "Geometric Abstractions",
+}
+const COLOR_SCHEMES = ["plasma", "viridis", "cividis", "magma", "inferno", "twilight", "hsv", "rainbow", "grayscale"]
 
 export function FlowArtGenerator() {
-  const [settings, setSettings] = useState<GenerationSettings>({
-    dataset: "gaussian",
+  const { toast } = useToast()
+  const [settings, setSettings] = useState<FlowArtSettings>({
+    dataset: "mandelbrot",
     scenario: "none",
-    colorScheme: "viridis",
+    colorScheme: "plasma",
     seed: Math.floor(Math.random() * 100000),
     samples: 1000,
-    noise: 0.05,
-    generationMode: "svg",
+    noise: 0.01,
+    generationMode: "svg", // Default to SVG
+    upscale: false,
   })
-
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [isUpscaling, setIsUpscaling] = useState(false)
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null)
-  const [upscaledImage, setUpscaledImage] = useState<string | null>(null)
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState("generate")
-  const [lastGeneration, setLastGeneration] = useState<GalleryImage | null>(null)
-  const [galleryImages, setGalleryImages] = useState<string[]>([])
-  const { toast } = useToast()
+  const [upscaleProgress, setUpscaleProgress] = useState(0)
+  const [upscaling, setUpscaling] = useState(false)
+  const [currentImageId, setCurrentImageId] = useState<string | null>(null)
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<CloudSyncStatus>(CloudSyncService.getStatus())
+  const [showPassword, setShowPassword] = useState(false)
+  const [authForm, setAuthForm] = useState({ email: "", password: "", displayName: "" })
+  const [authMode, setAuthMode] = useState<"signIn" | "signUp">("signIn")
+  const [authLoading, setAuthLoading] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
+  const [syncConflicts, setSyncConflicts] = useState<SyncConflict[]>([])
 
   useEffect(() => {
-    setGalleryImages(getGalleryImages())
+    const listener = (status: CloudSyncStatus) => {
+      setCloudSyncStatus(status)
+    }
+    CloudSyncService.addStatusListener(listener)
+    CloudSyncService.initializeAuth() // Initialize auth state on component mount
+    return () => CloudSyncService.removeStatusListener(listener)
   }, [])
 
-  const handleGenerate = useCallback(async () => {
-    setIsGenerating(true)
-    setError(null)
-    setProgress(0)
-    setGeneratedImage(null)
-    setUpscaledImage(null)
+  useEffect(() => {
+    // Attempt full sync when authenticated and sync is enabled
+    if (cloudSyncStatus.isAuthenticated && cloudSyncStatus.isEnabled && !cloudSyncStatus.isSyncing) {
+      handleFullSync()
+    }
+  }, [cloudSyncStatus.isAuthenticated, cloudSyncStatus.isEnabled])
 
-    console.log("Generating with mode:", settings.generationMode) // Added for debugging
+  const handleGenerate = async () => {
+    setIsLoading(true)
+    setProgress(0)
+    setUpscaling(false)
+    setAuthError(null) // Clear auth error on new generation attempt
 
     try {
+      let imageUrl: string
+      let filename: string
+      let finalSettings = { ...settings }
+
       if (settings.generationMode === "svg") {
-        // Generate mathematical SVG
-        setProgress(20)
-        const data = generateDataset(settings.dataset, settings.seed, settings.samples, settings.noise)
-
-        setProgress(60)
-        const svg = PlotUtils.createSVGPlot(data, settings.colorScheme, 800, 600)
-
-        setProgress(80)
-        const blob = new Blob([svg], { type: "image/svg+xml" })
-        const url = URL.createObjectURL(blob)
-
-        setProgress(100)
-        setGeneratedImage(url)
-
-        // Save to gallery
-        const image: GalleryImage = {
-          id: `flow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          imageUrl: url,
-          metadata: {
-            ...settings,
-            createdAt: Date.now(),
-            filename: `flow-art-${settings.dataset}-${Date.now()}.svg`,
-          },
-          isFavorite: false,
-          tags: [settings.dataset, settings.scenario, "mathematical"],
-        }
-
-        GalleryStorage.saveImage(image)
-        setLastGeneration(image)
+        imageUrl = generateFlowArt(finalSettings, (p) => setProgress(p))
+        filename = `flowsketch-${finalSettings.dataset}-${Date.now()}.svg`
       } else {
-        // Generate AI-enhanced version
-        setProgress(10)
-        // No need to generate SVG data on the client if the API doesn't use it for DALL-E 3 prompt
-        // const data = FlowModel.generateDataset(settings.dataset, settings.samples, settings.seed, settings.noise)
-        // const svg = PlotUtils.createSVGPlot(data, settings.colorScheme, 1024, 1024)
-
-        setProgress(50)
-        const response = await fetch("/api/generate-ai-art", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            // Removed svgData as the API route doesn't use it for DALL-E 3 prompt generation
-            dataset: settings.dataset,
-            seed: settings.seed,
-            colorScheme: settings.colorScheme,
-            numSamples: settings.samples, // Corrected parameter name
-            noise: settings.noise,
-            scenario: settings.scenario,
-          }),
+        // AI generation
+        toast({
+          title: "Generating AI Art...",
+          description: "This may take a moment. Please do not close the tab.",
+          duration: 5000,
         })
-
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || "Failed to generate AI art")
-        }
-
-        setProgress(80)
-        const result = await response.json()
-
-        setProgress(100)
-        setGeneratedImage(result.image) // Changed from result.imageUrl to result.image as per API response
-
-        // Save to gallery
-        const image: GalleryImage = {
-          id: `ai-flow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          imageUrl: result.image, // Changed from result.imageUrl to result.image
-          metadata: {
-            ...settings,
-            createdAt: Date.now(),
-            filename: `ai-flow-art-${settings.dataset}-${Date.now()}.png`,
-          },
-          isFavorite: false,
-          tags: [settings.dataset, settings.scenario, "ai-generated"],
-        }
-
-        GalleryStorage.saveImage(image)
-        setLastGeneration(image)
+        const aiResult = await generateAIArt(finalSettings, (p) => setProgress(p))
+        imageUrl = aiResult.imageUrl
+        filename = aiResult.filename
+        finalSettings = aiResult.settings // Use settings returned by AI model (e.g., actual seed used)
       }
-    } catch (err: any) {
-      setError(err.message)
+
+      setGeneratedImageUrl(imageUrl)
+      setProgress(100)
+
+      const newImage: GalleryImage = {
+        id: crypto.randomUUID(),
+        imageUrl,
+        metadata: {
+          ...finalSettings,
+          createdAt: Date.now(),
+          filename,
+          fileSize: 0, // Will be updated after upload or estimated
+        },
+        isFavorite: false,
+        tags: [],
+      }
+      setCurrentImageId(newImage.id)
+
+      // Auto-upload to cloud if enabled
+      const uploadResult = await CloudSyncService.autoUploadNewGeneration(newImage, (p) => setUpscaleProgress(p))
+      if (uploadResult.success && uploadResult.cloudImage) {
+        GalleryStorage.saveImage(uploadResult.cloudImage) // Save cloud version to local gallery
+        toast({
+          title: "Art Generated & Synced!",
+          description: "Your new artwork has been saved to your gallery and synced to the cloud.",
+          variant: "success",
+        })
+      } else {
+        GalleryStorage.saveImage(newImage) // Save local version
+        toast({
+          title: "Art Generated!",
+          description: "Your new artwork has been saved to your local gallery.",
+          variant: "success",
+        })
+      }
+    } catch (error: any) {
+      console.error("Generation failed:", error)
+      toast({
+        title: "Generation Failed",
+        description: error.message || "An unexpected error occurred during art generation.",
+        variant: "destructive",
+      })
+      setGeneratedImageUrl(null)
     } finally {
-      setIsGenerating(false)
+      setIsLoading(false)
       setProgress(0)
+      setUpscaleProgress(0)
+      setUpscaling(false)
     }
-  }, [settings, toast]) // Added toast to useCallback dependencies
+  }
 
   const handleUpscale = async () => {
-    if (!generatedImage) return
+    if (!generatedImageUrl || !currentImageId) return
 
-    setIsUpscaling(true)
-    setError(null)
+    setUpscaling(true)
+    setUpscaleProgress(0)
+    toast({
+      title: "Upscaling Image...",
+      description: "This may take a moment. Please do not close the tab.",
+      duration: 5000,
+    })
 
     try {
+      const imageToUpscale = GalleryStorage.getGallery().find((img) => img.id === currentImageId)
+      if (!imageToUpscale) {
+        throw new Error("Image not found in gallery for upscaling.")
+      }
+
       const response = await fetch("/api/upscale-image", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl: generatedImage }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageUrl: imageToUpscale.imageUrl }),
       })
 
       if (!response.ok) {
-        throw new Error("Failed to upscale image")
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to upscale image.")
       }
 
-      const result = await response.json()
-      setUpscaledImage(result.upscaledUrl)
-    } catch (err: any) {
-      setError(err.message)
+      const { upscaledImageUrl } = await response.json()
+
+      // Update the existing image in gallery with the upscaled URL
+      const updatedImage: GalleryImage = {
+        ...imageToUpscale,
+        imageUrl: upscaledImageUrl,
+        metadata: {
+          ...imageToUpscale.metadata,
+          filename: imageToUpscale.metadata.filename.replace(/\.(svg|png)$/, "-upscaled.png"),
+          fileSize: 0, // Reset, will be updated on re-upload
+        },
+      }
+
+      // Re-upload the upscaled image to cloud if it was cloud-stored
+      if (updatedImage.metadata.cloudStored) {
+        const uploadResult = await CloudSyncService.uploadImageFullResolution(updatedImage, (p) =>
+          setUpscaleProgress(p),
+        )
+        if (uploadResult.success && uploadResult.cloudImage) {
+          GalleryStorage.saveImage(uploadResult.cloudImage)
+          toast({
+            title: "Image Upscaled & Synced!",
+            description: "The upscaled image has been saved and synced to the cloud.",
+            variant: "success",
+          })
+        } else {
+          GalleryStorage.saveImage(updatedImage)
+          toast({
+            title: "Image Upscaled!",
+            description: "The upscaled image has been saved to your local gallery.",
+            variant: "success",
+          })
+        }
+      } else {
+        GalleryStorage.saveImage(updatedImage)
+        toast({
+          title: "Image Upscaled!",
+          description: "The upscaled image has been saved to your local gallery.",
+          variant: "success",
+        })
+      }
+
+      setGeneratedImageUrl(upscaledImageUrl)
+    } catch (error: any) {
+      console.error("Upscaling failed:", error)
+      toast({
+        title: "Upscaling Failed",
+        description: error.message || "An unexpected error occurred during upscaling.",
+        variant: "destructive",
+      })
     } finally {
-      setIsUpscaling(false)
+      setUpscaling(false)
+      setUpscaleProgress(0)
     }
   }
 
-  const handleDownload = (imageUrl: string, filename: string) => {
-    const link = document.createElement("a")
-    link.href = imageUrl
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
   const handleRandomize = () => {
-    setSettings({
-      ...settings,
-      seed: Math.floor(Math.random() * 100000),
-      // FIX: Randomize dataset from the DATASETS array
-      dataset: DATASETS[Math.floor(Math.random() * DATASETS.length)].value,
-      scenario: Object.keys(SCENARIOS)[Math.floor(Math.random() * Object.keys(SCENARIOS).length)],
-      colorScheme: Object.keys(COLOR_SCHEMES)[Math.floor(Math.random() * Object.keys(COLOR_SCHEMES).length)],
+    const randomDataset = DATASETS[Math.floor(Math.random() * DATASETS.length)]
+    const randomColorScheme = COLOR_SCHEMES[Math.floor(Math.random() * COLOR_SCHEMES.length)]
+    const randomSeed = Math.floor(Math.random() * 100000)
+    const randomSamples = Math.floor(Math.random() * (2000 - 500 + 1)) + 500 // 500-2000
+    const randomNoise = Number.parseFloat((Math.random() * 0.05).toFixed(3)) // 0-0.05
+
+    setSettings((prev) => ({
+      ...prev,
+      dataset: randomDataset,
+      colorScheme: randomColorScheme,
+      seed: randomSeed,
+      samples: randomSamples,
+      noise: randomNoise,
+      scenario:
+        prev.generationMode === "ai"
+          ? Object.keys(SCENARIOS)[Math.floor(Math.random() * Object.keys(SCENARIOS).length)]
+          : "none",
+    }))
+  }
+
+  const handleAuthSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setAuthLoading(true)
+    setAuthError(null)
+
+    let result: { success: boolean; error?: string }
+
+    if (authMode === "signIn") {
+      result = await CloudSyncService.signInWithEmail(authForm.email, authForm.password)
+    } else {
+      result = await CloudSyncService.signUpWithEmail(authForm.email, authForm.password, authForm.displayName)
+    }
+
+    if (result.success) {
+      toast({
+        title: `Successfully ${authMode === "signIn" ? "signed in" : "signed up"}!`,
+        description: "Cloud sync is now active.",
+        variant: "success",
+      })
+      // Clear form after successful auth
+      setAuthForm({ email: "", password: "", displayName: "" })
+    } else {
+      setAuthError(result.error || "Authentication failed.")
+      toast({
+        title: "Authentication Failed",
+        description: result.error || "Please check your credentials.",
+        variant: "destructive",
+      })
+    }
+    setAuthLoading(false)
+  }
+
+  const handleSignOut = async () => {
+    await CloudSyncService.signOut()
+    toast({
+      title: "Signed Out",
+      description: "Cloud sync has been disabled.",
+      variant: "default",
     })
   }
 
-  const handleImageSelect = (image: GalleryImage) => {
-    setSettings({
-      dataset: image.metadata.dataset,
-      scenario: image.metadata.scenario,
-      colorScheme: image.metadata.colorScheme,
-      seed: image.metadata.seed,
-      samples: image.metadata.samples,
-      noise: image.metadata.noise,
-      generationMode: image.metadata.generationMode,
-    })
-    setActiveTab("generate")
-  }
-
-  const handleSaveToGallery = useCallback(async () => {
-    if (generatedImage) {
-      try {
-        const compressed = await compressImage(generatedImage)
-        saveImageToGallery(compressed)
-        setGalleryImages(getGalleryImages())
+  const handleToggleSync = async (checked: boolean) => {
+    if (checked) {
+      const result = await CloudSyncService.enableSync()
+      if (result.success) {
         toast({
-          title: "Image Saved!",
-          description: "Your AI artwork has been added to the gallery.",
+          title: "Cloud Sync Enabled",
+          description: "Your gallery will now sync with the cloud.",
+          variant: "success",
         })
-      } catch (error) {
-        console.error("Error saving image to gallery:", error)
+      } else {
         toast({
-          title: "Save Failed",
-          description: "Could not save image to gallery.",
+          title: "Failed to Enable Sync",
+          description: result.error || "Please try again.",
           variant: "destructive",
         })
       }
     } else {
+      await CloudSyncService.disableSync()
       toast({
-        title: "No Image to Save",
-        description: "Please generate an AI image first.",
+        title: "Cloud Sync Disabled",
+        description: "Your gallery will no longer sync with the cloud.",
+        variant: "default",
+      })
+    }
+  }
+
+  const handleFullSync = async () => {
+    if (cloudSyncStatus.isSyncing) return
+    toast({
+      title: "Initiating Full Sync...",
+      description: "Comparing local and cloud galleries.",
+      duration: 3000,
+    })
+    const result = await CloudSyncService.performFullSync()
+    if (result.success) {
+      if (result.conflicts.length > 0) {
+        setSyncConflicts(result.conflicts)
+        toast({
+          title: "Sync Complete with Conflicts",
+          description: `${result.conflicts.length} conflicts found. Please resolve them.`,
+          variant: "warning",
+          duration: 5000,
+        })
+      } else {
+        toast({
+          title: "Full Sync Complete!",
+          description: "Your gallery is now up-to-date.",
+          variant: "success",
+        })
+      }
+    } else {
+      toast({
+        title: "Full Sync Failed",
+        description: result.error || "An error occurred during sync.",
         variant: "destructive",
       })
     }
-  }, [generatedImage, toast])
+  }
+
+  const handleResolveConflict = async (conflict: SyncConflict, resolution: "keep_local" | "keep_cloud") => {
+    await CloudSyncService.resolveConflict(conflict, resolution)
+    setSyncConflicts((prev) => prev.filter((c) => c.localImage.id !== conflict.localImage.id))
+    toast({
+      title: "Conflict Resolved",
+      description: `Image ${conflict.localImage.metadata.filename} resolved.`,
+      variant: "default",
+    })
+    // After resolving, trigger a re-load of the gallery to reflect changes
+    // This is handled by the CloudSyncService listener, but a manual trigger might be good for immediate UI update
+    // For now, rely on the listener.
+  }
+
+  const currentAuthUser = useMemo(() => supabase.auth.getUser(), [])
 
   return (
-    <div className="grid lg:grid-cols-3 gap-6 p-4 md:p-6">
-      <Card className="lg:col-span-2">
+    <TooltipProvider>
+      <Card className="w-full max-w-4xl mx-auto">
         <CardHeader>
-          <CardTitle>FlowSketch Art Generator</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5" />
+            FlowSketch Art Generator
+          </CardTitle>
+          <CardDescription>Generate beautiful mathematical and AI-enhanced artworks.</CardDescription>
         </CardHeader>
         <CardContent className="grid md:grid-cols-2 gap-6">
-          <div className="flex flex-col gap-4">
-            {/* Generation Mode */}
-            <div className="space-y-2">
-              <Label>Generation Mode</Label>
-              <Select
-                value={settings.generationMode}
-                onValueChange={(value: "svg" | "ai") => setSettings({ ...settings, generationMode: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="svg">
-                    <div className="flex items-center gap-2">
-                      <Palette className="h-4 w-4" />
-                      Mathematical SVG
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="ai">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="h-4 w-4" />
-                      AI Enhanced
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          {/* Left Panel: Settings */}
+          <div className="space-y-6">
+            <Tabs
+              value={settings.generationMode}
+              onValueChange={(value) =>
+                setSettings((prev) => ({
+                  ...prev,
+                  generationMode: value as "svg" | "ai",
+                  scenario: value === "svg" ? "none" : prev.scenario, // Reset scenario for SVG
+                }))
+              }
+              className="w-full"
+            >
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="svg">
+                  <ImageIcon className="h-4 w-4 mr-2" />
+                  Mathematical Art
+                </TabsTrigger>
+                <TabsTrigger value="ai">
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  AI Enhanced
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="svg" className="mt-4 space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="dataset">Dataset</Label>
+                  <Select
+                    value={settings.dataset}
+                    onValueChange={(value) => setSettings((prev) => ({ ...prev, dataset: value }))}
+                  >
+                    <SelectTrigger id="dataset">
+                      <SelectValue placeholder="Select a dataset" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DATASETS.map((dataset) => (
+                        <SelectItem key={dataset} value={dataset}>
+                          {dataset.charAt(0).toUpperCase() + dataset.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="color-scheme">Color Scheme</Label>
+                  <Select
+                    value={settings.colorScheme}
+                    onValueChange={(value) => setSettings((prev) => ({ ...prev, colorScheme: value }))}
+                  >
+                    <SelectTrigger id="color-scheme">
+                      <SelectValue placeholder="Select a color scheme" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {COLOR_SCHEMES.map((scheme) => (
+                        <SelectItem key={scheme} value={scheme}>
+                          {scheme.charAt(0).toUpperCase() + scheme.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </TabsContent>
+              <TabsContent value="ai" className="mt-4 space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="dataset-ai">Base Dataset</Label>
+                  <Select
+                    value={settings.dataset}
+                    onValueChange={(value) => setSettings((prev) => ({ ...prev, dataset: value }))}
+                  >
+                    <SelectTrigger id="dataset-ai">
+                      <SelectValue placeholder="Select a base dataset" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {DATASETS.map((dataset) => (
+                        <SelectItem key={dataset} value={dataset}>
+                          {dataset.charAt(0).toUpperCase() + dataset.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="scenario">Creative Scenario</Label>
+                  <Select
+                    value={settings.scenario}
+                    onValueChange={(value) => setSettings((prev) => ({ ...prev, scenario: value }))}
+                  >
+                    <SelectTrigger id="scenario">
+                      <SelectValue placeholder="Select a creative scenario" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(SCENARIOS).map(([key, value]) => (
+                        <SelectItem key={key} value={key}>
+                          {value}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="color-scheme-ai">Color Scheme</Label>
+                  <Select
+                    value={settings.colorScheme}
+                    onValueChange={(value) => setSettings((prev) => ({ ...prev, colorScheme: value }))}
+                  >
+                    <SelectTrigger id="color-scheme-ai">
+                      <SelectValue placeholder="Select a color scheme" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {COLOR_SCHEMES.map((scheme) => (
+                        <SelectItem key={scheme} value={scheme}>
+                          {scheme.charAt(0).toUpperCase() + scheme.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="upscale">Upscale to 4K (AI Only)</Label>
+                  <Switch
+                    id="upscale"
+                    checked={settings.upscale}
+                    onCheckedChange={(checked) => setSettings((prev) => ({ ...prev, upscale: checked }))}
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
 
-            <div className="grid gap-2">
-              <Label htmlFor="dataset">Mathematical Dataset</Label>
-              <Select value={settings.dataset} onValueChange={(value) => setSettings({ ...settings, dataset: value })}>
-                <SelectTrigger id="dataset">
-                  <SelectValue placeholder="Select a dataset" />
-                </SelectTrigger>
-                <SelectContent>
-                  {DATASETS.map((dataset) => (
-                    <SelectItem key={dataset.value} value={dataset.value}>
-                      {dataset.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
+            <div className="space-y-2">
               <Label htmlFor="seed">Seed: {settings.seed}</Label>
-              <Slider
+              <Input
                 id="seed"
-                min={0}
-                max={100000}
-                step={1}
-                value={[settings.seed]}
-                onValueChange={([val]) => setSettings({ ...settings, seed: val })}
+                type="number"
+                value={settings.seed}
+                onChange={(e) => setSettings((prev) => ({ ...prev, seed: Number.parseInt(e.target.value) || 0 }))}
               />
-              <Button
-                variant="outline"
-                onClick={() => setSettings({ ...settings, seed: Math.floor(Math.random() * 100000) })}
-              >
-                Randomize Seed
-              </Button>
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="num-samples">Number of Samples: {settings.samples}</Label>
+            <div className="space-y-2">
+              <Label htmlFor="samples">Samples: {settings.samples}</Label>
               <Slider
-                id="num-samples"
+                id="samples"
                 min={100}
                 max={5000}
                 step={100}
                 value={[settings.samples]}
-                onValueChange={([val]) => setSettings({ ...settings, samples: val })}
+                onValueChange={(value) => setSettings((prev) => ({ ...prev, samples: value[0] }))}
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="noise">Noise: {settings.noise.toFixed(2)}</Label>
+            <div className="space-y-2">
+              <Label htmlFor="noise">Noise: {settings.noise.toFixed(3)}</Label>
               <Slider
                 id="noise"
                 min={0}
-                max={0.5}
-                step={0.01}
+                max={0.1}
+                step={0.001}
                 value={[settings.noise]}
-                onValueChange={([val]) => setSettings({ ...settings, noise: val })}
+                onValueChange={(value) => setSettings((prev) => ({ ...prev, noise: value[0] }))}
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="color-scheme">Color Scheme</Label>
-              <Select
-                value={settings.colorScheme}
-                onValueChange={(value) => setSettings({ ...settings, colorScheme: value })}
-              >
-                <SelectTrigger id="color-scheme">
-                  <SelectValue placeholder="Select a color scheme" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(COLOR_SCHEMES).map(([key, value]) => (
-                    <SelectItem key={key} value={key}>
-                      {value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            {settings.generationMode === "ai" && (
-              <div className="grid gap-2">
-                <Label htmlFor="scenario">Creative Scenario</Label>
-                <Select
-                  value={settings.scenario}
-                  onValueChange={(value) => setSettings({ ...settings, scenario: value })}
-                >
-                  <SelectTrigger id="scenario">
-                    <SelectValue placeholder="Select a scenario" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(SCENARIOS).map(([key, value]) => (
-                      <SelectItem key={key} value={key}>
-                        {value.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            <Button onClick={handleGenerate} disabled={isGenerating || isUpscaling}>
-              {isGenerating || isUpscaling ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="mr-2 h-4 w-4" />
-                  Generate Art
-                </>
-              )}
-            </Button>
-            <Button onClick={handleRandomize} variant="outline">
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Randomize Settings
-            </Button>
-            {generatedImage && (
-              <Button onClick={handleSaveToGallery} disabled={isGenerating || isUpscaling}>
-                <Download className="mr-2 h-4 w-4" /> Save to Gallery
+
+            <div className="flex gap-2">
+              <Button onClick={handleRandomize} variant="outline" className="flex-1 bg-transparent">
+                <Shuffle className="h-4 w-4 mr-2" />
+                Randomize Settings
               </Button>
-            )}
-          </div>
-          <div className="flex flex-col items-center justify-center">
-            <div className="w-full max-w-md">
-              <div className="bg-muted rounded-lg overflow-hidden relative">
-                {(isGenerating || isUpscaling) && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                  </div>
-                )}
-                {generatedImage ? (
+              <Button onClick={handleGenerate} className="flex-1" disabled={isLoading || upscaling}>
+                {isLoading ? (
                   <>
-                    <img
-                      src={generatedImage || "/placeholder.svg"}
-                      alt="Generated artwork"
-                      className="w-full h-full object-cover"
-                    />
-                    {!upscaledImage && settings.generationMode === "ai" && (
-                      <Button onClick={handleUpscale} disabled={isUpscaling} className="absolute bottom-4 right-4">
-                        {isUpscaling ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Upscaling...
-                          </>
-                        ) : (
-                          <>
-                            <Zap className="mr-2 h-4 w-4" />
-                            Upscale to 4K
-                          </>
-                        )}
-                      </Button>
-                    )}
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Generating...
                   </>
                 ) : (
-                  <div className="flex items-center justify-center w-full h-full text-muted-foreground">
-                    No art generated yet.
+                  <>
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Generate Art
+                  </>
+                )}
+              </Button>
+            </div>
+            {(isLoading || upscaling) && (
+              <Progress value={isLoading ? progress : upscaleProgress} className="w-full mt-4" />
+            )}
+          </div>
+
+          {/* Right Panel: Generated Image & Cloud Sync */}
+          <div className="space-y-6">
+            <Card className="h-64 flex items-center justify-center bg-muted relative overflow-hidden">
+              {generatedImageUrl ? (
+                <img
+                  src={generatedImageUrl || "/placeholder.svg"}
+                  alt="Generated Art"
+                  className="object-contain h-full w-full"
+                />
+              ) : (
+                <div className="text-muted-foreground text-center">
+                  <ImageIcon className="h-12 w-12 mx-auto mb-2" />
+                  <p>Your art will appear here</p>
+                </div>
+              )}
+              {generatedImageUrl && (
+                <div className="absolute bottom-4 right-4 flex gap-2">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        onClick={() =>
+                          handleDownloadImage(generatedImageUrl, settings.generationMode === "svg" ? "svg" : "png")
+                        }
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Download Image</TooltipContent>
+                  </Tooltip>
+                  {settings.generationMode === "ai" && !upscaling && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button size="icon" onClick={handleUpscale} disabled={upscaling}>
+                          {upscaling ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Upscale to 4K</TooltipContent>
+                    </Tooltip>
+                  )}
+                </div>
+              )}
+            </Card>
+
+            {/* Cloud Sync Section */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Cloud className="h-4 w-4" /> Cloud Sync
+                </CardTitle>
+                <Switch
+                  checked={cloudSyncStatus.isEnabled}
+                  onCheckedChange={handleToggleSync}
+                  disabled={!cloudSyncStatus.isAuthenticated || cloudSyncStatus.isSyncing}
+                />
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground mb-4">
+                  {cloudSyncStatus.isAuthenticated
+                    ? cloudSyncStatus.isEnabled
+                      ? `Sync enabled. Last sync: ${cloudSyncStatus.lastSync ? new Date(cloudSyncStatus.lastSync).toLocaleString() : "Never"}. Used: ${GalleryStorage.formatFileSize(cloudSyncStatus.storageUsed)} / ${GalleryStorage.formatFileSize(cloudSyncStatus.storageQuota)}`
+                      : "Sync disabled. Enable to backup your gallery."
+                    : "Sign in to enable cloud sync and backup your gallery."}
+                </p>
+
+                {!cloudSyncStatus.isAuthenticated ? (
+                  <form onSubmit={handleAuthSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="you@example.com"
+                          value={authForm.email}
+                          onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
+                          required
+                          className="pl-8"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password">Password</Label>
+                      <div className="relative">
+                        <Lock className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={authForm.password}
+                          onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+                          required
+                          className="pl-8 pr-8"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-0 top-1/2 -translate-y-1/2 h-8 w-8"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                    </div>
+                    {authMode === "signUp" && (
+                      <div className="space-y-2">
+                        <Label htmlFor="displayName">Display Name (Optional)</Label>
+                        <div className="relative">
+                          <User className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="displayName"
+                            type="text"
+                            placeholder="Your Name"
+                            value={authForm.displayName}
+                            onChange={(e) => setAuthForm({ ...authForm, displayName: e.target.value })}
+                            className="pl-8"
+                          />
+                        </div>
+                      </div>
+                    )}
+                    {authError && <p className="text-destructive text-sm">{authError}</p>}
+                    <Button type="submit" className="w-full" disabled={authLoading}>
+                      {authLoading ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : authMode === "signIn" ? (
+                        "Sign In"
+                      ) : (
+                        "Sign Up"
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="w-full"
+                      onClick={() => setAuthMode(authMode === "signIn" ? "signUp" : "signIn")}
+                    >
+                      {authMode === "signIn" ? "Need an account? Sign Up" : "Already have an account? Sign In"}
+                    </Button>
+                  </form>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 text-sm">
+                      <User className="h-4 w-4" />
+                      <span>{cloudSyncStatus.isAuthenticated ? supabase.auth.user()?.email : "Not signed in"}</span>
+                    </div>
+                    <Button
+                      onClick={handleFullSync}
+                      variant="outline"
+                      className="w-full bg-transparent"
+                      disabled={cloudSyncStatus.isSyncing}
+                    >
+                      {cloudSyncStatus.isSyncing ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Syncing...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCcw className="h-4 w-4 mr-2" />
+                          Perform Full Sync
+                        </>
+                      )}
+                    </Button>
+                    <Button onClick={handleSignOut} variant="destructive" className="w-full">
+                      Sign Out
+                    </Button>
                   </div>
                 )}
-              </div>
-            </div>
+              </CardContent>
+            </Card>
+
+            {syncConflicts.length > 0 && (
+              <Card className="border-yellow-500 bg-yellow-50/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-yellow-700">
+                    <Info className="h-5 w-5" />
+                    Sync Conflicts ({syncConflicts.length})
+                  </CardTitle>
+                  <CardDescription>
+                    Some images have different versions locally and in the cloud. Please choose which version to keep.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {syncConflicts.map((conflict) => (
+                    <div key={conflict.localImage.id} className="border p-3 rounded-md space-y-2">
+                      <p className="font-medium text-sm">
+                        {conflict.localImage.metadata.filename} (Conflict Type: {conflict.type.replace("_", " ")})
+                      </p>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <p className="font-semibold">Local Version:</p>
+                          <p>Created: {new Date(conflict.localImage.metadata.createdAt).toLocaleString()}</p>
+                          <p>Size: {GalleryStorage.formatFileSize(conflict.localImage.metadata.fileSize || 0)}</p>
+                        </div>
+                        <div>
+                          <p className="font-semibold">Cloud Version:</p>
+                          <p>Created: {new Date(conflict.cloudImage.metadata.createdAt).toLocaleString()}</p>
+                          <p>Size: {GalleryStorage.formatFileSize(conflict.cloudImage.metadata.fileSize || 0)}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2 mt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleResolveConflict(conflict, "keep_local")}
+                          className="flex-1"
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" /> Keep Local
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleResolveConflict(conflict, "keep_cloud")}
+                          className="flex-1"
+                        >
+                          <UploadCloud className="h-4 w-4 mr-1" /> Keep Cloud
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
           </div>
         </CardContent>
       </Card>
-      <Card className="lg:col-span-1">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Archive className="h-5 w-5" /> Gallery
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Gallery images={galleryImages} onImageSelect={handleImageSelect} />
-        </CardContent>
-      </Card>
-      <CloudSync />
-    </div>
+    </TooltipProvider>
   )
+}
+
+// Helper function for downloading images
+function handleDownloadImage(imageUrl: string, type: "svg" | "png") {
+  const link = document.createElement("a")
+  link.href = imageUrl
+  link.download = `flowsketch-art-${Date.now()}.${type}`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
 }
