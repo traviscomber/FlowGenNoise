@@ -1,22 +1,21 @@
 "use client"
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect, useCallback } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Palette, Wand2, Download, RefreshCw, Zap, Sparkles, Archive, Settings, Info, Award } from "lucide-react"
-import { FlowModel } from "@/lib/flow-model"
+import { Wand2, Download, Archive, Palette, Sparkles, RefreshCw, Zap } from "lucide-react"
+import { generateDataset } from "@/lib/flow-model"
 import { PlotUtils } from "@/lib/plot-utils"
 import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
 import { Gallery } from "@/components/gallery"
+import { compressImage } from "@/lib/image-compression"
+import { saveImageToGallery, getGalleryImages } from "@/lib/gallery-storage"
+import { CloudSync } from "./cloud-sync"
+import { useToast } from "@/components/ui/use-toast"
+import { Loader2 } from "lucide-react"
 
 interface GenerationSettings {
   dataset: string
@@ -28,12 +27,70 @@ interface GenerationSettings {
   generationMode: "svg" | "ai"
 }
 
+const COLOR_SCHEMES = {
+  viridis: "Viridis (Green-Purple)",
+  plasma: "Plasma (Purple-Yellow)",
+  inferno: "Inferno (Red-Yellow)",
+  magma: "Magma (Purple-Red)",
+  cividis: "Cividis (Blue-Green)",
+  rainbow: "Rainbow (Full Spectrum)",
+  grayscale: "Grayscale (Black-White)",
+  cool: "Cool (Blue-Green)",
+  hot: "Hot (Red-Yellow)",
+  spring: "Spring (Pink-Yellow)",
+  summer: "Summer (Green-Yellow)",
+  autumn: "Autumn (Red-Orange)",
+  winter: "Winter (Blue-Purple)",
+  spectral: "Spectral (Diverging)",
+  RdYlGn: "Red-Yellow-Green",
+  PuOr: "Purple-Orange",
+  BrBG: "Brown-Green",
+  PiYG: "Pink-Yellow-Green",
+  PRGn: "Purple-Green",
+  RdBu: "Red-Blue",
+  RdGy: "Red-Gray",
+  RdPu: "Red-Purple",
+  YlGnBu: "Yellow-Green-Blue",
+  GnBu: "Green-Blue",
+  OrRd: "Orange-Red",
+  PuBuGn: "Purple-Blue-Green",
+  YlOrRd: "Yellow-Orange-Red",
+  Blues: "Blues",
+  Greens: "Greens",
+  Greys: "Greys",
+  Oranges: "Oranges",
+  Purples: "Purples",
+  Reds: "Reds",
+} as const
+
+const SCENARIOS = {
+  none: { label: "Pure Mathematical", backgroundColor: "white" },
+  enchanted_forest: { label: "Enchanted Forest", backgroundColor: "#8A2BE2" },
+  deep_ocean: { label: "Deep Ocean", backgroundColor: "#00008B" },
+  cosmic_nebula: { label: "Cosmic Nebula", backgroundColor: "#FF4500" },
+  cyberpunk_city: { label: "Cyberpunk City", backgroundColor: "#808080" },
+  ancient_temple: { label: "Ancient Temple", backgroundColor: "#A52A2A" },
+  crystal_cave: { label: "Crystal Cave", backgroundColor: "#ADD8E6" },
+  aurora_borealis: { label: "Aurora Borealis", backgroundColor: "#FF00FF" },
+  volcanic_landscape: { label: "Volcanic Landscape", backgroundColor: "#A0522D" },
+  neural_connections: { label: "Neural Connections", backgroundColor: "#FFD700" },
+} as const
+
+const DATASETS = [
+  { value: "gaussian", label: "Gaussian Blobs" },
+  { value: "spirals", label: "Spirals" },
+  { value: "moons", label: "Moons" },
+  { value: "checkerboard", label: "Checkerboard" },
+  { value: "grid", label: "Grid" },
+  { value: "neural", label: "Neural Connection" },
+]
+
 export function FlowArtGenerator() {
   const [settings, setSettings] = useState<GenerationSettings>({
-    dataset: "spiral",
+    dataset: "gaussian",
     scenario: "none",
     colorScheme: "viridis",
-    seed: Math.floor(Math.random() * 10000),
+    seed: Math.floor(Math.random() * 100000),
     samples: 1000,
     noise: 0.05,
     generationMode: "svg",
@@ -47,55 +104,27 @@ export function FlowArtGenerator() {
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("generate")
   const [lastGeneration, setLastGeneration] = useState<GalleryImage | null>(null)
+  const [galleryImages, setGalleryImages] = useState<string[]>([])
+  const { toast } = useToast()
 
-  const datasets = [
-    { value: "spiral", label: "Spiral Flow" },
-    { value: "moons", label: "Two Moons" },
-    { value: "circles", label: "Concentric Circles" },
-    { value: "checkerboard", label: "Checkerboard" },
-    { value: "swiss_roll", label: "Swiss Roll" },
-    { value: "s_curve", label: "S-Curve" },
-    { value: "blobs", label: "Gaussian Blobs" },
-    { value: "rings", label: "Nested Rings" },
-  ]
+  useEffect(() => {
+    setGalleryImages(getGalleryImages())
+  }, [])
 
-  const scenarios = [
-    { value: "none", label: "Pure Mathematical" },
-    { value: "enchanted_forest", label: "Enchanted Forest" },
-    { value: "deep_ocean", label: "Deep Ocean" },
-    { value: "cosmic_nebula", label: "Cosmic Nebula" },
-    { value: "cyberpunk_city", label: "Cyberpunk City" },
-    { value: "ancient_temple", label: "Ancient Temple" },
-    { value: "crystal_cave", label: "Crystal Cave" },
-    { value: "aurora_borealis", label: "Aurora Borealis" },
-    { value: "volcanic_landscape", label: "Volcanic Landscape" },
-  ]
-
-  const colorSchemes = [
-    { value: "viridis", label: "Viridis" },
-    { value: "plasma", label: "Plasma" },
-    { value: "inferno", label: "Inferno" },
-    { value: "magma", label: "Magma" },
-    { value: "cividis", label: "Cividis" },
-    { value: "turbo", label: "Turbo" },
-    { value: "cool", label: "Cool Blues" },
-    { value: "warm", label: "Warm Sunset" },
-    { value: "rainbow", label: "Rainbow" },
-    { value: "monochrome", label: "Monochrome" },
-  ]
-
-  const handleGenerate = async () => {
+  const handleGenerate = useCallback(async () => {
     setIsGenerating(true)
     setError(null)
     setProgress(0)
     setGeneratedImage(null)
     setUpscaledImage(null)
 
+    console.log("Generating with mode:", settings.generationMode) // Added for debugging
+
     try {
       if (settings.generationMode === "svg") {
         // Generate mathematical SVG
         setProgress(20)
-        const data = FlowModel.generateDataset(settings.dataset, settings.samples, settings.seed, settings.noise)
+        const data = generateDataset(settings.dataset, settings.seed, settings.samples, settings.noise)
 
         setProgress(60)
         const svg = PlotUtils.createSVGPlot(data, settings.colorScheme, 800, 600)
@@ -125,16 +154,20 @@ export function FlowArtGenerator() {
       } else {
         // Generate AI-enhanced version
         setProgress(10)
+        // No need to generate SVG data on the client if the API doesn't use it for DALL-E 3 prompt
+        // const data = FlowModel.generateDataset(settings.dataset, settings.samples, settings.seed, settings.noise)
+        // const svg = PlotUtils.createSVGPlot(data, settings.colorScheme, 1024, 1024)
 
         setProgress(50)
         const response = await fetch("/api/generate-ai-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            // Removed svgData as the API route doesn't use it for DALL-E 3 prompt generation
             dataset: settings.dataset,
             seed: settings.seed,
             colorScheme: settings.colorScheme,
-            numSamples: settings.samples,
+            numSamples: settings.samples, // Corrected parameter name
             noise: settings.noise,
             scenario: settings.scenario,
           }),
@@ -149,12 +182,12 @@ export function FlowArtGenerator() {
         const result = await response.json()
 
         setProgress(100)
-        setGeneratedImage(result.image)
+        setGeneratedImage(result.image) // Changed from result.imageUrl to result.image as per API response
 
         // Save to gallery
         const image: GalleryImage = {
           id: `ai-flow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          imageUrl: result.imageUrl,
+          imageUrl: result.image, // Changed from result.imageUrl to result.image
           metadata: {
             ...settings,
             createdAt: Date.now(),
@@ -173,7 +206,7 @@ export function FlowArtGenerator() {
       setIsGenerating(false)
       setProgress(0)
     }
-  }
+  }, [settings, toast]) // Added toast to useCallback dependencies
 
   const handleUpscale = async () => {
     if (!generatedImage) return
@@ -213,10 +246,11 @@ export function FlowArtGenerator() {
   const handleRandomize = () => {
     setSettings({
       ...settings,
-      seed: Math.floor(Math.random() * 10000),
-      dataset: datasets[Math.floor(Math.random() * datasets.length)].value,
-      scenario: scenarios[Math.floor(Math.random() * scenarios.length)].value,
-      colorScheme: colorSchemes[Math.floor(Math.random() * colorSchemes.length)].value,
+      seed: Math.floor(Math.random() * 100000),
+      // FIX: Randomize dataset from the DATASETS array
+      dataset: DATASETS[Math.floor(Math.random() * DATASETS.length)].value,
+      scenario: Object.keys(SCENARIOS)[Math.floor(Math.random() * Object.keys(SCENARIOS).length)],
+      colorScheme: Object.keys(COLOR_SCHEMES)[Math.floor(Math.random() * Object.keys(COLOR_SCHEMES).length)],
     })
   }
 
@@ -233,327 +267,235 @@ export function FlowArtGenerator() {
     setActiveTab("generate")
   }
 
+  const handleSaveToGallery = useCallback(async () => {
+    if (generatedImage) {
+      try {
+        const compressed = await compressImage(generatedImage)
+        saveImageToGallery(compressed)
+        setGalleryImages(getGalleryImages())
+        toast({
+          title: "Image Saved!",
+          description: "Your AI artwork has been added to the gallery.",
+        })
+      } catch (error) {
+        console.error("Error saving image to gallery:", error)
+        toast({
+          title: "Save Failed",
+          description: "Could not save image to gallery.",
+          variant: "destructive",
+        })
+      }
+    } else {
+      toast({
+        title: "No Image to Save",
+        description: "Please generate an AI image first.",
+        variant: "destructive",
+      })
+    }
+  }, [generatedImage, toast])
+
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-          FlowSketch Art Generator
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          Create stunning mathematical art with AI enhancement and aesthetic scoring
-        </p>
-      </div>
+    <div className="grid lg:grid-cols-3 gap-6 p-4 md:p-6">
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle>FlowSketch Art Generator</CardTitle>
+        </CardHeader>
+        <CardContent className="grid md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-4">
+            {/* Generation Mode */}
+            <div className="space-y-2">
+              <Label>Generation Mode</Label>
+              <Select
+                value={settings.generationMode}
+                onValueChange={(value: "svg" | "ai") => setSettings({ ...settings, generationMode: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="svg">
+                    <div className="flex items-center gap-2">
+                      <Palette className="h-4 w-4" />
+                      Mathematical SVG
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="ai">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-4 w-4" />
+                      AI Enhanced
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="generate" className="flex items-center gap-2">
-            <Wand2 className="h-4 w-4" />
-            Generate Art
-          </TabsTrigger>
-          <TabsTrigger value="gallery" className="flex items-center gap-2">
-            <Archive className="h-4 w-4" />
-            Gallery
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="generate" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Settings Panel */}
-            <Card className="lg:col-span-1">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  Generation Settings
-                </CardTitle>
-                <CardDescription>Configure your mathematical art parameters</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Generation Mode */}
-                <div className="space-y-2">
-                  <Label>Generation Mode</Label>
-                  <Select
-                    value={settings.generationMode}
-                    onValueChange={(value: "svg" | "ai") => setSettings({ ...settings, generationMode: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="svg">
-                        <div className="flex items-center gap-2">
-                          <Palette className="h-4 w-4" />
-                          Mathematical SVG
-                        </div>
+            <div className="grid gap-2">
+              <Label htmlFor="dataset">Mathematical Dataset</Label>
+              <Select value={settings.dataset} onValueChange={(value) => setSettings({ ...settings, dataset: value })}>
+                <SelectTrigger id="dataset">
+                  <SelectValue placeholder="Select a dataset" />
+                </SelectTrigger>
+                <SelectContent>
+                  {DATASETS.map((dataset) => (
+                    <SelectItem key={dataset.value} value={dataset.value}>
+                      {dataset.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="seed">Seed: {settings.seed}</Label>
+              <Slider
+                id="seed"
+                min={0}
+                max={100000}
+                step={1}
+                value={[settings.seed]}
+                onValueChange={([val]) => setSettings({ ...settings, seed: val })}
+              />
+              <Button
+                variant="outline"
+                onClick={() => setSettings({ ...settings, seed: Math.floor(Math.random() * 100000) })}
+              >
+                Randomize Seed
+              </Button>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="num-samples">Number of Samples: {settings.samples}</Label>
+              <Slider
+                id="num-samples"
+                min={100}
+                max={5000}
+                step={100}
+                value={[settings.samples]}
+                onValueChange={([val]) => setSettings({ ...settings, samples: val })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="noise">Noise: {settings.noise.toFixed(2)}</Label>
+              <Slider
+                id="noise"
+                min={0}
+                max={0.5}
+                step={0.01}
+                value={[settings.noise]}
+                onValueChange={([val]) => setSettings({ ...settings, noise: val })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="color-scheme">Color Scheme</Label>
+              <Select
+                value={settings.colorScheme}
+                onValueChange={(value) => setSettings({ ...settings, colorScheme: value })}
+              >
+                <SelectTrigger id="color-scheme">
+                  <SelectValue placeholder="Select a color scheme" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(COLOR_SCHEMES).map(([key, value]) => (
+                    <SelectItem key={key} value={key}>
+                      {value}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {settings.generationMode === "ai" && (
+              <div className="grid gap-2">
+                <Label htmlFor="scenario">Creative Scenario</Label>
+                <Select
+                  value={settings.scenario}
+                  onValueChange={(value) => setSettings({ ...settings, scenario: value })}
+                >
+                  <SelectTrigger id="scenario">
+                    <SelectValue placeholder="Select a scenario" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(SCENARIOS).map(([key, value]) => (
+                      <SelectItem key={key} value={key}>
+                        {value.label}
                       </SelectItem>
-                      <SelectItem value="ai">
-                        <div className="flex items-center gap-2">
-                          <Sparkles className="h-4 w-4" />
-                          AI Enhanced
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Dataset */}
-                <div className="space-y-2">
-                  <Label>Mathematical Dataset</Label>
-                  <Select
-                    value={settings.dataset}
-                    onValueChange={(value) => setSettings({ ...settings, dataset: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {datasets.map((dataset) => (
-                        <SelectItem key={dataset.value} value={dataset.value}>
-                          {dataset.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Scenario */}
-                {settings.generationMode === "ai" && (
-                  <div className="space-y-2">
-                    <Label>Creative Scenario</Label>
-                    <Select
-                      value={settings.scenario}
-                      onValueChange={(value) => setSettings({ ...settings, scenario: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {scenarios.map((scenario) => (
-                          <SelectItem key={scenario.value} value={scenario.value}>
-                            {scenario.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
-                {/* Color Scheme */}
-                <div className="space-y-2">
-                  <Label>Color Scheme</Label>
-                  <Select
-                    value={settings.colorScheme}
-                    onValueChange={(value) => setSettings({ ...settings, colorScheme: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {colorSchemes.map((scheme) => (
-                        <SelectItem key={scheme.value} value={scheme.value}>
-                          {scheme.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Seed */}
-                <div className="space-y-2">
-                  <Label>Random Seed</Label>
-                  <Input
-                    type="number"
-                    value={settings.seed}
-                    onChange={(e) => setSettings({ ...settings, seed: Number.parseInt(e.target.value) || 0 })}
-                  />
-                </div>
-
-                {/* Samples */}
-                <div className="space-y-2">
-                  <Label>Sample Count: {settings.samples}</Label>
-                  <Slider
-                    value={[settings.samples]}
-                    onValueChange={([value]) => setSettings({ ...settings, samples: value })}
-                    min={100}
-                    max={5000}
-                    step={100}
-                  />
-                </div>
-
-                {/* Noise */}
-                <div className="space-y-2">
-                  <Label>Noise Level: {settings.noise.toFixed(3)}</Label>
-                  <Slider
-                    value={[settings.noise]}
-                    onValueChange={([value]) => setSettings({ ...settings, noise: value })}
-                    min={0}
-                    max={0.2}
-                    step={0.001}
-                  />
-                </div>
-
-                <Separator />
-
-                {/* Action Buttons */}
-                <div className="space-y-2">
-                  <Button onClick={handleGenerate} disabled={isGenerating} className="w-full">
-                    {isGenerating ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                        Generating...
-                      </>
-                    ) : (
-                      <>
-                        <Wand2 className="h-4 w-4 mr-2" />
-                        Generate Art
-                      </>
-                    )}
-                  </Button>
-
-                  <Button onClick={handleRandomize} variant="outline" className="w-full bg-transparent">
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Randomize Settings
-                  </Button>
-                </div>
-
-                {/* Progress */}
-                {isGenerating && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Progress</span>
-                      <span>{progress}%</span>
-                    </div>
-                    <Progress value={progress} />
-                  </div>
-                )}
-
-                {/* Info */}
-                <Alert>
-                  <Info className="h-4 w-4" />
-                  <AlertDescription>
-                    {settings.generationMode === "svg"
-                      ? "Mathematical SVG generation creates precise geometric patterns based on flow dynamics."
-                      : "AI enhancement transforms mathematical patterns into artistic interpretations using DALL-E 3."}
-                  </AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
-
-            {/* Preview Panel */}
-            <Card className="lg:col-span-2">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Palette className="h-5 w-5" />
-                  Generated Artwork
-                  {lastGeneration?.aestheticScore && (
-                    <Badge variant="outline" className="ml-2">
-                      <Award className="h-3 w-3 mr-1" />
-                      {lastGeneration.aestheticScore.score}/10
-                    </Badge>
-                  )}
-                </CardTitle>
-                <CardDescription>
-                  Your mathematical art will appear here
-                  {lastGeneration && (
-                    <span className="ml-2">
-                      • Generated: {new Date(lastGeneration.metadata.createdAt).toLocaleTimeString()}
-                    </span>
-                  )}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {error && (
-                  <Alert className="mb-4">
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                )}
-
-                {generatedImage ? (
-                  <div className="space-y-4">
-                    <div className="relative">
-                      <img
-                        src={generatedImage || "/placeholder.svg"}
-                        alt="Generated artwork"
-                        className="w-full h-auto rounded-lg border shadow-lg"
-                      />
-                      {upscaledImage && (
-                        <div className="absolute top-2 right-2">
-                          <Badge variant="default" className="bg-green-600">
-                            <Zap className="h-3 w-3 mr-1" />
-                            4K Enhanced
-                          </Badge>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex gap-2 flex-wrap">
-                      <Button
-                        onClick={() =>
-                          handleDownload(
-                            upscaledImage || generatedImage,
-                            `flowsketch-${settings.dataset}-${Date.now()}.${settings.generationMode === "svg" ? "svg" : "png"}`,
-                          )
-                        }
-                        className="flex-1"
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        Download {upscaledImage ? "4K" : "Original"}
-                      </Button>
-
-                      {!upscaledImage && settings.generationMode !== "svg" && (
-                        <Button onClick={handleUpscale} disabled={isUpscaling} variant="outline">
-                          {isUpscaling ? (
-                            <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
-                              Upscaling...
-                            </>
-                          ) : (
-                            <>
-                              <Zap className="h-4 w-4 mr-2" />
-                              Upscale to 4K
-                            </>
-                          )}
-                        </Button>
-                      )}
-                    </div>
-
-                    {/* Settings Summary */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-                      <div className="text-center p-2 bg-muted rounded">
-                        <div className="font-medium">{settings.dataset}</div>
-                        <div className="text-muted-foreground">Dataset</div>
-                      </div>
-                      <div className="text-center p-2 bg-muted rounded">
-                        <div className="font-medium">{settings.samples}</div>
-                        <div className="text-muted-foreground">Samples</div>
-                      </div>
-                      <div className="text-center p-2 bg-muted rounded">
-                        <div className="font-medium">{settings.noise.toFixed(3)}</div>
-                        <div className="text-muted-foreground">Noise</div>
-                      </div>
-                      <div className="text-center p-2 bg-muted rounded">
-                        <div className="font-medium">{settings.seed}</div>
-                        <div className="text-muted-foreground">Seed</div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <Palette className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p className="text-lg font-medium mb-2">No artwork generated yet</p>
-                    <p className="text-sm">
-                      Configure your settings and click "Generate Art" to create your masterpiece
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            <Button onClick={handleGenerate} disabled={isGenerating || isUpscaling}>
+              {isGenerating || isUpscaling ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="mr-2 h-4 w-4" />
+                  Generate Art
+                </>
+              )}
+            </Button>
+            <Button onClick={handleRandomize} variant="outline">
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Randomize Settings
+            </Button>
+            {generatedImage && (
+              <Button onClick={handleSaveToGallery} disabled={isGenerating || isUpscaling}>
+                <Download className="mr-2 h-4 w-4" /> Save to Gallery
+              </Button>
+            )}
           </div>
-        </TabsContent>
-
-        <TabsContent value="gallery">
-          <Gallery onImageSelect={handleImageSelect} />
-        </TabsContent>
-      </Tabs>
+          <div className="flex flex-col items-center justify-center">
+            <div className="w-full max-w-md">
+              <div className="bg-muted rounded-lg overflow-hidden relative">
+                {(isGenerating || isUpscaling) && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                )}
+                {generatedImage ? (
+                  <>
+                    <img
+                      src={generatedImage || "/placeholder.svg"}
+                      alt="Generated artwork"
+                      className="w-full h-full object-cover"
+                    />
+                    {!upscaledImage && settings.generationMode === "ai" && (
+                      <Button onClick={handleUpscale} disabled={isUpscaling} className="absolute bottom-4 right-4">
+                        {isUpscaling ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Upscaling...
+                          </>
+                        ) : (
+                          <>
+                            <Zap className="mr-2 h-4 w-4" />
+                            Upscale to 4K
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full text-muted-foreground">
+                    No art generated yet.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      <Card className="lg:col-span-1">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Archive className="h-5 w-5" /> Gallery
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Gallery images={galleryImages} onImageSelect={handleImageSelect} />
+        </CardContent>
+      </Card>
+      <CloudSync />
     </div>
   )
 }

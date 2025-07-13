@@ -1,9 +1,17 @@
 import { NextResponse } from "next/server"
 import { generateText, experimental_generateImage } from "ai"
 import { openai } from "@ai-sdk/openai"
+// Removed: import { SCENARIOS } from "@/lib/flow-model" - using detailed scenarios defined below
 
-// Define scenarios directly in the API route to ensure they match the component
-const SCENARIOS = {
+// Define detailed scenarios for AI prompt generation
+const DETAILED_SCENARIOS = {
+  none: {
+    name: "Pure Mathematical",
+    objects: [],
+    backgroundColor: "white",
+    ambientColor: "neutral light",
+    density: 0,
+  },
   enchanted_forest: {
     name: "Enchanted Forest",
     objects: [
@@ -18,7 +26,7 @@ const SCENARIOS = {
   deep_ocean: {
     name: "Deep Ocean",
     objects: [
-      { type: "marine life", shapes: ["flowing jellyfish", "coral formations", "sea anemones"] },
+      { type: "marine life", shapes: ["flowing jellyfish", "coral formations", "sea anemomas"] },
       { type: "underwater currents", shapes: ["swirling water", "bubble streams", "kelp forests"] },
       { type: "bioluminescent organisms", shapes: ["glowing plankton", "light trails", "phosphorescent waves"] },
     ],
@@ -92,6 +100,19 @@ const SCENARIOS = {
     ambientColor: "orange and red lava glow",
     density: 0.6,
   },
+  neural_connections: {
+    // New detailed scenario for Neural Connections
+    name: "Neural Connections",
+    objects: [
+      { type: "neurons", shapes: ["spherical cell bodies", "dendritic branches", "axon terminals"] },
+      { type: "synapses", shapes: ["glowing connection points", "electrical impulses", "neurotransmitter bursts"] },
+      { type: "organic roots", shapes: ["interwoven fibrous structures", "vascular networks", "mycelial patterns"] },
+      { type: "data nodes", shapes: ["glowing data packets", "information streams", "network hubs"] },
+    ],
+    backgroundColor: "deep, ethereal grey-purple",
+    ambientColor: "subtle bioluminescent green and orange glows",
+    density: 0.75,
+  },
 }
 
 export async function POST(req: Request) {
@@ -110,8 +131,8 @@ export async function POST(req: Request) {
 
     // Create scenario-enhanced prompt
     let scenarioContext = ""
-    if (scenario && scenario !== "none" && SCENARIOS[scenario as keyof typeof SCENARIOS]) {
-      const scenarioConfig = SCENARIOS[scenario as keyof typeof SCENARIOS]
+    if (scenario && scenario !== "none" && DETAILED_SCENARIOS[scenario as keyof typeof DETAILED_SCENARIOS]) {
+      const scenarioConfig = DETAILED_SCENARIOS[scenario as keyof typeof DETAILED_SCENARIOS]
       const objectTypes = scenarioConfig.objects.map((obj) => `${obj.type} (${obj.shapes.join(", ")})`).join(", ")
 
       scenarioContext = `
@@ -122,7 +143,7 @@ Blend the mathematical ${dataset} patterns with immersive ${scenarioConfig.name.
 - **Environment**: Use ${scenarioConfig.backgroundColor} as base with ${scenarioConfig.ambientColor} ambient lighting
 - **Density**: Apply ${Math.round(scenarioConfig.density * 100)}% object placement density
 - **Creative Fusion**: Transform data points into scenario objects while maintaining mathematical structure
-- **Atmospheric Details**: Add environmental effects like ${scenario === "enchanted_forest" ? "dappled sunlight, mist, magical sparkles" : scenario === "deep_ocean" ? "water currents, bioluminescence, flowing movements" : scenario === "cosmic_nebula" ? "cosmic dust, stellar radiation, gravitational lensing" : scenario === "cyberpunk_city" ? "neon reflections, holographic effects, digital glitches" : scenario === "ancient_temple" ? "torch shadows, stone textures, mystical auras" : scenario === "crystal_cave" ? "light refractions, crystal echoes, prismatic effects" : scenario === "aurora_borealis" ? "magnetic field visualization, particle interactions, atmospheric glow" : "heat distortion, volcanic ash, molten textures"}`
+- **Atmospheric Details**: Add environmental effects like ${scenario === "enchanted_forest" ? "dappled sunlight, mist, magical sparkles" : scenario === "deep_ocean" ? "water currents, bioluminescence, flowing movements" : scenario === "cosmic_nebula" ? "cosmic dust, stellar radiation, gravitational lensing" : scenario === "cyberpunk_city" ? "neon reflections, holographic effects, digital glitches" : scenario === "ancient_temple" ? "torch shadows, stone textures, mystical auras" : scenario === "crystal_cave" ? "light refractions, crystal echoes, prismatic effects" : scenario === "aurora_borealis" ? "magnetic field visualization, particle interactions, atmospheric glow" : scenario === "volcanic_landscape" ? "heat distortion, volcanic ash, molten textures" : scenario === "neural_connections" ? "synaptic flashes, data flow, subtle organic pulsations" : ""}`
     }
 
     const { text: imagePrompt } = await generateText({

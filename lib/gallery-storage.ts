@@ -188,13 +188,18 @@ export class GalleryStorage {
     }
   }
 
-  static getStorageStats(): StorageStats {
-    const gallery = this.getGallery()
-    const localImages = gallery.length // All images are local now
-    const cloudImages = 0 // No cloud storage without auth
+  static getStorageStats(images: GalleryImage[]): StorageStats {
+    const localImages = images.filter((img) => !img.metadata.cloudStored).length
+    const cloudImages = images.filter((img) => img.metadata.cloudStored).length
 
-    const imageSizes = gallery
-      .map((img) => img.metadata.fileSize || this.estimateImageSize(img))
+    const imageSizes = images
+      .map((img) => {
+        // Ensure metadata exists and fileSize is a number, otherwise estimate
+        if (img.metadata && typeof img.metadata.fileSize === "number") {
+          return img.metadata.fileSize
+        }
+        return this.estimateImageSize(img)
+      })
       .filter((size) => size > 0)
 
     const totalSize = imageSizes.reduce((sum, size) => sum + size, 0)
@@ -202,12 +207,12 @@ export class GalleryStorage {
     const largestImage = imageSizes.length > 0 ? Math.max(...imageSizes) : 0
 
     // Calculate aesthetic stats
-    const scoredImages = gallery.filter((img) => img.aestheticScore)
+    const scoredImages = images.filter((img) => img.aestheticScore)
     const averageScore =
       scoredImages.length > 0
         ? scoredImages.reduce((sum, img) => sum + img.aestheticScore!.score, 0) / scoredImages.length
         : 0
-    const topRatedImages = gallery.filter((img) => img.aestheticScore && img.aestheticScore.score >= 7.0).length
+    const topRatedImages = images.filter((img) => img.aestheticScore && img.aestheticScore.score >= 7.0).length
 
     return {
       localImages,
@@ -221,15 +226,18 @@ export class GalleryStorage {
   }
 
   private static estimateImageSize(image: GalleryImage): number {
-    // Estimate based on generation mode and parameters
-    if (image.metadata.generationMode === "svg") {
-      return 50 * 1024 // ~50KB for SVG
-    } else {
-      // AI generated images are typically larger
-      const baseSize = 2 * 1024 * 1024 // 2MB base
-      const sampleMultiplier = image.metadata.samples / 1000 // More samples = larger
-      return Math.floor(baseSize * (1 + sampleMultiplier))
+    if (!image.metadata) {
+      return 0 // Unable to estimate without metadata
     }
+
+    // SVGs are tiny, AI images are larger
+    if (image.metadata.generationMode === "svg") {
+      return 50 * 1024 // ≈ 50 KB
+    }
+
+    const baseSize = 2 * 1024 * 1024 // 2 MB
+    const sampleMultiplier = (image.metadata.samples ?? 0) / 1000
+    return Math.floor(baseSize * (1 + sampleMultiplier))
   }
 
   private static saveGallery(gallery: GalleryImage[]): void {
@@ -277,4 +285,17 @@ export class GalleryStorage {
     if (score >= 4.0) return "outline"
     return "destructive"
   }
+}
+
+// -----------------------------------------------------------------------------
+// Helper function for modules that expect a named export instead of the class.
+// Returns the full gallery array, delegating to GalleryStorage.getGallery().
+// -----------------------------------------------------------------------------
+export function getGalleryImages(): GalleryImage[] {
+  return GalleryStorage.getGallery()
+}
+
+// Save a single image object to local storage (wrapper for GalleryStorage.saveImage)
+export function saveImageToGallery(image: GalleryImage): void {
+  GalleryStorage.saveImage(image)
 }

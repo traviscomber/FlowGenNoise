@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog"
 import { Heart, Download, Trash2, Grid3X3, List, Star, Settings, Archive, Eye, Copy, Zap, Award } from "lucide-react"
 import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
+import { CloudSyncService, type CloudSyncStatus } from "@/lib/cloud-sync" // Import CloudSyncService
 import { cn } from "@/lib/utils"
 
 interface GalleryProps {
@@ -34,21 +35,59 @@ export function Gallery({ onImageSelect }: GalleryProps) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "favorites" | "score">("newest")
-  const [storageStats, setStorageStats] = useState(GalleryStorage.getStorageStats())
+  const [storageStats, setStorageStats] = useState(GalleryStorage.getStorageStats([])) // Initialize with empty array
   const [isScoring, setIsScoring] = useState(false)
   const [scoringProgress, setScoringProgress] = useState(0)
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<CloudSyncStatus>(CloudSyncService.getStatus())
 
+  // Listen for cloud sync status changes
   useEffect(() => {
-    loadGallery()
+    const listener = (status: CloudSyncStatus) => {
+      setCloudSyncStatus(status)
+      // If sync status changes (e.g., signed in/out, enabled/disabled), reload gallery
+      loadGallery()
+    }
+    CloudSyncService.addStatusListener(listener)
+    return () => CloudSyncService.removeStatusListener(listener)
   }, [])
 
   useEffect(() => {
-    setStorageStats(GalleryStorage.getStorageStats())
+    loadGallery()
+  }, [cloudSyncStatus.isAuthenticated, cloudSyncStatus.isEnabled]) // Reload when auth/sync status changes
+
+  useEffect(() => {
+    setStorageStats(GalleryStorage.getStorageStats(images)) // Pass current images to getStorageStats
   }, [images])
 
-  const loadGallery = () => {
-    setImages(GalleryStorage.getGallery())
-  }
+  const loadGallery = useCallback(async () => {
+    const localImages = GalleryStorage.getGallery()
+    let cloudImages: GalleryImage[] = []
+
+    if (cloudSyncStatus.isAuthenticated && cloudSyncStatus.isEnabled) {
+      cloudImages = await CloudSyncService.downloadImages()
+    }
+
+    // Merge local and cloud images
+    const mergedImagesMap = new Map<string, GalleryImage>()
+
+    // Add local images first
+    localImages.forEach((img) => mergedImagesMap.set(img.id, img))
+
+    // Add/update with cloud images (cloud takes precedence for cloud-stored items)
+    cloudImages.forEach((cloudImg) => {
+      mergedImagesMap.set(cloudImg.id, {
+        ...cloudImg,
+        metadata: {
+          ...cloudImg.metadata,
+          cloudStored: true, // Ensure cloudStored is true for cloud images
+        },
+      })
+    })
+
+    const finalImages = Array.from(mergedImagesMap.values()).sort((a, b) => b.metadata.createdAt - a.metadata.createdAt) // Sort by newest first
+
+    setImages(finalImages)
+  }, [cloudSyncStatus.isAuthenticated, cloudSyncStatus.isEnabled])
 
   const filteredAndSortedImages = useMemo(() => {
     const filtered = images.filter((image) => {
@@ -86,13 +125,25 @@ export function Gallery({ onImageSelect }: GalleryProps) {
     return filtered
   }, [images, searchTerm, filterDataset, filterScenario, showFavoritesOnly, sortBy])
 
-  const handleToggleFavorite = (id: string) => {
-    GalleryStorage.toggleFavorite(id)
-    loadGallery()
+  const handleToggleFavorite = async (id: string) => {
+    GalleryStorage.toggleFavorite(id) // Update local storage
+    const imageToUpdate = images.find((img) => img.id === id)
+    if (imageToUpdate && imageToUpdate.metadata.cloudStored) {
+      // If cloud-stored, re-upload to update favorite status in Supabase metadata
+      await CloudSyncService.uploadImageFullResolution({
+        ...imageToUpdate,
+        isFavorite: !imageToUpdate.isFavorite, // Toggle the favorite status for upload
+      })
+    }
+    loadGallery() // Reload to reflect changes
   }
 
-  const handleDeleteImage = (id: string) => {
-    GalleryStorage.deleteImage(id)
+  const handleDeleteImage = async (id: string) => {
+    const imageToDelete = images.find((img) => img.id === id)
+    if (imageToDelete?.metadata.cloudStored) {
+      await CloudSyncService.deleteCloudImage(id)
+    }
+    GalleryStorage.deleteImage(id) // Delete from local storage
     loadGallery()
     if (selectedImage?.id === id) {
       setSelectedImage(null)
@@ -111,6 +162,11 @@ export function Gallery({ onImageSelect }: GalleryProps) {
   const handleScoreImage = async (id: string) => {
     const result = await GalleryStorage.scoreImage(id)
     if (result.success) {
+      const scoredImage = images.find((img) => img.id === id)
+      if (scoredImage && scoredImage.metadata.cloudStored) {
+        // If cloud-stored, re-upload to update score in Supabase metadata
+        await CloudSyncService.uploadImageFullResolution(scoredImage)
+      }
       loadGallery()
     }
   }
@@ -124,6 +180,14 @@ export function Gallery({ onImageSelect }: GalleryProps) {
         setScoringProgress(progress)
       })
 
+      // After batch scoring, re-upload cloud-stored images to update their metadata
+      const scoredCloudImages = images.filter(
+        (img) => img.aestheticScore && img.metadata.cloudStored && !img.metadata.uploadedAt, // Only re-upload if newly scored and cloud-stored
+      )
+      for (const img of scoredCloudImages) {
+        await CloudSyncService.uploadImageFullResolution(img)
+      }
+
       loadGallery()
       console.log(`Scored ${result.scored} images, ${result.failed} failed`)
     } catch (error) {
@@ -134,9 +198,15 @@ export function Gallery({ onImageSelect }: GalleryProps) {
     }
   }
 
-  const handleClearGallery = () => {
+  const handleClearGallery = async () => {
     if (confirm("Are you sure you want to delete all images? This cannot be undone.")) {
-      GalleryStorage.clearGallery()
+      // Delete all cloud images first if sync is enabled
+      if (cloudSyncStatus.isAuthenticated && cloudSyncStatus.isEnabled) {
+        for (const image of images.filter((img) => img.metadata.cloudStored)) {
+          await CloudSyncService.deleteCloudImage(image.id)
+        }
+      }
+      GalleryStorage.clearGallery() // Clear local storage
       loadGallery()
       setSelectedImage(null)
     }
@@ -179,8 +249,8 @@ export function Gallery({ onImageSelect }: GalleryProps) {
               )}
             </CardTitle>
             <CardDescription>
-              Your generated artworks • {storageInfo.imageCount} total images • {storageStats.topRatedImages} top-rated
-              (7.0+)
+              Your generated artworks • {storageStats.localImages + storageStats.cloudImages} total images •{" "}
+              {storageStats.topRatedImages} top-rated (7.0+)
             </CardDescription>
           </div>
           <div className="flex gap-2">
@@ -222,6 +292,10 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                         <span>{storageStats.localImages}</span>
                       </div>
                       <div className="flex justify-between text-sm">
+                        <span>Cloud Images:</span>
+                        <span>{storageStats.cloudImages}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
                         <span>Average Score:</span>
                         <span className={cn("font-medium", GalleryStorage.getScoreColor(storageStats.averageScore))}>
                           {storageStats.averageScore > 0 ? `${storageStats.averageScore}/10` : "Not scored"}
@@ -254,10 +328,14 @@ export function Gallery({ onImageSelect }: GalleryProps) {
                   <div className="bg-blue-50 p-3 rounded-lg">
                     <div className="flex items-center gap-2 text-blue-700 text-sm font-medium mb-1">
                       <Zap className="h-4 w-4" />
-                      No Authentication Required
+                      {cloudSyncStatus.isAuthenticated ? "Cloud Sync Enabled" : "No Authentication Required"}
                     </div>
                     <p className="text-blue-600 text-xs">
-                      All images stored locally with aesthetic scoring. Works completely offline!
+                      {cloudSyncStatus.isAuthenticated
+                        ? `Images stored locally and synced to cloud. Used: ${GalleryStorage.formatFileSize(
+                            cloudSyncStatus.storageUsed,
+                          )} / ${GalleryStorage.formatFileSize(cloudSyncStatus.storageQuota)}`
+                        : "All images stored locally with aesthetic scoring. Works completely offline!"}
                     </p>
                   </div>
                   <Separator />
