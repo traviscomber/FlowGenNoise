@@ -21,6 +21,11 @@ export const SCENARIOS = {
   ocean: { label: "Deep Ocean", backgroundColor: "#012b52" },
   space: { label: "Cosmic Nebula", backgroundColor: "#0b0d17" },
   city: { label: "Cyberpunk City", backgroundColor: "#1a001a" },
+  ancient_temple: { label: "Ancient Temple", backgroundColor: "#8B4513" }, // Example color, adjust as needed
+  crystal_cave: { label: "Crystal Cave", backgroundColor: "#2F4F4F" }, // Example color, adjust as needed
+  aurora_borealis: { label: "Aurora Borealis", backgroundColor: "#0A192F" }, // Example color, adjust as needed
+  volcanic_landscape: { label: "Volcanic Landscape", backgroundColor: "#361D1D" }, // Example color, adjust as needed
+  neural_connections: { label: "Neural Connections", backgroundColor: "#2A0A2A" }, // New scenario for UI
 } as const
 
 /* -------------------------------------------------------------------------- */
