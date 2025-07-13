@@ -60,26 +60,6 @@ export class GalleryStorage {
     this.saveGallery(gallery)
   }
 
-  static async saveImageWithCloudUpload(
-    image: GalleryImage,
-    onProgress?: (progress: number) => void,
-  ): Promise<{ success: boolean; error?: string; cloudImage?: GalleryImage }> {
-    // Save locally first
-    this.saveImage(image)
-
-    // Try cloud upload
-    const { CloudSyncService } = await import("./cloud-sync")
-    const result = await CloudSyncService.autoUploadNewGeneration(image, onProgress)
-
-    if (result.success && result.cloudImage) {
-      // Update local storage with cloud version
-      this.saveImage(result.cloudImage)
-      return { success: true, cloudImage: result.cloudImage }
-    }
-
-    return result
-  }
-
   static async scoreImage(id: string): Promise<{ success: boolean; error?: string }> {
     try {
       const gallery = this.getGallery()
@@ -114,7 +94,7 @@ export class GalleryStorage {
       image.aestheticScore = {
         score,
         rating,
-        method: method || "replicate",
+        method: method || "local",
         scoredAt: Date.now(),
       }
 
@@ -210,8 +190,8 @@ export class GalleryStorage {
 
   static getStorageStats(): StorageStats {
     const gallery = this.getGallery()
-    const localImages = gallery.filter((img) => !img.metadata.cloudStored).length
-    const cloudImages = gallery.filter((img) => img.metadata.cloudStored).length
+    const localImages = gallery.length // All images are local now
+    const cloudImages = 0 // No cloud storage without auth
 
     const imageSizes = gallery
       .map((img) => img.metadata.fileSize || this.estimateImageSize(img))

@@ -1,145 +1,158 @@
-/* ------------------------------------------------------------------
-   FlowSketch – Plot utilities
-   Exports:
-     - generateScatterPlotSVG : original helper used throughout the app
-     - createSVGPlot          : higher-level helper (kept for new code)
-   ------------------------------------------------------------------ */
+import type { DataPoint } from "./flow-model"
 
-export interface DataPoint {
-  x: number
-  y: number
-  /** Optional category / label used for colour maps */
-  category?: number
-}
+export class PlotUtils {
+  static createSVGPlot(data: DataPoint[], colorScheme = "viridis", width = 800, height = 600): string {
+    const margin = 40
+    const plotWidth = width - 2 * margin
+    const plotHeight = height - 2 * margin
 
-export interface PlotConfig {
-  width?: number
-  height?: number
-  colorScheme?: string
-  backgroundColor?: string
-  strokeWidth?: number
-}
+    // Calculate bounds
+    const xValues = data.map((d) => d.x)
+    const yValues = data.map((d) => d.y)
+    const xMin = Math.min(...xValues)
+    const xMax = Math.max(...xValues)
+    const yMin = Math.min(...yValues)
+    const yMax = Math.max(...yValues)
 
-/* ---------- Colour maps -------------------------------------------------- */
-const COLOR_SCHEMES = {
-  viridis: ["#440154", "#482777", "#3f4a8a", "#31678e", "#26838f", "#1f9d8a", "#6cce5a", "#b6de2b", "#fee825"],
-  plasma: [
-    "#0c0786",
-    "#40039c",
-    "#6a00a7",
-    "#8f0da4",
-    "#b12a90",
-    "#cc4778",
-    "#e16462",
-    "#f2844b",
-    "#fca636",
-    "#fcce25",
-  ],
-  magma: [
-    "#000003",
-    "#0b0927",
-    "#231151",
-    "#410f75",
-    "#5f187f",
-    "#7b2382",
-    "#982d80",
-    "#b73779",
-    "#d3436e",
-    "#eb5760",
-    "#f8765c",
-    "#fca50a",
-    "#fcffa4",
-  ],
-  inferno: [
-    "#000003",
-    "#0b0924",
-    "#230c4c",
-    "#410967",
-    "#5f187f",
-    "#7b2382",
-    "#982d80",
-    "#b73779",
-    "#d3436e",
-    "#eb5760",
-    "#f8765c",
-    "#fca50a",
-    "#fcffa4",
-  ],
-  cool: ["#00ffff", "#0080ff", "#0000ff", "#8000ff", "#ff00ff"],
-  warm: ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00"],
-  rainbow: [
-    "#ff0000",
-    "#ff8000",
-    "#ffff00",
-    "#80ff00",
-    "#00ff00",
-    "#00ff80",
-    "#00ffff",
-    "#0080ff",
-    "#0000ff",
-    "#8000ff",
-    "#ff00ff",
-    "#ff0080",
-  ],
-}
+    // Add padding
+    const xRange = xMax - xMin
+    const yRange = yMax - yMin
+    const padding = 0.1
+    const xMinPadded = xMin - xRange * padding
+    const xMaxPadded = xMax + xRange * padding
+    const yMinPadded = yMin - yRange * padding
+    const yMaxPadded = yMax + yRange * padding
 
-function getColorFromScheme(scheme: string, value: number): string {
-  const colors = COLOR_SCHEMES[scheme as keyof typeof COLOR_SCHEMES] || COLOR_SCHEMES.viridis
-  const index = Math.floor(value * (colors.length - 1))
-  return colors[Math.min(index, colors.length - 1)]
-}
+    // Scale functions
+    const scaleX = (x: number) => margin + ((x - xMinPadded) / (xMaxPadded - xMinPadded)) * plotWidth
+    const scaleY = (y: number) => height - margin - ((y - yMinPadded) / (yMaxPadded - yMinPadded)) * plotHeight
 
-/* ========================================================================== */
-/* Scatter-plot generator (legacy helper used elsewhere in the code-base)     */
-/* ========================================================================== */
-export function generateScatterPlotSVG(data: DataPoint[], config: PlotConfig = {}): string {
-  const { width = 1792, height = 1024, colorScheme = "viridis", backgroundColor = "#000000", strokeWidth = 1 } = config
+    // Color mapping
+    const getColor = (point: DataPoint, index: number) => {
+      return this.getColorFromScheme(colorScheme, point, index, data.length)
+    }
 
-  if (!data || data.length === 0) {
-    return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100%" height="100%" fill="${backgroundColor}"/>
-      <text x="50%" y="50%" text-anchor="middle" fill="white" font-size="24">No data to display</text>
-    </svg>`
-  }
+    // Generate SVG
+    let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`
 
-  // Find data bounds
-  const xValues = data.map((d) => d.x)
-  const yValues = data.map((d) => d.y)
-  const xMin = Math.min(...xValues)
-  const xMax = Math.max(...xValues)
-  const yMin = Math.min(...yValues)
-  const yMax = Math.max(...yValues)
+    // Background
+    svg += `<rect width="${width}" height="${height}" fill="#ffffff"/>`
 
-  // Add padding
-  const padding = 50
-  const plotWidth = width - 2 * padding
-  const plotHeight = height - 2 * padding
+    // Plot area background
+    svg += `<rect x="${margin}" y="${margin}" width="${plotWidth}" height="${plotHeight}" fill="#f8f9fa" stroke="#e9ecef"/>`
 
-  // Scale functions
-  const scaleX = (x: number) => padding + ((x - xMin) / (xMax - xMin)) * plotWidth
-  const scaleY = (y: number) => padding + ((yMax - y) / (yMax - yMin)) * plotHeight
-
-  // Generate SVG elements
-  const circles = data
-    .map((point, index) => {
+    // Data points
+    data.forEach((point, index) => {
       const x = scaleX(point.x)
       const y = scaleY(point.y)
-      const colorValue = index / (data.length - 1)
-      const color = getColorFromScheme(colorScheme, colorValue)
+      const color = getColor(point, index)
+      const radius = 2
 
-      return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="2" fill="${color}" stroke="none" opacity="0.8"/>`
+      svg += `<circle cx="${x}" cy="${y}" r="${radius}" fill="${color}" opacity="0.7"/>`
     })
-    .join("\n  ")
 
-  return `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100%" height="100%" fill="${backgroundColor}"/>
-  ${circles}
-</svg>`
-}
+    svg += `</svg>`
+    return svg
+  }
 
-/* ========================================================================== */
-/* High-level plot helper used by newer code                                  */
-/* ========================================================================== */
-export function createSVGPlot(data: DataPoint[], config: PlotConfig = {}): string {
-  return generateScatterPlotSVG(data, config)
+  private static getColorFromScheme(scheme: string, point: DataPoint, index: number, total: number): string {
+    const t = index / total
+    const cluster = point.cluster || 0
+
+    switch (scheme) {
+      case "viridis":
+        return this.viridisColor(t)
+      case "plasma":
+        return this.plasmaColor(t)
+      case "inferno":
+        return this.infernoColor(t)
+      case "magma":
+        return this.magmaColor(t)
+      case "cool":
+        return `hsl(${240 - t * 60}, 70%, ${50 + t * 30}%)`
+      case "warm":
+        return `hsl(${60 - t * 60}, 80%, ${50 + t * 20}%)`
+      case "rainbow":
+        return `hsl(${t * 360}, 70%, 50%)`
+      case "monochrome":
+        const gray = Math.floor(255 * (0.2 + t * 0.6))
+        return `rgb(${gray}, ${gray}, ${gray})`
+      default:
+        return this.viridisColor(t)
+    }
+  }
+
+  private static viridisColor(t: number): string {
+    const colors = [
+      [68, 1, 84],
+      [59, 82, 139],
+      [33, 144, 140],
+      [93, 201, 99],
+      [253, 231, 37],
+    ]
+    return this.interpolateColors(colors, t)
+  }
+
+  private static plasmaColor(t: number): string {
+    const colors = [
+      [13, 8, 135],
+      [75, 3, 161],
+      [125, 3, 168],
+      [168, 34, 150],
+      [208, 73, 119],
+      [240, 148, 65],
+      [252, 253, 191],
+    ]
+    return this.interpolateColors(colors, t)
+  }
+
+  private static infernoColor(t: number): string {
+    const colors = [
+      [0, 0, 4],
+      [31, 12, 72],
+      [85, 15, 109],
+      [136, 34, 106],
+      [186, 54, 85],
+      [227, 89, 51],
+      [249, 142, 8],
+      [252, 255, 164],
+    ]
+    return this.interpolateColors(colors, t)
+  }
+
+  private static magmaColor(t: number): string {
+    const colors = [
+      [0, 0, 4],
+      [28, 16, 68],
+      [79, 18, 123],
+      [129, 37, 129],
+      [181, 54, 122],
+      [229, 80, 100],
+      [251, 135, 97],
+      [254, 194, 135],
+      [252, 253, 191],
+    ]
+    return this.interpolateColors(colors, t)
+  }
+
+  private static interpolateColors(colors: number[][], t: number): string {
+    t = Math.max(0, Math.min(1, t))
+    const scaledT = t * (colors.length - 1)
+    const index = Math.floor(scaledT)
+    const fraction = scaledT - index
+
+    if (index >= colors.length - 1) {
+      const color = colors[colors.length - 1]
+      return `rgb(${color[0]}, ${color[1]}, ${color[2]})`
+    }
+
+    const color1 = colors[index]
+    const color2 = colors[index + 1]
+
+    const r = Math.round(color1[0] + (color2[0] - color1[0]) * fraction)
+    const g = Math.round(color1[1] + (color2[1] - color1[1]) * fraction)
+    const b = Math.round(color1[2] + (color2[2] - color1[2]) * fraction)
+
+    return `rgb(${r}, ${g}, ${b})`
+  }
 }
