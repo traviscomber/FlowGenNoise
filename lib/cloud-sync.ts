@@ -216,3 +216,6 @@ function createCloudSyncService() {
  *   CloudSyncService._setStatus({ isAuthenticated: true })
  */
 export const CloudSyncService = createCloudSyncService()
+
+// Alias for backward-compatibility with existing components
+export const CloudSync = CloudSyncService
