@@ -35,3 +35,7 @@ CREATE POLICY "Users can update own images" ON gallery_images
 
 CREATE POLICY "Users can delete own images" ON gallery_images
     FOR DELETE USING (auth.uid() = user_id);
+
+-- Policy for gallery_images: Users can insert their own images
+CREATE POLICY "Users can insert their own images." ON public.gallery_images
+FOR INSERT WITH CHECK (auth.uid() = user_id);

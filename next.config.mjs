@@ -12,19 +12,19 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'oaidalleapiprodscus.blob.core.windows.net',
         port: '',
-        pathname: '/private/**',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'replicate.delivery',
+        hostname: 'hebbkx1anhila5yf.supabase.co', // Allow Supabase storage
         port: '',
-        pathname: '/pbxt/**',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: '**.supabase.co',
+        hostname: 'blob.v0.dev', // Allow v0 placeholder images
         port: '',
-        pathname: '/storage/v1/object/public/**',
+        pathname: '/**',
       },
     ],
     unoptimized: true,

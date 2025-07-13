@@ -25,3 +25,7 @@ CREATE TABLE IF NOT EXISTS gallery_images (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Policy for gallery_images: Users can view their own images
+CREATE POLICY "Users can view their own images." ON public.gallery_images
+FOR SELECT USING (auth.uid() = user_id);

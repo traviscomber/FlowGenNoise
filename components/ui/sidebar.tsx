@@ -637,3 +637,13 @@ export {
   SidebarTrigger,
   useSidebar,
 }
+
+// This is a placeholder for a generic Sidebar component.
+// You can customize it based on your application's needs.
+function Sidebar({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <aside className={cn("flex h-full w-64 flex-col border-r bg-background p-4", className)} {...props}>
+      {children}
+    </aside>
+  )
+}

@@ -81,11 +81,6 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
       setApi?.(api)
       api.on("reInit", onSelect)
       api.on("select", onSelect)
-
-      return () => {
-        api.off("reInit", onSelect)
-        api.off("select", onSelect)
-      }
     }, [api, onSelect, setApi])
 
     return (
@@ -97,7 +92,7 @@ const Carousel = React.forwardRef<HTMLDivElement, CarouselProps>(
           scrollNext,
           canScrollPrev,
           canScrollNext,
-          orientation: orientation,
+          orientation,
         }}
       >
         <div

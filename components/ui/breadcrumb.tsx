@@ -35,19 +35,35 @@ const BreadcrumbLink = React.forwardRef<
   React.ComponentPropsWithoutRef<"a"> & {
     asChild?: boolean
   }
->(({ asChild, className, ...props }, ref) => (
+>(({ className, asChild, ...props }, ref) => (
   <a ref={ref} className={cn("transition-colors hover:text-foreground", className)} {...props} />
 ))
 BreadcrumbLink.displayName = "BreadcrumbLink"
 
-const BreadcrumbSeparator = ({ children, className, ...props }: React.ComponentPropsWithoutRef<"li">) => (
-  <li role="presentation" aria-hidden="true" className={cn("[&>svg]:size-3.5", className)} {...props}>
-    {children ?? <ChevronRight />}
-  </li>
+const BreadcrumbSeparator = React.forwardRef<HTMLLIElement, React.ComponentPropsWithoutRef<"li">>(
+  ({ className, children, ...props }, ref) => (
+    <li ref={ref} role="presentation" aria-hidden="true" className={cn("[&>svg]:size-3.5", className)} {...props}>
+      {children ?? <ChevronRight />}
+    </li>
+  ),
 )
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator"
 
-const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentPropsWithoutRef<"span">) => (
+const BreadcrumbPage = React.forwardRef<HTMLSpanElement, React.ComponentPropsWithoutRef<"span">>(
+  ({ className, ...props }, ref) => (
+    <span
+      ref={ref}
+      role="link"
+      aria-disabled="true"
+      aria-current="page"
+      className={cn("font-normal text-foreground", className)}
+      {...props}
+    />
+  ),
+)
+BreadcrumbPage.displayName = "BreadcrumbPage"
+
+const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentPropsWithoutRef<typeof MoreHorizontal>) => (
   <span
     role="presentation"
     aria-hidden="true"
@@ -60,4 +76,12 @@ const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentPropsWithout
 )
 BreadcrumbEllipsis.displayName = "BreadcrumbEllipsis"
 
-export { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbEllipsis }
+export {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+  BreadcrumbEllipsis,
+}

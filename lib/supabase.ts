@@ -4,10 +4,10 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error("Supabase URL or Anon Key is missing. Cloud sync will not work.")
+  throw new Error("Missing Supabase URL or Anon Key environment variables.")
 }
 
-export const supabase = createClient(supabaseUrl || "YOUR_SUPABASE_URL", supabaseAnonKey || "YOUR_SUPABASE_ANON_KEY")
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export type Database = {
   public: {

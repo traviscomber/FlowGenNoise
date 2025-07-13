@@ -6,9 +6,9 @@ CREATE TABLE public.gallery_images (
     id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
     image_url text NOT NULL,
-    metadata jsonb, -- Stores generation settings, filename, fileSize, aestheticScore, etc.
+    metadata jsonb NOT NULL, -- Store all generation settings and other metadata
     is_favorite boolean DEFAULT FALSE,
-    tags text[], -- Array of tags for categorization
+    tags text[] DEFAULT '{}',
     created_at timestamp with time zone DEFAULT now()
 );
 
@@ -55,10 +55,9 @@ FOR DELETE USING (bucket_id = 'flowsketch-gallery' AND auth.uid()::text = (stora
 
 -- Optional: Create a 'profiles' table to store additional user information
 CREATE TABLE public.profiles (
-    id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
+    id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     display_name text,
-    avatar_url text,
-    PRIMARY KEY (id)
+    created_at timestamp with time zone DEFAULT now()
 );
 
 -- Enable RLS for 'profiles'

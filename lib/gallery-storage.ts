@@ -1,7 +1,9 @@
-export interface GalleryImage {
+import type { FlowArtSettings } from "./flow-model"
+
+export type GalleryImage = {
   id: string
-  imageUrl: string
-  metadata: {
+  imageUrl: string // Base64 or cloud URL
+  metadata: FlowArtSettings & {
     dataset: string
     scenario: string
     colorScheme: string
@@ -9,11 +11,13 @@ export interface GalleryImage {
     samples: number
     noise: number
     generationMode: "svg" | "ai"
-    createdAt: number
+    createdAt: number // Unix timestamp
     filename: string
-    fileSize?: number // Size in bytes
+    fileSize: number // in bytes
     aestheticScore?: number // 0-1 score
-    cloudStored?: boolean // Indicates if the image is synced to cloud
+    cloudStored?: boolean // True if stored in cloud storage
+    cloudUrl?: string // URL if stored in cloud
+    cloudId?: string // ID if stored in cloud
   }
   isFavorite: boolean
   tags: string[]
@@ -29,76 +33,75 @@ export interface GalleryStats {
   averageScore: number | null
 }
 
-const GALLERY_STORAGE_KEY = "flowsketch_gallery_images"
+const LOCAL_STORAGE_KEY = "flowsketch_gallery"
 
-export const GalleryStorage = {
-  getGallery: (): GalleryImage[] => {
+export class GalleryStorage {
+  static getGallery(): GalleryImage[] {
     if (typeof window === "undefined") return []
     try {
-      const stored = localStorage.getItem(GALLERY_STORAGE_KEY)
+      const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
       return stored ? JSON.parse(stored) : []
     } catch (error) {
-      console.error("Failed to parse gallery from localStorage:", error)
+      console.error("Failed to load gallery from local storage:", error)
       return []
     }
-  },
+  }
 
-  saveGallery: (images: GalleryImage[]) => {
+  static saveGallery(gallery: GalleryImage[]): void {
     if (typeof window === "undefined") return
     try {
-      localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(images))
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(gallery))
+      window.dispatchEvent(new CustomEvent("gallery-updated")) // Notify listeners
     } catch (error) {
-      console.error("Failed to save gallery to localStorage:", error)
+      console.error("Failed to save gallery to local storage:", error)
     }
-  },
+  }
 
-  saveImage: (image: GalleryImage) => {
-    const images = GalleryStorage.getGallery()
-    const existingIndex = images.findIndex((img) => img.id === image.id)
+  static saveImage(image: GalleryImage): void {
+    const gallery = GalleryStorage.getGallery()
+    const existingIndex = gallery.findIndex((img) => img.id === image.id)
     if (existingIndex > -1) {
-      images[existingIndex] = image
+      gallery[existingIndex] = image // Update existing
     } else {
-      images.unshift(image) // Add new images to the beginning
+      gallery.unshift(image) // Add new to the beginning
     }
-    GalleryStorage.saveGallery(images)
-  },
+    GalleryStorage.saveGallery(gallery)
+  }
 
-  deleteImage: (id: string) => {
-    const images = GalleryStorage.getGallery().filter((img) => img.id !== id)
-    GalleryStorage.saveGallery(images)
-  },
+  static deleteImage(id: string): void {
+    const gallery = GalleryStorage.getGallery()
+    const updatedGallery = gallery.filter((img) => img.id !== id)
+    GalleryStorage.saveGallery(updatedGallery)
+  }
 
-  clearGallery: () => {
-    if (typeof window === "undefined") return
-    localStorage.removeItem(GALLERY_STORAGE_KEY)
-  },
-
-  toggleFavorite: (id: string): GalleryImage | undefined => {
-    const images = GalleryStorage.getGallery()
-    const imageIndex = images.findIndex((img) => img.id === id)
+  static updateImageMetadata(id: string, updates: Partial<GalleryImage["metadata"]>): void {
+    const gallery = GalleryStorage.getGallery()
+    const imageIndex = gallery.findIndex((img) => img.id === id)
     if (imageIndex > -1) {
-      images[imageIndex].isFavorite = !images[imageIndex].isFavorite
-      GalleryStorage.saveGallery(images)
-      return images[imageIndex]
+      gallery[imageIndex].metadata = { ...gallery[imageIndex].metadata, ...updates }
+      GalleryStorage.saveGallery(gallery)
     }
-    return undefined
-  },
+  }
 
-  updateImageMetadata: (id: string, newMetadata: Partial<GalleryImage["metadata"]>): GalleryImage | undefined => {
-    const images = GalleryStorage.getGallery()
-    const imageIndex = images.findIndex((img) => img.id === id)
+  static updateImageFavoriteStatus(id: string, isFavorite: boolean): void {
+    const gallery = GalleryStorage.getGallery()
+    const imageIndex = gallery.findIndex((img) => img.id === id)
     if (imageIndex > -1) {
-      images[imageIndex].metadata = {
-        ...images[imageIndex].metadata,
-        ...newMetadata,
-      }
-      GalleryStorage.saveGallery(images)
-      return images[imageIndex]
+      gallery[imageIndex].isFavorite = isFavorite
+      GalleryStorage.saveGallery(gallery)
     }
-    return undefined
-  },
+  }
 
-  getStorageStats: (images: GalleryImage[]): GalleryStats => {
+  static formatFileSize(bytes: number, decimals = 2): string {
+    if (bytes === 0) return "0 Bytes"
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB"]
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+  }
+
+  static getStorageStats(gallery: GalleryImage[]): GalleryStats {
     let totalLocalSize = 0
     let favoriteImages = 0
     let totalScore = 0
@@ -106,7 +109,7 @@ export const GalleryStorage = {
     let localImagesCount = 0
     let cloudImagesCount = 0
 
-    images.forEach((img) => {
+    gallery.forEach((img) => {
       if (img.metadata && typeof img.metadata.fileSize === "number") {
         // Only count local size for images that are not cloud-stored, or if they are the primary local copy
         // This logic might need refinement based on exact sync strategy
@@ -134,12 +137,12 @@ export const GalleryStorage = {
       }
     })
 
-    const totalCloudSize = images
+    const totalCloudSize = gallery
       .filter((img) => img.metadata.cloudStored && typeof img.metadata.fileSize === "number")
       .reduce((sum, img) => sum + (img.metadata.fileSize || 0), 0)
 
     return {
-      totalImages: images.length,
+      totalImages: gallery.length,
       localImages: localImagesCount,
       cloudImages: cloudImagesCount,
       totalLocalSize: totalLocalSize,
@@ -147,14 +150,5 @@ export const GalleryStorage = {
       favoriteImages: favoriteImages,
       averageScore: scoredImagesCount > 0 ? totalScore / scoredImagesCount : null,
     }
-  },
-
-  formatFileSize: (bytes: number, decimals = 2) => {
-    if (bytes === 0) return "0 Bytes"
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB"]
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
-  },
+  }
 }

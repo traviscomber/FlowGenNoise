@@ -1,88 +1,123 @@
 // lib/plot-utils.ts
-export const PlotUtils = {
-  createSVGPlot: (data: { x: number; y: number }[], colorScheme: string, width: number, height: number): string => {
-    const margin = { top: 20, right: 20, bottom: 30, left: 40 }
-    const innerWidth = width - margin.left - margin.right
-    const innerHeight = height - margin.top - margin.bottom
+import type { FlowArtSettings } from "./flow-model"
 
-    // Find min/max for scaling
-    const xMin = Math.min(...data.map((d) => d.x))
-    const xMax = Math.max(...data.map((d) => d.x))
-    const yMin = Math.min(...data.map((d) => d.y))
-    const yMax = Math.max(...data.map((d) => d.y))
+// Define a type for the data points
+export type DataPoint = { x: number; y: number; value: number }
 
-    // Simple linear scaling
-    const xScale = (value: number) => ((value - xMin) / (xMax - xMin)) * innerWidth
-    const yScale = (value: number) => innerHeight - ((value - yMin) / (yMax - yMin)) * innerHeight // Invert Y for SVG
-
-    // Determine color based on a simple gradient or fixed colors for now
-    // In a real implementation, you'd map data values to a color scale
-    const getColor = (index: number) => {
-      const colors: { [key: string]: string[] } = {
-        plasma: ["#0d0887", "#6a00a8", "#b12a90", "#e16462", "#fca636", "#fcce2b"],
-        viridis: [
-          "#440154",
-          "#482878",
-          "#3e4989",
-          "#31688e",
-          "#26828e",
-          "#1f9e89",
-          "#35b779",
-          "#6ece58",
-          "#b5de2b",
-          "#fde725",
-        ],
-        cividis: [
-          "#00204d",
-          "#003366",
-          "#004780",
-          "#005a99",
-          "#006eb3",
-          "#0082cc",
-          "#0096e6",
-          "#00aaff",
-          "#00bfff",
-          "#00d4ff",
-        ],
-        magma: ["#000004", "#1d1147", "#51127c", "#87258e", "#bc378c", "#e75e6f", "#f9945d", "#fecf4f", "#fcffa4"],
-        inferno: ["#000004", "#2c105c", "#680f6b", "#9e175a", "#cd2e43", "#f16024", "#fca50a", "#fcf823"],
-        twilight: [
-          "#000000",
-          "#2d004b",
-          "#5c0096",
-          "#8b00e0",
-          "#b900ff",
-          "#e800ff",
-          "#ff00e8",
-          "#ff00b9",
-          "#ff008b",
-          "#ff005c",
-          "#ff002d",
-          "#ff0000",
-        ],
-        hsv: ["#FF0000", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#FF00FF"], // Simplified HSV
-        rainbow: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#9400D3"],
-        grayscale: ["#000000", "#333333", "#666666", "#999999", "#CCCCCC", "#FFFFFF"],
-      }
-      const schemeColors = colors[colorScheme] || colors.plasma // Default to plasma
-      return schemeColors[index % schemeColors.length]
-    }
-
-    let circles = ""
-    data.forEach((d, i) => {
-      const cx = xScale(d.x)
-      const cy = yScale(d.y)
-      const color = getColor(i)
-      circles += `<circle cx="${cx}" cy="${cy}" r="2" fill="${color}" />`
-    })
-
-    return `
-      <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-        <rect width="${width}" height="${height}" fill="#f8f8f8"/>
-        <g transform="translate(${margin.left},${margin.top})">
-          ${circles}
-        </g>
-      </svg>
-    `
+// Color scheme definitions (simplified for client-side SVG generation)
+const COLOR_SCHEMES: { [key: string]: (value: number) => string } = {
+  plasma: (value: number) => {
+    // Simple approximation of plasma colormap
+    const r = Math.floor(255 * Math.pow(value, 0.5))
+    const g = Math.floor(255 * Math.pow(value, 1.5))
+    const b = Math.floor(255 * Math.pow(value, 2.5))
+    return `rgb(${r},${g},${b})`
   },
+  viridis: (value: number) => {
+    // Simple approximation of viridis colormap
+    const r = Math.floor(255 * (0.2 + 0.7 * value))
+    const g = Math.floor(255 * (0.9 - 0.7 * value))
+    const b = Math.floor(255 * (0.4 + 0.5 * value))
+    return `rgb(${r},${g},${b})`
+  },
+  cividis: (value: number) => {
+    // Simple approximation of cividis colormap
+    const r = Math.floor(255 * (0.1 + 0.8 * value))
+    const g = Math.floor(255 * (0.5 + 0.4 * value))
+    const b = Math.floor(255 * (0.8 - 0.7 * value))
+    return `rgb(${r},${g},${b})`
+  },
+  magma: (value: number) => {
+    // Simple approximation of magma colormap
+    const r = Math.floor(255 * Math.pow(value, 0.7))
+    const g = Math.floor(255 * Math.pow(value, 0.3))
+    const b = Math.floor(255 * Math.pow(value, 0.1))
+    return `rgb(${r},${g},${b})`
+  },
+  inferno: (value: number) => {
+    // Simple approximation of inferno colormap
+    const r = Math.floor(255 * Math.pow(value, 0.8))
+    const g = Math.floor(255 * Math.pow(value, 0.4))
+    const b = Math.floor(255 * Math.pow(value, 0.2))
+    return `rgb(${r},${g},${b})`
+  },
+  twilight: (value: number) => {
+    // Simple approximation of twilight colormap (diverging)
+    if (value < 0.5) {
+      const v = value * 2
+      const r = Math.floor(255 * v)
+      const g = 0
+      const b = Math.floor(255 * (1 - v))
+      return `rgb(${r},${g},${b})`
+    } else {
+      const v = (value - 0.5) * 2
+      const r = Math.floor(255 * (1 - v))
+      const g = Math.floor(255 * v)
+      const b = 0
+      return `rgb(${r},${g},${b})`
+    }
+  },
+  hsv: (value: number) => {
+    // Simple HSV approximation (hue changes, saturation/value fixed)
+    const h = value * 360 // Hue from 0 to 360
+    const s = 1 // Full saturation
+    const v = 1 // Full value
+    return `hsl(${h}, ${s * 100}%, ${(v * 100) / 2}%)` // Use HSL for CSS
+  },
+  rainbow: (value: number) => {
+    // Simple rainbow approximation
+    const hue = value * 360
+    return `hsl(${hue}, 100%, 50%)`
+  },
+  grayscale: (value: number) => {
+    const gray = Math.floor(value * 255)
+    return `rgb(${gray},${gray},${gray})`
+  },
+}
+
+/**
+ * Generates an SVG string for a scatter plot based on provided data points.
+ * @param data - Array of data points {x, y, value}.
+ * @param settings - FlowArtSettings containing colorScheme.
+ * @returns A base64 encoded SVG string.
+ */
+export function generateScatterPlotSVG(data: DataPoint[], settings: FlowArtSettings): string {
+  const width = 800
+  const height = 600
+  const padding = 50
+
+  // Find min/max for scaling
+  const minX = Math.min(...data.map((d) => d.x))
+  const maxX = Math.max(...data.map((d) => d.x))
+  const minY = Math.min(...data.map((d) => d.y))
+  const maxY = Math.max(...data.map((d) => d.y))
+  const minValue = Math.min(...data.map((d) => d.value))
+  const maxValue = Math.max(...data.map((d) => d.value))
+
+  // Scaling functions
+  const scaleX = (x: number) => padding + ((x - minX) / (maxX - minX)) * (width - 2 * padding)
+  const scaleY = (y: number) => height - padding - ((y - minY) / (maxY - minY)) * (height - 2 * padding) // Invert Y for SVG
+  const scaleValue = (value: number) => (value - minValue) / (maxValue - minValue) // Normalize to 0-1
+
+  const getColor = COLOR_SCHEMES[settings.colorScheme] || COLOR_SCHEMES.plasma
+
+  const circles = data
+    .map((d) => {
+      const cx = scaleX(d.x)
+      const cy = scaleY(d.y)
+      const color = getColor(scaleValue(d.value))
+      const radius = 1.5 // Fixed radius for simplicity, could be dynamic
+      return `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${color}" />`
+    })
+    .join("\n")
+
+  const svgContent = `
+    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="${width}" height="${height}" fill="#1a1a2e"/> <!-- Dark background for contrast -->
+      ${circles}
+    </svg>
+  `
+
+  // Encode to base64
+  return `data:image/svg+xml;base64,${btoa(svgContent)}`
 }

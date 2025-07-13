@@ -14,3 +14,7 @@ FOR UPDATE USING (bucket_id = 'flowsketch-gallery' AND auth.uid()::text = (stora
 
 CREATE POLICY "Allow authenticated users to delete their own files." ON storage.objects
 FOR DELETE USING (bucket_id = 'flowsketch-gallery' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+-- Policy for gallery_images: Users can delete their own images
+CREATE POLICY "Users can delete their own images." ON public.gallery_images
+FOR DELETE USING (auth.uid() = user_id);

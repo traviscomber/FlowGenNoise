@@ -6,8 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start",
-    "type-check": "tsc --noEmit"
+    "start": "next start"
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.29",
@@ -39,7 +38,8 @@
     "@radix-ui/react-toggle-group": "latest",
     "@radix-ui/react-tooltip": "latest",
     "@supabase/supabase-js": "latest",
-    "ai": "^3.1.33",
+    "@tremor/react": "latest",
+    "ai": "^3.2.19",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "latest",

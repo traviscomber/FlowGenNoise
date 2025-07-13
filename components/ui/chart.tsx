@@ -1,8 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-
-import type * as React from "react"
+import * as React from "react"
 import {
   CartesianGrid,
   Line,
@@ -16,8 +15,18 @@ import {
   Area,
   AreaChart,
 } from "recharts"
+import { ChartContainer as RechartsChartContainer, type ChartContainerProps } from "@tremor/react"
 
-import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+const ChartContainer = React.forwardRef<HTMLDivElement, ChartContainerProps>(
+  ({ className, children, ...props }, ref) => (
+    <RechartsChartContainer ref={ref} className={className} {...props}>
+      {children}
+    </RechartsChartContainer>
+  ),
+)
+ChartContainer.displayName = "ChartContainer"
+
+import { type ChartConfig, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 
 // Helper to determine chart type and render accordingly
 const ChartComponent = ({ type, data, config }: { type: string; data: any[]; config: ChartConfig }) => {
@@ -133,4 +142,4 @@ const Chart = ({ type, data, config, className, ...props }: ChartProps) => (
   </ChartContainer>
 )
 
-export { Chart }
+export { Chart, ChartContainer }
