@@ -286,3 +286,8 @@ export class GalleryStorage {
 export function getGalleryImages(): GalleryImage[] {
   return GalleryStorage.getGallery()
 }
+
+// Save a single image object to local storage (wrapper for GalleryStorage.saveImage)
+export function saveImageToGallery(image: GalleryImage): void {
+  GalleryStorage.saveImage(image)
+}
