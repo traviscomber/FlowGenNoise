@@ -7,9 +7,22 @@
  *   • FlowModel.generateDataset – wrapper for legacy code paths
  */
 
+import { PlotUtils } from "@/lib/plot-utils"
+
 export interface Point {
   x: number
   y: number
+}
+
+export interface FlowArtSettings {
+  dataset: string
+  scenario: string
+  colorScheme: string
+  seed: number
+  samples: number
+  noise: number
+  generationMode: "svg" | "ai"
+  upscale?: boolean
 }
 
 /* -------------------------------------------------------------------------- */
@@ -154,6 +167,60 @@ export function generateDataset(dataset: string, seed = 42, numSamples = 1000, n
       return genNeural(numSamples, rng)
     default:
       return genGaussian(numSamples, rng, noise)
+  }
+}
+
+/**
+ * Generates mathematical SVG art and returns an object-URL to that SVG.
+ * `onProgress` is optional (0 – 100).
+ */
+export function generateFlowArt(settings: FlowArtSettings, onProgress?: (p: number) => void): string {
+  onProgress?.(10)
+  const data = generateDataset(settings.dataset, settings.seed, settings.samples, settings.noise)
+  onProgress?.(50)
+  const svg = PlotUtils.createSVGPlot(data, settings.colorScheme, 800, 600)
+  onProgress?.(80)
+  const blob = new Blob([svg], { type: "image/svg+xml" })
+  const url = URL.createObjectURL(blob)
+  onProgress?.(100)
+  return url
+}
+
+/**
+ * Calls the /api/generate-ai-art route and streams progress.
+ * Returns the final image URL plus a filename and (potentially updated) settings.
+ */
+export async function generateAIArt(
+  settings: FlowArtSettings,
+  onProgress?: (p: number) => void,
+): Promise<{ imageUrl: string; filename: string; settings: FlowArtSettings }> {
+  onProgress?.(10)
+  const res = await fetch("/api/generate-ai-art", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      dataset: settings.dataset,
+      seed: settings.seed,
+      colorScheme: settings.colorScheme,
+      numSamples: settings.samples,
+      noise: settings.noise,
+      scenario: settings.scenario,
+    }),
+  })
+  onProgress?.(60)
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || "Failed to generate AI art")
+  }
+  const data = await res.json()
+  onProgress?.(90)
+
+  const updatedSettings = { ...settings } // could merge more fields if the API returns them
+  onProgress?.(100)
+  return {
+    imageUrl: data.image,
+    filename: `ai-flow-art-${settings.dataset}-${Date.now()}.png`,
+    settings: updatedSettings,
   }
 }
 
