@@ -1,8 +1,9 @@
 "use client"
 
 import type React from "react"
+import type { User as SupabaseUser } from "@supabase/supabase-js"
 
-import { useState, useMemo, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { Input } from "@/components/ui/input"
@@ -25,7 +26,6 @@ import {
   Loader2,
   Info,
   RefreshCcw,
-  User,
   Mail,
   Lock,
   Eye,
@@ -74,6 +74,20 @@ export function FlowArtGenerator() {
   const [authLoading, setAuthLoading] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
   const [syncConflicts, setSyncConflicts] = useState<SyncConflict[]>([])
+  const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null)
+
+  /* load the current user once and keep it updated */
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setCurrentUser(data.user ?? null))
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setCurrentUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   useEffect(() => {
     const listener = (status: CloudSyncStatus) => {
@@ -388,7 +402,8 @@ export function FlowArtGenerator() {
     // For now, rely on the listener.
   }
 
-  const currentAuthUser = useMemo(() => supabase.auth.getUser(), [])
+  // Delete the old (unused) line farther down that reads
+  // `const currentAuthUser = useMemo(() => supabase.auth.getUser(), [])`
 
   return (
     <TooltipProvider>
@@ -694,7 +709,7 @@ export function FlowArtGenerator() {
                       <div className="space-y-2">
                         <Label htmlFor="displayName">Display Name (Optional)</Label>
                         <div className="relative">
-                          <User className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Mail className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                           <Input
                             id="displayName"
                             type="text"
@@ -728,8 +743,10 @@ export function FlowArtGenerator() {
                 ) : (
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 text-sm">
-                      <User className="h-4 w-4" />
-                      <span>{cloudSyncStatus.isAuthenticated ? supabase.auth.user()?.email : "Not signed in"}</span>
+                      <Mail className="h-4 w-4" />
+                      <span>
+                        {cloudSyncStatus.isAuthenticated ? (currentUser?.email ?? "Unknown user") : "Not signed in"}
+                      </span>
                     </div>
                     <Button
                       onClick={handleFullSync}
