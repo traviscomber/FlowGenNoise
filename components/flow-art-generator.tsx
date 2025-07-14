@@ -317,9 +317,39 @@ export default function FlowArtGenerator() {
         // The AI route returns { image, aiDescription }. `image` is a PNG URL / data-URL.
         if (data.image) {
           // Embed the PNG into the canvas area by wrapping it in an <img>
-          setCurrentSvg(
-            `<img src="${data.image}" alt="AI Generated Art" style="max-width:100%;height:auto;display:block;margin:auto;" />`,
-          )
+          const aiArtwork = `<img src="${data.image}" alt="AI Generated Art" style="max-width:100%;height:auto;display:block;margin:auto;" />`
+          setCurrentSvg(aiArtwork)
+
+          // Auto-save AI artwork to gallery
+          try {
+            await saveToGallery({
+              svg: data.image, // Save the actual image URL
+              params: {
+                ...params,
+                dataset,
+                scenario,
+                colorScheme,
+                seed,
+                generationMode: "ai",
+                aiPrompt: `Abstract ${dataset} pattern with ${scenario} theme, ${params.complexity} complexity and ${params.flowIntensity} intensity`,
+                aiDescription: data.aiDescription,
+              },
+              colors,
+              timestamp: Date.now(),
+            })
+
+            toast({
+              title: "AI Artwork Generated & Saved",
+              description: "Your AI artwork has been automatically saved to the gallery",
+            })
+          } catch (saveError) {
+            console.error("Failed to auto-save AI artwork:", saveError)
+            toast({
+              title: "Generated but Save Failed",
+              description: "Artwork generated but failed to save to gallery",
+              variant: "destructive",
+            })
+          }
         } else {
           throw new Error("No image returned from AI generation")
         }
@@ -332,14 +362,53 @@ export default function FlowArtGenerator() {
         })
         // Fall back to mathematical SVG
         setCurrentSvg(svgContent)
+
+        // Auto-save fallback mathematical artwork
+        try {
+          await saveToGallery({
+            svg: svgContent,
+            params: { ...params, dataset, scenario, colorScheme, seed, generationMode: "svg" },
+            colors,
+            timestamp: Date.now(),
+          })
+
+          toast({
+            title: "Mathematical Artwork Generated & Saved",
+            description: "Fallback mathematical artwork has been saved to the gallery",
+          })
+        } catch (saveError) {
+          console.error("Failed to auto-save fallback artwork:", saveError)
+        }
       } finally {
         setIsGenerating(false)
       }
     } else {
       console.log("Setting mathematical SVG content")
       setCurrentSvg(svgContent)
+
+      // Auto-save mathematical artwork to gallery
+      try {
+        await saveToGallery({
+          svg: svgContent,
+          params: { ...params, dataset, scenario, colorScheme, seed, generationMode: "svg" },
+          colors,
+          timestamp: Date.now(),
+        })
+
+        toast({
+          title: "Mathematical Artwork Generated & Saved",
+          description: "Your mathematical artwork has been automatically saved to the gallery",
+        })
+      } catch (saveError) {
+        console.error("Failed to auto-save mathematical artwork:", saveError)
+        toast({
+          title: "Generated but Save Failed",
+          description: "Artwork generated but failed to save to gallery",
+          variant: "destructive",
+        })
+      }
     }
-  }, [generationMode, dataset, scenario, colorScheme, params, seed, svgContent, toast])
+  }, [generationMode, dataset, scenario, colorScheme, params, seed, svgContent, colors, toast])
 
   const applyPreset = useCallback(
     (preset: Preset) => {
@@ -463,6 +532,93 @@ export default function FlowArtGenerator() {
       toast({ title: "Download Failed", description: String(error), variant: "destructive" })
     }
   }, [currentSvg, svgContent, dataset, scenario, toast])
+
+  const generateTestArtwork = useCallback(async () => {
+    try {
+      // Create a few test artworks with different settings
+      const testConfigs = [
+        {
+          dataset: "lissajous" as DatasetType,
+          scenario: "ocean_waves" as ScenarioType,
+          colorScheme: "viridis" as ColorSchemeType,
+          testParams: { ...params, samples: 150, noise: 0.1, complexity: 1.5 },
+        },
+        {
+          dataset: "spiral_galaxy" as DatasetType,
+          scenario: "cosmic_nebula" as ScenarioType,
+          colorScheme: "plasma" as ColorSchemeType,
+          testParams: { ...params, samples: 200, noise: 0.3, complexity: 2.5 },
+        },
+        {
+          dataset: "mandelbrot" as DatasetType,
+          scenario: "crystal_cave" as ScenarioType,
+          colorScheme: "rainbow" as ColorSchemeType,
+          testParams: { ...params, samples: 100, noise: 0.05, complexity: 3.0 },
+        },
+      ]
+
+      for (let i = 0; i < testConfigs.length; i++) {
+        const config = testConfigs[i]
+        const testSeed = Math.floor(Math.random() * 100000)
+
+        // Generate test data
+        const testData = generateDataset(
+          config.dataset,
+          testSeed,
+          config.testParams.samples,
+          config.testParams.noise,
+          config.testParams.complexity,
+          config.testParams.symmetry,
+          config.testParams.flowIntensity,
+          config.testParams.scenarioThreshold,
+        )
+
+        // Generate test SVG
+        const testSvg = PlotUtils.generateSVG(testData, {
+          width: 800,
+          height: 600,
+          strokeWidth: 2,
+          strokeColor: colors.stroke,
+          fillColor: colors.fill,
+          backgroundColor: colors.background,
+          complexity: config.testParams.complexity,
+          symmetry: config.testParams.symmetry,
+          flowIntensity: config.testParams.flowIntensity,
+          scenarioThreshold: config.testParams.scenarioThreshold,
+          showPoints: true,
+          showConnections: true,
+          pointSize: 2,
+        })
+
+        // Save to gallery
+        await saveToGallery({
+          svg: testSvg,
+          params: {
+            ...config.testParams,
+            dataset: config.dataset,
+            scenario: config.scenario,
+            colorScheme: config.colorScheme,
+            seed: testSeed,
+            generationMode: "svg",
+          },
+          colors,
+          timestamp: Date.now() - i * 1000, // Stagger timestamps
+        })
+      }
+
+      toast({
+        title: "Test Artwork Generated",
+        description: `Generated ${testConfigs.length} test artworks and saved to gallery`,
+      })
+    } catch (error) {
+      console.error("Failed to generate test artwork:", error)
+      toast({
+        title: "Test Generation Failed",
+        description: "Failed to generate test artwork",
+        variant: "destructive",
+      })
+    }
+  }, [params, colors, toast])
 
   return (
     <div className="w-full">
@@ -691,6 +847,15 @@ export default function FlowArtGenerator() {
                     Save
                   </Button>
                 </div>
+
+                <Button
+                  variant="outline"
+                  onClick={generateTestArtwork}
+                  className="w-full h-12 font-medium bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600"
+                >
+                  <Zap className="h-4 w-4 mr-2" />
+                  Generate Test Gallery
+                </Button>
 
                 <Button variant="outline" onClick={downloadArtwork} className="w-full h-12 font-medium bg-transparent">
                   <Download className="h-4 w-4 mr-2" />

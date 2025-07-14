@@ -51,6 +51,27 @@ export function Gallery() {
     }
   }
 
+  const debugGalleryStorage = () => {
+    try {
+      const storageKeys = Object.keys(localStorage).filter(
+        (key) => key.includes("flowsketch") || key.includes("gallery"),
+      )
+      console.log("All FlowSketch storage keys:", storageKeys)
+
+      storageKeys.forEach((key) => {
+        const data = localStorage.getItem(key)
+        console.log(`${key}:`, data ? JSON.parse(data) : null)
+      })
+
+      toast({
+        title: "Debug Info Logged",
+        description: "Check browser console for storage details",
+      })
+    } catch (error) {
+      console.error("Debug failed:", error)
+    }
+  }
+
   const handleDeleteImage = (imageId: string) => {
     try {
       GalleryStorage.deleteImage(imageId)
@@ -229,6 +250,9 @@ export function Gallery() {
           </Badge>
           <Button variant="outline" size="sm" onClick={loadGallery} className="ml-2 bg-transparent">
             <RefreshCw className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" size="sm" onClick={debugGalleryStorage} className="ml-2 bg-transparent">
+            Debug
           </Button>
         </CardTitle>
       </CardHeader>
