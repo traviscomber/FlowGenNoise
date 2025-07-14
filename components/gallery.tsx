@@ -7,53 +7,47 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Trash2, Star, StarOff, Download, ImageIcon, Palette, Zap } from "lucide-react"
-import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
+import { Trash2, Star, StarOff, Download, ImageIcon, Palette, Zap, RefreshCw } from "lucide-react"
+import { GalleryStorage, type GalleryImage, migrateGalleryData } from "@/lib/gallery-storage"
 import { useToast } from "@/hooks/use-toast"
 
 export function Gallery() {
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([])
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
   const [activeTab, setActiveTab] = useState("all")
+  const [isLoading, setIsLoading] = useState(true)
   const { toast } = useToast()
 
   useEffect(() => {
     loadGallery()
   }, [])
 
-  const loadGallery = () => {
+  const loadGallery = async () => {
     try {
+      setIsLoading(true)
+
+      // First, try to migrate any old data
+      migrateGalleryData()
+
+      // Then load the current gallery
       const images = GalleryStorage.getAllImages()
+      console.log("Loaded gallery images:", images.length)
 
-      // Sanitize images to ensure metadata exists
-      const sanitizedImages = images.map((image) => ({
-        ...image,
-        metadata: {
-          dataset: "lissajous",
-          colorScheme: "viridis",
-          samples: 1000,
-          noise: 0.1,
-          seed: 12345,
-          generationMode: "svg",
-          scenario: "none",
-          scenarioThreshold: 50,
-          createdAt: Date.now(),
-          filename: "unknown.svg",
-          fileSize: 0,
-          cloudStored: false,
-          ...image.metadata, // Override with actual metadata if it exists
-        },
-      }))
+      setGalleryImages(images)
 
-      setGalleryImages(sanitizedImages)
+      if (images.length === 0) {
+        console.log("No images found in gallery")
+      }
     } catch (error) {
       console.error("Error loading gallery:", error)
       setGalleryImages([])
       toast({
         title: "Gallery Load Error",
-        description: "Failed to load gallery images",
+        description: "Failed to load gallery images. Please try refreshing.",
         variant: "destructive",
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -80,6 +74,15 @@ export function Gallery() {
     try {
       GalleryStorage.toggleFavorite(imageId)
       loadGallery()
+
+      // Update selected image if it's the one being toggled
+      if (selectedImage && selectedImage.id === imageId) {
+        const updatedImage = GalleryStorage.getImage(imageId)
+        if (updatedImage) {
+          setSelectedImage(updatedImage)
+        }
+      }
+
       toast({
         title: "Favorite Updated",
         description: "Image favorite status changed",
@@ -100,8 +103,16 @@ export function Gallery() {
         throw new Error("No image URL available")
       }
 
-      // Check if it's an SVG string or a data URL
-      if (image.imageUrl.startsWith("<svg")) {
+      // Handle different image URL formats
+      if (image.imageUrl.startsWith("data:image/svg+xml")) {
+        // It's a data URL for SVG
+        const a = document.createElement("a")
+        a.href = image.imageUrl
+        a.download = image.metadata?.filename || `flowsketch-${image.id}.svg`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      } else if (image.imageUrl.startsWith("<svg")) {
         // It's an SVG string
         const blob = new Blob([image.imageUrl], { type: "image/svg+xml" })
         const url = URL.createObjectURL(blob)
@@ -113,7 +124,7 @@ export function Gallery() {
         document.body.removeChild(a)
         URL.revokeObjectURL(url)
       } else {
-        // It's a data URL or regular URL
+        // It's a regular URL or data URL
         const a = document.createElement("a")
         a.href = image.imageUrl
         a.download = image.metadata?.filename || `flowsketch-${image.id}.png`
@@ -153,6 +164,58 @@ export function Gallery() {
     })
   }
 
+  const renderImagePreview = (image: GalleryImage) => {
+    if (image.imageUrl.startsWith("data:image/svg+xml") || image.imageUrl.startsWith("<svg")) {
+      // For SVG content
+      let svgContent = image.imageUrl
+      if (image.imageUrl.startsWith("data:image/svg+xml")) {
+        try {
+          // Decode base64 data URL
+          const base64 = image.imageUrl.split(",")[1]
+          svgContent = atob(base64)
+        } catch (e) {
+          console.warn("Failed to decode SVG data URL:", e)
+          svgContent = '<div class="text-gray-400">Invalid SVG</div>'
+        }
+      }
+
+      return (
+        <div
+          className="w-full h-full flex items-center justify-center"
+          dangerouslySetInnerHTML={{ __html: svgContent }}
+          style={{
+            transform: "scale(0.8)",
+            transformOrigin: "center",
+          }}
+        />
+      )
+    } else {
+      // For regular images
+      return (
+        <img
+          src={image.imageUrl || "/placeholder.svg"}
+          alt="Generated artwork"
+          className="w-full h-full object-contain"
+          style={{
+            transform: "scale(0.8)",
+            transformOrigin: "center",
+          }}
+        />
+      )
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <Card className="w-full shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+        <CardContent className="flex items-center justify-center py-12">
+          <RefreshCw className="h-8 w-8 animate-spin text-gray-400" />
+          <span className="ml-2 text-gray-600">Loading gallery...</span>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card className="w-full shadow-xl border-0 bg-white/80 backdrop-blur-sm">
       <CardHeader className="pb-6">
@@ -164,6 +227,9 @@ export function Gallery() {
           <Badge variant="secondary" className="ml-auto">
             {galleryImages.length} {galleryImages.length === 1 ? "piece" : "pieces"}
           </Badge>
+          <Button variant="outline" size="sm" onClick={loadGallery} className="ml-2 bg-transparent">
+            <RefreshCw className="h-4 w-4" />
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -190,16 +256,7 @@ export function Gallery() {
                       <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 group">
                         <CardContent className="p-4">
                           <div className="aspect-square bg-gray-100 rounded-lg mb-3 overflow-hidden">
-                            <div
-                              className="w-full h-full flex items-center justify-center"
-                              dangerouslySetInnerHTML={{
-                                __html: image.imageUrl || '<div class="text-gray-400">No preview</div>',
-                              }}
-                              style={{
-                                transform: "scale(0.8)",
-                                transformOrigin: "center",
-                              }}
-                            />
+                            {renderImagePreview(image)}
                           </div>
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
@@ -232,12 +289,7 @@ export function Gallery() {
                           {/* Image Display */}
                           <div className="space-y-4">
                             <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden border-2">
-                              <div
-                                className="w-full h-full flex items-center justify-center"
-                                dangerouslySetInnerHTML={{
-                                  __html: image.imageUrl || '<div class="text-gray-400">No preview</div>',
-                                }}
-                              />
+                              {renderImagePreview(image)}
                             </div>
                             <div className="flex gap-2">
                               <Button
@@ -375,16 +427,7 @@ export function Gallery() {
                       <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 group">
                         <CardContent className="p-4">
                           <div className="aspect-square bg-gray-100 rounded-lg mb-3 overflow-hidden">
-                            <div
-                              className="w-full h-full flex items-center justify-center"
-                              dangerouslySetInnerHTML={{
-                                __html: image.imageUrl || '<div class="text-gray-400">No preview</div>',
-                              }}
-                              style={{
-                                transform: "scale(0.8)",
-                                transformOrigin: "center",
-                              }}
-                            />
+                            {renderImagePreview(image)}
                           </div>
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
@@ -417,12 +460,7 @@ export function Gallery() {
                           {/* Image Display */}
                           <div className="space-y-4">
                             <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden border-2">
-                              <div
-                                className="w-full h-full flex items-center justify-center"
-                                dangerouslySetInnerHTML={{
-                                  __html: image.imageUrl || '<div class="text-gray-400">No preview</div>',
-                                }}
-                              />
+                              {renderImagePreview(image)}
                             </div>
                             <div className="flex gap-2">
                               <Button
