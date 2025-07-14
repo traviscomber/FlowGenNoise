@@ -1,501 +1,785 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useCallback, useMemo } from "react"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Slider } from "@/components/ui/slider"
-import { Wand2, Download, Archive, Palette, Sparkles, RefreshCw, Zap } from "lucide-react"
-import { generateDataset } from "@/lib/flow-model"
-import { PlotUtils } from "@/lib/plot-utils"
-import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
-import { Gallery } from "@/components/gallery"
-import { compressImage } from "@/lib/image-compression"
-import { saveImageToGallery, getGalleryImages } from "@/lib/gallery-storage"
-import { CloudSync } from "./cloud-sync"
-import { useToast } from "@/components/ui/use-toast"
-import { Loader2 } from "lucide-react"
+import { Label } from "@/components/ui/label"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Download, Shuffle, Sparkles, Save, Palette, Zap } from "lucide-react"
+import {
+  generateDataset,
+  datasets,
+  scenarios,
+  colorSchemes,
+  type DatasetType,
+  type ScenarioType,
+  type ColorSchemeType,
+  type FlowParameters,
+} from "@/lib/flow-model"
+import { PlotUtils, type PlotConfig } from "@/lib/plot-utils"
+import { saveToGallery } from "@/lib/gallery-storage"
+import { useToast } from "@/hooks/use-toast"
 
-interface GenerationSettings {
-  dataset: string
-  scenario: string
-  colorScheme: string
-  seed: number
-  samples: number
-  noise: number
-  generationMode: "svg" | "ai"
+interface Preset {
+  name: string
+  dataset: DatasetType
+  scenario: ScenarioType
+  colorScheme: ColorSchemeType
+  params: FlowParameters
+  colors: {
+    stroke: string
+    fill: string
+    background: string
+  }
 }
 
-const COLOR_SCHEMES = {
-  viridis: "Viridis (Green-Purple)",
-  plasma: "Plasma (Purple-Yellow)",
-  inferno: "Inferno (Red-Yellow)",
-  magma: "Magma (Purple-Red)",
-  cividis: "Cividis (Blue-Green)",
-  rainbow: "Rainbow (Full Spectrum)",
-  grayscale: "Grayscale (Black-White)",
-  cool: "Cool (Blue-Green)",
-  hot: "Hot (Red-Yellow)",
-  spring: "Spring (Pink-Yellow)",
-  summer: "Summer (Green-Yellow)",
-  autumn: "Autumn (Red-Orange)",
-  winter: "Winter (Blue-Purple)",
-  spectral: "Spectral (Diverging)",
-  RdYlGn: "Red-Yellow-Green",
-  PuOr: "Purple-Orange",
-  BrBG: "Brown-Green",
-  PiYG: "Pink-Yellow-Green",
-  PRGn: "Purple-Green",
-  RdBu: "Red-Blue",
-  RdGy: "Red-Gray",
-  RdPu: "Red-Purple",
-  YlGnBu: "Yellow-Green-Blue",
-  GnBu: "Green-Blue",
-  OrRd: "Orange-Red",
-  PuBuGn: "Purple-Blue-Green",
-  YlOrRd: "Yellow-Orange-Red",
-  Blues: "Blues",
-  Greens: "Greens",
-  Greys: "Greys",
-  Oranges: "Oranges",
-  Purples: "Purples",
-  Reds: "Reds",
-} as const
-
-const SCENARIOS = {
-  none: { label: "Pure Mathematical", backgroundColor: "white" },
-  enchanted_forest: { label: "Enchanted Forest", backgroundColor: "#8A2BE2" },
-  deep_ocean: { label: "Deep Ocean", backgroundColor: "#00008B" },
-  cosmic_nebula: { label: "Cosmic Nebula", backgroundColor: "#FF4500" },
-  cyberpunk_city: { label: "Cyberpunk City", backgroundColor: "#808080" },
-  ancient_temple: { label: "Ancient Temple", backgroundColor: "#A52A2A" },
-  crystal_cave: { label: "Crystal Cave", backgroundColor: "#ADD8E6" },
-  aurora_borealis: { label: "Aurora Borealis", backgroundColor: "#FF00FF" },
-  volcanic_landscape: { label: "Volcanic Landscape", backgroundColor: "#A0522D" },
-  neural_connections: { label: "Neural Connections", backgroundColor: "#FFD700" },
-} as const
-
-const DATASETS = [
-  { value: "gaussian", label: "Gaussian Blobs" },
-  { value: "spirals", label: "Spirals" },
-  { value: "moons", label: "Moons" },
-  { value: "checkerboard", label: "Checkerboard" },
-  { value: "grid", label: "Grid" },
-  { value: "neural", label: "Neural Connection" },
+const PRESETS: Preset[] = [
+  {
+    name: "Ocean Waves",
+    dataset: "wave_interference",
+    scenario: "deep_ocean",
+    colorScheme: "viridis",
+    params: {
+      dataset: "wave_interference",
+      samples: 200,
+      noise: 0.2,
+      complexity: 2,
+      symmetry: 0.8,
+      colorVariation: 0.6,
+      flowIntensity: 1.5,
+      scenario: "deep_ocean",
+      scenarioThreshold: 70,
+    },
+    colors: { stroke: "#0ea5e9", fill: "none", background: "#f0f9ff" },
+  },
+  {
+    name: "Fire Storm",
+    dataset: "spiral_galaxy",
+    scenario: "volcanic_landscape",
+    colorScheme: "inferno",
+    params: {
+      dataset: "spiral_galaxy",
+      samples: 300,
+      noise: 0.4,
+      complexity: 3,
+      symmetry: 0.3,
+      colorVariation: 0.9,
+      flowIntensity: 2.2,
+      scenario: "volcanic_landscape",
+      scenarioThreshold: 85,
+    },
+    colors: { stroke: "#ef4444", fill: "none", background: "#fef2f2" },
+  },
+  {
+    name: "Forest Flow",
+    dataset: "fern",
+    scenario: "enchanted_forest",
+    colorScheme: "rainbow",
+    params: {
+      dataset: "fern",
+      samples: 150,
+      noise: 0.1,
+      complexity: 1.5,
+      symmetry: 0.7,
+      colorVariation: 0.4,
+      flowIntensity: 1.2,
+      scenario: "enchanted_forest",
+      scenarioThreshold: 60,
+    },
+    colors: { stroke: "#22c55e", fill: "none", background: "#f0fdf4" },
+  },
+  {
+    name: "Cosmic Dance",
+    dataset: "mandelbrot",
+    scenario: "cosmic_nebula",
+    colorScheme: "plasma",
+    params: {
+      dataset: "mandelbrot",
+      samples: 400,
+      noise: 0.3,
+      complexity: 4,
+      symmetry: 0.5,
+      colorVariation: 0.8,
+      flowIntensity: 2.8,
+      scenario: "cosmic_nebula",
+      scenarioThreshold: 90,
+    },
+    colors: { stroke: "#8b5cf6", fill: "none", background: "#faf5ff" },
+  },
+  {
+    name: "Neural Network",
+    dataset: "neural_network",
+    scenario: "neural_connections",
+    colorScheme: "neon",
+    params: {
+      dataset: "neural_network",
+      samples: 250,
+      noise: 0.15,
+      complexity: 2.5,
+      symmetry: 0.4,
+      colorVariation: 0.7,
+      flowIntensity: 1.8,
+      scenario: "neural_connections",
+      scenarioThreshold: 75,
+    },
+    colors: { stroke: "#00ff88", fill: "none", background: "#0a0a0a" },
+  },
+  {
+    name: "Crystal Cave",
+    dataset: "crystal_lattice",
+    scenario: "crystal_cave",
+    colorScheme: "cividis",
+    params: {
+      dataset: "crystal_lattice",
+      samples: 180,
+      noise: 0.05,
+      complexity: 1.8,
+      symmetry: 0.9,
+      colorVariation: 0.3,
+      flowIntensity: 1.1,
+      scenario: "crystal_cave",
+      scenarioThreshold: 65,
+    },
+    colors: { stroke: "#4c1d95", fill: "none", background: "#f8fafc" },
+  },
 ]
 
-export function FlowArtGenerator() {
-  const [settings, setSettings] = useState<GenerationSettings>({
-    dataset: "gaussian",
-    scenario: "none",
-    colorScheme: "viridis",
-    seed: Math.floor(Math.random() * 100000),
-    samples: 1000,
-    noise: 0.05,
-    generationMode: "svg",
-  })
-
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [isUpscaling, setIsUpscaling] = useState(false)
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null)
-  const [upscaledImage, setUpscaledImage] = useState<string | null>(null)
-  const [progress, setProgress] = useState(0)
-  const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState("generate")
-  const [lastGeneration, setLastGeneration] = useState<GalleryImage | null>(null)
-  const [galleryImages, setGalleryImages] = useState<string[]>([])
+export default function FlowArtGenerator() {
   const { toast } = useToast()
 
-  useEffect(() => {
-    setGalleryImages(getGalleryImages())
+  // Enhanced state with dataset and scenario selection
+  const [dataset, setDataset] = useState<DatasetType>("lissajous")
+  const [scenario, setScenario] = useState<ScenarioType>("none")
+  const [colorScheme, setColorScheme] = useState<ColorSchemeType>("viridis")
+  const [seed, setSeed] = useState(Math.floor(Math.random() * 100000))
+
+  const [params, setParams] = useState<FlowParameters>({
+    dataset: "lissajous",
+    samples: 200,
+    noise: 0.2,
+    complexity: 2,
+    symmetry: 0.5,
+    colorVariation: 0.5,
+    flowIntensity: 1.5,
+    scenario: "none",
+    scenarioThreshold: 50,
+  })
+
+  const [colors, setColors] = useState({
+    stroke: "#3b82f6",
+    fill: "none",
+    background: "#ffffff",
+  })
+
+  const [currentSvg, setCurrentSvg] = useState<string>("")
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [generationMode, setGenerationMode] = useState<"mathematical" | "ai">("mathematical")
+
+  // Memoized data generation with ALL parameters
+  const generatedData = useMemo(() => {
+    try {
+      console.log("Generating data with ALL parameters:", {
+        dataset,
+        seed,
+        samples: params.samples,
+        noise: params.noise,
+        complexity: params.complexity,
+        symmetry: params.symmetry,
+        flowIntensity: params.flowIntensity,
+        scenarioThreshold: params.scenarioThreshold,
+      })
+
+      const data = generateDataset(
+        dataset,
+        seed,
+        params.samples,
+        params.noise,
+        params.complexity,
+        params.symmetry,
+        params.flowIntensity,
+        params.scenarioThreshold,
+      )
+
+      console.log("Generated data points:", data?.length || 0)
+
+      if (!Array.isArray(data)) {
+        console.error("generateDataset returned non-array:", typeof data)
+        return [{ x: 400, y: 300 }]
+      }
+
+      return data
+    } catch (error) {
+      console.error("Error generating data:", error)
+      return [{ x: 400, y: 300 }]
+    }
+  }, [
+    dataset,
+    seed,
+    params.samples,
+    params.noise,
+    params.complexity,
+    params.symmetry,
+    params.flowIntensity,
+    params.scenarioThreshold,
+  ])
+
+  // Memoized SVG generation with ALL parameters passed to PlotUtils
+  const svgContent = useMemo(() => {
+    try {
+      if (!Array.isArray(generatedData)) {
+        console.error("generatedData is not an array in svgContent:", typeof generatedData)
+        return PlotUtils.generateSVG([{ x: 400, y: 300 }], {
+          width: 800,
+          height: 600,
+          strokeWidth: 2,
+          strokeColor: colors.stroke,
+          fillColor: colors.fill,
+          backgroundColor: colors.background,
+          complexity: params.complexity,
+          symmetry: params.symmetry,
+          flowIntensity: params.flowIntensity,
+          scenarioThreshold: params.scenarioThreshold,
+        })
+      }
+
+      const config: PlotConfig = {
+        width: 800,
+        height: 600,
+        strokeWidth: 2,
+        strokeColor: colors.stroke,
+        fillColor: colors.fill,
+        backgroundColor: colors.background,
+        complexity: params.complexity,
+        symmetry: params.symmetry,
+        flowIntensity: params.flowIntensity,
+        scenarioThreshold: params.scenarioThreshold,
+        showPoints: true,
+        showConnections: true,
+        pointSize: 2,
+      }
+
+      console.log("Generating SVG with config:", config)
+      return PlotUtils.generateSVG(generatedData, config)
+    } catch (error) {
+      console.error("Error generating SVG:", error)
+      return `<svg width="800" height="600"><rect width="100%" height="100%" fill="#f3f4f6"/><text x="400" y="300" textAnchor="middle">Error</text></svg>`
+    }
+  }, [generatedData, colors, params.complexity, params.symmetry, params.flowIntensity, params.scenarioThreshold])
+
+  // Safe parameter update functions
+  const updateParam = useCallback((key: keyof FlowParameters, value: number | number[]) => {
+    try {
+      // Handle slider array values
+      const numericValue = Array.isArray(value) ? value[0] : value
+
+      if (typeof numericValue !== "number" || !isFinite(numericValue)) {
+        console.warn(`Invalid value for ${key}:`, value)
+        return
+      }
+
+      console.log(`Updating parameter ${key} to:`, numericValue)
+
+      setParams((prev) => ({
+        ...prev,
+        [key]: numericValue,
+      }))
+    } catch (error) {
+      console.error(`Error updating parameter ${key}:`, error)
+    }
   }, [])
 
-  const handleGenerate = useCallback(async () => {
-    setIsGenerating(true)
-    setError(null)
-    setProgress(0)
-    setGeneratedImage(null)
-    setUpscaledImage(null)
-
-    console.log("Generating with mode:", settings.generationMode) // Added for debugging
-
-    try {
-      if (settings.generationMode === "svg") {
-        // Generate mathematical SVG
-        setProgress(20)
-        const data = generateDataset(settings.dataset, settings.seed, settings.samples, settings.noise)
-
-        setProgress(60)
-        const svg = PlotUtils.createSVGPlot(data, settings.colorScheme, 800, 600)
-
-        setProgress(80)
-        const blob = new Blob([svg], { type: "image/svg+xml" })
-        const url = URL.createObjectURL(blob)
-
-        setProgress(100)
-        setGeneratedImage(url)
-
-        // Save to gallery
-        const image: GalleryImage = {
-          id: `flow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          imageUrl: url,
-          metadata: {
-            ...settings,
-            createdAt: Date.now(),
-            filename: `flow-art-${settings.dataset}-${Date.now()}.svg`,
-          },
-          isFavorite: false,
-          tags: [settings.dataset, settings.scenario, "mathematical"],
-        }
-
-        GalleryStorage.saveImage(image)
-        setLastGeneration(image)
-      } else {
-        // Generate AI-enhanced version
-        setProgress(10)
-        // No need to generate SVG data on the client if the API doesn't use it for DALL-E 3 prompt
-        // const data = FlowModel.generateDataset(settings.dataset, settings.samples, settings.seed, settings.noise)
-        // const svg = PlotUtils.createSVGPlot(data, settings.colorScheme, 1024, 1024)
-
-        setProgress(50)
+  const generateArt = useCallback(async () => {
+    if (generationMode === "ai") {
+      setIsGenerating(true)
+      // AI Generation Mode
+      try {
         const response = await fetch("/api/generate-ai-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            // Removed svgData as the API route doesn't use it for DALL-E 3 prompt generation
-            dataset: settings.dataset,
-            seed: settings.seed,
-            colorScheme: settings.colorScheme,
-            numSamples: settings.samples, // Corrected parameter name
-            noise: settings.noise,
-            scenario: settings.scenario,
+            prompt: `Abstract ${dataset} pattern with ${scenario} theme, ${params.complexity} complexity and ${params.flowIntensity} intensity`,
+            dataset,
+            scenario,
+            colorScheme,
+            params,
+            seed,
           }),
         })
 
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || "Failed to generate AI art")
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+
+        const data = await response.json()
+
+        // The AI route returns { image, aiDescription }. `image` is a PNG URL / data-URL.
+        if (data.image) {
+          // Embed the PNG into the canvas area by wrapping it in an <img>
+          setCurrentSvg(
+            `<img src="${data.image}" alt="AI Generated Art" style="max-width:100%;height:auto;display:block;margin:auto;" />`,
+          )
+        } else {
+          throw new Error("No image returned from AI generation")
         }
-
-        setProgress(80)
-        const result = await response.json()
-
-        setProgress(100)
-        setGeneratedImage(result.image) // Changed from result.imageUrl to result.image as per API response
-
-        // Save to gallery
-        const image: GalleryImage = {
-          id: `ai-flow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          imageUrl: result.image, // Changed from result.imageUrl to result.image
-          metadata: {
-            ...settings,
-            createdAt: Date.now(),
-            filename: `ai-flow-art-${settings.dataset}-${Date.now()}.png`,
-          },
-          isFavorite: false,
-          tags: [settings.dataset, settings.scenario, "ai-generated"],
-        }
-
-        GalleryStorage.saveImage(image)
-        setLastGeneration(image)
-      }
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setIsGenerating(false)
-      setProgress(0)
-    }
-  }, [settings, toast]) // Added toast to useCallback dependencies
-
-  const handleUpscale = async () => {
-    if (!generatedImage) return
-
-    setIsUpscaling(true)
-    setError(null)
-
-    try {
-      const response = await fetch("/api/upscale-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl: generatedImage }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to upscale image")
-      }
-
-      const result = await response.json()
-      setUpscaledImage(result.upscaledUrl)
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setIsUpscaling(false)
-    }
-  }
-
-  const handleDownload = (imageUrl: string, filename: string) => {
-    const link = document.createElement("a")
-    link.href = imageUrl
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
-  const handleRandomize = () => {
-    setSettings({
-      ...settings,
-      seed: Math.floor(Math.random() * 100000),
-      // FIX: Randomize dataset from the DATASETS array
-      dataset: DATASETS[Math.floor(Math.random() * DATASETS.length)].value,
-      scenario: Object.keys(SCENARIOS)[Math.floor(Math.random() * Object.keys(SCENARIOS).length)],
-      colorScheme: Object.keys(COLOR_SCHEMES)[Math.floor(Math.random() * Object.keys(COLOR_SCHEMES).length)],
-    })
-  }
-
-  const handleImageSelect = (image: GalleryImage) => {
-    setSettings({
-      dataset: image.metadata.dataset,
-      scenario: image.metadata.scenario,
-      colorScheme: image.metadata.colorScheme,
-      seed: image.metadata.seed,
-      samples: image.metadata.samples,
-      noise: image.metadata.noise,
-      generationMode: image.metadata.generationMode,
-    })
-    setActiveTab("generate")
-  }
-
-  const handleSaveToGallery = useCallback(async () => {
-    if (generatedImage) {
-      try {
-        const compressed = await compressImage(generatedImage)
-        saveImageToGallery(compressed)
-        setGalleryImages(getGalleryImages())
+      } catch (error) {
+        console.error("AI generation error:", error)
         toast({
-          title: "Image Saved!",
-          description: "Your AI artwork has been added to the gallery.",
+          title: "AI Generation Failed",
+          description: String(error),
+          variant: "destructive",
+        })
+        // Fall back to mathematical SVG
+        setCurrentSvg(svgContent)
+      } finally {
+        setIsGenerating(false)
+      }
+    } else {
+      console.log("Setting mathematical SVG content")
+      setCurrentSvg(svgContent)
+    }
+  }, [generationMode, dataset, scenario, colorScheme, params, seed, svgContent, toast])
+
+  const applyPreset = useCallback(
+    (preset: Preset) => {
+      try {
+        setDataset(preset.dataset)
+        setScenario(preset.scenario)
+        setColorScheme(preset.colorScheme)
+        setParams(preset.params)
+        setColors(preset.colors)
+        toast({
+          title: "Preset Applied",
+          description: `Applied "${preset.name}" preset with ${preset.dataset} dataset`,
         })
       } catch (error) {
-        console.error("Error saving image to gallery:", error)
+        console.error("Error applying preset:", error)
         toast({
-          title: "Save Failed",
-          description: "Could not save image to gallery.",
+          title: "Error",
+          description: "Failed to apply preset",
           variant: "destructive",
         })
       }
-    } else {
+    },
+    [toast],
+  )
+
+  const randomizeParams = useCallback(() => {
+    try {
+      // Randomize dataset and scenario for crazy combinations
+      const randomDataset = datasets[Math.floor(Math.random() * datasets.length)].value as DatasetType
+      const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)].value as ScenarioType
+      const randomColorScheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)].value as ColorSchemeType
+
+      setDataset(randomDataset)
+      setScenario(randomScenario)
+      setColorScheme(randomColorScheme)
+      setSeed(Math.floor(Math.random() * 100000))
+
+      const randomParams: FlowParameters = {
+        dataset: randomDataset,
+        samples: Math.floor(Math.random() * 400) + 100,
+        noise: Math.random() * 0.5,
+        complexity: Math.random() * 4 + 0.5,
+        symmetry: Math.random(),
+        colorVariation: Math.random(),
+        flowIntensity: Math.random() * 2.5 + 0.5,
+        scenario: randomScenario,
+        scenarioThreshold: Math.floor(Math.random() * 100),
+      }
+      setParams(randomParams)
+
       toast({
-        title: "No Image to Save",
-        description: "Please generate an AI image first.",
+        title: "Parameters Randomized",
+        description: `Generated crazy combo: ${randomDataset} + ${randomScenario}`,
+      })
+    } catch (error) {
+      console.error("Error randomizing parameters:", error)
+    }
+  }, [toast])
+
+  const saveArtwork = useCallback(async () => {
+    try {
+      const svgToSave = currentSvg || svgContent
+      if (!svgToSave) {
+        throw new Error("No artwork to save")
+      }
+
+      await saveToGallery({
+        svg: svgToSave,
+        params: { ...params, dataset, scenario, colorScheme, seed },
+        colors,
+        timestamp: Date.now(),
+      })
+
+      toast({
+        title: "Artwork Saved",
+        description: "Your artwork has been saved to the gallery",
+      })
+    } catch (error) {
+      console.error("Error saving artwork:", error)
+      toast({
+        title: "Save Failed",
+        description: "Failed to save artwork to gallery",
         variant: "destructive",
       })
     }
-  }, [generatedImage, toast])
+  }, [currentSvg, svgContent, params, dataset, scenario, colorScheme, seed, colors, toast])
+
+  const downloadArtwork = useCallback(() => {
+    try {
+      const artwork = currentSvg || svgContent
+      if (!artwork) throw new Error("No artwork to download")
+
+      // Detect whether currentSvg is an <img> wrapper
+      const match = artwork.match(/<img[^>]+src=["']([^"']+)["']/i)
+      const imgSrc = match?.[1]
+
+      if (imgSrc) {
+        // Download PNG / data-URL
+        const a = document.createElement("a")
+        a.href = imgSrc
+        a.download = `flowsketch-${dataset}-${scenario}-${Date.now()}.png`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      } else {
+        // Otherwise treat as raw SVG
+        const blob = new Blob([artwork], { type: "image/svg+xml" })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = url
+        a.download = `flowsketch-${dataset}-${scenario}-${Date.now()}.svg`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      }
+
+      toast({ title: "Download Started" })
+    } catch (error) {
+      console.error("Download failed:", error)
+      toast({ title: "Download Failed", description: String(error), variant: "destructive" })
+    }
+  }, [currentSvg, svgContent, dataset, scenario, toast])
 
   return (
-    <div className="grid lg:grid-cols-3 gap-6 p-4 md:p-6">
-      <Card className="lg:col-span-2">
-        <CardHeader>
-          <CardTitle>FlowSketch Art Generator</CardTitle>
-        </CardHeader>
-        <CardContent className="grid md:grid-cols-2 gap-6">
-          <div className="flex flex-col gap-4">
-            {/* Generation Mode */}
-            <div className="space-y-2">
-              <Label>Generation Mode</Label>
-              <Select
-                value={settings.generationMode}
-                onValueChange={(value: "svg" | "ai") => setSettings({ ...settings, generationMode: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="svg">
-                    <div className="flex items-center gap-2">
-                      <Palette className="h-4 w-4" />
-                      Mathematical SVG
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="ai">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="h-4 w-4" />
-                      AI Enhanced
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="dataset">Mathematical Dataset</Label>
-              <Select value={settings.dataset} onValueChange={(value) => setSettings({ ...settings, dataset: value })}>
-                <SelectTrigger id="dataset">
-                  <SelectValue placeholder="Select a dataset" />
-                </SelectTrigger>
-                <SelectContent>
-                  {DATASETS.map((dataset) => (
-                    <SelectItem key={dataset.value} value={dataset.value}>
-                      {dataset.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="seed">Seed: {settings.seed}</Label>
-              <Slider
-                id="seed"
-                min={0}
-                max={100000}
-                step={1}
-                value={[settings.seed]}
-                onValueChange={([val]) => setSettings({ ...settings, seed: val })}
-              />
-              <Button
-                variant="outline"
-                onClick={() => setSettings({ ...settings, seed: Math.floor(Math.random() * 100000) })}
-              >
-                Randomize Seed
-              </Button>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="num-samples">Number of Samples: {settings.samples}</Label>
-              <Slider
-                id="num-samples"
-                min={100}
-                max={5000}
-                step={100}
-                value={[settings.samples]}
-                onValueChange={([val]) => setSettings({ ...settings, samples: val })}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="noise">Noise: {settings.noise.toFixed(2)}</Label>
-              <Slider
-                id="noise"
-                min={0}
-                max={0.5}
-                step={0.01}
-                value={[settings.noise]}
-                onValueChange={([val]) => setSettings({ ...settings, noise: val })}
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="color-scheme">Color Scheme</Label>
-              <Select
-                value={settings.colorScheme}
-                onValueChange={(value) => setSettings({ ...settings, colorScheme: value })}
-              >
-                <SelectTrigger id="color-scheme">
-                  <SelectValue placeholder="Select a color scheme" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(COLOR_SCHEMES).map(([key, value]) => (
-                    <SelectItem key={key} value={key}>
-                      {value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            {settings.generationMode === "ai" && (
-              <div className="grid gap-2">
-                <Label htmlFor="scenario">Creative Scenario</Label>
-                <Select
-                  value={settings.scenario}
-                  onValueChange={(value) => setSettings({ ...settings, scenario: value })}
+    <div className="w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Controls Panel - Takes up 4 columns on large screens */}
+        <div className="lg:col-span-4 space-y-6">
+          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+            <CardHeader className="pb-6">
+              <CardTitle className="flex items-center gap-3 text-xl">
+                <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
+                  <Palette className="h-5 w-5 text-white" />
+                </div>
+                Controls
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              {/* Generation Mode */}
+              <div className="space-y-4">
+                <Label className="text-base font-semibold text-gray-700">Generation Mode</Label>
+                <Tabs
+                  value={generationMode}
+                  onValueChange={(value) => setGenerationMode(value as "mathematical" | "ai")}
                 >
-                  <SelectTrigger id="scenario">
-                    <SelectValue placeholder="Select a scenario" />
+                  <TabsList className="grid w-full grid-cols-2 h-12 bg-gray-100">
+                    <TabsTrigger value="mathematical" className="text-sm font-medium">
+                      Mathematical
+                    </TabsTrigger>
+                    <TabsTrigger value="ai" className="text-sm font-medium">
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      AI Enhanced
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
+
+              {/* Dataset Selection */}
+              <div className="space-y-4">
+                <Label className="text-base font-semibold text-gray-700 flex items-center gap-2">
+                  <Zap className="h-4 w-4" />
+                  Dataset Pattern
+                </Label>
+                <Select value={dataset} onValueChange={(value) => setDataset(value as DatasetType)}>
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Choose a mathematical pattern" />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(SCENARIOS).map(([key, value]) => (
-                      <SelectItem key={key} value={key}>
-                        {value.label}
+                    {datasets.map((d) => (
+                      <SelectItem key={d.value} value={d.value}>
+                        {d.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-            )}
-            <Button onClick={handleGenerate} disabled={isGenerating || isUpscaling}>
-              {isGenerating || isUpscaling ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="mr-2 h-4 w-4" />
-                  Generate Art
-                </>
-              )}
-            </Button>
-            <Button onClick={handleRandomize} variant="outline">
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Randomize Settings
-            </Button>
-            {generatedImage && (
-              <Button onClick={handleSaveToGallery} disabled={isGenerating || isUpscaling}>
-                <Download className="mr-2 h-4 w-4" /> Save to Gallery
-              </Button>
-            )}
-          </div>
-          <div className="flex flex-col items-center justify-center">
-            <div className="w-full max-w-md">
-              <div className="bg-muted rounded-lg overflow-hidden relative">
-                {(isGenerating || isUpscaling) && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                  </div>
-                )}
-                {generatedImage ? (
-                  <>
-                    <img
-                      src={generatedImage || "/placeholder.svg"}
-                      alt="Generated artwork"
-                      className="w-full h-full object-cover"
-                    />
-                    {!upscaledImage && settings.generationMode === "ai" && (
-                      <Button onClick={handleUpscale} disabled={isUpscaling} className="absolute bottom-4 right-4">
-                        {isUpscaling ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Upscaling...
-                          </>
-                        ) : (
-                          <>
-                            <Zap className="mr-2 h-4 w-4" />
-                            Upscale to 4K
-                          </>
-                        )}
-                      </Button>
-                    )}
-                  </>
-                ) : (
-                  <div className="flex items-center justify-center w-full h-full text-muted-foreground">
-                    No art generated yet.
-                  </div>
-                )}
+
+              {/* Scenario Selection */}
+              <div className="space-y-4">
+                <Label className="text-base font-semibold text-gray-700 flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  Creative Scenario
+                </Label>
+                <Select value={scenario} onValueChange={(value) => setScenario(value as ScenarioType)}>
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Choose a creative theme" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {scenarios.map((s) => (
+                      <SelectItem key={s.value} value={s.value}>
+                        {s.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-      <Card className="lg:col-span-1">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Archive className="h-5 w-5" /> Gallery
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Gallery images={galleryImages} onImageSelect={handleImageSelect} />
-        </CardContent>
-      </Card>
-      <CloudSync />
+
+              {/* Color Scheme Selection */}
+              <div className="space-y-4">
+                <Label className="text-base font-semibold text-gray-700">Color Scheme</Label>
+                <Select value={colorScheme} onValueChange={(value) => setColorScheme(value as ColorSchemeType)}>
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Choose colors" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {colorSchemes.map((c) => (
+                      <SelectItem key={c.value} value={c.value}>
+                        {c.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Parameters */}
+              <div className="space-y-8">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <Label className="text-sm font-semibold text-gray-700">Samples</Label>
+                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{params.samples}</span>
+                  </div>
+                  <Slider
+                    value={[params.samples]}
+                    onValueChange={(value) => updateParam("samples", value)}
+                    min={50}
+                    max={500}
+                    step={10}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <Label className="text-sm font-semibold text-gray-700">Noise</Label>
+                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{params.noise.toFixed(2)}</span>
+                  </div>
+                  <Slider
+                    value={[params.noise]}
+                    onValueChange={(value) => updateParam("noise", value)}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <Label className="text-sm font-semibold text-gray-700">Complexity</Label>
+                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
+                      {params.complexity.toFixed(1)}
+                    </span>
+                  </div>
+                  <Slider
+                    value={[params.complexity]}
+                    onValueChange={(value) => updateParam("complexity", value)}
+                    min={0.5}
+                    max={5}
+                    step={0.1}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <Label className="text-sm font-semibold text-gray-700">Symmetry</Label>
+                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
+                      {params.symmetry.toFixed(2)}
+                    </span>
+                  </div>
+                  <Slider
+                    value={[params.symmetry]}
+                    onValueChange={(value) => updateParam("symmetry", value)}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <Label className="text-sm font-semibold text-gray-700">Flow Intensity</Label>
+                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
+                      {params.flowIntensity.toFixed(1)}
+                    </span>
+                  </div>
+                  <Slider
+                    value={[params.flowIntensity]}
+                    onValueChange={(value) => updateParam("flowIntensity", value)}
+                    min={0.1}
+                    max={3}
+                    step={0.1}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <Label className="text-sm font-semibold text-gray-700">Scenario Blend</Label>
+                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{params.scenarioThreshold}%</span>
+                  </div>
+                  <Slider
+                    value={[params.scenarioThreshold]}
+                    onValueChange={(value) => updateParam("scenarioThreshold", value)}
+                    min={0}
+                    max={100}
+                    step={1}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <Label className="text-sm font-semibold text-gray-700">Seed</Label>
+                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{seed}</span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setSeed(Math.floor(Math.random() * 100000))}
+                    className="w-full"
+                  >
+                    <Shuffle className="h-4 w-4 mr-2" />
+                    New Seed
+                  </Button>
+                </div>
+              </div>
+
+              <Separator className="my-6" />
+
+              {/* Action Buttons */}
+              <div className="space-y-4">
+                <Button
+                  onClick={generateArt}
+                  className="w-full h-14 text-base font-semibold bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg"
+                  disabled={isGenerating}
+                >
+                  {isGenerating ? "Generating..." : "Generate Art"}
+                </Button>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <Button variant="outline" onClick={randomizeParams} className="h-12 font-medium bg-transparent">
+                    <Shuffle className="h-4 w-4 mr-2" />
+                    Crazy Random
+                  </Button>
+                  <Button variant="outline" onClick={saveArtwork} className="h-12 font-medium bg-transparent">
+                    <Save className="h-4 w-4 mr-2" />
+                    Save
+                  </Button>
+                </div>
+
+                <Button variant="outline" onClick={downloadArtwork} className="w-full h-12 font-medium bg-transparent">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Presets */}
+          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+            <CardHeader className="pb-6">
+              <CardTitle className="text-lg font-semibold">Crazy Presets</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-3">
+                {PRESETS.map((preset) => (
+                  <Button
+                    key={preset.name}
+                    variant="outline"
+                    onClick={() => applyPreset(preset)}
+                    className="justify-start h-16 text-left font-medium hover:bg-gray-50 p-4"
+                  >
+                    <div className="flex flex-col items-start w-full">
+                      <div className="flex items-center gap-3 w-full">
+                        <Badge
+                          variant="secondary"
+                          className="w-6 h-6 rounded-full p-0 flex items-center justify-center border-2"
+                          style={{
+                            backgroundColor: preset.colors.stroke + "15",
+                            borderColor: preset.colors.stroke,
+                            color: preset.colors.stroke,
+                          }}
+                        >
+                          ●
+                        </Badge>
+                        <span className="text-sm font-semibold">{preset.name}</span>
+                      </div>
+                      <span className="text-xs text-gray-500 ml-9">
+                        {preset.dataset} + {preset.scenario}
+                      </span>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Canvas Area - Takes up 8 columns on large screens */}
+        <div className="lg:col-span-8">
+          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm h-full">
+            <CardHeader className="pb-6">
+              <CardTitle className="text-xl font-semibold">Generated Artwork</CardTitle>
+            </CardHeader>
+            <CardContent className="h-full">
+              <div className="flex justify-center items-center min-h-[600px] p-4">
+                <div
+                  className="border-4 border-gray-200 rounded-2xl overflow-hidden shadow-2xl bg-white"
+                  style={{ minWidth: "800px", minHeight: "600px", maxWidth: "100%" }}
+                  dangerouslySetInnerHTML={{
+                    __html: currentSvg || svgContent,
+                  }}
+                />
+              </div>
+
+              <div className="mt-8 flex justify-between items-center text-sm text-gray-600 bg-gray-50 p-4 rounded-lg">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="font-medium">
+                    Dataset: <span className="font-mono">{dataset}</span>
+                  </span>
+                  <span className="font-medium">
+                    Scenario: <span className="font-mono">{scenario}</span>
+                  </span>
+                  <span className="font-medium">
+                    Points: <span className="font-mono">{Array.isArray(generatedData) ? generatedData.length : 0}</span>
+                  </span>
+                  <span className="font-medium">
+                    Mode: <span className="font-mono">{generationMode === "ai" ? "AI Enhanced" : "Mathematical"}</span>
+                  </span>
+                  <span className="font-medium">
+                    Seed: <span className="font-mono">{seed}</span>
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }

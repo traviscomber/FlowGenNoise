@@ -1,9 +1,13 @@
 import { createClient } from "@supabase/supabase-js"
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn("Supabase environment variables are not set. Supabase client will not be initialized.")
+}
+
+export const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null
 
 export type Database = {
   public: {
@@ -24,7 +28,24 @@ export type Database = {
             generationMode: "svg" | "ai"
             createdAt: number
             filename: string
+            fileSize: number
+            cloudStored: boolean
+            aiPrompt?: string
+            aiDescription?: string
+            scenarioThreshold?: number
+            aestheticScore?: {
+              score: number
+              rating: string
+              method: string
+            }
+            uploadedAt?: number
+            originalSize?: number
           }
+          aesthetic_score: {
+            score: number
+            rating: string
+            method: string
+          } | null
           is_favorite: boolean
           tags: string[]
           created_at: string
@@ -45,7 +66,24 @@ export type Database = {
             generationMode: "svg" | "ai"
             createdAt: number
             filename: string
+            fileSize: number
+            cloudStored: boolean
+            aiPrompt?: string
+            aiDescription?: string
+            scenarioThreshold?: number
+            aestheticScore?: {
+              score: number
+              rating: string
+              method: string
+            }
+            uploadedAt?: number
+            originalSize?: number
           }
+          aesthetic_score?: {
+            score: number
+            rating: string
+            method: string
+          } | null
           is_favorite?: boolean
           tags?: string[]
           created_at?: string
@@ -66,7 +104,24 @@ export type Database = {
             generationMode: "svg" | "ai"
             createdAt: number
             filename: string
+            fileSize: number
+            cloudStored: boolean
+            aiPrompt?: string
+            aiDescription?: string
+            scenarioThreshold?: number
+            aestheticScore?: {
+              score: number
+              rating: string
+              method: string
+            }
+            uploadedAt?: number
+            originalSize?: number
           }
+          aesthetic_score?: {
+            score: number
+            rating: string
+            method: string
+          } | null
           is_favorite?: boolean
           tags?: string[]
           created_at?: string

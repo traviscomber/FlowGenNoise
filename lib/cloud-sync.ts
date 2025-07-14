@@ -1,5 +1,20 @@
-import { supabase } from "./supabase"
+"use client"
+import { createClient } from "@supabase/supabase-js"
 import type { GalleryImage } from "./gallery-storage"
+import { GalleryStorage } from "@/lib/gallery-storage"
+import type { useToast } from "@/components/ui/use-toast"
+
+// Initialize Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+let supabase: ReturnType<typeof createClient> | null = null
+
+if (supabaseUrl && supabaseAnonKey) {
+  supabase = createClient(supabaseUrl, supabaseAnonKey)
+} else {
+  console.warn("Supabase environment variables are not set. Cloud sync will be disabled.")
+}
 
 export interface CloudSyncStatus {
   isEnabled: boolean
@@ -19,36 +34,55 @@ export interface SyncConflict {
 }
 
 export class CloudSyncService {
-  private static syncStatus: CloudSyncStatus = {
-    isEnabled: false,
-    isAuthenticated: false,
+  private static instance: CloudSyncService
+  private listeners: Set<() => void> = new Set()
+  private status: {
+    isSyncing: boolean
+    progress: number
+    message: string
+  } = {
     isSyncing: false,
-    lastSync: null,
-    pendingUploads: 0,
-    storageUsed: 0,
-    storageQuota: 500 * 1024 * 1024, // 500MB default for high-res images
-    conflictCount: 0,
+    progress: 0,
+    message: "",
   }
 
-  private static listeners: Array<(status: CloudSyncStatus) => void> = []
-
-  static addStatusListener(listener: (status: CloudSyncStatus) => void) {
-    this.listeners.push(listener)
-    listener(this.syncStatus)
+  private constructor() {
+    // Private constructor to enforce singleton pattern
   }
 
-  static removeStatusListener(listener: (status: CloudSyncStatus) => void) {
-    const index = this.listeners.indexOf(listener)
-    if (index > -1) {
-      this.listeners.splice(index, 1)
+  public static getInstance(): CloudSyncService {
+    if (!CloudSyncService.instance) {
+      CloudSyncService.instance = new CloudSyncService()
     }
+    return CloudSyncService.instance
   }
 
-  private static notifyListeners() {
-    this.listeners.forEach((listener) => listener(this.syncStatus))
+  private setStatus(newStatus: Partial<CloudSyncService["status"]>) {
+    this.status = { ...this.status, ...newStatus }
+    this.notifyListeners()
+  }
+
+  public getStatus() {
+    return this.status
+  }
+
+  public addStatusListener(listener: () => void) {
+    this.listeners.add(listener)
+  }
+
+  public removeStatusListener(listener: () => void) {
+    this.listeners.delete(listener)
+  }
+
+  private notifyListeners() {
+    this.listeners.forEach((listener) => listener())
   }
 
   static async signInWithEmail(email: string, password: string): Promise<{ success: boolean; error?: string }> {
+    if (!supabase) {
+      return { success: false, error: "Supabase client not initialized." }
+    }
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -59,9 +93,8 @@ export class CloudSyncService {
         return { success: false, error: error.message }
       }
 
-      await this.initializeUser()
-      this.syncStatus.isAuthenticated = true
-      this.notifyListeners()
+      await this.getInstance().initializeUser()
+      this.getInstance().setStatus({ isAuthenticated: true })
 
       return { success: true }
     } catch (error: any) {
@@ -74,6 +107,10 @@ export class CloudSyncService {
     password: string,
     displayName?: string,
   ): Promise<{ success: boolean; error?: string }> {
+    if (!supabase) {
+      return { success: false, error: "Supabase client not initialized." }
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -90,7 +127,7 @@ export class CloudSyncService {
       }
 
       if (data.user) {
-        await this.createUserProfile(data.user.id, email, displayName)
+        await this.getInstance().createUserProfile(data.user.id, email, displayName)
       }
 
       return { success: true }
@@ -100,36 +137,38 @@ export class CloudSyncService {
   }
 
   static async signOut(): Promise<void> {
+    if (!supabase) return
+
     await supabase.auth.signOut()
-    this.syncStatus.isAuthenticated = false
-    this.syncStatus.isEnabled = false
-    this.notifyListeners()
+    this.getInstance().setStatus({ isAuthenticated: false, isEnabled: false })
   }
 
   static async initializeAuth(): Promise<void> {
+    if (!supabase) return
+
     const {
       data: { session },
     } = await supabase.auth.getSession()
 
     if (session?.user) {
-      this.syncStatus.isAuthenticated = true
-      await this.initializeUser()
+      this.getInstance().setStatus({ isAuthenticated: true })
+      await this.getInstance().initializeUser()
     }
 
     // Listen for auth changes
     supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_IN" && session?.user) {
-        this.syncStatus.isAuthenticated = true
-        await this.initializeUser()
+        this.getInstance().setStatus({ isAuthenticated: true })
+        await this.getInstance().initializeUser()
       } else if (event === "SIGNED_OUT") {
-        this.syncStatus.isAuthenticated = false
-        this.syncStatus.isEnabled = false
+        this.getInstance().setStatus({ isAuthenticated: false, isEnabled: false })
       }
-      this.notifyListeners()
     })
   }
 
-  private static async createUserProfile(userId: string, email: string, displayName?: string): Promise<void> {
+  private async createUserProfile(userId: string, email: string, displayName?: string): Promise<void> {
+    if (!supabase) return
+
     const { error } = await supabase.from("user_profiles").insert({
       id: userId,
       email,
@@ -144,7 +183,9 @@ export class CloudSyncService {
     }
   }
 
-  private static async initializeUser(): Promise<void> {
+  private async initializeUser(): Promise<void> {
+    if (!supabase) return
+
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -157,15 +198,19 @@ export class CloudSyncService {
       // Profile doesn't exist, create it
       await this.createUserProfile(user.id, user.email!, user.user_metadata?.display_name)
     } else if (profile) {
-      this.syncStatus.isEnabled = profile.sync_enabled
-      this.syncStatus.storageUsed = profile.storage_used
-      this.syncStatus.storageQuota = profile.storage_quota
+      this.getInstance().setStatus({
+        isEnabled: profile.sync_enabled,
+        storageUsed: profile.storage_used,
+        storageQuota: profile.storage_quota,
+      })
     }
-
-    this.notifyListeners()
   }
 
   static async enableSync(): Promise<{ success: boolean; error?: string }> {
+    if (!supabase) {
+      return { success: false, error: "Supabase client not initialized." }
+    }
+
     try {
       const {
         data: { user },
@@ -180,11 +225,10 @@ export class CloudSyncService {
         return { success: false, error: error.message }
       }
 
-      this.syncStatus.isEnabled = true
-      this.notifyListeners()
+      this.getInstance().setStatus({ isEnabled: true })
 
       // Perform initial sync
-      await this.performFullSync()
+      await this.getInstance().performFullSync()
 
       return { success: true }
     } catch (error: any) {
@@ -193,6 +237,8 @@ export class CloudSyncService {
   }
 
   static async disableSync(): Promise<void> {
+    if (!supabase) return
+
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -200,14 +246,18 @@ export class CloudSyncService {
 
     await supabase.from("user_profiles").update({ sync_enabled: false }).eq("id", user.id)
 
-    this.syncStatus.isEnabled = false
-    this.notifyListeners()
+    this.getInstance().setStatus({ isEnabled: false })
   }
 
   static async uploadImageFullResolution(
     image: GalleryImage,
     onProgress?: (progress: number) => void,
   ): Promise<{ success: boolean; error?: string; cloudUrl?: string; thumbnailUrl?: string }> {
+    if (!supabase) {
+      console.error("Supabase client not initialized. Cannot upload image.")
+      return { success: false, error: "Supabase client not initialized." }
+    }
+
     try {
       const {
         data: { user },
@@ -300,7 +350,7 @@ export class CloudSyncService {
       onProgress?.(100)
 
       // Update storage usage
-      await this.updateStorageUsage()
+      await this.getInstance().updateStorageUsage()
 
       return { success: true, cloudUrl: mainUrl, thumbnailUrl }
     } catch (error: any) {
@@ -360,13 +410,13 @@ export class CloudSyncService {
     onProgress?: (progress: number) => void,
   ): Promise<{ success: boolean; error?: string; cloudImage?: GalleryImage }> {
     // Check if user is authenticated and sync is enabled
-    if (!this.syncStatus.isAuthenticated || !this.syncStatus.isEnabled) {
+    if (!this.getInstance().getStatus().isAuthenticated || !this.getInstance().getStatus().isEnabled) {
       // Save locally only
       return { success: true }
     }
 
     try {
-      const result = await this.uploadImageFullResolution(image, onProgress)
+      const result = await this.getInstance().uploadImageFullResolution(image, onProgress)
 
       if (result.success && result.cloudUrl) {
         // Update the image with cloud URL and thumbnail
@@ -392,6 +442,11 @@ export class CloudSyncService {
   }
 
   static async downloadImages(): Promise<GalleryImage[]> {
+    if (!supabase) {
+      console.error("Supabase client not initialized. Cannot download images.")
+      return []
+    }
+
     try {
       const {
         data: { user },
@@ -424,6 +479,10 @@ export class CloudSyncService {
   }
 
   static async deleteCloudImage(imageId: string): Promise<{ success: boolean; error?: string }> {
+    if (!supabase) {
+      return { success: false, error: "Supabase client not initialized." }
+    }
+
     try {
       const {
         data: { user },
@@ -450,20 +509,19 @@ export class CloudSyncService {
         return { success: false, error: error.message }
       }
 
-      await this.updateStorageUsage()
+      await this.getInstance().updateStorageUsage()
       return { success: true }
     } catch (error: any) {
       return { success: false, error: error.message }
     }
   }
 
-  static async performFullSync(): Promise<{ success: boolean; conflicts: SyncConflict[]; error?: string }> {
-    if (!this.syncStatus.isAuthenticated || !this.syncStatus.isEnabled) {
+  public async performFullSync(): Promise<{ success: boolean; conflicts: SyncConflict[]; error?: string }> {
+    if (!this.getStatus().isAuthenticated || !this.getStatus().isEnabled) {
       return { success: false, conflicts: [], error: "Sync not enabled or not authenticated" }
     }
 
-    this.syncStatus.isSyncing = true
-    this.notifyListeners()
+    this.setStatus({ isSyncing: true })
 
     try {
       // Get local images
@@ -515,19 +573,19 @@ export class CloudSyncService {
         localStorage.setItem("flowsketch-gallery", JSON.stringify(updatedLocal))
       }
 
-      this.syncStatus.lastSync = Date.now()
-      this.syncStatus.conflictCount = conflicts.length
+      this.setStatus({ lastSync: Date.now(), conflictCount: conflicts.length })
 
       return { success: true, conflicts }
     } catch (error: any) {
       return { success: false, conflicts: [], error: error.message }
     } finally {
-      this.syncStatus.isSyncing = false
-      this.notifyListeners()
+      this.setStatus({ isSyncing: false })
     }
   }
 
-  private static async updateStorageUsage(): Promise<void> {
+  private async updateStorageUsage(): Promise<void> {
+    if (!supabase) return
+
     try {
       const {
         data: { user },
@@ -545,25 +603,177 @@ export class CloudSyncService {
 
       await supabase.from("user_profiles").update({ storage_used: totalSize }).eq("id", user.id)
 
-      this.syncStatus.storageUsed = totalSize
-      this.notifyListeners()
+      this.getInstance().setStatus({ storageUsed: totalSize })
     } catch (error) {
       console.error("Failed to update storage usage:", error)
     }
   }
 
-  static getStatus(): CloudSyncStatus {
-    return { ...this.syncStatus }
+  public async uploadAllImages(toast: ReturnType<typeof useToast>["toast"]) {
+    if (!supabase) {
+      toast({ title: "Error", description: "Supabase client not initialized." })
+      return
+    }
+
+    this.setStatus({ isSyncing: true, progress: 0, message: "Starting upload..." })
+    const imagesToUpload = GalleryStorage.getGallery().filter((img) => !img.metadata.cloudStored)
+    let uploadedCount = 0
+    let failedCount = 0
+
+    if (imagesToUpload.length === 0) {
+      toast({ title: "No new images to upload.", description: "All local images are already synced to cloud." })
+      this.setStatus({ isSyncing: false, progress: 100, message: "Upload complete." })
+      return
+    }
+
+    for (const image of imagesToUpload) {
+      this.setStatus({
+        message: `Uploading ${uploadedCount + 1} of ${imagesToUpload.length}: ${image.metadata.filename}...`,
+      })
+      const publicUrl = await GalleryStorage.uploadImageToCloud(image)
+      if (publicUrl) {
+        GalleryStorage.updateImageMetadata(image.id, { cloudStored: true, imageUrl: publicUrl })
+        uploadedCount++
+      } else {
+        failedCount++
+        toast({
+          title: "Upload Failed",
+          description: `Failed to upload ${image.metadata.filename}.`,
+          variant: "destructive",
+        })
+      }
+      this.setStatus({ progress: Math.round(((uploadedCount + failedCount) / imagesToUpload.length) * 100) })
+    }
+
+    this.setStatus({ isSyncing: false, message: "" })
+    toast({
+      title: "Upload Complete",
+      description: `Successfully uploaded ${uploadedCount} images. Failed: ${failedCount}.`,
+    })
   }
 
-  static async resolveConflict(conflict: SyncConflict, resolution: "keep_local" | "keep_cloud"): Promise<void> {
-    if (resolution === "keep_local") {
-      await this.uploadImageFullResolution(conflict.localImage)
-    } else {
-      // Update local storage with cloud version
-      const localImages = JSON.parse(localStorage.getItem("flowsketch-gallery") || "[]") as GalleryImage[]
-      const updatedImages = localImages.map((img) => (img.id === conflict.cloudImage.id ? conflict.cloudImage : img))
-      localStorage.setItem("flowsketch-gallery", JSON.stringify(updatedImages))
+  public async downloadAllImages(toast: ReturnType<typeof useToast>["toast"]) {
+    if (!supabase) {
+      toast({ title: "Error", description: "Supabase client not initialized." })
+      return
     }
+
+    this.setStatus({ isSyncing: true, progress: 0, message: "Starting download..." })
+    // This is a simplified example. In a real app, you'd fetch a list of cloud images
+    // and compare with local, then download missing ones.
+    const cloudImages = GalleryStorage.getGallery().filter((img) => img.metadata.cloudStored) // Assuming cloudStored means it exists in cloud
+    let downloadedCount = 0
+    let failedCount = 0
+
+    if (cloudImages.length === 0) {
+      toast({ title: "No cloud images to download.", description: "Your cloud gallery is empty or not synced." })
+      this.setStatus({ isSyncing: false, progress: 100, message: "Download complete." })
+      return
+    }
+
+    for (const image of cloudImages) {
+      this.setStatus({
+        message: `Downloading ${downloadedCount + 1} of ${cloudImages.length}: ${image.metadata.filename}...`,
+      })
+      const pathInStorage = image.imageUrl.split("flowsketch-gallery/")[1] // Extract path from public URL
+      if (pathInStorage) {
+        const localUrl = await GalleryStorage.downloadImageFromCloud(pathInStorage)
+        if (localUrl) {
+          GalleryStorage.updateImageMetadata(image.id, { imageUrl: localUrl })
+          downloadedCount++
+        } else {
+          failedCount++
+          toast({
+            title: "Download Failed",
+            description: `Failed to download ${image.metadata.filename}.`,
+            variant: "destructive",
+          })
+        }
+      } else {
+        failedCount++ // Image URL was not a valid cloud URL
+      }
+      this.setStatus({ progress: Math.round(((downloadedCount + failedCount) / cloudImages.length) * 100) })
+    }
+
+    this.setStatus({ isSyncing: false, message: "" })
+    toast({
+      title: "Download Complete",
+      description: `Successfully downloaded ${downloadedCount} images. Failed: ${failedCount}.`,
+    })
+  }
+
+  public async batchScoreImages(toast: ReturnType<typeof useToast>["toast"]) {
+    if (!supabase) {
+      toast({ title: "Error", description: "Supabase client not initialized." })
+      return
+    }
+
+    this.setStatus({ isSyncing: true, progress: 0, message: "Starting batch scoring..." })
+    const result = await GalleryStorage.batchScoreImages((progress) => {
+      this.setStatus({ progress, message: `Scoring images: ${Math.round(progress)}% complete...` })
+    })
+    this.setStatus({ isSyncing: false, message: "" })
+    toast({
+      title: "Batch Scoring Complete",
+      description: `Scored ${result.scored} images, failed ${result.failed}.`,
+    })
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Convenience helpers used by the Gallery component                  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Upload an image (full-resolution) to Supabase Storage.
+ * Returns true on success, false on failure.
+ */
+export async function uploadImageToCloud(
+  image: GalleryImage,
+  onProgress?: (progress: number) => void,
+): Promise<boolean> {
+  const result = await CloudSyncService.uploadImageFullResolution(image, onProgress)
+  return result.success
+}
+
+/**
+ * Get the public URL of an already-uploaded image.
+ * Returns null if the user isn’t authenticated or the image isn’t found.
+ */
+export async function getCloudImageUrl(imageId: string): Promise<string | null> {
+  if (!supabase) return null
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return null
+
+  const { data, error } = await supabase
+    .from("gallery_images")
+    .select("image_url")
+    .eq("id", imageId)
+    .eq("user_id", user.id)
+    .single()
+
+  if (error || !data?.image_url) return null
+  return data.image_url as string
+}
+
+/**
+ * Delete an image (and its thumbnail) from Supabase Storage **and**
+ * remove the corresponding DB row.
+ * Returns `{ success: boolean; error?: string }`.
+ */
+export async function deleteImageFromCloud(imageId: string): Promise<{ success: boolean; error?: string }> {
+  return CloudSyncService.deleteCloudImage(imageId)
+}
+
+/**
+ * List all images stored in the cloud for the current user.
+ * Returns an array of GalleryImage objects.
+ */
+export async function listCloudImages(): Promise<GalleryImage[]> {
+  return CloudSyncService.downloadImages()
+}
+
+/* Re-export CloudSyncService for direct use if needed */

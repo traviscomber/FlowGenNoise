@@ -1,163 +1,80 @@
 import { NextResponse } from "next/server"
+import { generateText } from "ai"
+import { openai } from "@ai-sdk/openai"
 
-/**
- * POST /api/score-image
- * Body: { imageUrl: string; metadata?: any }
- *
- * 1. Attempts to score the image with Replicate's AestheticPredictor.
- * 2. On any failure (missing token, API error, etc.) falls back to a local heuristic.
- */
 export async function POST(req: Request) {
-  // ────────────────────────────────────────────────────────────
-  // Parse body ONCE so we can re-use it for both paths
-  // ────────────────────────────────────────────────────────────
-  let body: { imageUrl?: string; metadata?: any }
   try {
-    body = await req.json()
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 })
-  }
+    const { imageUrl, metadata } = await req.json()
 
-  const { imageUrl, metadata } = body
-
-  if (!imageUrl) {
-    return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
-  }
-
-  // ────────────────────────────────────────────────────────────
-  // Try Replicate first (only if token + model version are set)
-  // ────────────────────────────────────────────────────────────
-  const token = process.env.REPLICATE_API_TOKEN
-  const modelVersion =
-    process.env.REPLICATE_MODEL_VERSION ??
-    // Default public version of "aesthetic-predictor"
-    "48227b6d39d3c8c8c9d17ad9b93d15d64ba5f9d6e0a4b5eaf311ec5f7c23e38e"
-
-  if (token) {
-    try {
-      const prediction = await createReplicatePrediction(token, modelVersion, imageUrl)
-      const aestheticScore = await pollReplicatePrediction(token, prediction.id)
-
-      return NextResponse.json({
-        score: aestheticScore,
-        rating: getAestheticRating(aestheticScore),
-        method: "replicate",
-      })
-    } catch (replicateErr) {
-      // Log for observability but keep going
-      console.error("Replicate aesthetic scoring failed, falling back →", replicateErr)
+    if (!imageUrl || !metadata) {
+      return NextResponse.json({ error: "Missing imageUrl or metadata" }, { status: 400 })
     }
-  }
 
-  // ────────────────────────────────────────────────────────────
-  // Local fallback
-  // ────────────────────────────────────────────────────────────
-  const local = await getLocalAestheticScore({ imageUrl, metadata })
-  return NextResponse.json(local)
-}
+    // Construct a detailed prompt for the AI to score the image
+    const prompt = `Analyze the following image (described by its metadata) for its aesthetic quality, creativity, and technical execution.
+    The image was generated with the following parameters:
+    - Dataset: ${metadata.dataset}
+    - Scenario: ${metadata.scenario}
+    - Color Scheme: ${metadata.colorScheme}
+    - Seed: ${metadata.seed}
+    - Samples: ${metadata.samples}
+    - Noise: ${metadata.noise}
+    - Generation Mode: ${metadata.generationMode}
+    ${metadata.aiPrompt ? `- AI Prompt: ${metadata.aiPrompt}` : ""}
+    ${metadata.aiDescription ? `- AI Description: ${metadata.aiDescription}` : ""}
 
-/* ────────────────────────────────────────────────────────── */
-/* Helpers                                                   */
-/* ────────────────────────────────────────────────────────── */
+    Provide a score from 1.0 to 10.0 (e.g., 8.5) and a brief rating (e.g., "Excellent", "Good", "Average", "Needs Improvement").
+    Focus on:
+    1. **Visual Appeal**: How harmonious are the colors and shapes?
+    2. **Originality**: How unique and creative is the composition?
+    3. **Complexity/Detail**: How intricate are the patterns and textures?
+    4. **Cohesion**: Do all elements work together effectively?
 
-async function createReplicatePrediction(token: string, version: string, image: string) {
-  const res = await fetch("https://api.replicate.com/v1/predictions", {
-    method: "POST",
-    headers: {
-      Authorization: `Token ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      version,
-      input: { image },
-    }),
-  })
+    Output your response as a JSON object with 'score' (number), 'rating' (string), and 'method' (string, always "AI Aesthetic Scoring").
+    Example: {"score": 8.5, "rating": "Excellent", "method": "AI Aesthetic Scoring"}
+    `
 
-  if (!res.ok) {
-    const detail = await safeReadText(res)
-    throw new Error(`Replicate API error (${res.status}): ${detail}`)
-  }
-  return res.json() as Promise<{ id: string }>
-}
-
-async function pollReplicatePrediction(token: string, id: string): Promise<number> {
-  const poll = async () => {
-    const r = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
-      headers: { Authorization: `Token ${token}` },
-      cache: "no-store",
+    const { text: aiResponse } = await generateText({
+      model: openai("gpt-4o"),
+      prompt: prompt,
+      temperature: 0.7,
+      maxTokens: 200, // Keep response concise
     })
-    if (!r.ok) throw new Error(`Polling failed (${r.status})`)
-    return r.json() as Promise<{ status: string; output: number }>
-  }
 
-  for (;;) {
-    const data = await poll()
-    if (data.status === "succeeded") return data.output
-    if (data.status === "failed" || data.status === "canceled") {
-      throw new Error(`Prediction ${data.status}`)
+    console.log("AI Scoring Response:", aiResponse)
+
+    try {
+      const parsedResponse = JSON.parse(aiResponse)
+      if (typeof parsedResponse.score === "number" && typeof parsedResponse.rating === "string") {
+        return NextResponse.json({
+          score: parsedResponse.score,
+          rating: parsedResponse.rating,
+          method: parsedResponse.method || "AI Aesthetic Scoring",
+        })
+      } else {
+        throw new Error("Invalid AI response format.")
+      }
+    } catch (parseError) {
+      console.error("Failed to parse AI response:", parseError)
+      // Fallback if AI doesn't return perfect JSON
+      const scoreMatch = aiResponse.match(/"score":\s*(\d+\.?\d*)/)
+      const ratingMatch = aiResponse.match(/"rating":\s*"([^"]*)"/)
+      const score = scoreMatch ? Number.parseFloat(scoreMatch[1]) : 5.0
+      const rating = ratingMatch ? ratingMatch[1] : "Undetermined"
+      return NextResponse.json({
+        score: score,
+        rating: rating,
+        method: "AI Aesthetic Scoring (Parsed)",
+      })
     }
-    await new Promise((res) => setTimeout(res, 1100))
-  }
-}
-
-function getAestheticRating(score: number): string {
-  if (score >= 8) return "Exceptional"
-  if (score >= 7) return "Excellent"
-  if (score >= 6) return "Very Good"
-  if (score >= 5) return "Good"
-  if (score >= 4) return "Fair"
-  return "Needs Improvement"
-}
-
-/**
- * Lightweight local heuristic when Replicate isn’t available.
- */
-async function getLocalAestheticScore({
-  imageUrl,
-  metadata,
-}: {
-  imageUrl: string
-  metadata?: any
-}): Promise<{ score: number; rating: string; method: string }> {
-  let score = 5 // start neutral
-
-  try {
-    // Fetch once to get size - good signal for detail/complexity
-    const resp = await fetch(imageUrl, { cache: "no-store" })
-    const buffer = await resp.arrayBuffer()
-    const size = buffer.byteLength
-
-    // Size bonus
-    if (size > 500_000) score += 0.4
-    if (size > 1_000_000) score += 0.4
-
-    // Generation params
-    if (metadata) {
-      if (metadata.samples > 1000) score += 0.6
-      if (metadata.noise >= 0.02 && metadata.noise <= 0.08) score += 0.4
-      if (metadata.generationMode === "ai") score += 0.6
-      if (metadata.scenario && metadata.scenario !== "none") score += 0.5
+  } catch (error: any) {
+    console.error("Error scoring image with AI:", error)
+    if (error.message.includes("api_key")) {
+      return NextResponse.json(
+        { error: "OpenAI API key is missing or invalid. Please set OPENAI_API_KEY." },
+        { status: 500 },
+      )
     }
-
-    // Mild randomness for variety
-    score += (Math.random() - 0.5) * 0.6
-  } catch {
-    // ignore fetch failures – keep base score + randomness
-    score += (Math.random() - 0.5) * 1
-  }
-
-  score = Math.max(1, Math.min(10, score))
-  return {
-    score: Number(score.toFixed(1)),
-    rating: getAestheticRating(score),
-    method: "local",
-  }
-}
-
-async function safeReadText(res: Response) {
-  try {
-    return await res.text()
-  } catch {
-    return "(no body)"
+    return NextResponse.json({ error: "Failed to score image: " + error.message }, { status: 500 })
   }
 }
