@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { toast as sonnerToast, type ToastOptions } from "sonner"
+import { useCallback } from "react"
 
 import type { ToastActionElement, ToastProps } from "@/components/ui/toast"
 
@@ -136,7 +138,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-function toast({ ...props }: Toast) {
+function toastWrapper({ ...props }: Toast) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -165,7 +167,7 @@ function toast({ ...props }: Toast) {
   }
 }
 
-function useToast() {
+function useToastHook() {
   const [state, setState] = React.useState<State>(memoryState)
 
   React.useEffect(() => {
@@ -180,9 +182,23 @@ function useToast() {
 
   return {
     ...state,
-    toast,
+    toast: toastWrapper,
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
 
-export { useToast, toast }
+export const toast = sonnerToast
+
+/**
+ * Optional React hook that memoises the toast call for convenience.
+ *
+ * \`\`\`tsx
+ * const { toast } = useToast()
+ * toast('Saved!')
+ * \`\`\`
+ */
+export function useToast() {
+  const memoised = useCallback((message: string, opts?: ToastOptions) => toast(message, opts), [])
+
+  return { toast: memoised }
+}
