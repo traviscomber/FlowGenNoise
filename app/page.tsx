@@ -17,11 +17,9 @@ export default function Home() {
           </div>
         </div>
       </header>
-      <main className="flex flex-1 flex-col items-center justify-center p-4 md:p-6">
-        <div className="grid w-full max-w-6xl grid-cols-1 gap-6 lg:grid-cols-2">
-          <FlowArtGenerator />
-          <Gallery />
-        </div>
+      <main className="flex flex-1 flex-col items-center justify-center p-4 md:p-6 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+        <FlowArtGenerator />
+        <Gallery />
       </main>
     </div>
   )

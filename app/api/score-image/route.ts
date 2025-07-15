@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { imageUrl, metadata } = await req.json()
+    const { imageData, metadata } = await request.json()
 
-    if (!imageUrl || !metadata) {
-      return NextResponse.json({ error: "Missing imageUrl or metadata" }, { status: 400 })
+    if (!imageData || !metadata) {
+      return NextResponse.json({ error: "Missing imageData or metadata" }, { status: 400 })
     }
 
     // Construct a detailed prompt for the AI to score the image

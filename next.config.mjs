@@ -41,6 +41,7 @@ const nextConfig = {
         hostname: '**.supabase.co', // For Supabase storage
       },
     ],
+    domains: ['placeholder.svg'],
     unoptimized: true,
   },
 };

@@ -1,55 +1,44 @@
 # FlowSketch Art Generator
 
-A web application for generating abstract art using flow fields and AI-enhanced techniques.
+A Next.js application for generating flow-based art using AI and mathematical models.
 
 ## Features
 
--   **SVG Generation:** Create intricate art pieces using mathematical datasets and color schemes.
--   **AI Enhanced Mode:** Transform abstract patterns into stunning scenes with AI-powered image generation.
--   **Gallery:** Save and manage your favorite creations.
--   **Cloud Sync:** Sync your gallery across devices using Supabase.
-
-## Technologies
-
--   Next.js
--   TypeScript
--   Tailwind CSS
--   Shadcn/ui
--   Supabase
--   Replicate AI API
+- AI-powered art generation
+- Flow field visualization
+- Gallery with cloud sync
+- User authentication via Supabase
+- Responsive design with dark mode
 
 ## Getting Started
 
-1.  Clone the repository:
+1. Install dependencies:
+\`\`\`bash
+npm install
+\`\`\`
 
-    \`\`\`bash
-    git clone https://github.com/your-username/flowsketch-art-generator.git
-    cd flowsketch-art-generator
-    \`\`\`
+2. Set up environment variables:
+\`\`\`bash
+cp .env.example .env.local
+\`\`\`
 
-2.  Install dependencies:
+3. Run the development server:
+\`\`\`bash
+npm run dev
+\`\`\`
 
-    \`\`\`bash
-    npm install
-    \`\`\`
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-3.  Set up your environment variables:
+## Tech Stack
 
-    -   Create a `.env.local` file in the root directory.
-    -   Add your Supabase and Replicate API keys (see `.env.example` for required variables).
+- Next.js 14
+- React 18
+- TypeScript
+- Tailwind CSS
+- Supabase
+- OpenAI API
+- D3.js for visualizations
 
-4.  Run the development server:
+## Deployment
 
-    \`\`\`bash
-    npm run dev
-    \`\`\`
-
-5.  Open your browser and navigate to `http://localhost:3000`.
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
-
-## License
-
-MIT License
+Deploy on Vercel with one click or push to your connected Git repository.

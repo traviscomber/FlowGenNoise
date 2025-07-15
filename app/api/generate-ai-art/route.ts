@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
         aiDescription = `${dataset} patterns with subtle ${scenario.replace("_", " ")} influences`
       } else {
         // Minimal theme (1-19%)
-        finalPrompt = `Abstract mathematical art featuring ${mathFoundation} with very subtle color and mood inspiration from ${scenario.replace("_", " ")} aesthetics. Mathematical patterns dominate. Digital art, high quality, detailed.`
+        finalPrompt = `Abstract mathematical art featuring ${mathFoundation} with very subtle color and mood inspiration from ${scenarioDesc} aesthetics. Mathematical patterns dominate. Digital art, high quality, detailed.`
         aiDescription = `${dataset} patterns with minimal ${scenario.replace("_", " ")} mood`
       }
     }

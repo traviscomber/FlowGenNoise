@@ -1,42 +1,22 @@
 export const runtime = "nodejs"
 
-import { NextResponse } from "next/server"
-import { Buffer } from "node:buffer"
+import { type NextRequest, NextResponse } from "next/server"
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { dataset, seed, colorScheme, samples, noise } = await req.json()
+    const { parameters } = await request.json()
 
-    if (
-      !dataset ||
-      typeof seed !== "number" ||
-      !colorScheme ||
-      typeof samples !== "number" ||
-      typeof noise !== "number"
-    ) {
-      return NextResponse.json({ error: "Missing required parameters" }, { status: 400 })
+    // Simulate art generation with flow field parameters
+    const artData = {
+      id: Date.now().toString(),
+      parameters,
+      imageUrl: `/placeholder.svg?height=400&width=400&query=flow+field+art`,
+      createdAt: new Date().toISOString(),
     }
 
-    // Generate mathematical data based on dataset type
-    const data = generateDataset(dataset, seed, samples, noise)
-
-    // Create SVG visualization
-    const svg = createSVGPlot(data, colorScheme, 800, 600)
-
-    // Convert SVG to base64 data URL
-    const base64 = Buffer.from(svg).toString("base64")
-    const dataUrl = `data:image/svg+xml;base64,${base64}`
-
-    return NextResponse.json({
-      image: dataUrl,
-      baseResolution: "800x600",
-      readyForUpscaling: true,
-      recommendedUpscale: "2x",
-      scenario: null,
-      aiDescription: `Mathematical visualization of ${dataset} dataset with ${samples} samples, noise ${noise}, and ${colorScheme} color scheme.`,
-    })
-  } catch (error: any) {
-    console.error("Error generating mathematical art:", error)
+    return NextResponse.json(artData)
+  } catch (error) {
+    console.error("Error generating art:", error)
     return NextResponse.json({ error: "Failed to generate art" }, { status: 500 })
   }
 }
@@ -176,7 +156,10 @@ function getColorScheme(scheme: string): string[] {
       "#ed6925",
       "#fb9b06",
       "#f7d03c",
-      "#fcffa4",
+      "#f8765c",
+      "#fd9969",
+      "#fdbf6f",
+      "#fcfdbf",
     ],
     magma: [
       "#000003",
