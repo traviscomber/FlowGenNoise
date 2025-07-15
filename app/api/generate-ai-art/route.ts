@@ -1,49 +1,55 @@
 import { NextResponse } from "next/server"
-import { generateText, experimental_generateImage } from "ai"
+import { experimental_generateImage } from "ai"
 import { openai } from "@ai-sdk/openai"
 
 export async function POST(req: Request) {
   try {
-    const { dataset, seed, colorScheme, numSamples, noise } = await req.json()
+    const {
+      dataset,
+      seed,
+      scenario,
+      colorScheme, // legacy – still supported
+      numSamples,
+      noise,
+      customPrompt, // new - custom/enhanced prompt
+    } = await req.json()
+
+    const theme = scenario || colorScheme
 
     if (
       !dataset ||
       typeof seed === "undefined" ||
-      !colorScheme ||
+      !theme ||
       typeof numSamples === "undefined" ||
       typeof noise === "undefined"
     ) {
       return NextResponse.json(
-        { error: "Missing dataset, seed, color scheme, number of samples, or noise" },
+        {
+          error: "Missing dataset, seed, scenario/colorScheme, number of samples, or noise",
+        },
         { status: 400 },
       )
     }
 
-    // Step 1: Generate enhanced prompt for high-quality base image
-    const { text: imagePrompt } = await generateText({
-      model: openai("gpt-4o"),
-      prompt: `Create a highly detailed image generation prompt for DALL-E 3 that will serve as a base for professional 8K upscaling. The artwork should be a generative art masterpiece inspired by a '${dataset}' dataset with a '${colorScheme}' color scheme.
+    console.log("Generating AI art with theme:", theme)
+    console.log("Custom prompt provided:", !!customPrompt)
 
-Requirements for upscaling-ready image:
-- Clean, sharp edges and well-defined structures
-- Rich detail that will enhance beautifully when upscaled
-- Professional composition suitable for large format printing
-- Mathematical precision with ${numSamples} elements arranged organically
-- Subtle noise texture of ${noise} that adds visual interest
-- High contrast and vibrant colors that will scale well
-- Complex patterns and textures that reward close inspection
-- Gallery-quality artistic composition
+    let finalPrompt: string
 
-The image should be optimized as a base for AI upscaling to 8K resolution, with every element designed to enhance beautifully when processed through professional upscaling algorithms.`,
-      temperature: 0.8,
-    })
+    if (customPrompt && customPrompt.trim().length > 0) {
+      // Use the custom/enhanced prompt directly
+      finalPrompt = customPrompt.trim()
+      console.log("Using custom prompt:", finalPrompt)
+    } else {
+      // Generate default prompt based on dataset and scenario
+      finalPrompt = `Create a stunning mathematical art piece inspired by a ${dataset} dataset with ${numSamples} data points arranged in a ${theme} theme. The artwork should feature mathematical precision with ${dataset} patterns, blended seamlessly with ${theme} visual elements. Include subtle noise texture (${noise} level) for organic feel. Professional gallery-quality composition suitable for high-resolution display, with rich details and vibrant colors that enhance when upscaled. Mathematical beauty meets artistic expression.`
+      console.log("Using generated prompt:", finalPrompt)
+    }
 
-    console.log("Generated Base Image Prompt:", imagePrompt)
-
-    // Step 2: Generate high-quality base image
+    // Generate high-quality base image using DALL-E 3
     const { image } = await experimental_generateImage({
       model: openai.image("dall-e-3"),
-      prompt: imagePrompt,
+      prompt: finalPrompt,
       quality: "hd",
       size: "1792x1024", // Maximum DALL-E 3 resolution
       style: "vivid",
@@ -56,9 +62,11 @@ The image should be optimized as a base for AI upscaling to 8K resolution, with 
       baseResolution: "1792x1024",
       readyForUpscaling: true,
       recommendedUpscale: "4x",
+      promptUsed: finalPrompt,
+      isCustomPrompt: !!customPrompt,
     })
   } catch (error: any) {
-    console.error("Error generating base AI art:", error)
+    console.error("Error generating AI art:", error)
     if (error.message.includes("api_key")) {
       return NextResponse.json(
         { error: "OpenAI API key is missing or invalid. Please set OPENAI_API_KEY." },

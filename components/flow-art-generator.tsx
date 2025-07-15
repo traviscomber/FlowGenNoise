@@ -1,379 +1,750 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Loader2, Download, Zap, Info, Sparkles } from "lucide-react"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Slider } from "@/components/ui/slider"
+import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
+import { Download, Sparkles, Settings, ImageIcon, Info, Loader2, Zap, Wand2, Edit3 } from "lucide-react"
+import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
 import { ClientUpscaler } from "@/lib/client-upscaler"
+import { useToast } from "@/hooks/use-toast"
 
-interface UpscaleMetadata {
-  originalSize: string
-  upscaledSize: string
-  scaleFactor: number
-  model: string
-  quality: string
-  method: string
+interface GeneratedArt {
+  svgContent: string
+  imageUrl: string
+  upscaledImageUrl?: string
+  params: GenerationParams
+  mode: "svg" | "ai"
+  upscaleMethod?: "cloudinary" | "client" | "mathematical"
+  customPrompt?: string
 }
 
 export function FlowArtGenerator() {
-  const [dataset, setDataset] = useState<string>("spirals")
-  const [seed, setSeed] = useState<number>(1234)
-  const [colorScheme, setColorScheme] = useState<string>("magma")
-  const [generationMode, setGenerationMode] = useState<"svg" | "ai">("svg")
-  const [baseImageUrl, setBaseImageUrl] = useState<string | null>(null)
-  const [upscaledImageUrl, setUpscaledImageUrl] = useState<string | null>(null)
-  const [loading, setLoading] = useState<boolean>(false)
-  const [upscaling, setUpscaling] = useState<boolean>(false)
-  const [error, setError] = useState<string | null>(null)
-  const [noise, setNoise] = useState<number>(0.05)
-  const [numSamples, setNumSamples] = useState<number>(1000)
-  const [upscaleProgress, setUpscaleProgress] = useState<number>(0)
-  const [upscaleStatus, setUpscaleStatus] = useState<string>("")
-  const [upscaleMetadata, setUpscaleMetadata] = useState<UpscaleMetadata | null>(null)
+  const [generatedArt, setGeneratedArt] = useState<GeneratedArt | null>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [isUpscaling, setIsUpscaling] = useState(false)
+  const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [mode, setMode] = useState<"svg" | "ai">("svg")
 
-  const handleGenerate = async () => {
-    setLoading(true)
-    setError(null)
-    setBaseImageUrl(null)
-    setUpscaledImageUrl(null)
-    setUpscaleMetadata(null)
+  // Generation parameters - separate dataset and scenario
+  const [dataset, setDataset] = useState("spirals")
+  const [scenario, setScenario] = useState("forest")
+  const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
+  const [numSamples, setNumSamples] = useState(2000)
+  const [noiseScale, setNoiseScale] = useState(0.05)
+  const [timeStep, setTimeStep] = useState(0.01)
 
-    try {
-      let response
-      if (generationMode === "svg") {
-        response = await fetch("/api/generate-art", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ dataset, seed, colorScheme, numSamples, noise }),
-        })
-      } else {
-        response = await fetch("/api/generate-ai-art", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ dataset, seed, colorScheme, numSamples, noise }),
-        })
-      }
+  // AI Art prompt enhancement
+  const [customPrompt, setCustomPrompt] = useState("")
+  const [useCustomPrompt, setUseCustomPrompt] = useState(false)
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to generate image")
-      }
+  const { toast } = useToast()
 
-      const data = await response.json()
-      setBaseImageUrl(data.image)
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleFreeUpscale = async () => {
-    if (!baseImageUrl) return
-
-    setUpscaling(true)
-    setUpscaleProgress(0)
-    setUpscaleStatus("Trying free AI upscaling services...")
-    setError(null)
+  const enhancePrompt = useCallback(async () => {
+    setIsEnhancingPrompt(true)
 
     try {
-      // Try server-side free upscaling first
-      setUpscaleProgress(20)
-      setUpscaleStatus("Connecting to free AI upscaling services...")
+      console.log("Enhancing prompt for:", { dataset, scenario, numSamples, noiseScale })
 
-      const response = await fetch("/api/upscale-image", {
+      const response = await fetch("/api/enhance-prompt", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          imageData: baseImageUrl,
-          scaleFactor: 4,
-          upscaleModel: "real-esrgan",
+          dataset,
+          scenario,
+          numSamples,
+          noiseScale,
+          currentPrompt: customPrompt,
         }),
       })
 
       if (!response.ok) {
-        throw new Error("Server upscaling failed")
+        throw new Error(`Failed to enhance prompt: ${response.status}`)
       }
 
       const data = await response.json()
+      console.log("Enhanced prompt received:", data.enhancedPrompt)
 
-      if (data.requiresClientUpscaling) {
-        // Fallback to client-side upscaling
-        setUpscaleProgress(50)
-        setUpscaleStatus("Using high-quality client-side upscaling...")
+      setCustomPrompt(data.enhancedPrompt)
+      setUseCustomPrompt(true)
 
-        const upscaledImage = await ClientUpscaler.upscaleImage(baseImageUrl, 4)
+      toast({
+        title: "Prompt Enhanced! ✨",
+        description: "Mathematical concepts and artistic details added to your prompt.",
+      })
+    } catch (error: any) {
+      console.error("Prompt enhancement error:", error)
+      toast({
+        title: "Enhancement Failed",
+        description: "Could not enhance prompt. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsEnhancingPrompt(false)
+    }
+  }, [dataset, scenario, numSamples, noiseScale, customPrompt, toast])
 
-        setUpscaleProgress(80)
-        setUpscaleStatus("Applying enhancement filters...")
+  const generateArt = useCallback(async () => {
+    console.log("Generate button clicked! Mode:", mode)
+    setIsGenerating(true)
+    setProgress(0)
 
-        const enhancedImage = await ClientUpscaler.enhanceImage(upscaledImage)
-
-        setUpscaledImageUrl(enhancedImage)
-        setUpscaleMetadata(data.metadata)
-      } else {
-        // Server-side upscaling succeeded
-        setUpscaledImageUrl(data.image)
-        setUpscaleMetadata(data.metadata)
+    try {
+      const params: GenerationParams = {
+        dataset,
+        scenario,
+        seed,
+        numSamples,
+        noiseScale,
+        timeStep,
       }
 
-      setUpscaleProgress(100)
-      setUpscaleStatus("Free upscaling complete!")
-    } catch (err: any) {
-      // Final fallback to client-side only
-      try {
-        setUpscaleProgress(30)
-        setUpscaleStatus("Using client-side upscaling...")
+      console.log("Generating with params:", params)
 
-        const upscaledImage = await ClientUpscaler.upscaleImage(baseImageUrl, 4)
+      if (mode === "svg") {
+        // Generate SVG flow field
+        setProgress(30)
+        console.log("Generating SVG content...")
+        const svgContent = generateFlowField(params)
+        console.log("SVG generated, length:", svgContent.length)
 
-        setUpscaleProgress(70)
-        setUpscaleStatus("Enhancing image quality...")
+        setProgress(60)
+        // Convert SVG to data URL
+        const svgBlob = new Blob([svgContent], { type: "image/svg+xml" })
+        const imageUrl = URL.createObjectURL(svgBlob)
+        console.log("Blob URL created:", imageUrl)
 
-        const enhancedImage = await ClientUpscaler.enhanceImage(upscaledImage)
-
-        setUpscaledImageUrl(enhancedImage)
-        setUpscaleMetadata({
-          originalSize: "1792x1024",
-          upscaledSize: "7168x4096",
-          scaleFactor: 4,
-          model: "Client-side Bicubic + Enhancement",
-          quality: "High Quality Upscaled",
-          method: "client-side",
+        setProgress(100)
+        setGeneratedArt({
+          svgContent,
+          imageUrl,
+          params,
+          mode: "svg",
         })
 
-        setUpscaleProgress(100)
-        setUpscaleStatus("Client-side upscaling complete!")
-      } catch (clientError: any) {
-        setError("All upscaling methods failed: " + clientError.message)
+        toast({
+          title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
+          description: `Beautiful ${dataset} dataset with ${scenario} scenario blend created.`,
+        })
+      } else {
+        // Generate AI art
+        setProgress(20)
+        console.log("Calling AI art API...")
+
+        const requestBody = {
+          dataset,
+          scenario,
+          seed,
+          numSamples,
+          noise: noiseScale,
+          customPrompt: useCustomPrompt ? customPrompt : undefined,
+        }
+
+        console.log("Sending AI request:", requestBody)
+
+        const response = await fetch("/api/generate-ai-art", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestBody),
+        })
+
+        console.log("AI API Response status:", response.status)
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          console.error("AI API error response:", errorText)
+          throw new Error(`AI API failed: ${response.status} - ${errorText}`)
+        }
+
+        const data = await response.json()
+        console.log("AI art response received:", data)
+
+        if (!data.image) {
+          throw new Error("AI API returned no image")
+        }
+
+        setProgress(80)
+        setGeneratedArt({
+          svgContent: "",
+          imageUrl: data.image,
+          params,
+          mode: "ai",
+          customPrompt: useCustomPrompt ? customPrompt : undefined,
+        })
+
+        setProgress(100)
+        toast({
+          title: "AI Art Generated! 🤖✨",
+          description: useCustomPrompt
+            ? "Custom enhanced prompt artwork created!"
+            : `AI-enhanced ${dataset} + ${scenario} artwork created.`,
+        })
       }
+    } catch (error: any) {
+      console.error("Generation error:", error)
+      toast({
+        title: "Generation Failed",
+        description: error.message || "Failed to generate artwork. Please try again.",
+        variant: "destructive",
+      })
     } finally {
-      setUpscaling(false)
+      setIsGenerating(false)
+      setProgress(0)
+    }
+  }, [dataset, scenario, seed, numSamples, noiseScale, timeStep, mode, useCustomPrompt, customPrompt, toast])
+
+  const upscaleImage = useCallback(async () => {
+    if (!generatedArt) {
+      console.log("No generated art to upscale")
+      return
+    }
+
+    console.log("Upscale button clicked!")
+    setIsUpscaling(true)
+
+    try {
+      // For SVG mode, use mathematical upscaling to add real detail
+      if (generatedArt.mode === "svg") {
+        console.log("Using mathematical upscaling for SVG...")
+        toast({
+          title: "Mathematical Upscaling",
+          description: "Re-rendering visualization with 4x more detail points...",
+        })
+
+        // Convert SVG to data URL first
+        let imageDataUrl = generatedArt.imageUrl
+        if (generatedArt.imageUrl.startsWith("blob:")) {
+          const canvas = document.createElement("canvas")
+          const ctx = canvas.getContext("2d")
+          const img = new Image()
+
+          await new Promise((resolve, reject) => {
+            img.onload = () => {
+              canvas.width = 512
+              canvas.height = 512
+              ctx?.drawImage(img, 0, 0, 512, 512)
+              imageDataUrl = canvas.toDataURL("image/png")
+              resolve(void 0)
+            }
+            img.onerror = reject
+            img.src = generatedArt.imageUrl
+          })
+        }
+
+        // Apply mathematical upscaling with generation parameters
+        const upscaledDataUrl = await ClientUpscaler.upscaleImage(imageDataUrl, 4)
+
+        setGeneratedArt((prev) =>
+          prev
+            ? {
+                ...prev,
+                upscaledImageUrl: upscaledDataUrl,
+                upscaleMethod: "mathematical",
+              }
+            : null,
+        )
+
+        toast({
+          title: "Mathematical Upscaling Complete! ✨",
+          description: "Added 16x more data points with enhanced resolution.",
+        })
+      } else {
+        // For AI art, use client-side upscaling
+        console.log("Using pixel-based upscaling for AI art...")
+        toast({
+          title: "AI Art Enhancement",
+          description: "Applying advanced pixel enhancement to AI artwork...",
+        })
+
+        const upscaledDataUrl = await ClientUpscaler.upscaleImage(generatedArt.imageUrl, 4)
+
+        setGeneratedArt((prev) =>
+          prev
+            ? {
+                ...prev,
+                upscaledImageUrl: upscaledDataUrl,
+                upscaleMethod: "client",
+              }
+            : null,
+        )
+
+        toast({
+          title: "AI Art Enhancement Complete! 🤖✨",
+          description: "Applied advanced pixel enhancement to your AI artwork.",
+        })
+      }
+    } catch (error: any) {
+      console.error("Upscale error:", error)
+      toast({
+        title: "Upscaling Failed",
+        description: "Enhancement failed. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsUpscaling(false)
+    }
+  }, [generatedArt, toast])
+
+  const downloadImage = useCallback(async () => {
+    if (!generatedArt) {
+      console.log("No generated art to download")
+      return
+    }
+
+    console.log("Download button clicked!")
+
+    try {
+      const imageUrl = generatedArt.upscaledImageUrl || generatedArt.imageUrl
+      const isEnhanced = !!generatedArt.upscaledImageUrl
+      const fileExtension = generatedArt.mode === "svg" && !isEnhanced ? "svg" : "png"
+      const fileName = `flowsketch-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
+
+      console.log("Downloading:", fileName, "from:", imageUrl)
+
+      // Check if it's a data URL (client-side upscaled or SVG blob)
+      if (imageUrl.startsWith("data:") || imageUrl.startsWith("blob:")) {
+        // Direct download for data URLs and blob URLs
+        const link = document.createElement("a")
+        link.href = imageUrl
+        link.download = fileName
+        link.style.display = "none"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        console.log("Direct download completed")
+      } else {
+        // For external URLs, fetch and convert to blob
+        const response = await fetch(imageUrl, { mode: "cors" })
+        if (!response.ok) {
+          throw new Error("Failed to fetch image for download")
+        }
+
+        const blob = await response.blob()
+        const blobUrl = URL.createObjectURL(blob)
+
+        const link = document.createElement("a")
+        link.href = blobUrl
+        link.download = fileName
+        link.style.display = "none"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+
+        // Clean up the blob URL
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 100)
+        console.log("Blob download completed")
+      }
+
+      toast({
+        title: "Download Complete! 🎨",
+        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario} artwork downloaded.`,
+      })
+    } catch (error: any) {
+      console.error("Download error:", error)
+      toast({
+        title: "Download Failed",
+        description: "Could not download the image. Please try right-clicking and saving the image.",
+        variant: "destructive",
+      })
+    }
+  }, [generatedArt, toast])
+
+  const handleRandomSeed = useCallback(() => {
+    const newSeed = Math.floor(Math.random() * 10000)
+    console.log("Random seed clicked, new seed:", newSeed)
+    setSeed(newSeed)
+  }, [])
+
+  const getButtonText = () => {
+    if (mode === "ai") {
+      if (useCustomPrompt) {
+        return "Generate Custom AI Art"
+      }
+      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)}`
+    } else {
+      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)}`
     }
   }
-
-  const handleDownload = (isUpscaled = false) => {
-    const downloadUrl = isUpscaled ? upscaledImageUrl : baseImageUrl
-    if (downloadUrl) {
-      const link = document.createElement("a")
-      link.href = downloadUrl
-      const fileExtension = generationMode === "svg" ? "svg" : "png"
-      const suffix = isUpscaled ? "-upscaled-4x" : "-base"
-      link.download = `flowsketch-art${suffix}-${Date.now()}.${fileExtension}`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    }
-  }
-
-  const currentImage = upscaledImageUrl || baseImageUrl
-  const isAIMode = generationMode === "ai"
 
   return (
-    <div className="flex flex-col items-center justify-center w-full p-4">
-      <Card className="w-full max-w-2xl">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl">FlowSketch Art Generator</CardTitle>
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-            Create structured art using toy datasets. Free AI upscaling available for all images.
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="dataset">Dataset</Label>
-              <Select value={dataset} onValueChange={setDataset}>
-                <SelectTrigger id="dataset">
-                  <SelectValue placeholder="Select a dataset" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="spirals">Spirals</SelectItem>
-                  <SelectItem value="checkerboard">Checkerboard</SelectItem>
-                  <SelectItem value="moons">Moons</SelectItem>
-                  <SelectItem value="gaussian">Gaussian</SelectItem>
-                  <SelectItem value="grid">Grid</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="seed">Seed</Label>
-              <Input
-                id="seed"
-                type="number"
-                value={seed}
-                onChange={(e) => setSeed(Number(e.target.value))}
-                placeholder="Enter a seed"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="num-samples">Number of Samples</Label>
-              <Input
-                id="num-samples"
-                type="number"
-                value={numSamples}
-                onChange={(e) => setNumSamples(Number(e.target.value))}
-                placeholder="Enter number of samples"
-                min={100}
-                step={100}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="noise">Noise Level</Label>
-              <Input
-                id="noise"
-                type="number"
-                value={noise}
-                onChange={(e) => setNoise(Number(e.target.value))}
-                placeholder="Enter noise level"
-                step={0.01}
-                min={0}
-                max={1}
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="color-scheme">Color Scheme</Label>
-            <Select value={colorScheme} onValueChange={setColorScheme}>
-              <SelectTrigger id="color-scheme">
-                <SelectValue placeholder="Select a color scheme" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="magma">Magma</SelectItem>
-                <SelectItem value="viridis">Viridis</SelectItem>
-                <SelectItem value="plasma">Plasma</SelectItem>
-                <SelectItem value="cividis">Cividis</SelectItem>
-                <SelectItem value="grayscale">Grayscale</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="text-center space-y-2">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+          FlowSketch Dataset + Scenario Generator
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          Choose a dataset pattern, then blend it with a scenario theme
+        </p>
+      </div>
 
-          <div className="space-y-2">
-            <Label>Generation Mode</Label>
-            <RadioGroup
-              value={generationMode}
-              onValueChange={(value: "svg" | "ai") => setGenerationMode(value)}
-              className="flex space-x-4"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="svg" id="mode-svg" />
-                <Label htmlFor="mode-svg">SVG Plot</Label>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Controls */}
+        <div className="lg:col-span-1 space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Generation Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Tabs value={mode} onValueChange={(value) => setMode(value as "svg" | "ai")}>
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="svg">Dataset + Scenario</TabsTrigger>
+                  <TabsTrigger value="ai">AI Art</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="svg" className="space-y-4">
+                  <Alert>
+                    <Zap className="h-4 w-4" />
+                    <AlertDescription>
+                      First choose a dataset pattern, then select a scenario to blend with it!
+                    </AlertDescription>
+                  </Alert>
+                </TabsContent>
+
+                <TabsContent value="ai" className="space-y-4">
+                  <Alert>
+                    <Sparkles className="h-4 w-4" />
+                    <AlertDescription>
+                      Create AI-generated artwork based on your dataset and scenario combination. Use prompt enhancement
+                      for better results!
+                    </AlertDescription>
+                  </Alert>
+                </TabsContent>
+              </Tabs>
+
+              <div className="space-y-2">
+                <Label>Dataset Pattern</Label>
+                <Select value={dataset} onValueChange={setDataset}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="spirals">🌀 Spirals</SelectItem>
+                    <SelectItem value="moons">🌙 Moons</SelectItem>
+                    <SelectItem value="circles">⭕ Circles</SelectItem>
+                    <SelectItem value="blobs">🔵 Blobs</SelectItem>
+                    <SelectItem value="checkerboard">🏁 Checkerboard</SelectItem>
+                    <SelectItem value="gaussian">📊 Gaussian</SelectItem>
+                    <SelectItem value="grid">⚏ Grid</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="ai" id="mode-ai" />
-                <Label htmlFor="mode-ai">AI Generated</Label>
+
+              <div className="space-y-2">
+                <Label>Scenario Theme</Label>
+                <Select value={scenario} onValueChange={setScenario}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="forest">🌲 Forest</SelectItem>
+                    <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
+                    <SelectItem value="ocean">🌊 Ocean</SelectItem>
+                    <SelectItem value="neural">🧠 Neural</SelectItem>
+                    <SelectItem value="fire">🔥 Fire</SelectItem>
+                    <SelectItem value="ice">❄️ Ice</SelectItem>
+                    <SelectItem value="desert">🏜️ Desert</SelectItem>
+                    <SelectItem value="sunset">🌅 Sunset</SelectItem>
+                    <SelectItem value="monochrome">⚫ Monochrome</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-            </RadioGroup>
-          </div>
 
-          <Button onClick={handleGenerate} className="w-full" disabled={loading || upscaling}>
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating Base Image...
-              </>
-            ) : (
-              "Generate Flow Art"
-            )}
-          </Button>
+              {/* AI Prompt Enhancement Section */}
+              {mode === "ai" && (
+                <div className="space-y-3 p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-semibold flex items-center gap-2">
+                      <Wand2 className="h-4 w-4" />
+                      AI Prompt Enhancement
+                    </Label>
+                    <Button
+                      onClick={enhancePrompt}
+                      disabled={isEnhancingPrompt}
+                      size="sm"
+                      variant="outline"
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600"
+                    >
+                      {isEnhancingPrompt ? (
+                        <>
+                          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                          Enhancing...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-3 w-3 mr-1" />
+                          Enhance
+                        </>
+                      )}
+                    </Button>
+                  </div>
 
-          {error && <p className="text-red-500 text-center">{error}</p>}
+                  <Textarea
+                    placeholder="Click 'Enhance' to generate a mathematical AI art prompt, or write your own custom prompt here..."
+                    value={customPrompt}
+                    onChange={(e) => {
+                      setCustomPrompt(e.target.value)
+                      setUseCustomPrompt(e.target.value.length > 0)
+                    }}
+                    rows={4}
+                    className="text-sm resize-none"
+                  />
 
-          {currentImage && (
-            <div className="mt-6 flex flex-col items-center gap-4">
-              <div className="relative">
-                <img
-                  src={currentImage || "/placeholder.svg"}
-                  alt="Generated Flow Art"
-                  className="max-w-full h-auto border rounded-lg shadow-md"
-                />
-                <div className="absolute top-2 right-2 flex gap-2">
-                  {upscaledImageUrl ? (
-                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-                      <Sparkles className="w-3 h-3 mr-1" />
-                      4x Upscaled
-                    </Badge>
-                  ) : (
-                    <Badge className="bg-blue-500">Base Resolution</Badge>
+                  {customPrompt && (
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary" className="text-xs">
+                        <Edit3 className="h-3 w-3 mr-1" />
+                        Custom Prompt Active
+                      </Badge>
+                      <Button
+                        onClick={() => {
+                          setCustomPrompt("")
+                          setUseCustomPrompt(false)
+                        }}
+                        size="sm"
+                        variant="ghost"
+                        className="text-xs h-6 px-2"
+                      >
+                        Clear
+                      </Button>
+                    </div>
                   )}
                 </div>
+              )}
+
+              <div className="space-y-2">
+                <Label>Seed: {seed}</Label>
+                <Slider value={[seed]} onValueChange={(value) => setSeed(value[0])} max={10000} min={1} step={1} />
+                <Button variant="outline" size="sm" onClick={handleRandomSeed} disabled={isGenerating}>
+                  Random Seed
+                </Button>
               </div>
 
-              {upscaling && (
-                <div className="w-full max-w-md space-y-2">
-                  <Progress value={upscaleProgress} className="w-full" />
-                  <p className="text-sm text-center text-gray-600">{upscaleStatus}</p>
+              <div className="space-y-2">
+                <Label>Sample Points: {numSamples}</Label>
+                <Slider
+                  value={[numSamples]}
+                  onValueChange={(value) => setNumSamples(value[0])}
+                  max={5000}
+                  min={100}
+                  step={100}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Noise Scale: {noiseScale}</Label>
+                <Slider
+                  value={[noiseScale]}
+                  onValueChange={(value) => setNoiseScale(value[0])}
+                  max={0.2}
+                  min={0.001}
+                  step={0.001}
+                />
+              </div>
+
+              <Button
+                onClick={generateArt}
+                disabled={isGenerating}
+                className={`w-full ${
+                  mode === "ai"
+                    ? "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600"
+                    : "bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 hover:from-green-600 hover:via-blue-600 hover:to-purple-600"
+                }`}
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    {mode === "ai" ? "Generating AI Art..." : "Generating Art..."}
+                  </>
+                ) : (
+                  <>
+                    {mode === "ai" ? <Sparkles className="h-4 w-4 mr-2" /> : <Zap className="h-4 w-4 mr-2" />}
+                    {getButtonText()}
+                  </>
+                )}
+              </Button>
+
+              {isGenerating && (
+                <div className="space-y-2">
+                  <Progress value={progress} />
+                  <p className="text-sm text-center text-gray-600">
+                    {progress < 30
+                      ? `Generating ${dataset} dataset...`
+                      : progress < 60
+                        ? mode === "ai"
+                          ? useCustomPrompt
+                            ? "Processing custom prompt..."
+                            : "Applying AI artistic effects..."
+                          : `Applying ${scenario} scenario...`
+                        : progress < 90
+                          ? "Rendering visualization..."
+                          : "Finalizing artwork..."}
+                  </p>
                 </div>
               )}
+            </CardContent>
+          </Card>
 
-              {upscaleMetadata && (
-                <Alert className="max-w-md">
-                  <Info className="h-4 w-4" />
-                  <AlertDescription>
-                    <div className="space-y-1 text-sm">
-                      <div>
-                        <strong>Resolution:</strong> {upscaleMetadata.upscaledSize}
-                      </div>
-                      <div>
-                        <strong>Method:</strong> {upscaleMetadata.model}
-                      </div>
-                      <div>
-                        <strong>Quality:</strong> {upscaleMetadata.quality}
-                      </div>
-                    </div>
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              <div className="flex flex-col sm:flex-row gap-2 w-full max-w-md">
-                <Button onClick={() => handleDownload(false)} variant="outline" className="flex-1">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Base
+          {/* Action Buttons */}
+          {generatedArt && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ImageIcon className="h-5 w-5" />
+                  Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button onClick={downloadImage} variant="outline" className="w-full bg-transparent">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download {generatedArt.upscaledImageUrl ? "Enhanced" : "Original"}
                 </Button>
 
-                {!upscaledImageUrl && baseImageUrl && (
-                  <Button
-                    onClick={handleFreeUpscale}
-                    disabled={upscaling}
-                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                  >
-                    {upscaling ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4" />}
-                    Free 4x Upscale
-                  </Button>
-                )}
+                <Button
+                  onClick={upscaleImage}
+                  disabled={isUpscaling || !!generatedArt.upscaledImageUrl}
+                  variant="outline"
+                  className="w-full bg-transparent"
+                >
+                  {isUpscaling ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      {generatedArt.mode === "svg" ? "Adding Detail..." : "Enhancing AI Art..."}
+                    </>
+                  ) : generatedArt.upscaledImageUrl ? (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Enhanced ✓ ({generatedArt.upscaleMethod === "mathematical" ? "16x More Points" : "Pixel Enhanced"}
+                      )
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      {generatedArt.mode === "svg" ? "Add Mathematical Detail" : "Enhance AI Art"}
+                    </>
+                  )}
+                </Button>
 
-                {upscaledImageUrl && (
-                  <Button
-                    onClick={() => handleDownload(true)}
-                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Download 4x
-                  </Button>
+                {generatedArt.upscaledImageUrl && generatedArt.upscaleMethod === "mathematical" && (
+                  <Alert>
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      True mathematical upscaling: Re-rendered with 4x scale factor and 16x more data points
+                    </AlertDescription>
+                  </Alert>
                 )}
-              </div>
-
-              {!upscaledImageUrl && baseImageUrl && (
-                <p className="text-xs text-gray-500 text-center max-w-md">
-                  Free upscaling tries AI services first, then falls back to high-quality client-side processing
-                </p>
-              )}
-            </div>
+              </CardContent>
+            </Card>
           )}
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* Preview */}
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <ImageIcon className="h-5 w-5" />
+                  Generated Artwork
+                </span>
+                {generatedArt && (
+                  <div className="flex gap-2">
+                    <Badge variant={generatedArt.mode === "ai" ? "default" : "outline"}>
+                      {generatedArt.mode === "ai" ? "🤖 AI Art" : "📊 SVG"}
+                    </Badge>
+                    <Badge variant="outline">{generatedArt.params.dataset}</Badge>
+                    <Badge variant="outline">{generatedArt.params.scenario}</Badge>
+                    <Badge variant="outline">{generatedArt.params.numSamples} points</Badge>
+                    {generatedArt.customPrompt && (
+                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                        <Wand2 className="w-3 h-3 mr-1" />
+                        Custom Prompt
+                      </Badge>
+                    )}
+                    {generatedArt.upscaledImageUrl && (
+                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        Enhanced
+                      </Badge>
+                    )}
+                  </div>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {generatedArt ? (
+                <div className="space-y-4">
+                  <div className="relative bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden">
+                    {generatedArt.mode === "svg" && !generatedArt.upscaledImageUrl ? (
+                      <div
+                        className="w-full h-96 flex items-center justify-center"
+                        dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                      />
+                    ) : (
+                      <img
+                        src={generatedArt.upscaledImageUrl || generatedArt.imageUrl}
+                        alt="Generated artwork"
+                        className="w-full h-96 object-contain"
+                      />
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">Mode:</span>
+                      <p className="font-medium">{generatedArt.mode === "ai" ? "AI Art" : "SVG"}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Dataset:</span>
+                      <p className="font-medium capitalize">{generatedArt.params.dataset}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Scenario:</span>
+                      <p className="font-medium capitalize">{generatedArt.params.scenario}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Seed:</span>
+                      <p className="font-medium">{generatedArt.params.seed}</p>
+                    </div>
+                  </div>
+
+                  {generatedArt.customPrompt && (
+                    <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg">
+                      <Label className="text-xs font-semibold text-purple-700 dark:text-purple-300">
+                        Custom Prompt Used:
+                      </Label>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-3">
+                        {generatedArt.customPrompt}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="h-96 flex items-center justify-center text-gray-500 dark:text-gray-400">
+                  <div className="text-center">
+                    <Zap className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>Choose a dataset and scenario combination!</p>
+                    <p className="text-sm mt-2">Try Spirals + Forest or Moons + Cosmic for amazing results</p>
+                    <p className="text-sm mt-1 text-purple-600">
+                      Switch to AI Art tab and use prompt enhancement for professional results! 🤖✨
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }
