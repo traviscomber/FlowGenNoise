@@ -1,6 +1,14 @@
 import { supabase } from "@/lib/supabase"
 import type { GenerationParams } from "@/lib/flow-model"
 
+// helper ─ place near the top (after imports)
+function isMissingTable(error: any) {
+  return (
+    error?.code === "42P01" || // Postgres undefined table
+    (typeof error?.message === "string" && error.message.includes("does not exist"))
+  )
+}
+
 export interface GalleryItem {
   id: string
   title: string
@@ -96,48 +104,54 @@ export class GalleryService {
       sortOrder?: "asc" | "desc"
     } = {},
   ): Promise<{ items: GalleryItem[]; total: number }> {
-    const {
-      limit = 20,
-      offset = 0,
-      mode,
-      favoritesOnly = false,
-      searchTerm,
-      sortBy = "created_at",
-      sortOrder = "desc",
-    } = options
+    try {
+      const {
+        limit = 20,
+        offset = 0,
+        mode,
+        favoritesOnly = false,
+        searchTerm,
+        sortBy = "created_at",
+        sortOrder = "desc",
+      } = options
 
-    let query = supabase.from("gallery").select("*", { count: "exact" })
+      let query = supabase.from("gallery").select("*", { count: "exact" })
 
-    // Apply filters
-    if (mode) {
-      query = query.eq("mode", mode)
-    }
+      // Apply filters
+      if (mode) {
+        query = query.eq("mode", mode)
+      }
 
-    if (favoritesOnly) {
-      query = query.eq("is_favorite", true)
-    }
+      if (favoritesOnly) {
+        query = query.eq("is_favorite", true)
+      }
 
-    if (searchTerm) {
-      query = query.or(
-        `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,tags.cs.{${searchTerm.toLowerCase()}}`,
-      )
-    }
+      if (searchTerm) {
+        query = query.or(
+          `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,tags.cs.{${searchTerm.toLowerCase()}}`,
+        )
+      }
 
-    // Apply sorting
-    query = query.order(sortBy, { ascending: sortOrder === "asc" })
+      // Apply sorting
+      query = query.order(sortBy, { ascending: sortOrder === "asc" })
 
-    // Apply pagination
-    query = query.range(offset, offset + limit - 1)
+      // Apply pagination
+      query = query.range(offset, offset + limit - 1)
 
-    const { data, error, count } = await query
+      const { data, error, count } = await query
 
-    if (error) {
+      if (error) throw error
+
+      return {
+        items: data || [],
+        total: count || 0,
+      }
+    } catch (error: any) {
+      if (isMissingTable(error)) {
+        // table not ready yet → return empty list instead of failing
+        return { items: [], total: 0 }
+      }
       throw new Error(`Failed to fetch gallery items: ${error.message}`)
-    }
-
-    return {
-      items: data || [],
-      total: count || 0,
     }
   }
 
@@ -195,27 +209,30 @@ export class GalleryService {
   }
 
   static async getPopularTags(limit = 20): Promise<Array<{ tag: string; count: number }>> {
-    // This is a more complex query that requires a custom function or raw SQL
-    // For now, we'll implement a simpler version
-    const { data, error } = await supabase.from("gallery").select("tags")
+    try {
+      const { data, error } = await supabase.from("gallery").select("tags")
 
-    if (error) {
+      if (error) throw error
+
+      // Count tag occurrences
+      const tagCounts: Record<string, number> = {}
+      data.forEach((item) => {
+        item.tags.forEach((tag: string) => {
+          tagCounts[tag] = (tagCounts[tag] || 0) + 1
+        })
+      })
+
+      // Sort by count and return top tags
+      return Object.entries(tagCounts)
+        .map(([tag, count]) => ({ tag, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, limit)
+    } catch (error: any) {
+      if (isMissingTable(error)) {
+        return [] // no tags yet
+      }
       throw new Error(`Failed to fetch tags: ${error.message}`)
     }
-
-    // Count tag occurrences
-    const tagCounts: Record<string, number> = {}
-    data.forEach((item) => {
-      item.tags.forEach((tag: string) => {
-        tagCounts[tag] = (tagCounts[tag] || 0) + 1
-      })
-    })
-
-    // Sort by count and return top tags
-    return Object.entries(tagCounts)
-      .map(([tag, count]) => ({ tag, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, limit)
   }
 
   static async getStats(): Promise<{
@@ -225,20 +242,25 @@ export class GalleryService {
     enhancedCount: number
     favoritesCount: number
   }> {
-    const { data, error } = await supabase.from("gallery").select("mode, upscaled_image_url, is_favorite")
+    try {
+      const { data, error } = await supabase.from("gallery").select("mode, upscaled_image_url, is_favorite")
 
-    if (error) {
+      if (error) throw error
+
+      const stats = {
+        totalArtworks: data.length,
+        svgCount: data.filter((item) => item.mode === "svg").length,
+        aiCount: data.filter((item) => item.mode === "ai").length,
+        enhancedCount: data.filter((item) => item.upscaled_image_url).length,
+        favoritesCount: data.filter((item) => item.is_favorite).length,
+      }
+
+      return stats
+    } catch (error: any) {
+      if (isMissingTable(error)) {
+        return { totalArtworks: 0, svgCount: 0, aiCount: 0, enhancedCount: 0, favoritesCount: 0 }
+      }
       throw new Error(`Failed to fetch stats: ${error.message}`)
     }
-
-    const stats = {
-      totalArtworks: data.length,
-      svgCount: data.filter((item) => item.mode === "svg").length,
-      aiCount: data.filter((item) => item.mode === "ai").length,
-      enhancedCount: data.filter((item) => item.upscaled_image_url).length,
-      favoritesCount: data.filter((item) => item.is_favorite).length,
-    }
-
-    return stats
   }
 }
