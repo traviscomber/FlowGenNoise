@@ -1,205 +1,216 @@
-import { NextResponse } from "next/server"
-import { generateText, experimental_generateImage } from "ai"
-import { openai } from "@ai-sdk/openai"
-// Removed: import { SCENARIOS } from "@/lib/flow-model" - using detailed scenarios defined below
+import { type NextRequest, NextResponse } from "next/server"
 
-// Define detailed scenarios for AI prompt generation
-const DETAILED_SCENARIOS = {
-  none: {
-    name: "Pure Mathematical",
-    objects: [],
-    backgroundColor: "white",
-    ambientColor: "neutral light",
-    density: 0,
-  },
-  enchanted_forest: {
-    name: "Enchanted Forest",
-    objects: [
-      { type: "mystical trees", shapes: ["spiraling branches", "glowing leaves", "twisted trunks"] },
-      { type: "magical creatures", shapes: ["fairy lights", "ethereal wisps", "forest spirits"] },
-      { type: "ancient stones", shapes: ["moss-covered rocks", "runic circles", "crystal formations"] },
-    ],
-    backgroundColor: "deep forest green",
-    ambientColor: "golden sunlight filtering through canopy",
-    density: 0.7,
-  },
-  deep_ocean: {
-    name: "Deep Ocean",
-    objects: [
-      { type: "marine life", shapes: ["flowing jellyfish", "coral formations", "sea anemomas"] },
-      { type: "underwater currents", shapes: ["swirling water", "bubble streams", "kelp forests"] },
-      { type: "bioluminescent organisms", shapes: ["glowing plankton", "light trails", "phosphorescent waves"] },
-    ],
-    backgroundColor: "deep ocean blue",
-    ambientColor: "bioluminescent blue-green glow",
-    density: 0.6,
-  },
-  cosmic_nebula: {
-    name: "Cosmic Nebula",
-    objects: [
-      { type: "stellar formations", shapes: ["star clusters", "gas clouds", "cosmic dust"] },
-      { type: "celestial bodies", shapes: ["distant planets", "asteroid fields", "comet trails"] },
-      { type: "energy phenomena", shapes: ["plasma streams", "magnetic fields", "gravitational waves"] },
-    ],
-    backgroundColor: "deep space black",
-    ambientColor: "cosmic purple and pink nebula glow",
-    density: 0.5,
-  },
-  cyberpunk_city: {
-    name: "Cyberpunk City",
-    objects: [
-      { type: "neon structures", shapes: ["holographic displays", "data streams", "circuit patterns"] },
-      { type: "urban elements", shapes: ["skyscrapers", "flying vehicles", "digital billboards"] },
-      { type: "tech interfaces", shapes: ["glowing terminals", "laser grids", "virtual reality portals"] },
-    ],
-    backgroundColor: "dark urban night",
-    ambientColor: "neon pink and cyan lighting",
-    density: 0.8,
-  },
-  ancient_temple: {
-    name: "Ancient Temple",
-    objects: [
-      { type: "architectural elements", shapes: ["stone pillars", "carved reliefs", "sacred geometries"] },
-      { type: "mystical artifacts", shapes: ["glowing orbs", "ancient symbols", "ritual circles"] },
-      { type: "natural overgrowth", shapes: ["climbing vines", "moss patterns", "weathered stones"] },
-    ],
-    backgroundColor: "warm sandstone",
-    ambientColor: "golden torch light and shadows",
-    density: 0.6,
-  },
-  crystal_cave: {
-    name: "Crystal Cave",
-    objects: [
-      { type: "crystal formations", shapes: ["prismatic clusters", "refracting surfaces", "geometric crystals"] },
-      { type: "mineral deposits", shapes: ["stalactites", "stalagmites", "mineral veins"] },
-      { type: "light phenomena", shapes: ["rainbow refractions", "crystal reflections", "inner glow"] },
-    ],
-    backgroundColor: "deep cave darkness",
-    ambientColor: "prismatic crystal light",
-    density: 0.7,
-  },
-  aurora_borealis: {
-    name: "Aurora Borealis",
-    objects: [
-      { type: "atmospheric phenomena", shapes: ["dancing lights", "magnetic field lines", "particle streams"] },
-      { type: "arctic landscape", shapes: ["ice formations", "snow drifts", "frozen lakes"] },
-      { type: "celestial elements", shapes: ["star fields", "moon phases", "cosmic radiation"] },
-    ],
-    backgroundColor: "arctic night sky",
-    ambientColor: "green and purple aurora light",
-    density: 0.4,
-  },
-  volcanic_landscape: {
-    name: "Volcanic Landscape",
-    objects: [
-      { type: "volcanic features", shapes: ["lava flows", "volcanic rock", "steam vents"] },
-      { type: "thermal phenomena", shapes: ["heat waves", "molten streams", "glowing embers"] },
-      { type: "geological formations", shapes: ["basalt columns", "crater rims", "ash clouds"] },
-    ],
-    backgroundColor: "dark volcanic rock",
-    ambientColor: "orange and red lava glow",
-    density: 0.6,
-  },
-  neural_connections: {
-    // New detailed scenario for Neural Connections
-    name: "Neural Connections",
-    objects: [
-      { type: "neurons", shapes: ["spherical cell bodies", "dendritic branches", "axon terminals"] },
-      { type: "synapses", shapes: ["glowing connection points", "electrical impulses", "neurotransmitter bursts"] },
-      { type: "organic roots", shapes: ["interwoven fibrous structures", "vascular networks", "mycelial patterns"] },
-      { type: "data nodes", shapes: ["glowing data packets", "information streams", "network hubs"] },
-    ],
-    backgroundColor: "deep, ethereal grey-purple",
-    ambientColor: "subtle bioluminescent green and orange glows",
-    density: 0.75,
-  },
-}
+export const runtime = "nodejs"
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { dataset, seed, colorScheme, numSamples, noise, scenario } = await req.json()
+    const {
+      prompt: userPrompt,
+      negative_prompt,
+      num_outputs = 1,
+      guidance_scale = 7.5,
+      num_inference_steps = 50,
+      seed,
+      dataset,
+      colorScheme,
+      numSamples,
+      noise,
+      scenario,
+      scenarioThreshold = 50,
+    } = await request.json()
 
-    if (
-      !dataset ||
-      typeof seed === "undefined" ||
-      !colorScheme ||
-      typeof numSamples === "undefined" ||
-      typeof noise === "undefined"
-    ) {
-      return NextResponse.json({ error: "Missing required parameters" }, { status: 400 })
-    }
-
-    // Create scenario-enhanced prompt
-    let scenarioContext = ""
-    if (scenario && scenario !== "none" && DETAILED_SCENARIOS[scenario as keyof typeof DETAILED_SCENARIOS]) {
-      const scenarioConfig = DETAILED_SCENARIOS[scenario as keyof typeof DETAILED_SCENARIOS]
-      const objectTypes = scenarioConfig.objects.map((obj) => `${obj.type} (${obj.shapes.join(", ")})`).join(", ")
-
-      scenarioContext = `
-
-### Scenario Integration: ${scenarioConfig.name}
-Blend the mathematical ${dataset} patterns with immersive ${scenarioConfig.name.toLowerCase()} elements:
-- **Objects**: Incorporate ${objectTypes} shaped and positioned according to the mathematical data points
-- **Environment**: Use ${scenarioConfig.backgroundColor} as base with ${scenarioConfig.ambientColor} ambient lighting
-- **Density**: Apply ${Math.round(scenarioConfig.density * 100)}% object placement density
-- **Creative Fusion**: Transform data points into scenario objects while maintaining mathematical structure
-- **Atmospheric Details**: Add environmental effects like ${scenario === "enchanted_forest" ? "dappled sunlight, mist, magical sparkles" : scenario === "deep_ocean" ? "water currents, bioluminescence, flowing movements" : scenario === "cosmic_nebula" ? "cosmic dust, stellar radiation, gravitational lensing" : scenario === "cyberpunk_city" ? "neon reflections, holographic effects, digital glitches" : scenario === "ancient_temple" ? "torch shadows, stone textures, mystical auras" : scenario === "crystal_cave" ? "light refractions, crystal echoes, prismatic effects" : scenario === "aurora_borealis" ? "magnetic field visualization, particle interactions, atmospheric glow" : scenario === "volcanic_landscape" ? "heat distortion, volcanic ash, molten textures" : scenario === "neural_connections" ? "synaptic flashes, data flow, subtle organic pulsations" : ""}`
-    }
-
-    const { text: imagePrompt } = await generateText({
-      model: openai("gpt-4o"),
-      prompt: `*Image Generation Prompt for DALL-E 3:*
-
-Create an intricate generative art masterpiece inspired by a '${dataset}' dataset, employing a '${colorScheme}' color scheme. The artwork should serve as an ideal base for professional 8K upscaling, focusing on clean, sharp edges and well-defined structures.${scenarioContext}
-
-### Elements:
-1. *Mathematical Precision*: Arrange exactly ${numSamples} ${dataset} elements organically across the canvas, ensuring each one is unique yet harmoniously integrated with the others. The elements should vary in size and density, creating a dynamic flow throughout the piece.
-
-2. *Color Palette*: Utilize a vibrant and high-contrast ${colorScheme} color scheme to emphasize the patterns. Create depth and dimension with strategic color gradients and transitions.
-
-3. *Textures and Patterns*: Introduce complex textures within the ${dataset} patterns, such as fine lines, cross-hatching, or dotting, which will reveal new details upon close inspection. Ensure that these intricate patterns are meticulously crafted to reward viewers and enhance during upscaling.
-
-4. *Noise Texture*: Apply a subtle noise texture of ${noise} to the entire image, giving it a tactile surface that adds sophistication and visual interest without overwhelming the primary elements.
-
-### Composition:
-- *Professional Composition*: Design the composition with a balance that suits large-format printing. The ${dataset} elements should guide the viewer's eye seamlessly across the canvas, creating a sense of movement and energy.
-- *Gallery-Quality*: Ensure that the overall artwork exudes a refined, gallery-quality aesthetic suitable for exhibition, with each element contributing to a cohesive and engaging visual narrative.
-
-### Optimization for Upscaling:
-- *Edge Definition*: Focus on maintaining sharp, clean edges around each element and between color transitions to ensure clarity and precision are preserved during upscaling.
-- *Detail Enhancement*: Design with rich detail that enhances beautifully when processed through AI upscaling algorithms, emphasizing the depth and complexity of the piece.
-
-By adhering to these guidelines, the resulting image will be an exquisite generative art masterpiece, optimized for professional 8K upscaling and perfect for large-format, gallery-quality display.`,
-      temperature: 0.8,
+    console.log("🎨 AI Art Generation Request:", {
+      userPrompt,
+      dataset,
+      colorScheme,
+      scenario,
+      scenarioThreshold,
+      seed,
     })
 
-    console.log("Generated Enhanced Prompt:", imagePrompt)
+    // Check for OpenAI API key
+    if (!process.env.OPENAI_API_KEY) {
+      console.error("❌ OPENAI_API_KEY not found")
+      return NextResponse.json({
+        image:
+          "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==",
+        aiDescription: "OpenAI API key not configured. Please set OPENAI_API_KEY environment variable.",
+      })
+    }
 
-    const { image } = await experimental_generateImage({
-      model: openai.image("dall-e-3"),
-      prompt: imagePrompt,
-      quality: "hd",
-      size: "1792x1024",
-      style: "vivid",
+    // Enhanced dataset descriptions
+    const datasetDescriptions = {
+      lissajous:
+        "flowing Lissajous curves with smooth, harmonic oscillations creating elegant figure-eight and infinity patterns",
+      mandelbrot:
+        "intricate Mandelbrot set fractals with infinite detail, self-similar patterns, and complex mathematical boundaries",
+      julia: "mesmerizing Julia set fractals with swirling, organic patterns and infinite recursive detail",
+      sierpinski:
+        "geometric Sierpinski triangle fractals with triangular self-similar patterns and recursive subdivisions",
+      fern: "delicate Barnsley fern fractals with natural, organic leaf-like patterns and branching structures",
+      neural_network:
+        "interconnected neural network nodes with synaptic connections, branching pathways, and organic circuitry",
+      moon_phases:
+        "cyclical moon phase patterns with crescents, full circles, and waning shapes in orbital arrangements",
+      checkerboard:
+        "geometric checkerboard patterns with alternating squares, grid structures, and tessellated arrangements",
+      spiral_galaxy:
+        "sweeping spiral galaxy arms with stellar formations, cosmic dust trails, and rotating galactic structures",
+      dna_helix: "double helix DNA strands with twisted ribbons, genetic code patterns, and molecular structures",
+      wave_interference: "overlapping wave interference patterns with constructive and destructive wave interactions",
+      crystal_lattice:
+        "crystalline lattice structures with geometric arrangements, molecular bonds, and prismatic formations",
+    }
+
+    const colorDescriptions = {
+      viridis: "deep purple to bright yellow gradient colors (viridis palette)",
+      plasma: "purple to pink to yellow gradient colors (plasma palette)",
+      inferno: "black to red to yellow gradient colors (inferno palette)",
+      magma: "black to purple to white gradient colors (magma palette)",
+      cividis: "blue to yellow gradient colors (cividis palette)",
+      rainbow: "full spectrum rainbow colors",
+      grayscale: "black and white grayscale tones",
+      neon: "bright electric neon colors with glowing effects",
+      pastel: "soft pastel colors with gentle, muted tones",
+      monochrome: "high contrast black and white patterns",
+    }
+
+    const scenarioDescriptions = {
+      none: "",
+      enchanted_forest:
+        "mystical enchanted forest with glowing magical elements, ancient trees, fairy lights, moss-covered stones, and ethereal mist",
+      deep_ocean:
+        "deep ocean depths with bioluminescent creatures, coral formations, underwater currents, and mysterious abyssal lighting",
+      cosmic_nebula:
+        "cosmic nebula in deep space with swirling gas clouds, distant stars, cosmic dust, and celestial phenomena",
+      cyberpunk_city:
+        "futuristic cyberpunk cityscape with neon lights, holographic displays, digital rain, and high-tech architecture",
+      ancient_temple:
+        "ancient mystical temple with weathered stone columns, hieroglyphs, golden artifacts, and sacred geometry",
+      crystal_cave:
+        "crystalline cave system with glowing crystals, mineral formations, refracting light, and geometric structures",
+      aurora_borealis:
+        "northern lights aurora borealis with dancing colored lights, arctic landscape, and atmospheric phenomena",
+      volcanic_landscape:
+        "volcanic landscape with flowing lava, molten rock formations, ash clouds, and fiery geological features",
+      neural_connections:
+        "neural network connections with synapses, brain-like structures, electrical impulses, and organic circuitry",
+      quantum_realm:
+        "quantum realm with particle interactions, energy fields, subatomic structures, and probability clouds",
+      steampunk_workshop:
+        "Victorian steampunk workshop with brass gears, steam pipes, mechanical contraptions, and industrial machinery",
+      underwater_city: "submerged underwater city with bubble domes, aquatic architecture, and marine life integration",
+      space_station:
+        "futuristic space station with rotating modules, solar panels, docking bays, and zero-gravity environments",
+      mystical_portal:
+        "magical portal gateway with swirling energy, dimensional rifts, arcane symbols, and otherworldly lighting",
+    }
+
+    // Build the mathematical foundation
+    const mathFoundation = `${datasetDescriptions[dataset as keyof typeof datasetDescriptions]} with ${colorDescriptions[colorScheme as keyof typeof colorDescriptions]}, ${numSamples} sample points, noise level ${noise}`
+
+    let finalPrompt = ""
+    let aiDescription = ""
+
+    // Apply scenario blending based on threshold
+    if (userPrompt && userPrompt.trim()) {
+      // User provided custom prompt - use it directly
+      finalPrompt = userPrompt.trim()
+      aiDescription = `Custom AI prompt: ${finalPrompt}`
+    } else if (scenario === "none" || scenarioThreshold === 0) {
+      // Pure mathematical art
+      finalPrompt = `Abstract mathematical art featuring ${mathFoundation}. Digital art, high quality, detailed, artistic visualization of mathematical concepts.`
+      aiDescription = `Pure mathematical art: ${dataset} patterns with ${colorScheme} colors`
+    } else {
+      // Blend mathematical and scenario elements based on threshold
+      const scenarioDesc = scenarioDescriptions[scenario as keyof typeof scenarioDescriptions] || ""
+
+      if (scenarioThreshold >= 80) {
+        // Scenario dominates (80-100%)
+        finalPrompt = `${scenarioDesc} where the environment and structures are formed by ${mathFoundation}. The mathematical patterns become the very fabric and architecture of this ${scenario.replace("_", " ")} world. Highly detailed, cinematic, artistic masterpiece.`
+        aiDescription = `${scenario.replace("_", " ")} world built from ${dataset} mathematical patterns`
+      } else if (scenarioThreshold >= 50) {
+        // Balanced blend (50-79%)
+        finalPrompt = `Abstract mathematical art featuring ${mathFoundation}, artistically interpreted within a ${scenarioDesc} setting. The mathematical patterns blend harmoniously with the thematic elements. Digital art, high quality, detailed visualization.`
+        aiDescription = `${dataset} patterns blended with ${scenario.replace("_", " ")} theme`
+      } else if (scenarioThreshold >= 20) {
+        // Subtle thematic hints (20-49%)
+        finalPrompt = `Abstract mathematical art featuring ${mathFoundation} with subtle visual hints and color inspiration from ${scenarioDesc}. The mathematical patterns remain primary with gentle thematic influences. Digital art, high quality, detailed.`
+        aiDescription = `${dataset} patterns with subtle ${scenario.replace("_", " ")} influences`
+      } else {
+        // Minimal theme (1-19%)
+        finalPrompt = `Abstract mathematical art featuring ${mathFoundation} with very subtle color and mood inspiration from ${scenario.replace("_", " ")} aesthetics. Mathematical patterns dominate. Digital art, high quality, detailed.`
+        aiDescription = `${dataset} patterns with minimal ${scenario.replace("_", " ")} mood`
+      }
+    }
+
+    console.log("🚀 Final prompt being sent to DALL-E 3:", finalPrompt)
+
+    // Call OpenAI DALL-E 3 API directly
+    const openaiResponse = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "dall-e-3",
+        prompt: finalPrompt,
+        n: 1,
+        size: "1024x1024",
+        quality: "standard",
+        response_format: "url",
+      }),
     })
 
-    const baseImage = `data:image/png;base64,${image.base64}`
+    if (!openaiResponse.ok) {
+      const errorText = await openaiResponse.text()
+      console.error("❌ OpenAI API Error:", errorText)
+
+      return NextResponse.json({
+        image:
+          "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==",
+        aiDescription: `OpenAI API Error: ${errorText.substring(0, 200)}...`,
+      })
+    }
+
+    const result = await openaiResponse.json()
+    console.log("✅ OpenAI Response received:", result.data?.[0]?.url ? "Image URL received" : "No image URL")
+
+    if (result.data && result.data[0] && result.data[0].url) {
+      // Convert the image URL to base64 for consistent handling
+      try {
+        const imageResponse = await fetch(result.data[0].url)
+        const imageBuffer = await imageResponse.arrayBuffer()
+        const base64Image = Buffer.from(imageBuffer).toString("base64")
+        const dataUrl = `data:image/png;base64,${base64Image}`
+
+        return NextResponse.json({
+          image: dataUrl,
+          aiDescription: aiDescription,
+        })
+      } catch (fetchError) {
+        console.error("❌ Error fetching generated image:", fetchError)
+        return NextResponse.json({
+          image: result.data[0].url, // Return URL directly if base64 conversion fails
+          aiDescription: aiDescription,
+        })
+      }
+    } else {
+      console.error("❌ No image URL in OpenAI response:", result)
+      return NextResponse.json({
+        image:
+          "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==",
+        aiDescription: "Failed to generate image - no URL returned from OpenAI",
+      })
+    }
+  } catch (error: any) {
+    console.error("❌ Unexpected error in AI art generation:", error)
 
     return NextResponse.json({
-      image: baseImage,
-      baseResolution: "1792x1024",
-      readyForUpscaling: true,
-      recommendedUpscale: "4x",
-      scenario: scenario || null,
+      image:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==",
+      aiDescription: `Generation failed: ${error.message || "Unknown error occurred"}`,
     })
-  } catch (error: any) {
-    console.error("Error generating AI art:", error)
-    if (error.message.includes("api_key")) {
-      return NextResponse.json(
-        { error: "OpenAI API key is missing or invalid. Please set OPENAI_API_KEY." },
-        { status: 500 },
-      )
-    }
-    return NextResponse.json({ error: "Failed to generate AI art: " + error.message }, { status: 500 })
   }
 }

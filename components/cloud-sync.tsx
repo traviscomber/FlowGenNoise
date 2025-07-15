@@ -1,413 +1,186 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useCallback, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useToast } from "@/components/ui/use-toast"
+import { GalleryStorage } from "@/lib/gallery-storage"
+import { uploadImageToCloud, deleteImageFromCloud, listCloudImages } from "@/lib/cloud-sync"
+import { Cloud, Upload, Trash2, RefreshCcw, Loader2 } from "lucide-react"
 import {
-  Cloud,
-  CloudOff,
-  FolderSyncIcon as Sync,
-  User,
-  AlertTriangle,
-  CheckCircle,
-  Loader2,
-  Upload,
-  Download,
-  Wifi,
-  WifiOff,
-} from "lucide-react"
-import { CloudSyncService, type CloudSyncStatus, type SyncConflict } from "@/lib/cloud-sync"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Progress } from "@/components/ui/progress"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 
-interface CloudSyncProps {
-  onSyncComplete?: () => void
-}
+export function CloudSync() {
+  const { toast } = useToast()
+  const [isSyncing, setIsSyncing] = useState(false)
+  const [syncProgress, setSyncProgress] = useState(0)
+  const [syncMessage, setSyncMessage] = useState("")
+  const [cloudImages, setCloudImages] = useState<string[]>([])
+  const [localImagesCount, setLocalImagesCount] = useState(0)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-export function CloudSync({ onSyncComplete }: CloudSyncProps) {
-  const [syncStatus, setSyncStatus] = useState<CloudSyncStatus>(CloudSyncService.getStatus())
-  const [showAuthDialog, setShowAuthDialog] = useState(false)
-  const [authMode, setAuthMode] = useState<"signin" | "signup">("signin")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [displayName, setDisplayName] = useState("")
-  const [authLoading, setAuthLoading] = useState(false)
-  const [authError, setAuthError] = useState("")
-  const [conflicts, setConflicts] = useState<SyncConflict[]>([])
-  const [showConflicts, setShowConflicts] = useState(false)
-
-  useEffect(() => {
-    CloudSyncService.initializeAuth()
-
-    const handleStatusChange = (status: CloudSyncStatus) => {
-      setSyncStatus(status)
-    }
-
-    CloudSyncService.addStatusListener(handleStatusChange)
-    return () => CloudSyncService.removeStatusListener(handleStatusChange)
+  const fetchCloudImages = useCallback(async () => {
+    setSyncMessage("Fetching cloud images...")
+    const images = await listCloudImages()
+    setCloudImages(images)
+    setSyncMessage(`Found ${images.length} images in cloud.`)
   }, [])
 
-  const handleAuth = async () => {
-    setAuthLoading(true)
-    setAuthError("")
+  const updateLocalCount = useCallback(() => {
+    setLocalImagesCount(GalleryStorage.getAllImages().length)
+  }, [])
 
-    try {
-      let result
-      if (authMode === "signin") {
-        result = await CloudSyncService.signInWithEmail(email, password)
-      } else {
-        result = await CloudSyncService.signUpWithEmail(email, password, displayName)
+  useEffect(() => {
+    if (isDialogOpen) {
+      fetchCloudImages()
+      updateLocalCount()
+    }
+  }, [isDialogOpen, fetchCloudImages, updateLocalCount])
+
+  const handleSyncToCloud = useCallback(async () => {
+    setIsSyncing(true)
+    setSyncProgress(0)
+    setSyncMessage("Starting cloud sync...")
+
+    const localImages = GalleryStorage.getAllImages()
+    let uploadedCount = 0
+
+    for (let i = 0; i < localImages.length; i++) {
+      const image = localImages[i]
+      setSyncMessage(`Uploading image ${i + 1}/${localImages.length}: ${image.metadata.filename}`)
+      const success = await uploadImageToCloud(image)
+      if (success) {
+        GalleryStorage.updateImageMetadata(image.id, { cloudStored: true })
+        uploadedCount++
       }
+      setSyncProgress(Math.round(((i + 1) / localImages.length) * 100))
+    }
 
-      if (result.success) {
-        setShowAuthDialog(false)
-        setEmail("")
-        setPassword("")
-        setDisplayName("")
-        if (authMode === "signin") {
-          await handleEnableSync()
-        }
-      } else {
-        setAuthError(result.error || "Authentication failed")
+    setSyncMessage(`Sync complete! Uploaded ${uploadedCount} new images.`)
+    toast({
+      title: "Cloud Sync Complete",
+      description: `Successfully synced ${uploadedCount} images to the cloud.`,
+    })
+    setIsSyncing(false)
+    fetchCloudImages() // Refresh cloud image list
+    updateLocalCount() // Refresh local image count
+  }, [toast, fetchCloudImages, updateLocalCount])
+
+  const handleClearCloud = useCallback(async () => {
+    if (!confirm("Are you sure you want to delete ALL images from cloud storage? This cannot be undone.")) {
+      return
+    }
+
+    setIsSyncing(true)
+    setSyncProgress(0)
+    setSyncMessage("Deleting all cloud images...")
+
+    let deletedCount = 0
+    for (let i = 0; i < cloudImages.length; i++) {
+      const imageId = cloudImages[i]
+      setSyncMessage(`Deleting image ${i + 1}/${cloudImages.length}: ${imageId}`)
+      const success = await deleteImageFromCloud(imageId)
+      if (success) {
+        deletedCount++
       }
-    } catch (error: any) {
-      setAuthError(error.message)
-    } finally {
-      setAuthLoading(false)
+      setSyncProgress(Math.round(((i + 1) / cloudImages.length) * 100))
     }
-  }
 
-  const handleEnableSync = async () => {
-    const result = await CloudSyncService.enableSync()
-    if (!result.success) {
-      setAuthError(result.error || "Failed to enable sync")
-    } else {
-      onSyncComplete?.()
-    }
-  }
-
-  const handleDisableSync = async () => {
-    await CloudSyncService.disableSync()
-  }
-
-  const handleSignOut = async () => {
-    await CloudSyncService.signOut()
-  }
-
-  const handleSync = async () => {
-    const result = await CloudSyncService.performFullSync()
-    if (result.conflicts.length > 0) {
-      setConflicts(result.conflicts)
-      setShowConflicts(true)
-    } else {
-      onSyncComplete?.()
-    }
-  }
-
-  const handleResolveConflict = async (conflict: SyncConflict, resolution: "keep_local" | "keep_cloud") => {
-    await CloudSyncService.resolveConflict(conflict, resolution)
-    setConflicts((prev) => prev.filter((c) => c.localImage.id !== conflict.localImage.id))
-
-    if (conflicts.length <= 1) {
-      setShowConflicts(false)
-      onSyncComplete?.()
-    }
-  }
-
-  const storagePercentage = (syncStatus.storageUsed / syncStatus.storageQuota) * 100
+    setSyncMessage(`Cloud cleared! Deleted ${deletedCount} images.`)
+    toast({
+      title: "Cloud Cleared",
+      description: `Successfully deleted ${deletedCount} images from the cloud.`,
+    })
+    setIsSyncing(false)
+    fetchCloudImages() // Refresh cloud image list
+  }, [toast, cloudImages, fetchCloudImages])
 
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            {syncStatus.isAuthenticated ? (
-              syncStatus.isEnabled ? (
-                <Cloud className="h-5 w-5 text-green-500" />
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-1 bg-transparent">
+          <Cloud className="h-4 w-4" />
+          Cloud Sync
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Cloud Synchronization</DialogTitle>
+          <DialogDescription>Manage your FlowSketch art gallery with cloud storage.</DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="flex items-center justify-between">
+            <span className="font-medium">Local Images:</span>
+            <span>{localImagesCount}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="font-medium">Cloud Images:</span>
+            <span>{cloudImages.length}</span>
+            <Button variant="ghost" size="icon" onClick={fetchCloudImages} disabled={isSyncing}>
+              <RefreshCcw className="h-4 w-4" />
+              <span className="sr-only">Refresh Cloud List</span>
+            </Button>
+          </div>
+          <Separator />
+          <div className="space-y-2">
+            <Button onClick={handleSyncToCloud} className="w-full" disabled={isSyncing}>
+              {isSyncing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Syncing...
+                </>
               ) : (
-                <CloudOff className="h-5 w-5 text-orange-500" />
-              )
-            ) : (
-              <CloudOff className="h-5 w-5 text-gray-500" />
-            )}
-            Cloud Sync
-          </CardTitle>
-          <CardDescription>
-            {syncStatus.isAuthenticated
-              ? syncStatus.isEnabled
-                ? "Your gallery is synced across devices"
-                : "Cloud sync is available but disabled"
-              : "Sign in to sync your gallery across devices"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {!syncStatus.isAuthenticated ? (
-            <div className="space-y-4">
-              <Alert>
-                <Wifi className="h-4 w-4" />
-                <AlertDescription>
-                  Sign in to automatically sync your gallery across all your devices. Your artworks will be safely
-                  stored in the cloud.
-                </AlertDescription>
-              </Alert>
-              <Button onClick={() => setShowAuthDialog(true)} className="w-full">
-                <User className="h-4 w-4 mr-2" />
-                Sign In / Sign Up
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {/* Sync Status */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {syncStatus.isSyncing ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : syncStatus.isEnabled ? (
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                  ) : (
-                    <WifiOff className="h-4 w-4 text-orange-500" />
-                  )}
-                  <span className="text-sm font-medium">
-                    {syncStatus.isSyncing ? "Syncing..." : syncStatus.isEnabled ? "Sync Enabled" : "Sync Disabled"}
-                  </span>
-                </div>
-                <Badge variant={syncStatus.isEnabled ? "default" : "secondary"}>
-                  {syncStatus.isEnabled ? "Active" : "Inactive"}
-                </Badge>
-              </div>
-
-              {/* Last Sync */}
-              {syncStatus.lastSync && (
-                <div className="text-sm text-muted-foreground">
-                  Last sync: {new Date(syncStatus.lastSync).toLocaleString()}
-                </div>
+                <>
+                  <Upload className="mr-2 h-4 w-4" /> Upload Local to Cloud
+                </>
               )}
-
-              {/* Storage Usage */}
-              {syncStatus.isEnabled && (
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Storage Used</span>
-                    <span>
-                      {(syncStatus.storageUsed / 1024 / 1024).toFixed(1)} MB /{" "}
-                      {(syncStatus.storageQuota / 1024 / 1024).toFixed(0)} MB
-                    </span>
-                  </div>
-                  <Progress value={storagePercentage} className="h-2" />
-
-                  <div className="text-xs text-muted-foreground">
-                    <div className="flex justify-between">
-                      <span>Images compressed automatically</span>
-                      <span className="text-green-600">Space saved</span>
-                    </div>
-                  </div>
-
-                  {storagePercentage > 80 && (
-                    <Alert>
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertDescription>
-                        You're running low on storage space. Images are automatically compressed to save space.
-                      </AlertDescription>
-                    </Alert>
-                  )}
-                </div>
-              )}
-
-              {/* Conflicts Warning */}
-              {syncStatus.conflictCount > 0 && (
-                <Alert>
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription>
-                    {syncStatus.conflictCount} sync conflict{syncStatus.conflictCount > 1 ? "s" : ""} detected.
-                    <Button variant="link" className="p-0 h-auto ml-1" onClick={() => setShowConflicts(true)}>
-                      Resolve now
-                    </Button>
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              <Separator />
-
-              {/* Actions */}
-              <div className="flex gap-2">
-                {syncStatus.isEnabled ? (
-                  <>
-                    <Button onClick={handleSync} disabled={syncStatus.isSyncing} className="flex-1">
-                      <Sync className="h-4 w-4 mr-2" />
-                      {syncStatus.isSyncing ? "Syncing..." : "Sync Now"}
-                    </Button>
-                    <Button variant="outline" onClick={handleDisableSync}>
-                      <CloudOff className="h-4 w-4 mr-2" />
-                      Disable
-                    </Button>
-                  </>
-                ) : (
-                  <Button onClick={handleEnableSync} className="flex-1">
-                    <Cloud className="h-4 w-4 mr-2" />
-                    Enable Sync
-                  </Button>
-                )}
-              </div>
-
-              <Button variant="outline" onClick={handleSignOut} className="w-full bg-transparent">
-                Sign Out
-              </Button>
+            </Button>
+            <Button onClick={handleClearCloud} className="w-full" variant="destructive" disabled={isSyncing}>
+              <Trash2 className="mr-2 h-4 w-4" /> Clear All Cloud Images
+            </Button>
+            {/* Download from cloud functionality could be added here */}
+            {/* <Button className="w-full" disabled={isSyncing}>
+              <Download className="mr-2 h-4 w-4" /> Download Cloud to Local
+            </Button> */}
+          </div>
+          {isSyncing && (
+            <div className="space-y-2">
+              <Progress value={syncProgress} className="w-full" />
+              <p className="text-sm text-muted-foreground">{syncMessage}</p>
             </div>
           )}
-        </CardContent>
-      </Card>
-
-      {/* Auth Dialog */}
-      <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{authMode === "signin" ? "Sign In" : "Create Account"}</DialogTitle>
-            <DialogDescription>
-              {authMode === "signin"
-                ? "Sign in to sync your gallery across devices"
-                : "Create an account to start syncing your artworks"}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4">
-            {authError && (
-              <Alert>
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>{authError}</AlertDescription>
-              </Alert>
-            )}
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-              />
-            </div>
-
-            {authMode === "signup" && (
-              <div className="space-y-2">
-                <Label htmlFor="displayName">Display Name (Optional)</Label>
-                <Input
-                  id="displayName"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="Your Name"
-                />
-              </div>
-            )}
-
-            <div className="flex gap-2">
-              <Button onClick={handleAuth} disabled={authLoading} className="flex-1">
-                {authLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <User className="h-4 w-4 mr-2" />}
-                {authMode === "signin" ? "Sign In" : "Create Account"}
-              </Button>
-            </div>
-
-            <div className="text-center">
-              <Button
-                variant="link"
-                onClick={() => {
-                  setAuthMode(authMode === "signin" ? "signup" : "signin")
-                  setAuthError("")
-                }}
-              >
-                {authMode === "signin" ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
-              </Button>
-            </div>
+          <Separator />
+          <div className="space-y-2">
+            <h3 className="font-medium">Cloud Storage Status:</h3>
+            <ScrollArea className="h-32 rounded-md border p-2 text-sm">
+              {cloudImages.length > 0 ? (
+                <ul>
+                  {cloudImages.map((id) => (
+                    <li key={id} className="truncate">
+                      {id}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-muted-foreground">No images found in cloud storage.</p>
+              )}
+            </ScrollArea>
           </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Conflicts Dialog */}
-      <Dialog open={showConflicts} onOpenChange={setShowConflicts}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>Sync Conflicts</DialogTitle>
-            <DialogDescription>
-              Some images have conflicts between your local and cloud versions. Choose which version to keep.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 max-h-96 overflow-y-auto">
-            {conflicts.map((conflict, index) => (
-              <Card key={conflict.localImage.id}>
-                <CardContent className="p-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Download className="h-4 w-4" />
-                        <span className="font-medium">Local Version</span>
-                        {conflict.type === "local_newer" && <Badge variant="default">Newer</Badge>}
-                      </div>
-                      <img
-                        src={conflict.localImage.imageUrl || "/placeholder.svg"}
-                        alt="Local version"
-                        className="w-full h-32 object-cover rounded border"
-                      />
-                      <div className="text-xs text-muted-foreground">
-                        Created: {new Date(conflict.localImage.metadata.createdAt).toLocaleString()}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <Upload className="h-4 w-4" />
-                        <span className="font-medium">Cloud Version</span>
-                        {conflict.type === "cloud_newer" && <Badge variant="default">Newer</Badge>}
-                      </div>
-                      <img
-                        src={conflict.cloudImage.imageUrl || "/placeholder.svg"}
-                        alt="Cloud version"
-                        className="w-full h-32 object-cover rounded border"
-                      />
-                      <div className="text-xs text-muted-foreground">
-                        Created: {new Date(conflict.cloudImage.metadata.createdAt).toLocaleString()}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 mt-4">
-                    <Button
-                      variant="outline"
-                      onClick={() => handleResolveConflict(conflict, "keep_local")}
-                      className="flex-1"
-                    >
-                      Keep Local
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => handleResolveConflict(conflict, "keep_cloud")}
-                      className="flex-1"
-                    >
-                      Keep Cloud
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            Close
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

@@ -1,30 +1,55 @@
-# FlowSketch Deployment
+# FlowSketch Art Generator
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+A web application for generating abstract art using flow fields and AI-enhanced techniques.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/travis-projects-c14a785a/v0-flow-sketch-deployment)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/tLz33TUZDhy)
+## Features
 
-## Overview
+-   **SVG Generation:** Create intricate art pieces using mathematical datasets and color schemes.
+-   **AI Enhanced Mode:** Transform abstract patterns into stunning scenes with AI-powered image generation.
+-   **Gallery:** Save and manage your favorite creations.
+-   **Cloud Sync:** Sync your gallery across devices using Supabase.
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+## Technologies
 
-## Deployment
+-   Next.js
+-   TypeScript
+-   Tailwind CSS
+-   Shadcn/ui
+-   Supabase
+-   Replicate AI API
 
-Your project is live at:
+## Getting Started
 
-**[https://vercel.com/travis-projects-c14a785a/v0-flow-sketch-deployment](https://vercel.com/travis-projects-c14a785a/v0-flow-sketch-deployment)**
+1.  Clone the repository:
 
-## Build your app
+    \`\`\`bash
+    git clone https://github.com/your-username/flowsketch-art-generator.git
+    cd flowsketch-art-generator
+    \`\`\`
 
-Continue building your app on:
+2.  Install dependencies:
 
-**[https://v0.dev/chat/projects/tLz33TUZDhy](https://v0.dev/chat/projects/tLz33TUZDhy)**
+    \`\`\`bash
+    npm install
+    \`\`\`
 
-## How It Works
+3.  Set up your environment variables:
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+    -   Create a `.env.local` file in the root directory.
+    -   Add your Supabase and Replicate API keys (see `.env.example` for required variables).
+
+4.  Run the development server:
+
+    \`\`\`bash
+    npm run dev
+    \`\`\`
+
+5.  Open your browser and navigate to `http://localhost:3000`.
+
+## Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+
+## License
+
+MIT License

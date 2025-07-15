@@ -1,152 +1,54 @@
-export interface CompressionOptions {
-  maxWidth?: number
-  maxHeight?: number
-  quality?: number
-  format?: "jpeg" | "png" | "webp"
-  thumbnailSize?: number
-}
+export async function compressImage(
+  dataUrl: string,
+  quality = 0.8,
+  maxWidth = 1024,
+  maxHeight = 1024,
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.src = dataUrl
+    img.crossOrigin = "anonymous" // Set crossOrigin to avoid CORS issues
 
-export interface CompressionResult {
-  compressedImage: Blob
-  thumbnail: Blob
-  originalSize: number
-  compressedSize: number
-  compressionRatio: number
-}
+    img.onload = () => {
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d")
 
-export class ImageCompressor {
-  static async compressImage(imageUrl: string, options: CompressionOptions = {}): Promise<CompressionResult> {
-    const { maxWidth = 1920, maxHeight = 1080, quality = 0.8, format = "jpeg", thumbnailSize = 300 } = options
+      if (!ctx) {
+        return reject(new Error("Could not get 2D context from canvas"))
+      }
 
-    return new Promise((resolve, reject) => {
-      const img = new Image()
-      img.crossOrigin = "anonymous"
+      let width = img.width
+      let height = img.height
 
-      img.onload = () => {
-        try {
-          // Calculate dimensions
-          let { width, height } = img
-          const aspectRatio = width / height
-
-          if (width > maxWidth) {
-            width = maxWidth
-            height = width / aspectRatio
-          }
-          if (height > maxHeight) {
-            height = maxHeight
-            width = height * aspectRatio
-          }
-
-          // Create main compressed image
-          const canvas = document.createElement("canvas")
-          const ctx = canvas.getContext("2d")!
-          canvas.width = width
-          canvas.height = height
-
-          ctx.imageSmoothingEnabled = true
-          ctx.imageSmoothingQuality = "high"
-          ctx.drawImage(img, 0, 0, width, height)
-
-          // Create thumbnail
-          const thumbCanvas = document.createElement("canvas")
-          const thumbCtx = thumbCanvas.getContext("2d")!
-          const thumbSize = Math.min(thumbnailSize, Math.min(width, height))
-          thumbCanvas.width = thumbSize
-          thumbCanvas.height = thumbSize
-
-          // Center crop for thumbnail
-          const sourceSize = Math.min(width, height)
-          const sourceX = (width - sourceSize) / 2
-          const sourceY = (height - sourceSize) / 2
-
-          thumbCtx.drawImage(canvas, sourceX, sourceY, sourceSize, sourceSize, 0, 0, thumbSize, thumbSize)
-
-          // Convert to blobs
-          canvas.toBlob(
-            (compressedBlob) => {
-              if (!compressedBlob) {
-                reject(new Error("Failed to compress image"))
-                return
-              }
-
-              thumbCanvas.toBlob(
-                (thumbnailBlob) => {
-                  if (!thumbnailBlob) {
-                    reject(new Error("Failed to create thumbnail"))
-                    return
-                  }
-
-                  // Calculate original size (estimate)
-                  const originalSize = this.estimateImageSize(img.width, img.height)
-                  const compressedSize = compressedBlob.size
-                  const compressionRatio = originalSize / compressedSize
-
-                  resolve({
-                    compressedImage: compressedBlob,
-                    thumbnail: thumbnailBlob,
-                    originalSize,
-                    compressedSize,
-                    compressionRatio,
-                  })
-                },
-                `image/${format}`,
-                quality,
-              )
-            },
-            `image/${format}`,
-            quality,
-          )
-        } catch (error) {
-          reject(error)
+      // Calculate new dimensions to fit within maxWidth/maxHeight while maintaining aspect ratio
+      if (width > height) {
+        if (width > maxWidth) {
+          height *= maxWidth / width
+          width = maxWidth
+        }
+      } else {
+        if (height > maxHeight) {
+          width *= maxHeight / height
+          height = maxHeight
         }
       }
 
-      img.onerror = () => reject(new Error("Failed to load image"))
-      img.src = imageUrl
-    })
-  }
+      canvas.width = width
+      canvas.height = height
 
-  static async compressForUpload(imageUrl: string): Promise<CompressionResult> {
-    // Optimized settings for cloud upload
-    return this.compressImage(imageUrl, {
-      maxWidth: 2048,
-      maxHeight: 2048,
-      quality: 0.85,
-      format: "jpeg",
-      thumbnailSize: 400,
-    })
-  }
+      ctx.drawImage(img, 0, 0, width, height)
 
-  static async createThumbnail(imageUrl: string, size = 300): Promise<Blob> {
-    const result = await this.compressImage(imageUrl, {
-      maxWidth: size,
-      maxHeight: size,
-      quality: 0.7,
-      format: "jpeg",
-    })
-    return result.thumbnail
-  }
+      // Convert canvas to data URL (PNG for lossless, JPEG for lossy compression)
+      // Using image/jpeg for compression, image/png for original quality if preferred
+      const outputFormat = dataUrl.startsWith("data:image/png") ? "image/png" : "image/jpeg"
 
-  private static estimateImageSize(width: number, height: number): number {
-    // Rough estimate: 4 bytes per pixel for RGBA
-    return width * height * 4
-  }
+      canvas.toDataURL(outputFormat, quality)
+        ? resolve(canvas.toDataURL(outputFormat, quality))
+        : reject(new Error("Failed to convert canvas to data URL"))
+    }
 
-  static formatFileSize(bytes: number): string {
-    if (bytes === 0) return "0 Bytes"
-    const k = 1024
-    const sizes = ["Bytes", "KB", "MB", "GB"]
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
-  }
-}
-
-// --- Convenience re-exports --------------------------------------------------
-
-/**
- * Convenience wrapper so callers can `import { compressImage }` directly.
- * Internally it forwards to `ImageCompressor.compressImage`.
- */
-export async function compressImage(imageUrl: string, options: CompressionOptions = {}) {
-  return ImageCompressor.compressImage(imageUrl, options)
+    img.onerror = (error) => {
+      reject(new Error(`Failed to load image for compression: ${error}`))
+    }
+  })
 }

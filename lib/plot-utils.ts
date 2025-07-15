@@ -1,77 +1,83 @@
-/**
- * FlowSketch – SVG rendering helpers
- *
- * Exports:
- *   • createSVGPlot            – main helper (width/height configurable)
- *   • generateScatterPlotSVG   – alias (kept for backwards compatibility)
- *   • PlotUtils                – object bundling the helpers
- */
+export class PlotUtils {
+  static createSVGPlot(data: Array<{ x: number; y: number }>, colorScheme: string, width = 800, height = 600): string {
+    const padding = 50
+    const plotWidth = width - 2 * padding
+    const plotHeight = height - 2 * padding
 
-import type { Point } from "./flow-model"
+    // Find data bounds
+    const xValues = data.map((d) => d.x)
+    const yValues = data.map((d) => d.y)
+    const xMin = Math.min(...xValues)
+    const xMax = Math.max(...xValues)
+    const yMin = Math.min(...yValues)
+    const yMax = Math.max(...yValues)
 
-/* Basic palettes – used when a colour scheme string doesn’t match */
-const DEFAULT_PALETTE = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
+    // Scale functions
+    const scaleX = (x: number) => padding + ((x - xMin) / (xMax - xMin)) * plotWidth
+    const scaleY = (y: number) => padding + ((yMax - y) / (yMax - yMin)) * plotHeight
 
-function getPalette(scheme: string): string[] {
-  switch (scheme) {
-    case "viridis":
-      return ["#440154", "#31688e", "#35b779", "#fde725"]
-    case "plasma":
-      return ["#0d0887", "#7e03a8", "#cc4778", "#f89441", "#f0f921"]
-    case "inferno":
-      return ["#000004", "#420a68", "#932667", "#dd513a", "#fca50a", "#fcffa4"]
-    case "magma":
-      return ["#000004", "#3b0f70", "#8c2981", "#de4968", "#fe9f6d", "#fcfdbf"]
-    case "cool":
-      return ["#00ffff", "#0080ff", "#0000ff", "#8000ff"]
-    case "warm":
-      return ["#ff0000", "#ff8000", "#ffff00", "#80ff00"]
-    case "turbo":
-      return ["#30123b", "#4140ba", "#2e9df5", "#4bd276", "#f3f34c", "#f79a23", "#ca2928"]
-    default:
-      return DEFAULT_PALETTE
-  }
-}
+    // Color schemes
+    const colorMaps = {
+      viridis: ["#440154", "#482777", "#3f4a8a", "#31678e", "#26838f", "#1f9d8a", "#6cce5a", "#b6de2b", "#fee825"],
+      plasma: [
+        "#0c0786",
+        "#40039c",
+        "#6a00a7",
+        "#8f0da4",
+        "#b12a90",
+        "#cc4778",
+        "#e16462",
+        "#f2844b",
+        "#fca636",
+        "#fcce25",
+      ],
+      inferno: [
+        "#000003",
+        "#1b0c41",
+        "#4a0c6b",
+        "#781c6d",
+        "#a52c60",
+        "#cf4446",
+        "#ed6925",
+        "#fb9b06",
+        "#f7d13d",
+        "#fcffa4",
+      ],
+      magma: ["#000003", "#1c1044", "#4f127b", "#812581", "#b5367a", "#e55964", "#fb8761", "#fec287", "#fcfdbf"],
+      cividis: ["#00204c", "#00336f", "#39486b", "#575d6d", "#707173", "#8a8678", "#a69c75", "#c4b56c", "#e4cf5b"],
+      rainbow: ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80", "#00ffff", "#0080ff", "#0000ff"],
+      grayscale: ["#000000", "#1a1a1a", "#333333", "#4d4d4d", "#666666", "#808080", "#999999", "#b3b3b3", "#cccccc"],
+      neon: ["#ff00ff", "#ff0080", "#ff0040", "#ff4000", "#ff8000", "#ffff00", "#80ff00", "#00ff80", "#00ffff"],
+      pastel: ["#ffb3ba", "#ffdfba", "#ffffba", "#baffc9", "#bae1ff", "#d4baff", "#ffbaff", "#ffbad4", "#c9ffba"],
+      monochrome: ["#000000", "#ffffff", "#000000", "#ffffff", "#000000", "#ffffff", "#000000", "#ffffff", "#000000"],
+    }
 
-/**
- * Create a simple scatter-plot SVG string for a list of points
- */
-export function createSVGPlot(points: Point[], colorScheme: string, width = 800, height = 600): string {
-  if (!points.length) return "<svg xmlns='http://www.w3.org/2000/svg'/>"
+    const colors = colorMaps[colorScheme as keyof typeof colorMaps] || colorMaps.viridis
 
-  // Get bounds
-  const xs = points.map((p) => p.x)
-  const ys = points.map((p) => p.y)
-  const minX = Math.min(...xs)
-  const maxX = Math.max(...xs)
-  const minY = Math.min(...ys)
-  const maxY = Math.max(...ys)
+    // Generate SVG
+    let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`
+    svg += `<rect width="${width}" height="${height}" fill="white"/>`
 
-  const palette = getPalette(colorScheme)
-  const radius = Math.max(1, Math.min(width, height) / 300)
+    // Plot points
+    data.forEach((point, i) => {
+      const x = scaleX(point.x)
+      const y = scaleY(point.y)
+      const colorIndex = Math.floor((i / data.length) * (colors.length - 1))
+      const color = colors[colorIndex]
 
-  const circles = points
-    .map((p, idx) => {
-      const cx = ((p.x - minX) / (maxX - minX)) * width
-      // Flip y so origin is bottom-left
-      const cy = height - ((p.y - minY) / (maxY - minY)) * height
-      const fill = palette[idx % palette.length]
-      return `<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${radius}" fill="${fill}" />`
+      svg += `<circle cx="${x}" cy="${y}" r="2" fill="${color}" opacity="0.7"/>`
     })
-    .join("")
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${circles}</svg>`
-}
+    // Add connecting lines for some patterns
+    if (data.length > 1) {
+      let pathData = `M ${scaleX(data[0].x)} ${scaleY(data[0].y)}`
+      for (let i = 1; i < data.length; i++) {
+        pathData += ` L ${scaleX(data[i].x)} ${scaleY(data[i].y)}`
+      }
+      svg += `<path d="${pathData}" stroke="${colors[Math.floor(colors.length / 2)]}" stroke-width="1" fill="none" opacity="0.3"/>`
+    }
 
-/* -------------------------------------------------------------------------- */
-/*  Alias kept to satisfy any legacy import/usage                            */
-/* -------------------------------------------------------------------------- */
-export const generateScatterPlotSVG = createSVGPlot
-
-/* -------------------------------------------------------------------------- */
-/*  Bundle helpers for the `{ PlotUtils }` named import in FlowArtGenerator   */
-/* -------------------------------------------------------------------------- */
-export const PlotUtils = {
-  createSVGPlot,
-  generateScatterPlotSVG,
+    svg += "</svg>"
+    return svg
+  }
 }

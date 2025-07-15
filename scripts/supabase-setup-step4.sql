@@ -1,37 +1,20 @@
--- Step 4: Create functions and triggers
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO public.user_profiles (id, email, display_name)
-    VALUES (
-        NEW.id,
-        NEW.email,
-        NEW.raw_user_meta_data->>'display_name'
-    );
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- Step 4: Define RLS Policies for the 'gallery' table
+-- These policies control what authenticated users can do with their data.
 
--- Create trigger for new user signup
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-CREATE TRIGGER on_auth_user_created
-    AFTER INSERT ON auth.users
-    FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+-- Policy for authenticated users to read their own gallery images
+CREATE POLICY "Users can view their own gallery images" ON public.gallery
+FOR SELECT USING (auth.uid() = user_id);
 
--- Create function to update updated_at timestamp
-CREATE OR REPLACE FUNCTION public.update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+-- Policy for authenticated users to insert gallery images
+CREATE POLICY "Users can insert their own gallery images" ON public.gallery
+FOR INSERT WITH CHECK (auth.uid() = user_id);
 
--- Create triggers for updated_at
-CREATE TRIGGER update_user_profiles_updated_at
-    BEFORE UPDATE ON user_profiles
-    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+-- Policy for authenticated users to update their own gallery images
+CREATE POLICY "Users can update their own gallery images" ON public.gallery
+FOR UPDATE USING (auth.uid() = user_id);
 
-CREATE TRIGGER update_gallery_images_updated_at
-    BEFORE UPDATE ON gallery_images
-    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+-- Policy for authenticated users to delete their own gallery images
+CREATE POLICY "Users can delete their own gallery images" ON public.gallery
+FOR DELETE USING (auth.uid() = user_id);
+
+-- After running these policies, proceed to Step 5 for storage setup.

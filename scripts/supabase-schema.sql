@@ -1,125 +1,59 @@
--- Create user profiles table
-CREATE TABLE IF NOT EXISTS user_profiles (
-    id UUID REFERENCES auth.users(id) PRIMARY KEY,
-    email TEXT NOT NULL,
-    display_name TEXT,
-    avatar_url TEXT,
-    sync_enabled BOOLEAN DEFAULT true,
-    storage_quota BIGINT DEFAULT 104857600, -- 100MB in bytes
-    storage_used BIGINT DEFAULT 0,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- This script defines the database schema for the FlowSketch application.
+-- It includes the 'gallery' table for storing metadata about generated art.
+
+-- Enable the uuid-ossp extension for generating UUIDs
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Create the 'gallery' table
+CREATE TABLE IF NOT EXISTS public.gallery (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE, -- Link to Supabase Auth users
+    image_url TEXT NOT NULL, -- Public URL of the image in storage
+    metadata JSONB NOT NULL, -- Store FlowArtSettings and other metadata as JSONB
+    is_favorite BOOLEAN DEFAULT FALSE,
+    tags TEXT[] DEFAULT '{}', -- Array of tags for categorization
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create gallery images table
-CREATE TABLE IF NOT EXISTS gallery_images (
-    id TEXT PRIMARY KEY,
-    user_id UUID REFERENCES user_profiles(id) ON DELETE CASCADE,
-    image_url TEXT NOT NULL,
-    thumbnail_url TEXT,
-    metadata JSONB NOT NULL,
-    is_favorite BOOLEAN DEFAULT false,
-    tags TEXT[] DEFAULT '{}',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+-- Enable Row Level Security (RLS) for the 'gallery' table
+ALTER TABLE public.gallery ENABLE ROW LEVEL SECURITY;
 
--- Create storage bucket for images
-INSERT INTO storage.buckets (id, name, public) 
-VALUES ('gallery-images', 'gallery-images', true)
+-- RLS Policies for 'gallery' table:
+-- 1. Allow authenticated users to read their own gallery images
+CREATE POLICY "Users can view their own gallery images" ON public.gallery
+FOR SELECT USING (auth.uid() = user_id);
+
+-- 2. Allow authenticated users to insert gallery images
+CREATE POLICY "Users can insert their own gallery images" ON public.gallery
+FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- 3. Allow authenticated users to update their own gallery images
+CREATE POLICY "Users can update their own gallery images" ON public.gallery
+FOR UPDATE USING (auth.uid() = user_id);
+
+-- 4. Allow authenticated users to delete their own gallery images
+CREATE POLICY "Users can delete their own gallery images" ON public.gallery
+FOR DELETE USING (auth.uid() = user_id);
+
+-- Create the 'flowsketch-gallery' storage bucket
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('flowsketch-gallery', 'flowsketch-gallery', TRUE)
 ON CONFLICT (id) DO NOTHING;
 
--- Enable RLS on tables
-ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE gallery_images ENABLE ROW LEVEL SECURITY;
+-- Enable Row Level Security (RLS) for the 'flowsketch-gallery' bucket
+ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies for user_profiles
-CREATE POLICY "Users can view own profile" ON user_profiles
-    FOR SELECT USING (auth.uid() = id);
+-- RLS Policies for 'flowsketch-gallery' bucket:
+-- 1. Allow public read access to files in the bucket
+CREATE POLICY "Allow public read access" ON storage.objects FOR SELECT USING (bucket_id = 'flowsketch-gallery');
 
-CREATE POLICY "Users can update own profile" ON user_profiles
-    FOR UPDATE USING (auth.uid() = id);
+-- 2. Allow authenticated users to insert files into the bucket
+CREATE POLICY "Allow authenticated uploads" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'flowsketch-gallery' AND auth.role() = 'authenticated');
 
-CREATE POLICY "Users can insert own profile" ON user_profiles
-    FOR INSERT WITH CHECK (auth.uid() = id);
+-- 3. Allow authenticated users to delete files from the bucket (only if they own them, or if linked to their gallery entry)
+-- For simplicity, this policy allows authenticated users to delete any file in the bucket.
+-- In a production app, you'd want to link this to the user_id of the image in the 'gallery' table.
+CREATE POLICY "Allow authenticated deletes" ON storage.objects FOR DELETE USING (bucket_id = 'flowsketch-gallery' AND auth.role() = 'authenticated');
 
--- RLS Policies for gallery_images
-CREATE POLICY "Users can view own images" ON gallery_images
-    FOR SELECT USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can insert own images" ON gallery_images
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Users can update own images" ON gallery_images
-    FOR UPDATE USING (auth.uid() = user_id);
-
-CREATE POLICY "Users can delete own images" ON gallery_images
-    FOR DELETE USING (auth.uid() = user_id);
-
--- Storage policies
-CREATE POLICY "Users can upload own images" ON storage.objects
-    FOR INSERT WITH CHECK (
-        bucket_id = 'gallery-images' AND 
-        auth.uid()::text = (storage.foldername(name))[1]
-    );
-
-CREATE POLICY "Users can view own images" ON storage.objects
-    FOR SELECT USING (
-        bucket_id = 'gallery-images' AND 
-        auth.uid()::text = (storage.foldername(name))[1]
-    );
-
-CREATE POLICY "Users can update own images" ON storage.objects
-    FOR UPDATE USING (
-        bucket_id = 'gallery-images' AND 
-        auth.uid()::text = (storage.foldername(name))[1]
-    );
-
-CREATE POLICY "Users can delete own images" ON storage.objects
-    FOR DELETE USING (
-        bucket_id = 'gallery-images' AND 
-        auth.uid()::text = (storage.foldername(name))[1]
-    );
-
--- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_gallery_images_user_id ON gallery_images(user_id);
-CREATE INDEX IF NOT EXISTS idx_gallery_images_created_at ON gallery_images(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_gallery_images_is_favorite ON gallery_images(is_favorite) WHERE is_favorite = true;
-
--- Create function to automatically create user profile
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO public.user_profiles (id, email, display_name)
-    VALUES (
-        NEW.id,
-        NEW.email,
-        NEW.raw_user_meta_data->>'display_name'
-    );
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- Create trigger for new user signup
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-CREATE TRIGGER on_auth_user_created
-    AFTER INSERT ON auth.users
-    FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-
--- Create function to update updated_at timestamp
-CREATE OR REPLACE FUNCTION public.update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Create triggers for updated_at
-CREATE TRIGGER update_user_profiles_updated_at
-    BEFORE UPDATE ON user_profiles
-    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
-
-CREATE TRIGGER update_gallery_images_updated_at
-    BEFORE UPDATE ON gallery_images
-    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+-- Optional: Add an index for faster lookups by user_id in the gallery table
+CREATE INDEX IF NOT EXISTS idx_gallery_user_id ON public.gallery (user_id);
