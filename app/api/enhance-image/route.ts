@@ -1,3 +1,6 @@
+export const runtime = "nodejs"
+export const maxDuration = 60 // seconds
+
 import { type NextRequest, NextResponse } from "next/server"
 import sharp from "sharp"
 
