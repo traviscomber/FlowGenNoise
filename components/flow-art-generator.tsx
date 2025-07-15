@@ -11,10 +11,11 @@ import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
-import { Download, Sparkles, Settings, ImageIcon, Info, Loader2, Zap, Wand2, Edit3 } from "lucide-react"
+import { Download, Sparkles, Settings, ImageIcon, Info, Loader2, Zap, Wand2, Edit3, Save } from "lucide-react"
 import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
 import { ClientUpscaler } from "@/lib/client-upscaler"
 import { useToast } from "@/hooks/use-toast"
+import { SaveArtworkDialog } from "@/components/gallery/save-artwork-dialog"
 
 interface GeneratedArt {
   svgContent: string
@@ -45,6 +46,9 @@ export function FlowArtGenerator() {
   // AI Art prompt enhancement
   const [customPrompt, setCustomPrompt] = useState("")
   const [useCustomPrompt, setUseCustomPrompt] = useState(false)
+
+  const [showSaveDialog, setShowSaveDialog] = useState(false)
+  const [saveDialogRefresh, setSaveDialogRefresh] = useState(0)
 
   const { toast } = useToast()
 
@@ -374,6 +378,19 @@ export function FlowArtGenerator() {
     }
   }
 
+  const handleSaveArtwork = useCallback(() => {
+    if (!generatedArt) return
+    setShowSaveDialog(true)
+  }, [generatedArt])
+
+  const handleArtworkSaved = useCallback(() => {
+    setSaveDialogRefresh((prev) => prev + 1)
+    toast({
+      title: "Saved to Gallery! 🎨",
+      description: "Your artwork has been added to the gallery.",
+    })
+  }, [toast])
+
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="text-center space-y-2">
@@ -610,6 +627,11 @@ export function FlowArtGenerator() {
                   Download {generatedArt.upscaledImageUrl ? "Enhanced" : "Original"}
                 </Button>
 
+                <Button onClick={handleSaveArtwork} variant="outline" className="w-full bg-transparent">
+                  <Save className="h-4 w-4 mr-2" />
+                  Save to Gallery
+                </Button>
+
                 <Button
                   onClick={upscaleImage}
                   disabled={isUpscaling || !!generatedArt.upscaledImageUrl}
@@ -745,6 +767,23 @@ export function FlowArtGenerator() {
           </Card>
         </div>
       </div>
+      {/* Save Artwork Dialog */}
+      {generatedArt && (
+        <SaveArtworkDialog
+          open={showSaveDialog}
+          onClose={() => setShowSaveDialog(false)}
+          artworkData={{
+            title: `${generatedArt.params.dataset} + ${generatedArt.params.scenario}`,
+            imageUrl: generatedArt.imageUrl,
+            upscaledImageUrl: generatedArt.upscaledImageUrl,
+            generationParams: generatedArt.params,
+            mode: generatedArt.mode,
+            customPrompt: generatedArt.customPrompt,
+            upscaleMethod: generatedArt.upscaleMethod,
+          }}
+          onSaved={handleArtworkSaved}
+        />
+      )}
     </div>
   )
 }
