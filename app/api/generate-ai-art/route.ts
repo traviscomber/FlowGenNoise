@@ -19,27 +19,46 @@ export async function POST(req: Request) {
       )
     }
 
-    // Step 1: Use GPT-4o to generate a highly detailed and artistic prompt for the image
+    // Step 1: Generate enhanced prompt for high-quality base image
     const { text: imagePrompt } = await generateText({
       model: openai("gpt-4o"),
-      prompt: `Create a vivid, abstract, and highly detailed image generation prompt for DALL-E 3. The artwork should visually represent a generative art piece inspired by a '${dataset}' dataset, rendered with a '${colorScheme}' color scheme. Emphasize intricate patterns, fluid motion, and dynamic composition. The image should convey a sense of mathematical elegance and organic growth, with approximately ${numSamples} elements and a subtle visual noise effect of ${noise}. Focus on artistic qualities like light, texture, and depth, making it visually striking and unique.`,
-      temperature: 0.8, // Increased temperature for more creativity
+      prompt: `Create a highly detailed image generation prompt for DALL-E 3 that will serve as a base for professional 8K upscaling. The artwork should be a generative art masterpiece inspired by a '${dataset}' dataset with a '${colorScheme}' color scheme.
+
+Requirements for upscaling-ready image:
+- Clean, sharp edges and well-defined structures
+- Rich detail that will enhance beautifully when upscaled
+- Professional composition suitable for large format printing
+- Mathematical precision with ${numSamples} elements arranged organically
+- Subtle noise texture of ${noise} that adds visual interest
+- High contrast and vibrant colors that will scale well
+- Complex patterns and textures that reward close inspection
+- Gallery-quality artistic composition
+
+The image should be optimized as a base for AI upscaling to 8K resolution, with every element designed to enhance beautifully when processed through professional upscaling algorithms.`,
+      temperature: 0.8,
     })
 
-    console.log("Generated Image Prompt:", imagePrompt)
+    console.log("Generated Base Image Prompt:", imagePrompt)
 
-    // Step 2: Use DALL-E 3 to generate the image based on the refined prompt
+    // Step 2: Generate high-quality base image
     const { image } = await experimental_generateImage({
       model: openai.image("dall-e-3"),
       prompt: imagePrompt,
-      quality: "hd", // Request high-definition quality
-      size: "1024x1024",
-      style: "vivid", // Use a vivid style for more vibrant and dramatic results
+      quality: "hd",
+      size: "1792x1024", // Maximum DALL-E 3 resolution
+      style: "vivid",
     })
 
-    return NextResponse.json({ image: image.base64 })
+    const baseImage = `data:image/png;base64,${image.base64}`
+
+    return NextResponse.json({
+      image: baseImage,
+      baseResolution: "1792x1024",
+      readyForUpscaling: true,
+      recommendedUpscale: "4x",
+    })
   } catch (error: any) {
-    console.error("Error generating AI art:", error)
+    console.error("Error generating base AI art:", error)
     if (error.message.includes("api_key")) {
       return NextResponse.json(
         { error: "OpenAI API key is missing or invalid. Please set OPENAI_API_KEY." },

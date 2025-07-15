@@ -6,24 +6,45 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Loader2, Download } from "lucide-react" // Import Download icon
+import { Loader2, Download, Zap, Info, Sparkles } from "lucide-react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { ClientUpscaler } from "@/lib/client-upscaler"
+
+interface UpscaleMetadata {
+  originalSize: string
+  upscaledSize: string
+  scaleFactor: number
+  model: string
+  quality: string
+  method: string
+}
 
 export function FlowArtGenerator() {
   const [dataset, setDataset] = useState<string>("spirals")
   const [seed, setSeed] = useState<number>(1234)
   const [colorScheme, setColorScheme] = useState<string>("magma")
   const [generationMode, setGenerationMode] = useState<"svg" | "ai">("svg")
-  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [baseImageUrl, setBaseImageUrl] = useState<string | null>(null)
+  const [upscaledImageUrl, setUpscaledImageUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const [upscaling, setUpscaling] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [noise, setNoise] = useState<number>(0.05)
   const [numSamples, setNumSamples] = useState<number>(1000)
+  const [upscaleProgress, setUpscaleProgress] = useState<number>(0)
+  const [upscaleStatus, setUpscaleStatus] = useState<string>("")
+  const [upscaleMetadata, setUpscaleMetadata] = useState<UpscaleMetadata | null>(null)
 
   const handleGenerate = async () => {
     setLoading(true)
     setError(null)
-    setImageUrl(null) // Clear previous image when generating new one
+    setBaseImageUrl(null)
+    setUpscaledImageUrl(null)
+    setUpscaleMetadata(null)
+
     try {
       let response
       if (generationMode === "svg") {
@@ -50,7 +71,7 @@ export function FlowArtGenerator() {
       }
 
       const data = await response.json()
-      setImageUrl(data.image)
+      setBaseImageUrl(data.image)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -58,18 +79,108 @@ export function FlowArtGenerator() {
     }
   }
 
-  const handleDownload = () => {
-    if (imageUrl) {
+  const handleFreeUpscale = async () => {
+    if (!baseImageUrl) return
+
+    setUpscaling(true)
+    setUpscaleProgress(0)
+    setUpscaleStatus("Trying free AI upscaling services...")
+    setError(null)
+
+    try {
+      // Try server-side free upscaling first
+      setUpscaleProgress(20)
+      setUpscaleStatus("Connecting to free AI upscaling services...")
+
+      const response = await fetch("/api/upscale-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          imageData: baseImageUrl,
+          scaleFactor: 4,
+          upscaleModel: "real-esrgan",
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Server upscaling failed")
+      }
+
+      const data = await response.json()
+
+      if (data.requiresClientUpscaling) {
+        // Fallback to client-side upscaling
+        setUpscaleProgress(50)
+        setUpscaleStatus("Using high-quality client-side upscaling...")
+
+        const upscaledImage = await ClientUpscaler.upscaleImage(baseImageUrl, 4)
+
+        setUpscaleProgress(80)
+        setUpscaleStatus("Applying enhancement filters...")
+
+        const enhancedImage = await ClientUpscaler.enhanceImage(upscaledImage)
+
+        setUpscaledImageUrl(enhancedImage)
+        setUpscaleMetadata(data.metadata)
+      } else {
+        // Server-side upscaling succeeded
+        setUpscaledImageUrl(data.image)
+        setUpscaleMetadata(data.metadata)
+      }
+
+      setUpscaleProgress(100)
+      setUpscaleStatus("Free upscaling complete!")
+    } catch (err: any) {
+      // Final fallback to client-side only
+      try {
+        setUpscaleProgress(30)
+        setUpscaleStatus("Using client-side upscaling...")
+
+        const upscaledImage = await ClientUpscaler.upscaleImage(baseImageUrl, 4)
+
+        setUpscaleProgress(70)
+        setUpscaleStatus("Enhancing image quality...")
+
+        const enhancedImage = await ClientUpscaler.enhanceImage(upscaledImage)
+
+        setUpscaledImageUrl(enhancedImage)
+        setUpscaleMetadata({
+          originalSize: "1792x1024",
+          upscaledSize: "7168x4096",
+          scaleFactor: 4,
+          model: "Client-side Bicubic + Enhancement",
+          quality: "High Quality Upscaled",
+          method: "client-side",
+        })
+
+        setUpscaleProgress(100)
+        setUpscaleStatus("Client-side upscaling complete!")
+      } catch (clientError: any) {
+        setError("All upscaling methods failed: " + clientError.message)
+      }
+    } finally {
+      setUpscaling(false)
+    }
+  }
+
+  const handleDownload = (isUpscaled = false) => {
+    const downloadUrl = isUpscaled ? upscaledImageUrl : baseImageUrl
+    if (downloadUrl) {
       const link = document.createElement("a")
-      link.href = imageUrl
-      // Determine file extension based on generation mode
+      link.href = downloadUrl
       const fileExtension = generationMode === "svg" ? "svg" : "png"
-      link.download = `flowsketch-art-${Date.now()}.${fileExtension}`
+      const suffix = isUpscaled ? "-upscaled-4x" : "-base"
+      link.download = `flowsketch-art${suffix}-${Date.now()}.${fileExtension}`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
     }
   }
+
+  const currentImage = upscaledImageUrl || baseImageUrl
+  const isAIMode = generationMode === "ai"
 
   return (
     <div className="flex flex-col items-center justify-center w-full p-4">
@@ -77,7 +188,7 @@ export function FlowArtGenerator() {
         <CardHeader>
           <CardTitle className="text-center text-2xl">FlowSketch Art Generator</CardTitle>
           <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-            Create structured art using toy datasets.
+            Create structured art using toy datasets. Free AI upscaling available for all images.
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -162,33 +273,103 @@ export function FlowArtGenerator() {
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="ai" id="mode-ai" />
-                <Label htmlFor="mode-ai">AI Generated Image</Label>
+                <Label htmlFor="mode-ai">AI Generated</Label>
               </div>
             </RadioGroup>
           </div>
 
-          <Button onClick={handleGenerate} className="w-full" disabled={loading}>
+          <Button onClick={handleGenerate} className="w-full" disabled={loading || upscaling}>
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
+                Generating Base Image...
               </>
             ) : (
               "Generate Flow Art"
             )}
           </Button>
+
           {error && <p className="text-red-500 text-center">{error}</p>}
-          {imageUrl && (
+
+          {currentImage && (
             <div className="mt-6 flex flex-col items-center gap-4">
-              <img
-                src={imageUrl || "/placeholder.svg"}
-                alt="Generated Flow Art"
-                className="max-w-full h-auto border rounded-lg shadow-md"
-              />
-              <Button onClick={handleDownload} className="w-full max-w-xs">
-                <Download className="mr-2 h-4 w-4" />
-                Download Image
-              </Button>
+              <div className="relative">
+                <img
+                  src={currentImage || "/placeholder.svg"}
+                  alt="Generated Flow Art"
+                  className="max-w-full h-auto border rounded-lg shadow-md"
+                />
+                <div className="absolute top-2 right-2 flex gap-2">
+                  {upscaledImageUrl ? (
+                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
+                      <Sparkles className="w-3 h-3 mr-1" />
+                      4x Upscaled
+                    </Badge>
+                  ) : (
+                    <Badge className="bg-blue-500">Base Resolution</Badge>
+                  )}
+                </div>
+              </div>
+
+              {upscaling && (
+                <div className="w-full max-w-md space-y-2">
+                  <Progress value={upscaleProgress} className="w-full" />
+                  <p className="text-sm text-center text-gray-600">{upscaleStatus}</p>
+                </div>
+              )}
+
+              {upscaleMetadata && (
+                <Alert className="max-w-md">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    <div className="space-y-1 text-sm">
+                      <div>
+                        <strong>Resolution:</strong> {upscaleMetadata.upscaledSize}
+                      </div>
+                      <div>
+                        <strong>Method:</strong> {upscaleMetadata.model}
+                      </div>
+                      <div>
+                        <strong>Quality:</strong> {upscaleMetadata.quality}
+                      </div>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-2 w-full max-w-md">
+                <Button onClick={() => handleDownload(false)} variant="outline" className="flex-1">
+                  <Download className="mr-2 h-4 w-4" />
+                  Download Base
+                </Button>
+
+                {!upscaledImageUrl && baseImageUrl && (
+                  <Button
+                    onClick={handleFreeUpscale}
+                    disabled={upscaling}
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                  >
+                    {upscaling ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4" />}
+                    Free 4x Upscale
+                  </Button>
+                )}
+
+                {upscaledImageUrl && (
+                  <Button
+                    onClick={() => handleDownload(true)}
+                    className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Download 4x
+                  </Button>
+                )}
+              </div>
+
+              {!upscaledImageUrl && baseImageUrl && (
+                <p className="text-xs text-gray-500 text-center max-w-md">
+                  Free upscaling tries AI services first, then falls back to high-quality client-side processing
+                </p>
+              )}
             </div>
           )}
         </CardContent>
