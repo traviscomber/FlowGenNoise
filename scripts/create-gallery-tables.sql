@@ -31,5 +31,15 @@ CREATE INDEX IF NOT EXISTS idx_gallery_tags ON gallery USING GIN(tags);
 ALTER TABLE gallery ENABLE ROW LEVEL SECURITY;
 
 -- Create a policy that allows all operations for now (you can restrict this later)
-CREATE POLICY IF NOT EXISTS "Allow all operations on gallery" ON gallery
-  FOR ALL USING (true);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies 
+    WHERE schemaname = 'public' 
+    AND tablename = 'gallery' 
+    AND policyname = 'Allow all operations on gallery'
+  ) THEN
+    CREATE POLICY "Allow all operations on gallery" ON gallery
+      FOR ALL USING (true);
+  END IF;
+END $$;

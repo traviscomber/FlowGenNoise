@@ -1,789 +1,382 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Textarea } from "@/components/ui/textarea"
-import { Download, Sparkles, Settings, ImageIcon, Info, Loader2, Zap, Wand2, Edit3, Save } from "lucide-react"
-import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
-import { ClientUpscaler } from "@/lib/client-upscaler"
-import { useToast } from "@/hooks/use-toast"
-import { SaveArtworkDialog } from "@/components/gallery/save-artwork-dialog"
+import { Slider } from "@/components/ui/slider"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Download, RefreshCw, Heart } from "lucide-react"
+import { toast } from "sonner"
 
-interface GeneratedArt {
-  svgContent: string
-  imageUrl: string
-  upscaledImageUrl?: string
-  params: GenerationParams
-  mode: "svg" | "ai"
-  upscaleMethod?: "cloudinary" | "client" | "mathematical"
-  customPrompt?: string
-}
+import { SaveArtworkDialog } from "./gallery/save-artwork-dialog"
+import { GalleryService } from "@/lib/gallery-service"
 
-export function FlowArtGenerator() {
-  const [generatedArt, setGeneratedArt] = useState<GeneratedArt | null>(null)
-  const [isGenerating, setIsGenerating] = useState(false)
+const FlowArtGenerator = () => {
+  const [params, setParams] = useState({
+    flowFieldDensity: 20,
+    particleDensity: 5000,
+    particleSpeed: 1,
+    particleSize: 1,
+    lineLength: 50,
+    fadeIn: false,
+    fadeOut: false,
+    colorMode: "rainbow",
+    rainbowSaturation: 100,
+    rainbowLightness: 50,
+    singleColor: "#ffffff",
+  })
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null)
+  const [upscaledImage, setUpscaledImage] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const [isUpscaling, setIsUpscaling] = useState(false)
-  const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [mode, setMode] = useState<"svg" | "ai">("svg")
-
-  // Generation parameters - separate dataset and scenario
-  const [dataset, setDataset] = useState("spirals")
-  const [scenario, setScenario] = useState("forest")
-  const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
-  const [numSamples, setNumSamples] = useState(2000)
-  const [noiseScale, setNoiseScale] = useState(0.05)
-  const [timeStep, setTimeStep] = useState(0.01)
-
-  // AI Art prompt enhancement
+  const [currentMode, setCurrentMode] = useState<"flow" | "ai">("flow")
   const [customPrompt, setCustomPrompt] = useState("")
-  const [useCustomPrompt, setUseCustomPrompt] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const [showSaveDialog, setShowSaveDialog] = useState(false)
-  const [saveDialogRefresh, setSaveDialogRefresh] = useState(0)
 
-  const { toast } = useToast()
+  useEffect(() => {
+    generateFlowArt()
+  }, [])
 
-  const enhancePrompt = useCallback(async () => {
-    setIsEnhancingPrompt(true)
-
+  const generateFlowArt = async () => {
+    setIsLoading(true)
     try {
-      console.log("Enhancing prompt for:", { dataset, scenario, numSamples, noiseScale })
-
-      const response = await fetch("/api/enhance-prompt", {
+      const response = await fetch("/api/flow-art", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          dataset,
-          scenario,
-          numSamples,
-          noiseScale,
-          currentPrompt: customPrompt,
-        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ params }),
       })
 
       if (!response.ok) {
-        throw new Error(`Failed to enhance prompt: ${response.status}`)
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const data = await response.json()
-      console.log("Enhanced prompt received:", data.enhancedPrompt)
-
-      setCustomPrompt(data.enhancedPrompt)
-      setUseCustomPrompt(true)
-
-      toast({
-        title: "Prompt Enhanced! ✨",
-        description: "Mathematical concepts and artistic details added to your prompt.",
-      })
-    } catch (error: any) {
-      console.error("Prompt enhancement error:", error)
-      toast({
-        title: "Enhancement Failed",
-        description: "Could not enhance prompt. Please try again.",
-        variant: "destructive",
-      })
+      setGeneratedImage(data.imageUrl)
+    } catch (error) {
+      console.error("Failed to generate flow art:", error)
+      toast.error("Failed to generate flow art")
     } finally {
-      setIsEnhancingPrompt(false)
-    }
-  }, [dataset, scenario, numSamples, noiseScale, customPrompt, toast])
-
-  const generateArt = useCallback(async () => {
-    console.log("Generate button clicked! Mode:", mode)
-    setIsGenerating(true)
-    setProgress(0)
-
-    try {
-      const params: GenerationParams = {
-        dataset,
-        scenario,
-        seed,
-        numSamples,
-        noiseScale,
-        timeStep,
-      }
-
-      console.log("Generating with params:", params)
-
-      if (mode === "svg") {
-        // Generate SVG flow field
-        setProgress(30)
-        console.log("Generating SVG content...")
-        const svgContent = generateFlowField(params)
-        console.log("SVG generated, length:", svgContent.length)
-
-        setProgress(60)
-        // Convert SVG to data URL
-        const svgBlob = new Blob([svgContent], { type: "image/svg+xml" })
-        const imageUrl = URL.createObjectURL(svgBlob)
-        console.log("Blob URL created:", imageUrl)
-
-        setProgress(100)
-        setGeneratedArt({
-          svgContent,
-          imageUrl,
-          params,
-          mode: "svg",
-        })
-
-        toast({
-          title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
-          description: `Beautiful ${dataset} dataset with ${scenario} scenario blend created.`,
-        })
-      } else {
-        // Generate AI art
-        setProgress(20)
-        console.log("Calling AI art API...")
-
-        const requestBody = {
-          dataset,
-          scenario,
-          seed,
-          numSamples,
-          noise: noiseScale,
-          customPrompt: useCustomPrompt ? customPrompt : undefined,
-        }
-
-        console.log("Sending AI request:", requestBody)
-
-        const response = await fetch("/api/generate-ai-art", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
-        })
-
-        console.log("AI API Response status:", response.status)
-
-        if (!response.ok) {
-          const errorText = await response.text()
-          console.error("AI API error response:", errorText)
-          throw new Error(`AI API failed: ${response.status} - ${errorText}`)
-        }
-
-        const data = await response.json()
-        console.log("AI art response received:", data)
-
-        if (!data.image) {
-          throw new Error("AI API returned no image")
-        }
-
-        setProgress(80)
-        setGeneratedArt({
-          svgContent: "",
-          imageUrl: data.image,
-          params,
-          mode: "ai",
-          customPrompt: useCustomPrompt ? customPrompt : undefined,
-        })
-
-        setProgress(100)
-        toast({
-          title: "AI Art Generated! 🤖✨",
-          description: useCustomPrompt
-            ? "Custom enhanced prompt artwork created!"
-            : `AI-enhanced ${dataset} + ${scenario} artwork created.`,
-        })
-      }
-    } catch (error: any) {
-      console.error("Generation error:", error)
-      toast({
-        title: "Generation Failed",
-        description: error.message || "Failed to generate artwork. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsGenerating(false)
-      setProgress(0)
-    }
-  }, [dataset, scenario, seed, numSamples, noiseScale, timeStep, mode, useCustomPrompt, customPrompt, toast])
-
-  const upscaleImage = useCallback(async () => {
-    if (!generatedArt) {
-      console.log("No generated art to upscale")
-      return
-    }
-
-    console.log("Upscale button clicked!")
-    setIsUpscaling(true)
-
-    try {
-      // For SVG mode, use mathematical upscaling to add real detail
-      if (generatedArt.mode === "svg") {
-        console.log("Using mathematical upscaling for SVG...")
-        toast({
-          title: "Mathematical Upscaling",
-          description: "Re-rendering visualization with 4x more detail points...",
-        })
-
-        // Convert SVG to data URL first
-        let imageDataUrl = generatedArt.imageUrl
-        if (generatedArt.imageUrl.startsWith("blob:")) {
-          const canvas = document.createElement("canvas")
-          const ctx = canvas.getContext("2d")
-          const img = new Image()
-
-          await new Promise((resolve, reject) => {
-            img.onload = () => {
-              canvas.width = 512
-              canvas.height = 512
-              ctx?.drawImage(img, 0, 0, 512, 512)
-              imageDataUrl = canvas.toDataURL("image/png")
-              resolve(void 0)
-            }
-            img.onerror = reject
-            img.src = generatedArt.imageUrl
-          })
-        }
-
-        // Apply mathematical upscaling with generation parameters
-        const upscaledDataUrl = await ClientUpscaler.upscaleImage(imageDataUrl, 4)
-
-        setGeneratedArt((prev) =>
-          prev
-            ? {
-                ...prev,
-                upscaledImageUrl: upscaledDataUrl,
-                upscaleMethod: "mathematical",
-              }
-            : null,
-        )
-
-        toast({
-          title: "Mathematical Upscaling Complete! ✨",
-          description: "Added 16x more data points with enhanced resolution.",
-        })
-      } else {
-        // For AI art, use client-side upscaling
-        console.log("Using pixel-based upscaling for AI art...")
-        toast({
-          title: "AI Art Enhancement",
-          description: "Applying advanced pixel enhancement to AI artwork...",
-        })
-
-        const upscaledDataUrl = await ClientUpscaler.upscaleImage(generatedArt.imageUrl, 4)
-
-        setGeneratedArt((prev) =>
-          prev
-            ? {
-                ...prev,
-                upscaledImageUrl: upscaledDataUrl,
-                upscaleMethod: "client",
-              }
-            : null,
-        )
-
-        toast({
-          title: "AI Art Enhancement Complete! 🤖✨",
-          description: "Applied advanced pixel enhancement to your AI artwork.",
-        })
-      }
-    } catch (error: any) {
-      console.error("Upscale error:", error)
-      toast({
-        title: "Upscaling Failed",
-        description: "Enhancement failed. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsUpscaling(false)
-    }
-  }, [generatedArt, toast])
-
-  const downloadImage = useCallback(async () => {
-    if (!generatedArt) {
-      console.log("No generated art to download")
-      return
-    }
-
-    console.log("Download button clicked!")
-
-    try {
-      const imageUrl = generatedArt.upscaledImageUrl || generatedArt.imageUrl
-      const isEnhanced = !!generatedArt.upscaledImageUrl
-      const fileExtension = generatedArt.mode === "svg" && !isEnhanced ? "svg" : "png"
-      const fileName = `flowsketch-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
-
-      console.log("Downloading:", fileName, "from:", imageUrl)
-
-      // Check if it's a data URL (client-side upscaled or SVG blob)
-      if (imageUrl.startsWith("data:") || imageUrl.startsWith("blob:")) {
-        // Direct download for data URLs and blob URLs
-        const link = document.createElement("a")
-        link.href = imageUrl
-        link.download = fileName
-        link.style.display = "none"
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        console.log("Direct download completed")
-      } else {
-        // For external URLs, fetch and convert to blob
-        const response = await fetch(imageUrl, { mode: "cors" })
-        if (!response.ok) {
-          throw new Error("Failed to fetch image for download")
-        }
-
-        const blob = await response.blob()
-        const blobUrl = URL.createObjectURL(blob)
-
-        const link = document.createElement("a")
-        link.href = blobUrl
-        link.download = fileName
-        link.style.display = "none"
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-
-        // Clean up the blob URL
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 100)
-        console.log("Blob download completed")
-      }
-
-      toast({
-        title: "Download Complete! 🎨",
-        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario} artwork downloaded.`,
-      })
-    } catch (error: any) {
-      console.error("Download error:", error)
-      toast({
-        title: "Download Failed",
-        description: "Could not download the image. Please try right-clicking and saving the image.",
-        variant: "destructive",
-      })
-    }
-  }, [generatedArt, toast])
-
-  const handleRandomSeed = useCallback(() => {
-    const newSeed = Math.floor(Math.random() * 10000)
-    console.log("Random seed clicked, new seed:", newSeed)
-    setSeed(newSeed)
-  }, [])
-
-  const getButtonText = () => {
-    if (mode === "ai") {
-      if (useCustomPrompt) {
-        return "Generate Custom AI Art"
-      }
-      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)}`
-    } else {
-      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)}`
+      setIsLoading(false)
     }
   }
 
-  const handleSaveArtwork = useCallback(() => {
-    if (!generatedArt) return
-    setShowSaveDialog(true)
-  }, [generatedArt])
+  const generateAIArtwork = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch("/api/ai-art", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: customPrompt }),
+      })
 
-  const handleArtworkSaved = useCallback(() => {
-    setSaveDialogRefresh((prev) => prev + 1)
-    toast({
-      title: "Saved to Gallery! 🎨",
-      description: "Your artwork has been added to the gallery.",
-    })
-  }, [toast])
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      setGeneratedImage(data.imageUrl)
+    } catch (error) {
+      console.error("Failed to generate AI artwork:", error)
+      toast.error("Failed to generate AI artwork")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const upscaleImage = async () => {
+    if (!generatedImage) return
+
+    setIsUpscaling(true)
+    try {
+      const response = await fetch("/api/upscale", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageUrl: generatedImage }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      setUpscaledImage(data.upscaledImageUrl)
+    } catch (error) {
+      console.error("Failed to upscale image:", error)
+      toast.error("Failed to upscale image")
+    } finally {
+      setIsUpscaling(false)
+    }
+  }
+
+  const downloadImage = () => {
+    if (!generatedImage) return
+
+    const link = document.createElement("a")
+    link.href = generatedImage
+    link.download = "flow-art.png"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const handleSaveToGallery = async (data: {
+    title: string
+    description: string
+    tags: string[]
+  }) => {
+    if (!generatedImage) return
+
+    try {
+      await GalleryService.saveArtwork({
+        title: data.title,
+        description: data.description,
+        imageUrl: generatedImage,
+        upscaledImageUrl: upscaledImage || undefined,
+        generationParams: params,
+        mode: currentMode,
+        customPrompt: currentMode === "ai" ? customPrompt : undefined,
+        upscaleMethod: upscaledImage ? "AI Upscaler" : undefined,
+        tags: data.tags,
+      })
+
+      toast.success("Artwork saved to gallery!")
+    } catch (error) {
+      console.error("Failed to save artwork:", error)
+      toast.error("Failed to save artwork")
+    }
+  }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-          FlowSketch Dataset + Scenario Generator
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Choose a dataset pattern, then blend it with a scenario theme
-        </p>
-      </div>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Flow Art Generator</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Controls */}
-        <div className="lg:col-span-1 space-y-4">
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="w-full md:w-1/3">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Generation Settings
-              </CardTitle>
+              <CardTitle>Settings</CardTitle>
+              <CardDescription>Adjust the parameters to generate your unique flow art.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <Tabs value={mode} onValueChange={(value) => setMode(value as "svg" | "ai")}>
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="svg">Dataset + Scenario</TabsTrigger>
-                  <TabsTrigger value="ai">AI Art</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="svg" className="space-y-4">
-                  <Alert>
-                    <Zap className="h-4 w-4" />
-                    <AlertDescription>
-                      First choose a dataset pattern, then select a scenario to blend with it!
-                    </AlertDescription>
-                  </Alert>
-                </TabsContent>
-
-                <TabsContent value="ai" className="space-y-4">
-                  <Alert>
-                    <Sparkles className="h-4 w-4" />
-                    <AlertDescription>
-                      Create AI-generated artwork based on your dataset and scenario combination. Use prompt enhancement
-                      for better results!
-                    </AlertDescription>
-                  </Alert>
-                </TabsContent>
-              </Tabs>
-
-              <div className="space-y-2">
-                <Label>Dataset Pattern</Label>
-                <Select value={dataset} onValueChange={setDataset}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="spirals">🌀 Spirals</SelectItem>
-                    <SelectItem value="moons">🌙 Moons</SelectItem>
-                    <SelectItem value="circles">⭕ Circles</SelectItem>
-                    <SelectItem value="blobs">🔵 Blobs</SelectItem>
-                    <SelectItem value="checkerboard">🏁 Checkerboard</SelectItem>
-                    <SelectItem value="gaussian">📊 Gaussian</SelectItem>
-                    <SelectItem value="grid">⚏ Grid</SelectItem>
-                  </SelectContent>
-                </Select>
+            <CardContent className="grid gap-4">
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="ai-mode">AI Mode</Label>
+                <Switch
+                  id="ai-mode"
+                  checked={currentMode === "ai"}
+                  onCheckedChange={(checked) => setCurrentMode(checked ? "ai" : "flow")}
+                />
               </div>
 
-              <div className="space-y-2">
-                <Label>Scenario Theme</Label>
-                <Select value={scenario} onValueChange={setScenario}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="forest">🌲 Forest</SelectItem>
-                    <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
-                    <SelectItem value="ocean">🌊 Ocean</SelectItem>
-                    <SelectItem value="neural">🧠 Neural</SelectItem>
-                    <SelectItem value="fire">🔥 Fire</SelectItem>
-                    <SelectItem value="ice">❄️ Ice</SelectItem>
-                    <SelectItem value="desert">🏜️ Desert</SelectItem>
-                    <SelectItem value="sunset">🌅 Sunset</SelectItem>
-                    <SelectItem value="monochrome">⚫ Monochrome</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* AI Prompt Enhancement Section */}
-              {mode === "ai" && (
-                <div className="space-y-3 p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-semibold flex items-center gap-2">
-                      <Wand2 className="h-4 w-4" />
-                      AI Prompt Enhancement
-                    </Label>
-                    <Button
-                      onClick={enhancePrompt}
-                      disabled={isEnhancingPrompt}
-                      size="sm"
-                      variant="outline"
-                      className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600"
-                    >
-                      {isEnhancingPrompt ? (
-                        <>
-                          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                          Enhancing...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="h-3 w-3 mr-1" />
-                          Enhance
-                        </>
-                      )}
-                    </Button>
-                  </div>
-
-                  <Textarea
-                    placeholder="Click 'Enhance' to generate a mathematical AI art prompt, or write your own custom prompt here..."
+              {currentMode === "ai" ? (
+                <div>
+                  <Label htmlFor="prompt">Prompt</Label>
+                  <Input
+                    type="text"
+                    id="prompt"
                     value={customPrompt}
-                    onChange={(e) => {
-                      setCustomPrompt(e.target.value)
-                      setUseCustomPrompt(e.target.value.length > 0)
-                    }}
-                    rows={4}
-                    className="text-sm resize-none"
+                    onChange={(e) => setCustomPrompt(e.target.value)}
+                    placeholder="Enter a prompt for the AI"
                   />
-
-                  {customPrompt && (
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-xs">
-                        <Edit3 className="h-3 w-3 mr-1" />
-                        Custom Prompt Active
-                      </Badge>
-                      <Button
-                        onClick={() => {
-                          setCustomPrompt("")
-                          setUseCustomPrompt(false)
-                        }}
-                        size="sm"
-                        variant="ghost"
-                        className="text-xs h-6 px-2"
-                      >
-                        Clear
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <Label>Seed: {seed}</Label>
-                <Slider value={[seed]} onValueChange={(value) => setSeed(value[0])} max={10000} min={1} step={1} />
-                <Button variant="outline" size="sm" onClick={handleRandomSeed} disabled={isGenerating}>
-                  Random Seed
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Sample Points: {numSamples}</Label>
-                <Slider
-                  value={[numSamples]}
-                  onValueChange={(value) => setNumSamples(value[0])}
-                  max={5000}
-                  min={100}
-                  step={100}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Noise Scale: {noiseScale}</Label>
-                <Slider
-                  value={[noiseScale]}
-                  onValueChange={(value) => setNoiseScale(value[0])}
-                  max={0.2}
-                  min={0.001}
-                  step={0.001}
-                />
-              </div>
-
-              <Button
-                onClick={generateArt}
-                disabled={isGenerating}
-                className={`w-full ${
-                  mode === "ai"
-                    ? "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600"
-                    : "bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 hover:from-green-600 hover:via-blue-600 hover:to-purple-600"
-                }`}
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    {mode === "ai" ? "Generating AI Art..." : "Generating Art..."}
-                  </>
-                ) : (
-                  <>
-                    {mode === "ai" ? <Sparkles className="h-4 w-4 mr-2" /> : <Zap className="h-4 w-4 mr-2" />}
-                    {getButtonText()}
-                  </>
-                )}
-              </Button>
-
-              {isGenerating && (
-                <div className="space-y-2">
-                  <Progress value={progress} />
-                  <p className="text-sm text-center text-gray-600">
-                    {progress < 30
-                      ? `Generating ${dataset} dataset...`
-                      : progress < 60
-                        ? mode === "ai"
-                          ? useCustomPrompt
-                            ? "Processing custom prompt..."
-                            : "Applying AI artistic effects..."
-                          : `Applying ${scenario} scenario...`
-                        : progress < 90
-                          ? "Rendering visualization..."
-                          : "Finalizing artwork..."}
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Action Buttons */}
-          {generatedArt && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ImageIcon className="h-5 w-5" />
-                  Actions
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button onClick={downloadImage} variant="outline" className="w-full bg-transparent">
-                  <Download className="h-4 w-4 mr-2" />
-                  Download {generatedArt.upscaledImageUrl ? "Enhanced" : "Original"}
-                </Button>
-
-                <Button onClick={handleSaveArtwork} variant="outline" className="w-full bg-transparent">
-                  <Save className="h-4 w-4 mr-2" />
-                  Save to Gallery
-                </Button>
-
-                <Button
-                  onClick={upscaleImage}
-                  disabled={isUpscaling || !!generatedArt.upscaledImageUrl}
-                  variant="outline"
-                  className="w-full bg-transparent"
-                >
-                  {isUpscaling ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      {generatedArt.mode === "svg" ? "Adding Detail..." : "Enhancing AI Art..."}
-                    </>
-                  ) : generatedArt.upscaledImageUrl ? (
-                    <>
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      Enhanced ✓ ({generatedArt.upscaleMethod === "mathematical" ? "16x More Points" : "Pixel Enhanced"}
-                      )
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      {generatedArt.mode === "svg" ? "Add Mathematical Detail" : "Enhance AI Art"}
-                    </>
-                  )}
-                </Button>
-
-                {generatedArt.upscaledImageUrl && generatedArt.upscaleMethod === "mathematical" && (
-                  <Alert>
-                    <Info className="h-4 w-4" />
-                    <AlertDescription className="text-xs">
-                      True mathematical upscaling: Re-rendered with 4x scale factor and 16x more data points
-                    </AlertDescription>
-                  </Alert>
-                )}
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        {/* Preview */}
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <ImageIcon className="h-5 w-5" />
-                  Generated Artwork
-                </span>
-                {generatedArt && (
-                  <div className="flex gap-2">
-                    <Badge variant={generatedArt.mode === "ai" ? "default" : "outline"}>
-                      {generatedArt.mode === "ai" ? "🤖 AI Art" : "📊 SVG"}
-                    </Badge>
-                    <Badge variant="outline">{generatedArt.params.dataset}</Badge>
-                    <Badge variant="outline">{generatedArt.params.scenario}</Badge>
-                    <Badge variant="outline">{generatedArt.params.numSamples} points</Badge>
-                    {generatedArt.customPrompt && (
-                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                        <Wand2 className="w-3 h-3 mr-1" />
-                        Custom Prompt
-                      </Badge>
-                    )}
-                    {generatedArt.upscaledImageUrl && (
-                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-                        <Sparkles className="w-3 h-3 mr-1" />
-                        Enhanced
-                      </Badge>
-                    )}
-                  </div>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {generatedArt ? (
-                <div className="space-y-4">
-                  <div className="relative bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden">
-                    {generatedArt.mode === "svg" && !generatedArt.upscaledImageUrl ? (
-                      <div
-                        className="w-full h-96 flex items-center justify-center"
-                        dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
-                      />
-                    ) : (
-                      <img
-                        src={generatedArt.upscaledImageUrl || generatedArt.imageUrl}
-                        alt="Generated artwork"
-                        className="w-full h-96 object-contain"
-                      />
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <span className="text-gray-600">Mode:</span>
-                      <p className="font-medium">{generatedArt.mode === "ai" ? "AI Art" : "SVG"}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Dataset:</span>
-                      <p className="font-medium capitalize">{generatedArt.params.dataset}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Scenario:</span>
-                      <p className="font-medium capitalize">{generatedArt.params.scenario}</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Seed:</span>
-                      <p className="font-medium">{generatedArt.params.seed}</p>
-                    </div>
-                  </div>
-
-                  {generatedArt.customPrompt && (
-                    <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg">
-                      <Label className="text-xs font-semibold text-purple-700 dark:text-purple-300">
-                        Custom Prompt Used:
-                      </Label>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-3">
-                        {generatedArt.customPrompt}
-                      </p>
-                    </div>
-                  )}
+                  <Button onClick={generateAIArtwork} disabled={isLoading} className="mt-2 w-full">
+                    {isLoading ? "Generating..." : "Generate AI Artwork"}
+                  </Button>
                 </div>
               ) : (
-                <div className="h-96 flex items-center justify-center text-gray-500 dark:text-gray-400">
-                  <div className="text-center">
-                    <Zap className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Choose a dataset and scenario combination!</p>
-                    <p className="text-sm mt-2">Try Spirals + Forest or Moons + Cosmic for amazing results</p>
-                    <p className="text-sm mt-1 text-purple-600">
-                      Switch to AI Art tab and use prompt enhancement for professional results! 🤖✨
-                    </p>
+                <>
+                  <div className="grid gap-2">
+                    <Label htmlFor="flowFieldDensity">Flow Field Density</Label>
+                    <Slider
+                      id="flowFieldDensity"
+                      defaultValue={[params.flowFieldDensity]}
+                      max={50}
+                      step={1}
+                      onValueChange={(value) => setParams({ ...params, flowFieldDensity: value[0] })}
+                    />
                   </div>
-                </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="particleDensity">Particle Density</Label>
+                    <Slider
+                      id="particleDensity"
+                      defaultValue={[params.particleDensity]}
+                      max={10000}
+                      step={100}
+                      onValueChange={(value) => setParams({ ...params, particleDensity: value[0] })}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="particleSpeed">Particle Speed</Label>
+                    <Slider
+                      id="particleSpeed"
+                      defaultValue={[params.particleSpeed]}
+                      max={10}
+                      step={0.1}
+                      onValueChange={(value) => setParams({ ...params, particleSpeed: value[0] })}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="particleSize">Particle Size</Label>
+                    <Slider
+                      id="particleSize"
+                      defaultValue={[params.particleSize]}
+                      max={10}
+                      step={0.1}
+                      onValueChange={(value) => setParams({ ...params, particleSize: value[0] })}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="lineLength">Line Length</Label>
+                    <Slider
+                      id="lineLength"
+                      defaultValue={[params.lineLength]}
+                      max={200}
+                      step={1}
+                      onValueChange={(value) => setParams({ ...params, lineLength: value[0] })}
+                    />
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Label htmlFor="fadeIn">Fade In</Label>
+                    <Switch
+                      id="fadeIn"
+                      checked={params.fadeIn}
+                      onCheckedChange={(checked) => setParams({ ...params, fadeIn: checked })}
+                    />
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Label htmlFor="fadeOut">Fade Out</Label>
+                    <Switch
+                      id="fadeOut"
+                      checked={params.fadeOut}
+                      onCheckedChange={(checked) => setParams({ ...params, fadeOut: checked })}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="colorMode">Color Mode</Label>
+                    <Select
+                      value={params.colorMode}
+                      onValueChange={(value) => setParams({ ...params, colorMode: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a color mode" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="rainbow">Rainbow</SelectItem>
+                        <SelectItem value="single">Single Color</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {params.colorMode === "rainbow" ? (
+                    <>
+                      <div className="grid gap-2">
+                        <Label htmlFor="rainbowSaturation">Rainbow Saturation</Label>
+                        <Slider
+                          id="rainbowSaturation"
+                          defaultValue={[params.rainbowSaturation]}
+                          max={100}
+                          step={1}
+                          onValueChange={(value) => setParams({ ...params, rainbowSaturation: value[0] })}
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="rainbowLightness">Rainbow Lightness</Label>
+                        <Slider
+                          id="rainbowLightness"
+                          defaultValue={[params.rainbowLightness]}
+                          max={100}
+                          step={1}
+                          onValueChange={(value) => setParams({ ...params, rainbowLightness: value[0] })}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <div>
+                      <Label htmlFor="singleColor">Single Color</Label>
+                      <Input
+                        type="color"
+                        id="singleColor"
+                        value={params.singleColor}
+                        onChange={(e) => setParams({ ...params, singleColor: e.target.value })}
+                      />
+                    </div>
+                  )}
+
+                  <Button onClick={generateFlowArt} disabled={isLoading} className="w-full">
+                    {isLoading ? "Generating..." : "Generate Flow Art"}
+                  </Button>
+                </>
               )}
             </CardContent>
           </Card>
         </div>
+
+        <div className="w-full md:w-2/3">
+          {generatedImage ? (
+            <div className="flex flex-col gap-4">
+              <img src={upscaledImage || generatedImage} alt="Generated Flow Art" className="rounded-md shadow-md" />
+
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => generateFlowArt()}
+                  disabled={isLoading}
+                  className="flex items-center gap-2"
+                  variant="outline"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  Regenerate
+                </Button>
+                <Button
+                  onClick={upscaleImage}
+                  disabled={isUpscaling || !generatedImage}
+                  className="flex items-center gap-2 bg-transparent"
+                  variant="outline"
+                >
+                  {isUpscaling ? "Upscaling..." : "Upscale"}
+                </Button>
+                <Button
+                  onClick={downloadImage}
+                  disabled={!generatedImage}
+                  className="flex items-center gap-2 bg-transparent"
+                  variant="outline"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </Button>
+                <Button onClick={() => setShowSaveDialog(true)} className="flex items-center gap-2" variant="outline">
+                  <Heart className="w-4 h-4" />
+                  Save to Gallery
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-gray-500">No art generated yet. Adjust the settings and click "Generate Flow Art".</p>
+            </div>
+          )}
+        </div>
       </div>
-      {/* Save Artwork Dialog */}
-      {generatedArt && (
-        <SaveArtworkDialog
-          open={showSaveDialog}
-          onClose={() => setShowSaveDialog(false)}
-          artworkData={{
-            title: `${generatedArt.params.dataset} + ${generatedArt.params.scenario}`,
-            imageUrl: generatedArt.imageUrl,
-            upscaledImageUrl: generatedArt.upscaledImageUrl,
-            generationParams: generatedArt.params,
-            mode: generatedArt.mode,
-            customPrompt: generatedArt.customPrompt,
-            upscaleMethod: generatedArt.upscaleMethod,
-          }}
-          onSaved={handleArtworkSaved}
-        />
-      )}
+      <SaveArtworkDialog
+        open={showSaveDialog}
+        onClose={() => setShowSaveDialog(false)}
+        onSave={handleSaveToGallery}
+        imageUrl={generatedImage || ""}
+        upscaledImageUrl={upscaledImage || undefined}
+        generationParams={params}
+        mode={currentMode}
+        customPrompt={currentMode === "ai" ? customPrompt : undefined}
+        upscaleMethod={upscaledImage ? "AI Upscaler" : undefined}
+      />
     </div>
   )
 }
+
+export default FlowArtGenerator

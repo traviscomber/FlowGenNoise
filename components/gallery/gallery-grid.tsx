@@ -2,319 +2,194 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Heart, Download, Trash2, Edit, Sparkles, Calendar, Tag, MoreVertical } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { GalleryService, type GalleryItem } from "@/lib/gallery-service"
-import { useToast } from "@/hooks/use-toast"
-import { formatDistanceToNow } from "date-fns"
+import { Heart, Download, Edit, Trash2, Eye, Sparkles } from "lucide-react"
+import type { GalleryItem } from "@/lib/gallery-service"
+import { cn } from "@/lib/utils"
 
 interface GalleryGridProps {
-  searchTerm?: string
-  mode?: "svg" | "ai"
-  favoritesOnly?: boolean
-  onItemClick?: (item: GalleryItem) => void
-  onItemEdit?: (item: GalleryItem) => void
-  onItemDelete?: (item: GalleryItem) => void
-  refreshTrigger?: number
+  items: GalleryItem[]
+  onItemClick: (item: GalleryItem) => void
+  onFavoriteToggle: (id: string) => void
+  onEdit: (item: GalleryItem) => void
+  onDelete: (id: string) => void
+  onDownload: (item: GalleryItem) => void
+  loading?: boolean
 }
 
 export function GalleryGrid({
-  searchTerm,
-  mode,
-  favoritesOnly,
+  items,
   onItemClick,
-  onItemEdit,
-  onItemDelete,
-  refreshTrigger,
+  onFavoriteToggle,
+  onEdit,
+  onDelete,
+  onDownload,
+  loading = false,
 }: GalleryGridProps) {
-  const [items, setItems] = useState<GalleryItem[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [hasMore, setHasMore] = useState(true)
-  const [loadingMore, setLoadingMore] = useState(false)
-  const { toast } = useToast()
+  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
 
-  const loadItems = async (offset = 0, append = false) => {
-    try {
-      if (offset === 0) setLoading(true)
-      else setLoadingMore(true)
-
-      const result = await GalleryService.getGalleryItems({
-        limit: 12,
-        offset,
-        mode,
-        favoritesOnly,
-        searchTerm,
-      })
-
-      if (append) {
-        setItems((prev) => [...prev, ...result.items])
-      } else {
-        setItems(result.items)
-      }
-
-      setHasMore(result.items.length === 12)
-      setError(null)
-    } catch (err: any) {
-      setError(err.message)
-      toast({
-        title: "Failed to load gallery",
-        description: err.message,
-        variant: "destructive",
-      })
-    } finally {
-      setLoading(false)
-      setLoadingMore(false)
-    }
-  }
-
-  useEffect(() => {
-    loadItems()
-  }, [searchTerm, mode, favoritesOnly, refreshTrigger])
-
-  const handleLoadMore = () => {
-    loadItems(items.length, true)
-  }
-
-  const handleToggleFavorite = async (item: GalleryItem, e: React.MouseEvent) => {
-    e.stopPropagation()
-    try {
-      await GalleryService.toggleFavorite(item.id)
-      setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, is_favorite: !i.is_favorite } : i)))
-      toast({
-        title: item.is_favorite ? "Removed from favorites" : "Added to favorites",
-        description: `"${item.title}" ${item.is_favorite ? "removed from" : "added to"} your favorites.`,
-      })
-    } catch (err: any) {
-      toast({
-        title: "Failed to update favorite",
-        description: err.message,
-        variant: "destructive",
-      })
-    }
+  const handleImageError = (itemId: string) => {
+    setImageErrors((prev) => new Set(prev).add(itemId))
   }
 
   const handleDownload = async (item: GalleryItem, e: React.MouseEvent) => {
     e.stopPropagation()
-    try {
-      const imageUrl = item.upscaled_image_url || item.image_url
-      const isEnhanced = !!item.upscaled_image_url
-      const fileName = `${item.title.replace(/[^a-zA-Z0-9]/g, "-")}-${item.id.slice(0, 8)}${isEnhanced ? "-enhanced" : ""}.png`
-
-      // Create download link
-      const link = document.createElement("a")
-      link.href = imageUrl
-      link.download = fileName
-      link.target = "_blank"
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-
-      toast({
-        title: "Download started",
-        description: `Downloading "${item.title}"`,
-      })
-    } catch (err: any) {
-      toast({
-        title: "Download failed",
-        description: "Could not download the image. Please try right-clicking and saving.",
-        variant: "destructive",
-      })
-    }
-  }
-
-  const handleDelete = async (item: GalleryItem, e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (onItemDelete) {
-      onItemDelete(item)
-    }
-  }
-
-  const handleEdit = async (item: GalleryItem, e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (onItemEdit) {
-      onItemEdit(item)
-    }
+    onDownload(item)
   }
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {Array.from({ length: 8 }).map((_, i) => (
           <Card key={i} className="overflow-hidden">
-            <Skeleton className="h-48 w-full" />
+            <div className="aspect-square bg-gray-200 animate-pulse" />
             <CardContent className="p-4">
-              <Skeleton className="h-4 w-3/4 mb-2" />
-              <Skeleton className="h-3 w-1/2 mb-3" />
-              <div className="flex gap-1">
-                <Skeleton className="h-5 w-12" />
-                <Skeleton className="h-5 w-16" />
-              </div>
+              <div className="h-4 bg-gray-200 rounded animate-pulse mb-2" />
+              <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3" />
             </CardContent>
           </Card>
         ))}
       </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <Alert variant="destructive">
-        <AlertDescription>{error}</AlertDescription>
-      </Alert>
     )
   }
 
   if (items.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="text-gray-500 dark:text-gray-400">
-          <Sparkles className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <p className="text-lg font-medium mb-2">No artworks found</p>
-          <p className="text-sm">
-            {searchTerm
-              ? `No results for "${searchTerm}"`
-              : favoritesOnly
-                ? "No favorites yet"
-                : "Start creating some amazing art!"}
-          </p>
+        <div className="text-gray-400 mb-4">
+          <Sparkles className="w-16 h-16 mx-auto" />
         </div>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">No artworks yet</h3>
+        <p className="text-gray-500">Start creating some beautiful art to see it here!</p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {items.map((item) => (
-          <Card
-            key={item.id}
-            className="group overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-            onClick={() => onItemClick?.(item)}
-          >
-            <div className="relative">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {items.map((item) => (
+        <Card
+          key={item.id}
+          className="group overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+          onClick={() => onItemClick(item)}
+        >
+          <div className="relative aspect-square overflow-hidden bg-gray-100">
+            {!imageErrors.has(item.id) ? (
               <img
                 src={item.upscaled_image_url || item.image_url}
                 alt={item.title}
-                className="w-full h-48 object-cover"
+                className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                onError={() => handleImageError(item.id)}
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
-
-              {/* Overlay badges */}
-              <div className="absolute top-2 left-2 flex gap-1">
-                <Badge variant={item.mode === "ai" ? "default" : "outline"} className="text-xs">
-                  {item.mode === "ai" ? "🤖 AI" : "📊 SVG"}
-                </Badge>
-                {item.upscaled_image_url && (
-                  <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs">
-                    <Sparkles className="w-3 h-3 mr-1" />
-                    Enhanced
-                  </Badge>
-                )}
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                <span className="text-gray-400">Image not available</span>
               </div>
+            )}
 
-              {/* Action buttons */}
-              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button size="sm" variant="secondary" className="h-8 w-8 p-0">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={(e) => handleDownload(item, e)}>
-                      <Download className="h-4 w-4 mr-2" />
-                      Download
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={(e) => handleEdit(item, e)}>
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={(e) => handleDelete(item, e)} className="text-red-600 dark:text-red-400">
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+            {/* Overlay with actions */}
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onItemClick(item)
+                  }}
+                >
+                  <Eye className="w-4 h-4" />
+                </Button>
+                <Button size="sm" variant="secondary" onClick={(e) => handleDownload(item, e)}>
+                  <Download className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onFavoriteToggle(item.id)
+                  }}
+                >
+                  <Heart className={cn("w-4 h-4", item.is_favorite && "fill-red-500 text-red-500")} />
+                </Button>
               </div>
-
-              {/* Favorite button */}
-              <Button
-                size="sm"
-                variant="secondary"
-                className={`absolute bottom-2 right-2 h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
-                  item.is_favorite ? "text-red-500" : ""
-                }`}
-                onClick={(e) => handleToggleFavorite(item, e)}
-              >
-                <Heart className={`h-4 w-4 ${item.is_favorite ? "fill-current" : ""}`} />
-              </Button>
             </div>
 
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-sm mb-1 line-clamp-1">{item.title}</h3>
-              {item.description && (
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">{item.description}</p>
-              )}
-
-              <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                <Calendar className="h-3 w-3" />
-                {formatDistanceToNow(new Date(item.created_at), { addSuffix: true })}
-              </div>
-
-              <div className="flex flex-wrap gap-1 mb-2">
-                <Badge variant="outline" className="text-xs">
-                  {item.generation_params.dataset}
+            {/* Badges */}
+            <div className="absolute top-2 left-2 flex gap-1">
+              <Badge variant={item.mode === "ai" ? "default" : "secondary"} className="text-xs">
+                {item.mode.toUpperCase()}
+              </Badge>
+              {item.upscaled_image_url && (
+                <Badge variant="outline" className="text-xs bg-white/90">
+                  Enhanced
                 </Badge>
-                <Badge variant="outline" className="text-xs">
-                  {item.generation_params.scenario}
-                </Badge>
-                {item.custom_prompt && (
-                  <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">Custom</Badge>
-                )}
-              </div>
-
-              {item.tags.length > 0 && (
-                <div className="flex items-center gap-1 text-xs text-gray-500">
-                  <Tag className="h-3 w-3" />
-                  <span className="line-clamp-1">
-                    {item.tags.slice(0, 3).join(", ")}
-                    {item.tags.length > 3 && ` +${item.tags.length - 3}`}
-                  </span>
-                </div>
               )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            </div>
 
-      {hasMore && (
-        <div className="text-center">
-          <Button onClick={handleLoadMore} disabled={loadingMore} variant="outline">
-            {loadingMore ? (
-              <>
-                <Sparkles className="h-4 w-4 mr-2 animate-spin" />
-                Loading more...
-              </>
-            ) : (
-              "Load More"
+            {/* Favorite indicator */}
+            {item.is_favorite && (
+              <div className="absolute top-2 right-2">
+                <Heart className="w-5 h-5 fill-red-500 text-red-500" />
+              </div>
             )}
-          </Button>
-        </div>
-      )}
+          </div>
+
+          <CardContent className="p-4">
+            <h3 className="font-medium text-sm mb-1 truncate" title={item.title}>
+              {item.title}
+            </h3>
+            <p className="text-xs text-gray-500 mb-2 line-clamp-2">{item.description || "No description"}</p>
+
+            {/* Tags */}
+            <div className="flex flex-wrap gap-1 mb-2">
+              {item.tags.slice(0, 3).map((tag) => (
+                <Badge key={tag} variant="outline" className="text-xs px-1 py-0">
+                  {tag}
+                </Badge>
+              ))}
+              {item.tags.length > 3 && (
+                <Badge variant="outline" className="text-xs px-1 py-0">
+                  +{item.tags.length - 3}
+                </Badge>
+              )}
+            </div>
+
+            {/* Actions */}
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-gray-400">{new Date(item.created_at).toLocaleDateString()}</span>
+              <div className="flex gap-1">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onEdit(item)
+                  }}
+                >
+                  <Edit className="w-3 h-3" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onDelete(item.id)
+                  }}
+                >
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   )
 }
