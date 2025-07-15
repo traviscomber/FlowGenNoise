@@ -1,8 +1,7 @@
 "use client"
 
-import * as React from "react"
-
 import type { ToastProps } from "@/components/ui/toast"
+import { useToast, toast } from "@/hooks/use-toast"
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
@@ -112,86 +111,4 @@ function dispatch(action: ActionType) {
 
 type Toast = Omit<ToastProps, "id">
 
-/**
- * Fire-and-forget toast helper that can be called outside React.
- * Usage: toast({ title: 'Saved!' })
- */
-export function toast(props: Toast) {
-  const id = `toast-${Math.random().toString(36).substring(2, 9)}`
-
-  const update = (next: ToastProps) =>
-    dispatch({
-      type: "UPDATE_TOAST",
-      toast: { ...next, id },
-    })
-
-  const dismiss = () =>
-    dispatch({
-      type: "DISMISS_TOAST",
-      toastId: id,
-    })
-
-  dispatch({
-    type: "ADD_TOAST",
-    toast: {
-      ...props,
-      id,
-      open: true,
-      onOpenChange: (open) => {
-        if (!open) dismiss()
-      },
-    },
-  })
-
-  return { id, update, dismiss }
-}
-
-function useToast() {
-  const [state, setState] = React.useState<State>(memoryState)
-
-  React.useEffect(() => {
-    listeners.push(setState)
-    return () => {
-      const index = listeners.indexOf(setState)
-      if (index > -1) {
-        listeners.splice(index, 1)
-      }
-    }
-  }, [state])
-
-  return {
-    ...state,
-    toast: React.useCallback((props: Toast) => {
-      const id = `toast-${Math.random().toString(36).substring(2, 9)}`
-
-      const update = (props: ToastProps) =>
-        dispatch({
-          type: "UPDATE_TOAST",
-          toast: { ...props, id },
-        })
-      const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
-
-      dispatch({
-        type: "ADD_TOAST",
-        toast: {
-          ...props,
-          id,
-          open: true,
-          onOpenChange: (open) => {
-            if (!open) {
-              dismiss()
-            }
-          },
-        },
-      })
-
-      return {
-        id: id,
-        dismiss,
-        update,
-      }
-    }, []),
-  }
-}
-
-export { useToast }
+export { useToast, toast }

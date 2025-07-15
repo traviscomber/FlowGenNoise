@@ -8,6 +8,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null
+;("use client")
+import { useEffect, useState } from "react"
+import type { Session } from "@supabase/supabase-js"
 
 export type Database = {
   public: {
@@ -165,4 +168,45 @@ export type Database = {
       }
     }
   }
+}
+
+/**
+ * React hook that returns the current Supabase user (or `null` when signed-out).
+ * It automatically listens for auth state changes.
+ */
+export function useUser() {
+  const [user, setUser] = useState<Session["user"] | null>()
+
+  useEffect(() => {
+    if (!supabase) {
+      setUser(null)
+      return
+    }
+
+    // Get the initial session
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user ?? null)
+    })
+
+    // Subscribe to future auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
+
+  return user
+}
+
+/**
+ * Convenience helper for signing the current user out.
+ */
+export async function signOut() {
+  if (!supabase) return
+  await supabase.auth.signOut()
 }
