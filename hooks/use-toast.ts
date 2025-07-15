@@ -1,8 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { toast as sonnerToast, type ToastOptions } from "sonner"
-import { useCallback } from "react"
 
 import type { ToastActionElement, ToastProps } from "@/components/ui/toast"
 
@@ -89,8 +87,6 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -138,7 +134,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-function toastWrapper({ ...props }: Toast) {
+function toast({ ...props }: Toast) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -167,7 +163,7 @@ function toastWrapper({ ...props }: Toast) {
   }
 }
 
-function useToastHook() {
+function useToast() {
   const [state, setState] = React.useState<State>(memoryState)
 
   React.useEffect(() => {
@@ -182,23 +178,9 @@ function useToastHook() {
 
   return {
     ...state,
-    toast: toastWrapper,
+    toast,
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
 
-export const toast = sonnerToast
-
-/**
- * Optional React hook that memoises the toast call for convenience.
- *
- * \`\`\`tsx
- * const { toast } = useToast()
- * toast('Saved!')
- * \`\`\`
- */
-export function useToast() {
-  const memoised = useCallback((message: string, opts?: ToastOptions) => toast(message, opts), [])
-
-  return { toast: memoised }
-}
+export { useToast, toast }
