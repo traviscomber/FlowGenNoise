@@ -1,20 +1,22 @@
 export const runtime = "nodejs"
 
 import { type NextRequest, NextResponse } from "next/server"
+import { generateFlowArt } from "@/lib/flow-model"
 
 export async function POST(request: NextRequest) {
   try {
-    const { parameters } = await request.json()
+    const { prompt, width = 800, height = 600 } = await request.json()
 
-    // Simulate art generation with flow field parameters
-    const artData = {
-      id: Date.now().toString(),
-      parameters,
-      imageUrl: `/placeholder.svg?height=400&width=400&query=flow+field+art`,
-      createdAt: new Date().toISOString(),
+    if (!prompt) {
+      return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
 
-    return NextResponse.json(artData)
+    const artData = await generateFlowArt(prompt, width, height)
+
+    return NextResponse.json({
+      success: true,
+      data: artData,
+    })
   } catch (error) {
     console.error("Error generating art:", error)
     return NextResponse.json({ error: "Failed to generate art" }, { status: 500 })

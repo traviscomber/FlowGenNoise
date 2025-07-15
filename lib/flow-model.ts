@@ -1,4 +1,6 @@
 // lib/flow-model.ts
+import * as d3 from "d3"
+
 export type DatasetType =
   | "lissajous"
   | "mandelbrot"
@@ -53,6 +55,13 @@ export interface FlowArtSettings {
   aiPrompt?: string
   aiNegativePrompt?: string
   scenarioThreshold: number
+}
+
+export interface FlowArtData {
+  paths: string[]
+  colors: string[]
+  width: number
+  height: number
 }
 
 export const defaultFlowArtSettings: FlowArtSettings = {
@@ -243,4 +252,63 @@ export function generateDataset(datasetType: DatasetType, seed: number, numSampl
   }
 
   return data
+}
+
+export async function generateFlowArt(prompt: string, width = 800, height = 600): Promise<FlowArtData> {
+  // Simple flow field generation based on prompt
+  const paths: string[] = []
+  const colors: string[] = []
+
+  const numPaths = 50 + Math.floor(Math.random() * 100)
+
+  for (let i = 0; i < numPaths; i++) {
+    const path = generateFlowPath(width, height)
+    const color = generateColor(prompt, i)
+
+    paths.push(path)
+    colors.push(color)
+  }
+
+  return {
+    paths,
+    colors,
+    width,
+    height,
+  }
+}
+
+function generateFlowPath(width: number, height: number): string {
+  const points: [number, number][] = []
+
+  let x = Math.random() * width
+  let y = Math.random() * height
+
+  const numPoints = 20 + Math.floor(Math.random() * 30)
+
+  for (let i = 0; i < numPoints; i++) {
+    points.push([x, y])
+
+    // Simple flow field simulation
+    const angle = (x / width + y / height) * Math.PI * 4
+    const step = 5 + Math.random() * 10
+
+    x += Math.cos(angle) * step
+    y += Math.sin(angle) * step
+
+    // Wrap around edges
+    x = ((x % width) + width) % width
+    y = ((y % height) + height) % height
+  }
+
+  const line = d3.line().curve(d3.curveCatmullRom)
+  return line(points) || ""
+}
+
+function generateColor(prompt: string, index: number): string {
+  // Generate colors based on prompt characteristics
+  const hue = (prompt.length * 137.5 + index * 25) % 360
+  const saturation = 60 + Math.random() * 40
+  const lightness = 40 + Math.random() * 30
+
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`
 }

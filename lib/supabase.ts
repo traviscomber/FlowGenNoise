@@ -6,7 +6,6 @@ import { useEffect, useState } from "react"
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-// Singleton – ensures we reuse the same Supabase instance everywhere
 let _client: SupabaseClient | null = null
 
 export function supabase(): SupabaseClient {
@@ -24,12 +23,10 @@ export function useUser() {
   const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
-    // Initial fetch
     supabase()
       .auth.getUser()
       .then(({ data }) => setUser(data.user ?? null))
 
-    // Listen for future auth events
     const {
       data: { subscription },
     } = supabase().auth.onAuthStateChange((_event, session) => {
