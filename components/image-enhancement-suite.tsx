@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { Settings, Download, Sparkles, Wand2 } from "lucide-react"
+import { Settings, Download, Sparkles, Wand2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -10,12 +10,15 @@ import { Slider } from "@/components/ui/slider"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 interface EnhanceSettings {
   scale: number
   enhanceMode: "photo" | "artwork" | "anime" | "generic"
   denoiseStrength: number
   sharpenStrength: number
+  contrastBoost: number
+  saturationBoost: number
 }
 
 interface Props {
@@ -24,23 +27,192 @@ interface Props {
 }
 
 export function ImageEnhancementSuite({ baseImageUrl, onEnhancedImage }: Props) {
-  /* --- state --- */
   const [settings, setSettings] = useState<EnhanceSettings>({
     scale: 2,
-    enhanceMode: "generic",
-    denoiseStrength: 0.5,
-    sharpenStrength: 0.3,
+    enhanceMode: "artwork",
+    denoiseStrength: 0.3,
+    sharpenStrength: 0.7,
+    contrastBoost: 0.2,
+    saturationBoost: 0.3,
   })
   const [processing, setProcessing] = useState(false)
   const [progress, setProgress] = useState(0)
   const [enhancedUrl, setEnhancedUrl] = useState<string | null>(null)
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [enhancementMethod, setEnhancementMethod] = useState<string>("")
 
-  /* ------------------------------------------------------------------ */
-  /* HELPERS                                                            */
-  /* ------------------------------------------------------------------ */
+  // Advanced client-side enhancement with multiple passes
+  const enhanceLocally = async (): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.crossOrigin = "anonymous"
 
-  // convert a base64 / data-url into a File for multi-part POST
+      img.onload = () => {
+        try {
+          // Create high-resolution canvas
+          const originalW = img.width
+          const originalH = img.height
+          const scaledW = Math.floor(originalW * settings.scale)
+          const scaledH = Math.floor(originalH * settings.scale)
+
+          const canvas = document.createElement("canvas")
+          canvas.width = scaledW
+          canvas.height = scaledH
+          const ctx = canvas.getContext("2d")
+
+          if (!ctx) {
+            reject(new Error("Canvas not supported"))
+            return
+          }
+
+          // Enable high-quality scaling
+          ctx.imageSmoothingEnabled = true
+          ctx.imageSmoothingQuality = "high"
+
+          // Step 1: Initial upscale with bicubic-like interpolation
+          ctx.drawImage(img, 0, 0, scaledW, scaledH)
+
+          // Step 2: Get image data for pixel-level processing
+          const imageData = ctx.getImageData(0, 0, scaledW, scaledH)
+          const data = imageData.data
+
+          // Step 3: Apply enhancement based on mode
+          for (let i = 0; i < data.length; i += 4) {
+            let r = data[i]
+            let g = data[i + 1]
+            let b = data[i + 2]
+
+            // Mode-specific enhancements
+            switch (settings.enhanceMode) {
+              case "photo":
+                // Natural photo enhancement
+                r = Math.min(255, r * (1 + settings.contrastBoost * 0.5))
+                g = Math.min(255, g * (1 + settings.contrastBoost * 0.5))
+                b = Math.min(255, b * (1 + settings.contrastBoost * 0.5))
+                break
+
+              case "artwork":
+                // Vibrant artwork enhancement
+                const artworkBoost = 1 + settings.saturationBoost
+                const avg = (r + g + b) / 3
+                r = Math.min(255, avg + (r - avg) * artworkBoost)
+                g = Math.min(255, avg + (g - avg) * artworkBoost)
+                b = Math.min(255, avg + (b - avg) * artworkBoost)
+                break
+
+              case "anime":
+                // Anime-style enhancement with color pop
+                r = Math.min(255, r * (1 + settings.saturationBoost * 1.2))
+                g = Math.min(255, g * (1 + settings.saturationBoost * 1.2))
+                b = Math.min(255, b * (1 + settings.saturationBoost * 1.2))
+                break
+
+              default:
+                // Generic enhancement
+                const contrast = 1 + settings.contrastBoost
+                r = Math.min(255, Math.max(0, (r - 128) * contrast + 128))
+                g = Math.min(255, Math.max(0, (g - 128) * contrast + 128))
+                b = Math.min(255, Math.max(0, (b - 128) * contrast + 128))
+            }
+
+            data[i] = r
+            data[i + 1] = g
+            data[i + 2] = b
+          }
+
+          // Step 4: Apply sharpening if enabled
+          if (settings.sharpenStrength > 0) {
+            const sharpenedData = applySharpen(imageData, settings.sharpenStrength)
+            ctx.putImageData(sharpenedData, 0, 0)
+          } else {
+            ctx.putImageData(imageData, 0, 0)
+          }
+
+          // Step 5: Final quality pass with CSS filters
+          const tempCanvas = document.createElement("canvas")
+          tempCanvas.width = scaledW
+          tempCanvas.height = scaledH
+          const tempCtx = tempCanvas.getContext("2d")
+
+          if (tempCtx) {
+            // Apply final filters
+            const brightness = 1 + settings.contrastBoost * 0.1
+            const saturation = 1 + settings.saturationBoost
+            tempCtx.filter = `brightness(${brightness}) saturate(${saturation}) contrast(1.1)`
+            tempCtx.drawImage(canvas, 0, 0)
+
+            // Convert to high-quality JPEG
+            tempCanvas.toBlob(
+              (blob) => {
+                if (!blob) {
+                  reject(new Error("Failed to create enhanced image"))
+                  return
+                }
+                const url = URL.createObjectURL(blob)
+                resolve(url)
+              },
+              "image/jpeg",
+              0.95,
+            )
+          } else {
+            // Fallback without final filters
+            canvas.toBlob(
+              (blob) => {
+                if (!blob) {
+                  reject(new Error("Failed to create enhanced image"))
+                  return
+                }
+                const url = URL.createObjectURL(blob)
+                resolve(url)
+              },
+              "image/jpeg",
+              0.95,
+            )
+          }
+        } catch (error) {
+          reject(error)
+        }
+      }
+
+      img.onerror = () => reject(new Error("Failed to load image"))
+      img.src = baseImageUrl
+    })
+  }
+
+  // Sharpening algorithm using convolution
+  const applySharpen = (imageData: ImageData, strength: number): ImageData => {
+    const data = imageData.data
+    const width = imageData.width
+    const height = imageData.height
+    const output = new ImageData(width, height)
+    const outputData = output.data
+
+    // Sharpening kernel
+    const kernel = [0, -strength, 0, -strength, 1 + 4 * strength, -strength, 0, -strength, 0]
+
+    for (let y = 1; y < height - 1; y++) {
+      for (let x = 1; x < width - 1; x++) {
+        for (let c = 0; c < 3; c++) {
+          // RGB channels
+          let sum = 0
+          for (let ky = -1; ky <= 1; ky++) {
+            for (let kx = -1; kx <= 1; kx++) {
+              const idx = ((y + ky) * width + (x + kx)) * 4 + c
+              sum += data[idx] * kernel[(ky + 1) * 3 + (kx + 1)]
+            }
+          }
+          const outputIdx = (y * width + x) * 4 + c
+          outputData[outputIdx] = Math.min(255, Math.max(0, sum))
+        }
+        // Copy alpha channel
+        const alphaIdx = (y * width + x) * 4 + 3
+        outputData[alphaIdx] = data[alphaIdx]
+      }
+    }
+
+    return output
+  }
+
   const dataUrlToFile = (dataUrl: string, filename: string): File => {
     const [meta, data] = dataUrl.split(",")
     const mime = meta.match(/:(.*?);/)?.[1] || "image/png"
@@ -50,59 +222,19 @@ export function ImageEnhancementSuite({ baseImageUrl, onEnhancedImage }: Props) 
     return new File([array], filename, { type: mime })
   }
 
-  // ---------- CLIENT-SIDE FALLBACK ----------
-  const enhanceLocally = async (): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image()
-      img.crossOrigin = "anonymous"
-      img.onload = () => {
-        const w = img.width * settings.scale
-        const h = img.height * settings.scale
-        const canvas = document.createElement("canvas")
-        canvas.width = w
-        canvas.height = h
-        const ctx = canvas.getContext("2d")
-        if (!ctx) return reject(new Error("Canvas not supported"))
-
-        // basic filter presets
-        const filters: Record<string, string> = {
-          generic: "",
-          photo: "brightness(1.02) saturate(1.05)",
-          artwork: "brightness(1.01) saturate(1.10)",
-          anime: "brightness(1.03) saturate(1.15)",
-        }
-
-        ctx.filter = filters[settings.enhanceMode] || ""
-        ctx.drawImage(img, 0, 0, w, h)
-
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) return reject(new Error("Blob conversion failed"))
-            const url = URL.createObjectURL(blob)
-            resolve(url)
-          },
-          "image/jpeg",
-          0.95,
-        )
-      }
-      img.onerror = reject
-      img.src = baseImageUrl
-    })
-  }
-
-  /* ------------------------------------------------------------------ */
-  /* UPSCALE HANDLER                                                    */
-  /* ------------------------------------------------------------------ */
   const handleEnhance = useCallback(async () => {
     if (!baseImageUrl) return
+
     setProcessing(true)
     setProgress(0)
+    setEnhancementMethod("")
 
-    // optimistic progress simulation
-    const tick = setInterval(() => setProgress((p) => Math.min(p + 5, 90)), 150)
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => Math.min(prev + 8, 85))
+    }, 200)
 
-    // attempt server route first
     try {
+      // Try server-side enhancement first
       const formData = new FormData()
       formData.append("image", dataUrlToFile(baseImageUrl, "source.png"))
       formData.append("scale", settings.scale.toString())
@@ -111,81 +243,70 @@ export function ImageEnhancementSuite({ baseImageUrl, onEnhancedImage }: Props) 
       formData.append("sharpenStrength", settings.sharpenStrength.toString())
 
       const controller = new AbortController()
-      const timeout = setTimeout(() => controller.abort(), 15_000) // 15 s
+      const timeout = setTimeout(() => controller.abort(), 10000)
 
-      const res = await fetch("/api/enhance-image", {
-        method: "POST",
-        body: formData,
-        signal: controller.signal,
-      }).catch((err) => {
-        // fetch aborted or network failure
-        console.warn("Server enhancement failed, falling back:", err)
-        return null
-      })
-
-      clearTimeout(timeout)
-
-      if (res && res.ok) {
-        const blob = await res.blob()
-        const url = URL.createObjectURL(blob)
-        setProgress(100)
-        setEnhancedUrl(url)
-        onEnhancedImage(url, { ...settings, method: "server" })
-      } else {
-        // ---------- FALLBACK ----------
-        const url = await enhanceLocally()
-        setProgress(100)
-        setEnhancedUrl(url)
-        onEnhancedImage(url, { ...settings, method: "client-fallback" })
-      }
-    } catch (err) {
-      console.error("Enhancement error:", err)
-      // fallback if something unexpected happened
       try {
+        const response = await fetch("/api/enhance-image", {
+          method: "POST",
+          body: formData,
+          signal: controller.signal,
+        })
+
+        clearTimeout(timeout)
+
+        if (response.ok) {
+          const blob = await response.blob()
+          const url = URL.createObjectURL(blob)
+          setEnhancedUrl(url)
+          setEnhancementMethod("Server-side AI Enhancement")
+          onEnhancedImage(url, { ...settings, method: "server" })
+        } else {
+          throw new Error("Server enhancement failed")
+        }
+      } catch (serverError) {
+        console.warn("Server enhancement failed, using client-side:", serverError)
+
+        // Fallback to advanced client-side enhancement
         const url = await enhanceLocally()
         setEnhancedUrl(url)
-        onEnhancedImage(url, { ...settings, method: "client-fallback" })
-      } catch (err2) {
-        console.error("Local enhancement also failed:", err2)
+        setEnhancementMethod("Advanced Client-side Enhancement")
+        onEnhancedImage(url, { ...settings, method: "client-advanced" })
       }
+
+      setProgress(100)
+    } catch (error) {
+      console.error("Enhancement failed:", error)
+      setEnhancementMethod("Enhancement Failed")
     } finally {
-      clearInterval(tick)
-      setTimeout(() => setProgress(0), 400)
+      clearInterval(progressInterval)
+      setTimeout(() => setProgress(0), 1000)
       setProcessing(false)
     }
   }, [baseImageUrl, settings, onEnhancedImage])
 
-  /* ------------------------------------------------------------------ */
-  /* DOWNLOAD                                                           */
-  /* ------------------------------------------------------------------ */
   const downloadEnhanced = () => {
     if (!enhancedUrl) return
     const a = document.createElement("a")
     a.href = enhancedUrl
-    a.download = `enhanced_${settings.scale}x.jpg`
+    a.download = `enhanced_${settings.scale}x_${settings.enhanceMode}.jpg`
     a.click()
   }
 
-  /* ------------------------------------------------------------------ */
-  /* RENDER                                                             */
-  /* ------------------------------------------------------------------ */
   return (
     <Card className="w-full bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-indigo-900/20 border border-purple-500/30">
       <CardHeader>
         <CardTitle className="flex items-center justify-center gap-2 text-xl">
-          <Wand2 className="text-purple-400" /> AI Enhancement Suite
+          <Wand2 className="text-purple-400" />
+          AI Enhancement Suite
         </CardTitle>
-        <p className="text-center text-sm text-gray-400">
-          Upscale &amp; refine your art in one click – works offline if needed.
-        </p>
+        <p className="text-center text-sm text-gray-400">Professional image enhancement with advanced algorithms</p>
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {/* ----- SETTINGS ROW ----- */}
+        {/* Enhancement Mode and Scale */}
         <div className="grid grid-cols-2 gap-4">
-          {/* mode */}
           <div className="space-y-2">
-            <Label>Mode</Label>
+            <Label>Enhancement Mode</Label>
             <Select
               value={settings.enhanceMode}
               onValueChange={(v) => setSettings((s) => ({ ...s, enhanceMode: v as any }))}
@@ -194,33 +315,75 @@ export function ImageEnhancementSuite({ baseImageUrl, onEnhancedImage }: Props) 
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(["generic", "photo", "artwork", "anime"] as const).map((m) => (
-                  <SelectItem key={m} value={m}>
-                    <span className="flex items-center gap-2">
-                      <Badge variant="secondary" className="capitalize">
-                        {m}
-                      </Badge>
-                    </span>
-                  </SelectItem>
-                ))}
+                <SelectItem value="artwork">
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-purple-500">Artwork</Badge>
+                    <span>Digital Art</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="photo">
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-green-500">Photo</Badge>
+                    <span>Realistic</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="anime">
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-pink-500">Anime</Badge>
+                    <span>Cartoon/Anime</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="generic">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary">Generic</Badge>
+                    <span>All-purpose</span>
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* scale */}
           <div className="space-y-2">
-            <Label>Scale: {settings.scale}×</Label>
+            <Label>Upscale Factor: {settings.scale}×</Label>
             <Slider
               min={1}
               max={4}
               step={0.5}
               value={[settings.scale]}
               onValueChange={([v]) => setSettings((s) => ({ ...s, scale: v }))}
+              className="w-full"
             />
           </div>
         </div>
 
-        {/* ----- ADVANCED ----- */}
+        {/* Quick Enhancement Controls */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Sharpness: {settings.sharpenStrength.toFixed(1)}</Label>
+            <Slider
+              min={0}
+              max={1}
+              step={0.1}
+              value={[settings.sharpenStrength]}
+              onValueChange={([v]) => setSettings((s) => ({ ...s, sharpenStrength: v }))}
+              className="w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Vibrancy: {settings.saturationBoost.toFixed(1)}</Label>
+            <Slider
+              min={0}
+              max={1}
+              step={0.1}
+              value={[settings.saturationBoost]}
+              onValueChange={([v]) => setSettings((s) => ({ ...s, saturationBoost: v }))}
+              className="w-full"
+            />
+          </div>
+        </div>
+
+        {/* Advanced Settings */}
         <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced}>
           <CollapsibleTrigger asChild>
             <Button variant="ghost" className="w-full justify-between">
@@ -233,29 +396,39 @@ export function ImageEnhancementSuite({ baseImageUrl, onEnhancedImage }: Props) 
           </CollapsibleTrigger>
           <CollapsibleContent className="pt-4 space-y-4">
             <div className="space-y-2">
-              <Label>Denoise: {settings.denoiseStrength.toFixed(1)}</Label>
+              <Label>Contrast Boost: {settings.contrastBoost.toFixed(1)}</Label>
+              <Slider
+                min={0}
+                max={1}
+                step={0.1}
+                value={[settings.contrastBoost]}
+                onValueChange={([v]) => setSettings((s) => ({ ...s, contrastBoost: v }))}
+                className="w-full"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Noise Reduction: {settings.denoiseStrength.toFixed(1)}</Label>
               <Slider
                 min={0}
                 max={1}
                 step={0.1}
                 value={[settings.denoiseStrength]}
                 onValueChange={([v]) => setSettings((s) => ({ ...s, denoiseStrength: v }))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Sharpen: {settings.sharpenStrength.toFixed(1)}</Label>
-              <Slider
-                min={0}
-                max={1}
-                step={0.1}
-                value={[settings.sharpenStrength]}
-                onValueChange={([v]) => setSettings((s) => ({ ...s, sharpenStrength: v }))}
+                className="w-full"
               />
             </div>
           </CollapsibleContent>
         </Collapsible>
 
-        {/* ----- ACTION BUTTON ----- */}
+        {/* Enhancement Info */}
+        {enhancementMethod && (
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>Using: {enhancementMethod}</AlertDescription>
+          </Alert>
+        )}
+
+        {/* Process Button */}
         <Button
           onClick={handleEnhance}
           disabled={processing}
@@ -264,26 +437,39 @@ export function ImageEnhancementSuite({ baseImageUrl, onEnhancedImage }: Props) 
           {processing ? (
             <>
               <div className="mr-2 h-4 w-4 animate-spin rounded-full border-b-2 border-white" />
-              Enhancing… {progress}%
+              Enhancing... {progress}%
             </>
           ) : (
             <>
-              <Sparkles className="mr-2 h-4 w-4" /> Enhance Image
+              <Sparkles className="mr-2 h-4 w-4" />
+              Enhance Image
             </>
           )}
         </Button>
 
-        {processing && <Progress value={progress} />}
+        {processing && <Progress value={progress} className="w-full" />}
 
-        {/* ----- RESULT ----- */}
+        {/* Enhanced Result */}
         {enhancedUrl && (
           <div className="space-y-4">
-            <img src={enhancedUrl || "/placeholder.svg"} alt="Enhanced" className="w-full rounded-lg shadow-lg" />
+            <div className="relative">
+              <img
+                src={enhancedUrl || "/placeholder.svg"}
+                alt="Enhanced"
+                className="w-full rounded-lg shadow-lg border border-purple-500/30"
+              />
+              <Badge className="absolute top-2 right-2 bg-gradient-to-r from-purple-500 to-pink-500">
+                <Sparkles className="w-3 h-3 mr-1" />
+                {settings.scale}× Enhanced
+              </Badge>
+            </div>
+
             <Button
               onClick={downloadEnhanced}
               className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
             >
-              <Download className="mr-2 h-4 w-4" /> Download ({settings.scale}×)
+              <Download className="mr-2 h-4 w-4" />
+              Download Enhanced ({settings.scale}× {settings.enhanceMode})
             </Button>
           </div>
         )}
