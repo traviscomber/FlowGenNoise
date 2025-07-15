@@ -1,40 +1,43 @@
 "use client"
 
-import { createClient } from "@supabase/supabase-js"
+import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 import { useEffect, useState } from "react"
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Singleton – ensures we reuse the same Supabase instance everywhere
+let _client: SupabaseClient | null = null
+
+export function supabase(): SupabaseClient {
+  if (!_client) {
+    _client = createClient(supabaseUrl, supabaseAnonKey)
+  }
+  return _client
+}
+
+export async function signOut() {
+  await supabase().auth.signOut()
+}
 
 export function useUser() {
   const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    // Initial fetch
+    supabase()
+      .auth.getUser()
+      .then(({ data }) => setUser(data.user ?? null))
 
+    // Listen for future auth events
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase().auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
-      setLoading(false)
     })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  return { user, loading }
-}
-
-export async function signOut() {
-  const { error } = await supabase.auth.signOut()
-  if (error) {
-    console.error("Error signing out:", error)
-    throw error
-  }
+  return user
 }
