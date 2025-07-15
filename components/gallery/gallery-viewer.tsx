@@ -1,262 +1,237 @@
 "use client"
 
 import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { X, Download, Heart, Copy } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Download, Heart, X, Copy, Check, Sparkles, Palette, Settings, Calendar, Tag } from "lucide-react"
+import { toast } from "@/hooks/use-toast"
 import type { GalleryItem } from "@/lib/gallery-service"
-import { cn } from "@/lib/utils"
+import { GalleryService } from "@/lib/gallery-service"
 
 interface GalleryViewerProps {
   item: GalleryItem | null
-  open: boolean
   onClose: () => void
-  onFavoriteToggle: (id: string) => void
-  onDownload: (item: GalleryItem) => void
+  onItemUpdate: (item: GalleryItem) => void
 }
 
-export function GalleryViewer({ item, open, onClose, onFavoriteToggle, onDownload }: GalleryViewerProps) {
-  const [copiedField, setCopiedField] = useState<string | null>(null)
+export function GalleryViewer({ item, onClose, onItemUpdate }: GalleryViewerProps) {
+  const [loading, setLoading] = useState(false)
 
   if (!item) return null
 
-  const copyToClipboard = async (text: string, field: string) => {
+  const handleToggleFavorite = async () => {
+    setLoading(true)
     try {
-      await navigator.clipboard.writeText(text)
-      setCopiedField(field)
-      setTimeout(() => setCopiedField(null), 2000)
-    } catch (err) {
-      console.error("Failed to copy:", err)
+      const updated = await GalleryService.toggleFavorite(item.id)
+      onItemUpdate(updated)
+      toast({
+        title: updated.is_favorite ? "Added to favorites" : "Removed from favorites",
+        description: `"${item.title}" has been ${updated.is_favorite ? "added to" : "removed from"} your favorites.`,
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update favorite status",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
     }
   }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString()
+  const handleDownload = async () => {
+    try {
+      const imageUrl = item.upscaled_image_url || item.image_url
+      const response = await fetch(imageUrl)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `${item.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.${item.mode === "svg" ? "svg" : "png"}`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url)
+
+      toast({
+        title: "Download started",
+        description: `Downloading "${item.title}"`,
+      })
+    } catch (error) {
+      toast({
+        title: "Download failed",
+        description: "Failed to download the image",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const copyToClipboard = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      toast({
+        title: "Copied to clipboard",
+        description: `${label} copied to clipboard`,
+      })
+    } catch (error) {
+      toast({
+        title: "Copy failed",
+        description: "Failed to copy to clipboard",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] p-0">
-        <div className="flex flex-col lg:flex-row h-full">
-          {/* Image Section */}
-          <div className="flex-1 relative bg-gray-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden flex">
+        {/* Image Section */}
+        <div className="flex-1 flex items-center justify-center bg-gray-50 p-8">
+          <div className="relative max-w-full max-h-full">
             <img
               src={item.upscaled_image_url || item.image_url}
               alt={item.title}
               className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
             />
+            {item.upscaled_image_url && <Badge className="absolute top-2 right-2 bg-green-500">Enhanced</Badge>}
+          </div>
+        </div>
 
-            {/* Image overlay actions */}
-            <div className="absolute top-4 right-4 flex gap-2">
-              <Button size="sm" variant="secondary" onClick={() => onDownload(item)}>
+        {/* Info Section */}
+        <div className="w-96 flex flex-col">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b">
+            <h2 className="text-xl font-semibold truncate">{item.title}</h2>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            {/* Actions */}
+            <div className="flex gap-2">
+              <Button onClick={handleDownload} className="flex-1">
                 <Download className="w-4 h-4 mr-2" />
                 Download
               </Button>
-              <Button size="sm" variant="secondary" onClick={() => onFavoriteToggle(item.id)}>
-                <Heart className={cn("w-4 h-4 mr-2", item.is_favorite && "fill-red-500 text-red-500")} />
-                {item.is_favorite ? "Unfavorite" : "Favorite"}
+              <Button variant="outline" onClick={handleToggleFavorite} disabled={loading}>
+                <Heart className={`w-4 h-4 ${item.is_favorite ? "text-red-500 fill-current" : ""}`} />
               </Button>
             </div>
 
-            {/* Enhancement badge */}
-            {item.upscaled_image_url && (
-              <div className="absolute top-4 left-4">
-                <Badge className="bg-green-500 text-white">
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  Enhanced
-                </Badge>
+            {/* Description */}
+            {item.description && (
+              <div>
+                <h3 className="font-medium mb-2">Description</h3>
+                <p className="text-sm text-gray-600">{item.description}</p>
               </div>
             )}
-          </div>
 
-          {/* Details Section */}
-          <div className="w-full lg:w-96 border-l">
-            <DialogHeader className="p-6 pb-4">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <DialogTitle className="text-xl mb-2">{item.title}</DialogTitle>
-                  {item.description && <p className="text-gray-600 text-sm">{item.description}</p>}
-                </div>
-                <Button variant="ghost" size="sm" onClick={onClose}>
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-
-              <div className="flex items-center gap-2 mt-4">
-                <Badge variant={item.mode === "ai" ? "default" : "secondary"}>
-                  {item.mode === "ai" ? (
-                    <>
-                      <Sparkles className="w-3 h-3 mr-1" />
-                      AI Art
-                    </>
-                  ) : (
-                    <>
-                      <Palette className="w-3 h-3 mr-1" />
-                      SVG Flow
-                    </>
-                  )}
-                </Badge>
-                {item.is_favorite && (
-                  <Badge variant="outline" className="text-red-500 border-red-200">
-                    <Heart className="w-3 h-3 mr-1 fill-current" />
-                    Favorite
+            {/* Tags */}
+            <div>
+              <h3 className="font-medium mb-2">Tags</h3>
+              <div className="flex flex-wrap gap-1">
+                {item.tags.map((tag) => (
+                  <Badge key={tag} variant="outline" className="text-xs">
+                    {tag}
                   </Badge>
-                )}
+                ))}
               </div>
-            </DialogHeader>
+            </div>
 
-            <ScrollArea className="flex-1 px-6">
-              <div className="space-y-6 pb-6">
-                {/* Tags */}
-                {item.tags.length > 0 && (
-                  <div>
-                    <h4 className="font-medium text-sm mb-2 flex items-center">
-                      <Tag className="w-4 h-4 mr-2" />
-                      Tags
-                    </h4>
-                    <div className="flex flex-wrap gap-1">
-                      {item.tags.map((tag) => (
-                        <Badge key={tag} variant="outline" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
+            <Separator />
 
-                {/* Generation Parameters */}
-                <div>
-                  <h4 className="font-medium text-sm mb-3 flex items-center">
-                    <Settings className="w-4 h-4 mr-2" />
-                    Generation Parameters
-                  </h4>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Dataset:</span>
-                      <Badge variant="outline">{item.generation_params.dataset}</Badge>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Scenario:</span>
-                      <Badge variant="outline">{item.generation_params.scenario}</Badge>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Points:</span>
-                      <span className="font-mono">{item.generation_params.numSamples}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Seed:</span>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono">{item.generation_params.seed}</span>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-6 w-6 p-0"
-                          onClick={() => copyToClipboard(item.generation_params.seed.toString(), "seed")}
-                        >
-                          {copiedField === "seed" ? (
-                            <Check className="w-3 h-3 text-green-500" />
-                          ) : (
-                            <Copy className="w-3 h-3" />
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                    {item.generation_params.temperature && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Temperature:</span>
-                        <span className="font-mono">{item.generation_params.temperature}</span>
-                      </div>
-                    )}
+            {/* Generation Parameters */}
+            <div>
+              <h3 className="font-medium mb-3">Generation Parameters</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Mode:</span>
+                  <Badge variant={item.mode === "ai" ? "default" : "secondary"}>{item.mode.toUpperCase()}</Badge>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Dataset:</span>
+                  <span className="text-sm font-mono">{item.generation_params.dataset}</span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Scenario:</span>
+                  <span className="text-sm font-mono">{item.generation_params.scenario}</span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Points:</span>
+                  <span className="text-sm font-mono">{item.generation_params.numSamples}</span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Seed:</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-mono">{item.generation_params.seed}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToClipboard(item.generation_params.seed.toString(), "Seed")}
+                    >
+                      <Copy className="w-3 h-3" />
+                    </Button>
                   </div>
                 </div>
 
-                {/* Custom Prompt (for AI art) */}
                 {item.custom_prompt && (
                   <div>
-                    <h4 className="font-medium text-sm mb-2 flex items-center justify-between">
-                      <span className="flex items-center">
-                        <Sparkles className="w-4 h-4 mr-2" />
-                        Custom Prompt
-                      </span>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-gray-600">Custom Prompt:</span>
                       <Button
-                        size="sm"
                         variant="ghost"
-                        className="h-6 w-6 p-0"
-                        onClick={() => copyToClipboard(item.custom_prompt!, "prompt")}
+                        size="sm"
+                        onClick={() => copyToClipboard(item.custom_prompt!, "Custom prompt")}
                       >
-                        {copiedField === "prompt" ? (
-                          <Check className="w-3 h-3 text-green-500" />
-                        ) : (
-                          <Copy className="w-3 h-3" />
-                        )}
+                        <Copy className="w-3 h-3" />
                       </Button>
-                    </h4>
-                    <div className="bg-gray-50 rounded-lg p-3 text-sm">{item.custom_prompt}</div>
+                    </div>
+                    <p className="text-sm font-mono bg-gray-50 p-2 rounded text-wrap break-words">
+                      {item.custom_prompt}
+                    </p>
                   </div>
                 )}
 
-                {/* Enhancement Info */}
-                {item.upscaled_image_url && (
-                  <div>
-                    <h4 className="font-medium text-sm mb-2 flex items-center">
-                      <Sparkles className="w-4 h-4 mr-2" />
-                      Enhancement
-                    </h4>
-                    <div className="text-sm space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-600">Method:</span>
-                        <Badge variant="outline">{item.upscale_method || "Unknown"}</Badge>
-                      </div>
-                      <div className="text-xs text-gray-500">This artwork has been enhanced for higher quality</div>
-                    </div>
+                {item.upscale_method && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Enhancement:</span>
+                    <span className="text-sm font-mono">{item.upscale_method}</span>
                   </div>
                 )}
+              </div>
+            </div>
 
-                <Separator />
+            <Separator />
 
-                {/* Metadata */}
-                <div>
-                  <h4 className="font-medium text-sm mb-3 flex items-center">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Metadata
-                  </h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Created:</span>
-                      <span className="text-xs">{formatDate(item.created_at)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Updated:</span>
-                      <span className="text-xs">{formatDate(item.updated_at)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">ID:</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono">{item.id.slice(0, 8)}...</span>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-4 w-4 p-0"
-                          onClick={() => copyToClipboard(item.id, "id")}
-                        >
-                          {copiedField === "id" ? (
-                            <Check className="w-2 h-2 text-green-500" />
-                          ) : (
-                            <Copy className="w-2 h-2" />
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+            {/* Metadata */}
+            <div>
+              <h3 className="font-medium mb-3">Metadata</h3>
+              <div className="space-y-2 text-sm text-gray-600">
+                <div className="flex justify-between">
+                  <span>Created:</span>
+                  <span>{new Date(item.created_at).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Updated:</span>
+                  <span>{new Date(item.updated_at).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>ID:</span>
+                  <span className="font-mono text-xs">{item.id}</span>
                 </div>
               </div>
-            </ScrollArea>
+            </div>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   )
 }

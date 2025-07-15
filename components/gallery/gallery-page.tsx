@@ -1,20 +1,18 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Search, Filter, Heart, Palette, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Search, Heart, Grid3X3, List, ArrowLeft, Sparkles, TagIcon } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "@/hooks/use-toast"
 import { GalleryGrid } from "./gallery-grid"
 import { GalleryViewer } from "./gallery-viewer"
 import { GalleryService, type GalleryItem } from "@/lib/gallery-service"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
 
 export function GalleryPage() {
-  const router = useRouter()
   const [items, setItems] = useState<GalleryItem[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -22,7 +20,6 @@ export function GalleryPage() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
   const [sortBy, setSortBy] = useState<"created_at" | "title">("created_at")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null)
   const [stats, setStats] = useState({
     totalArtworks: 0,
@@ -32,30 +29,25 @@ export function GalleryPage() {
     favoritesCount: 0,
   })
   const [popularTags, setPopularTags] = useState<Array<{ tag: string; count: number }>>([])
-  const [selectedTag, setSelectedTag] = useState<string | null>(null)
-
-  useEffect(() => {
-    loadGalleryItems()
-    loadStats()
-    loadPopularTags()
-  }, [searchTerm, selectedMode, showFavoritesOnly, sortBy, sortOrder, selectedTag])
 
   const loadGalleryItems = async () => {
     try {
       setLoading(true)
-      const searchQuery = selectedTag ? selectedTag : searchTerm
-      const { items: galleryItems } = await GalleryService.getGalleryItems({
+      const result = await GalleryService.getGalleryItems({
         mode: selectedMode === "all" ? undefined : selectedMode,
         favoritesOnly: showFavoritesOnly,
-        searchTerm: searchQuery,
+        searchTerm: searchTerm || undefined,
         sortBy,
         sortOrder,
         limit: 50,
       })
-      setItems(galleryItems)
+      setItems(result.items)
     } catch (error) {
-      console.error("Failed to load gallery items:", error)
-      toast.error("Failed to load gallery items")
+      toast({
+        title: "Error",
+        description: "Failed to load gallery items",
+        variant: "destructive",
+      })
     } finally {
       setLoading(false)
     }
@@ -63,8 +55,8 @@ export function GalleryPage() {
 
   const loadStats = async () => {
     try {
-      const galleryStats = await GalleryService.getStats()
-      setStats(galleryStats)
+      const statsData = await GalleryService.getStats()
+      setStats(statsData)
     } catch (error) {
       console.error("Failed to load stats:", error)
     }
@@ -79,107 +71,46 @@ export function GalleryPage() {
     }
   }
 
-  const handleFavoriteToggle = async (id: string) => {
-    try {
-      await GalleryService.toggleFavorite(id)
-      setItems(items.map((item) => (item.id === id ? { ...item, is_favorite: !item.is_favorite } : item)))
-      if (selectedItem?.id === id) {
-        setSelectedItem({ ...selectedItem, is_favorite: !selectedItem.is_favorite })
-      }
-      loadStats() // Refresh stats
-      toast.success("Favorite status updated")
-    } catch (error) {
-      console.error("Failed to toggle favorite:", error)
-      toast.error("Failed to update favorite status")
-    }
+  useEffect(() => {
+    loadGalleryItems()
+  }, [selectedMode, showFavoritesOnly, searchTerm, sortBy, sortOrder])
+
+  useEffect(() => {
+    loadStats()
+    loadPopularTags()
+  }, [])
+
+  const handleItemUpdate = (updatedItem: GalleryItem) => {
+    setItems(items.map((item) => (item.id === updatedItem.id ? updatedItem : item)))
+    setSelectedItem(updatedItem)
+    loadStats() // Refresh stats
   }
 
-  const handleEdit = async (item: GalleryItem) => {
-    // For now, just show a toast. You could implement an edit dialog here
-    toast.info("Edit functionality coming soon!")
-  }
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this artwork?")) return
-
-    try {
-      await GalleryService.deleteArtwork(id)
-      setItems(items.filter((item) => item.id !== id))
-      if (selectedItem?.id === id) {
-        setSelectedItem(null)
-      }
-      loadStats() // Refresh stats
-      toast.success("Artwork deleted successfully")
-    } catch (error) {
-      console.error("Failed to delete artwork:", error)
-      toast.error("Failed to delete artwork")
+  const handleItemDelete = (deletedId: string) => {
+    setItems(items.filter((item) => item.id !== deletedId))
+    if (selectedItem?.id === deletedId) {
+      setSelectedItem(null)
     }
-  }
-
-  const handleDownload = async (item: GalleryItem) => {
-    try {
-      const imageUrl = item.upscaled_image_url || item.image_url
-      const response = await fetch(imageUrl)
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `${item.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.png`
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
-      toast.success("Download started")
-    } catch (error) {
-      console.error("Failed to download image:", error)
-      toast.error("Failed to download image")
-    }
+    loadStats() // Refresh stats
   }
 
   const handleTagClick = (tag: string) => {
-    setSelectedTag(selectedTag === tag ? null : tag)
-    setSearchTerm("")
-  }
-
-  const clearFilters = () => {
-    setSearchTerm("")
-    setSelectedMode("all")
-    setShowFavoritesOnly(false)
-    setSelectedTag(null)
+    setSearchTerm(tag)
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={() => router.push("/")} className="flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Back to Generator
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Art Gallery</h1>
-                <p className="text-gray-600">Browse and manage your generated artworks</p>
-              </div>
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Art Gallery</h1>
+              <p className="text-gray-600">Browse and manage your generated artworks</p>
             </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant={viewMode === "grid" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("grid")}
-              >
-                <Grid3X3 className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("list")}
-              >
-                <List className="w-4 h-4" />
-              </Button>
-            </div>
+            <Button onClick={() => (window.location.href = "/")} variant="outline">
+              Create New Art
+            </Button>
           </div>
 
           {/* Stats Cards */}
@@ -192,14 +123,14 @@ export function GalleryPage() {
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-purple-600">{stats.aiCount}</div>
-                <div className="text-sm text-gray-600">AI Art</div>
+                <div className="text-2xl font-bold text-green-600">{stats.svgCount}</div>
+                <div className="text-sm text-gray-600">SVG Art</div>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-green-600">{stats.svgCount}</div>
-                <div className="text-sm text-gray-600">SVG Flow</div>
+                <div className="text-2xl font-bold text-purple-600">{stats.aiCount}</div>
+                <div className="text-sm text-gray-600">AI Art</div>
               </CardContent>
             </Card>
             <Card>
@@ -215,155 +146,151 @@ export function GalleryPage() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                placeholder="Search artworks..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value)
-                  setSelectedTag(null)
-                }}
-                className="pl-10"
-              />
-            </div>
-
-            <div className="flex gap-2 flex-wrap">
-              <Select value={selectedMode} onValueChange={(value: any) => setSelectedMode(value)}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="ai">AI Art</SelectItem>
-                  <SelectItem value="svg">SVG Flow</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select
-                value={`${sortBy}-${sortOrder}`}
-                onValueChange={(value) => {
-                  const [field, order] = value.split("-")
-                  setSortBy(field as any)
-                  setSortOrder(order as any)
-                }}
-              >
-                <SelectTrigger className="w-40">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="created_at-desc">Newest First</SelectItem>
-                  <SelectItem value="created_at-asc">Oldest First</SelectItem>
-                  <SelectItem value="title-asc">Title A-Z</SelectItem>
-                  <SelectItem value="title-desc">Title Z-A</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Button
-                variant={showFavoritesOnly ? "default" : "outline"}
-                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                className="flex items-center gap-2"
-              >
-                <Heart className="w-4 h-4" />
-                Favorites
-              </Button>
-
-              {(searchTerm || selectedMode !== "all" || showFavoritesOnly || selectedTag) && (
-                <Button variant="ghost" onClick={clearFilters}>
-                  Clear Filters
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {/* Active Filters */}
-          {(selectedTag || searchTerm || selectedMode !== "all" || showFavoritesOnly) && (
-            <div className="flex flex-wrap gap-2 mt-4">
-              {selectedTag && (
-                <Badge variant="secondary" className="cursor-pointer" onClick={() => setSelectedTag(null)}>
-                  Tag: {selectedTag} ×
-                </Badge>
-              )}
-              {searchTerm && <Badge variant="secondary">Search: {searchTerm}</Badge>}
-              {selectedMode !== "all" && <Badge variant="secondary">Mode: {selectedMode.toUpperCase()}</Badge>}
-              {showFavoritesOnly && <Badge variant="secondary">Favorites Only</Badge>}
-            </div>
-          )}
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
+        <div className="flex gap-6">
           {/* Main Content */}
           <div className="flex-1">
-            <GalleryGrid
-              items={items}
-              onItemClick={setSelectedItem}
-              onFavoriteToggle={handleFavoriteToggle}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onDownload={handleDownload}
-              loading={loading}
-            />
+            {/* Filters and Search */}
+            <Card className="mb-6">
+              <CardContent className="p-4">
+                <div className="flex flex-col md:flex-row gap-4">
+                  {/* Search */}
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      placeholder="Search artworks..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+
+                  {/* Mode Filter */}
+                  <Select value={selectedMode} onValueChange={(value: "all" | "svg" | "ai") => setSelectedMode(value)}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="svg">SVG</SelectItem>
+                      <SelectItem value="ai">AI</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* Favorites Filter */}
+                  <Button
+                    variant={showFavoritesOnly ? "default" : "outline"}
+                    onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                    className="flex items-center gap-2"
+                  >
+                    <Heart className={`w-4 h-4 ${showFavoritesOnly ? "fill-current" : ""}`} />
+                    Favorites
+                  </Button>
+
+                  {/* Sort */}
+                  <Select
+                    value={`${sortBy}-${sortOrder}`}
+                    onValueChange={(value) => {
+                      const [by, order] = value.split("-") as [typeof sortBy, typeof sortOrder]
+                      setSortBy(by)
+                      setSortOrder(order)
+                    }}
+                  >
+                    <SelectTrigger className="w-40">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="created_at-desc">Newest First</SelectItem>
+                      <SelectItem value="created_at-asc">Oldest First</SelectItem>
+                      <SelectItem value="title-asc">Title A-Z</SelectItem>
+                      <SelectItem value="title-desc">Title Z-A</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Gallery Grid */}
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="text-gray-500">Loading gallery...</div>
+              </div>
+            ) : (
+              <GalleryGrid
+                items={items}
+                onItemClick={setSelectedItem}
+                onItemUpdate={handleItemUpdate}
+                onItemDelete={handleItemDelete}
+              />
+            )}
           </div>
 
           {/* Sidebar */}
-          <div className="w-64 space-y-6">
+          <div className="w-80 space-y-6">
             {/* Popular Tags */}
-            {popularTags.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm flex items-center gap-2">
-                    <TagIcon className="w-4 h-4" />
-                    Popular Tags
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {popularTags.map(({ tag, count }) => (
-                    <div
-                      key={tag}
-                      className={`flex items-center justify-between p-2 rounded cursor-pointer transition-colors ${
-                        selectedTag === tag ? "bg-blue-100 text-blue-700" : "hover:bg-gray-100"
-                      }`}
-                      onClick={() => handleTagClick(tag)}
-                    >
-                      <span className="text-sm">{tag}</span>
-                      <Badge variant="outline" className="text-xs">
-                        {count}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <TrendingUp className="w-5 h-5" />
+                  Popular Tags
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {popularTags.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {popularTags.map(({ tag, count }) => (
+                      <Badge
+                        key={tag}
+                        variant="outline"
+                        className="cursor-pointer hover:bg-blue-50 text-xs"
+                        onClick={() => handleTagClick(tag)}
+                      >
+                        {tag} ({count})
                       </Badge>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-500">No tags yet</div>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Quick Actions */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm">Quick Actions</CardTitle>
+                <CardTitle className="text-lg">Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-3">
                 <Button
                   variant="outline"
-                  size="sm"
                   className="w-full justify-start bg-transparent"
-                  onClick={() => router.push("/")}
+                  onClick={() => (window.location.href = "/")}
                 >
-                  <Sparkles className="w-4 h-4 mr-2" />
+                  <Palette className="w-4 h-4 mr-2" />
                   Create New Art
                 </Button>
                 <Button
                   variant="outline"
-                  size="sm"
                   className="w-full justify-start bg-transparent"
                   onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
                 >
                   <Heart className="w-4 h-4 mr-2" />
-                  View Favorites
+                  {showFavoritesOnly ? "Show All" : "Show Favorites"}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start bg-transparent"
+                  onClick={() => {
+                    setSearchTerm("")
+                    setSelectedMode("all")
+                    setShowFavoritesOnly(false)
+                    setSortBy("created_at")
+                    setSortOrder("desc")
+                  }}
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  Clear Filters
                 </Button>
               </CardContent>
             </Card>
@@ -371,14 +298,8 @@ export function GalleryPage() {
         </div>
       </div>
 
-      {/* Gallery Viewer */}
-      <GalleryViewer
-        item={selectedItem}
-        open={!!selectedItem}
-        onClose={() => setSelectedItem(null)}
-        onFavoriteToggle={handleFavoriteToggle}
-        onDownload={handleDownload}
-      />
+      {/* Gallery Viewer Modal */}
+      <GalleryViewer item={selectedItem} onClose={() => setSelectedItem(null)} onItemUpdate={handleItemUpdate} />
     </div>
   )
 }

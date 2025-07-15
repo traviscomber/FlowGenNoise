@@ -1,7 +1,5 @@
 "use client"
-
-import type React from "react"
-
+import { X, Plus } from "lucide-react" // Importing X and Plus icons
 import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -9,18 +7,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Loader2, Save, X, Plus } from "lucide-react"
+import { toast } from "@/hooks/use-toast"
 import type { GenerationParams } from "@/lib/flow-model"
+import { GalleryService, type SaveArtworkParams } from "@/lib/gallery-service"
 
 interface SaveArtworkDialogProps {
-  open: boolean
+  isOpen: boolean
   onClose: () => void
-  onSave: (data: {
-    title: string
-    description: string
-    tags: string[]
-  }) => Promise<void>
+  onSaved: () => void
   imageUrl: string
   upscaledImageUrl?: string
   generationParams: GenerationParams
@@ -30,9 +24,9 @@ interface SaveArtworkDialogProps {
 }
 
 export function SaveArtworkDialog({
-  open,
+  isOpen,
   onClose,
-  onSave,
+  onSaved,
   imageUrl,
   upscaledImageUrl,
   generationParams,
@@ -40,80 +34,93 @@ export function SaveArtworkDialog({
   customPrompt,
   upscaleMethod,
 }: SaveArtworkDialogProps) {
-  const [title, setTitle] = useState("")
+  const [title, setTitle] = useState(() => {
+    const timestamp = new Date().toLocaleString()
+    return `${mode.toUpperCase()} Art - ${generationParams.dataset} - ${timestamp}`
+  })
   const [description, setDescription] = useState("")
   const [customTags, setCustomTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState("")
   const [saving, setSaving] = useState(false)
 
-  // Auto-generate title and tags when dialog opens
-  const generateAutoTitle = () => {
-    const modeText = mode === "ai" ? "AI Art" : "Flow Art"
-    const datasetText = generationParams.dataset.charAt(0).toUpperCase() + generationParams.dataset.slice(1)
-    const scenarioText = generationParams.scenario.charAt(0).toUpperCase() + generationParams.scenario.slice(1)
-    return `${modeText} - ${datasetText} ${scenarioText}`
-  }
+  if (!isOpen) return null
 
+  // Auto-generated tags
   const autoTags = [
     generationParams.dataset,
     generationParams.scenario,
     mode,
     `${generationParams.numSamples}-points`,
     `seed-${generationParams.seed}`,
-    ...(upscaledImageUrl ? ["enhanced"] : []),
-    ...(customPrompt ? ["custom-prompt"] : []),
   ]
 
-  const handleOpen = () => {
-    if (!title) {
-      setTitle(generateAutoTitle())
-    }
+  if (upscaledImageUrl) {
+    autoTags.push("enhanced")
   }
 
+  if (customPrompt) {
+    autoTags.push("custom-prompt")
+  }
+
+  const allTags = [...new Set([...autoTags, ...customTags])]
+
   const addCustomTag = () => {
-    if (newTag.trim() && !customTags.includes(newTag.trim().toLowerCase())) {
-      setCustomTags([...customTags, newTag.trim().toLowerCase()])
+    if (newTag.trim() && !customTags.includes(newTag.trim())) {
+      setCustomTags([...customTags, newTag.trim()])
       setNewTag("")
     }
   }
 
-  const removeCustomTag = (tagToRemove: string) => {
-    setCustomTags(customTags.filter((tag) => tag !== tagToRemove))
+  const removeCustomTag = (tag: string) => {
+    setCustomTags(customTags.filter((t) => t !== tag))
   }
 
   const handleSave = async () => {
-    if (!title.trim()) return
+    if (!title.trim()) {
+      toast({
+        title: "Title required",
+        description: "Please enter a title for your artwork",
+        variant: "destructive",
+      })
+      return
+    }
 
     setSaving(true)
     try {
-      await onSave({
+      const params: SaveArtworkParams = {
         title: title.trim(),
-        description: description.trim(),
+        description: description.trim() || undefined,
+        imageUrl,
+        upscaledImageUrl,
+        generationParams,
+        mode,
+        customPrompt,
+        upscaleMethod,
         tags: customTags,
+      }
+
+      await GalleryService.saveArtwork(params)
+
+      toast({
+        title: "Artwork saved!",
+        description: `"${title}" has been added to your gallery.`,
       })
 
-      // Reset form
-      setTitle("")
-      setDescription("")
-      setCustomTags([])
-      setNewTag("")
+      onSaved()
       onClose()
     } catch (error) {
-      console.error("Failed to save artwork:", error)
+      toast({
+        title: "Save failed",
+        description: "Failed to save artwork to gallery",
+        variant: "destructive",
+      })
     } finally {
       setSaving(false)
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      addCustomTag()
-    }
-  }
-
   return (
-    <Dialog open={open} onOpenChange={onClose} onOpenAutoFocus={handleOpen}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
@@ -169,81 +176,66 @@ export function SaveArtworkDialog({
               />
             </div>
 
-            {/* Auto Tags */}
-            <div>
-              <Label>Auto-generated Tags</Label>
-              <div className="flex flex-wrap gap-1 mt-2 p-3 bg-gray-50 rounded-lg">
-                {autoTags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-xs">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              <p className="text-xs text-gray-500 mt-1">
-                These tags are automatically generated based on your generation parameters
-              </p>
-            </div>
+            {/* Tags */}
+            <div className="space-y-3">
+              <Label>Tags</Label>
 
-            {/* Custom Tags */}
-            <div>
-              <Label>Custom Tags</Label>
-              <div className="flex gap-2 mt-2">
+              {/* Auto-generated tags */}
+              <div>
+                <div className="text-sm text-gray-600 mb-2">Auto-generated tags:</div>
+                <div className="flex flex-wrap gap-1">
+                  {autoTags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Custom tags */}
+              {customTags.length > 0 && (
+                <div>
+                  <div className="text-sm text-gray-600 mb-2">Custom tags:</div>
+                  <div className="flex flex-wrap gap-1">
+                    {customTags.map((tag) => (
+                      <Badge
+                        key={tag}
+                        variant="outline"
+                        className="text-xs cursor-pointer hover:bg-red-50"
+                        onClick={() => removeCustomTag(tag)}
+                      >
+                        {tag} <X className="w-3 h-3 ml-1" />
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Add custom tag */}
+              <div className="flex gap-2">
                 <Input
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Add custom tag..."
+                  placeholder="Add custom tag"
+                  onKeyPress={(e) => e.key === "Enter" && addCustomTag()}
                   className="flex-1"
                 />
                 <Button type="button" variant="outline" size="sm" onClick={addCustomTag} disabled={!newTag.trim()}>
                   <Plus className="w-4 h-4" />
                 </Button>
               </div>
-
-              {customTags.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {customTags.map((tag) => (
-                    <Badge
-                      key={tag}
-                      variant="outline"
-                      className="text-xs cursor-pointer hover:bg-red-50 hover:border-red-200"
-                      onClick={() => removeCustomTag(tag)}
-                    >
-                      {tag} <X className="w-2 h-2 ml-1" />
-                    </Badge>
-                  ))}
-                </div>
-              )}
             </div>
 
-            <Separator />
-
             {/* Generation Info */}
-            <div>
-              <Label>Generation Parameters</Label>
-              <div className="mt-2 p-3 bg-gray-50 rounded-lg text-sm space-y-1">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Dataset:</span>
-                  <span>{generationParams.dataset}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Scenario:</span>
-                  <span>{generationParams.scenario}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Points:</span>
-                  <span>{generationParams.numSamples}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Seed:</span>
-                  <span className="font-mono">{generationParams.seed}</span>
-                </div>
-                {customPrompt && (
-                  <div className="pt-2 border-t">
-                    <span className="text-gray-600 text-xs">Custom Prompt:</span>
-                    <p className="text-xs mt-1 p-2 bg-white rounded border">{customPrompt}</p>
-                  </div>
-                )}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="text-sm font-medium mb-2">Generation Parameters</div>
+              <div className="text-xs text-gray-600 space-y-1">
+                <div>Dataset: {generationParams.dataset}</div>
+                <div>Scenario: {generationParams.scenario}</div>
+                <div>Points: {generationParams.numSamples}</div>
+                <div>Seed: {generationParams.seed}</div>
+                {customPrompt && <div>Custom Prompt: {customPrompt}</div>}
+                {upscaleMethod && <div>Enhancement: {upscaleMethod}</div>}
               </div>
             </div>
           </div>
@@ -255,17 +247,7 @@ export function SaveArtworkDialog({
             Cancel
           </Button>
           <Button onClick={handleSave} disabled={!title.trim() || saving}>
-            {saving ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4 mr-2" />
-                Save to Gallery
-              </>
-            )}
+            {saving ? "Saving..." : "Save to Gallery"}
           </Button>
         </div>
       </DialogContent>

@@ -1,56 +1,55 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Slider } from "@/components/ui/slider"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
+import { ModeToggle } from "@/components/mode-toggle"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Download, RefreshCw, Heart } from "lucide-react"
-import { toast } from "sonner"
-
+import { useToast } from "@/components/ui/use-toast"
+import { Download, Github, Heart, Loader2, Maximize2, Wand2 } from "lucide-react"
 import { SaveArtworkDialog } from "./gallery/save-artwork-dialog"
-import { GalleryService } from "@/lib/gallery-service"
 
-const FlowArtGenerator = () => {
-  const [params, setParams] = useState({
-    flowFieldDensity: 20,
-    particleDensity: 5000,
-    particleSpeed: 1,
-    particleSize: 1,
-    lineLength: 50,
-    fadeIn: false,
-    fadeOut: false,
-    colorMode: "rainbow",
-    rainbowSaturation: 100,
-    rainbowLightness: 50,
-    singleColor: "#ffffff",
-  })
+export function FlowArtGenerator() {
+  const [iterations, setIterations] = useState(50)
+  const [brushSize, setBrushSize] = useState(5)
+  const [decayRate, setDecayRate] = useState(0.01)
+  const [colorPalette, setColorPalette] = useState("rainbow")
+  const [useGradients, setUseGradients] = useState(true)
+  const [mode, setMode] = useState<"flow" | "ai">("flow")
+  const [customPrompt, setCustomPrompt] = useState("")
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [upscaledImage, setUpscaledImage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [isUpscaling, setIsUpscaling] = useState(false)
-  const [currentMode, setCurrentMode] = useState<"flow" | "ai">("flow")
-  const [customPrompt, setCustomPrompt] = useState("")
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const { toast } = useToast()
 
   const [showSaveDialog, setShowSaveDialog] = useState(false)
 
-  useEffect(() => {
-    generateFlowArt()
-  }, [])
+  const params = {
+    iterations,
+    brushSize,
+    decayRate,
+    colorPalette,
+    useGradients,
+  }
 
-  const generateFlowArt = async () => {
+  const handleGenerate = async () => {
     setIsLoading(true)
+    setUpscaledImage(null)
     try {
-      const response = await fetch("/api/flow-art", {
+      const response = await fetch("/api/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ params }),
+        body: JSON.stringify({
+          params,
+          mode,
+          customPrompt,
+        }),
       })
 
       if (!response.ok) {
@@ -59,43 +58,19 @@ const FlowArtGenerator = () => {
 
       const data = await response.json()
       setGeneratedImage(data.imageUrl)
-    } catch (error) {
-      console.error("Failed to generate flow art:", error)
-      toast.error("Failed to generate flow art")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const generateAIArtwork = async () => {
-    setIsLoading(true)
-    try {
-      const response = await fetch("/api/ai-art", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt: customPrompt }),
+    } catch (error: any) {
+      toast({
+        title: "Error generating image",
+        description: error.message,
+        variant: "destructive",
       })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      setGeneratedImage(data.imageUrl)
-    } catch (error) {
-      console.error("Failed to generate AI artwork:", error)
-      toast.error("Failed to generate AI artwork")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const upscaleImage = async () => {
-    if (!generatedImage) return
-
-    setIsUpscaling(true)
+  const handleUpscale = async () => {
+    setIsLoading(true)
     try {
       const response = await fetch("/api/upscale", {
         method: "POST",
@@ -111,272 +86,239 @@ const FlowArtGenerator = () => {
 
       const data = await response.json()
       setUpscaledImage(data.upscaledImageUrl)
-    } catch (error) {
-      console.error("Failed to upscale image:", error)
-      toast.error("Failed to upscale image")
-    } finally {
-      setIsUpscaling(false)
-    }
-  }
-
-  const downloadImage = () => {
-    if (!generatedImage) return
-
-    const link = document.createElement("a")
-    link.href = generatedImage
-    link.download = "flow-art.png"
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
-  const handleSaveToGallery = async (data: {
-    title: string
-    description: string
-    tags: string[]
-  }) => {
-    if (!generatedImage) return
-
-    try {
-      await GalleryService.saveArtwork({
-        title: data.title,
-        description: data.description,
-        imageUrl: generatedImage,
-        upscaledImageUrl: upscaledImage || undefined,
-        generationParams: params,
-        mode: currentMode,
-        customPrompt: currentMode === "ai" ? customPrompt : undefined,
-        upscaleMethod: upscaledImage ? "AI Upscaler" : undefined,
-        tags: data.tags,
+    } catch (error: any) {
+      toast({
+        title: "Error upscaling image",
+        description: error.message,
+        variant: "destructive",
       })
-
-      toast.success("Artwork saved to gallery!")
-    } catch (error) {
-      console.error("Failed to save artwork:", error)
-      toast.error("Failed to save artwork")
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Flow Art Generator</h1>
+    <div className="container relative flex max-w-5xl flex-col items-center justify-center space-y-10 p-5">
+      <ModeToggle className="absolute top-4 right-4" />
+      <h1 className="scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+        Flow Art Generator
+      </h1>
+      <p className="max-w-[85%] text-sm text-muted-foreground">
+        Create mesmerizing generative art with ease. Adjust parameters to explore endless possibilities. You can also
+        use AI mode to generate images from a prompt.
+      </p>
+      <div className="flex w-full flex-col gap-4 md:flex-row">
+        <Card className="w-full md:w-1/3">
+          <CardHeader>
+            <CardTitle>Parameters</CardTitle>
+            <CardDescription>Adjust the settings to your liking.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="iterations">Iterations</Label>
+              <Slider
+                id="iterations"
+                defaultValue={[iterations]}
+                max={200}
+                min={10}
+                step={1}
+                onValueChange={(value) => setIterations(value[0])}
+              />
+              <p className="text-sm text-muted-foreground">Number of iterations for the flow field.</p>
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="brushSize">Brush Size</Label>
+              <Slider
+                id="brushSize"
+                defaultValue={[brushSize]}
+                max={20}
+                min={1}
+                step={1}
+                onValueChange={(value) => setBrushSize(value[0])}
+              />
+              <p className="text-sm text-muted-foreground">Size of the brush.</p>
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="decayRate">Decay Rate</Label>
+              <Slider
+                id="decayRate"
+                defaultValue={[decayRate]}
+                max={0.1}
+                min={0.001}
+                step={0.001}
+                onValueChange={(value) => setDecayRate(value[0])}
+              />
+              <p className="text-sm text-muted-foreground">Rate at which the flow field decays.</p>
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="colorPalette">Color Palette</Label>
+              <Select onValueChange={setColorPalette}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a color palette" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="rainbow">Rainbow</SelectItem>
+                  <SelectItem value="cool">Cool</SelectItem>
+                  <SelectItem value="warm">Warm</SelectItem>
+                  <SelectItem value="monochrome">Monochrome</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-sm text-muted-foreground">Choose a color palette for the artwork.</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="useGradients"
+                checked={useGradients}
+                onCheckedChange={(checked) => setUseGradients(checked)}
+              />
+              <Label htmlFor="useGradients">Use Gradients</Label>
+            </div>
+          </CardContent>
+        </Card>
 
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="w-full md:w-1/3">
-          <Card>
-            <CardHeader>
-              <CardTitle>Settings</CardTitle>
-              <CardDescription>Adjust the parameters to generate your unique flow art.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="ai-mode">AI Mode</Label>
-                <Switch
-                  id="ai-mode"
-                  checked={currentMode === "ai"}
-                  onCheckedChange={(checked) => setCurrentMode(checked ? "ai" : "flow")}
+        <Card className="w-full md:w-1/3">
+          <CardHeader>
+            <CardTitle>Mode</CardTitle>
+            <CardDescription>Choose between Flow and AI modes.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <div className="flex items-center space-x-2">
+              <Button
+                variant={mode === "flow" ? "default" : "outline"}
+                onClick={() => setMode("flow")}
+                className="w-full"
+              >
+                Flow
+              </Button>
+              <Button variant={mode === "ai" ? "default" : "outline"} onClick={() => setMode("ai")} className="w-full">
+                AI
+              </Button>
+            </div>
+            {mode === "ai" && (
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="customPrompt">Custom Prompt</Label>
+                <Input
+                  id="customPrompt"
+                  placeholder="A nebula in deep space"
+                  value={customPrompt}
+                  onChange={(e) => setCustomPrompt(e.target.value)}
                 />
+                <p className="text-sm text-muted-foreground">Enter a prompt for the AI to generate an image from.</p>
               </div>
+            )}
+          </CardContent>
+        </Card>
 
-              {currentMode === "ai" ? (
-                <div>
-                  <Label htmlFor="prompt">Prompt</Label>
-                  <Input
-                    type="text"
-                    id="prompt"
-                    value={customPrompt}
-                    onChange={(e) => setCustomPrompt(e.target.value)}
-                    placeholder="Enter a prompt for the AI"
-                  />
-                  <Button onClick={generateAIArtwork} disabled={isLoading} className="mt-2 w-full">
-                    {isLoading ? "Generating..." : "Generate AI Artwork"}
-                  </Button>
-                </div>
+        <Card className="w-full md:w-1/3">
+          <CardHeader>
+            <CardTitle>Output</CardTitle>
+            <CardDescription>Generated artwork.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            {generatedImage ? (
+              <div className="relative">
+                <img src={generatedImage || "/placeholder.svg"} alt="Generated Artwork" className="rounded-md" />
+                {isLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-muted/50 rounded-md">
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex h-48 items-center justify-center rounded-md bg-muted">
+                {isLoading ? (
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                ) : (
+                  <p className="text-sm text-muted-foreground">No artwork generated yet.</p>
+                )}
+              </div>
+            )}
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button onClick={handleGenerate} disabled={isLoading} className="flex items-center gap-2">
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Generating...
+                </>
               ) : (
                 <>
-                  <div className="grid gap-2">
-                    <Label htmlFor="flowFieldDensity">Flow Field Density</Label>
-                    <Slider
-                      id="flowFieldDensity"
-                      defaultValue={[params.flowFieldDensity]}
-                      max={50}
-                      step={1}
-                      onValueChange={(value) => setParams({ ...params, flowFieldDensity: value[0] })}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="particleDensity">Particle Density</Label>
-                    <Slider
-                      id="particleDensity"
-                      defaultValue={[params.particleDensity]}
-                      max={10000}
-                      step={100}
-                      onValueChange={(value) => setParams({ ...params, particleDensity: value[0] })}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="particleSpeed">Particle Speed</Label>
-                    <Slider
-                      id="particleSpeed"
-                      defaultValue={[params.particleSpeed]}
-                      max={10}
-                      step={0.1}
-                      onValueChange={(value) => setParams({ ...params, particleSpeed: value[0] })}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="particleSize">Particle Size</Label>
-                    <Slider
-                      id="particleSize"
-                      defaultValue={[params.particleSize]}
-                      max={10}
-                      step={0.1}
-                      onValueChange={(value) => setParams({ ...params, particleSize: value[0] })}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="lineLength">Line Length</Label>
-                    <Slider
-                      id="lineLength"
-                      defaultValue={[params.lineLength]}
-                      max={200}
-                      step={1}
-                      onValueChange={(value) => setParams({ ...params, lineLength: value[0] })}
-                    />
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Label htmlFor="fadeIn">Fade In</Label>
-                    <Switch
-                      id="fadeIn"
-                      checked={params.fadeIn}
-                      onCheckedChange={(checked) => setParams({ ...params, fadeIn: checked })}
-                    />
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Label htmlFor="fadeOut">Fade Out</Label>
-                    <Switch
-                      id="fadeOut"
-                      checked={params.fadeOut}
-                      onCheckedChange={(checked) => setParams({ ...params, fadeOut: checked })}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="colorMode">Color Mode</Label>
-                    <Select
-                      value={params.colorMode}
-                      onValueChange={(value) => setParams({ ...params, colorMode: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a color mode" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="rainbow">Rainbow</SelectItem>
-                        <SelectItem value="single">Single Color</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {params.colorMode === "rainbow" ? (
-                    <>
-                      <div className="grid gap-2">
-                        <Label htmlFor="rainbowSaturation">Rainbow Saturation</Label>
-                        <Slider
-                          id="rainbowSaturation"
-                          defaultValue={[params.rainbowSaturation]}
-                          max={100}
-                          step={1}
-                          onValueChange={(value) => setParams({ ...params, rainbowSaturation: value[0] })}
-                        />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="rainbowLightness">Rainbow Lightness</Label>
-                        <Slider
-                          id="rainbowLightness"
-                          defaultValue={[params.rainbowLightness]}
-                          max={100}
-                          step={1}
-                          onValueChange={(value) => setParams({ ...params, rainbowLightness: value[0] })}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <div>
-                      <Label htmlFor="singleColor">Single Color</Label>
-                      <Input
-                        type="color"
-                        id="singleColor"
-                        value={params.singleColor}
-                        onChange={(e) => setParams({ ...params, singleColor: e.target.value })}
-                      />
-                    </div>
-                  )}
-
-                  <Button onClick={generateFlowArt} disabled={isLoading} className="w-full">
-                    {isLoading ? "Generating..." : "Generate Flow Art"}
-                  </Button>
+                  <Wand2 className="w-4 h-4" />
+                  Generate
                 </>
               )}
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="w-full md:w-2/3">
-          {generatedImage ? (
-            <div className="flex flex-col gap-4">
-              <img src={upscaledImage || generatedImage} alt="Generated Flow Art" className="rounded-md shadow-md" />
-
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => generateFlowArt()}
-                  disabled={isLoading}
-                  className="flex items-center gap-2"
-                  variant="outline"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  Regenerate
+            </Button>
+            <div className="flex gap-2">
+              {generatedImage && (
+                <Button onClick={handleUpscale} disabled={isLoading} className="flex items-center gap-2">
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Upscaling...
+                    </>
+                  ) : (
+                    <>
+                      <Maximize2 className="w-4 h-4" />
+                      Upscale
+                    </>
+                  )}
                 </Button>
-                <Button
-                  onClick={upscaleImage}
-                  disabled={isUpscaling || !generatedImage}
-                  className="flex items-center gap-2 bg-transparent"
-                  variant="outline"
+              )}
+              {generatedImage && (
+                <a
+                  href={upscaledImage || generatedImage}
+                  download="artwork.png"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  {isUpscaling ? "Upscaling..." : "Upscale"}
-                </Button>
-                <Button
-                  onClick={downloadImage}
-                  disabled={!generatedImage}
-                  className="flex items-center gap-2 bg-transparent"
-                  variant="outline"
-                >
-                  <Download className="w-4 h-4" />
-                  Download
-                </Button>
-                <Button onClick={() => setShowSaveDialog(true)} className="flex items-center gap-2" variant="outline">
+                  <Button className="flex items-center gap-2">
+                    <Download className="w-4 h-4" />
+                    Download
+                  </Button>
+                </a>
+              )}
+              {generatedImage && (
+                <Button onClick={() => setShowSaveDialog(true)} className="flex items-center gap-2">
                   <Heart className="w-4 h-4" />
                   Save to Gallery
                 </Button>
-              </div>
+              )}
             </div>
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-gray-500">No art generated yet. Adjust the settings and click "Generate Flow Art".</p>
-            </div>
-          )}
-        </div>
+          </CardFooter>
+        </Card>
       </div>
+      <p className="text-center text-sm text-muted-foreground">
+        Built by{" "}
+        <a
+          href="https://twitter.com/steventey"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2"
+        >
+          Steven Tey
+        </a>{" "}
+        •{" "}
+        <a href="https://github.com/steven-tey/flow-art-generator" target="_blank" rel="noopener noreferrer">
+          <Github className="inline-block w-4 h-4" />
+          GitHub
+        </a>
+      </p>
       <SaveArtworkDialog
-        open={showSaveDialog}
+        isOpen={showSaveDialog}
         onClose={() => setShowSaveDialog(false)}
-        onSave={handleSaveToGallery}
+        onSaved={() => {
+          toast({
+            title: "Artwork saved!",
+            description: "Your artwork has been added to the gallery.",
+          })
+        }}
         imageUrl={generatedImage || ""}
         upscaledImageUrl={upscaledImage || undefined}
         generationParams={params}
-        mode={currentMode}
-        customPrompt={currentMode === "ai" ? customPrompt : undefined}
-        upscaleMethod={upscaledImage ? "AI Upscaler" : undefined}
+        mode={mode}
+        customPrompt={mode === "ai" ? customPrompt : undefined}
+        upscaleMethod={upscaledImage ? "Real-ESRGAN" : undefined}
       />
     </div>
   )
 }
-
-export default FlowArtGenerator
