@@ -6,13 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Loader2, Download, Zap, Info, Sparkles } from "lucide-react"
+import { Loader2, Download, Zap, Info, Sparkles, Wand2 } from "lucide-react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ClientUpscaler } from "@/lib/client-upscaler"
-import { ImageEnhancementPanel } from "@/components/image-enhancement-panel"
+import { EnhancementSuite } from "@/components/enhancement-suite"
 
 interface UpscaleMetadata {
   originalSize: string
@@ -39,11 +39,7 @@ export function FlowArtGenerator() {
   const [upscaleStatus, setUpscaleStatus] = useState<string>("")
   const [upscaleMetadata, setUpscaleMetadata] = useState<UpscaleMetadata | null>(null)
   const [enhancedImageUrl, setEnhancedImageUrl] = useState<string | null>(null)
-  const [showEnhancementPanel, setShowEnhancementPanel] = useState<boolean>(false)
-
-  const handleEnhancedImageChange = (enhancedImage: string) => {
-    setEnhancedImageUrl(enhancedImage)
-  }
+  const [enhancementMetadata, setEnhancementMetadata] = useState<any>(null)
 
   const handleGenerate = async () => {
     setLoading(true)
@@ -52,7 +48,7 @@ export function FlowArtGenerator() {
     setUpscaledImageUrl(null)
     setUpscaleMetadata(null)
     setEnhancedImageUrl(null)
-    setShowEnhancementPanel(false)
+    setEnhancementMetadata(null)
 
     try {
       let response
@@ -174,19 +170,21 @@ export function FlowArtGenerator() {
     }
   }
 
-  const handleDownload = (isUpscaled = false) => {
-    let downloadUrl: string | null = null
-    let suffix = ""
+  const handleEnhancedImage = (imageUrl: string, metadata: any) => {
+    setEnhancedImageUrl(imageUrl)
+    setEnhancementMetadata(metadata)
+  }
 
-    if (isUpscaled) {
-      downloadUrl = upscaledImageUrl
-      suffix = "-upscaled-4x"
-    } else if (enhancedImageUrl) {
+  const handleDownload = (isUpscaled = false, isEnhanced = false) => {
+    let downloadUrl = baseImageUrl
+    let suffix = "-base"
+
+    if (isEnhanced && enhancedImageUrl) {
       downloadUrl = enhancedImageUrl
       suffix = "-enhanced"
-    } else {
-      downloadUrl = baseImageUrl
-      suffix = "-base"
+    } else if (isUpscaled && upscaledImageUrl) {
+      downloadUrl = upscaledImageUrl
+      suffix = "-upscaled-4x"
     }
 
     if (downloadUrl) {
@@ -326,36 +324,17 @@ export function FlowArtGenerator() {
                       <Sparkles className="w-3 h-3 mr-1" />
                       4x Upscaled
                     </Badge>
-                  ) : enhancedImageUrl ? (
-                    <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
-                      <Sparkles className="w-3 h-3 mr-1" />
-                      Enhanced
-                    </Badge>
                   ) : (
                     <Badge className="bg-blue-500">Base Resolution</Badge>
                   )}
+                  {enhancedImageUrl && (
+                    <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                      <Wand2 className="w-3 h-3 mr-1" />
+                      Enhanced
+                    </Badge>
+                  )}
                 </div>
               </div>
-
-              {baseImageUrl && !showEnhancementPanel && (
-                <Button
-                  onClick={() => setShowEnhancementPanel(true)}
-                  variant="outline"
-                  className="bg-gradient-to-r from-purple-500 to-blue-500 text-white border-0 hover:from-purple-600 hover:to-blue-600"
-                >
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Enhance Image
-                </Button>
-              )}
-
-              {showEnhancementPanel && baseImageUrl && (
-                <div className="w-full max-w-md">
-                  <ImageEnhancementPanel
-                    originalImage={baseImageUrl}
-                    onEnhancedImageChange={handleEnhancedImageChange}
-                  />
-                </div>
-              )}
 
               {upscaling && (
                 <div className="w-full max-w-md space-y-2">
@@ -383,6 +362,8 @@ export function FlowArtGenerator() {
                 </Alert>
               )}
 
+              {baseImageUrl && <EnhancementSuite baseImageUrl={baseImageUrl} onEnhancedImage={handleEnhancedImage} />}
+
               <div className="flex flex-col sm:flex-row gap-2 w-full max-w-md">
                 <Button onClick={() => handleDownload(false)} variant="outline" className="flex-1">
                   <Download className="mr-2 h-4 w-4" />
@@ -407,6 +388,16 @@ export function FlowArtGenerator() {
                   >
                     <Download className="mr-2 h-4 w-4" />
                     Download 4x
+                  </Button>
+                )}
+
+                {enhancedImageUrl && (
+                  <Button
+                    onClick={() => handleDownload(true, true)}
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Enhanced
                   </Button>
                 )}
               </div>
