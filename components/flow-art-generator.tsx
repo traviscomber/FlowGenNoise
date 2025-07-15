@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ClientUpscaler } from "@/lib/client-upscaler"
-import { EnhancementSuite } from "@/components/enhancement-suite"
+import { ImageEnhancementSuite } from "@/components/image-enhancement-suite"
 
 interface UpscaleMetadata {
   originalSize: string
@@ -40,6 +40,11 @@ export function FlowArtGenerator() {
   const [upscaleMetadata, setUpscaleMetadata] = useState<UpscaleMetadata | null>(null)
   const [enhancedImageUrl, setEnhancedImageUrl] = useState<string | null>(null)
   const [enhancementMetadata, setEnhancementMetadata] = useState<any>(null)
+
+  const handleEnhancedImage = (imageUrl: string, metadata: any) => {
+    setEnhancedImageUrl(imageUrl)
+    setEnhancementMetadata(metadata)
+  }
 
   const handleGenerate = async () => {
     setLoading(true)
@@ -168,11 +173,6 @@ export function FlowArtGenerator() {
     } finally {
       setUpscaling(false)
     }
-  }
-
-  const handleEnhancedImage = (imageUrl: string, metadata: any) => {
-    setEnhancedImageUrl(imageUrl)
-    setEnhancementMetadata(metadata)
   }
 
   const handleDownload = (isUpscaled = false, isEnhanced = false) => {
@@ -362,7 +362,11 @@ export function FlowArtGenerator() {
                 </Alert>
               )}
 
-              {baseImageUrl && <EnhancementSuite baseImageUrl={baseImageUrl} onEnhancedImage={handleEnhancedImage} />}
+              {baseImageUrl && (
+                <div className="w-full max-w-md">
+                  <ImageEnhancementSuite baseImageUrl={baseImageUrl} onEnhancedImage={handleEnhancedImage} />
+                </div>
+              )}
 
               <div className="flex flex-col sm:flex-row gap-2 w-full max-w-md">
                 <Button onClick={() => handleDownload(false)} variant="outline" className="flex-1">
@@ -393,7 +397,7 @@ export function FlowArtGenerator() {
 
                 {enhancedImageUrl && (
                   <Button
-                    onClick={() => handleDownload(true, true)}
+                    onClick={() => handleDownload(false, true)}
                     className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                   >
                     <Download className="mr-2 h-4 w-4" />
