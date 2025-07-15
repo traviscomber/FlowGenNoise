@@ -1,40 +1,44 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { createClient } from "@supabase/supabase-js"
+import { useState, useEffect } from "react"
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// ---------------------------------------------------------------------------
-// Hook - returns the current Supabase user and keeps it in sync client-side.
+// User hook for authentication state
 export function useUser() {
-  const [user, setUser] = useState<import("@supabase/supabase-js").User | null>(null)
+  const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Initial fetch (wrapped in an IIFE because getUser returns a Promise)
-    ;(async () => {
-      const { data } = await supabase.auth.getUser()
-      setUser(data.user ?? null)
-    })()
-
-    // Listen for auth state changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
+      setLoading(false)
     })
 
-    return () => subscription?.unsubscribe()
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
-  return user
+  return { user, loading }
 }
 
-// Simple wrapper so components can call signOut() directly.
+// Sign out function
 export async function signOut() {
   const { error } = await supabase.auth.signOut()
-  if (error) throw error
+  if (error) {
+    console.error("Error signing out:", error)
+    throw error
+  }
 }
