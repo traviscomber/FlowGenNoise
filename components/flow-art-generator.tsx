@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ClientUpscaler } from "@/lib/client-upscaler"
+import { ImageEnhancementPanel } from "@/components/image-enhancement-panel"
 
 interface UpscaleMetadata {
   originalSize: string
@@ -37,6 +38,12 @@ export function FlowArtGenerator() {
   const [upscaleProgress, setUpscaleProgress] = useState<number>(0)
   const [upscaleStatus, setUpscaleStatus] = useState<string>("")
   const [upscaleMetadata, setUpscaleMetadata] = useState<UpscaleMetadata | null>(null)
+  const [enhancedImageUrl, setEnhancedImageUrl] = useState<string | null>(null)
+  const [showEnhancementPanel, setShowEnhancementPanel] = useState<boolean>(false)
+
+  const handleEnhancedImageChange = (enhancedImage: string) => {
+    setEnhancedImageUrl(enhancedImage)
+  }
 
   const handleGenerate = async () => {
     setLoading(true)
@@ -44,6 +51,8 @@ export function FlowArtGenerator() {
     setBaseImageUrl(null)
     setUpscaledImageUrl(null)
     setUpscaleMetadata(null)
+    setEnhancedImageUrl(null)
+    setShowEnhancementPanel(false)
 
     try {
       let response
@@ -166,12 +175,24 @@ export function FlowArtGenerator() {
   }
 
   const handleDownload = (isUpscaled = false) => {
-    const downloadUrl = isUpscaled ? upscaledImageUrl : baseImageUrl
+    let downloadUrl: string | null = null
+    let suffix = ""
+
+    if (isUpscaled) {
+      downloadUrl = upscaledImageUrl
+      suffix = "-upscaled-4x"
+    } else if (enhancedImageUrl) {
+      downloadUrl = enhancedImageUrl
+      suffix = "-enhanced"
+    } else {
+      downloadUrl = baseImageUrl
+      suffix = "-base"
+    }
+
     if (downloadUrl) {
       const link = document.createElement("a")
       link.href = downloadUrl
       const fileExtension = generationMode === "svg" ? "svg" : "png"
-      const suffix = isUpscaled ? "-upscaled-4x" : "-base"
       link.download = `flowsketch-art${suffix}-${Date.now()}.${fileExtension}`
       document.body.appendChild(link)
       link.click()
@@ -179,7 +200,7 @@ export function FlowArtGenerator() {
     }
   }
 
-  const currentImage = upscaledImageUrl || baseImageUrl
+  const currentImage = enhancedImageUrl || upscaledImageUrl || baseImageUrl
   const isAIMode = generationMode === "ai"
 
   return (
@@ -305,11 +326,36 @@ export function FlowArtGenerator() {
                       <Sparkles className="w-3 h-3 mr-1" />
                       4x Upscaled
                     </Badge>
+                  ) : enhancedImageUrl ? (
+                    <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
+                      <Sparkles className="w-3 h-3 mr-1" />
+                      Enhanced
+                    </Badge>
                   ) : (
                     <Badge className="bg-blue-500">Base Resolution</Badge>
                   )}
                 </div>
               </div>
+
+              {baseImageUrl && !showEnhancementPanel && (
+                <Button
+                  onClick={() => setShowEnhancementPanel(true)}
+                  variant="outline"
+                  className="bg-gradient-to-r from-purple-500 to-blue-500 text-white border-0 hover:from-purple-600 hover:to-blue-600"
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Enhance Image
+                </Button>
+              )}
+
+              {showEnhancementPanel && baseImageUrl && (
+                <div className="w-full max-w-md">
+                  <ImageEnhancementPanel
+                    originalImage={baseImageUrl}
+                    onEnhancedImageChange={handleEnhancedImageChange}
+                  />
+                </div>
+              )}
 
               {upscaling && (
                 <div className="w-full max-w-md space-y-2">
