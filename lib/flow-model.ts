@@ -1,165 +1,71 @@
 /**
- * FlowSketch – lightweight mathematical dataset generator
- *
- * Provides:
- *   • SCENARIOS – palette of background colours (used by UI)
- *   • generateDataset(...) – returns an array of { x, y } points
- *   • FlowModel.generateDataset – wrapper for legacy code paths
+ * A simple seeded pseudo-random number generator (PRNG).
+ * Not cryptographically secure, but sufficient for reproducible dataset generation.
  */
-
-export interface Point {
-  x: number
-  y: number
-}
-
-/* -------------------------------------------------------------------------- */
-/* 1. Creative scenario catalogue (UI can read background colours if desired) */
-/* -------------------------------------------------------------------------- */
-export const SCENARIOS = {
-  none: { label: "None", backgroundColor: "#ffffff" },
-  forest: { label: "Enchanted Forest", backgroundColor: "#183a1d" },
-  ocean: { label: "Deep Ocean", backgroundColor: "#012b52" },
-  space: { label: "Cosmic Nebula", backgroundColor: "#0b0d17" },
-  city: { label: "Cyberpunk City", backgroundColor: "#1a001a" },
-  ancient_temple: { label: "Ancient Temple", backgroundColor: "#8B4513" }, // Example color, adjust as needed
-  crystal_cave: { label: "Crystal Cave", backgroundColor: "#2F4F4F" }, // Example color, adjust as needed
-  aurora_borealis: { label: "Aurora Borealis", backgroundColor: "#0A192F" }, // Example color, adjust as needed
-  volcanic_landscape: { label: "Volcanic Landscape", backgroundColor: "#361D1D" }, // Example color, adjust as needed
-  neural_connections: { label: "Neural Connections", backgroundColor: "#2A0A2A" }, // New scenario for UI
-} as const
-
-/* -------------------------------------------------------------------------- */
-/* 2. Small deterministic PRNG (Mulberry32)                                   */
-/* -------------------------------------------------------------------------- */
-function mulberry32(seed: number) {
+function createPrng(seed: number) {
+  let s = seed
   return () => {
-    let t = (seed += 0x6d2b79f5)
-    t = Math.imul(t ^ (t >>> 15), t | 1)
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+    s = (s * 9301 + 49297) % 233280
+    return s / 233280
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* 3. Individual pattern generators                                           */
-/* -------------------------------------------------------------------------- */
-function genSpirals(n: number, rng: () => number, noise = 0.01): Point[] {
-  // two-armed spiral
-  const pts: Point[] = []
-  for (let i = 0; i < n; i++) {
-    const r = i / n
-    const angle = 4 * Math.PI * r // two full turns
-    pts.push({
-      x: r * Math.cos(angle) + (rng() - 0.5) * noise,
-      y: r * Math.sin(angle) + (rng() - 0.5) * noise,
-    })
-  }
-  return pts
-}
+export function generateDataset(name: string, seed: number, n_samples: number, noise: number): number[][] {
+  const prng = createPrng(seed)
 
-function genMoons(n: number, rng: () => number, noise = 0.05): Point[] {
-  const pts: Point[] = []
-  const half = Math.floor(n / 2)
-
-  // upper moon
-  for (let i = 0; i < half; i++) {
-    const angle = Math.PI * rng()
-    pts.push({
-      x: Math.cos(angle) + (rng() - 0.5) * noise,
-      y: Math.sin(angle) + (rng() - 0.5) * noise,
-    })
-  }
-
-  // lower moon (offset)
-  for (let i = 0; i < n - half; i++) {
-    const angle = Math.PI * rng()
-    pts.push({
-      x: 1 - Math.cos(angle) + (rng() - 0.5) * noise,
-      y: -Math.sin(angle) + 0.5 + (rng() - 0.5) * noise,
-    })
-  }
-  return pts
-}
-
-function genCheckerboard(n: number, rng: () => number): Point[] {
-  const size = Math.ceil(Math.sqrt(n))
-  const pts: Point[] = []
-  for (let row = 0; row < size; row++) {
-    for (let col = 0; col < size; col++) {
-      if (pts.length >= n) break
-      pts.push({ x: col, y: row })
+  if (name === "spirals") {
+    const data: number[][] = []
+    for (let i = 0; i < n_samples; i++) {
+      const theta = Math.sqrt(prng()) * 2 * Math.PI
+      const r = 2 * theta
+      const x = r * Math.cos(theta) + (prng() * 2 - 1) * noise
+      const y = r * Math.sin(theta) + (prng() * 2 - 1) * noise
+      data.push([x, y])
     }
-  }
-  return pts
-}
-
-function genGaussian(n: number, rng: () => number, noise = 0.08): Point[] {
-  const pts: Point[] = []
-  const gaussian = () => {
-    // Box-Muller transform
-    const u = 1 - rng()
-    const v = 1 - rng()
-    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v)
-  }
-  for (let i = 0; i < n; i++) {
-    pts.push({ x: gaussian() * noise, y: gaussian() * noise })
-  }
-  return pts
-}
-
-function genGrid(n: number): Point[] {
-  const side = Math.ceil(Math.sqrt(n))
-  const pts: Point[] = []
-  for (let r = 0; r < side; r++) {
-    for (let c = 0; c < side; c++) {
-      if (pts.length >= n) break
-      pts.push({ x: c / (side - 1), y: r / (side - 1) })
+    return data
+  } else if (name === "checkerboard") {
+    const data: number[][] = []
+    for (let i = 0; i < n_samples; i++) {
+      const x = Math.floor(prng() * 4 - 2) + (prng() * 2 - 1) * noise
+      const y = Math.floor(prng() * 4 - 2) + (prng() * 2 - 1) * noise
+      data.push([x, y])
     }
-  }
-  return pts
-}
+    return data
+  } else if (name === "moons") {
+    // Simplified implementation of make_moons, aiming for similar visual output
+    const X: number[][] = []
 
-function genNeural(n: number, rng: () => number): Point[] {
-  // sinusoid “ridge” pattern
-  const pts: Point[] = []
-  for (let i = 0; i < n; i++) {
-    const t = (i / n) * 4 * Math.PI
-    pts.push({
-      x: t / (4 * Math.PI),
-      y: 0.5 + Math.sin(t * 2) * 0.3 + (rng() - 0.5) * 0.05,
-    })
+    for (let i = 0; i < n_samples / 2; i++) {
+      const angle = (Math.PI * i) / (n_samples / 2 - 1)
+      X.push([Math.cos(angle) + (prng() * 2 - 1) * noise, Math.sin(angle) + (prng() * 2 - 1) * noise])
+    }
+    for (let i = 0; i < n_samples / 2; i++) {
+      const angle = (Math.PI * i) / (n_samples / 2 - 1) + Math.PI
+      X.push([1 - Math.cos(angle) + (prng() * 2 - 1) * noise, 1 - Math.sin(angle) + (prng() * 2 - 1) * noise])
+    }
+    return X
+  } else if (name === "gaussian") {
+    const data: number[][] = []
+    for (let i = 0; i < n_samples; i++) {
+      // Using Box-Muller transform for Gaussian distribution
+      const u1 = prng()
+      const u2 = prng()
+      const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2)
+      const z2 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2)
+      data.push([z1 * 0.5 + (prng() * 2 - 1) * noise, z2 * 0.5 + (prng() * 2 - 1) * noise]) // Scale down for better visualization
+    }
+    return data
+  } else if (name === "grid") {
+    const data: number[][] = []
+    const numPointsPerSide = Math.floor(Math.sqrt(n_samples))
+    const step = 2 / (numPointsPerSide - 1) // Grid from -1 to 1
+    for (let i = 0; i < numPointsPerSide; i++) {
+      for (let j = 0; j < numPointsPerSide; j++) {
+        data.push([-1 + i * step + (prng() * 2 - 1) * noise, -1 + j * step + (prng() * 2 - 1) * noise])
+      }
+    }
+    return data
   }
-  return pts
-}
-
-/* -------------------------------------------------------------------------- */
-/* 4. Public generator – used across the app                                  */
-/* -------------------------------------------------------------------------- */
-export function generateDataset(dataset: string, seed = 42, numSamples = 1000, noise = 0.05): Point[] {
-  const rng = mulberry32(seed)
-  switch (dataset) {
-    case "spiral":
-    case "spirals":
-      return genSpirals(numSamples, rng, noise)
-    case "moons":
-      return genMoons(numSamples, rng, noise)
-    case "checkerboard":
-      return genCheckerboard(numSamples, rng)
-    case "gaussian":
-    case "blobs":
-      return genGaussian(numSamples, rng, noise)
-    case "grid":
-      return genGrid(numSamples)
-    case "neural":
-      return genNeural(numSamples, rng)
-    default:
-      return genGaussian(numSamples, rng, noise)
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/* 5. Wrapper class (legacy API the UI already imports)                       */
-/* -------------------------------------------------------------------------- */
-export class FlowModel {
-  static generateDataset = generateDataset
+  // Default to random noise if name is not recognized
+  return Array.from({ length: n_samples }, () => [prng() * 2 - 1, prng() * 2 - 1])
 }

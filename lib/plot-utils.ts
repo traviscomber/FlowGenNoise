@@ -1,77 +1,65 @@
-/**
- * FlowSketch – SVG rendering helpers
- *
- * Exports:
- *   • createSVGPlot            – main helper (width/height configurable)
- *   • generateScatterPlotSVG   – alias (kept for backwards compatibility)
- *   • PlotUtils                – object bundling the helpers
- */
+export function generateScatterPlotSVG(data: number[][]): string {
+  const width = 600
+  const height = 400
+  const margin = 40 // Margin for padding
 
-import type { Point } from "./flow-model"
-
-/* Basic palettes – used when a colour scheme string doesn’t match */
-const DEFAULT_PALETTE = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
-
-function getPalette(scheme: string): string[] {
-  switch (scheme) {
-    case "viridis":
-      return ["#440154", "#31688e", "#35b779", "#fde725"]
-    case "plasma":
-      return ["#0d0887", "#7e03a8", "#cc4778", "#f89441", "#f0f921"]
-    case "inferno":
-      return ["#000004", "#420a68", "#932667", "#dd513a", "#fca50a", "#fcffa4"]
-    case "magma":
-      return ["#000004", "#3b0f70", "#8c2981", "#de4968", "#fe9f6d", "#fcfdbf"]
-    case "cool":
-      return ["#00ffff", "#0080ff", "#0000ff", "#8000ff"]
-    case "warm":
-      return ["#ff0000", "#ff8000", "#ffff00", "#80ff00"]
-    case "turbo":
-      return ["#30123b", "#4140ba", "#2e9df5", "#4bd276", "#f3f34c", "#f79a23", "#ca2928"]
-    default:
-      return DEFAULT_PALETTE
+  // Find min/max for scaling
+  let minX = Number.POSITIVE_INFINITY,
+    maxX = Number.NEGATIVE_INFINITY,
+    minY = Number.POSITIVE_INFINITY,
+    maxY = Number.NEGATIVE_INFINITY
+  for (const [x, y] of data) {
+    minX = Math.min(minX, x)
+    maxX = Math.max(maxX, x)
+    minY = Math.min(minY, y)
+    maxY = Math.max(maxY, y)
   }
-}
 
-/**
- * Create a simple scatter-plot SVG string for a list of points
- */
-export function createSVGPlot(points: Point[], colorScheme: string, width = 800, height = 600): string {
-  if (!points.length) return "<svg xmlns='http://www.w3.org/2000/svg'/>"
+  // Add some padding to the data range
+  const paddingFactor = 0.1
+  const rangeX = maxX - minX
+  const rangeY = maxY - minY
+  minX -= rangeX * paddingFactor
+  maxX += rangeX * paddingFactor
+  minY -= rangeY * paddingFactor
+  maxY += rangeY * paddingFactor
 
-  // Get bounds
-  const xs = points.map((p) => p.x)
-  const ys = points.map((p) => p.y)
-  const minX = Math.min(...xs)
-  const maxX = Math.max(...xs)
-  const minY = Math.min(...ys)
-  const maxY = Math.max(...ys)
+  // Scaling functions to map data coordinates to SVG pixel coordinates
+  const scaleX = (val: number) => margin + ((val - minX) / (maxX - minX)) * (width - 2 * margin)
+  const scaleY = (val: number) => height - margin - ((val - minY) / (maxY - minY)) * (height - 2 * margin) // Invert Y for SVG
 
-  const palette = getPalette(colorScheme)
-  const radius = Math.max(1, Math.min(width, height) / 300)
+  // For color mapping (c=np.linalg.norm(X, axis=1), cmap='magma')
+  const norms = data.map(([x, y]) => Math.sqrt(x * x + y * y))
+  const minNorm = Math.min(...norms)
+  const maxNorm = Math.max(...norms)
 
-  const circles = points
-    .map((p, idx) => {
-      const cx = ((p.x - minX) / (maxX - minX)) * width
-      // Flip y so origin is bottom-left
-      const cy = height - ((p.y - minY) / (maxY - minY)) * height
-      const fill = palette[idx % palette.length]
-      return `<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${radius}" fill="${fill}" />`
-    })
-    .join("")
+  const getColor = (norm: number) => {
+    // Simple linear interpolation for a 'magma' like effect
+    // Approximating magma colormap with a gradient from purple to yellow
+    const t = (norm - minNorm) / (maxNorm - minNorm)
+    const r = Math.floor(255 * t)
+    const g = Math.floor(255 * t)
+    const b = Math.floor(255 * (1 - t))
+    return `rgb(${r}, ${g}, ${b})`
+  }
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">${circles}</svg>`
-}
+  let circles = ""
+  const pointRadius = 2 // Radius for SVG points
 
-/* -------------------------------------------------------------------------- */
-/*  Alias kept to satisfy any legacy import/usage                            */
-/* -------------------------------------------------------------------------- */
-export const generateScatterPlotSVG = createSVGPlot
+  for (let i = 0; i < data.length; i++) {
+    const [x, y] = data[i]
+    const norm = norms[i]
+    const color = getColor(norm)
+    circles += `<circle cx="${scaleX(x)}" cy="${scaleY(y)}" r="${pointRadius}" fill="${color}" fill-opacity="0.8" />`
+  }
 
-/* -------------------------------------------------------------------------- */
-/*  Bundle helpers for the `{ PlotUtils }` named import in FlowArtGenerator   */
-/* -------------------------------------------------------------------------- */
-export const PlotUtils = {
-  createSVGPlot,
-  generateScatterPlotSVG,
+  const svgContent = `
+        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="${width}" height="${height}" fill="white"/>
+          ${circles}
+        </svg>
+      `
+
+  // Encode SVG to base64 data URL
+  return `data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`
 }
