@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { ImageEnhancementSuite } from "./image-enhancement-suite"
+import { ImageEnhancementSuite } from "@/components/image-enhancement-suite"
 
-const FlowArtGenerator = () => {
+export function FlowArtGenerator() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [showEnhancementSuite, setShowEnhancementSuite] = useState(false)
 
@@ -45,5 +45,3 @@ const FlowArtGenerator = () => {
     </div>
   )
 }
-
-export default FlowArtGenerator
