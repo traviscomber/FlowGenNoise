@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -24,6 +24,8 @@ interface GeneratedArt {
   mode: "svg" | "ai"
   upscaleMethod?: "cloudinary" | "client" | "mathematical"
   customPrompt?: string
+  timestamp: number
+  id: string
 }
 
 export function FlowArtGenerator() {
@@ -33,6 +35,29 @@ export function FlowArtGenerator() {
   const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false)
   const [progress, setProgress] = useState(0)
   const [mode, setMode] = useState<"svg" | "ai">("svg")
+
+  // Gallery state
+  const [gallery, setGallery] = useState<GeneratedArt[]>([])
+  const [showGallery, setShowGallery] = useState(false)
+
+  // Load gallery from localStorage on mount
+  useEffect(() => {
+    const savedGallery = localStorage.getItem("flowsketch-gallery")
+    if (savedGallery) {
+      try {
+        setGallery(JSON.parse(savedGallery))
+      } catch (error) {
+        console.error("Failed to load gallery from localStorage:", error)
+      }
+    }
+  }, [])
+
+  // Save gallery to localStorage whenever it changes
+  useEffect(() => {
+    if (gallery.length > 0) {
+      localStorage.setItem("flowsketch-gallery", JSON.stringify(gallery))
+    }
+  }, [gallery])
 
   // Generation parameters - separate dataset, scenario, and color palette
   const [dataset, setDataset] = useState("spirals")
@@ -126,12 +151,16 @@ export function FlowArtGenerator() {
         console.log("Blob URL created:", imageUrl)
 
         setProgress(100)
-        setGeneratedArt({
+        const newArt = {
           svgContent,
           imageUrl,
           params,
-          mode: "svg",
-        })
+          mode: "svg" as const,
+          timestamp: Date.now(),
+          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        }
+        setGeneratedArt(newArt)
+        setGallery((prev) => [newArt, ...prev.slice(0, 19)]) // Keep last 20 images
 
         toast({
           title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
@@ -176,13 +205,17 @@ export function FlowArtGenerator() {
         }
 
         setProgress(80)
-        setGeneratedArt({
+        const newArt = {
           svgContent: "",
           imageUrl: data.image,
           params,
-          mode: "ai",
+          mode: "ai" as const,
           customPrompt: useCustomPrompt ? customPrompt : undefined,
-        })
+          timestamp: Date.now(),
+          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        }
+        setGeneratedArt(newArt)
+        setGallery((prev) => [newArt, ...prev.slice(0, 19)]) // Keep last 20 images
 
         setProgress(100)
         toast({
@@ -379,6 +412,48 @@ export function FlowArtGenerator() {
     setSeed(newSeed)
   }, [])
 
+  const clearGallery = useCallback(() => {
+    setGallery([])
+    localStorage.removeItem("flowsketch-gallery")
+    toast({
+      title: "Gallery Cleared",
+      description: "All saved artworks have been removed.",
+    })
+  }, [toast])
+
+  const removeFromGallery = useCallback(
+    (id: string) => {
+      setGallery((prev) => prev.filter((art) => art.id !== id))
+      toast({
+        title: "Artwork Removed",
+        description: "Artwork removed from gallery.",
+      })
+    },
+    [toast],
+  )
+
+  const loadFromGallery = useCallback(
+    (art: GeneratedArt) => {
+      setGeneratedArt(art)
+      setDataset(art.params.dataset)
+      setScenario(art.params.scenario)
+      setColorScheme(art.params.colorScheme)
+      setSeed(art.params.seed)
+      setNumSamples(art.params.numSamples)
+      setNoiseScale(art.params.noiseScale)
+      if (art.customPrompt) {
+        setCustomPrompt(art.customPrompt)
+        setUseCustomPrompt(true)
+      }
+      setMode(art.mode)
+      toast({
+        title: "Artwork Loaded",
+        description: "Settings restored from gallery artwork.",
+      })
+    },
+    [toast],
+  )
+
   const getButtonText = () => {
     const scenarioText = scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)
 
@@ -415,9 +490,10 @@ export function FlowArtGenerator() {
             </CardHeader>
             <CardContent className="space-y-4">
               <Tabs value={mode} onValueChange={(value) => setMode(value as "svg" | "ai")}>
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="svg">Dataset + Scenario</TabsTrigger>
                   <TabsTrigger value="ai">AI Art</TabsTrigger>
+                  <TabsTrigger value="gallery">Gallery ({gallery.length})</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="svg" className="space-y-4">
@@ -437,6 +513,83 @@ export function FlowArtGenerator() {
                       prompt enhancement for better results!
                     </AlertDescription>
                   </Alert>
+                </TabsContent>
+
+                <TabsContent value="gallery" className="space-y-4">
+                  <Alert>
+                    <ImageIcon className="h-4 w-4" />
+                    <AlertDescription>
+                      Your generated artworks are automatically saved here. Click any image to load its settings.
+                    </AlertDescription>
+                  </Alert>
+
+                  {gallery.length > 0 ? (
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <p className="text-sm text-gray-600">{gallery.length} saved artworks</p>
+                        <Button onClick={clearGallery} variant="outline" size="sm">
+                          Clear All
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto">
+                        {gallery.map((art) => (
+                          <div
+                            key={art.id}
+                            className="relative group border rounded-lg overflow-hidden bg-white dark:bg-gray-800"
+                          >
+                            <div className="aspect-square relative">
+                              {art.mode === "svg" && !art.upscaledImageUrl ? (
+                                <div
+                                  className="w-full h-full flex items-center justify-center text-xs"
+                                  dangerouslySetInnerHTML={{ __html: art.svgContent }}
+                                />
+                              ) : (
+                                <img
+                                  src={art.upscaledImageUrl || art.imageUrl}
+                                  alt={`${art.params.dataset} + ${art.params.scenario}`}
+                                  className="w-full h-full object-cover cursor-pointer"
+                                  onClick={() => loadFromGallery(art)}
+                                />
+                              )}
+
+                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center">
+                                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-2">
+                                  <Button size="sm" variant="secondary" onClick={() => loadFromGallery(art)}>
+                                    Load
+                                  </Button>
+                                  <Button size="sm" variant="destructive" onClick={() => removeFromGallery(art.id)}>
+                                    Remove
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="p-2 space-y-1">
+                              <div className="flex gap-1">
+                                <Badge variant="outline" className="text-xs">
+                                  {art.mode}
+                                </Badge>
+                                <Badge variant="outline" className="text-xs">
+                                  {art.params.dataset}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-gray-600 dark:text-gray-400">
+                                {art.params.scenario} • {art.params.colorScheme}
+                              </p>
+                              <p className="text-xs text-gray-500">{new Date(art.timestamp).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>No artworks in gallery yet</p>
+                      <p className="text-sm mt-1">Generate some art to see it here!</p>
+                    </div>
+                  )}
                 </TabsContent>
               </Tabs>
 
