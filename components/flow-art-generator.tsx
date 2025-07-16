@@ -432,27 +432,25 @@ export function FlowArtGenerator() {
                       <Wand2 className="h-4 w-4" />
                       {isScientificDataset() ? "Scientific AI Prompt" : "Custom AI Prompt"}
                     </Label>
-                    {isScientificDataset() && (
-                      <Button
-                        onClick={enhancePrompt}
-                        disabled={isEnhancingPrompt}
-                        size="sm"
-                        variant="outline"
-                        className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600"
-                      >
-                        {isEnhancingPrompt ? (
-                          <>
-                            <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                            Enhancing...
-                          </>
-                        ) : (
-                          <>
-                            <Sparkles className="h-3 w-3 mr-1" />
-                            Generate Scientific Prompt
-                          </>
-                        )}
-                      </Button>
-                    )}
+                    <Button
+                      onClick={enhancePrompt}
+                      disabled={isEnhancingPrompt}
+                      size="sm"
+                      variant="outline"
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600"
+                    >
+                      {isEnhancingPrompt ? (
+                        <>
+                          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                          Enhancing...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-3 w-3 mr-1" />
+                          {isScientificDataset() ? "Generate Scientific Prompt" : "Enhance Prompt"}
+                        </>
+                      )}
+                    </Button>
                   </div>
 
                   <Textarea
@@ -462,7 +460,7 @@ export function FlowArtGenerator() {
                     placeholder={
                       isScientificDataset()
                         ? "Click 'Generate Scientific Prompt' to create a detailed mathematical prompt based on your selected dataset..."
-                        : "Describe your vision... Leave empty to use auto-generated prompts based on dataset + scenario"
+                        : "Click 'Enhance Prompt' to generate a detailed prompt, or write your own custom prompt here..."
                     }
                     rows={5}
                     className="resize-none"

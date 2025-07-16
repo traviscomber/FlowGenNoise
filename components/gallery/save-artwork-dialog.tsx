@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
 import {
   Dialog,
   DialogContent,
@@ -17,8 +18,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Save, Loader2, Sparkles, X } from "lucide-react"
-import { galleryService, type ArtworkData } from "@/lib/gallery-service"
+import { Save, Loader2, X } from "lucide-react"
+import { GalleryService, type ArtworkData } from "@/lib/gallery-service"
 
 interface SaveArtworkDialogProps {
   artworkData: {
@@ -43,67 +44,69 @@ interface SaveArtworkDialogProps {
 
 export function SaveArtworkDialog({ artworkData, onSaved, children }: SaveArtworkDialogProps) {
   const [open, setOpen] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [customTags, setCustomTags] = useState("")
-  const [tags, setTags] = useState<string[]>([])
+  const [isSaving, setIsSaving] = useState(false)
 
-  // Generate auto-suggestions when dialog opens
-  const generateAutoSuggestions = () => {
-    const autoTitle = `${artworkData.mode === "ai" ? "AI" : "Flow"} ${artworkData.params.dataset.charAt(0).toUpperCase() + artworkData.params.dataset.slice(1)} - ${artworkData.params.scenario.charAt(0).toUpperCase() + artworkData.params.scenario.slice(1)}`
+  // Generate auto tags based on artwork data
+  const generateAutoTags = () => {
+    const tags = [artworkData.mode, artworkData.params.dataset, artworkData.params.scenario]
 
-    const autoDescription =
-      artworkData.customPrompt ||
-      `Generated using ${artworkData.params.dataset} dataset with ${artworkData.params.scenario} scenario styling. Seed: ${artworkData.params.seed}.`
+    if (artworkData.upscaledImageUrl) {
+      tags.push("enhanced")
+    }
 
-    const autoTags = [
-      artworkData.mode,
-      artworkData.params.dataset,
-      artworkData.params.scenario,
-      ...(artworkData.mode === "ai" ? ["ai-generated", "artificial-intelligence"] : ["flow-field", "mathematical"]),
-      ...(artworkData.upscaledImageUrl ? ["enhanced", "upscaled"] : []),
-      ...(artworkData.customPrompt ? ["custom-prompt"] : []),
+    if (artworkData.customPrompt) {
+      tags.push("custom-prompt")
+    }
+
+    // Add scientific tag for scientific datasets
+    const scientificDatasets = [
+      "neural_networks",
+      "quantum_fields",
+      "dna_sequences",
+      "cosmic_phenomena",
+      "fractal_geometry",
+      "protein_folding",
+      "brain_connectivity",
+      "crystalline_structures",
     ]
 
-    setTitle(autoTitle)
-    setDescription(autoDescription)
-    setTags(autoTags)
-  }
-
-  const handleOpenChange = (newOpen: boolean) => {
-    setOpen(newOpen)
-    if (newOpen) {
-      generateAutoSuggestions()
+    if (scientificDatasets.includes(artworkData.params.dataset)) {
+      tags.push("scientific")
     }
+
+    return tags.filter(Boolean)
   }
 
-  const addCustomTag = () => {
-    if (customTags.trim() && !tags.includes(customTags.trim().toLowerCase())) {
-      setTags([...tags, customTags.trim().toLowerCase()])
-      setCustomTags("")
-    }
-  }
-
-  const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove))
+  // Generate auto title
+  const generateAutoTitle = () => {
+    const datasetName = artworkData.params.dataset.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+    const scenarioName = artworkData.params.scenario.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+    return `${datasetName} ${scenarioName} Art`
   }
 
   const handleSave = async () => {
-    if (!title.trim()) {
-      alert("Please enter a title for your artwork")
-      return
-    }
-
     setIsSaving(true)
 
     try {
-      const artworkToSave: Omit<ArtworkData, "id" | "createdAt" | "updatedAt"> = {
-        title: title.trim(),
-        description: description.trim() || undefined,
+      const autoTags = generateAutoTags()
+      const manualTags = customTags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0)
+
+      const allTags = [...new Set([...autoTags, ...manualTags])]
+
+      const artwork: Omit<ArtworkData, "id" | "createdAt" | "updatedAt"> = {
+        title: title || generateAutoTitle(),
+        description:
+          description ||
+          `Generated ${artworkData.mode} artwork using ${artworkData.params.dataset} dataset with ${artworkData.params.scenario} styling`,
         imageUrl: artworkData.imageUrl,
-        svgContent: artworkData.svgContent,
         upscaledImageUrl: artworkData.upscaledImageUrl,
+        svgContent: artworkData.svgContent,
         mode: artworkData.mode,
         dataset: artworkData.params.dataset,
         scenario: artworkData.params.scenario,
@@ -113,23 +116,19 @@ export function SaveArtworkDialog({ artworkData, onSaved, children }: SaveArtwor
         timeStep: artworkData.params.timeStep,
         customPrompt: artworkData.customPrompt,
         upscaleMethod: artworkData.upscaleMethod,
-        tags: tags,
+        tags: allTags,
         isFavorite: false,
       }
 
-      const savedArtwork = await galleryService.saveArtwork(artworkToSave)
+      await GalleryService.saveArtwork(artwork)
 
-      if (savedArtwork) {
-        setOpen(false)
-        onSaved?.()
+      setOpen(false)
+      setTitle("")
+      setDescription("")
+      setCustomTags("")
 
-        // Reset form
-        setTitle("")
-        setDescription("")
-        setCustomTags("")
-        setTags([])
-      } else {
-        alert("Failed to save artwork. Please try again.")
+      if (onSaved) {
+        onSaved()
       }
     } catch (error) {
       console.error("Error saving artwork:", error)
@@ -139,8 +138,22 @@ export function SaveArtworkDialog({ artworkData, onSaved, children }: SaveArtwor
     }
   }
 
+  const removeTag = (tagToRemove: string) => {
+    const tags = customTags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag !== tagToRemove)
+    setCustomTags(tags.join(", "))
+  }
+
+  const autoTags = generateAutoTags()
+  const manualTags = customTags
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter((tag) => tag.length > 0)
+
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
@@ -162,110 +175,95 @@ export function SaveArtworkDialog({ artworkData, onSaved, children }: SaveArtwor
               className="w-full h-48 object-contain"
             />
             <div className="absolute top-2 right-2 flex gap-1">
-              <Badge variant={artworkData.mode === "ai" ? "default" : "outline"}>
+              <Badge variant={artworkData.mode === "ai" ? "default" : "outline"} className="text-xs">
                 {artworkData.mode === "ai" ? "🤖 AI" : "📊 Flow"}
               </Badge>
               {artworkData.upscaledImageUrl && (
-                <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-                  <Sparkles className="w-3 h-3 mr-1" />
+                <Badge variant="secondary" className="text-xs">
                   Enhanced
                 </Badge>
               )}
             </div>
           </div>
 
-          {/* Generation Parameters */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <div>
-              <span className="text-gray-600 dark:text-gray-400">Dataset:</span>
-              <p className="font-medium capitalize">{artworkData.params.dataset}</p>
+          {/* Title */}
+          <div className="space-y-2">
+            <Label htmlFor="title">Title</Label>
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder={generateAutoTitle()}
+            />
+          </div>
+
+          {/* Description */}
+          <div className="space-y-2">
+            <Label htmlFor="description">Description (Optional)</Label>
+            <Textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe your artwork..."
+              rows={3}
+            />
+          </div>
+
+          {/* Tags */}
+          <div className="space-y-2">
+            <Label>Tags</Label>
+
+            {/* Auto Tags */}
+            <div className="space-y-2">
+              <p className="text-xs text-muted-foreground">Auto-generated tags:</p>
+              <div className="flex flex-wrap gap-1">
+                {autoTags.map((tag) => (
+                  <Badge key={tag} variant="secondary" className="text-xs">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
             </div>
-            <div>
-              <span className="text-gray-600 dark:text-gray-400">Scenario:</span>
-              <p className="font-medium capitalize">{artworkData.params.scenario}</p>
-            </div>
-            <div>
-              <span className="text-gray-600 dark:text-gray-400">Seed:</span>
-              <p className="font-medium">{artworkData.params.seed}</p>
-            </div>
-            <div>
-              <span className="text-gray-600 dark:text-gray-400">Mode:</span>
-              <p className="font-medium">{artworkData.mode === "ai" ? "AI Generated" : "Flow Field"}</p>
+
+            {/* Manual Tags */}
+            <div className="space-y-2">
+              <Label htmlFor="custom-tags" className="text-xs">
+                Additional tags (comma-separated):
+              </Label>
+              <Input
+                id="custom-tags"
+                value={customTags}
+                onChange={(e) => setCustomTags(e.target.value)}
+                placeholder="abstract, colorful, experimental..."
+              />
+              {manualTags.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {manualTags.map((tag) => (
+                    <Badge key={tag} variant="outline" className="text-xs">
+                      {tag}
+                      <button onClick={() => removeTag(tag)} className="ml-1 hover:text-destructive">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Form Fields */}
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="title">Title *</Label>
-              <Input
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter artwork title..."
-                className="mt-1"
-              />
-            </div>
+          <Separator />
 
-            <div>
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe your artwork..."
-                rows={3}
-                className="mt-1 resize-none"
-              />
+          {/* Generation Parameters */}
+          <div className="space-y-2">
+            <Label className="text-xs font-medium">Generation Parameters</Label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-muted-foreground">
+              <div>Dataset: {artworkData.params.dataset}</div>
+              <div>Scenario: {artworkData.params.scenario}</div>
+              <div>Seed: {artworkData.params.seed}</div>
+              <div>Mode: {artworkData.mode === "ai" ? "AI Generated" : "Flow Field"}</div>
+              {artworkData.params.numSamples && <div>Samples: {artworkData.params.numSamples}</div>}
+              {artworkData.params.noiseScale && <div>Noise: {artworkData.params.noiseScale.toFixed(2)}</div>}
             </div>
-
-            {/* Tags */}
-            <div>
-              <Label>Tags</Label>
-              <div className="mt-1 space-y-2">
-                {tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {tags.map((tag, index) => (
-                      <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                        {tag}
-                        <button
-                          type="button"
-                          onClick={() => removeTag(tag)}
-                          className="ml-1 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full p-0.5"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-                <div className="flex gap-2">
-                  <Input
-                    value={customTags}
-                    onChange={(e) => setCustomTags(e.target.value)}
-                    placeholder="Add custom tags..."
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault()
-                        addCustomTag()
-                      }
-                    }}
-                  />
-                  <Button type="button" onClick={addCustomTag} variant="outline" size="sm">
-                    Add
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {artworkData.customPrompt && (
-              <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg">
-                <Label className="text-xs font-semibold text-purple-700 dark:text-purple-300">
-                  Custom Prompt Used:
-                </Label>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{artworkData.customPrompt}</p>
-              </div>
-            )}
           </div>
         </div>
 
@@ -273,15 +271,15 @@ export function SaveArtworkDialog({ artworkData, onSaved, children }: SaveArtwor
           <Button variant="outline" onClick={() => setOpen(false)} disabled={isSaving}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={isSaving || !title.trim()}>
+          <Button onClick={handleSave} disabled={isSaving}>
             {isSaving ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Saving...
               </>
             ) : (
               <>
-                <Save className="h-4 w-4 mr-2" />
+                <Save className="mr-2 h-4 w-4" />
                 Save to Gallery
               </>
             )}
