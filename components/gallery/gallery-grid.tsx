@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Heart, Download, Trash2, Eye, Sparkles, Brain, Dna, Atom, Microscope } from "lucide-react"
 import { galleryService, type ArtworkData } from "@/lib/gallery-service"
-import { getData } from "@/lib/data-service" // Declare the getData variable
 
 interface GalleryGridProps {
   artworks: ArtworkData[]
@@ -196,7 +195,7 @@ export function GalleryGrid({ artworks, onArtworkUpdate, onArtworkView }: Galler
                     Enhanced
                   </Badge>
                 )}
-                {getData && (
+                {getDatasetIcon(artwork.dataset) && (
                   <Badge variant="outline" className="text-xs bg-white/90">
                     {getDatasetIcon(artwork.dataset)}
                   </Badge>
