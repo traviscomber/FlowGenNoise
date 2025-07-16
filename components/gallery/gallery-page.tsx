@@ -1,328 +1,391 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Heart, ImageIcon, Sparkles, Calendar, Tag, X, BarChart3 } from "lucide-react"
-import { type GalleryItem, type GalleryFilters, type GalleryStats, galleryService } from "@/lib/gallery-service"
+import { Search, Filter, Heart, ImageIcon, Sparkles, Zap, X, TrendingUp } from "lucide-react"
+import { galleryService, type ArtworkData, type GalleryFilters, type GalleryStats } from "@/lib/gallery-service"
 import { GalleryGrid } from "./gallery-grid"
+import { GalleryViewer } from "./gallery-viewer"
 
 export function GalleryPage() {
-  const [items, setItems] = useState<GalleryItem[]>([])
-  const [stats, setStats] = useState<GalleryStats>({
-    total: 0,
-    svg_count: 0,
-    ai_count: 0,
-    favorites_count: 0,
-    recent_count: 0,
-  })
+  const [artworks, setArtworks] = useState<ArtworkData[]>([])
+  const [stats, setStats] = useState<GalleryStats | null>(null)
   const [popularTags, setPopularTags] = useState<Array<{ tag: string; count: number }>>([])
-  const [filters, setFilters] = useState<GalleryFilters>({})
-  const [sortBy, setSortBy] = useState<"created_at" | "updated_at" | "title">("created_at")
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
   const [isLoading, setIsLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedArtwork, setSelectedArtwork] = useState<ArtworkData | null>(null)
+  const [isViewerOpen, setIsViewerOpen] = useState(false)
 
-  // Load initial data
-  useEffect(() => {
-    loadData()
-    loadStats()
-    loadPopularTags()
-  }, [])
-
-  // Reload items when filters or sorting changes
-  useEffect(() => {
-    loadData()
-  }, [filters, sortBy, sortOrder])
+  // Filter states
+  const [filters, setFilters] = useState<GalleryFilters>({
+    search: "",
+    mode: "all",
+    dataset: "",
+    scenario: "",
+    isFavorite: undefined,
+    tags: [],
+    sortBy: "created_at",
+    sortOrder: "desc",
+  })
 
   const loadData = async () => {
     setIsLoading(true)
-    const data = await galleryService.getArtworks(filters, 50, 0, sortBy, sortOrder)
-    setItems(data)
-    setIsLoading(false)
-  }
+    try {
+      const [artworksData, statsData, tagsData] = await Promise.all([
+        galleryService.getArtworks(filters),
+        galleryService.getGalleryStats(),
+        galleryService.getPopularTags(10),
+      ])
 
-  const loadStats = async () => {
-    const statsData = await galleryService.getStats()
-    setStats(statsData)
-  }
-
-  const loadPopularTags = async () => {
-    const tagsData = await galleryService.getPopularTags(10)
-    setPopularTags(tagsData)
-  }
-
-  const handleSearch = () => {
-    setFilters({ ...filters, search: searchQuery.trim() || undefined })
-  }
-
-  const handleSearchKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSearch()
+      setArtworks(artworksData)
+      setStats(statsData)
+      setPopularTags(tagsData)
+    } catch (error) {
+      console.error("Error loading gallery data:", error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
+  useEffect(() => {
+    loadData()
+  }, [filters])
+
+  const handleFilterChange = (key: keyof GalleryFilters, value: any) => {
+    setFilters((prev) => ({ ...prev, [key]: value }))
+  }
+
+  const clearFilters = () => {
+    setFilters({
+      search: "",
+      mode: "all",
+      dataset: "",
+      scenario: "",
+      isFavorite: undefined,
+      tags: [],
+      sortBy: "created_at",
+      sortOrder: "desc",
+    })
+  }
+
   const addTagFilter = (tag: string) => {
-    const currentTags = filters.tags || []
-    if (!currentTags.includes(tag)) {
-      setFilters({ ...filters, tags: [...currentTags, tag] })
+    if (!filters.tags?.includes(tag)) {
+      handleFilterChange("tags", [...(filters.tags || []), tag])
     }
   }
 
   const removeTagFilter = (tag: string) => {
-    const currentTags = filters.tags || []
-    setFilters({ ...filters, tags: currentTags.filter((t) => t !== tag) })
+    handleFilterChange("tags", filters.tags?.filter((t) => t !== tag) || [])
   }
 
-  const clearFilters = () => {
-    setFilters({})
-    setSearchQuery("")
+  const handleArtworkView = (artwork: ArtworkData) => {
+    setSelectedArtwork(artwork)
+    setIsViewerOpen(true)
   }
 
-  const handleItemUpdate = (updatedItem: GalleryItem) => {
-    setItems(items.map((item) => (item.id === updatedItem.id ? updatedItem : item)))
-    loadStats() // Refresh stats
+  const handleViewerClose = () => {
+    setIsViewerOpen(false)
+    setSelectedArtwork(null)
   }
 
-  const handleItemDelete = (deletedId: string) => {
-    setItems(items.filter((item) => item.id !== deletedId))
-    loadStats() // Refresh stats
+  const getActiveFiltersCount = () => {
+    let count = 0
+    if (filters.search) count++
+    if (filters.mode && filters.mode !== "all") count++
+    if (filters.dataset) count++
+    if (filters.scenario) count++
+    if (filters.isFavorite !== undefined) count++
+    if (filters.tags && filters.tags.length > 0) count += filters.tags.length
+    return count
   }
-
-  const hasActiveFilters = Object.keys(filters).some((key) => {
-    const value = filters[key as keyof GalleryFilters]
-    return value !== undefined && value !== "" && (Array.isArray(value) ? value.length > 0 : true)
-  })
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Art Gallery</h1>
-        <p className="text-muted-foreground">Browse and manage your generated artwork collection</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Art Gallery
+          </h1>
+          <p className="text-muted-foreground">Your collection of generated artwork</p>
+        </div>
+        <Button variant="outline" asChild>
+          <a href="/">
+            <Sparkles className="mr-2 h-4 w-4" />
+            Create New Art
+          </a>
+        </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <ImageIcon className="h-4 w-4 text-muted-foreground" />
-              <div>
-                <div className="text-2xl font-bold">{stats.total}</div>
-                <div className="text-xs text-muted-foreground">Total</div>
+      {stats && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="h-5 w-5 text-blue-500" />
+                <div>
+                  <p className="text-2xl font-bold">{stats.totalArtworks}</p>
+                  <p className="text-xs text-muted-foreground">Total Artworks</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-blue-500" />
-              <div>
-                <div className="text-2xl font-bold">{stats.ai_count}</div>
-                <div className="text-xs text-muted-foreground">AI Art</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-purple-500" />
+                <div>
+                  <p className="text-2xl font-bold">{stats.aiArtworks}</p>
+                  <p className="text-xs text-muted-foreground">AI Generated</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-green-500" />
-              <div>
-                <div className="text-2xl font-bold">{stats.svg_count}</div>
-                <div className="text-xs text-muted-foreground">SVG</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-cyan-500" />
+                <div>
+                  <p className="text-2xl font-bold">{stats.flowArtworks}</p>
+                  <p className="text-xs text-muted-foreground">Flow Fields</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Heart className="h-4 w-4 text-red-500" />
-              <div>
-                <div className="text-2xl font-bold">{stats.favorites_count}</div>
-                <div className="text-xs text-muted-foreground">Favorites</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <Heart className="h-5 w-5 text-red-500" />
+                <div>
+                  <p className="text-2xl font-bold">{stats.favoriteArtworks}</p>
+                  <p className="text-xs text-muted-foreground">Favorites</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-purple-500" />
-              <div>
-                <div className="text-2xl font-bold">{stats.recent_count}</div>
-                <div className="text-xs text-muted-foreground">This Week</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
-      <div className="flex gap-6">
-        {/* Main Content */}
-        <div className="flex-1">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Sidebar */}
+        <div className="space-y-6">
           {/* Search and Filters */}
-          <div className="mb-6 space-y-4">
-            {/* Search Bar */}
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search artwork by title or description..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={handleSearchKeyPress}
-                  className="pl-10"
-                />
-              </div>
-              <Button onClick={handleSearch}>Search</Button>
-            </div>
-
-            {/* Filter Controls */}
-            <div className="flex flex-wrap gap-2">
-              <Select
-                value={filters.mode || "all"}
-                onValueChange={(value) =>
-                  setFilters({ ...filters, mode: value === "all" ? undefined : (value as "svg" | "ai") })
-                }
-              >
-                <SelectTrigger className="w-32">
-                  <SelectValue placeholder="Mode" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Modes</SelectItem>
-                  <SelectItem value="svg">SVG</SelectItem>
-                  <SelectItem value="ai">AI Art</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Button
-                variant={filters.favorites ? "default" : "outline"}
-                size="sm"
-                onClick={() => setFilters({ ...filters, favorites: !filters.favorites })}
-              >
-                <Heart className="h-4 w-4 mr-2" />
-                Favorites
-              </Button>
-
-              <Select
-                value={`${sortBy}-${sortOrder}`}
-                onValueChange={(value) => {
-                  const [field, order] = value.split("-")
-                  setSortBy(field as "created_at" | "updated_at" | "title")
-                  setSortOrder(order as "asc" | "desc")
-                }}
-              >
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="created_at-desc">Newest First</SelectItem>
-                  <SelectItem value="created_at-asc">Oldest First</SelectItem>
-                  <SelectItem value="updated_at-desc">Recently Updated</SelectItem>
-                  <SelectItem value="title-asc">Title A-Z</SelectItem>
-                  <SelectItem value="title-desc">Title Z-A</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {hasActiveFilters && (
-                <Button variant="ghost" size="sm" onClick={clearFilters}>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Filter className="h-5 w-5" />
+                Filters
+                {getActiveFiltersCount() > 0 && (
+                  <Badge variant="secondary" className="ml-auto">
+                    {getActiveFiltersCount()}
+                  </Badge>
+                )}
+              </CardTitle>
+              {getActiveFiltersCount() > 0 && (
+                <Button variant="ghost" size="sm" onClick={clearFilters} className="w-full">
                   <X className="h-4 w-4 mr-2" />
-                  Clear Filters
+                  Clear All Filters
                 </Button>
               )}
-            </div>
-
-            {/* Active Filters */}
-            {hasActiveFilters && (
-              <div className="flex flex-wrap gap-2">
-                {filters.search && (
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    Search: "{filters.search}"
-                    <button onClick={() => setFilters({ ...filters, search: undefined })}>
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                {filters.mode && (
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    Mode: {filters.mode.toUpperCase()}
-                    <button onClick={() => setFilters({ ...filters, mode: undefined })}>
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                {filters.favorites && (
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    Favorites Only
-                    <button onClick={() => setFilters({ ...filters, favorites: undefined })}>
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                {filters.tags?.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="flex items-center gap-1">
-                    Tag: {tag}
-                    <button onClick={() => removeTagFilter(tag)}>
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ))}
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Search */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Search</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder="Search artworks..."
+                    value={filters.search || ""}
+                    onChange={(e) => handleFilterChange("search", e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
               </div>
-            )}
-          </div>
 
-          {/* Gallery Grid */}
-          {isLoading ? (
-            <div className="text-center py-12">
-              <div className="text-muted-foreground">Loading artwork...</div>
-            </div>
-          ) : (
-            <GalleryGrid items={items} onItemUpdate={handleItemUpdate} onItemDelete={handleItemDelete} />
-          )}
-        </div>
+              {/* Mode Filter */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Mode</label>
+                <Select value={filters.mode || "all"} onValueChange={(value) => handleFilterChange("mode", value)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Modes</SelectItem>
+                    <SelectItem value="ai">🤖 AI Generated</SelectItem>
+                    <SelectItem value="flow">📊 Flow Fields</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-        {/* Sidebar */}
-        <div className="w-64 space-y-6">
+              {/* Dataset Filter */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Dataset</label>
+                <Select
+                  value={filters.dataset || "none"}
+                  onValueChange={(value) => handleFilterChange("dataset", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Datasets" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">All Datasets</SelectItem>
+                    <SelectItem value="ffhq">👤 Human Faces</SelectItem>
+                    <SelectItem value="bedroom">🛏️ Bedrooms</SelectItem>
+                    <SelectItem value="church_outdoor">⛪ Churches</SelectItem>
+                    <SelectItem value="celebahq">⭐ Celebrities</SelectItem>
+                    <SelectItem value="neural_networks">🧠 Neural Networks</SelectItem>
+                    <SelectItem value="quantum_fields">⚛️ Quantum Fields</SelectItem>
+                    <SelectItem value="dna_sequences">🧬 DNA Sequences</SelectItem>
+                    <SelectItem value="cosmic_phenomena">🌌 Cosmic</SelectItem>
+                    <SelectItem value="fractal_geometry">🔢 Fractals</SelectItem>
+                    <SelectItem value="protein_folding">🔬 Proteins</SelectItem>
+                    <SelectItem value="brain_connectivity">🧠 Brain Networks</SelectItem>
+                    <SelectItem value="crystalline_structures">💎 Crystals</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Favorites Filter */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Favorites</label>
+                <Select
+                  value={filters.isFavorite === undefined ? "all" : filters.isFavorite.toString()}
+                  onValueChange={(value) =>
+                    handleFilterChange("isFavorite", value === "all" ? undefined : value === "true")
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Artworks</SelectItem>
+                    <SelectItem value="true">❤️ Favorites Only</SelectItem>
+                    <SelectItem value="false">Regular Only</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Sort */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Sort By</label>
+                <div className="flex gap-2">
+                  <Select
+                    value={filters.sortBy || "created_at"}
+                    onValueChange={(value) => handleFilterChange("sortBy", value)}
+                  >
+                    <SelectTrigger className="flex-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="created_at">Date Created</SelectItem>
+                      <SelectItem value="title">Title</SelectItem>
+                      <SelectItem value="dataset">Dataset</SelectItem>
+                      <SelectItem value="scenario">Scenario</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={filters.sortOrder || "desc"}
+                    onValueChange={(value) => handleFilterChange("sortOrder", value)}
+                  >
+                    <SelectTrigger className="w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="desc">↓</SelectItem>
+                      <SelectItem value="asc">↑</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Popular Tags */}
           {popularTags.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Tag className="h-4 w-4" />
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
                   Popular Tags
                 </CardTitle>
+                <CardDescription>Click to filter by tag</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2">
-                {popularTags.map(({ tag, count }) => (
-                  <div key={tag} className="flex items-center justify-between">
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {popularTags.map(({ tag, count }) => (
                     <Button
-                      variant="ghost"
+                      key={tag}
+                      variant={filters.tags?.includes(tag) ? "default" : "outline"}
                       size="sm"
-                      onClick={() => addTagFilter(tag)}
-                      className="h-auto p-1 justify-start"
-                      disabled={filters.tags?.includes(tag)}
+                      onClick={() => {
+                        if (filters.tags?.includes(tag)) {
+                          removeTagFilter(tag)
+                        } else {
+                          addTagFilter(tag)
+                        }
+                      }}
+                      className="text-xs"
                     >
-                      <Badge variant="outline" className="text-xs">
-                        {tag}
-                      </Badge>
+                      {tag} ({count})
                     </Button>
-                    <span className="text-xs text-muted-foreground">{count}</span>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Active Tag Filters */}
+          {filters.tags && filters.tags.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">Active Tag Filters</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {filters.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                      {tag}
+                      <button
+                        onClick={() => removeTagFilter(tag)}
+                        className="ml-1 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full p-0.5"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           )}
         </div>
+
+        {/* Main Content */}
+        <div className="lg:col-span-3">
+          {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Loading your gallery...</p>
+              </div>
+            </div>
+          ) : (
+            <GalleryGrid artworks={artworks} onArtworkUpdate={loadData} onArtworkView={handleArtworkView} />
+          )}
+        </div>
       </div>
+
+      {/* Artwork Viewer */}
+      <GalleryViewer
+        artwork={selectedArtwork}
+        isOpen={isViewerOpen}
+        onClose={handleViewerClose}
+        onArtworkUpdate={loadData}
+      />
     </div>
   )
 }
