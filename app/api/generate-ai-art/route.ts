@@ -2,8 +2,6 @@ import { experimental_generateImage } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { type NextRequest, NextResponse } from "next/server"
 
-export const runtime = "edge" // This API route can run on the edge
-
 export async function POST(req: NextRequest) {
   try {
     const { prompt } = await req.json()
@@ -12,27 +10,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
 
-    // Check for OPENAI_API_KEY
+    // If no key, return a placeholder so the UI still works
     if (!process.env.OPENAI_API_KEY) {
-      console.warn("OPENAI_API_KEY is not set. Returning placeholder image.")
-      // Return a placeholder image URL if API key is missing
+      console.warn("OPENAI_API_KEY is not set. Returning placeholder.")
       return NextResponse.json({
         imageUrl: "/placeholder.svg?height=1024&width=1024",
-        altText: "Placeholder image due to missing OpenAI API key",
+        altText: "Placeholder image (missing OPENAI_API_KEY)",
       })
     }
 
-    const { url } = await experimental_generateImage({
-      model: openai("dall-e-3"),
-      prompt: prompt,
+    // Call DALL·E-3 through the AI SDK
+    const { image } = await experimental_generateImage({
+      model: openai.image("dall-e-3"),
+      prompt,
       quality: "standard",
       style: "vivid",
       size: "1024x1024",
     })
 
-    return NextResponse.json({ imageUrl: url, altText: prompt })
+    // `image` can contain a url OR a base64 buffer depending on the provider
+    const imageUrl = typeof image === "string" ? image : `data:image/png;base64,${image.base64}`
+
+    return NextResponse.json({ imageUrl, altText: prompt })
   } catch (error) {
-    console.error("Error generating AI art:", error)
-    return NextResponse.json({ error: "Failed to generate AI art" }, { status: 500 })
+    console.error("❌ generate-ai-art API error:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
