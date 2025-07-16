@@ -15,6 +15,8 @@ import { Download, Sparkles, Settings, ImageIcon, Info, Loader2, Zap, Wand2, Edi
 import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
 import { ClientUpscaler } from "@/lib/client-upscaler"
 import { useToast } from "@/hooks/use-toast"
+import Link from "next/link"
+import { SaveArtworkDialog } from "@/components/gallery/save-artwork-dialog"
 
 interface GeneratedArt {
   svgContent: string
@@ -384,6 +386,14 @@ export function FlowArtGenerator() {
           Choose a dataset pattern, then blend it with a scenario theme
         </p>
       </div>
+      <div className="text-center">
+        <Link href="/gallery">
+          <Button variant="outline" className="mb-4 bg-transparent">
+            <ImageIcon className="h-4 w-4 mr-2" />
+            View Gallery
+          </Button>
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Controls */}
@@ -634,6 +644,24 @@ export function FlowArtGenerator() {
                     </>
                   )}
                 </Button>
+
+                <SaveArtworkDialog
+                  artworkData={{
+                    imageUrl: generatedArt.imageUrl,
+                    svgContent: generatedArt.svgContent,
+                    upscaledImageUrl: generatedArt.upscaledImageUrl,
+                    mode: generatedArt.mode,
+                    params: generatedArt.params,
+                    customPrompt: generatedArt.customPrompt,
+                    upscaleMethod: generatedArt.upscaleMethod,
+                  }}
+                  onSaved={() => {
+                    toast({
+                      title: "Saved to Gallery! 🎨",
+                      description: "Your artwork is now in your gallery.",
+                    })
+                  }}
+                />
 
                 {generatedArt.upscaledImageUrl && generatedArt.upscaleMethod === "mathematical" && (
                   <Alert>
