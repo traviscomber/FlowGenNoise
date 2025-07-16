@@ -46,7 +46,7 @@ export interface GalleryStats {
   popularScenarios: Array<{ scenario: string; count: number }>
 }
 
-class GalleryService {
+export class GalleryService {
   async saveArtwork(artworkData: Omit<ArtworkData, "id" | "createdAt" | "updatedAt">): Promise<ArtworkData | null> {
     try {
       const { data, error } = await supabase
