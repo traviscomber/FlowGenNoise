@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -11,28 +11,12 @@ import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Download,
-  Sparkles,
-  Settings,
-  ImageIcon,
-  Info,
-  Loader2,
-  Zap,
-  Wand2,
-  Edit3,
-  GalleryThumbnailsIcon as Gallery,
-  Trash2,
-  Star,
-} from "lucide-react"
+import { Download, Sparkles, Settings, ImageIcon, Info, Loader2, Zap, Wand2, Edit3 } from "lucide-react"
 import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
 import { ClientUpscaler } from "@/lib/client-upscaler"
 import { useToast } from "@/hooks/use-toast"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface GeneratedArt {
-  id: string
   svgContent: string
   imageUrl: string
   upscaledImageUrl?: string
@@ -40,26 +24,19 @@ interface GeneratedArt {
   mode: "svg" | "ai"
   upscaleMethod?: "cloudinary" | "client" | "mathematical"
   customPrompt?: string
-  timestamp: number
-  favorite?: boolean
 }
-
-// Local storage key for gallery
-const GALLERY_STORAGE_KEY = "flowsketch-gallery"
 
 export function FlowArtGenerator() {
   const [generatedArt, setGeneratedArt] = useState<GeneratedArt | null>(null)
-  const [galleryImages, setGalleryImages] = useState<GeneratedArt[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
   const [isUpscaling, setIsUpscaling] = useState(false)
   const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false)
   const [progress, setProgress] = useState(0)
   const [mode, setMode] = useState<"svg" | "ai">("svg")
-  const [showGallery, setShowGallery] = useState(false)
 
   // Generation parameters - separate dataset and scenario
   const [dataset, setDataset] = useState("spirals")
-  const [scenario, setScenario] = useState("pure")
+  const [scenario, setScenario] = useState("forest")
   const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
   const [numSamples, setNumSamples] = useState(2000)
   const [noiseScale, setNoiseScale] = useState(0.05)
@@ -70,83 +47,6 @@ export function FlowArtGenerator() {
   const [useCustomPrompt, setUseCustomPrompt] = useState(false)
 
   const { toast } = useToast()
-
-  // Load gallery from localStorage on component mount
-  useEffect(() => {
-    const savedGallery = localStorage.getItem(GALLERY_STORAGE_KEY)
-    if (savedGallery) {
-      try {
-        setGalleryImages(JSON.parse(savedGallery))
-      } catch (error) {
-        console.error("Failed to load gallery from localStorage:", error)
-      }
-    }
-  }, [])
-
-  // Save gallery to localStorage whenever it changes
-  const saveGallery = useCallback((images: GeneratedArt[]) => {
-    try {
-      localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(images))
-      setGalleryImages(images)
-    } catch (error) {
-      console.error("Failed to save gallery to localStorage:", error)
-    }
-  }, [])
-
-  // Add image to gallery
-  const addToGallery = useCallback(
-    (art: GeneratedArt) => {
-      const newGallery = [art, ...galleryImages]
-      saveGallery(newGallery)
-    },
-    [galleryImages, saveGallery],
-  )
-
-  // Remove image from gallery
-  const removeFromGallery = useCallback(
-    (id: string) => {
-      const newGallery = galleryImages.filter((img) => img.id !== id)
-      saveGallery(newGallery)
-      toast({
-        title: "Image Removed",
-        description: "Image has been removed from your gallery.",
-      })
-    },
-    [galleryImages, saveGallery, toast],
-  )
-
-  // Toggle favorite status
-  const toggleFavorite = useCallback(
-    (id: string) => {
-      const newGallery = galleryImages.map((img) => (img.id === id ? { ...img, favorite: !img.favorite } : img))
-      saveGallery(newGallery)
-    },
-    [galleryImages, saveGallery],
-  )
-
-  // Load image from gallery
-  const loadFromGallery = useCallback(
-    (art: GeneratedArt) => {
-      setGeneratedArt(art)
-      setDataset(art.params.dataset)
-      setScenario(art.params.scenario)
-      setSeed(art.params.seed)
-      setNumSamples(art.params.numSamples)
-      setNoiseScale(art.params.noiseScale)
-      setTimeStep(art.params.timeStep)
-      setMode(art.mode)
-      if (art.customPrompt) {
-        setCustomPrompt(art.customPrompt)
-        setUseCustomPrompt(true)
-      }
-      setShowGallery(false)
-      toast({
-        title: "Image Loaded",
-        description: "Settings and image loaded from gallery.",
-      })
-    },
-    [toast],
-  )
 
   const enhancePrompt = useCallback(async () => {
     setIsEnhancingPrompt(true)
@@ -223,21 +123,16 @@ export function FlowArtGenerator() {
         console.log("Blob URL created:", imageUrl)
 
         setProgress(100)
-        const newArt: GeneratedArt = {
-          id: Date.now().toString(),
+        setGeneratedArt({
           svgContent,
           imageUrl,
           params,
           mode: "svg",
-          timestamp: Date.now(),
-        }
-
-        setGeneratedArt(newArt)
-        addToGallery(newArt)
+        })
 
         toast({
-          title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
-          description: `Beautiful ${dataset} dataset with ${scenario === "pure" ? "pure mathematical" : scenario} ${scenario === "pure" ? "visualization" : "scenario blend"} created.`,
+          title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
+          description: `Beautiful ${dataset} dataset with ${scenario} scenario blend created.`,
         })
       } else {
         // Generate AI art
@@ -277,26 +172,20 @@ export function FlowArtGenerator() {
         }
 
         setProgress(80)
-        const newArt: GeneratedArt = {
-          id: Date.now().toString(),
+        setGeneratedArt({
           svgContent: "",
           imageUrl: data.image,
           params,
           mode: "ai",
           customPrompt: useCustomPrompt ? customPrompt : undefined,
-          timestamp: Date.now(),
-        }
-
-        setGeneratedArt(newArt)
-        addToGallery(newArt)
+        })
 
         setProgress(100)
         toast({
           title: "AI Art Generated! 🤖✨",
-          description:
-            useCustomPrompt && customPrompt.trim().length > 0
-              ? "Custom enhanced prompt artwork created!"
-              : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork created.`,
+          description: useCustomPrompt
+            ? "Custom enhanced prompt artwork created!"
+            : `AI-enhanced ${dataset} + ${scenario} artwork created.`,
         })
       }
     } catch (error: any) {
@@ -310,19 +199,7 @@ export function FlowArtGenerator() {
       setIsGenerating(false)
       setProgress(0)
     }
-  }, [
-    dataset,
-    scenario,
-    seed,
-    numSamples,
-    noiseScale,
-    timeStep,
-    mode,
-    useCustomPrompt,
-    customPrompt,
-    toast,
-    addToGallery,
-  ])
+  }, [dataset, scenario, seed, numSamples, noiseScale, timeStep, mode, useCustomPrompt, customPrompt, toast])
 
   const upscaleImage = useCallback(async () => {
     if (!generatedArt) {
@@ -365,17 +242,15 @@ export function FlowArtGenerator() {
         // Apply mathematical upscaling with generation parameters
         const upscaledDataUrl = await ClientUpscaler.upscaleImage(imageDataUrl, 4)
 
-        const updatedArt = {
-          ...generatedArt,
-          upscaledImageUrl: upscaledDataUrl,
-          upscaleMethod: "mathematical" as const,
-        }
-
-        setGeneratedArt(updatedArt)
-
-        // Update in gallery
-        const newGallery = galleryImages.map((img) => (img.id === generatedArt.id ? updatedArt : img))
-        saveGallery(newGallery)
+        setGeneratedArt((prev) =>
+          prev
+            ? {
+                ...prev,
+                upscaledImageUrl: upscaledDataUrl,
+                upscaleMethod: "mathematical",
+              }
+            : null,
+        )
 
         toast({
           title: "Mathematical Upscaling Complete! ✨",
@@ -391,17 +266,15 @@ export function FlowArtGenerator() {
 
         const upscaledDataUrl = await ClientUpscaler.upscaleImage(generatedArt.imageUrl, 4)
 
-        const updatedArt = {
-          ...generatedArt,
-          upscaledImageUrl: upscaledDataUrl,
-          upscaleMethod: "client" as const,
-        }
-
-        setGeneratedArt(updatedArt)
-
-        // Update in gallery
-        const newGallery = galleryImages.map((img) => (img.id === generatedArt.id ? updatedArt : img))
-        saveGallery(newGallery)
+        setGeneratedArt((prev) =>
+          prev
+            ? {
+                ...prev,
+                upscaledImageUrl: upscaledDataUrl,
+                upscaleMethod: "client",
+              }
+            : null,
+        )
 
         toast({
           title: "AI Art Enhancement Complete! 🤖✨",
@@ -418,7 +291,7 @@ export function FlowArtGenerator() {
     } finally {
       setIsUpscaling(false)
     }
-  }, [generatedArt, toast, galleryImages, saveGallery])
+  }, [generatedArt, toast])
 
   const downloadImage = useCallback(async () => {
     if (!generatedArt) {
@@ -472,7 +345,7 @@ export function FlowArtGenerator() {
 
       toast({
         title: "Download Complete! 🎨",
-        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} artwork downloaded.`,
+        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario} artwork downloaded.`,
       })
     } catch (error: any) {
       console.error("Download error:", error)
@@ -491,15 +364,13 @@ export function FlowArtGenerator() {
   }, [])
 
   const getButtonText = () => {
-    const scenarioText = scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)
-
     if (mode === "ai") {
-      if (useCustomPrompt && customPrompt.trim().length > 0) {
+      if (useCustomPrompt) {
         return "Generate Custom AI Art"
       }
-      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}`
+      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)}`
     } else {
-      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}`
+      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)}`
     }
   }
 
@@ -535,8 +406,7 @@ export function FlowArtGenerator() {
                   <Alert>
                     <Zap className="h-4 w-4" />
                     <AlertDescription>
-                      First choose a dataset pattern, then select a scenario to blend with it! Try "Pure Mathematical"
-                      for raw mathematical beauty.
+                      First choose a dataset pattern, then select a scenario to blend with it!
                     </AlertDescription>
                   </Alert>
                 </TabsContent>
@@ -577,7 +447,6 @@ export function FlowArtGenerator() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pure">🔢 Pure Mathematical</SelectItem>
                     <SelectItem value="forest">🌲 Forest</SelectItem>
                     <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
                     <SelectItem value="ocean">🌊 Ocean</SelectItem>
@@ -716,9 +585,7 @@ export function FlowArtGenerator() {
                           ? useCustomPrompt
                             ? "Processing custom prompt..."
                             : "Applying AI artistic effects..."
-                          : scenario === "pure"
-                            ? "Applying pure mathematical visualization..."
-                            : `Applying ${scenario} scenario...`
+                          : `Applying ${scenario} scenario...`
                         : progress < 90
                           ? "Rendering visualization..."
                           : "Finalizing artwork..."}
@@ -779,95 +646,6 @@ export function FlowArtGenerator() {
               </CardContent>
             </Card>
           )}
-
-          {/* Gallery Button */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Gallery className="h-5 w-5" />
-                Gallery ({galleryImages.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Dialog open={showGallery} onOpenChange={setShowGallery}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" className="w-full bg-transparent">
-                    <Gallery className="h-4 w-4 mr-2" />
-                    View Gallery
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[80vh]">
-                  <DialogHeader>
-                    <DialogTitle>Your Art Gallery ({galleryImages.length} images)</DialogTitle>
-                  </DialogHeader>
-                  <ScrollArea className="h-[60vh]">
-                    {galleryImages.length === 0 ? (
-                      <div className="text-center py-8 text-gray-500">
-                        <Gallery className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                        <p>No images in gallery yet.</p>
-                        <p className="text-sm mt-2">Generate some artwork to see it here!</p>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
-                        {galleryImages.map((art) => (
-                          <div key={art.id} className="relative group">
-                            <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                              {art.mode === "svg" && !art.upscaledImageUrl ? (
-                                <div
-                                  className="w-full h-full flex items-center justify-center"
-                                  dangerouslySetInnerHTML={{ __html: art.svgContent }}
-                                />
-                              ) : (
-                                <img
-                                  src={art.upscaledImageUrl || art.imageUrl}
-                                  alt={`${art.params.dataset} + ${art.params.scenario === "pure" ? "pure math" : art.params.scenario}`}
-                                  className="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform"
-                                  onClick={() => loadFromGallery(art)}
-                                />
-                              )}
-                            </div>
-                            <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <Button
-                                size="sm"
-                                variant="secondary"
-                                className="h-8 w-8 p-0"
-                                onClick={() => toggleFavorite(art.id)}
-                              >
-                                <Star className={`h-4 w-4 ${art.favorite ? "fill-yellow-400 text-yellow-400" : ""}`} />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                className="h-8 w-8 p-0"
-                                onClick={() => removeFromGallery(art.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                            <div className="mt-2 text-xs text-center">
-                              <p className="font-medium">
-                                {art.params.dataset} +{" "}
-                                {art.params.scenario === "pure" ? "pure math" : art.params.scenario}
-                              </p>
-                              <p className="text-gray-500">
-                                {art.mode === "ai" ? "🤖 AI" : "📊 SVG"} • Seed: {art.params.seed}
-                              </p>
-                              {art.upscaledImageUrl && (
-                                <Badge variant="secondary" className="text-xs mt-1">
-                                  <Sparkles className="w-3 h-3 mr-1" />
-                                  Enhanced
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </ScrollArea>
-                </DialogContent>
-              </Dialog>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Preview */}
@@ -885,9 +663,7 @@ export function FlowArtGenerator() {
                       {generatedArt.mode === "ai" ? "🤖 AI Art" : "📊 SVG"}
                     </Badge>
                     <Badge variant="outline">{generatedArt.params.dataset}</Badge>
-                    <Badge variant="outline">
-                      {generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario}
-                    </Badge>
+                    <Badge variant="outline">{generatedArt.params.scenario}</Badge>
                     <Badge variant="outline">{generatedArt.params.numSamples} points</Badge>
                     {generatedArt.customPrompt && (
                       <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
@@ -934,9 +710,7 @@ export function FlowArtGenerator() {
                     </div>
                     <div>
                       <span className="text-gray-600">Scenario:</span>
-                      <p className="font-medium capitalize">
-                        {generatedArt.params.scenario === "pure" ? "Pure Mathematical" : generatedArt.params.scenario}
-                      </p>
+                      <p className="font-medium capitalize">{generatedArt.params.scenario}</p>
                     </div>
                     <div>
                       <span className="text-gray-600">Seed:</span>
@@ -960,9 +734,7 @@ export function FlowArtGenerator() {
                   <div className="text-center">
                     <Zap className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>Choose a dataset and scenario combination!</p>
-                    <p className="text-sm mt-2">
-                      Try Spirals + Pure Mathematical or Gaussian + Pure Mathematical for clean mathematical beauty
-                    </p>
+                    <p className="text-sm mt-2">Try Spirals + Forest or Moons + Cosmic for amazing results</p>
                     <p className="text-sm mt-1 text-purple-600">
                       Switch to AI Art tab and use prompt enhancement for professional results! 🤖✨
                     </p>

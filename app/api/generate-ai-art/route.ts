@@ -1,15 +1,20 @@
-import { type NextRequest, NextResponse } from "next/server"
-import OpenAI from "openai"
+import { NextResponse } from "next/server"
+import { experimental_generateImage } from "ai"
+import { openai } from "@ai-sdk/openai"
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { dataset, scenario, seed, numSamples, noise, customPrompt } = await request.json()
+    const {
+      dataset,
+      seed,
+      scenario,
+      colorScheme, // legacy – still supported
+      numSamples,
+      noise,
+      customPrompt, // new - custom/enhanced prompt
+    } = await req.json()
 
-    const theme = scenario || "default"
+    const theme = scenario || colorScheme
 
     if (
       !dataset ||
@@ -20,7 +25,6 @@ export async function POST(request: NextRequest) {
     ) {
       return NextResponse.json(
         {
-          success: false,
           error: "Missing dataset, seed, scenario/colorScheme, number of samples, or noise",
         },
         { status: 400 },
@@ -38,105 +42,37 @@ export async function POST(request: NextRequest) {
       console.log("Using custom prompt:", finalPrompt)
     } else {
       // Generate default prompt based on dataset and scenario
-      const datasetDescriptions = {
-        spirals: "logarithmic spiral patterns with golden ratio proportions",
-        moons: "two interlocking crescent moon shapes creating binary classification boundaries",
-        circles: "concentric circular patterns with radial symmetry",
-        blobs: "organic blob clusters with Gaussian distribution",
-        checkerboard: "alternating checkerboard pattern with discrete grid structure",
-        gaussian: "normal distribution bell curve with statistical probability density",
-        grid: "regular grid lattice with uniform spacing and crystalline structure",
-      }
-
-      const scenarioDescriptions = {
-        pure: "pure mathematical visualization with clean geometric forms, grid lines, and axes highlighting mathematical properties",
-        forest: "organic forest growth with fractal tree structures, natural greens and golden sunlight",
-        cosmic: "stellar formations with nebula clouds, deep space colors and cosmic dust",
-        ocean: "fluid dynamics with wave patterns, aquatic blues from deep ocean to seafoam",
-        neural: "synaptic neural networks with electric blue and purple pathways and glowing nodes",
-        fire: "combustion dynamics with flame patterns, warm reds and oranges",
-        ice: "crystalline frost structures with cool blues and prismatic light refraction",
-        desert: "sand dune formations with wind patterns, warm earth tones and golden hour lighting",
-        sunset: "atmospheric light scattering with warm gradient transitions and golden hour colors",
-        monochrome: "grayscale tonal variations with high contrast minimalist aesthetic",
-      }
-
-      const datasetDesc = datasetDescriptions[dataset as keyof typeof datasetDescriptions] || dataset
-      const scenarioDesc = scenarioDescriptions[scenario as keyof typeof scenarioDescriptions] || scenario
-
-      finalPrompt = `Create a stunning mathematical art piece featuring ${datasetDesc} arranged in ${scenarioDesc} style. The artwork should show ${numSamples} data points with mathematical precision and ${scenario === "pure" ? "clean geometric beauty" : "artistic visual elements"}. Include subtle texture (noise level ${noise}) for organic feel. Professional gallery-quality composition, highly detailed, vibrant colors, suitable for high-resolution display. Mathematical beauty meets artistic expression. Digital art, masterpiece quality.`
-
+      finalPrompt = `Create a stunning mathematical art piece inspired by a ${dataset} dataset with ${numSamples} data points arranged in a ${theme} theme. The artwork should feature mathematical precision with ${dataset} patterns, blended seamlessly with ${theme} visual elements. Include subtle noise texture (${noise} level) for organic feel. Professional gallery-quality composition suitable for high-resolution display, with rich details and vibrant colors that enhance when upscaled. Mathematical beauty meets artistic expression.`
       console.log("Using generated prompt:", finalPrompt)
     }
 
-    // Check if OpenAI API key is available
-    if (!process.env.OPENAI_API_KEY) {
-      console.log("No OpenAI API key found, using fallback image generation")
+    // Generate high-quality base image using DALL-E 3
+    const { image } = await experimental_generateImage({
+      model: openai.image("dall-e-3"),
+      prompt: finalPrompt,
+      quality: "hd",
+      size: "1792x1024", // Maximum DALL-E 3 resolution
+      style: "vivid",
+    })
 
-      // Fallback to a more sophisticated placeholder that reflects the parameters
-      const fallbackImage = `https://picsum.photos/seed/${seed}/1024/1024`
+    const baseImage = `data:image/png;base64,${image.base64}`
 
-      return NextResponse.json({
-        image: fallbackImage,
-        success: true,
-        fallback: true,
-        message: "Using placeholder image - add OPENAI_API_KEY for real AI generation",
-      })
-    }
-
-    console.log("Calling OpenAI DALL-E API...")
-
-    try {
-      const response = await openai.images.generate({
-        model: "dall-e-3",
-        prompt: finalPrompt,
-        n: 1,
-        size: "1024x1024",
-        quality: "standard",
-        response_format: "url",
-      })
-
-      console.log("OpenAI API response received")
-
-      if (!response.data || response.data.length === 0) {
-        throw new Error("No image generated by OpenAI")
-      }
-
-      const imageUrl = response.data[0].url
-      if (!imageUrl) {
-        throw new Error("No image URL in OpenAI response")
-      }
-
-      console.log("AI art generated successfully:", imageUrl)
-
-      return NextResponse.json({
-        image: imageUrl,
-        success: true,
-        prompt: finalPrompt,
-        revised_prompt: response.data[0].revised_prompt || finalPrompt,
-      })
-    } catch (openaiError: any) {
-      console.error("OpenAI API error:", openaiError)
-
-      // If OpenAI fails, fall back to placeholder
-      const fallbackImage = `https://picsum.photos/seed/${seed}/1024/1024`
-
-      return NextResponse.json({
-        image: fallbackImage,
-        success: true,
-        fallback: true,
-        error: openaiError.message,
-        message: "OpenAI API failed, using placeholder image",
-      })
-    }
-  } catch (error) {
+    return NextResponse.json({
+      image: baseImage,
+      baseResolution: "1792x1024",
+      readyForUpscaling: true,
+      recommendedUpscale: "4x",
+      promptUsed: finalPrompt,
+      isCustomPrompt: !!customPrompt,
+    })
+  } catch (error: any) {
     console.error("Error generating AI art:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to generate AI art: " + (error as Error).message,
-      },
-      { status: 500 },
-    )
+    if (error.message.includes("api_key")) {
+      return NextResponse.json(
+        { error: "OpenAI API key is missing or invalid. Please set OPENAI_API_KEY." },
+        { status: 500 },
+      )
+    }
+    return NextResponse.json({ error: "Failed to generate AI art: " + error.message }, { status: 500 })
   }
 }

@@ -383,14 +383,14 @@ export function generateHighResFlowField(params: UpscaleParams): string {
     svgContent += `<rect width="${size}" height="${size}" fill="white"/>`
   } else {
     svgContent += `
-      <defs>
-        <radialGradient id="bg-${seed}" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.8"/>
-          <stop offset="100%" style="stop-color:${colors[1]};stop-opacity:1"/>
-        </radialGradient>
-      </defs>
-      <rect width="${size}" height="${size}" fill="url(#bg-${seed})"/>
-    `
+    <defs>
+      <radialGradient id="bg-${seed}" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.8"/>
+        <stop offset="100%" style="stop-color:${colors[1]};stop-opacity:1"/>
+      </radialGradient>
+    </defs>
+    <rect width="${size}" height="${size}" fill="url(#bg-${seed})"/>
+  `
   }
 
   const centerX = size / 2
