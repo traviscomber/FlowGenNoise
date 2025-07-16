@@ -1,280 +1,320 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import { Heart, Download, Copy, X, Sparkles, Wand2 } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-import { galleryService, type GalleryItem } from "@/lib/gallery-service"
 import { useState } from "react"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Heart, Download, Trash2, X, Copy, Calendar, Tag, Settings, Sparkles } from "lucide-react"
+import { type GalleryItem, galleryService } from "@/lib/gallery-service"
+import { useToast } from "@/hooks/use-toast"
 
 interface GalleryViewerProps {
-  item: GalleryItem | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onItemChange: () => void
+  item: GalleryItem
+  onClose: () => void
+  onUpdate?: (item: GalleryItem) => void
+  onDelete?: (id: string) => void
 }
 
-export function GalleryViewer({ item, open, onOpenChange, onItemChange }: GalleryViewerProps) {
-  const [loading, setLoading] = useState(false)
+export function GalleryViewer({ item, onClose, onUpdate, onDelete }: GalleryViewerProps) {
+  const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
 
-  if (!item) return null
-
   const handleToggleFavorite = async () => {
-    setLoading(true)
-    try {
-      await galleryService.toggleFavorite(item.id)
+    setIsLoading(true)
+    const success = await galleryService.toggleFavorite(item.id)
+
+    if (success) {
+      const updatedItem = { ...item, is_favorite: !item.is_favorite }
+      onUpdate?.(updatedItem)
       toast({
-        title: item.is_favorite ? "Removed from Favorites" : "Added to Favorites",
-        description: `"${item.title}" ${item.is_favorite ? "removed from" : "added to"} favorites.`,
+        title: item.is_favorite ? "Removed from favorites" : "Added to favorites",
+        description: `"${item.title}" has been ${item.is_favorite ? "removed from" : "added to"} your favorites.`,
       })
-      onItemChange()
-    } catch (error: any) {
+    } else {
       toast({
         title: "Error",
-        description: error.message || "Failed to update favorite status.",
+        description: "Failed to update favorite status.",
         variant: "destructive",
       })
-    } finally {
-      setLoading(false)
     }
+    setIsLoading(false)
+  }
+
+  const handleDelete = async () => {
+    if (!confirm(`Are you sure you want to delete "${item.title}"?`)) {
+      return
+    }
+
+    setIsLoading(true)
+    const success = await galleryService.deleteArtwork(item.id)
+
+    if (success) {
+      onDelete?.(item.id)
+      toast({
+        title: "Artwork deleted",
+        description: `"${item.title}" has been deleted from your gallery.`,
+      })
+    } else {
+      toast({
+        title: "Error",
+        description: "Failed to delete artwork.",
+        variant: "destructive",
+      })
+    }
+    setIsLoading(false)
   }
 
   const handleDownload = async () => {
     try {
       const imageUrl = item.upscaled_image_url || item.image_url
-      const isEnhanced = !!item.upscaled_image_url
-      const fileExtension = item.mode === "svg" && !isEnhanced ? "svg" : "png"
-      const fileName = `${item.title.replace(/[^a-zA-Z0-9]/g, "-")}-${item.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
+      const response = await fetch(imageUrl)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
 
-      if (imageUrl.startsWith("data:") || imageUrl.startsWith("blob:")) {
-        const link = document.createElement("a")
-        link.href = imageUrl
-        link.download = fileName
-        link.style.display = "none"
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-      } else {
-        const response = await fetch(imageUrl, { mode: "cors" })
-        const blob = await response.blob()
-        const blobUrl = URL.createObjectURL(blob)
-
-        const link = document.createElement("a")
-        link.href = blobUrl
-        link.download = fileName
-        link.style.display = "none"
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 100)
-      }
+      const link = document.createElement("a")
+      link.href = url
+      link.download = `${item.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.png`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
 
       toast({
-        title: "Download Complete! 🎨",
-        description: `"${item.title}" downloaded successfully.`,
+        title: "Download started",
+        description: `Downloading "${item.title}"`,
       })
     } catch (error) {
       toast({
-        title: "Download Failed",
-        description: "Could not download the image. Please try again.",
+        title: "Download failed",
+        description: "Failed to download the artwork.",
         variant: "destructive",
       })
     }
   }
 
-  const copyToClipboard = (text: string, label: string) => {
-    navigator.clipboard.writeText(text.toString())
-    toast({
-      title: "Copied!",
-      description: `${label} copied to clipboard.`,
-    })
+  const copyToClipboard = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      toast({
+        title: "Copied to clipboard",
+        description: `${label} copied to clipboard.`,
+      })
+    } catch (error) {
+      toast({
+        title: "Copy failed",
+        description: "Failed to copy to clipboard.",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span>{item.title}</span>
-            <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Image */}
-          <div className="lg:col-span-2">
-            <div className="relative bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden">
-              {item.mode === "svg" && item.svg_content && !item.upscaled_image_url ? (
-                <div
-                  className="w-full min-h-[400px] flex items-center justify-center"
-                  dangerouslySetInnerHTML={{ __html: item.svg_content }}
-                />
-              ) : (
-                <img
-                  src={item.upscaled_image_url || item.image_url}
-                  alt={item.title}
-                  className="w-full h-auto max-h-[600px] object-contain"
-                />
-              )}
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2 mt-4">
-              <Button
-                onClick={handleToggleFavorite}
-                disabled={loading}
-                variant="outline"
-                className="flex-1 bg-transparent"
-              >
-                <Heart className={`h-4 w-4 mr-2 ${item.is_favorite ? "fill-red-500 text-red-500" : ""}`} />
-                {item.is_favorite ? "Remove from Favorites" : "Add to Favorites"}
-              </Button>
-              <Button onClick={handleDownload} variant="outline" className="flex-1 bg-transparent">
-                <Download className="h-4 w-4 mr-2" />
-                Download {item.upscaled_image_url ? "Enhanced" : "Original"}
-              </Button>
-            </div>
+    <Dialog open={true} onOpenChange={() => onClose()}>
+      <DialogContent className="max-w-6xl max-h-[90vh] p-0">
+        <div className="flex h-full">
+          {/* Image Section */}
+          <div className="flex-1 bg-black flex items-center justify-center p-4">
+            <img
+              src={item.upscaled_image_url || item.image_url}
+              alt={item.title}
+              className="max-w-full max-h-full object-contain"
+            />
           </div>
 
-          {/* Metadata */}
-          <div className="space-y-4">
-            {/* Badges */}
-            <div className="flex flex-wrap gap-2">
-              <Badge variant={item.mode === "ai" ? "default" : "outline"}>
-                {item.mode === "ai" ? "🤖 AI Art" : "📊 SVG"}
-              </Badge>
-              {item.upscaled_image_url && (
-                <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  Enhanced
-                </Badge>
-              )}
-              {item.custom_prompt && (
-                <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                  <Wand2 className="w-3 h-3 mr-1" />
-                  Custom Prompt
-                </Badge>
-              )}
-              {item.is_favorite && (
-                <Badge className="bg-red-500 text-white">
-                  <Heart className="w-3 h-3 mr-1 fill-current" />
-                  Favorite
-                </Badge>
-              )}
-            </div>
-
-            {/* Description */}
-            {item.description && (
-              <div>
-                <Label className="text-sm font-semibold">Description</Label>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{item.description}</p>
-              </div>
-            )}
-
-            <Separator />
-
-            {/* Generation Parameters */}
-            <div>
-              <Label className="text-sm font-semibold">Generation Parameters</Label>
-              <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
-                <div>
-                  <span className="text-gray-600">Dataset:</span>
-                  <p className="font-medium capitalize">{item.dataset}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Scenario:</span>
-                  <p className="font-medium capitalize">{item.scenario}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Seed:</span>
-                  <div className="flex items-center gap-1">
-                    <p className="font-medium">{item.seed}</p>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => copyToClipboard(item.seed.toString(), "Seed")}
-                      className="h-6 w-6 p-0"
-                    >
-                      <Copy className="h-3 w-3" />
-                    </Button>
+          {/* Sidebar */}
+          <div className="w-80 border-l bg-background flex flex-col">
+            {/* Header */}
+            <div className="p-4 border-b">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h2 className="text-lg font-semibold mb-1">{item.title}</h2>
+                  <div className="flex gap-2">
+                    <Badge variant={item.mode === "ai" ? "default" : "secondary"}>{item.mode.toUpperCase()}</Badge>
+                    {item.upscaled_image_url && <Badge variant="outline">Enhanced</Badge>}
+                    {item.is_favorite && (
+                      <Badge variant="destructive">
+                        <Heart className="h-3 w-3 fill-current mr-1" />
+                        Favorite
+                      </Badge>
+                    )}
                   </div>
                 </div>
-                <div>
-                  <span className="text-gray-600">Samples:</span>
-                  <p className="font-medium">{item.num_samples}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Noise:</span>
-                  <p className="font-medium">{item.noise_scale}</p>
-                </div>
-                {item.time_step && (
+                <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <ScrollArea className="flex-1">
+              <div className="p-4 space-y-4">
+                {/* Description */}
+                {item.description && (
                   <div>
-                    <span className="text-gray-600">Time Step:</span>
-                    <p className="font-medium">{item.time_step}</p>
+                    <h3 className="text-sm font-medium mb-2">Description</h3>
+                    <p className="text-sm text-muted-foreground">{item.description}</p>
                   </div>
                 )}
+
+                {/* Tags */}
+                {item.tags.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <Tag className="h-4 w-4" />
+                      Tags
+                    </h3>
+                    <div className="flex flex-wrap gap-1">
+                      {item.tags.map((tag) => (
+                        <Badge key={tag} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <Separator />
+
+                {/* Generation Parameters */}
+                <div>
+                  <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    Generation Parameters
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Dataset:</span>
+                      <span className="font-mono">{item.dataset}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Scenario:</span>
+                      <span className="font-mono">{item.scenario}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Seed:</span>
+                      <div className="flex items-center gap-1">
+                        <span className="font-mono">{item.seed}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyToClipboard(item.seed.toString(), "Seed")}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Samples:</span>
+                      <span className="font-mono">{item.num_samples}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Noise Scale:</span>
+                      <span className="font-mono">{item.noise_scale}</span>
+                    </div>
+                    {item.time_step && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Time Step:</span>
+                        <span className="font-mono">{item.time_step}</span>
+                      </div>
+                    )}
+                    {item.upscale_method && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Upscale Method:</span>
+                        <span className="font-mono">{item.upscale_method}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Custom Prompt */}
+                {item.custom_prompt && (
+                  <div>
+                    <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <Sparkles className="h-4 w-4" />
+                      Custom Prompt
+                    </h3>
+                    <div className="bg-muted p-3 rounded-md">
+                      <p className="text-sm font-mono">{item.custom_prompt}</p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyToClipboard(item.custom_prompt!, "Custom prompt")}
+                        className="mt-2 h-6 text-xs"
+                      >
+                        <Copy className="h-3 w-3 mr-1" />
+                        Copy Prompt
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                <Separator />
+
+                {/* Metadata */}
+                <div>
+                  <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    Metadata
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Created:</span>
+                      <span>{new Date(item.created_at).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Updated:</span>
+                      <span>{new Date(item.updated_at).toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">ID:</span>
+                      <div className="flex items-center gap-1">
+                        <span className="font-mono text-xs">{item.id.slice(0, 8)}...</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyToClipboard(item.id, "Artwork ID")}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            </ScrollArea>
 
-            {/* Custom Prompt */}
-            {item.custom_prompt && (
-              <>
-                <Separator />
-                <div>
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-semibold">Custom Prompt</Label>
-                    <Button size="sm" variant="ghost" onClick={() => copyToClipboard(item.custom_prompt!, "Prompt")}>
-                      <Copy className="h-3 w-3" />
-                    </Button>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{item.custom_prompt}</p>
-                </div>
-              </>
-            )}
-
-            {/* Enhancement Info */}
-            {item.upscaled_image_url && (
-              <>
-                <Separator />
-                <div>
-                  <Label className="text-sm font-semibold">Enhancement</Label>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Method:{" "}
-                    {item.upscale_method === "mathematical" ? "Mathematical (16x more points)" : "Pixel Enhancement"}
-                  </p>
-                </div>
-              </>
-            )}
-
-            {/* Tags */}
-            {item.tags.length > 0 && (
-              <>
-                <Separator />
-                <div>
-                  <Label className="text-sm font-semibold">Tags</Label>
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {item.tags.map((tag) => (
-                      <Badge key={tag} variant="outline" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* Timestamps */}
-            <Separator />
-            <div className="text-xs text-gray-500 dark:text-gray-400">
-              <div>Created: {new Date(item.created_at).toLocaleString()}</div>
-              {item.updated_at !== item.created_at && <div>Updated: {new Date(item.updated_at).toLocaleString()}</div>}
+            {/* Actions */}
+            <div className="p-4 border-t">
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleToggleFavorite}
+                  disabled={isLoading}
+                  className="flex-1 bg-transparent"
+                >
+                  <Heart className={`h-4 w-4 mr-2 ${item.is_favorite ? "fill-current" : ""}`} />
+                  {item.is_favorite ? "Unfavorite" : "Favorite"}
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleDownload} className="flex-1 bg-transparent">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+              </div>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleDelete}
+                disabled={isLoading}
+                className="w-full mt-2"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Artwork
+              </Button>
             </div>
           </div>
         </div>

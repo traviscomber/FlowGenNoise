@@ -1,6 +1,4 @@
-import { createClient } from "@supabase/supabase-js"
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+import { createClient } from "@/lib/supabase"
 
 export interface GalleryItem {
   id: string
@@ -24,7 +22,7 @@ export interface GalleryItem {
   updated_at: string
 }
 
-export interface SaveArtworkData {
+export interface CreateGalleryItem {
   title: string
   description?: string
   image_url: string
@@ -40,229 +38,289 @@ export interface SaveArtworkData {
   custom_prompt?: string
   upscale_method?: string
   tags?: string[]
+  is_favorite?: boolean
+}
+
+export interface GalleryFilters {
+  search?: string
+  mode?: "svg" | "ai"
+  favorites?: boolean
+  tags?: string[]
+  dataset?: string
+  scenario?: string
 }
 
 export interface GalleryStats {
   total: number
-  svg: number
-  ai: number
-  favorites: number
-  enhanced: number
+  svg_count: number
+  ai_count: number
+  favorites_count: number
+  recent_count: number
 }
 
 class GalleryService {
-  private handleError(error: any, operation: string) {
-    console.error(`Gallery service error (${operation}):`, error)
+  private supabase = createClient()
 
-    // Check if it's a "table does not exist" error
-    if (error?.message?.includes("does not exist") || error?.code === "42P01") {
-      throw new Error(`Database table not found. Please run the gallery migration script first.`)
-    }
-
-    throw new Error(`Failed to ${operation}: ${error?.message || "Unknown error"}`)
-  }
-
-  async saveArtwork(data: SaveArtworkData): Promise<GalleryItem> {
+  async saveArtwork(artwork: CreateGalleryItem): Promise<GalleryItem | null> {
     try {
-      const { data: result, error } = await supabase
-        .from("gallery")
-        .insert([
-          {
-            ...data,
-            tags: data.tags || this.generateAutoTags(data),
-          },
-        ])
-        .select()
-        .single()
+      const { data, error } = await this.supabase.from("gallery").insert([artwork]).select().single()
 
-      if (error) throw error
-      return result
-    } catch (error) {
-      this.handleError(error, "save artwork")
-      throw error // TypeScript requires this
-    }
-  }
-
-  async getGalleryItems(
-    options: {
-      limit?: number
-      offset?: number
-      search?: string
-      mode?: "svg" | "ai"
-      favorites?: boolean
-      tags?: string[]
-      sortBy?: "created_at" | "title"
-      sortOrder?: "asc" | "desc"
-    } = {},
-  ): Promise<GalleryItem[]> {
-    try {
-      const {
-        limit = 20,
-        offset = 0,
-        search,
-        mode,
-        favorites,
-        tags,
-        sortBy = "created_at",
-        sortOrder = "desc",
-      } = options
-
-      let query = supabase.from("gallery").select("*")
-
-      // Apply filters
-      if (search) {
-        query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`)
+      if (error) {
+        console.error("Error saving artwork:", error)
+        return null
       }
 
-      if (mode) {
-        query = query.eq("mode", mode)
-      }
-
-      if (favorites) {
-        query = query.eq("is_favorite", true)
-      }
-
-      if (tags && tags.length > 0) {
-        query = query.overlaps("tags", tags)
-      }
-
-      // Apply sorting and pagination
-      query = query.order(sortBy, { ascending: sortOrder === "asc" }).range(offset, offset + limit - 1)
-
-      const { data, error } = await query
-
-      if (error) throw error
-      return data || []
-    } catch (error) {
-      this.handleError(error, "fetch gallery items")
-      return [] // Fallback for UI
-    }
-  }
-
-  async getGalleryItem(id: string): Promise<GalleryItem | null> {
-    try {
-      const { data, error } = await supabase.from("gallery").select("*").eq("id", id).single()
-
-      if (error) throw error
       return data
     } catch (error) {
-      this.handleError(error, "fetch gallery item")
+      console.error("Error saving artwork:", error)
       return null
     }
   }
 
-  async updateArtwork(id: string, updates: Partial<SaveArtworkData>): Promise<GalleryItem> {
+  async getArtworks(
+    filters: GalleryFilters = {},
+    limit = 20,
+    offset = 0,
+    sortBy = "created_at",
+    sortOrder: "asc" | "desc" = "desc",
+  ): Promise<GalleryItem[]> {
     try {
-      const { data, error } = await supabase.from("gallery").update(updates).eq("id", id).select().single()
+      let query = this.supabase
+        .from("gallery")
+        .select("*")
+        .order(sortBy, { ascending: sortOrder === "asc" })
+        .range(offset, offset + limit - 1)
 
-      if (error) throw error
-      return data
+      // Apply filters
+      if (filters.search) {
+        query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`)
+      }
+
+      if (filters.mode) {
+        query = query.eq("mode", filters.mode)
+      }
+
+      if (filters.favorites) {
+        query = query.eq("is_favorite", true)
+      }
+
+      if (filters.tags && filters.tags.length > 0) {
+        query = query.overlaps("tags", filters.tags)
+      }
+
+      if (filters.dataset) {
+        query = query.eq("dataset", filters.dataset)
+      }
+
+      if (filters.scenario) {
+        query = query.eq("scenario", filters.scenario)
+      }
+
+      const { data, error } = await query
+
+      if (error) {
+        console.error("Error fetching artworks:", error)
+        return []
+      }
+
+      return data || []
     } catch (error) {
-      this.handleError(error, "update artwork")
-      throw error
+      console.error("Error fetching artworks:", error)
+      return []
     }
   }
 
-  async toggleFavorite(id: string): Promise<GalleryItem> {
+  async getArtworkById(id: string): Promise<GalleryItem | null> {
     try {
-      // First get current state
-      const { data: current, error: fetchError } = await supabase
+      const { data, error } = await this.supabase.from("gallery").select("*").eq("id", id).single()
+
+      if (error) {
+        console.error("Error fetching artwork:", error)
+        return null
+      }
+
+      return data
+    } catch (error) {
+      console.error("Error fetching artwork:", error)
+      return null
+    }
+  }
+
+  async updateArtwork(id: string, updates: Partial<CreateGalleryItem>): Promise<GalleryItem | null> {
+    try {
+      const { data, error } = await this.supabase.from("gallery").update(updates).eq("id", id).select().single()
+
+      if (error) {
+        console.error("Error updating artwork:", error)
+        return null
+      }
+
+      return data
+    } catch (error) {
+      console.error("Error updating artwork:", error)
+      return null
+    }
+  }
+
+  async deleteArtwork(id: string): Promise<boolean> {
+    try {
+      const { error } = await this.supabase.from("gallery").delete().eq("id", id)
+
+      if (error) {
+        console.error("Error deleting artwork:", error)
+        return false
+      }
+
+      return true
+    } catch (error) {
+      console.error("Error deleting artwork:", error)
+      return false
+    }
+  }
+
+  async toggleFavorite(id: string): Promise<boolean> {
+    try {
+      // First get the current favorite status
+      const { data: current, error: fetchError } = await this.supabase
         .from("gallery")
         .select("is_favorite")
         .eq("id", id)
         .single()
 
-      if (fetchError) throw fetchError
+      if (fetchError) {
+        console.error("Error fetching current favorite status:", fetchError)
+        return false
+      }
 
       // Toggle the favorite status
-      const { data, error } = await supabase
+      const { error: updateError } = await this.supabase
         .from("gallery")
         .update({ is_favorite: !current.is_favorite })
         .eq("id", id)
-        .select()
-        .single()
 
-      if (error) throw error
-      return data
+      if (updateError) {
+        console.error("Error toggling favorite:", updateError)
+        return false
+      }
+
+      return true
     } catch (error) {
-      this.handleError(error, "toggle favorite")
-      throw error
-    }
-  }
-
-  async deleteArtwork(id: string): Promise<void> {
-    try {
-      const { error } = await supabase.from("gallery").delete().eq("id", id)
-
-      if (error) throw error
-    } catch (error) {
-      this.handleError(error, "delete artwork")
-      throw error
+      console.error("Error toggling favorite:", error)
+      return false
     }
   }
 
   async getStats(): Promise<GalleryStats> {
     try {
-      const { data, error } = await supabase.from("gallery").select("mode, is_favorite, upscaled_image_url")
+      const { data, error } = await this.supabase.from("gallery").select("mode, is_favorite, created_at")
 
-      if (error) throw error
-
-      const stats = {
-        total: data?.length || 0,
-        svg: data?.filter((item) => item.mode === "svg").length || 0,
-        ai: data?.filter((item) => item.mode === "ai").length || 0,
-        favorites: data?.filter((item) => item.is_favorite).length || 0,
-        enhanced: data?.filter((item) => item.upscaled_image_url).length || 0,
+      if (error) {
+        console.error("Error fetching stats:", error)
+        return {
+          total: 0,
+          svg_count: 0,
+          ai_count: 0,
+          favorites_count: 0,
+          recent_count: 0,
+        }
       }
+
+      const now = new Date()
+      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+
+      const stats = data.reduce(
+        (acc, item) => {
+          acc.total++
+          if (item.mode === "svg") acc.svg_count++
+          if (item.mode === "ai") acc.ai_count++
+          if (item.is_favorite) acc.favorites_count++
+          if (new Date(item.created_at) > weekAgo) acc.recent_count++
+          return acc
+        },
+        {
+          total: 0,
+          svg_count: 0,
+          ai_count: 0,
+          favorites_count: 0,
+          recent_count: 0,
+        },
+      )
 
       return stats
     } catch (error) {
-      this.handleError(error, "fetch stats")
-      return { total: 0, svg: 0, ai: 0, favorites: 0, enhanced: 0 }
+      console.error("Error fetching stats:", error)
+      return {
+        total: 0,
+        svg_count: 0,
+        ai_count: 0,
+        favorites_count: 0,
+        recent_count: 0,
+      }
     }
   }
 
-  async getPopularTags(): Promise<{ tag: string; count: number }[]> {
+  async getPopularTags(limit = 10): Promise<Array<{ tag: string; count: number }>> {
     try {
-      const { data, error } = await supabase.from("gallery").select("tags")
+      const { data, error } = await this.supabase.from("gallery").select("tags")
 
-      if (error) throw error
+      if (error) {
+        console.error("Error fetching tags:", error)
+        return []
+      }
 
       // Count tag occurrences
       const tagCounts: Record<string, number> = {}
-      data?.forEach((item) => {
-        item.tags?.forEach((tag: string) => {
-          tagCounts[tag] = (tagCounts[tag] || 0) + 1
-        })
+      data.forEach((item) => {
+        if (item.tags && Array.isArray(item.tags)) {
+          item.tags.forEach((tag) => {
+            tagCounts[tag] = (tagCounts[tag] || 0) + 1
+          })
+        }
       })
 
-      // Convert to array and sort by count
+      // Sort by count and return top tags
       return Object.entries(tagCounts)
         .map(([tag, count]) => ({ tag, count }))
         .sort((a, b) => b.count - a.count)
-        .slice(0, 20) // Top 20 tags
+        .slice(0, limit)
     } catch (error) {
-      this.handleError(error, "fetch tags")
+      console.error("Error fetching popular tags:", error)
       return []
     }
   }
 
-  private generateAutoTags(data: SaveArtworkData): string[] {
-    const tags = [data.dataset, data.scenario, data.mode]
+  async getUniqueDatasets(): Promise<string[]> {
+    try {
+      const { data, error } = await this.supabase.from("gallery").select("dataset").order("dataset")
 
-    if (data.upscaled_image_url) {
-      tags.push("enhanced")
+      if (error) {
+        console.error("Error fetching datasets:", error)
+        return []
+      }
+
+      const uniqueDatasets = [...new Set(data.map((item) => item.dataset))]
+      return uniqueDatasets
+    } catch (error) {
+      console.error("Error fetching datasets:", error)
+      return []
     }
+  }
 
-    if (data.custom_prompt) {
-      tags.push("custom-prompt")
+  async getUniqueScenarios(): Promise<string[]> {
+    try {
+      const { data, error } = await this.supabase.from("gallery").select("scenario").order("scenario")
+
+      if (error) {
+        console.error("Error fetching scenarios:", error)
+        return []
+      }
+
+      const uniqueScenarios = [...new Set(data.map((item) => item.scenario))]
+      return uniqueScenarios
+    } catch (error) {
+      console.error("Error fetching scenarios:", error)
+      return []
     }
-
-    if (data.num_samples > 3000) {
-      tags.push("high-detail")
-    }
-
-    return tags
   }
 }
 

@@ -1,69 +1,83 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Save, Loader2, X, Plus } from "lucide-react"
+import { Save, X, Plus } from "lucide-react"
+import { galleryService, type CreateGalleryItem } from "@/lib/gallery-service"
 import { useToast } from "@/hooks/use-toast"
-import { galleryService, type SaveArtworkData } from "@/lib/gallery-service"
 
 interface SaveArtworkDialogProps {
-  artworkData: {
-    imageUrl: string
-    svgContent?: string
-    upscaledImageUrl?: string
-    mode: "svg" | "ai"
-    params: {
-      dataset: string
-      scenario: string
-      seed: number
-      numSamples: number
-      noiseScale: number
-      timeStep?: number
-    }
+  imageUrl: string
+  svgContent?: string
+  upscaledImageUrl?: string
+  mode: "svg" | "ai"
+  generationParams: {
+    dataset: string
+    scenario: string
+    seed: number
+    numSamples: number
+    noiseScale: number
+    timeStep?: number
     customPrompt?: string
     upscaleMethod?: string
   }
-  onSaved?: () => void
+  children: React.ReactNode
 }
 
-export function SaveArtworkDialog({ artworkData, onSaved }: SaveArtworkDialogProps) {
+export function SaveArtworkDialog({
+  imageUrl,
+  svgContent,
+  upscaledImageUrl,
+  mode,
+  generationParams,
+  children,
+}: SaveArtworkDialogProps) {
   const [open, setOpen] = useState(false)
-  const [saving, setSaving] = useState(false)
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [tags, setTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState("")
+  const [isSaving, setIsSaving] = useState(false)
   const { toast } = useToast()
 
-  // Generate auto title and tags when dialog opens
-  const handleOpenChange = (isOpen: boolean) => {
-    setOpen(isOpen)
-    if (isOpen && !title) {
-      const autoTitle = `${artworkData.params.dataset.charAt(0).toUpperCase() + artworkData.params.dataset.slice(1)} + ${artworkData.params.scenario.charAt(0).toUpperCase() + artworkData.params.scenario.slice(1)}`
-      setTitle(autoTitle)
+  // Generate auto-suggestions when dialog opens
+  const generateAutoSuggestions = () => {
+    const autoTitle = `${generationParams.dataset} - ${generationParams.scenario}`
+    const autoTags = [
+      generationParams.dataset.toLowerCase(),
+      generationParams.scenario.toLowerCase(),
+      mode,
+      ...(generationParams.customPrompt ? ["custom"] : []),
+      ...(upscaledImageUrl ? ["upscaled"] : []),
+    ].filter(Boolean)
 
-      const autoTags = [artworkData.params.dataset, artworkData.params.scenario, artworkData.mode]
+    setTitle(autoTitle)
+    setTags(autoTags)
+  }
 
-      if (artworkData.upscaledImageUrl) {
-        autoTags.push("enhanced")
-      }
-
-      if (artworkData.customPrompt) {
-        autoTags.push("custom-prompt")
-      }
-
-      setTags(autoTags)
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen)
+    if (newOpen) {
+      generateAutoSuggestions()
+    } else {
+      // Reset form when closing
+      setTitle("")
+      setDescription("")
+      setTags([])
+      setNewTag("")
     }
   }
 
   const addTag = () => {
-    if (newTag.trim() && !tags.includes(newTag.trim())) {
-      setTags([...tags, newTag.trim()])
+    if (newTag.trim() && !tags.includes(newTag.trim().toLowerCase())) {
+      setTags([...tags, newTag.trim().toLowerCase()])
       setNewTag("")
     }
   }
@@ -72,84 +86,105 @@ export function SaveArtworkDialog({ artworkData, onSaved }: SaveArtworkDialogPro
     setTags(tags.filter((tag) => tag !== tagToRemove))
   }
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      addTag()
+    }
+  }
+
   const handleSave = async () => {
     if (!title.trim()) {
       toast({
-        title: "Title Required",
+        title: "Title required",
         description: "Please enter a title for your artwork.",
         variant: "destructive",
       })
       return
     }
 
-    setSaving(true)
+    setIsSaving(true)
 
-    try {
-      const saveData: SaveArtworkData = {
-        title: title.trim(),
-        description: description.trim() || undefined,
-        image_url: artworkData.imageUrl,
-        svg_content: artworkData.svgContent,
-        upscaled_image_url: artworkData.upscaledImageUrl,
-        mode: artworkData.mode,
-        dataset: artworkData.params.dataset,
-        scenario: artworkData.params.scenario,
-        seed: artworkData.params.seed,
-        num_samples: artworkData.params.numSamples,
-        noise_scale: artworkData.params.noiseScale,
-        time_step: artworkData.params.timeStep,
-        custom_prompt: artworkData.customPrompt,
-        upscale_method: artworkData.upscaleMethod,
-        tags,
-      }
+    const artworkData: CreateGalleryItem = {
+      title: title.trim(),
+      description: description.trim() || undefined,
+      image_url: imageUrl,
+      svg_content: svgContent,
+      upscaled_image_url: upscaledImageUrl,
+      mode,
+      dataset: generationParams.dataset,
+      scenario: generationParams.scenario,
+      seed: generationParams.seed,
+      num_samples: generationParams.numSamples,
+      noise_scale: generationParams.noiseScale,
+      time_step: generationParams.timeStep,
+      custom_prompt: generationParams.customPrompt,
+      upscale_method: generationParams.upscaleMethod,
+      tags,
+      is_favorite: false,
+    }
 
-      await galleryService.saveArtwork(saveData)
+    const result = await galleryService.saveArtwork(artworkData)
 
+    if (result) {
       toast({
-        title: "Artwork Saved! 🎨",
+        title: "Artwork saved!",
         description: "Your artwork has been added to the gallery.",
       })
-
       setOpen(false)
-      onSaved?.()
-
-      // Reset form
-      setTitle("")
-      setDescription("")
-      setTags([])
-    } catch (error: any) {
-      console.error("Save error:", error)
+    } else {
       toast({
-        title: "Save Failed",
-        description: error.message || "Failed to save artwork. Please try again.",
+        title: "Save failed",
+        description: "Failed to save artwork. Please try again.",
         variant: "destructive",
       })
-    } finally {
-      setSaving(false)
     }
+
+    setIsSaving(false)
   }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="w-full bg-transparent">
-          <Save className="h-4 w-4 mr-2" />
-          Save to Gallery
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Save Artwork to Gallery</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <Save className="h-5 w-5" />
+            Save to Gallery
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Preview */}
-          <div className="relative bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden">
-            <img
-              src={artworkData.upscaledImageUrl || artworkData.imageUrl}
-              alt="Artwork preview"
-              className="w-full h-32 object-contain"
-            />
+          <div className="flex gap-4">
+            <div className="flex-shrink-0">
+              <img
+                src={imageUrl || "/placeholder.svg"}
+                alt="Generated artwork"
+                className="w-32 h-32 object-cover rounded-lg border"
+              />
+            </div>
+            <div className="flex-1 space-y-2">
+              <div className="text-sm text-muted-foreground">
+                <div>
+                  <strong>Mode:</strong> {mode.toUpperCase()}
+                </div>
+                <div>
+                  <strong>Dataset:</strong> {generationParams.dataset}
+                </div>
+                <div>
+                  <strong>Scenario:</strong> {generationParams.scenario}
+                </div>
+                <div>
+                  <strong>Seed:</strong> {generationParams.seed}
+                </div>
+                {generationParams.customPrompt && (
+                  <div>
+                    <strong>Custom Prompt:</strong> {generationParams.customPrompt}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Title */}
@@ -160,6 +195,7 @@ export function SaveArtworkDialog({ artworkData, onSaved }: SaveArtworkDialogPro
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter artwork title..."
+              maxLength={100}
             />
           </div>
 
@@ -170,8 +206,9 @@ export function SaveArtworkDialog({ artworkData, onSaved }: SaveArtworkDialogPro
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Optional description..."
+              placeholder="Add a description for your artwork..."
               rows={3}
+              maxLength={500}
             />
           </div>
 
@@ -182,61 +219,35 @@ export function SaveArtworkDialog({ artworkData, onSaved }: SaveArtworkDialogPro
               <Input
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
-                placeholder="Add tag..."
-                onKeyPress={(e) => e.key === "Enter" && addTag()}
+                onKeyPress={handleKeyPress}
+                placeholder="Add a tag..."
+                className="flex-1"
               />
-              <Button onClick={addTag} size="sm" variant="outline">
+              <Button type="button" variant="outline" size="sm" onClick={addTag} disabled={!newTag.trim()}>
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <Badge key={tag} variant="secondary" className="text-xs">
-                  {tag}
-                  <button onClick={() => removeTag(tag)} className="ml-1 hover:text-red-500">
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          {/* Generation Info */}
-          <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <h4 className="text-sm font-semibold mb-2">Generation Parameters</h4>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div>Mode: {artworkData.mode.toUpperCase()}</div>
-              <div>Seed: {artworkData.params.seed}</div>
-              <div>Dataset: {artworkData.params.dataset}</div>
-              <div>Scenario: {artworkData.params.scenario}</div>
-              <div>Samples: {artworkData.params.numSamples}</div>
-              <div>Noise: {artworkData.params.noiseScale}</div>
-            </div>
-            {artworkData.customPrompt && (
-              <div className="mt-2">
-                <div className="text-xs font-medium">Custom Prompt:</div>
-                <div className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">{artworkData.customPrompt}</div>
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {tags.map((tag) => (
+                  <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                    {tag}
+                    <button type="button" onClick={() => removeTag(tag)} className="ml-1 hover:text-destructive">
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                ))}
               </div>
             )}
           </div>
 
           {/* Actions */}
-          <div className="flex gap-2 pt-4">
-            <Button onClick={handleSave} disabled={saving || !title.trim()} className="flex-1">
-              {saving ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4 mr-2" />
-                  Save to Gallery
-                </>
-              )}
-            </Button>
-            <Button variant="outline" onClick={() => setOpen(false)} disabled={saving}>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="outline" onClick={() => setOpen(false)} disabled={isSaving}>
               Cancel
+            </Button>
+            <Button onClick={handleSave} disabled={isSaving || !title.trim()}>
+              {isSaving ? "Saving..." : "Save to Gallery"}
             </Button>
           </div>
         </div>
