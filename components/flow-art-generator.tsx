@@ -34,10 +34,10 @@ export function FlowArtGenerator() {
   const [progress, setProgress] = useState(0)
   const [mode, setMode] = useState<"svg" | "ai">("svg")
 
-  // Generation parameters - separate dataset and scenario
+  // Generation parameters - separate dataset, scenario, and color palette
   const [dataset, setDataset] = useState("spirals")
   const [scenario, setScenario] = useState("pure")
-  const [colorScheme, setColorScheme] = useState("pure")
+  const [colorScheme, setColorScheme] = useState("plasma")
   const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
   const [numSamples, setNumSamples] = useState(2000)
   const [noiseScale, setNoiseScale] = useState(0.05)
@@ -135,7 +135,7 @@ export function FlowArtGenerator() {
 
         toast({
           title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
-          description: `Beautiful ${dataset} dataset with ${scenario === "pure" ? "pure mathematical" : scenario} ${scenario === "pure" ? "visualization" : "scenario blend"} created.`,
+          description: `Beautiful ${dataset} dataset with ${scenario === "pure" ? "pure mathematical" : scenario} ${scenario === "pure" ? "visualization" : "scenario"} in ${colorScheme} colors.`,
         })
       } else {
         // Generate AI art
@@ -189,7 +189,7 @@ export function FlowArtGenerator() {
           title: "AI Art Generated! 🤖✨",
           description: useCustomPrompt
             ? "Custom enhanced prompt artwork created!"
-            : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork created.`,
+            : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork in ${colorScheme} palette.`,
         })
       }
     } catch (error: any) {
@@ -321,7 +321,7 @@ export function FlowArtGenerator() {
       const imageUrl = generatedArt.upscaledImageUrl || generatedArt.imageUrl
       const isEnhanced = !!generatedArt.upscaledImageUrl
       const fileExtension = generatedArt.mode === "svg" && !isEnhanced ? "svg" : "png"
-      const fileName = `flowsketch-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
+      const fileName = `flowsketch-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
 
       console.log("Downloading:", fileName, "from:", imageUrl)
 
@@ -361,7 +361,7 @@ export function FlowArtGenerator() {
 
       toast({
         title: "Download Complete! 🎨",
-        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} artwork downloaded.`,
+        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} in ${generatedArt.params.colorScheme} colors downloaded.`,
       })
     } catch (error: any) {
       console.error("Download error:", error)
@@ -399,7 +399,7 @@ export function FlowArtGenerator() {
           FlowSketch Dataset + Scenario Generator
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Choose a dataset pattern, then blend it with a scenario theme
+          Choose a dataset pattern, scenario effects, and color palette
         </p>
       </div>
 
@@ -424,8 +424,7 @@ export function FlowArtGenerator() {
                   <Alert>
                     <Zap className="h-4 w-4" />
                     <AlertDescription>
-                      First choose a dataset pattern, then select a scenario to blend with it! Try "Pure Mathematical"
-                      for raw mathematical beauty.
+                      Choose dataset pattern, scenario effects, and color palette independently for maximum creativity!
                     </AlertDescription>
                   </Alert>
                 </TabsContent>
@@ -434,8 +433,8 @@ export function FlowArtGenerator() {
                   <Alert>
                     <Sparkles className="h-4 w-4" />
                     <AlertDescription>
-                      Create AI-generated artwork based on your dataset and scenario combination. Use prompt enhancement
-                      for better results!
+                      Create AI-generated artwork based on your dataset, scenario, and color palette combination. Use
+                      prompt enhancement for better results!
                     </AlertDescription>
                   </Alert>
                 </TabsContent>
@@ -460,22 +459,20 @@ export function FlowArtGenerator() {
               </div>
 
               <div className="space-y-2">
-                <Label>Scenario Theme</Label>
+                <Label>Scenario Effects</Label>
                 <Select value={scenario} onValueChange={setScenario}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="pure">🔢 Pure Mathematical</SelectItem>
-                    <SelectItem value="forest">🌲 Forest</SelectItem>
-                    <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
-                    <SelectItem value="ocean">🌊 Ocean</SelectItem>
-                    <SelectItem value="neural">🧠 Neural</SelectItem>
-                    <SelectItem value="fire">🔥 Fire</SelectItem>
-                    <SelectItem value="ice">❄️ Ice</SelectItem>
-                    <SelectItem value="desert">🏜️ Desert</SelectItem>
-                    <SelectItem value="sunset">🌅 Sunset</SelectItem>
-                    <SelectItem value="monochrome">⚫ Monochrome</SelectItem>
+                    <SelectItem value="forest">🌲 Forest Growth</SelectItem>
+                    <SelectItem value="cosmic">🌌 Cosmic Spiral</SelectItem>
+                    <SelectItem value="ocean">🌊 Ocean Waves</SelectItem>
+                    <SelectItem value="neural">🧠 Neural Network</SelectItem>
+                    <SelectItem value="fire">🔥 Fire Dynamics</SelectItem>
+                    <SelectItem value="ice">❄️ Ice Crystals</SelectItem>
+                    <SelectItem value="desert">🏜️ Desert Dunes</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -487,16 +484,18 @@ export function FlowArtGenerator() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pure">🔢 Pure Mathematical</SelectItem>
-                    <SelectItem value="forest">🌲 Forest</SelectItem>
-                    <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
+                    <SelectItem value="plasma">🟣 Plasma</SelectItem>
+                    <SelectItem value="lava">🔴 Lava</SelectItem>
+                    <SelectItem value="futuristic">🔵 Futuristic</SelectItem>
+                    <SelectItem value="forest">🟢 Forest</SelectItem>
                     <SelectItem value="ocean">🌊 Ocean</SelectItem>
-                    <SelectItem value="neural">🧠 Neural</SelectItem>
-                    <SelectItem value="fire">🔥 Fire</SelectItem>
-                    <SelectItem value="ice">❄️ Ice</SelectItem>
-                    <SelectItem value="desert">🏜️ Desert</SelectItem>
                     <SelectItem value="sunset">🌅 Sunset</SelectItem>
-                    <SelectItem value="monochrome">⚫ Monochrome</SelectItem>
+                    <SelectItem value="arctic">❄️ Arctic</SelectItem>
+                    <SelectItem value="neon">💚 Neon</SelectItem>
+                    <SelectItem value="vintage">🟤 Vintage</SelectItem>
+                    <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
+                    <SelectItem value="toxic">🟡 Toxic</SelectItem>
+                    <SelectItem value="ember">🟠 Ember</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -628,7 +627,7 @@ export function FlowArtGenerator() {
                             : "Applying AI artistic effects..."
                           : scenario === "pure"
                             ? "Applying pure mathematical visualization..."
-                            : `Applying ${scenario} scenario...`
+                            : `Applying ${scenario} scenario effects...`
                         : progress < 90
                           ? "Rendering visualization..."
                           : "Finalizing artwork..."}
@@ -709,6 +708,7 @@ export function FlowArtGenerator() {
                     <Badge variant="outline">
                       {generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario}
                     </Badge>
+                    <Badge variant="outline">{generatedArt.params.colorScheme}</Badge>
                     <Badge variant="outline">{generatedArt.params.numSamples} points</Badge>
                     {generatedArt.customPrompt && (
                       <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
@@ -744,7 +744,7 @@ export function FlowArtGenerator() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                     <div>
                       <span className="text-gray-600">Mode:</span>
                       <p className="font-medium">{generatedArt.mode === "ai" ? "AI Art" : "SVG"}</p>
@@ -756,8 +756,12 @@ export function FlowArtGenerator() {
                     <div>
                       <span className="text-gray-600">Scenario:</span>
                       <p className="font-medium capitalize">
-                        {generatedArt.params.scenario === "pure" ? "Pure Mathematical" : generatedArt.params.scenario}
+                        {generatedArt.params.scenario === "pure" ? "Pure Math" : generatedArt.params.scenario}
                       </p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Colors:</span>
+                      <p className="font-medium capitalize">{generatedArt.params.colorScheme}</p>
                     </div>
                     <div>
                       <span className="text-gray-600">Seed:</span>
@@ -780,9 +784,9 @@ export function FlowArtGenerator() {
                 <div className="h-96 flex items-center justify-center text-gray-500 dark:text-gray-400">
                   <div className="text-center">
                     <Zap className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Choose a dataset and scenario combination!</p>
+                    <p>Choose a dataset, scenario, and color palette!</p>
                     <p className="text-sm mt-2">
-                      Try Spirals + Pure Mathematical or Gaussian + Pure Mathematical for clean mathematical beauty
+                      Try Spirals + Pure Math + Plasma or Gaussian + Neural + Futuristic for stunning results
                     </p>
                     <p className="text-sm mt-1 text-purple-600">
                       Switch to AI Art tab and use prompt enhancement for professional results! 🤖✨

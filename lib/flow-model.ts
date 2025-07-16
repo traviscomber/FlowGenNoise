@@ -26,84 +26,20 @@ export interface UpscaleParams extends GenerationParams {
   extraDetail: boolean
 }
 
-// Color schemes for different scenarios
-const scenarioColors = {
-  pure: ["#000000", "#1a1a1a", "#333333", "#4d4d4d", "#666666", "#808080", "#999999", "#b3b3b3", "#cccccc", "#e6e6e6"],
-  forest: [
-    "#0F1B0F",
-    "#14532D",
-    "#166534",
-    "#16A34A",
-    "#22C55E",
-    "#4ADE80",
-    "#86EFAC",
-    "#BBF7D0",
-    "#DCFCE7",
-    "#F0FDF4",
-  ],
-  cosmic: [
-    "#0B1426",
-    "#1E3A8A",
-    "#3B82F6",
-    "#60A5FA",
-    "#93C5FD",
-    "#DBEAFE",
-    "#FEF3C7",
-    "#FCD34D",
-    "#F59E0B",
-    "#D97706",
-  ],
-  ocean: ["#0C1E2B", "#164E63", "#0891B2", "#0EA5E9", "#38BDF8", "#7DD3FC", "#BAE6FD", "#E0F2FE", "#F0F9FF", "#FFFFFF"],
-  sunset: [
-    "#1A0B0B",
-    "#7C2D12",
-    "#DC2626",
-    "#EF4444",
-    "#F87171",
-    "#FCA5A5",
-    "#FED7AA",
-    "#FDBA74",
-    "#FB923C",
-    "#F97316",
-  ],
-  fire: ["#1A0A00", "#7C1D00", "#DC2626", "#EF4444", "#F87171", "#FCA5A5", "#FED7AA", "#FDBA74", "#FB923C", "#FFEDD5"],
-  ice: ["#0F1419", "#1E293B", "#334155", "#64748B", "#94A3B8", "#CBD5E1", "#E2E8F0", "#F1F5F9", "#F8FAFC", "#FFFFFF"],
-  neural: [
-    "#1a1a2e",
-    "#16213e",
-    "#0f3460",
-    "#533483",
-    "#7209b7",
-    "#a663cc",
-    "#4cc9f0",
-    "#7209b7",
-    "#f72585",
-    "#4361ee",
-  ],
-  desert: [
-    "#2D1B0E",
-    "#8B4513",
-    "#CD853F",
-    "#DEB887",
-    "#F4A460",
-    "#F5DEB3",
-    "#FFF8DC",
-    "#FFFACD",
-    "#FFFFE0",
-    "#FFFFF0",
-  ],
-  monochrome: [
-    "#000000",
-    "#1F1F1F",
-    "#3F3F3F",
-    "#5F5F5F",
-    "#7F7F7F",
-    "#9F9F9F",
-    "#BFBFBF",
-    "#DFDFDF",
-    "#EFEFEF",
-    "#FFFFFF",
-  ],
+// Pure 4-color palettes for visual themes
+const colorPalettes = {
+  plasma: ["#0D001A", "#7209B7", "#F72585", "#FFBE0B"], // Deep purple to bright pink to yellow
+  lava: ["#1A0000", "#8B0000", "#FF4500", "#FFD700"], // Deep red to orange to gold
+  futuristic: ["#001122", "#00FFFF", "#0080FF", "#FFFFFF"], // Dark blue to cyan to white
+  forest: ["#0F1B0F", "#228B22", "#32CD32", "#90EE90"], // Dark green to light green
+  ocean: ["#000080", "#0066CC", "#00BFFF", "#E0F6FF"], // Deep blue to light blue
+  sunset: ["#2D1B69", "#FF6B35", "#F7931E", "#FFD23F"], // Purple to orange to yellow
+  arctic: ["#1E3A8A", "#60A5FA", "#E0F2FE", "#FFFFFF"], // Deep blue to white
+  neon: ["#000000", "#FF00FF", "#00FF00", "#FFFF00"], // Black to bright neon colors
+  vintage: ["#8B4513", "#CD853F", "#F4A460", "#FFF8DC"], // Brown to cream
+  cosmic: ["#0B0B2F", "#4B0082", "#9370DB", "#FFD700"], // Deep space to gold
+  toxic: ["#1A1A00", "#66FF00", "#CCFF00", "#FFFF99"], // Dark to bright green-yellow
+  ember: ["#2D0A00", "#CC4400", "#FF8800", "#FFCC66"], // Dark brown to bright orange
 }
 
 // Seeded random number generator for consistent results
@@ -379,7 +315,7 @@ export function generateHighResFlowField(params: UpscaleParams): string {
   const enhancedSamples = highResolution ? numSamples * scaleFactor * scaleFactor : numSamples
 
   const rng = new SeededRandom(seed)
-  const colors = scenarioColors[colorScheme as keyof typeof scenarioColors] || scenarioColors.monochrome
+  const colors = colorPalettes[colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
 
   // Generate base dataset
   const basePoints = generateDataset(dataset, seed, enhancedSamples, noiseScale)
@@ -389,75 +325,58 @@ export function generateHighResFlowField(params: UpscaleParams): string {
 
   let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`
 
-  // Add background gradient based on color scheme
-  if (colorScheme === "pure") {
-    // Pure mathematical gets a clean white background
-    svgContent += `<rect width="${size}" height="${size}" fill="white"/>`
-  } else {
-    svgContent += `
+  // Add background gradient based on color palette
+  svgContent += `
     <defs>
-      <radialGradient id="bg-${seed}" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.8"/>
+      <radialGradient id="bg-${seed}" cx="50%" cy="50%" r="70%">
+        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.9"/>
         <stop offset="100%" style="stop-color:${colors[1]};stop-opacity:1"/>
       </radialGradient>
     </defs>
     <rect width="${size}" height="${size}" fill="url(#bg-${seed})"/>
   `
-  }
 
   const centerX = size / 2
   const centerY = size / 2
   const scale = size / 8
 
-  // Render points with scenario-specific styling
+  // Render points with scenario-specific styling but color palette colors
   for (let i = 0; i < transformedPoints.length; i++) {
     const point = transformedPoints[i]
     const screenX = centerX + point.x * scale
     const screenY = centerY + point.y * scale
 
     if (screenX >= 0 && screenX <= size && screenY >= 0 && screenY <= size) {
-      const colorIndex = Math.floor((i / transformedPoints.length) * (colors.length - 1))
+      // Use color palette for coloring (cycle through the 4 colors)
+      const colorIndex = Math.floor((i / transformedPoints.length) * 4) % 4
+      const pointColor = colors[colorIndex]
+
       let radius = 1
       let opacity = 0.6
       let strokeWidth = 0
       let stroke = "none"
 
-      // Apply scenario-specific rendering
+      // Apply scenario-specific sizing and effects (but not colors)
       switch (scenario) {
         case "pure":
           // Pure mathematical visualization
           radius = 0.8 + point.metadata.magnitude * 0.5
           opacity = 0.7 + (point.metadata.magnitude / 3) * 0.3
 
-          // Color based on mathematical properties
-          let pureColor = "#333333"
+          // Special highlighting for prime numbers
           if (point.metadata.isPrime) {
-            pureColor = "#000000" // Prime numbers are black
             radius *= 1.5
-          } else if (point.metadata.quadrant === 1) {
-            pureColor = "#666666"
-          } else if (point.metadata.quadrant === 2) {
-            pureColor = "#999999"
-          } else if (point.metadata.quadrant === 3) {
-            pureColor = "#4d4d4d"
-          } else {
-            pureColor = "#808080"
+            stroke = colors[3] // Use brightest color for stroke
+            strokeWidth = 0.5
           }
-
-          // Override with color scheme if not pure
-          if (colorScheme !== "pure") {
-            pureColor = colors[colorIndex]
-          }
-
-          svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="${pureColor}" opacity="${opacity}"/>`
-          continue
+          break
 
         case "forest":
           radius = 0.5 + point.metadata.leafDensity * 2
           opacity = 0.4 + point.metadata.leafDensity * 0.4
           if (point.metadata.isTree) {
             // Draw tree trunk
-            svgContent += `<line x1="${screenX}" y1="${screenY}" x2="${screenX}" y2="${screenY + point.metadata.treeHeight}" stroke="${colors[3]}" stroke-width="2" opacity="0.7"/>`
+            svgContent += `<line x1="${screenX}" y1="${screenY}" x2="${screenX}" y2="${screenY + point.metadata.treeHeight}" stroke="${colors[2]}" stroke-width="2" opacity="0.7"/>`
             // Draw tree crown
             radius = 3 + rng.range(0, 4)
             opacity = 0.8
@@ -470,7 +389,7 @@ export function generateHighResFlowField(params: UpscaleParams): string {
           if (point.metadata.isStar) {
             radius = 2 + rng.range(0, 3)
             opacity = 0.9
-            stroke = colors[8]
+            stroke = colors[3] // Brightest color for stars
             strokeWidth = 0.5
           }
           break
@@ -484,7 +403,7 @@ export function generateHighResFlowField(params: UpscaleParams): string {
           radius = 0.5 + Math.abs(point.metadata.activation) * 2
           opacity = 0.3 + Math.abs(point.metadata.activation) * 0.6
           if (point.metadata.isNeuron) {
-            stroke = colors[colorIndex + 1] || colors[colorIndex]
+            stroke = colors[3] // Brightest color for neurons
             strokeWidth = 0.5
           }
           break
@@ -495,6 +414,8 @@ export function generateHighResFlowField(params: UpscaleParams): string {
           if (point.metadata.isEmber) {
             radius = 1 + rng.range(0, 2)
             opacity = 0.9
+            stroke = colors[3] // Brightest color for embers
+            strokeWidth = 0.3
           }
           break
 
@@ -502,7 +423,7 @@ export function generateHighResFlowField(params: UpscaleParams): string {
           radius = 0.3 + point.metadata.crystallineStructure * 0.3
           opacity = 0.5 + point.metadata.frostLevel * 0.04
           if (point.metadata.isCrystal) {
-            stroke = colors[7]
+            stroke = colors[3] // Brightest color for crystals
             strokeWidth = 0.3
           }
           break
@@ -517,11 +438,11 @@ export function generateHighResFlowField(params: UpscaleParams): string {
           opacity = 0.4 + Math.abs(point.metadata.pattern) * 0.4
       }
 
-      svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="${colors[colorIndex]}" opacity="${opacity}" stroke="${stroke}" stroke-width="${strokeWidth}"/>`
+      svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="${pointColor}" opacity="${opacity}" stroke="${stroke}" stroke-width="${strokeWidth}"/>`
     }
   }
 
-  // Add scenario-specific overlays
+  // Add scenario-specific overlays (using color palette)
   if (scenario === "neural") {
     // Add neural connections
     for (let i = 0; i < Math.min(transformedPoints.length, 200); i++) {
@@ -537,22 +458,22 @@ export function generateHighResFlowField(params: UpscaleParams): string {
         const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
         if (distance < scale * 0.5) {
           const connectionOpacity = 0.1 + point1.metadata.connectionStrength * point2.metadata.connectionStrength * 0.3
-          svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${colors[5]}" stroke-width="0.5" opacity="${connectionOpacity}"/>`
+          svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${colors[2]}" stroke-width="0.5" opacity="${connectionOpacity}"/>`
         }
       }
     }
-  } else if (scenario === "pure" && colorScheme === "pure") {
+  } else if (scenario === "pure") {
     // Add mathematical grid lines for pure mathematical visualization
     const gridSpacing = size / 10
     for (let i = 0; i <= 10; i++) {
       const pos = i * gridSpacing
-      svgContent += `<line x1="${pos}" y1="0" x2="${pos}" y2="${size}" stroke="#e0e0e0" stroke-width="0.5" opacity="0.3"/>`
-      svgContent += `<line x1="0" y1="${pos}" x2="${size}" y2="${pos}" stroke="#e0e0e0" stroke-width="0.5" opacity="0.3"/>`
+      svgContent += `<line x1="${pos}" y1="0" x2="${pos}" y2="${size}" stroke="${colors[1]}" stroke-width="0.5" opacity="0.2"/>`
+      svgContent += `<line x1="0" y1="${pos}" x2="${size}" y2="${pos}" stroke="${colors[1]}" stroke-width="0.5" opacity="0.2"/>`
     }
 
     // Add axes
-    svgContent += `<line x1="${centerX}" y1="0" x2="${centerX}" y2="${size}" stroke="#cccccc" stroke-width="1" opacity="0.6"/>`
-    svgContent += `<line x1="0" y1="${centerY}" x2="${size}" y2="${centerY}" stroke="#cccccc" stroke-width="1" opacity="0.6"/>`
+    svgContent += `<line x1="${centerX}" y1="0" x2="${centerX}" y2="${size}" stroke="${colors[2]}" stroke-width="1" opacity="0.4"/>`
+    svgContent += `<line x1="0" y1="${centerY}" x2="${size}" y2="${centerY}" stroke="${colors[2]}" stroke-width="1" opacity="0.4"/>`
   }
 
   svgContent += "</svg>"
