@@ -1,38 +1,34 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
-CREATE TABLE IF NOT EXISTS gallery (
+-- Create a table for storing generated artworks
+CREATE TABLE IF NOT EXISTS artworks (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  title VARCHAR(255) NOT NULL,
+  name TEXT NOT NULL,
   description TEXT,
-  image_url TEXT NOT NULL,
-  svg_content TEXT,
-  upscaled_image_url TEXT,
-  mode VARCHAR(50) NOT NULL,
-  dataset VARCHAR(255) NOT NULL,
-  scenario VARCHAR(255) NOT NULL,
-  seed INTEGER NOT NULL,
-  num_samples INTEGER,
-  noise_scale DOUBLE PRECISION,
-  time_step DOUBLE PRECISION,
-  custom_prompt TEXT,
-  upscale_method VARCHAR(255),
-  tags TEXT[],
-  is_favorite BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  "imageUrl" TEXT NOT NULL,
+  "originalPrompt" TEXT,
+  dataset TEXT,
+  scenario TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Enable Row Level Security (RLS)
-ALTER TABLE gallery ENABLE ROW LEVEL SECURITY;
+-- Enable Row Level Security (RLS) for the artworks table
+ALTER TABLE artworks ENABLE ROW LEVEL SECURITY;
 
--- Create a policy for anonymous users to read all artworks
-CREATE POLICY "Allow public read access" ON gallery FOR SELECT USING (TRUE);
+-- Create a policy to allow all users to read artworks (public gallery)
+CREATE POLICY "Allow public read access" ON artworks
+FOR SELECT USING (TRUE);
 
--- Create a policy for authenticated users to insert, update, and delete their own artworks
--- This policy assumes you have an authentication system that populates auth.uid()
--- For a simple public gallery, you might remove the auth.uid() check for inserts/updates
--- or implement a different authorization mechanism.
-CREATE POLICY "Allow authenticated users to manage their own artworks" ON gallery
-FOR ALL
-TO authenticated
-USING (auth.uid() = (SELECT id FROM auth.users WHERE id = auth.uid()));
+-- Create a policy to allow authenticated users to insert artworks
+CREATE POLICY "Allow authenticated users to insert" ON artworks
+FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+
+-- Create a policy to allow authenticated users to delete their own artworks
+-- (Assuming you'll add a user_id column later if you want per-user galleries)
+-- For now, this policy allows any authenticated user to delete any artwork.
+-- You might want to refine this to `auth.uid() = user_id` if you add user authentication.
+CREATE POLICY "Allow authenticated users to delete" ON artworks
+FOR DELETE USING (auth.role() = 'authenticated');
+
+-- Optional: Add a user_id column and update policies for per-user galleries
+-- ALTER TABLE artworks ADD COLUMN user_id UUID REFERENCES auth.users(id);
+-- CREATE POLICY "Allow users to manage their own artworks" ON artworks
+-- FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);

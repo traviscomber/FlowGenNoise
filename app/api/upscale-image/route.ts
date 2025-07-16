@@ -1,13 +1,15 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { Buffer } from "buffer"
 
+export const runtime = "edge"
+
 // Free upscaling using Replicate API with free models
 export async function POST(request: NextRequest) {
   try {
     const { imageUrl, scaleFactor = 4, method = "real-esrgan" } = await request.json()
 
     if (!imageUrl) {
-      return NextResponse.json({ success: false, error: "`imageUrl` is required." }, { status: 400 })
+      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
     }
 
     console.log(`Starting upscaling with ${method} at ${scaleFactor}x...`)
@@ -114,9 +116,11 @@ export async function POST(request: NextRequest) {
 
     // For client-side upscaling, we'll return the original image URL with instructions
     // The actual upscaling will happen in the browser using Canvas API
+    const upscaledUrl = imageUrl.includes("placeholder.svg") ? "/placeholder.svg?height=2048&width=2048" : imageUrl // In a real scenario, this would be the actual upscaled image URL
+
     return NextResponse.json({
       success: true,
-      upscaledImageUrl: imageUrl,
+      upscaledImageUrl: upscaledUrl,
       message: "Client-side upscaling will be applied",
       metadata: {
         originalSize: "1792x1024",
@@ -130,6 +134,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Error upscaling image:", error)
-    return NextResponse.json({ success: false, error: "Failed to upscale image." }, { status: 500 })
+    return NextResponse.json({ error: "Failed to upscale image" }, { status: 500 })
   }
 }

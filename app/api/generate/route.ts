@@ -1,5 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateFlowField } from "@/lib/flow-model"
+import { experimental_generateImage } from "ai"
+import { openai } from "@ai-sdk/openai"
+
+export const runtime = "edge"
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,9 +32,11 @@ export async function POST(request: NextRequest) {
     } else if (mode === "ai") {
       // Generate AI art using DALL·E 3
       if (!process.env.OPENAI_API_KEY) {
+        console.warn("OPENAI_API_KEY is not set. Returning placeholder image.")
+        // Return a placeholder image URL if API key is missing
         return NextResponse.json({
-          imageUrl: "/placeholder.svg?height=512&width=512&text=AI+Art+Generation+Requires+OpenAI+API+Key",
-          svgContent: "",
+          imageUrl: "/placeholder.svg?height=1024&width=1024",
+          altText: "Placeholder image due to missing OpenAI API key",
         })
       }
 
@@ -108,43 +114,20 @@ export async function POST(request: NextRequest) {
       }
 
       try {
-        const response = await fetch("https://api.openai.com/v1/images/generations", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "dall-e-3",
-            prompt: enhancedPrompt,
-            n: 1,
-            size: "1024x1024",
-            quality: "standard",
-            response_format: "url",
-          }),
-        })
-
-        if (!response.ok) {
-          throw new Error(`OpenAI API error: ${response.status}`)
-        }
-
-        const data = await response.json()
-        const imageUrl = data.data[0]?.url
-
-        if (!imageUrl) {
-          throw new Error("No image URL returned from OpenAI")
-        }
-
-        return NextResponse.json({
-          imageUrl,
-          svgContent: "",
+        const { url } = await experimental_generateImage({
+          model: openai("dall-e-3"),
           prompt: enhancedPrompt,
+          quality: "standard",
+          style: "vivid",
+          size: "1024x1024",
         })
+
+        return NextResponse.json({ imageUrl: url, altText: enhancedPrompt })
       } catch (error) {
         console.error("AI generation error:", error)
         return NextResponse.json({
-          imageUrl: "/placeholder.svg?height=512&width=512&text=AI+Generation+Failed",
-          svgContent: "",
+          imageUrl: "/placeholder.svg?height=1024&width=1024",
+          altText: "Placeholder image due to AI generation failure",
           error: "AI generation failed",
         })
       }

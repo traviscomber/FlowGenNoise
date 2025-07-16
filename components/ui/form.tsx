@@ -2,48 +2,78 @@
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { Controller, FormProvider, useFormContext } from "react-hook-form"
+import { Controller, FormProvider, useFormContext, type FieldPath, type FieldValues } from "react-hook-form"
 
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 
 const Form = FormProvider
 
-const FormField = ({ ...props }) => {
-  return <Controller {...props} />
+const FormFieldContext = React.createContext<string>("")
+
+const FormField = <TField extends FieldPath<FieldValues>, TForm extends FieldValues>({
+  ...props
+}: { name: TField } & React.ComponentProps<typeof Controller>) => {
+  return (
+    <FormFieldContext.Provider value={props.name}>
+      <Controller {...props} />
+    </FormFieldContext.Provider>
+  )
 }
+
+const useFormField = () => {
+  const fieldContext = React.useContext(FormFieldContext)
+  const itemContext = React.useContext(FormItemContext)
+
+  const { getFieldState, formState } = useFormContext()
+
+  const fieldState = getFieldState(fieldContext, formState)
+
+  if (!fieldContext) {
+    throw new Error("`useFormField` should be used within `FormField`.")
+  }
+
+  const { id } = itemContext
+
+  return {
+    id,
+    name: fieldContext,
+    formItemId: `${id}-form-item`,
+    formDescriptionId: `${id}-form-item-description`,
+    formMessageId: `${id}-form-item-message`,
+    ...fieldState,
+  }
+}
+
+const FormItemContext = React.createContext<{ id: string }>({ id: "" })
 
 const FormItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => {
     const id = React.useId()
 
-    return <div ref={ref} className={cn("space-y-2", className)} {...props} />
+    return (
+      <FormItemContext.Provider value={{ id }}>
+        <div ref={ref} className={cn("space-y-2", className)} {...props} />
+      </FormItemContext.Provider>
+    )
   },
 )
 FormItem.displayName = "FormItem"
 
 const FormLabel = React.forwardRef<React.ElementRef<typeof Label>, React.ComponentPropsWithoutRef<typeof Label>>(
   ({ className, ...props }, ref) => {
-    const { error, formItemId } = useFormField()
+    const { formItemId } = useFormField()
 
-    return <Label ref={ref} className={cn(error && "text-destructive", className)} htmlFor={formItemId} {...props} />
+    return <Label ref={ref} className={cn(className)} htmlFor={formItemId} {...props} />
   },
 )
 FormLabel.displayName = "FormLabel"
 
 const FormControl = React.forwardRef<React.ElementRef<typeof Slot>, React.ComponentPropsWithoutRef<typeof Slot>>(
   ({ ...props }, ref) => {
-    const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
+    const { formItemId, formDescriptionId, formMessageId } = useFormField()
 
-    return (
-      <Slot
-        ref={ref}
-        id={formItemId}
-        aria-describedby={!error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`}
-        aria-invalid={!!error}
-        {...props}
-      />
-    )
+    return <Slot ref={ref} id={formItemId} aria-describedby={formDescriptionId} {...props} />
   },
 )
 FormControl.displayName = "FormControl"
@@ -81,30 +111,5 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
   },
 )
 FormMessage.displayName = "FormMessage"
-
-function useFormField() {
-  const fieldContext = React.useContext(FormField)
-  const itemContext = React.useContext(FormItemContext)
-  const { getFieldState, formState } = useFormContext()
-
-  const fieldState = getFieldState(fieldContext.name, formState)
-
-  if (!fieldContext) {
-    throw new Error("useFormField should be used within <FormField>")
-  }
-
-  const { id } = itemContext
-
-  return {
-    id,
-    name: fieldContext.name,
-    formItemId: `${id}-form-item`,
-    formDescriptionId: `${id}-form-item-description`,
-    formMessageId: `${id}-form-item-message`,
-    ...fieldState,
-  }
-}
-
-const FormItemContext = React.createContext({} as { id: string })
 
 export { useFormField, Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormField }

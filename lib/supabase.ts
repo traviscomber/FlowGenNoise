@@ -1,12 +1,18 @@
 import { createClient } from "@supabase/supabase-js"
 
+// Client-side Supabase client (for public data access)
+// Ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in your .env.local
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error("Supabase URL or Anon Key is missing. Please check your environment variables.")
-  // Fallback for local development if keys are missing, though functionality will be limited.
-  // In a real application, you might want to throw an error or handle this more gracefully.
-}
+export const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null
 
-export const supabase = createClient(supabaseUrl || "http://localhost:54321", supabaseAnonKey || "YOUR_ANON_KEY_HERE")
+// Server-side Supabase client (for secure operations, e.g., in API routes or Server Actions)
+// Ensure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set in your .env.local
+const serviceRoleSupabaseUrl = process.env.SUPABASE_URL
+const serviceRoleSupabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+export const supabaseAdmin =
+  serviceRoleSupabaseUrl && serviceRoleSupabaseKey ? createClient(serviceRoleSupabaseUrl, serviceRoleSupabaseKey) : null
+
+// You can add more specific client instances or helper functions here as needed.

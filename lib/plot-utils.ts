@@ -64,5 +64,22 @@ export function generateScatterPlotSVG(data: number[][]): string {
   return `data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`
 }
 
-// This file is currently empty as no specific plotting utilities are implemented yet.
-// It can be used in the future for functions related to data visualization or plot manipulation.
+// This file is reserved for utility functions related to plotting or data visualization.
+// Currently, it's a placeholder.
+
+export function generatePlotData(type: string, count: number) {
+  // Placeholder for generating data for a plot
+  console.log(`Generating ${count} data points for a ${type} plot...`)
+  const data = []
+  for (let i = 0; i < count; i++) {
+    data.push({
+      x: i,
+      y: Math.sin(i * 0.1) + Math.random() * 0.5,
+    })
+  }
+  return data
+}
+
+export function formatPlotTitle(dataset: string, scenario: string): string {
+  return `Plot for ${dataset} - ${scenario}`
+}

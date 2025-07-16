@@ -1,167 +1,202 @@
 "use client"
 
 import * as React from "react"
-import * as RechartsPrimitive from "recharts"
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  Bar,
+  BarChart,
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+} from "recharts"
+import { cn } from "@/utils"
+import { useChart } from "@/components/ui/chart"
 
-import { cn } from "@/lib/utils"
-
-// Format: { THEME_NAME: CSS_SELECTOR }
-const THEMES = { light: "", dark: ".dark" } as const
-
-export type ChartConfig = {
-  [k in string]: {
-    label?: React.ReactNode
-    icon?: React.ComponentType
-  } & ({ color?: string; theme?: never } | { color?: never; theme: Record<keyof typeof THEMES, string> })
+// Define a type for common chart props
+interface CommonChartProps {
+  data: Record<string, any>[]
+  chartConfig: ChartConfig
+  className?: string
 }
 
-type ChartContextProps = {
+// Line Chart Component
+interface LineChartProps extends CommonChartProps {
+  lines: { dataKey: string; stroke: string; type?: "monotone" | "linear" }[]
+}
+
+const CustomLineChart: React.FC<LineChartProps> = ({ data, chartConfig, lines, className }) => (
+  <ChartContainer config={chartConfig} className={className}>
+    <LineChart data={data}>
+      <CartesianGrid vertical={false} />
+      <XAxis
+        dataKey="month"
+        tickLine={false}
+        tickMargin={10}
+        axisLine={false}
+        tickFormatter={(value) => value.slice(0, 3)}
+      />
+      <YAxis />
+      <CustomChartTooltip cursor={false} />
+      <Legend />
+      {lines.map((line, index) => (
+        <Line key={index} dataKey={line.dataKey} type={line.type || "monotone"} stroke={line.stroke} dot={false} />
+      ))}
+    </LineChart>
+  </ChartContainer>
+)
+
+// Bar Chart Component
+interface BarChartProps extends CommonChartProps {
+  bars: { dataKey: string; fill: string }[]
+}
+
+const CustomBarChart: React.FC<BarChartProps> = ({ data, chartConfig, bars, className }) => (
+  <ChartContainer config={chartConfig} className={className}>
+    <BarChart data={data}>
+      <CartesianGrid vertical={false} />
+      <XAxis
+        dataKey="month"
+        tickLine={false}
+        tickMargin={10}
+        axisLine={false}
+        tickFormatter={(value) => value.slice(0, 3)}
+      />
+      <YAxis />
+      <CustomChartTooltip cursor={false} />
+      <Legend />
+      {bars.map((bar, index) => (
+        <Bar key={index} dataKey={bar.dataKey} fill={bar.fill} radius={8} />
+      ))}
+    </BarChart>
+  </ChartContainer>
+)
+
+// Area Chart Component
+interface AreaChartProps extends CommonChartProps {
+  areas: { dataKey: string; fill: string; stroke: string; type?: "monotone" | "linear" }[]
+}
+
+const CustomAreaChart: React.FC<AreaChartProps> = ({ data, chartConfig, areas, className }) => (
+  <ChartContainer config={chartConfig} className={className}>
+    <AreaChart data={data}>
+      <CartesianGrid vertical={false} />
+      <XAxis
+        dataKey="month"
+        tickLine={false}
+        tickMargin={10}
+        axisLine={false}
+        tickFormatter={(value) => value.slice(0, 3)}
+      />
+      <YAxis />
+      <CustomChartTooltip cursor={false} />
+      <Legend />
+      {areas.map((area, index) => (
+        <Area key={index} dataKey={area.dataKey} type={area.type || "monotone"} fill={area.fill} stroke={area.stroke} />
+      ))}
+    </AreaChart>
+  </ChartContainer>
+)
+
+// Chart Components (from shadcn/ui)
+const ChartContext = React.createContext<ChartContextValues | null>(null)
+
+function ChartContainer<T extends React.ComponentProps<"div">>({
+  id,
+  className,
+  children,
+  config,
+  ...props
+}: T & {
   config: ChartConfig
-}
-
-const ChartContext = React.createContext<ChartContextProps | null>(null)
-
-function useChart() {
-  const context = React.useContext(ChartContext)
-
-  if (!context) {
-    throw new Error("useChart must be used within a <ChartContainer />")
-  }
-
-  return context
-}
-
-const ChartContainer = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div"> & {
-    config: ChartConfig
-    children: React.ComponentProps<typeof RechartsPrimitive.ResponsiveContainer>["children"]
-  }
->(({ id, className, children, config, ...props }, ref) => {
+}) {
   const uniqueId = React.useId()
-  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
-
+  const chartId = `chart-${id || uniqueId}`
   return (
-    <ChartContext.Provider value={{ config }}>
+    <ChartContext.Provider value={{ config, chartId }}>
       <div
         data-chart={chartId}
-        ref={ref}
         className={cn(
-          "flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none",
+          "flex aspect-video h-full w-full flex-col [&_.recharts-cartesian-grid]:stroke-border [&_.recharts-tooltip-content]:rounded-md [&_.recharts-tooltip-content]:border-border [&_.recharts-tooltip-content]:bg-background [&_.recharts-tooltip-content]:px-2 [&_.recharts-tooltip-content]:py-1.5 [&_.recharts-tooltip-content]:text-popover-foreground [&_[data-value='active']]:opacity-100 [&_.recharts-active-dot]:fill-primary",
           className,
         )}
         {...props}
       >
-        <ChartStyle id={chartId} config={config} />
         <ResponsiveContainer>{children}</ResponsiveContainer>
       </div>
     </ChartContext.Provider>
   )
-})
-ChartContainer.displayName = "Chart"
-
-const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
-  const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color)
-
-  if (!colorConfig.length) {
-    return null
-  }
-
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
-${colorConfig
-  .map(([key, itemConfig]) => {
-    const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
-}
-`,
-          )
-          .join("\n"),
-      }}
-    />
-  )
 }
 
-// Workaround for https://github.com/recharts/recharts/issues/3615
-const ResponsiveContainer = (props: React.ComponentProps<typeof RechartsPrimitive.ResponsiveContainer>) => (
-  <RechartsPrimitive.ResponsiveContainer
-    {...props}
-    className="[&_.recharts-tooltip-cursor]:fill-accent/20 [&_.recharts-cartesian-grid_line]:stroke-border [&_.recharts-dot]:stroke-primary"
-  />
-)
+const CustomChartTooltip = ({ ...props }) => {
+  const { config } = useChart()
+  return <Tooltip cursor={false} content={<CustomChartTooltipContent config={config} />} {...props} />
+}
 
-const ChartTooltip = RechartsPrimitive.Tooltip
+interface CustomChartTooltipContentProps {
+  config: ChartConfig
+  payload: any[]
+}
 
-const ChartTooltipContent = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> & React.ComponentPropsWithoutRef<"div">
->(({ active, payload, className, ...props }, ref) => {
-  if (active && payload && payload.length) {
+const CustomChartTooltipContent = React.forwardRef<HTMLDivElement, CustomChartTooltipContentProps>(
+  ({ className, payload, config }, ref) => {
+    const { chartId } = useChart()
+
+    if (!payload || !payload.length) {
+      return null
+    }
+
+    const activePayload = payload[0]
+    const { dataKey, name, value, color } = activePayload
+
     return (
-      <div ref={ref} className={cn("rounded-lg border bg-background p-2 text-sm shadow-md", className)} {...props}>
-        {payload.map((item: any) => (
-          <div key={item.dataKey} className="flex items-center justify-between gap-x-4">
-            {item.name && <span className="text-muted-foreground">{item.name}:</span>}
-            <span className="font-mono font-medium tabular-nums text-foreground">{item.value}</span>
+      <div
+        ref={ref}
+        className={cn("rounded-md border border-border bg-background px-3 py-1.5 text-sm shadow-md", className)}
+      >
+        {config[dataKey]?.label && <div className="text-muted-foreground">{config[dataKey].label}</div>}
+        <div className="flex items-center justify-between gap-x-4">
+          <div className="flex items-center gap-x-2">
+            <div
+              className="size-2 rounded-full"
+              style={{
+                backgroundColor: color,
+              }}
+            />
+            <span className="text-muted-foreground">{name}</span>
           </div>
-        ))}
+          <span className="font-medium">{value}</span>
+        </div>
       </div>
     )
+  },
+)
+CustomChartTooltipContent.displayName = "CustomChartTooltipContent"
+
+interface ChartContextValues {
+  config: ChartConfig
+  chartId: string
+}
+
+type ChartConfig = {
+  [k: string]: {
+    label?: string
+    color?: string
+    icon?: React.ComponentType<{ className?: string }>
   }
-
-  return null
-})
-ChartTooltipContent.displayName = "ChartTooltipContent"
-
-const ChartLegend = RechartsPrimitive.Legend
-
-const ChartLegendContent = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Legend> & React.ComponentPropsWithoutRef<"div">
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("flex flex-wrap items-center justify-center gap-2", className)} {...props} />
-))
-ChartLegendContent.displayName = "ChartLegendContent"
-
-// Helper to extract item config from a payload.
-function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {
-  if (typeof payload !== "object" || payload === null) {
-    return undefined
-  }
-
-  const payloadPayload =
-    "payload" in payload && typeof payload.payload === "object" && payload.payload !== null
-      ? payload.payload
-      : undefined
-
-  let configLabelKey: string = key
-
-  if (key in payload && typeof payload[key as keyof typeof payload] === "string") {
-    configLabelKey = payload[key as keyof typeof payload] as string
-  } else if (
-    payloadPayload &&
-    key in payloadPayload &&
-    typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
-  ) {
-    configLabelKey = payloadPayload[key as keyof typeof payloadPayload] as string
-  }
-
-  return configLabelKey in config ? config[configLabelKey] : config[key as keyof typeof config]
 }
 
 export {
+  CustomLineChart as LineChart,
+  CustomBarChart as BarChart,
+  CustomAreaChart as AreaChart,
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-  ChartStyle,
-  ResponsiveContainer,
+  CustomChartTooltip as ChartTooltip,
+  CustomChartTooltipContent as ChartTooltipContent,
+  type ChartConfig,
 }

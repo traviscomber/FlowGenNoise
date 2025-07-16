@@ -5,7 +5,7 @@ export default function Home() {
   // You can set a password here to gate access to the generator
   // For example: <PasswordGate correctPassword="your-secret-password">
   return (
-    <PasswordGate>
+    <PasswordGate correctPassword="flowsketch2024">
       <FlowArtGenerator />
     </PasswordGate>
   )

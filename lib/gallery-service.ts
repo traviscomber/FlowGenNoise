@@ -1,4 +1,20 @@
-import { supabase } from "./supabase"
+import { createClient } from "@supabase/supabase-js"
+import { supabaseUrl, supabaseAnonKey } from "./supabaseConfig" // Assuming supabaseUrl and supabaseAnonKey are defined in a separate file
+
+// Define the structure for an artwork in the gallery
+export interface GalleryArtwork {
+  id: string
+  name: string
+  description: string
+  imageUrl: string
+  originalPrompt: string
+  dataset: string
+  scenario: string
+  created_at: string // ISO timestamp
+}
+
+// Initialize Supabase client
+const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null
 
 export interface ArtworkData {
   id?: string
@@ -47,99 +63,65 @@ export interface GalleryStats {
 }
 
 export class GalleryService {
-  async saveArtwork(artworkData: Omit<ArtworkData, "id" | "createdAt" | "updatedAt">): Promise<ArtworkData | null> {
-    try {
-      const { data, error } = await supabase
-        .from("gallery")
-        .insert([
-          {
-            title: artworkData.title,
-            description: artworkData.description,
-            image_url: artworkData.imageUrl,
-            svg_content: artworkData.svgContent,
-            upscaled_image_url: artworkData.upscaledImageUrl,
-            mode: artworkData.mode,
-            dataset: artworkData.dataset,
-            scenario: artworkData.scenario,
-            seed: artworkData.seed,
-            num_samples: artworkData.numSamples,
-            noise_scale: artworkData.noiseScale,
-            time_step: artworkData.timeStep,
-            custom_prompt: artworkData.customPrompt,
-            upscale_method: artworkData.upscaleMethod,
-            tags: Array.isArray(artworkData.tags) ? artworkData.tags : [],
-            is_favorite: artworkData.isFavorite,
-          },
-        ])
-        .select()
-        .single()
+  private static readonly TABLE_NAME = "artworks"
 
-      if (error) {
-        console.error("Error saving artwork:", error)
-        return null
-      }
-
-      return this.mapDatabaseToArtwork(data)
-    } catch (error) {
-      console.error("Error saving artwork:", error)
-      return null
+  /**
+   * Saves a new artwork to the Supabase gallery.
+   * @param artwork The artwork data to save (excluding id and created_at).
+   * @returns The saved artwork with its generated id and created_at timestamp.
+   * @throws Error if Supabase client is not initialized or save fails.
+   */
+  static async saveArtwork(artwork: Omit<GalleryArtwork, "id" | "created_at">): Promise<GalleryArtwork> {
+    if (!supabase) {
+      throw new Error("Supabase client not initialized. Cannot save artwork.")
     }
+
+    const { data, error } = await supabase.from(this.TABLE_NAME).insert([artwork]).select().single()
+
+    if (error) {
+      console.error("Supabase save error:", error)
+      throw new Error(`Failed to save artwork: ${error.message}`)
+    }
+
+    return data as GalleryArtwork
   }
 
-  async getArtworks(filters: GalleryFilters = {}): Promise<ArtworkData[]> {
-    try {
-      let query = supabase.from("gallery").select("*")
-
-      // Apply filters
-      if (filters.search) {
-        query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`)
-      }
-
-      if (filters.mode && filters.mode !== "all") {
-        query = query.eq("mode", filters.mode)
-      }
-
-      if (filters.dataset) {
-        query = query.eq("dataset", filters.dataset)
-      }
-
-      if (filters.scenario) {
-        query = query.eq("scenario", filters.scenario)
-      }
-
-      if (filters.isFavorite !== undefined) {
-        query = query.eq("is_favorite", filters.isFavorite)
-      }
-
-      if (filters.tags && filters.tags.length > 0) {
-        query = query.overlaps("tags", filters.tags)
-      }
-
-      // Apply sorting
-      const sortBy = filters.sortBy || "created_at"
-      const sortOrder = filters.sortOrder || "desc"
-      query = query.order(sortBy, { ascending: sortOrder === "asc" })
-
-      // Apply pagination
-      const limit = filters.limit ?? 20
-      if (filters.limit) {
-        query = query.limit(limit)
-      }
-      if (filters.offset) {
-        query = query.range(filters.offset, filters.offset + limit - 1)
-      }
-
-      const { data, error } = await query
-
-      if (error) {
-        console.error("Error fetching artworks:", error)
-        return []
-      }
-
-      return data?.map(this.mapDatabaseToArtwork) || []
-    } catch (error) {
-      console.error("Error fetching artworks:", error)
+  /**
+   * Retrieves all artworks from the Supabase gallery, ordered by creation date.
+   * @returns An array of GalleryArtwork objects.
+   * @throws Error if Supabase client is not initialized or fetch fails.
+   */
+  static async getArtworks(): Promise<GalleryArtwork[]> {
+    if (!supabase) {
+      console.warn("Supabase client not initialized. Returning empty array for artworks.")
       return []
+    }
+
+    const { data, error } = await supabase.from(this.TABLE_NAME).select("*").order("created_at", { ascending: false })
+
+    if (error) {
+      console.error("Supabase fetch error:", error)
+      throw new Error(`Failed to fetch artworks: ${error.message}`)
+    }
+
+    return data as GalleryArtwork[]
+  }
+
+  /**
+   * Deletes an artwork from the gallery by its ID.
+   * @param id The ID of the artwork to delete.
+   * @throws Error if Supabase client is not initialized or delete fails.
+   */
+  static async deleteArtwork(id: string): Promise<void> {
+    if (!supabase) {
+      throw new Error("Supabase client not initialized. Cannot delete artwork.")
+    }
+
+    const { error } = await supabase.from(this.TABLE_NAME).delete().eq("id", id)
+
+    if (error) {
+      console.error("Supabase delete error:", error)
+      throw new Error(`Failed to delete artwork: ${error.message}`)
     }
   }
 
@@ -179,22 +161,6 @@ export class GalleryService {
     } catch (error) {
       console.error("Error updating artwork:", error)
       return null
-    }
-  }
-
-  async deleteArtwork(id: string): Promise<boolean> {
-    try {
-      const { error } = await supabase.from("gallery").delete().eq("id", id)
-
-      if (error) {
-        console.error("Error deleting artwork:", error)
-        return false
-      }
-
-      return true
-    } catch (error) {
-      console.error("Error deleting artwork:", error)
-      return false
     }
   }
 
@@ -339,5 +305,3 @@ export class GalleryService {
     }
   }
 }
-
-export const galleryService = new GalleryService()
