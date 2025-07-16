@@ -1,5 +1,4 @@
-import { createClient } from "@supabase/supabase-js"
-import { supabaseUrl, supabaseAnonKey } from "./supabaseConfig" // Assuming supabaseUrl and supabaseAnonKey are defined in a separate file
+import { supabase } from "./supabase"
 
 // Define the structure for an artwork in the gallery
 export interface GalleryArtwork {
@@ -12,9 +11,6 @@ export interface GalleryArtwork {
   scenario: string
   created_at: string // ISO timestamp
 }
-
-// Initialize Supabase client
-const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null
 
 export interface ArtworkData {
   id?: string
