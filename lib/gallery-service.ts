@@ -50,7 +50,7 @@ class GalleryService {
   async saveArtwork(artworkData: Omit<ArtworkData, "id" | "createdAt" | "updatedAt">): Promise<ArtworkData | null> {
     try {
       const { data, error } = await supabase
-        .from("gallery_artworks")
+        .from("gallery")
         .insert([
           {
             title: artworkData.title,
@@ -67,7 +67,7 @@ class GalleryService {
             time_step: artworkData.timeStep,
             custom_prompt: artworkData.customPrompt,
             upscale_method: artworkData.upscaleMethod,
-            tags: artworkData.tags,
+            tags: Array.isArray(artworkData.tags) ? artworkData.tags : [],
             is_favorite: artworkData.isFavorite,
           },
         ])
@@ -88,7 +88,7 @@ class GalleryService {
 
   async getArtworks(filters: GalleryFilters = {}): Promise<ArtworkData[]> {
     try {
-      let query = supabase.from("gallery_artworks").select("*")
+      let query = supabase.from("gallery").select("*")
 
       // Apply filters
       if (filters.search) {
@@ -121,11 +121,12 @@ class GalleryService {
       query = query.order(sortBy, { ascending: sortOrder === "asc" })
 
       // Apply pagination
+      const limit = filters.limit ?? 20
       if (filters.limit) {
-        query = query.limit(filters.limit)
+        query = query.limit(limit)
       }
       if (filters.offset) {
-        query = query.range(filters.offset, filters.offset + (filters.limit || 10) - 1)
+        query = query.range(filters.offset, filters.offset + limit - 1)
       }
 
       const { data, error } = await query
@@ -144,7 +145,7 @@ class GalleryService {
 
   async getArtworkById(id: string): Promise<ArtworkData | null> {
     try {
-      const { data, error } = await supabase.from("gallery_artworks").select("*").eq("id", id).single()
+      const { data, error } = await supabase.from("gallery").select("*").eq("id", id).single()
 
       if (error) {
         console.error("Error fetching artwork:", error)
@@ -167,7 +168,7 @@ class GalleryService {
       if (updates.tags !== undefined) updateData.tags = updates.tags
       if (updates.isFavorite !== undefined) updateData.is_favorite = updates.isFavorite
 
-      const { data, error } = await supabase.from("gallery_artworks").update(updateData).eq("id", id).select().single()
+      const { data, error } = await supabase.from("gallery").update(updateData).eq("id", id).select().single()
 
       if (error) {
         console.error("Error updating artwork:", error)
@@ -183,7 +184,7 @@ class GalleryService {
 
   async deleteArtwork(id: string): Promise<boolean> {
     try {
-      const { error } = await supabase.from("gallery_artworks").delete().eq("id", id)
+      const { error } = await supabase.from("gallery").delete().eq("id", id)
 
       if (error) {
         console.error("Error deleting artwork:", error)
@@ -201,7 +202,7 @@ class GalleryService {
     try {
       // First get current favorite status
       const { data: current, error: fetchError } = await supabase
-        .from("gallery_artworks")
+        .from("gallery")
         .select("is_favorite")
         .eq("id", id)
         .single()
@@ -213,7 +214,7 @@ class GalleryService {
 
       // Toggle the favorite status
       const { error: updateError } = await supabase
-        .from("gallery_artworks")
+        .from("gallery")
         .update({ is_favorite: !current.is_favorite })
         .eq("id", id)
 
@@ -231,7 +232,7 @@ class GalleryService {
 
   async getGalleryStats(): Promise<GalleryStats> {
     try {
-      const { data, error } = await supabase.from("gallery_artworks").select("mode, dataset, scenario, is_favorite")
+      const { data, error } = await supabase.from("gallery").select("mode, dataset, scenario, is_favorite")
 
       if (error) {
         console.error("Error fetching gallery stats:", error)
@@ -258,7 +259,7 @@ class GalleryService {
 
   async getPopularTags(limit = 10): Promise<Array<{ tag: string; count: number }>> {
     try {
-      const { data, error } = await supabase.from("gallery_artworks").select("tags")
+      const { data, error } = await supabase.from("gallery").select("tags")
 
       if (error) {
         console.error("Error fetching tags:", error)
