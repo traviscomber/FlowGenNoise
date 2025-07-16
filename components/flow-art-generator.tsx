@@ -39,6 +39,7 @@ export function FlowArtGenerator() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          mode,
           dataset,
           scenario,
           seed,
