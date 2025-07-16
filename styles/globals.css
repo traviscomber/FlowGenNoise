@@ -92,9 +92,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
-/* You can add global styles to this file, and also import other CSS files */
-/* For example, if you have a base.css, you can import it here: */
-/* @import './base.css'; */
-
-/* You can add custom global styles here if needed */

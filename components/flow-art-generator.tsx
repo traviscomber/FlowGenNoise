@@ -1,499 +1,604 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, Sparkles, ImagePlus, Save, GalleryHorizontal } from "lucide-react"
-import Image from "next/image"
-import { useToast } from "@/hooks/use-toast"
+import { Slider } from "@/components/ui/slider"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
+import { Download, Save, Sparkles, Wand2, Eye, EyeOff } from "lucide-react"
+import { ImageIcon } from "lucide-react"
 import { SaveArtworkDialog } from "@/components/gallery/save-artwork-dialog"
-import Link from "next/link"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useToast } from "@/hooks/use-toast"
 
-// Safe response parser to handle both JSON and text responses
-async function safeParse<T = any>(response: Response): Promise<T> {
-  const contentType = response.headers.get("content-type") || ""
+type Mode = "flow" | "ai"
 
-  if (contentType.includes("application/json")) {
-    try {
-      return await response.json()
-    } catch (e) {
-      console.error("Failed to parse JSON:", e)
-      return { error: "Invalid JSON response" } as T
-    }
-  } else {
-    const text = await response.text()
-    return { error: text || "Unknown error" } as T
-  }
+// Enhanced mathematical problem sets for datasets
+const MATHEMATICAL_DATASETS = {
+  spirals: {
+    name: "Logarithmic Spirals",
+    description: "Golden ratio spirals following r = a·e^(b·θ), mimicking nautilus shells and galaxy arms",
+    mathConcept: "Polar coordinates, exponential growth, Fibonacci sequences, φ = 1.618",
+  },
+  moons: {
+    name: "Two Moons Problem",
+    description: "Interleaving crescents creating non-linear decision boundaries",
+    mathConcept: "Non-linear classification, manifold learning, topological separation",
+  },
+  circles: {
+    name: "Concentric Circles",
+    description: "Radial symmetry with multiple distance metrics r² = x² + y²",
+    mathConcept: "Euclidean distance, radial basis functions, circular harmonics",
+  },
+  blobs: {
+    name: "Gaussian Mixture",
+    description: "Multivariate normal distributions creating organic cluster formations",
+    mathConcept: "Probability density functions, statistical clustering, σ² variance",
+  },
+  checkerboard: {
+    name: "Discrete Tessellation",
+    description: "Alternating grid pattern with sharp topological boundaries",
+    mathConcept: "Discrete topology, tessellation theory, decision boundaries",
+  },
+  gaussian: {
+    name: "Normal Distribution",
+    description: "Perfect bell curve following central limit theorem N(μ,σ²)",
+    mathConcept: "Statistical distribution, probability density, central limit theorem",
+  },
+  grid: {
+    name: "Cartesian Lattice",
+    description: "Regular coordinate system with periodic tiling structure",
+    mathConcept: "Cartesian coordinates, lattice theory, periodic functions",
+  },
 }
 
-interface Dataset {
-  id: string
-  name: string
-  type: "scientific" | "artistic"
-  scenarios: { id: string; name: string; defaultPrompt: string }[]
+const SCENARIOS = {
+  forest: "Enchanted mathematical forest with emerald canopies, golden light, and organic textures",
+  cosmic: "Deep space nebula with stellar formations, gravitational lensing, and cosmic phenomena",
+  ocean: "Underwater paradise with bioluminescent organisms, caustic lighting, and flowing currents",
+  neural: "Living neural network with synaptic connections, electrical impulses, and brain-like structures",
+  fire: "Mathematical flames with heat distortion, dancing embers, and molten intensity",
+  ice: "Crystalline wonderland with hexagonal symmetry, aurora effects, and pristine frost patterns",
+  desert: "Wind-carved formations with golden sands, mirages, and oasis reflections",
+  sunset: "Golden hour atmosphere with coral skies, lens flares, and warm atmospheric perspective",
+  monochrome: "Classical black and white with dramatic chiaroscuro, fine art composition, and pure form",
 }
-
-const datasets: Dataset[] = [
-  {
-    id: "scientific",
-    name: "Scientific Data",
-    type: "scientific",
-    scenarios: [
-      {
-        id: "fractal",
-        name: "Fractal Geometry",
-        defaultPrompt: "A complex fractal pattern with mathematical precision",
-      },
-      {
-        id: "quantum",
-        name: "Quantum Entanglement",
-        defaultPrompt: "Two entangled particles showing quantum correlation",
-      },
-      { id: "neural", name: "Neural Network", defaultPrompt: "An abstract neural network with interconnected nodes" },
-      { id: "cosmic", name: "Cosmic Microwave Background", defaultPrompt: "Cosmic background radiation visualization" },
-    ],
-  },
-  {
-    id: "nature",
-    name: "Nature Scenes",
-    type: "artistic",
-    scenarios: [
-      {
-        id: "forest",
-        name: "Enchanted Forest",
-        defaultPrompt: "A mystical forest with glowing flora and magical atmosphere",
-      },
-      { id: "ocean", name: "Deep Sea Abyss", defaultPrompt: "Bioluminescent creatures in the deep ocean depths" },
-      {
-        id: "mountain",
-        name: "Aurora Mountains",
-        defaultPrompt: "Snow-capped mountains under dancing aurora borealis",
-      },
-    ],
-  },
-  {
-    id: "abstract",
-    name: "Abstract Concepts",
-    type: "artistic",
-    scenarios: [
-      {
-        id: "emotion",
-        name: "Emotional Landscape",
-        defaultPrompt: "An abstract representation of pure joy and happiness",
-      },
-      { id: "music", name: "Visualizing Music", defaultPrompt: "Abstract forms inspired by classical symphony" },
-      {
-        id: "dream",
-        name: "Surreal Dreamscape",
-        defaultPrompt: "A surreal dreamscape with floating islands and impossible geometry",
-      },
-    ],
-  },
-]
 
 export function FlowArtGenerator() {
-  const [selectedDatasetId, setSelectedDatasetId] = useState<string>(datasets[0].id)
-  const [selectedScenarioId, setSelectedScenarioId] = useState<string>(datasets[0].scenarios[0].id)
-  const [prompt, setPrompt] = useState<string>("")
-  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null)
-  const [generatedAltText, setGeneratedAltText] = useState<string>("")
-  const [loading, setLoading] = useState(false)
-  const [upscaling, setUpscaling] = useState(false)
-  const [enhancingPrompt, setEnhancingPrompt] = useState(false)
-  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
+  const [dataset, setDataset] = useState<keyof typeof MATHEMATICAL_DATASETS>("spirals")
+  const [scenario, setScenario] = useState<keyof typeof SCENARIOS>("forest")
+  const [seed, setSeed] = useState(Math.floor(Math.random() * 1000))
+  const [numSamples, setNumSamples] = useState(2000)
+  const [noiseScale, setNoiseScale] = useState(0.05)
+  const [timeStep, setTimeStep] = useState(0.01)
+  const [customPrompt, setCustomPrompt] = useState("")
+  const [mode, setMode] = useState<Mode>("flow")
+  const [upscaleMethod, setUpscaleMethod] = useState("real-esrgan")
+
+  // Prompt management states
+  const [generatedPrompt, setGeneratedPrompt] = useState("")
+  const [finalPrompt, setFinalPrompt] = useState("")
+  const [showPromptDetails, setShowPromptDetails] = useState(false)
+  const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false)
+  const [promptGenerated, setPromptGenerated] = useState(false)
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [result, setResult] = useState<{ imageUrl: string; svgContent: string; upscaledImageUrl?: string } | null>(null)
+
+  // Add new state for generated metadata
+  const [generatedMetadata, setGeneratedMetadata] = useState<{
+    title: string
+    description: string
+  } | null>(null)
 
   const { toast } = useToast()
 
-  const selectedDataset = useMemo(() => datasets.find((d) => d.id === selectedDatasetId), [selectedDatasetId])
+  // Generate enhanced base prompt from dataset and scenario
+  const generateBasePrompt = () => {
+    const datasetInfo = MATHEMATICAL_DATASETS[dataset]
+    const scenarioDesc = SCENARIOS[scenario]
 
-  const selectedScenario = useMemo(
-    () => selectedDataset?.scenarios.find((s) => s.id === selectedScenarioId),
-    [selectedDataset, selectedScenarioId],
-  )
+    // Create rich, detailed base prompt
+    const basePrompt = createEnhancedBasePrompt(datasetInfo, scenarioDesc, {
+      numSamples,
+      noiseScale,
+      seed,
+      timeStep,
+    })
 
-  // Update prompt when scenario changes
-  useEffect(() => {
-    if (selectedScenario) {
-      setPrompt(selectedScenario.defaultPrompt)
-    }
-  }, [selectedScenario])
-
-  // Update scenario when dataset changes
-  useEffect(() => {
-    if (selectedDataset && selectedDataset.scenarios.length > 0) {
-      setSelectedScenarioId(selectedDataset.scenarios[0].id)
-    }
-  }, [selectedDataset])
-
-  const handleGenerateArt = async () => {
-    if (!prompt.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter a prompt.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setLoading(true)
-    setGeneratedImageUrl(null)
-    setGeneratedAltText("")
-
-    try {
-      const response = await fetch("/api/generate-ai-art", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: prompt.trim() }),
-      })
-
-      const data = await safeParse<{ imageUrl: string; altText: string; error?: string; placeholder?: boolean }>(
-        response,
-      )
-
-      if (data.error) {
-        throw new Error(data.error)
-      }
-
-      if (data.imageUrl) {
-        setGeneratedImageUrl(data.imageUrl)
-        setGeneratedAltText(data.altText || prompt)
-
-        if (data.placeholder) {
-          toast({
-            title: "Placeholder Generated",
-            description: "AI generation is currently unavailable. Showing placeholder image.",
-            variant: "default",
-          })
-        } else {
-          toast({
-            title: "Success",
-            description: "Art generated successfully!",
-          })
-        }
-      } else {
-        throw new Error("No image URL received")
-      }
-    } catch (error: any) {
-      console.error("Error generating art:", error)
-      toast({
-        title: "Error",
-        description: error.message || "Failed to generate art. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setLoading(false)
-    }
+    setGeneratedPrompt(basePrompt)
+    setFinalPrompt(basePrompt)
+    setPromptGenerated(true)
   }
 
-  const handleUpscaleImage = async () => {
-    if (!generatedImageUrl) {
-      toast({
-        title: "Error",
-        description: "No image to upscale.",
-        variant: "destructive",
-      })
-      return
+  // Helper function to create enhanced base prompts
+  const createEnhancedBasePrompt = (
+    datasetInfo: (typeof MATHEMATICAL_DATASETS)[keyof typeof MATHEMATICAL_DATASETS],
+    scenarioDesc: string,
+    params: { numSamples: number; noiseScale: number; seed: number; timeStep: number },
+  ) => {
+    const mathPrompts = {
+      spirals: `Mesmerizing logarithmic spirals unfurling in perfect mathematical harmony, each curve following the golden ratio φ = 1.618. Fibonacci sequences manifest as nested spiral arms, creating hypnotic patterns that echo nautilus shells and galaxy formations. The spiral density increases toward the center, with ${params.numSamples} precisely calculated points tracing the path of r = a·e^(b·θ). Organic flow lines connect each mathematical node, creating a living tapestry of exponential growth and polar coordinate beauty.`,
+
+      moons: `Two intertwining crescent moons dancing in non-linear mathematical space, representing the classic two-moon classification problem. Each crescent follows a perfect semicircular arc, with ${params.numSamples} data points distributed along the curved boundaries. The crescents interlock like yin-yang symbols, creating complex decision boundaries that challenge linear separation. Smooth gradients flow between the lunar shapes, with subtle noise (σ=${params.noiseScale}) adding organic texture to the mathematical precision.`,
+
+      circles: `Concentric circles radiating outward in perfect radial symmetry, each ring representing a different distance metric in mathematical space. ${params.numSamples} points distributed across multiple circular bands, creating mandala-like patterns with precise geometric relationships. The circles follow r² = x² + y² equations, with each ring separated by calculated intervals. Flow fields connect the circular boundaries, creating ripple effects that propagate through the mathematical space like waves in a pond.`,
+
+      blobs: `Gaussian probability clouds manifesting as organic blob formations, each cluster representing a different statistical distribution. ${params.numSamples} data points sampled from multivariate normal distributions, creating natural clustering patterns that resemble cellular structures or cloud formations. The blobs follow σ² variance parameters, with smooth probability density gradients connecting each cluster. Noise factor ${params.noiseScale} adds natural randomness to the mathematical precision.`,
+
+      checkerboard: `Discrete mathematical tessellation creating an infinite checkerboard pattern, where each square represents a different topological region. ${params.numSamples} points distributed across the grid vertices, creating sharp decision boundaries that alternate in perfect mathematical rhythm. The pattern follows discrete topology principles, with each cell representing a different classification region. Flow lines create smooth transitions between the discrete mathematical spaces.`,
+
+      gaussian: `Pure Gaussian distribution manifesting as a perfect bell curve in 2D space, following the central limit theorem. ${params.numSamples} points sampled from normal distribution N(μ,σ²), creating a natural mountain-like formation with highest density at the center. The distribution follows the probability density function f(x) = (1/σ√(2π))e^(-½((x-μ)/σ)²), with smooth gradients radiating outward from the statistical center.`,
+
+      grid: `Perfect Cartesian coordinate system with ${params.numSamples} points arranged in mathematical precision across a regular lattice structure. Each intersection represents a coordinate pair (x,y) in Euclidean space, creating a foundation for all mathematical transformations. The grid follows periodic tiling principles, with each cell maintaining perfect geometric relationships. Flow fields transform the rigid mathematical structure into organic, flowing patterns.`,
     }
 
-    setUpscaling(true)
-    try {
-      const response = await fetch("/api/upscale-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl: generatedImageUrl }),
-      })
+    const scenarioEnhancements = {
+      forest: `Rendered as an enchanted mathematical forest where each equation becomes a living tree branch. Emerald greens (#2d5016, #4a7c59) and golden ratios manifest as autumn leaves. Dappled sunlight filters through the canopy, creating chiaroscuro lighting effects. Moss-covered bark textures emerge from the mathematical structures, with morning mist adding ethereal atmosphere. The forest floor sparkles with dewdrops that catch the light like tiny mathematical gems.`,
 
-      const data = await safeParse<{ upscaledUrl: string; error?: string }>(response)
+      cosmic: `Transformed into a cosmic nebula where mathematical equations become stellar formations. Deep space purples (#191970, #4b0082) and electric blues create the vast cosmic backdrop. Each mathematical point becomes a star, with gravitational lensing effects bending light around massive mathematical objects. Cosmic dust and gas clouds follow the flow fields, creating spectacular aurora-like phenomena. Distant galaxies spiral in the background, following the same mathematical principles.`,
 
-      if (data.error) {
-        throw new Error(data.error)
-      }
+      ocean: `Manifested as an underwater mathematical paradise where equations flow like ocean currents. Brilliant aqua blues (#006994, #1e90ff) and seafoam greens create depth and movement. Bioluminescent mathematical organisms pulse with inner light, creating a living reef of equations. Caustic light patterns dance across the mathematical seafloor, while gentle currents carry the flow fields like underwater aurora. Schools of geometric fish swim through the mathematical coral formations.`,
 
-      if (data.upscaledUrl) {
-        setGeneratedImageUrl(data.upscaledUrl)
-        toast({
-          title: "Success",
-          description: "Image upscaled successfully!",
-        })
-      } else {
-        throw new Error("No upscaled URL received")
-      }
-    } catch (error: any) {
-      console.error("Error upscaling image:", error)
-      toast({
-        title: "Error",
-        description: error.message || "Failed to upscale image. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setUpscaling(false)
+      neural: `Visualized as a living neural network where each mathematical point becomes a neuron firing with electric energy. Vibrant synaptic connections (#ff6b6b, #4ecdc4) pulse with data transmission. The mathematical structures form neural pathways, with electrical impulses following the flow fields. Dendrites and axons branch out in fractal patterns, creating a brain-like structure that processes the mathematical information. Neurotransmitters sparkle like stars at each synaptic junction.`,
+
+      fire: `Rendered as mathematical flames where each equation burns with intense heat and light. Fiery reds (#8b0000, #dc143c) and molten oranges create the blazing atmosphere. The mathematical structures become dancing flames, with heat distortion effects warping the space around them. Embers float upward following the flow fields, creating trails of light. The fire's base glows with white-hot intensity, while the tips flicker with cooler orange and red hues.`,
+
+      ice: `Crystallized into a frozen mathematical wonderland where equations become ice crystals. Pristine blues (#b0e0e6, #87ceeb) and arctic whites create the glacial palette. Each mathematical structure forms perfect ice crystals with hexagonal symmetry. Frost patterns follow the flow fields, creating delicate filigree across the surface. Aurora borealis dances overhead, casting ethereal light across the mathematical ice formations. Icicles hang like frozen equations, catching and refracting the polar light.`,
+
+      desert: `Manifested as mathematical sand dunes where equations shift like desert winds. Warm golden sands (#daa520, #cd853f) and terracotta create the arid landscape. The mathematical structures form wind-carved rock formations, with sand particles following the flow fields. Mirages shimmer in the distance, creating optical illusions that bend the mathematical space. Oasis pools reflect the mathematical patterns, while desert flowers bloom in impossible mathematical precision.`,
+
+      sunset: `Painted with the warm glow of golden hour where mathematics meets the sublime beauty of twilight. Coral pinks (#ff7f50) and amber golds (#ffa500) create the perfect lighting. The mathematical structures are silhouetted against the setting sun, with lens flares and atmospheric perspective adding depth. Clouds follow the flow fields, creating dramatic sky formations. The entire scene is bathed in warm, diffused light that makes every mathematical element glow with inner beauty.`,
+
+      monochrome: `Rendered in exquisite black and white where mathematical beauty is distilled to pure form and contrast. Deep charcoals (#2c2c2c) and pristine whites create dramatic chiaroscuro effects. The mathematical structures become studies in light and shadow, with subtle gradations revealing every detail. Cross-hatching and stippling techniques add texture, while negative space creates breathing room. The composition follows classical artistic principles, making mathematics into fine art.`,
     }
+
+    const mathPrompt = mathPrompts[dataset as keyof typeof mathPrompts] || mathPrompts.spirals
+    const scenarioPrompt =
+      scenarioEnhancements[scenario as keyof typeof scenarioEnhancements] || scenarioEnhancements.forest
+
+    return `${mathPrompt}
+
+${scenarioPrompt}
+
+Technical specifications: Ultra-high resolution 8K masterpiece with professional gallery lighting. Mathematical precision meets artistic excellence through advanced rendering techniques including global illumination, subsurface scattering, and physically-based materials. Composition follows the rule of thirds with perfect mathematical balance. Color harmony achieved through complementary palettes and golden ratio proportions. Depth of field creates focus hierarchy while maintaining mathematical clarity throughout.
+
+Artistic style: Hyperrealistic mathematical visualization with painterly qualities, combining the precision of technical illustration with the soul of fine art. Each mathematical element is rendered with museum-quality attention to detail. The piece should evoke both intellectual wonder and emotional resonance, making complex mathematics accessible through pure visual beauty.
+
+Seed: ${params.seed} | Noise: ${params.noiseScale} | Flow: ${params.timeStep}`
   }
 
-  const handleEnhancePrompt = async () => {
-    if (!prompt.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter a prompt to enhance.",
-        variant: "destructive",
-      })
-      return
-    }
+  // Enhance prompt using OpenAI
+  const enhancePrompt = async () => {
+    setIsEnhancingPrompt(true)
 
-    setEnhancingPrompt(true)
     try {
       const response = await fetch("/api/enhance-prompt", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          prompt: prompt.trim(),
-          datasetType: selectedDataset?.type,
+          dataset,
+          scenario,
+          numSamples,
+          noiseScale,
+          currentPrompt: generatedPrompt,
+          customElements: customPrompt.trim(),
         }),
       })
 
-      const data = await safeParse<{ enhancedPrompt: string; error?: string }>(response)
-
-      if (data.error) {
-        throw new Error(data.error)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      if (data.enhancedPrompt) {
-        setPrompt(data.enhancedPrompt)
+      const data = await response.json()
+
+      if (data.success) {
+        let enhancedPrompt = data.enhancedPrompt
+
+        // Incorporate custom prompt elements if provided
+        if (customPrompt.trim()) {
+          enhancedPrompt += ` Additional elements: ${customPrompt.trim()}`
+        }
+
+        setFinalPrompt(enhancedPrompt)
         toast({
-          title: "Success",
-          description: "Prompt enhanced!",
+          title: "Prompt Enhanced!",
+          description: "AI has enhanced your prompt with artistic details.",
         })
       } else {
-        throw new Error("No enhanced prompt received")
+        throw new Error(data.error || "Failed to enhance prompt")
       }
-    } catch (error: any) {
-      console.error("Error enhancing prompt:", error)
+    } catch (error) {
+      console.error("Failed to enhance prompt:", error)
       toast({
-        title: "Error",
-        description: error.message || "Failed to enhance prompt. Please try again.",
+        title: "Enhancement Failed",
+        description: "Failed to enhance prompt. Using base prompt instead.",
         variant: "destructive",
       })
     } finally {
-      setEnhancingPrompt(false)
+      setIsEnhancingPrompt(false)
     }
   }
 
-  const handleSaveArtwork = () => {
-    if (!generatedImageUrl) {
+  // Update the generateArtwork function to include metadata generation
+  const generateArtwork = async () => {
+    if (!promptGenerated) {
       toast({
-        title: "Error",
-        description: "No artwork to save.",
+        title: "Generate Prompt First",
+        description: "Please generate a prompt before creating artwork.",
         variant: "destructive",
       })
       return
     }
-    setIsSaveDialogOpen(true)
+
+    setIsLoading(true)
+    setResult(null)
+    setGeneratedMetadata(null)
+
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mode,
+          dataset,
+          scenario,
+          seed,
+          numSamples,
+          noiseScale,
+          timeStep,
+          customPrompt: mode === "ai" ? finalPrompt : undefined,
+          upscaleMethod,
+          generateMetadata: true, // Request metadata generation
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      setResult(data)
+
+      // Set generated metadata if available
+      if (data.metadata) {
+        setGeneratedMetadata(data.metadata)
+      }
+
+      toast({
+        title: "Artwork Generated!",
+        description: "Your mathematical art has been created successfully.",
+      })
+    } catch (error) {
+      console.error("Failed to generate artwork:", error)
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate artwork. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const downloadImage = () => {
+    if (!result?.imageUrl) return
+
+    const link = document.createElement("a")
+    link.href = result.imageUrl
+    link.download = `flow-art-${dataset}-${scenario}-${seed}.png`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  // Reset prompt when dataset or scenario changes
+  const handleDatasetChange = (newDataset: keyof typeof MATHEMATICAL_DATASETS) => {
+    setDataset(newDataset)
+    setPromptGenerated(false)
+    setGeneratedPrompt("")
+    setFinalPrompt("")
+  }
+
+  const handleScenarioChange = (newScenario: keyof typeof SCENARIOS) => {
+    setScenario(newScenario)
+    setPromptGenerated(false)
+    setGeneratedPrompt("")
+    setFinalPrompt("")
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 sm:p-6 lg:p-8">
-      <header className="mb-8 text-center">
-        <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          FlowSketch Art Generator
-        </h1>
-        <p className="mt-3 text-xl text-gray-600">Transform data and concepts into stunning AI-generated art.</p>
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-        {/* Left Panel: Controls */}
-        <Card className="bg-white/80 backdrop-blur-sm shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-800">Generate Art</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid gap-2">
-              <Label htmlFor="dataset">Dataset</Label>
-              <Select value={selectedDatasetId} onValueChange={setSelectedDatasetId}>
-                <SelectTrigger id="dataset">
-                  <SelectValue placeholder="Select a dataset" />
-                </SelectTrigger>
-                <SelectContent>
-                  {datasets.map((dataset) => (
-                    <SelectItem key={dataset.id} value={dataset.id}>
-                      {dataset.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="scenario">Scenario</Label>
-              <Select value={selectedScenarioId} onValueChange={setSelectedScenarioId}>
-                <SelectTrigger id="scenario">
-                  <SelectValue placeholder="Select a scenario" />
-                </SelectTrigger>
-                <SelectContent>
-                  {selectedDataset?.scenarios.map((scenario) => (
-                    <SelectItem key={scenario.id} value={scenario.id}>
-                      {scenario.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="prompt">Prompt</Label>
-              <Textarea
-                id="prompt"
-                placeholder={
-                  enhancingPrompt
-                    ? "AI is crafting your prompt..."
-                    : selectedDataset?.type === "scientific"
-                      ? "Describe your scientific concept (e.g., 'black hole singularity', 'DNA helix structure')"
-                      : "Describe your artistic vision (e.g., 'a serene landscape', 'a futuristic city')"
-                }
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                rows={5}
-                className="min-h-[120px]"
-                disabled={enhancingPrompt}
-              />
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      onClick={handleEnhancePrompt}
-                      disabled={enhancingPrompt || !prompt.trim()}
-                      className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-                    >
-                      {enhancingPrompt ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Enhancing...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="mr-2 h-4 w-4" />
-                          Enhance Prompt
-                        </>
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>
-                      Let AI refine your prompt for better artistic results. For scientific datasets, it will add
-                      mathematical and scientific details. For other datasets, it will add artistic styles and
-                      descriptions.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-
-            <Button
-              onClick={handleGenerateArt}
-              disabled={loading || enhancingPrompt || !prompt.trim()}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <ImagePlus className="mr-2 h-4 w-4" />
-                  Generate Art
-                </>
-              )}
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Right Panel: Generated Art */}
-        <Card className="bg-white/80 backdrop-blur-sm shadow-lg flex flex-col">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-gray-800">Generated Artwork</CardTitle>
-          </CardHeader>
-          <CardContent className="flex-grow flex flex-col items-center justify-center p-4">
-            {loading && (
-              <div className="flex flex-col items-center space-y-4">
-                <Loader2 className="h-12 w-12 animate-spin text-blue-500" />
-                <p className="text-gray-600">Generating your masterpiece...</p>
-              </div>
-            )}
-            {generatedImageUrl && !loading && (
-              <div className="relative w-full h-auto max-w-md aspect-square rounded-lg overflow-hidden border border-gray-200 shadow-md">
-                <Image
-                  src={generatedImageUrl || "/placeholder.svg"}
-                  alt={generatedAltText || "Generated AI art"}
-                  fill
-                  style={{ objectFit: "contain" }}
-                  className="animate-in fade-in duration-500"
-                />
-              </div>
-            )}
-            {!generatedImageUrl && !loading && (
-              <div className="text-center text-gray-500">
-                <ImagePlus className="mx-auto h-16 w-16 text-gray-300" />
-                <p className="mt-2">Your generated art will appear here.</p>
-              </div>
-            )}
-          </CardContent>
-          {generatedImageUrl && !loading && (
-            <div className="p-4 border-t border-gray-200 flex flex-col sm:flex-row gap-3 justify-end">
-              <Button
-                onClick={handleUpscaleImage}
-                disabled={upscaling}
-                variant="outline"
-                className="flex-1 sm:flex-none bg-transparent"
-              >
-                {upscaling ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Upscaling...
-                  </>
-                ) : (
-                  <>
-                    <ImagePlus className="mr-2 h-4 w-4" />
-                    Upscale Image
-                  </>
-                )}
-              </Button>
-              <Button
-                onClick={handleSaveArtwork}
-                disabled={!generatedImageUrl}
-                className="flex-1 sm:flex-none bg-green-600 hover:bg-green-700 text-white"
-              >
-                <Save className="mr-2 h-4 w-4" />
-                Save to Gallery
-              </Button>
-              <Link href="/gallery" passHref>
-                <Button variant="outline" className="flex-1 sm:flex-none bg-transparent">
-                  <GalleryHorizontal className="mr-2 h-4 w-4" />
-                  View Gallery
-                </Button>
-              </Link>
-            </div>
-          )}
-        </Card>
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-3xl font-bold">FlowSketch Art Generator</h1>
+          <p className="text-muted-foreground">
+            Generate beautiful mathematical artwork using flow-based models and AI
+          </p>
+        </div>
+        <Button variant="outline" asChild>
+          <a href="/gallery">
+            <ImageIcon className="mr-2 h-4 w-4" />
+            View Gallery
+          </a>
+        </Button>
       </div>
 
-      {generatedImageUrl && (
-        <SaveArtworkDialog
-          isOpen={isSaveDialogOpen}
-          onClose={() => setIsSaveDialogOpen(false)}
-          onSave={() => {
-            // This function is handled by the dialog itself
-            setIsSaveDialogOpen(false)
-          }}
-          initialImageUrl={generatedImageUrl}
-          initialPrompt={prompt}
-          initialDataset={selectedDataset?.name || "Unknown"}
-          initialScenario={selectedScenario?.name || "Unknown"}
-        />
-      )}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          {/* Mathematical Dataset Selection */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Mathematical Dataset *</CardTitle>
+              <CardDescription>Choose the mathematical foundation for your artwork</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-2">
+                <Label htmlFor="dataset">Dataset Type</Label>
+                <Select value={dataset} onValueChange={handleDatasetChange}>
+                  <SelectTrigger id="dataset">
+                    <SelectValue placeholder="Select Mathematical Dataset" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(MATHEMATICAL_DATASETS).map(([key, info]) => (
+                      <SelectItem key={key} value={key}>
+                        {info.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Dataset Info */}
+              <div className="p-3 bg-muted rounded-md">
+                <h4 className="font-medium text-sm mb-1">{MATHEMATICAL_DATASETS[dataset].name}</h4>
+                <p className="text-sm text-muted-foreground mb-2">{MATHEMATICAL_DATASETS[dataset].description}</p>
+                <Badge variant="outline" className="text-xs">
+                  {MATHEMATICAL_DATASETS[dataset].mathConcept}
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Generation Settings */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Generation Settings</CardTitle>
+              <CardDescription>Configure the mathematical parameters</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-2">
+                <Label htmlFor="mode">Generation Mode</Label>
+                <Select value={mode} onValueChange={(value) => setMode(value as Mode)}>
+                  <SelectTrigger id="mode">
+                    <SelectValue placeholder="Select Mode" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="flow">Flow (SVG Mathematical)</SelectItem>
+                    <SelectItem value="ai">AI Enhanced (DALL-E)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="scenario">Artistic Scenario</Label>
+                <Select value={scenario} onValueChange={handleScenarioChange}>
+                  <SelectTrigger id="scenario">
+                    <SelectValue placeholder="Select Artistic Style" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(SCENARIOS).map(([key, description]) => (
+                      <SelectItem key={key} value={key}>
+                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="seed">Seed</Label>
+                  <Input
+                    id="seed"
+                    type="number"
+                    value={seed}
+                    onChange={(e) => setSeed(Number.parseInt(e.target.value))}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="num-samples">Sample Points</Label>
+                  <Input
+                    id="num-samples"
+                    type="number"
+                    value={numSamples}
+                    min={100}
+                    max={10000}
+                    onChange={(e) => setNumSamples(Number.parseInt(e.target.value))}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="noise-scale">Noise Scale: {noiseScale.toFixed(3)}</Label>
+                <Slider
+                  id="noise-scale"
+                  value={[noiseScale]}
+                  max={0.2}
+                  min={0.001}
+                  step={0.001}
+                  onValueChange={(value) => setNoiseScale(value[0])}
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="time-step">Time Step: {timeStep.toFixed(3)}</Label>
+                <Slider
+                  id="time-step"
+                  value={[timeStep]}
+                  max={0.1}
+                  min={0.001}
+                  step={0.001}
+                  onValueChange={(value) => setTimeStep(value[0])}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Prompt Management */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Prompt Generation</CardTitle>
+              <CardDescription>Generate and enhance your AI prompt</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Custom Elements */}
+              <div className="grid gap-2">
+                <Label htmlFor="custom-prompt">Custom Elements (Optional)</Label>
+                <Textarea
+                  id="custom-prompt"
+                  value={customPrompt}
+                  onChange={(e) => setCustomPrompt(e.target.value)}
+                  placeholder="Add custom elements like 'with golden fractals', 'in watercolor style', etc."
+                  rows={2}
+                />
+              </div>
+
+              {/* Generate Base Prompt */}
+              <Button onClick={generateBasePrompt} className="w-full bg-transparent" variant="outline">
+                <Sparkles className="mr-2 h-4 w-4" />
+                Generate Base Prompt
+              </Button>
+
+              {/* Generated Prompt Display */}
+              {promptGenerated && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label>Generated Prompt</Label>
+                    <Button variant="ghost" size="sm" onClick={() => setShowPromptDetails(!showPromptDetails)}>
+                      {showPromptDetails ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                  </div>
+
+                  {showPromptDetails && (
+                    <div className="p-3 bg-muted rounded-md">
+                      <p className="text-sm font-mono">{generatedPrompt}</p>
+                    </div>
+                  )}
+
+                  {/* Enhance Prompt Button */}
+                  {mode === "ai" && (
+                    <Button onClick={enhancePrompt} disabled={isEnhancingPrompt} className="w-full" variant="secondary">
+                      <Wand2 className="mr-2 h-4 w-4" />
+                      {isEnhancingPrompt ? "Enhancing..." : "AI Enhance Prompt"}
+                    </Button>
+                  )}
+
+                  {/* Final Prompt Editor */}
+                  <div className="grid gap-2">
+                    <Label htmlFor="final-prompt">Final Prompt (Editable)</Label>
+                    <Textarea
+                      id="final-prompt"
+                      value={finalPrompt}
+                      onChange={(e) => setFinalPrompt(e.target.value)}
+                      rows={4}
+                      className="font-mono text-sm"
+                    />
+                  </div>
+                </div>
+              )}
+            </CardContent>
+            <CardFooter>
+              <Button onClick={generateArtwork} disabled={isLoading || !promptGenerated} className="w-full">
+                {isLoading ? "Generating Artwork..." : "Generate Artwork"}
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+
+        {/* Result Display */}
+        <div>
+          {result ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>
+                  {generatedMetadata?.title ||
+                    `${MATHEMATICAL_DATASETS[dataset].name} • ${scenario.charAt(0).toUpperCase() + scenario.slice(1)}`}
+                </CardTitle>
+                <CardDescription>
+                  {generatedMetadata?.description || `Seed: ${seed} • ${numSamples} points • Noise: ${noiseScale}`}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <img
+                  src={result.imageUrl || "/placeholder.svg"}
+                  alt="Generated Mathematical Artwork"
+                  className="w-full rounded-md shadow-md"
+                />
+
+                {/* Show generated story/description */}
+                {generatedMetadata && (
+                  <div className="p-4 bg-muted/50 rounded-md">
+                    <h4 className="font-medium text-sm mb-2">The Story Behind This Artwork</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{generatedMetadata.description}</p>
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter className="flex gap-2">
+                <Button variant="outline" onClick={downloadImage} className="flex-1 bg-transparent">
+                  <Download className="mr-2 h-4 w-4" />
+                  Download
+                </Button>
+                <SaveArtworkDialog
+                  imageUrl={result.imageUrl}
+                  svgContent={result.svgContent}
+                  upscaledImageUrl={result.upscaledImageUrl}
+                  mode={mode}
+                  generationParams={{
+                    dataset,
+                    scenario,
+                    seed,
+                    numSamples,
+                    noiseScale,
+                    timeStep,
+                    customPrompt: finalPrompt,
+                    upscaleMethod: result.upscaledImageUrl ? upscaleMethod : undefined,
+                  }}
+                  generatedMetadata={generatedMetadata} // Pass metadata to save dialog
+                >
+                  <Button variant="outline" className="flex-1 bg-transparent">
+                    <Save className="mr-2 h-4 w-4" />
+                    Save to Gallery
+                  </Button>
+                </SaveArtworkDialog>
+              </CardFooter>
+            </Card>
+          ) : (
+            <Card className="h-full">
+              <CardContent className="flex items-center justify-center h-full min-h-[400px]">
+                <div className="text-center space-y-4">
+                  <div className="text-6xl">🎨</div>
+                  <div>
+                    <h3 className="text-lg font-medium mb-2">Ready to Create</h3>
+                    <p className="text-muted-foreground text-sm max-w-md">
+                      {!promptGenerated
+                        ? "Select your mathematical dataset and generate a prompt to begin creating artwork."
+                        : "Your prompt is ready! Click 'Generate Artwork' to create your mathematical masterpiece."}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

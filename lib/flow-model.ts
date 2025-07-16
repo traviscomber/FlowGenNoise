@@ -82,8 +82,11 @@ function generateDatasetPoints(dataset: string, numSamples: number, seed: number
         break
 
       default:
-        x = random() * 512
-        y = random() * 512
+        // Default to spirals if unknown dataset
+        const defaultT = (i / numSamples) * 4 * Math.PI
+        const defaultR = defaultT / (4 * Math.PI)
+        x = defaultR * Math.cos(defaultT) * 200 + 256 + (random() - 0.5) * 20
+        y = defaultR * Math.sin(defaultT) * 200 + 256 + (random() - 0.5) * 20
     }
 
     points.push([Math.max(0, Math.min(512, x)), Math.max(0, Math.min(512, y))])
