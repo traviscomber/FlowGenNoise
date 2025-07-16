@@ -13,6 +13,17 @@ import { SaveArtworkDialog } from "@/components/gallery/save-artwork-dialog"
 import Link from "next/link"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
+// --- utility --------------------------------------------------------------
+async function safeParse<ResponseShape = any>(resp: Response): Promise<ResponseShape | { error?: string }> {
+  const ct = resp.headers.get("content-type") ?? ""
+  if (ct.includes("application/json")) {
+    return (await resp.json()) as ResponseShape
+  }
+  // Fallback for text / html responses (e.g. 500 error pages)
+  return { error: await resp.text() }
+}
+// -------------------------------------------------------------------------
+
 interface Dataset {
   id: string
   name: string
@@ -82,11 +93,7 @@ export function FlowArtGenerator() {
 
   const handleGenerateArt = async () => {
     if (!prompt) {
-      toast({
-        title: "Error",
-        description: "Please enter a prompt.",
-        variant: "destructive",
-      })
+      toast({ title: "Error", description: "Please enter a prompt.", variant: "destructive" })
       return
     }
 
@@ -97,24 +104,19 @@ export function FlowArtGenerator() {
     try {
       const response = await fetch("/api/generate-ai-art", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
       })
 
+      const data = await safeParse<{ imageUrl: string; altText: string }>(response)
+
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to generate art")
+        throw new Error((data as any).error || `HTTP ${response.status}`)
       }
 
-      const data = await response.json()
       setGeneratedImageUrl(data.imageUrl)
       setGeneratedAltText(data.altText)
-      toast({
-        title: "Success",
-        description: "Art generated successfully!",
-      })
+      toast({ title: "Success", description: "Art generated successfully!" })
     } catch (error: any) {
       console.error("Error generating art:", error)
       toast({
@@ -147,13 +149,12 @@ export function FlowArtGenerator() {
         body: JSON.stringify({ imageUrl: generatedImageUrl }),
       })
 
+      const data = await safeParse<{ upscaledUrl: string }>(response)
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to upscale image")
+        throw new Error((data as any).error || `HTTP ${response.status}`)
       }
+      setGeneratedImageUrl(data.upscaledUrl)
 
-      const data = await response.json()
-      setGeneratedImageUrl(data.upscaledUrl) // Update with upscaled URL
       toast({
         title: "Success",
         description: "Image upscaled successfully!",
@@ -193,13 +194,12 @@ export function FlowArtGenerator() {
         }),
       })
 
+      const data = await safeParse<{ enhancedPrompt: string }>(response)
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to enhance prompt")
+        throw new Error((data as any).error || `HTTP ${response.status}`)
       }
-
-      const data = await response.json()
       setPrompt(data.enhancedPrompt)
+
       toast({
         title: "Success",
         description: "Prompt enhanced!",
