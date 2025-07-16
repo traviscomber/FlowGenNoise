@@ -27,6 +27,7 @@ export interface UpscaleParams extends GenerationParams {
 
 // Color schemes for different scenarios
 const scenarioColors = {
+  pure: ["#000000", "#1a1a1a", "#333333", "#4d4d4d", "#666666", "#808080", "#999999", "#b3b3b3", "#cccccc", "#e6e6e6"],
   forest: [
     "#0F1B0F",
     "#14532D",
@@ -225,6 +226,16 @@ function applyScenarioTransform(
     let metadata: any = {}
 
     switch (scenario) {
+      case "pure":
+        // Pure mathematical - no transformation, just preserve the mathematical structure
+        metadata = {
+          magnitude: Math.sqrt(baseX * baseX + baseY * baseY),
+          angle: Math.atan2(baseY, baseX),
+          quadrant: baseX >= 0 ? (baseY >= 0 ? 1 : 4) : baseY >= 0 ? 2 : 3,
+          isPrime: isPrime(Math.floor(Math.abs(baseX * 100) + Math.abs(baseY * 100))),
+        }
+        break
+
       case "forest":
         // Add tree-like growth patterns
         const treeHeight = Math.abs(baseY) * 0.5 + rng.range(0, 0.3)
@@ -332,6 +343,17 @@ function applyScenarioTransform(
   return transformedPoints
 }
 
+// Helper function to check if a number is prime (for pure mathematical scenario)
+function isPrime(n: number): boolean {
+  if (n < 2) return false
+  if (n === 2) return true
+  if (n % 2 === 0) return false
+  for (let i = 3; i <= Math.sqrt(n); i += 2) {
+    if (n % i === 0) return false
+  }
+  return true
+}
+
 export function generateFlowField(params: GenerationParams): string {
   return generateHighResFlowField({ ...params, scaleFactor: 1, highResolution: false, extraDetail: false })
 }
@@ -356,15 +378,20 @@ export function generateHighResFlowField(params: UpscaleParams): string {
   let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`
 
   // Add background gradient based on scenario
-  svgContent += `
-    <defs>
-      <radialGradient id="bg-${seed}" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.8"/>
-        <stop offset="100%" style="stop-color:${colors[1]};stop-opacity:1"/>
-      </radialGradient>
-    </defs>
-    <rect width="${size}" height="${size}" fill="url(#bg-${seed})"/>
-  `
+  if (scenario === "pure") {
+    // Pure mathematical gets a clean white background
+    svgContent += `<rect width="${size}" height="${size}" fill="white"/>`
+  } else {
+    svgContent += `
+      <defs>
+        <radialGradient id="bg-${seed}" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.8"/>
+          <stop offset="100%" style="stop-color:${colors[1]};stop-opacity:1"/>
+        </radialGradient>
+      </defs>
+      <rect width="${size}" height="${size}" fill="url(#bg-${seed})"/>
+    `
+  }
 
   const centerX = size / 2
   const centerY = size / 2
@@ -385,6 +412,29 @@ export function generateHighResFlowField(params: UpscaleParams): string {
 
       // Apply scenario-specific rendering
       switch (scenario) {
+        case "pure":
+          // Pure mathematical visualization
+          radius = 0.8 + point.metadata.magnitude * 0.5
+          opacity = 0.7 + (point.metadata.magnitude / 3) * 0.3
+
+          // Color based on mathematical properties
+          let pureColor = "#333333"
+          if (point.metadata.isPrime) {
+            pureColor = "#000000" // Prime numbers are black
+            radius *= 1.5
+          } else if (point.metadata.quadrant === 1) {
+            pureColor = "#666666"
+          } else if (point.metadata.quadrant === 2) {
+            pureColor = "#999999"
+          } else if (point.metadata.quadrant === 3) {
+            pureColor = "#4d4d4d"
+          } else {
+            pureColor = "#808080"
+          }
+
+          svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="${pureColor}" opacity="${opacity}"/>`
+          continue
+
         case "forest":
           radius = 0.5 + point.metadata.leafDensity * 2
           opacity = 0.4 + point.metadata.leafDensity * 0.4
@@ -474,6 +524,18 @@ export function generateHighResFlowField(params: UpscaleParams): string {
         }
       }
     }
+  } else if (scenario === "pure") {
+    // Add mathematical grid lines for pure mathematical visualization
+    const gridSpacing = size / 10
+    for (let i = 0; i <= 10; i++) {
+      const pos = i * gridSpacing
+      svgContent += `<line x1="${pos}" y1="0" x2="${pos}" y2="${size}" stroke="#e0e0e0" stroke-width="0.5" opacity="0.3"/>`
+      svgContent += `<line x1="0" y1="${pos}" x2="${size}" y2="${pos}" stroke="#e0e0e0" stroke-width="0.5" opacity="0.3"/>`
+    }
+
+    // Add axes
+    svgContent += `<line x1="${centerX}" y1="0" x2="${centerX}" y2="${size}" stroke="#cccccc" stroke-width="1" opacity="0.6"/>`
+    svgContent += `<line x1="0" y1="${centerY}" x2="${size}" y2="${centerY}" stroke="#cccccc" stroke-width="1" opacity="0.6"/>`
   }
 
   svgContent += "</svg>"

@@ -69,6 +69,7 @@ function getDatasetMathematicalContext(dataset: string): string {
 
 function getScenarioContext(scenario: string): string {
   const contexts = {
+    pure: "clean mathematical visualization with grid lines, axes, and pure geometric forms highlighting mathematical properties",
     forest:
       "organic growth patterns, fractal tree structures, natural color gradients from deep forest greens to golden sunlight",
     cosmic: "stellar formations, nebula clouds, deep space colors with cosmic dust and celestial mechanics",
