@@ -3,85 +3,65 @@
 import type React from "react"
 
 import { useState } from "react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Save, Loader2, Sparkles, X } from "lucide-react"
+import { Save, X, Sparkles, Heart } from "lucide-react"
 import { galleryService, type ArtworkData } from "@/lib/gallery-service"
+import { useToast } from "@/hooks/use-toast"
 
 interface SaveArtworkDialogProps {
-  artworkData: {
-    imageUrl: string
-    svgContent?: string
-    upscaledImageUrl?: string
-    mode: "flow" | "ai"
-    params: {
-      dataset: string
-      scenario: string
-      seed: number
-      numSamples?: number
-      noiseScale?: number
-      timeStep?: number
-    }
-    customPrompt?: string
-    upscaleMethod?: string
-  }
-  onSaved?: () => void
-  children: React.ReactNode
+  artwork: Omit<ArtworkData, "id" | "createdAt" | "updatedAt">
+  trigger?: React.ReactNode
+  onSaved?: (id: string) => void
 }
 
-export function SaveArtworkDialog({ artworkData, onSaved, children }: SaveArtworkDialogProps) {
+export function SaveArtworkDialog({ artwork, trigger, onSaved }: SaveArtworkDialogProps) {
   const [open, setOpen] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
-  const [title, setTitle] = useState("")
-  const [description, setDescription] = useState("")
-  const [customTags, setCustomTags] = useState("")
-  const [tags, setTags] = useState<string[]>([])
+  const [title, setTitle] = useState(artwork.title)
+  const [description, setDescription] = useState(artwork.description || "")
+  const [tags, setTags] = useState<string[]>(artwork.tags || [])
+  const [newTag, setNewTag] = useState("")
+  const [isFavorite, setIsFavorite] = useState(artwork.isFavorite || false)
+  const [saving, setSaving] = useState(false)
+  const { toast } = useToast()
 
-  // Generate auto-suggestions when dialog opens
-  const generateAutoSuggestions = () => {
-    const autoTitle = `${artworkData.mode === "ai" ? "AI" : "Flow"} ${artworkData.params.dataset.charAt(0).toUpperCase() + artworkData.params.dataset.slice(1)} - ${artworkData.params.scenario.charAt(0).toUpperCase() + artworkData.params.scenario.slice(1)}`
-
-    const autoDescription =
-      artworkData.customPrompt ||
-      `Generated using ${artworkData.params.dataset} dataset with ${artworkData.params.scenario} scenario styling. Seed: ${artworkData.params.seed}.`
-
-    const autoTags = [
-      artworkData.mode,
-      artworkData.params.dataset,
-      artworkData.params.scenario,
-      ...(artworkData.mode === "ai" ? ["ai-generated", "artificial-intelligence"] : ["flow-field", "mathematical"]),
-      ...(artworkData.upscaledImageUrl ? ["enhanced", "upscaled"] : []),
-      ...(artworkData.customPrompt ? ["custom-prompt"] : []),
-    ]
-
-    setTitle(autoTitle)
-    setDescription(autoDescription)
-    setTags(autoTags)
+  const generateTitle = () => {
+    const adjectives = ["Stunning", "Ethereal", "Vibrant", "Mystical", "Dynamic", "Elegant", "Bold", "Serene"]
+    const nouns = ["Creation", "Vision", "Masterpiece", "Artwork", "Design", "Composition", "Expression"]
+    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)]
+    const noun = nouns[Math.floor(Math.random() * nouns.length)]
+    setTitle(`${adjective} ${noun}`)
   }
 
-  const handleOpenChange = (newOpen: boolean) => {
-    setOpen(newOpen)
-    if (newOpen) {
-      generateAutoSuggestions()
+  const generateTags = () => {
+    const baseTags = [artwork.mode, artwork.dataset]
+    if (artwork.scenario) baseTags.push(artwork.scenario)
+
+    const additionalTags = {
+      neural_networks: ["brain", "connectivity", "neurons", "synapses"],
+      dna_sequences: ["genetic", "molecular", "helix", "biology"],
+      quantum_fields: ["physics", "particles", "quantum", "energy"],
+      cosmic_phenomena: ["space", "stars", "galaxy", "universe"],
+      fractal_geometry: ["mathematics", "patterns", "recursive", "geometry"],
+      protein_folding: ["biochemistry", "structure", "amino acids", "proteins"],
+      brain_connectivity: ["neuroscience", "networks", "cognition", "neural"],
+      crystalline_structures: ["chemistry", "lattice", "crystal", "molecular"],
     }
+
+    const datasetTags = additionalTags[artwork.dataset as keyof typeof additionalTags] || []
+    const randomTags = datasetTags.slice(0, 2 + Math.floor(Math.random() * 2))
+
+    setTags([...new Set([...baseTags, ...randomTags])])
   }
 
-  const addCustomTag = () => {
-    if (customTags.trim() && !tags.includes(customTags.trim().toLowerCase())) {
-      setTags([...tags, customTags.trim().toLowerCase()])
-      setCustomTags("")
+  const addTag = () => {
+    if (newTag.trim() && !tags.includes(newTag.trim())) {
+      setTags([...tags, newTag.trim()])
+      setNewTag("")
     }
   }
 
@@ -91,202 +71,193 @@ export function SaveArtworkDialog({ artworkData, onSaved, children }: SaveArtwor
 
   const handleSave = async () => {
     if (!title.trim()) {
-      alert("Please enter a title for your artwork")
+      toast({
+        title: "Title required",
+        description: "Please enter a title for your artwork.",
+        variant: "destructive",
+      })
       return
     }
 
-    setIsSaving(true)
+    setSaving(true)
 
-    try {
-      const artworkToSave: Omit<ArtworkData, "id" | "createdAt" | "updatedAt"> = {
-        title: title.trim(),
-        description: description.trim() || undefined,
-        imageUrl: artworkData.imageUrl,
-        svgContent: artworkData.svgContent,
-        upscaledImageUrl: artworkData.upscaledImageUrl,
-        mode: artworkData.mode,
-        dataset: artworkData.params.dataset,
-        scenario: artworkData.params.scenario,
-        seed: artworkData.params.seed,
-        numSamples: artworkData.params.numSamples,
-        noiseScale: artworkData.params.noiseScale,
-        timeStep: artworkData.params.timeStep,
-        customPrompt: artworkData.customPrompt,
-        upscaleMethod: artworkData.upscaleMethod,
-        tags: tags,
-        isFavorite: false,
-      }
-
-      const savedArtwork = await galleryService.saveArtwork(artworkToSave)
-
-      if (savedArtwork) {
-        setOpen(false)
-        onSaved?.()
-
-        // Reset form
-        setTitle("")
-        setDescription("")
-        setCustomTags("")
-        setTags([])
-      } else {
-        alert("Failed to save artwork. Please try again.")
-      }
-    } catch (error) {
-      console.error("Error saving artwork:", error)
-      alert("Failed to save artwork. Please try again.")
-    } finally {
-      setIsSaving(false)
+    const artworkToSave: ArtworkData = {
+      ...artwork,
+      title: title.trim(),
+      description: description.trim() || undefined,
+      tags,
+      isFavorite,
     }
+
+    const savedId = await galleryService.saveArtwork(artworkToSave)
+
+    if (savedId) {
+      toast({
+        title: "Artwork saved!",
+        description: `"${title}" has been added to your gallery.`,
+      })
+      onSaved?.(savedId)
+      setOpen(false)
+    } else {
+      toast({
+        title: "Save failed",
+        description: "Failed to save artwork. Please try again.",
+        variant: "destructive",
+      })
+    }
+
+    setSaving(false)
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Save className="h-5 w-5" />
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        {trigger || (
+          <Button variant="outline" size="sm">
+            <Save className="h-4 w-4 mr-2" />
             Save to Gallery
-          </DialogTitle>
-          <DialogDescription>
-            Add your artwork to your personal gallery with custom title, description, and tags.
-          </DialogDescription>
+          </Button>
+        )}
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Save Artwork to Gallery</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Preview */}
-          <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden">
-            <img
-              src={artworkData.upscaledImageUrl || artworkData.imageUrl}
-              alt="Artwork preview"
-              className="w-full h-48 object-contain"
-            />
-            <div className="absolute top-2 right-2 flex gap-1">
-              <Badge variant={artworkData.mode === "ai" ? "default" : "outline"}>
-                {artworkData.mode === "ai" ? "🤖 AI" : "📊 Flow"}
-              </Badge>
-              {artworkData.upscaledImageUrl && (
-                <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  Enhanced
-                </Badge>
+          <div className="space-y-4">
+            <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden">
+              {artwork.mode === "flow" && artwork.svgContent ? (
+                <div
+                  className="w-full h-full flex items-center justify-center"
+                  dangerouslySetInnerHTML={{ __html: artwork.svgContent }}
+                />
+              ) : (
+                <img
+                  src={artwork.upscaledImageUrl || artwork.imageUrl}
+                  alt="Generated artwork"
+                  className="w-full h-full object-cover"
+                />
               )}
             </div>
+
+            {/* Metadata */}
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2">
+                <Badge variant={artwork.mode === "ai" ? "default" : "outline"}>
+                  {artwork.mode === "ai" ? "🤖 AI" : "📊 Flow"}
+                </Badge>
+                <Badge variant="outline">{artwork.dataset}</Badge>
+                {artwork.scenario && <Badge variant="outline">{artwork.scenario}</Badge>}
+              </div>
+              <div className="text-muted-foreground">
+                <div>Seed: {artwork.seed}</div>
+                {artwork.upscaledImageUrl && (
+                  <div className="flex items-center gap-1">
+                    <Sparkles className="h-3 w-3" />
+                    Enhanced
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* Generation Parameters */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <div>
-              <span className="text-gray-600 dark:text-gray-400">Dataset:</span>
-              <p className="font-medium capitalize">{artworkData.params.dataset}</p>
-            </div>
-            <div>
-              <span className="text-gray-600 dark:text-gray-400">Scenario:</span>
-              <p className="font-medium capitalize">{artworkData.params.scenario}</p>
-            </div>
-            <div>
-              <span className="text-gray-600 dark:text-gray-400">Seed:</span>
-              <p className="font-medium">{artworkData.params.seed}</p>
-            </div>
-            <div>
-              <span className="text-gray-600 dark:text-gray-400">Mode:</span>
-              <p className="font-medium">{artworkData.mode === "ai" ? "AI Generated" : "Flow Field"}</p>
-            </div>
-          </div>
-
-          {/* Form Fields */}
+          {/* Form */}
           <div className="space-y-4">
-            <div>
-              <Label htmlFor="title">Title *</Label>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="title">Title</Label>
+                <Button type="button" variant="ghost" size="sm" onClick={generateTitle} className="text-xs">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  Generate
+                </Button>
+              </div>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter artwork title..."
-                className="mt-1"
+                maxLength={100}
               />
             </div>
 
-            <div>
-              <Label htmlFor="description">Description</Label>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description (optional)</Label>
               <Textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe your artwork..."
                 rows={3}
-                className="mt-1 resize-none"
+                maxLength={500}
               />
             </div>
 
-            {/* Tags */}
-            <div>
-              <Label>Tags</Label>
-              <div className="mt-1 space-y-2">
-                {tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {tags.map((tag, index) => (
-                      <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                        {tag}
-                        <button
-                          type="button"
-                          onClick={() => removeTag(tag)}
-                          className="ml-1 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-full p-0.5"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-                <div className="flex gap-2">
-                  <Input
-                    value={customTags}
-                    onChange={(e) => setCustomTags(e.target.value)}
-                    placeholder="Add custom tags..."
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault()
-                        addCustomTag()
-                      }
-                    }}
-                  />
-                  <Button type="button" onClick={addCustomTag} variant="outline" size="sm">
-                    Add
-                  </Button>
-                </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Tags</Label>
+                <Button type="button" variant="ghost" size="sm" onClick={generateTags} className="text-xs">
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  Generate
+                </Button>
               </div>
+
+              <div className="flex gap-2">
+                <Input
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  placeholder="Add a tag..."
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault()
+                      addTag()
+                    }
+                  }}
+                />
+                <Button type="button" onClick={addTag} size="sm">
+                  Add
+                </Button>
+              </div>
+
+              {tags.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      {tag}
+                      <button type="button" onClick={() => removeTag(tag)} className="ml-1 hover:text-red-500">
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {artworkData.customPrompt && (
-              <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg">
-                <Label className="text-xs font-semibold text-purple-700 dark:text-purple-300">
-                  Custom Prompt Used:
-                </Label>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{artworkData.customPrompt}</p>
-              </div>
-            )}
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="favorite"
+                checked={isFavorite}
+                onChange={(e) => setIsFavorite(e.target.checked)}
+                className="rounded"
+              />
+              <Label htmlFor="favorite" className="flex items-center gap-2">
+                <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+                Mark as favorite
+              </Label>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button onClick={handleSave} disabled={saving} className="flex-1">
+                {saving ? "Saving..." : "Save Artwork"}
+              </Button>
+              <Button variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+            </div>
           </div>
         </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={isSaving}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave} disabled={isSaving || !title.trim()}>
-            {isSaving ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4 mr-2" />
-                Save to Gallery
-              </>
-            )}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

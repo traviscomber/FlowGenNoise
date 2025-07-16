@@ -1,4 +1,4 @@
-import FlowArtGenerator from "@/components/flow-art-generator"
+import { FlowArtGenerator } from "@/components/flow-art-generator"
 
 export default function HomePage() {
   return (
