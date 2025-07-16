@@ -36,7 +36,8 @@ export function FlowArtGenerator() {
 
   // Generation parameters - separate dataset and scenario
   const [dataset, setDataset] = useState("spirals")
-  const [scenario, setScenario] = useState("forest")
+  const [scenario, setScenario] = useState("pure")
+  const [colorScheme, setColorScheme] = useState("pure")
   const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
   const [numSamples, setNumSamples] = useState(2000)
   const [noiseScale, setNoiseScale] = useState(0.05)
@@ -52,7 +53,7 @@ export function FlowArtGenerator() {
     setIsEnhancingPrompt(true)
 
     try {
-      console.log("Enhancing prompt for:", { dataset, scenario, numSamples, noiseScale })
+      console.log("Enhancing prompt for:", { dataset, scenario, colorScheme, numSamples, noiseScale })
 
       const response = await fetch("/api/enhance-prompt", {
         method: "POST",
@@ -60,6 +61,7 @@ export function FlowArtGenerator() {
         body: JSON.stringify({
           dataset,
           scenario,
+          colorScheme,
           numSamples,
           noiseScale,
           currentPrompt: customPrompt,
@@ -90,7 +92,7 @@ export function FlowArtGenerator() {
     } finally {
       setIsEnhancingPrompt(false)
     }
-  }, [dataset, scenario, numSamples, noiseScale, customPrompt, toast])
+  }, [dataset, scenario, colorScheme, numSamples, noiseScale, customPrompt, toast])
 
   const generateArt = useCallback(async () => {
     console.log("Generate button clicked! Mode:", mode)
@@ -101,6 +103,7 @@ export function FlowArtGenerator() {
       const params: GenerationParams = {
         dataset,
         scenario,
+        colorScheme,
         seed,
         numSamples,
         noiseScale,
@@ -131,8 +134,8 @@ export function FlowArtGenerator() {
         })
 
         toast({
-          title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
-          description: `Beautiful ${dataset} dataset with ${scenario} scenario blend created.`,
+          title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
+          description: `Beautiful ${dataset} dataset with ${scenario === "pure" ? "pure mathematical" : scenario} ${scenario === "pure" ? "visualization" : "scenario blend"} created.`,
         })
       } else {
         // Generate AI art
@@ -142,6 +145,7 @@ export function FlowArtGenerator() {
         const requestBody = {
           dataset,
           scenario,
+          colorScheme,
           seed,
           numSamples,
           noise: noiseScale,
@@ -185,7 +189,7 @@ export function FlowArtGenerator() {
           title: "AI Art Generated! 🤖✨",
           description: useCustomPrompt
             ? "Custom enhanced prompt artwork created!"
-            : `AI-enhanced ${dataset} + ${scenario} artwork created.`,
+            : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork created.`,
         })
       }
     } catch (error: any) {
@@ -199,7 +203,19 @@ export function FlowArtGenerator() {
       setIsGenerating(false)
       setProgress(0)
     }
-  }, [dataset, scenario, seed, numSamples, noiseScale, timeStep, mode, useCustomPrompt, customPrompt, toast])
+  }, [
+    dataset,
+    scenario,
+    colorScheme,
+    seed,
+    numSamples,
+    noiseScale,
+    timeStep,
+    mode,
+    useCustomPrompt,
+    customPrompt,
+    toast,
+  ])
 
   const upscaleImage = useCallback(async () => {
     if (!generatedArt) {
@@ -345,7 +361,7 @@ export function FlowArtGenerator() {
 
       toast({
         title: "Download Complete! 🎨",
-        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario} artwork downloaded.`,
+        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} artwork downloaded.`,
       })
     } catch (error: any) {
       console.error("Download error:", error)
@@ -364,13 +380,15 @@ export function FlowArtGenerator() {
   }, [])
 
   const getButtonText = () => {
+    const scenarioText = scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)
+
     if (mode === "ai") {
       if (useCustomPrompt) {
         return "Generate Custom AI Art"
       }
-      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)}`
+      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}`
     } else {
-      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario.charAt(0).toUpperCase() + scenario.slice(1)}`
+      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}`
     }
   }
 
@@ -406,7 +424,8 @@ export function FlowArtGenerator() {
                   <Alert>
                     <Zap className="h-4 w-4" />
                     <AlertDescription>
-                      First choose a dataset pattern, then select a scenario to blend with it!
+                      First choose a dataset pattern, then select a scenario to blend with it! Try "Pure Mathematical"
+                      for raw mathematical beauty.
                     </AlertDescription>
                   </Alert>
                 </TabsContent>
@@ -447,6 +466,28 @@ export function FlowArtGenerator() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="pure">🔢 Pure Mathematical</SelectItem>
+                    <SelectItem value="forest">🌲 Forest</SelectItem>
+                    <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
+                    <SelectItem value="ocean">🌊 Ocean</SelectItem>
+                    <SelectItem value="neural">🧠 Neural</SelectItem>
+                    <SelectItem value="fire">🔥 Fire</SelectItem>
+                    <SelectItem value="ice">❄️ Ice</SelectItem>
+                    <SelectItem value="desert">🏜️ Desert</SelectItem>
+                    <SelectItem value="sunset">🌅 Sunset</SelectItem>
+                    <SelectItem value="monochrome">⚫ Monochrome</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Color Palette</Label>
+                <Select value={colorScheme} onValueChange={setColorScheme}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pure">🔢 Pure Mathematical</SelectItem>
                     <SelectItem value="forest">🌲 Forest</SelectItem>
                     <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
                     <SelectItem value="ocean">🌊 Ocean</SelectItem>
@@ -585,7 +626,9 @@ export function FlowArtGenerator() {
                           ? useCustomPrompt
                             ? "Processing custom prompt..."
                             : "Applying AI artistic effects..."
-                          : `Applying ${scenario} scenario...`
+                          : scenario === "pure"
+                            ? "Applying pure mathematical visualization..."
+                            : `Applying ${scenario} scenario...`
                         : progress < 90
                           ? "Rendering visualization..."
                           : "Finalizing artwork..."}
@@ -663,7 +706,9 @@ export function FlowArtGenerator() {
                       {generatedArt.mode === "ai" ? "🤖 AI Art" : "📊 SVG"}
                     </Badge>
                     <Badge variant="outline">{generatedArt.params.dataset}</Badge>
-                    <Badge variant="outline">{generatedArt.params.scenario}</Badge>
+                    <Badge variant="outline">
+                      {generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario}
+                    </Badge>
                     <Badge variant="outline">{generatedArt.params.numSamples} points</Badge>
                     {generatedArt.customPrompt && (
                       <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
@@ -710,7 +755,9 @@ export function FlowArtGenerator() {
                     </div>
                     <div>
                       <span className="text-gray-600">Scenario:</span>
-                      <p className="font-medium capitalize">{generatedArt.params.scenario}</p>
+                      <p className="font-medium capitalize">
+                        {generatedArt.params.scenario === "pure" ? "Pure Mathematical" : generatedArt.params.scenario}
+                      </p>
                     </div>
                     <div>
                       <span className="text-gray-600">Seed:</span>
@@ -734,7 +781,9 @@ export function FlowArtGenerator() {
                   <div className="text-center">
                     <Zap className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>Choose a dataset and scenario combination!</p>
-                    <p className="text-sm mt-2">Try Spirals + Forest or Moons + Cosmic for amazing results</p>
+                    <p className="text-sm mt-2">
+                      Try Spirals + Pure Mathematical or Gaussian + Pure Mathematical for clean mathematical beauty
+                    </p>
                     <p className="text-sm mt-1 text-purple-600">
                       Switch to AI Art tab and use prompt enhancement for professional results! 🤖✨
                     </p>

@@ -4,95 +4,57 @@ import { openai } from "@ai-sdk/openai"
 
 export async function POST(req: Request) {
   try {
-    const { dataset, scenario, numSamples, noiseScale, currentPrompt } = await req.json()
+    const { dataset, scenario, colorScheme, numSamples, noiseScale, currentPrompt } = await req.json()
 
-    console.log("Enhancing prompt for:", { dataset, scenario, numSamples, noiseScale })
+    if (!dataset || !scenario || !colorScheme) {
+      return NextResponse.json({ error: "Missing required parameters" }, { status: 400 })
+    }
 
-    // Generate mathematical context for the dataset
-    const datasetMath = getDatasetMathematicalContext(dataset)
-    const scenarioContext = getScenarioContext(scenario)
+    console.log("Enhancing prompt for:", { dataset, scenario, colorScheme, numSamples, noiseScale })
 
-    const enhancementPrompt = `You are an expert in both mathematics and AI art generation. Create an enhanced DALL-E 3 prompt that combines mathematical precision with artistic beauty.
+    const enhancementPrompt = `You are an expert AI art prompt engineer specializing in mathematical and scientific visualizations. 
 
-Current Context:
-- Dataset: ${dataset} (${datasetMath})
-- Scenario: ${scenario} (${scenarioContext})
+Create an enhanced, detailed prompt for generating AI artwork based on these parameters:
+- Dataset: ${dataset} (mathematical data pattern)
+- Scenario: ${scenario} (artistic theme/environment)
+- Color Scheme: ${colorScheme} (color palette)
 - Data Points: ${numSamples}
 - Noise Level: ${noiseScale}
-- Current Prompt: ${currentPrompt || "None provided"}
 
-Create a detailed, professional prompt that:
-1. Incorporates the mathematical nature of the ${dataset} dataset
+Current prompt (if any): "${currentPrompt || "None provided"}"
+
+Generate a sophisticated, detailed prompt that:
+1. Describes the mathematical ${dataset} pattern with technical accuracy
 2. Blends it seamlessly with ${scenario} artistic elements
-3. Mentions the complexity of ${numSamples} data points
-4. Uses the noise level (${noiseScale}) to inform texture and detail
-5. Ensures the result is suitable for high-resolution upscaling
-6. Includes specific artistic techniques and visual elements
-7. Maintains mathematical accuracy while being visually stunning
+3. Uses ${colorScheme} color palette effectively
+4. Mentions the ${numSamples} data points for scale
+5. Incorporates the noise level (${noiseScale}) for organic texture
+6. Includes artistic quality descriptors (professional, gallery-quality, high-resolution, detailed)
+7. Balances mathematical precision with artistic beauty
 
-The prompt should be 2-3 sentences, highly detailed, and optimized for DALL-E 3's capabilities. Focus on creating gallery-quality mathematical art.`
+The prompt should be 2-3 sentences, rich in visual detail, and optimized for AI art generation. Focus on creating stunning mathematical art that would be suitable for galleries or scientific publications.`
 
-    const { text: enhancedPrompt } = await generateText({
+    const { text } = await generateText({
       model: openai("gpt-4o"),
       prompt: enhancementPrompt,
       temperature: 0.7,
       maxTokens: 300,
     })
 
-    console.log("Generated enhanced prompt:", enhancedPrompt)
+    console.log("Enhanced prompt generated:", text)
 
     return NextResponse.json({
-      enhancedPrompt: enhancedPrompt.trim(),
-      originalContext: {
-        dataset,
-        scenario,
-        numSamples,
-        noiseScale,
-      },
+      enhancedPrompt: text.trim(),
+      originalParams: { dataset, scenario, colorScheme, numSamples, noiseScale },
     })
   } catch (error: any) {
     console.error("Error enhancing prompt:", error)
-
     if (error.message.includes("api_key")) {
       return NextResponse.json(
         { error: "OpenAI API key is missing or invalid. Please set OPENAI_API_KEY." },
         { status: 500 },
       )
     }
-
     return NextResponse.json({ error: "Failed to enhance prompt: " + error.message }, { status: 500 })
   }
-}
-
-function getDatasetMathematicalContext(dataset: string): string {
-  const contexts = {
-    spirals:
-      "logarithmic spirals with polar coordinates r = aθ, featuring golden ratio proportions and Fibonacci sequences",
-    moons:
-      "two interlocking crescents based on circular arcs, representing binary classification boundaries in machine learning",
-    circles: "concentric circular patterns following radial distribution functions and harmonic oscillations",
-    blobs: "Gaussian mixture models with multivariate normal distributions creating organic cluster formations",
-    checkerboard:
-      "discrete grid patterns with alternating binary states, representing cellular automata and tessellation theory",
-    gaussian: "normal distribution bell curves with statistical probability density functions and random sampling",
-    grid: "regular lattice structures with uniform spacing, representing crystalline formations and periodic functions",
-  }
-  return contexts[dataset as keyof typeof contexts] || "mathematical point distributions with geometric patterns"
-}
-
-function getScenarioContext(scenario: string): string {
-  const contexts = {
-    pure: "clean mathematical visualization with grid lines, axes, and pure geometric forms highlighting mathematical properties",
-    forest:
-      "organic growth patterns, fractal tree structures, natural color gradients from deep forest greens to golden sunlight",
-    cosmic: "stellar formations, nebula clouds, deep space colors with cosmic dust and celestial mechanics",
-    ocean: "fluid dynamics, wave interference patterns, aquatic color palettes from deep blue to seafoam",
-    neural: "synaptic connections, brain-like networks, electric blue and purple neural pathways with glowing nodes",
-    fire: "combustion dynamics, flame propagation patterns, warm color spectrums from deep red to bright orange",
-    ice: "crystalline structures, frost patterns, cool color palettes with prismatic light refraction",
-    desert: "sand dune formations, wind erosion patterns, warm earth tones and golden hour lighting",
-    sunset: "atmospheric light scattering, warm gradient transitions, golden hour color temperature",
-    monochrome: "grayscale tonal variations, high contrast artistic composition, minimalist aesthetic",
-  }
-  return contexts[scenario as keyof typeof contexts] || "thematic visual elements with artistic color coordination"
 }

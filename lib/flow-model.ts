@@ -13,6 +13,7 @@ function createPrng(seed: number) {
 export interface GenerationParams {
   dataset: string
   scenario: string
+  colorScheme: string
   seed: number
   numSamples: number
   noiseScale: number
@@ -359,7 +360,18 @@ export function generateFlowField(params: GenerationParams): string {
 }
 
 export function generateHighResFlowField(params: UpscaleParams): string {
-  const { dataset, scenario, seed, numSamples, noiseScale, timeStep, scaleFactor, highResolution, extraDetail } = params
+  const {
+    dataset,
+    scenario,
+    colorScheme,
+    seed,
+    numSamples,
+    noiseScale,
+    timeStep,
+    scaleFactor,
+    highResolution,
+    extraDetail,
+  } = params
 
   // Calculate enhanced parameters for upscaling
   const baseSize = 512
@@ -367,7 +379,7 @@ export function generateHighResFlowField(params: UpscaleParams): string {
   const enhancedSamples = highResolution ? numSamples * scaleFactor * scaleFactor : numSamples
 
   const rng = new SeededRandom(seed)
-  const colors = scenarioColors[scenario as keyof typeof scenarioColors] || scenarioColors.monochrome
+  const colors = scenarioColors[colorScheme as keyof typeof scenarioColors] || scenarioColors.monochrome
 
   // Generate base dataset
   const basePoints = generateDataset(dataset, seed, enhancedSamples, noiseScale)
@@ -377,8 +389,8 @@ export function generateHighResFlowField(params: UpscaleParams): string {
 
   let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`
 
-  // Add background gradient based on scenario
-  if (scenario === "pure") {
+  // Add background gradient based on color scheme
+  if (colorScheme === "pure") {
     // Pure mathematical gets a clean white background
     svgContent += `<rect width="${size}" height="${size}" fill="white"/>`
   } else {
@@ -430,6 +442,11 @@ export function generateHighResFlowField(params: UpscaleParams): string {
             pureColor = "#4d4d4d"
           } else {
             pureColor = "#808080"
+          }
+
+          // Override with color scheme if not pure
+          if (colorScheme !== "pure") {
+            pureColor = colors[colorIndex]
           }
 
           svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="${pureColor}" opacity="${opacity}"/>`
@@ -524,7 +541,7 @@ export function generateHighResFlowField(params: UpscaleParams): string {
         }
       }
     }
-  } else if (scenario === "pure") {
+  } else if (scenario === "pure" && colorScheme === "pure") {
     // Add mathematical grid lines for pure mathematical visualization
     const gridSpacing = size / 10
     for (let i = 0; i <= 10; i++) {
