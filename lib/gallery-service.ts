@@ -1,21 +1,16 @@
-import { supabase } from "@/lib/supabase"
+import { supabase } from "./supabase"
 
 export interface ArtworkData {
   id?: string
   title: string
   description?: string
   imageUrl: string
-  svgContent?: string
   upscaledImageUrl?: string
+  svgContent?: string
   mode: "flow" | "ai"
   dataset: string
-  scenario: string
+  scenario?: string
   seed: number
-  numSamples?: number
-  noiseScale?: number
-  timeStep?: number
-  customPrompt?: string
-  upscaleMethod?: string
   tags: string[]
   isFavorite: boolean
   createdAt?: string
@@ -29,7 +24,7 @@ export interface GalleryFilters {
   scenario?: string
   isFavorite?: boolean
   tags?: string[]
-  sortBy?: "created_at" | "title" | "dataset" | "scenario"
+  sortBy?: "created_at" | "title" | "dataset"
   sortOrder?: "asc" | "desc"
   limit?: number
   offset?: number
@@ -37,41 +32,31 @@ export interface GalleryFilters {
 
 export interface GalleryStats {
   totalArtworks: number
-  flowArtworks: number
-  aiArtworks: number
-  favoriteArtworks: number
-  totalDatasets: number
-  totalScenarios: number
-  popularDatasets: Array<{ dataset: string; count: number }>
-  popularScenarios: Array<{ scenario: string; count: number }>
+  totalFavorites: number
+  totalByMode: { flow: number; ai: number }
+  totalByDataset: Record<string, number>
+  popularTags: Array<{ tag: string; count: number }>
 }
 
 class GalleryService {
-  async saveArtwork(artworkData: Omit<ArtworkData, "id" | "createdAt" | "updatedAt">): Promise<ArtworkData | null> {
+  async saveArtwork(artwork: ArtworkData): Promise<string | null> {
     try {
       const { data, error } = await supabase
         .from("gallery")
-        .insert([
-          {
-            title: artworkData.title,
-            description: artworkData.description,
-            image_url: artworkData.imageUrl,
-            svg_content: artworkData.svgContent,
-            upscaled_image_url: artworkData.upscaledImageUrl,
-            mode: artworkData.mode,
-            dataset: artworkData.dataset,
-            scenario: artworkData.scenario,
-            seed: artworkData.seed,
-            num_samples: artworkData.numSamples,
-            noise_scale: artworkData.noiseScale,
-            time_step: artworkData.timeStep,
-            custom_prompt: artworkData.customPrompt,
-            upscale_method: artworkData.upscaleMethod,
-            tags: Array.isArray(artworkData.tags) ? artworkData.tags : [],
-            is_favorite: artworkData.isFavorite,
-          },
-        ])
-        .select()
+        .insert({
+          title: artwork.title,
+          description: artwork.description,
+          image_url: artwork.imageUrl,
+          upscaled_image_url: artwork.upscaledImageUrl,
+          svg_content: artwork.svgContent,
+          mode: artwork.mode,
+          dataset: artwork.dataset,
+          scenario: artwork.scenario,
+          seed: artwork.seed,
+          tags: Array.isArray(artwork.tags) ? artwork.tags : [],
+          is_favorite: artwork.isFavorite || false,
+        })
+        .select("id")
         .single()
 
       if (error) {
@@ -79,7 +64,7 @@ class GalleryService {
         return null
       }
 
-      return this.mapDatabaseToArtwork(data)
+      return data?.id || null
     } catch (error) {
       console.error("Error saving artwork:", error)
       return null
@@ -118,15 +103,14 @@ class GalleryService {
       // Apply sorting
       const sortBy = filters.sortBy || "created_at"
       const sortOrder = filters.sortOrder || "desc"
-      query = query.order(sortBy, { ascending: sortOrder === "asc" })
+      query = query.order(sortBy === "created_at" ? "created_at" : sortBy, { ascending: sortOrder === "asc" })
 
       // Apply pagination
-      const limit = filters.limit ?? 20
       if (filters.limit) {
-        query = query.limit(limit)
+        query = query.limit(filters.limit)
       }
       if (filters.offset) {
-        query = query.range(filters.offset, filters.offset + limit - 1)
+        query = query.range(filters.offset, filters.offset + (filters.limit || 50) - 1)
       }
 
       const { data, error } = await query
@@ -136,7 +120,7 @@ class GalleryService {
         return []
       }
 
-      return data?.map(this.mapDatabaseToArtwork) || []
+      return (data || []).map(this.mapDatabaseToArtwork)
     } catch (error) {
       console.error("Error fetching artworks:", error)
       return []
@@ -152,33 +136,34 @@ class GalleryService {
         return null
       }
 
-      return this.mapDatabaseToArtwork(data)
+      return data ? this.mapDatabaseToArtwork(data) : null
     } catch (error) {
       console.error("Error fetching artwork:", error)
       return null
     }
   }
 
-  async updateArtwork(id: string, updates: Partial<ArtworkData>): Promise<ArtworkData | null> {
+  async updateArtwork(id: string, updates: Partial<ArtworkData>): Promise<boolean> {
     try {
       const updateData: any = {}
 
       if (updates.title !== undefined) updateData.title = updates.title
       if (updates.description !== undefined) updateData.description = updates.description
-      if (updates.tags !== undefined) updateData.tags = updates.tags
+      if (updates.tags !== undefined) updateData.tags = Array.isArray(updates.tags) ? updates.tags : []
       if (updates.isFavorite !== undefined) updateData.is_favorite = updates.isFavorite
+      if (updates.upscaledImageUrl !== undefined) updateData.upscaled_image_url = updates.upscaledImageUrl
 
-      const { data, error } = await supabase.from("gallery").update(updateData).eq("id", id).select().single()
+      const { error } = await supabase.from("gallery").update(updateData).eq("id", id)
 
       if (error) {
         console.error("Error updating artwork:", error)
-        return null
+        return false
       }
 
-      return this.mapDatabaseToArtwork(data)
+      return true
     } catch (error) {
       console.error("Error updating artwork:", error)
-      return null
+      return false
     }
   }
 
@@ -200,7 +185,7 @@ class GalleryService {
 
   async toggleFavorite(id: string): Promise<boolean> {
     try {
-      // First get current favorite status
+      // First get the current favorite status
       const { data: current, error: fetchError } = await supabase
         .from("gallery")
         .select("is_favorite")
@@ -230,34 +215,78 @@ class GalleryService {
     }
   }
 
-  async getGalleryStats(): Promise<GalleryStats> {
+  async getStats(): Promise<GalleryStats> {
     try {
-      const { data, error } = await supabase.from("gallery").select("mode, dataset, scenario, is_favorite")
+      const { data, error } = await supabase.from("gallery").select("mode, dataset, tags, is_favorite")
 
       if (error) {
-        console.error("Error fetching gallery stats:", error)
-        return this.getEmptyStats()
+        console.error("Error fetching stats:", error)
+        return {
+          totalArtworks: 0,
+          totalFavorites: 0,
+          totalByMode: { flow: 0, ai: 0 },
+          totalByDataset: {},
+          popularTags: [],
+        }
       }
 
-      const stats: GalleryStats = {
-        totalArtworks: data.length,
-        flowArtworks: data.filter((item) => item.mode === "flow").length,
-        aiArtworks: data.filter((item) => item.mode === "ai").length,
-        favoriteArtworks: data.filter((item) => item.is_favorite).length,
-        totalDatasets: new Set(data.map((item) => item.dataset)).size,
-        totalScenarios: new Set(data.map((item) => item.scenario)).size,
-        popularDatasets: this.getPopularItems(data, "dataset"),
-        popularScenarios: this.getPopularItems(data, "scenario"),
-      }
+      const artworks = data || []
+      const totalArtworks = artworks.length
+      const totalFavorites = artworks.filter((a) => a.is_favorite).length
 
-      return stats
+      const totalByMode = artworks.reduce(
+        (acc, artwork) => {
+          acc[artwork.mode as "flow" | "ai"]++
+          return acc
+        },
+        { flow: 0, ai: 0 },
+      )
+
+      const totalByDataset = artworks.reduce(
+        (acc, artwork) => {
+          acc[artwork.dataset] = (acc[artwork.dataset] || 0) + 1
+          return acc
+        },
+        {} as Record<string, number>,
+      )
+
+      const tagCounts = artworks.reduce(
+        (acc, artwork) => {
+          if (artwork.tags && Array.isArray(artwork.tags)) {
+            artwork.tags.forEach((tag: string) => {
+              acc[tag] = (acc[tag] || 0) + 1
+            })
+          }
+          return acc
+        },
+        {} as Record<string, number>,
+      )
+
+      const popularTags = Object.entries(tagCounts)
+        .map(([tag, count]) => ({ tag, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10)
+
+      return {
+        totalArtworks,
+        totalFavorites,
+        totalByMode,
+        totalByDataset,
+        popularTags,
+      }
     } catch (error) {
-      console.error("Error calculating gallery stats:", error)
-      return this.getEmptyStats()
+      console.error("Error fetching stats:", error)
+      return {
+        totalArtworks: 0,
+        totalFavorites: 0,
+        totalByMode: { flow: 0, ai: 0 },
+        totalByDataset: {},
+        popularTags: [],
+      }
     }
   }
 
-  async getPopularTags(limit = 10): Promise<Array<{ tag: string; count: number }>> {
+  async getPopularTags(limit = 20): Promise<Array<{ tag: string; count: number }>> {
     try {
       const { data, error } = await supabase.from("gallery").select("tags")
 
@@ -266,15 +295,17 @@ class GalleryService {
         return []
       }
 
-      const tagCounts: Record<string, number> = {}
-
-      data.forEach((item) => {
-        if (item.tags && Array.isArray(item.tags)) {
-          item.tags.forEach((tag: string) => {
-            tagCounts[tag] = (tagCounts[tag] || 0) + 1
-          })
-        }
-      })
+      const tagCounts = (data || []).reduce(
+        (acc, artwork) => {
+          if (artwork.tags && Array.isArray(artwork.tags)) {
+            artwork.tags.forEach((tag: string) => {
+              acc[tag] = (acc[tag] || 0) + 1
+            })
+          }
+          return acc
+        },
+        {} as Record<string, number>,
+      )
 
       return Object.entries(tagCounts)
         .map(([tag, count]) => ({ tag, count }))
@@ -286,56 +317,22 @@ class GalleryService {
     }
   }
 
-  private mapDatabaseToArtwork(data: any): ArtworkData {
+  private mapDatabaseToArtwork(dbArtwork: any): ArtworkData {
     return {
-      id: data.id,
-      title: data.title,
-      description: data.description,
-      imageUrl: data.image_url,
-      svgContent: data.svg_content,
-      upscaledImageUrl: data.upscaled_image_url,
-      mode: data.mode,
-      dataset: data.dataset,
-      scenario: data.scenario,
-      seed: data.seed,
-      numSamples: data.num_samples,
-      noiseScale: data.noise_scale,
-      timeStep: data.time_step,
-      customPrompt: data.custom_prompt,
-      upscaleMethod: data.upscale_method,
-      tags: data.tags || [],
-      isFavorite: data.is_favorite,
-      createdAt: data.created_at,
-      updatedAt: data.updated_at,
-    }
-  }
-
-  private getPopularItems(data: any[], field: string): Array<{ [key: string]: string | number }> {
-    const counts: Record<string, number> = {}
-
-    data.forEach((item) => {
-      const value = item[field]
-      if (value) {
-        counts[value] = (counts[value] || 0) + 1
-      }
-    })
-
-    return Object.entries(counts)
-      .map(([key, count]) => ({ [field]: key, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 5)
-  }
-
-  private getEmptyStats(): GalleryStats {
-    return {
-      totalArtworks: 0,
-      flowArtworks: 0,
-      aiArtworks: 0,
-      favoriteArtworks: 0,
-      totalDatasets: 0,
-      totalScenarios: 0,
-      popularDatasets: [],
-      popularScenarios: [],
+      id: dbArtwork.id,
+      title: dbArtwork.title,
+      description: dbArtwork.description,
+      imageUrl: dbArtwork.image_url,
+      upscaledImageUrl: dbArtwork.upscaled_image_url,
+      svgContent: dbArtwork.svg_content,
+      mode: dbArtwork.mode,
+      dataset: dbArtwork.dataset,
+      scenario: dbArtwork.scenario,
+      seed: dbArtwork.seed,
+      tags: Array.isArray(dbArtwork.tags) ? dbArtwork.tags : [],
+      isFavorite: dbArtwork.is_favorite || false,
+      createdAt: dbArtwork.created_at,
+      updatedAt: dbArtwork.updated_at,
     }
   }
 }
