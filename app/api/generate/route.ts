@@ -1,85 +1,124 @@
-import { NextResponse, type NextRequest } from "next/server"
-import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
-import { experimental_generateImage } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { type NextRequest, NextResponse } from "next/server"
+import { generateFlowField } from "@/lib/flow-model"
 
-/**
- * Unified generator for Flow (SVG) and AI modes.
- *
- * Expects JSON:
- * {
- *   mode:        "flow" | "ai",
- *   dataset:     string,
- *   scenario:    string,
- *   seed?:       number,
- *   numSamples?: number,
- *   noiseScale?: number,
- *   timeStep?:   number,
- *   customPrompt?: string
- * }
- *
- * Returns:
- * { imageUrl: string, svgContent?: string }
- */
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const {
-      mode = "flow",
-      dataset,
-      scenario,
-      seed = Math.floor(Math.random() * 10_000),
-      numSamples = 2_000,
-      noiseScale = 0.05,
-      timeStep = 0.01,
-      customPrompt = "",
-    } = await req.json()
+    const body = await request.json()
+    const { mode, dataset, scenario, seed, numSamples, noiseScale, timeStep, customPrompt, upscaleMethod } = body
 
-    if (!dataset || !scenario) {
-      return NextResponse.json({ error: "`dataset` and `scenario` are required." }, { status: 400 })
-    }
-
-    /* ------------------------------------------------------------------ */
-    /* FLOW  (SVG)                                                        */
-    /* ------------------------------------------------------------------ */
     if (mode === "flow") {
-      const params: GenerationParams = { dataset, scenario, seed, numSamples, noiseScale, timeStep }
-      const svgContent = generateFlowField(params)
-
-      // Encode SVG as data-URL so the client can <img src="...">
-      const base64 = Buffer.from(svgContent, "utf8").toString("base64")
-      const imageUrl = `data:image/svg+xml;base64,${base64}`
-
-      return NextResponse.json({ imageUrl, svgContent })
-    }
-
-    /* ------------------------------------------------------------------ */
-    /* AI  (DALL·E 3)                                                     */
-    /* ------------------------------------------------------------------ */
-    const prompt =
-      customPrompt.trim() ||
-      `Create an artistic piece inspired by a ${dataset} dataset (${numSamples} points) in a ${scenario} theme. ` +
-        `Add subtle noise (${noiseScale}) for an organic feel. High-resolution, richly detailed. Seed ${seed}.`
-
-    // If no key, return a placeholder so the local preview still works.
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json({
-        imageUrl: `/placeholder.svg?height=512&width=512&query=${encodeURIComponent("flow+art")}`,
+      // Generate SVG flow field
+      const svgContent = generateFlowField({
+        dataset,
+        scenario,
+        seed,
+        numSamples,
+        noiseScale,
+        timeStep,
       })
+
+      // Convert SVG to data URL
+      const svgBlob = new Blob([svgContent], { type: "image/svg+xml" })
+      const imageUrl = `data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`
+
+      return NextResponse.json({
+        imageUrl,
+        svgContent,
+      })
+    } else if (mode === "ai") {
+      // Generate AI art using DALL·E 3
+      if (!process.env.OPENAI_API_KEY) {
+        return NextResponse.json({
+          imageUrl: "/placeholder.svg?height=512&width=512&text=AI+Art+Generation+Requires+OpenAI+API+Key",
+          svgContent: "",
+        })
+      }
+
+      // Create enhanced prompt based on dataset and scenario
+      let enhancedPrompt = customPrompt
+
+      if (!customPrompt) {
+        const datasetDescriptions = {
+          ffhq: "high-quality human faces with diverse expressions and features",
+          bedroom: "modern interior bedroom spaces with elegant furniture and lighting",
+          church_outdoor: "majestic gothic and classical church architecture in outdoor settings",
+          celebahq: "celebrity portraits with professional photography styling",
+          neural_networks: "abstract neural network visualizations with interconnected nodes and synapses",
+          quantum_fields: "quantum field theory visualizations with particle interactions and wave functions",
+          dna_sequences: "DNA double helix structures with genetic code patterns and molecular bonds",
+          cosmic_phenomena: "deep space cosmic events like black holes, nebulae, and stellar formations",
+          fractal_geometry: "complex fractal patterns with infinite recursive mathematical structures",
+          protein_folding: "protein molecular structures showing amino acid chains and folding patterns",
+          brain_connectivity: "neural brain connectivity maps showing synaptic networks and pathways",
+          crystalline_structures: "crystalline molecular lattices with geometric atomic arrangements",
+        }
+
+        const scenarioStyles = {
+          random: "with vibrant colors and dynamic composition",
+          stylegan2: "in a photorealistic style with high detail and clarity",
+          stylegan: "with artistic interpretation and creative visual effects",
+          pggan: "with progressive detail enhancement and layered complexity",
+          cyberpunk: "in a cyberpunk aesthetic with neon colors and futuristic elements",
+          bioluminescent: "with bioluminescent glowing effects and organic patterns",
+          holographic: "with holographic iridescent surfaces and light refraction",
+          microscopic: "as seen through an electron microscope with scientific detail",
+          ethereal: "with ethereal, dreamlike qualities and soft lighting",
+          crystalline: "with crystalline structures and geometric precision",
+        }
+
+        const datasetDesc =
+          datasetDescriptions[dataset as keyof typeof datasetDescriptions] || "abstract artistic patterns"
+        const scenarioStyle = scenarioStyles[scenario as keyof typeof scenarioStyles] || "with artistic interpretation"
+
+        enhancedPrompt = `Create a stunning digital artwork featuring ${datasetDesc} ${scenarioStyle}. The image should be highly detailed, professionally composed, and visually striking. Use advanced lighting techniques and rich color palettes to create depth and visual interest.`
+      }
+
+      try {
+        const response = await fetch("https://api.openai.com/v1/images/generations", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "dall-e-3",
+            prompt: enhancedPrompt,
+            n: 1,
+            size: "1024x1024",
+            quality: "standard",
+            response_format: "url",
+          }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`OpenAI API error: ${response.status}`)
+        }
+
+        const data = await response.json()
+        const imageUrl = data.data[0]?.url
+
+        if (!imageUrl) {
+          throw new Error("No image URL returned from OpenAI")
+        }
+
+        return NextResponse.json({
+          imageUrl,
+          svgContent: "",
+          prompt: enhancedPrompt,
+        })
+      } catch (error) {
+        console.error("AI generation error:", error)
+        return NextResponse.json({
+          imageUrl: "/placeholder.svg?height=512&width=512&text=AI+Generation+Failed",
+          svgContent: "",
+          error: "AI generation failed",
+        })
+      }
     }
 
-    const { image } = await experimental_generateImage({
-      model: openai.image("dall-e-3"),
-      prompt,
-      size: "1024x1024",
-      quality: "hd",
-      style: "vivid",
-    })
-
-    const imageUrl = `data:image/png;base64,${image.base64}`
-
-    return NextResponse.json({ imageUrl })
-  } catch (err) {
-    console.error("❌ /api/generate error:", err)
-    return NextResponse.json({ error: "Internal server error." }, { status: 500 })
+    return NextResponse.json({ error: "Invalid mode" }, { status: 400 })
+  } catch (error) {
+    console.error("API error:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
