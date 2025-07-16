@@ -1,4 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
+import OpenAI from "openai"
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+})
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,6 +14,26 @@ export async function POST(request: NextRequest) {
     // Generate mathematical context for the dataset
     const datasetMath = getDatasetMathematicalContext(dataset)
     const scenarioContext = getScenarioContext(scenario)
+
+    // Check if OpenAI API key is available
+    if (!process.env.OPENAI_API_KEY) {
+      console.log("No OpenAI API key found, using fallback prompt enhancement")
+
+      const enhancedPrompt = `Enhanced mathematical visualization of ${dataset} dataset (${datasetMath}) in ${scenario} style (${scenarioContext}) with ${numSamples} sample points and ${noiseScale} noise scale. ${currentPrompt || ""} Professional artistic rendering with vibrant colors, mathematical precision, and dynamic composition suitable for gallery display.`
+
+      return NextResponse.json({
+        success: true,
+        enhancedPrompt: enhancedPrompt.trim(),
+        fallback: true,
+        message: "Using basic enhancement - add OPENAI_API_KEY for AI-powered enhancement",
+        originalContext: {
+          dataset,
+          scenario,
+          numSamples,
+          noiseScale,
+        },
+      })
+    }
 
     const enhancementPrompt = `You are an expert in both mathematics and AI art generation. Create an enhanced DALL-E 3 prompt that combines mathematical precision with artistic beauty.
 
@@ -28,26 +53,75 @@ Create a detailed, professional prompt that:
 6. Includes specific artistic techniques and visual elements
 7. Maintains mathematical accuracy while being visually stunning
 
-The prompt should be 2-3 sentences, highly detailed, and optimized for DALL-E 3's capabilities. Focus on creating gallery-quality mathematical art.`
+The prompt should be 2-3 sentences, highly detailed, and optimized for DALL-E 3's capabilities. Focus on creating gallery-quality mathematical art. Return only the enhanced prompt, no additional text.`
 
-    // Mock enhancement for now - in a real app, this would call OpenAI API
-    const enhancedPrompt = `Enhanced mathematical visualization of ${dataset} dataset in ${scenario} style with ${numSamples} sample points and ${noiseScale} noise scale. ${currentPrompt || ""} Professional artistic rendering with vibrant colors and dynamic composition.`
+    try {
+      console.log("Calling OpenAI for prompt enhancement...")
 
-    console.log("Generated enhanced prompt:", enhancedPrompt)
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are an expert prompt engineer specializing in mathematical art generation for DALL-E 3. Create detailed, artistic prompts that combine mathematical concepts with visual beauty.",
+          },
+          {
+            role: "user",
+            content: enhancementPrompt,
+          },
+        ],
+        max_tokens: 300,
+        temperature: 0.7,
+      })
 
-    return NextResponse.json({
-      success: true,
-      enhancedPrompt: enhancedPrompt.trim(),
-      originalContext: {
-        dataset,
-        scenario,
-        numSamples,
-        noiseScale,
-      },
-    })
+      const enhancedPrompt = completion.choices[0]?.message?.content?.trim()
+
+      if (!enhancedPrompt) {
+        throw new Error("No enhanced prompt generated")
+      }
+
+      console.log("AI-enhanced prompt generated:", enhancedPrompt)
+
+      return NextResponse.json({
+        success: true,
+        enhancedPrompt,
+        originalContext: {
+          dataset,
+          scenario,
+          numSamples,
+          noiseScale,
+        },
+      })
+    } catch (openaiError: any) {
+      console.error("OpenAI enhancement error:", openaiError)
+
+      // Fallback to basic enhancement
+      const enhancedPrompt = `Enhanced mathematical visualization of ${dataset} dataset (${datasetMath}) in ${scenario} style (${scenarioContext}) with ${numSamples} sample points and ${noiseScale} noise scale. ${currentPrompt || ""} Professional artistic rendering with vibrant colors, mathematical precision, and dynamic composition suitable for gallery display.`
+
+      return NextResponse.json({
+        success: true,
+        enhancedPrompt: enhancedPrompt.trim(),
+        fallback: true,
+        error: openaiError.message,
+        message: "OpenAI enhancement failed, using basic enhancement",
+        originalContext: {
+          dataset,
+          scenario,
+          numSamples,
+          noiseScale,
+        },
+      })
+    }
   } catch (error) {
     console.error("Error enhancing prompt:", error)
-    return NextResponse.json({ success: false, error: "Failed to enhance prompt" }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Failed to enhance prompt: " + (error as Error).message,
+      },
+      { status: 500 },
+    )
   }
 }
 
