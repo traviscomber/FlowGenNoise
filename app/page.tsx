@@ -1,9 +1,7 @@
-import { FlowArtGenerator } from "@/components/flow-art-generator"
 import { PasswordGate } from "@/components/auth/password-gate"
+import { FlowArtGenerator } from "@/components/flow-art-generator"
 
-export default function Home() {
-  // You can set a password here to gate access to the generator
-  // For example: <PasswordGate correctPassword="your-secret-password">
+export default function HomePage() {
   return (
     <PasswordGate correctPassword="flowsketch2024">
       <FlowArtGenerator />

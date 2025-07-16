@@ -13,16 +13,22 @@ import { SaveArtworkDialog } from "@/components/gallery/save-artwork-dialog"
 import Link from "next/link"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-// --- utility --------------------------------------------------------------
-async function safeParse<ResponseShape = any>(resp: Response): Promise<ResponseShape | { error?: string }> {
-  const ct = resp.headers.get("content-type") ?? ""
-  if (ct.includes("application/json")) {
-    return (await resp.json()) as ResponseShape
+// Safe response parser to handle both JSON and text responses
+async function safeParse<T = any>(response: Response): Promise<T> {
+  const contentType = response.headers.get("content-type") || ""
+
+  if (contentType.includes("application/json")) {
+    try {
+      return await response.json()
+    } catch (e) {
+      console.error("Failed to parse JSON:", e)
+      return { error: "Invalid JSON response" } as T
+    }
+  } else {
+    const text = await response.text()
+    return { error: text || "Unknown error" } as T
   }
-  // Fallback for text / html responses (e.g. 500 error pages)
-  return { error: await resp.text() }
 }
-// -------------------------------------------------------------------------
 
 interface Dataset {
   id: string
@@ -37,10 +43,18 @@ const datasets: Dataset[] = [
     name: "Scientific Data",
     type: "scientific",
     scenarios: [
-      { id: "fractal", name: "Fractal Geometry", defaultPrompt: "A complex fractal pattern" },
-      { id: "quantum", name: "Quantum Entanglement", defaultPrompt: "Two entangled particles" },
-      { id: "neural", name: "Neural Network", defaultPrompt: "An abstract neural network" },
-      { id: "cosmic", name: "Cosmic Microwave Background", defaultPrompt: "Cosmic background radiation" },
+      {
+        id: "fractal",
+        name: "Fractal Geometry",
+        defaultPrompt: "A complex fractal pattern with mathematical precision",
+      },
+      {
+        id: "quantum",
+        name: "Quantum Entanglement",
+        defaultPrompt: "Two entangled particles showing quantum correlation",
+      },
+      { id: "neural", name: "Neural Network", defaultPrompt: "An abstract neural network with interconnected nodes" },
+      { id: "cosmic", name: "Cosmic Microwave Background", defaultPrompt: "Cosmic background radiation visualization" },
     ],
   },
   {
@@ -48,9 +62,17 @@ const datasets: Dataset[] = [
     name: "Nature Scenes",
     type: "artistic",
     scenarios: [
-      { id: "forest", name: "Enchanted Forest", defaultPrompt: "A mystical forest with glowing flora" },
-      { id: "ocean", name: "Deep Sea Abyss", defaultPrompt: "Bioluminescent creatures in the deep ocean" },
-      { id: "mountain", name: "Aurora Mountains", defaultPrompt: "Mountains under an aurora borealis" },
+      {
+        id: "forest",
+        name: "Enchanted Forest",
+        defaultPrompt: "A mystical forest with glowing flora and magical atmosphere",
+      },
+      { id: "ocean", name: "Deep Sea Abyss", defaultPrompt: "Bioluminescent creatures in the deep ocean depths" },
+      {
+        id: "mountain",
+        name: "Aurora Mountains",
+        defaultPrompt: "Snow-capped mountains under dancing aurora borealis",
+      },
     ],
   },
   {
@@ -58,9 +80,17 @@ const datasets: Dataset[] = [
     name: "Abstract Concepts",
     type: "artistic",
     scenarios: [
-      { id: "emotion", name: "Emotional Landscape", defaultPrompt: "An abstract representation of joy" },
-      { id: "music", name: "Visualizing Music", defaultPrompt: "Abstract forms inspired by classical music" },
-      { id: "dream", name: "Surreal Dreamscape", defaultPrompt: "A surreal dreamscape with floating islands" },
+      {
+        id: "emotion",
+        name: "Emotional Landscape",
+        defaultPrompt: "An abstract representation of pure joy and happiness",
+      },
+      { id: "music", name: "Visualizing Music", defaultPrompt: "Abstract forms inspired by classical symphony" },
+      {
+        id: "dream",
+        name: "Surreal Dreamscape",
+        defaultPrompt: "A surreal dreamscape with floating islands and impossible geometry",
+      },
     ],
   },
 ]
@@ -85,15 +115,27 @@ export function FlowArtGenerator() {
     [selectedDataset, selectedScenarioId],
   )
 
+  // Update prompt when scenario changes
   useEffect(() => {
     if (selectedScenario) {
       setPrompt(selectedScenario.defaultPrompt)
     }
   }, [selectedScenario])
 
+  // Update scenario when dataset changes
+  useEffect(() => {
+    if (selectedDataset && selectedDataset.scenarios.length > 0) {
+      setSelectedScenarioId(selectedDataset.scenarios[0].id)
+    }
+  }, [selectedDataset])
+
   const handleGenerateArt = async () => {
-    if (!prompt) {
-      toast({ title: "Error", description: "Please enter a prompt.", variant: "destructive" })
+    if (!prompt.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a prompt.",
+        variant: "destructive",
+      })
       return
     }
 
@@ -105,18 +147,36 @@ export function FlowArtGenerator() {
       const response = await fetch("/api/generate-ai-art", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt: prompt.trim() }),
       })
 
-      const data = await safeParse<{ imageUrl: string; altText: string }>(response)
+      const data = await safeParse<{ imageUrl: string; altText: string; error?: string; placeholder?: boolean }>(
+        response,
+      )
 
-      if (!response.ok) {
-        throw new Error((data as any).error || `HTTP ${response.status}`)
+      if (data.error) {
+        throw new Error(data.error)
       }
 
-      setGeneratedImageUrl(data.imageUrl)
-      setGeneratedAltText(data.altText)
-      toast({ title: "Success", description: "Art generated successfully!" })
+      if (data.imageUrl) {
+        setGeneratedImageUrl(data.imageUrl)
+        setGeneratedAltText(data.altText || prompt)
+
+        if (data.placeholder) {
+          toast({
+            title: "Placeholder Generated",
+            description: "AI generation is currently unavailable. Showing placeholder image.",
+            variant: "default",
+          })
+        } else {
+          toast({
+            title: "Success",
+            description: "Art generated successfully!",
+          })
+        }
+      } else {
+        throw new Error("No image URL received")
+      }
     } catch (error: any) {
       console.error("Error generating art:", error)
       toast({
@@ -143,22 +203,25 @@ export function FlowArtGenerator() {
     try {
       const response = await fetch("/api/upscale-image", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imageUrl: generatedImageUrl }),
       })
 
-      const data = await safeParse<{ upscaledUrl: string }>(response)
-      if (!response.ok) {
-        throw new Error((data as any).error || `HTTP ${response.status}`)
-      }
-      setGeneratedImageUrl(data.upscaledUrl)
+      const data = await safeParse<{ upscaledUrl: string; error?: string }>(response)
 
-      toast({
-        title: "Success",
-        description: "Image upscaled successfully!",
-      })
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      if (data.upscaledUrl) {
+        setGeneratedImageUrl(data.upscaledUrl)
+        toast({
+          title: "Success",
+          description: "Image upscaled successfully!",
+        })
+      } else {
+        throw new Error("No upscaled URL received")
+      }
     } catch (error: any) {
       console.error("Error upscaling image:", error)
       toast({
@@ -172,7 +235,7 @@ export function FlowArtGenerator() {
   }
 
   const handleEnhancePrompt = async () => {
-    if (!prompt) {
+    if (!prompt.trim()) {
       toast({
         title: "Error",
         description: "Please enter a prompt to enhance.",
@@ -185,25 +248,28 @@ export function FlowArtGenerator() {
     try {
       const response = await fetch("/api/enhance-prompt", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          prompt,
-          datasetType: selectedDataset?.type, // Pass dataset type for conditional enhancement
+          prompt: prompt.trim(),
+          datasetType: selectedDataset?.type,
         }),
       })
 
-      const data = await safeParse<{ enhancedPrompt: string }>(response)
-      if (!response.ok) {
-        throw new Error((data as any).error || `HTTP ${response.status}`)
-      }
-      setPrompt(data.enhancedPrompt)
+      const data = await safeParse<{ enhancedPrompt: string; error?: string }>(response)
 
-      toast({
-        title: "Success",
-        description: "Prompt enhanced!",
-      })
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
+      if (data.enhancedPrompt) {
+        setPrompt(data.enhancedPrompt)
+        toast({
+          title: "Success",
+          description: "Prompt enhanced!",
+        })
+      } else {
+        throw new Error("No enhanced prompt received")
+      }
     } catch (error: any) {
       console.error("Error enhancing prompt:", error)
       toast({
@@ -298,7 +364,7 @@ export function FlowArtGenerator() {
                   <TooltipTrigger asChild>
                     <Button
                       onClick={handleEnhancePrompt}
-                      disabled={enhancingPrompt || !prompt}
+                      disabled={enhancingPrompt || !prompt.trim()}
                       className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                     >
                       {enhancingPrompt ? (
@@ -327,7 +393,7 @@ export function FlowArtGenerator() {
 
             <Button
               onClick={handleGenerateArt}
-              disabled={loading || enhancingPrompt}
+              disabled={loading || enhancingPrompt || !prompt.trim()}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
             >
               {loading ? (
@@ -362,8 +428,8 @@ export function FlowArtGenerator() {
                 <Image
                   src={generatedImageUrl || "/placeholder.svg"}
                   alt={generatedAltText || "Generated AI art"}
-                  layout="fill"
-                  objectFit="contain"
+                  fill
+                  style={{ objectFit: "contain" }}
                   className="animate-in fade-in duration-500"
                 />
               </div>
@@ -419,10 +485,8 @@ export function FlowArtGenerator() {
           isOpen={isSaveDialogOpen}
           onClose={() => setIsSaveDialogOpen(false)}
           onSave={() => {
-            // This function is handled by the dialog itself,
-            // but we need to trigger a refresh of the gallery
-            // after the dialog successfully saves.
-            // The dialog's onSave prop will handle the actual saving.
+            // This function is handled by the dialog itself
+            setIsSaveDialogOpen(false)
           }}
           initialImageUrl={generatedImageUrl}
           initialPrompt={prompt}
