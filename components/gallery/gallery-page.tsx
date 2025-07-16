@@ -1,323 +1,264 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Filter, Heart, Sparkles, Zap, Tag, X, Palette } from "lucide-react"
-import { GalleryService, type ArtworkData, type GalleryFilters, type GalleryStats } from "@/lib/gallery-service"
+import { useEffect, useState, useCallback } from "react"
+import { GalleryService, type ArtworkData, type GalleryFilters } from "@/lib/gallery-service"
 import { GalleryGrid } from "./gallery-grid"
-import Link from "next/link"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { Loader2, Search, Heart, Sparkles, Zap, Filter, XCircle } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 
 export function GalleryPage() {
   const [artworks, setArtworks] = useState<ArtworkData[]>([])
-  const [stats, setStats] = useState<GalleryStats | null>(null)
-  const [popularTags, setPopularTags] = useState<Array<{ tag: string; count: number }>>([])
   const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState<GalleryFilters>({ mode: "all" })
-  const [searchTerm, setSearchTerm] = useState("")
+  const [filters, setFilters] = useState<GalleryFilters>({
+    mode: "all",
+    isFavorite: undefined,
+    search: "",
+    dataset: "",
+    scenario: "",
+    tags: [],
+  })
+  const [popularTags, setPopularTags] = useState<Array<{ tag: string; count: number }>>([])
+  const [allDatasets, setAllDatasets] = useState<string[]>([])
+  const [allScenarios, setAllScenarios] = useState<string[]>([])
 
-  // Load data
-  useEffect(() => {
-    loadData()
-  }, [filters])
-
-  const loadData = async () => {
+  const fetchArtworks = useCallback(async () => {
     setLoading(true)
     try {
-      const [artworksData, statsData, tagsData] = await Promise.all([
-        GalleryService.getArtworks(filters),
-        GalleryService.getStats(),
-        GalleryService.getPopularTags(),
-      ])
+      const fetchedArtworks = await GalleryService.getArtworks(filters)
+      setArtworks(fetchedArtworks)
 
-      setArtworks(artworksData)
-      setStats(statsData)
-      setPopularTags(tagsData)
+      // Extract unique datasets and scenarios for filter options
+      const datasets = new Set<string>()
+      const scenarios = new Set<string>()
+      fetchedArtworks.forEach((artwork) => {
+        datasets.add(artwork.dataset)
+        scenarios.add(artwork.scenario)
+      })
+      setAllDatasets(Array.from(datasets).sort())
+      setAllScenarios(Array.from(scenarios).sort())
     } catch (error) {
-      console.error("Error loading gallery data:", error)
+      console.error("Failed to fetch artworks:", error)
     } finally {
       setLoading(false)
     }
-  }
+  }, [filters])
 
-  const handleSearch = () => {
-    setFilters({ ...filters, search: searchTerm })
-  }
+  const fetchPopularTags = useCallback(async () => {
+    try {
+      const tags = await GalleryService.getPopularTags(10)
+      setPopularTags(tags)
+    } catch (error) {
+      console.error("Failed to fetch popular tags:", error)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchArtworks()
+    fetchPopularTags()
+  }, [fetchArtworks, fetchPopularTags])
 
   const handleFilterChange = (key: keyof GalleryFilters, value: any) => {
-    setFilters({ ...filters, [key]: value })
+    setFilters((prev) => ({ ...prev, [key]: value }))
   }
 
-  const clearFilter = (key: keyof GalleryFilters) => {
-    const newFilters = { ...filters }
-    delete newFilters[key]
-    setFilters(newFilters)
+  const handleTagToggle = (tag: string) => {
+    setFilters((prev) => {
+      const currentTags = prev.tags || []
+      if (currentTags.includes(tag)) {
+        return { ...prev, tags: currentTags.filter((t) => t !== tag) }
+      } else {
+        return { ...prev, tags: [...currentTags, tag] }
+      }
+    })
   }
 
-  const clearAllFilters = () => {
-    setFilters({ mode: "all" })
-    setSearchTerm("")
+  const clearFilters = () => {
+    setFilters({
+      mode: "all",
+      isFavorite: undefined,
+      search: "",
+      dataset: "",
+      scenario: "",
+      tags: [],
+    })
   }
 
-  const handleArtworkUpdate = (updatedArtwork: ArtworkData) => {
-    setArtworks(artworks.map((artwork) => (artwork.id === updatedArtwork.id ? updatedArtwork : artwork)))
-  }
-
-  const handleArtworkDelete = (deletedId: string) => {
-    setArtworks(artworks.filter((artwork) => artwork.id !== deletedId))
-    loadData() // Refresh stats
-  }
-
-  const activeFiltersCount = Object.keys(filters).length - 1 // Exclude 'mode' from count
+  const hasActiveFilters =
+    filters.search ||
+    filters.mode !== "all" ||
+    filters.dataset ||
+    filters.scenario ||
+    filters.isFavorite !== undefined ||
+    (filters.tags && filters.tags.length > 0)
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Art Gallery</h1>
-          <p className="text-muted-foreground">Your collection of generated artwork</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Your Art Gallery
+          </h1>
+          <p className="text-muted-foreground">Browse and manage your generated artworks.</p>
         </div>
-        <Link href="/">
-          <Button variant="outline">
-            <Palette className="mr-2 h-4 w-4" />
+        <Button variant="outline" asChild>
+          <a href="/">
+            <Zap className="mr-2 h-4 w-4" />
             Generate New Art
-          </Button>
-        </Link>
+          </a>
+        </Button>
       </div>
 
-      {/* Stats Cards */}
-      {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold">{stats.totalArtworks}</div>
-              <div className="text-xs text-muted-foreground">Total Artworks</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">{stats.flowArtworks}</div>
-              <div className="text-xs text-muted-foreground">Flow Art</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-purple-600">{stats.aiArtworks}</div>
-              <div className="text-xs text-muted-foreground">AI Art</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-red-600">{stats.favoriteArtworks}</div>
-              <div className="text-xs text-muted-foreground">Favorites</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-green-600">{stats.totalDatasets}</div>
-              <div className="text-xs text-muted-foreground">Datasets</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold text-orange-600">{stats.totalScenarios}</div>
-              <div className="text-xs text-muted-foreground">Scenarios</div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Sidebar */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* Search */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Search className="h-4 w-4" />
-                Search
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex gap-2">
+      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
+        {/* Sidebar Filters */}
+        <Card className="h-fit sticky top-4">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Filter className="h-5 w-5" />
+              Filters
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Search */}
+            <div className="space-y-2">
+              <Label htmlFor="search">Search</Label>
+              <div className="relative">
+                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search artworks..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                  id="search"
+                  placeholder="Search by title or description..."
+                  value={filters.search}
+                  onChange={(e) => handleFilterChange("search", e.target.value)}
+                  className="pl-8"
                 />
-                <Button size="sm" onClick={handleSearch}>
-                  <Search className="h-4 w-4" />
-                </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* Filters */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between text-base">
-                <span className="flex items-center gap-2">
-                  <Filter className="h-4 w-4" />
-                  Filters
-                </span>
-                {activeFiltersCount > 0 && (
-                  <Button variant="ghost" size="sm" onClick={clearAllFilters}>
-                    Clear All
-                  </Button>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Mode Filter */}
-              <div>
-                <label className="text-sm font-medium mb-2 block">Mode</label>
-                <Select
-                  value={filters.mode || "all"}
-                  onValueChange={(value) => handleFilterChange("mode", value || undefined)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="All modes" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All modes</SelectItem>
-                    <SelectItem value="flow">
-                      <div className="flex items-center gap-2">
-                        <Zap className="h-4 w-4" />
-                        Flow Field
-                      </div>
+            {/* Mode Filter */}
+            <div className="space-y-2">
+              <Label htmlFor="mode">Mode</Label>
+              <Select value={filters.mode} onValueChange={(value) => handleFilterChange("mode", value)}>
+                <SelectTrigger id="mode">
+                  <SelectValue placeholder="All Modes" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Modes</SelectItem>
+                  <SelectItem value="flow">
+                    <div className="flex items-center gap-2">
+                      <Zap className="h-4 w-4" />
+                      Flow Field
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="ai">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-4 w-4" />
+                      AI Generated
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Dataset Filter */}
+            <div className="space-y-2">
+              <Label htmlFor="dataset">Dataset</Label>
+              <Select value={filters.dataset} onValueChange={(value) => handleFilterChange("dataset", value)}>
+                <SelectTrigger id="dataset">
+                  <SelectValue placeholder="All Datasets" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Datasets</SelectItem>
+                  {allDatasets.map((ds) => (
+                    <SelectItem key={ds} value={ds}>
+                      {ds.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
                     </SelectItem>
-                    <SelectItem value="ai">
-                      <div className="flex items-center gap-2">
-                        <Sparkles className="h-4 w-4" />
-                        AI Art
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Favorites Filter */}
-              <div>
-                <Button
-                  variant={filters.isFavorite ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handleFilterChange("isFavorite", filters.isFavorite ? undefined : true)}
-                  className="w-full justify-start"
-                >
-                  <Heart className={`h-4 w-4 mr-2 ${filters.isFavorite ? "fill-current" : ""}`} />
-                  Favorites Only
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Popular Tags */}
-          {popularTags.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Tag className="h-4 w-4" />
-                  Popular Tags
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-1">
-                  {popularTags.slice(0, 15).map(({ tag, count }) => (
-                    <Button
-                      key={tag}
-                      variant={filters.tags?.includes(tag) ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => {
-                        const currentTags = filters.tags || []
-                        const newTags = currentTags.includes(tag)
-                          ? currentTags.filter((t) => t !== tag)
-                          : [...currentTags, tag]
-                        handleFilterChange("tags", newTags.length > 0 ? newTags : undefined)
-                      }}
-                      className="text-xs h-7"
-                    >
-                      {tag} ({count})
-                    </Button>
                   ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+                </SelectContent>
+              </Select>
+            </div>
 
-        {/* Main Content */}
-        <div className="lg:col-span-3">
-          {/* Active Filters */}
-          {activeFiltersCount > 0 && (
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-sm font-medium">Active Filters:</span>
-              </div>
+            {/* Scenario Filter */}
+            <div className="space-y-2">
+              <Label htmlFor="scenario">Scenario</Label>
+              <Select value={filters.scenario} onValueChange={(value) => handleFilterChange("scenario", value)}>
+                <SelectTrigger id="scenario">
+                  <SelectValue placeholder="All Scenarios" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Scenarios</SelectItem>
+                  {allScenarios.map((sc) => (
+                    <SelectItem key={sc} value={sc}>
+                      {sc.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Favorites Filter */}
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="isFavorite"
+                checked={filters.isFavorite || false}
+                onChange={(e) => handleFilterChange("isFavorite", e.target.checked || undefined)}
+                className="h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary"
+              />
+              <Label htmlFor="isFavorite" className="flex items-center gap-1">
+                <Heart className="h-4 w-4 fill-red-500 text-red-500" />
+                Show Favorites
+              </Label>
+            </div>
+
+            <Separator />
+
+            {/* Popular Tags */}
+            <div className="space-y-2">
+              <Label>Popular Tags</Label>
               <div className="flex flex-wrap gap-2">
-                {filters.search && (
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    Search: "{filters.search}"
-                    <button onClick={() => clearFilter("search")}>
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                {filters.mode && filters.mode !== "all" && (
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    Mode: {filters.mode}
-                    <button onClick={() => clearFilter("mode")}>
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                {filters.isFavorite && (
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    Favorites Only
-                    <button onClick={() => clearFilter("isFavorite")}>
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                )}
-                {filters.tags?.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="flex items-center gap-1">
-                    Tag: {tag}
-                    <button
-                      onClick={() => {
-                        const newTags = filters.tags!.filter((t) => t !== tag)
-                        handleFilterChange("tags", newTags.length > 0 ? newTags : undefined)
-                      }}
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
+                {popularTags.map((tag) => (
+                  <Badge
+                    key={tag.tag}
+                    variant={filters.tags?.includes(tag.tag) ? "default" : "outline"}
+                    className="cursor-pointer"
+                    onClick={() => handleTagToggle(tag.tag)}
+                  >
+                    {tag.tag} ({tag.count})
                   </Badge>
                 ))}
               </div>
             </div>
-          )}
 
-          {/* Results */}
-          <div className="mb-4">
-            <p className="text-sm text-muted-foreground">
-              {loading ? "Loading..." : `${artworks.length} artwork${artworks.length !== 1 ? "s" : ""} found`}
-            </p>
-          </div>
+            {hasActiveFilters && (
+              <Button variant="outline" onClick={clearFilters} className="w-full bg-transparent">
+                <XCircle className="mr-2 h-4 w-4" />
+                Clear Filters
+              </Button>
+            )}
+          </CardContent>
+        </Card>
 
-          {/* Gallery Grid */}
+        {/* Artwork Grid */}
+        <div>
           {loading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="text-muted-foreground mt-4">Loading artworks...</p>
+            <div className="flex items-center justify-center h-96">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <span className="sr-only">Loading artworks...</span>
             </div>
           ) : (
             <GalleryGrid
               artworks={artworks}
-              onArtworkUpdate={handleArtworkUpdate}
-              onArtworkDelete={handleArtworkDelete}
+              onArtworkUpdate={(updatedArtwork) => {
+                setArtworks((prev) => prev.map((art) => (art.id === updatedArtwork.id ? updatedArtwork : art)))
+              }}
+              onArtworkDelete={(deletedId) => {
+                setArtworks((prev) => prev.filter((art) => art.id !== deletedId))
+              }}
             />
           )}
         </div>

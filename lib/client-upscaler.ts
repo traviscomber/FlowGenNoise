@@ -51,3 +51,6 @@ export class ClientUpscaler {
     })
   }
 }
+
+// This file is currently empty as client-side upscaling is not implemented.
+// It can be used in the future for client-side image processing or upscaling.

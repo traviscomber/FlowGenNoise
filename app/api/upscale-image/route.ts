@@ -4,16 +4,16 @@ import { Buffer } from "buffer"
 // Free upscaling using Replicate API with free models
 export async function POST(request: NextRequest) {
   try {
-    const { imageUrl, scaleFactor = 4, upscaleModel = "real-esrgan" } = await request.json()
+    const { imageUrl, scaleFactor = 4, method = "real-esrgan" } = await request.json()
 
     if (!imageUrl) {
-      return NextResponse.json({ success: false, error: "Image URL is required" }, { status: 400 })
+      return NextResponse.json({ success: false, error: "`imageUrl` is required." }, { status: 400 })
     }
 
-    console.log(`Starting free upscaling with ${upscaleModel} at ${scaleFactor}x...`)
+    console.log(`Starting upscaling with ${method} at ${scaleFactor}x...`)
 
     // Method 1: Try Replicate API (free tier available)
-    if (process.env.REPLICATE_API_TOKEN) {
+    if (process.env.REPLICATE_API_TOKEN && method === "real-esrgan") {
       try {
         const replicateResponse = await fetch("https://api.replicate.com/v1/predictions", {
           method: "POST",
@@ -72,36 +72,38 @@ export async function POST(request: NextRequest) {
     }
 
     // Method 2: Use Upscayl API (free alternative)
-    try {
-      const upscaylResponse = await fetch("https://api.upscayl.org/upscale", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          image: imageUrl,
-          model: "realesrgan-x4plus",
-          scale: scaleFactor,
-        }),
-      })
-
-      if (upscaylResponse.ok) {
-        const result = await upscaylResponse.json()
-        return NextResponse.json({
-          success: true,
-          image: `data:image/png;base64,${result.upscaled_image}`,
-          metadata: {
-            originalSize: "1792x1024",
-            upscaledSize: `${1792 * scaleFactor}x${1024 * scaleFactor}`,
-            scaleFactor: scaleFactor,
-            model: "Real-ESRGAN (Upscayl)",
-            quality: "AI Upscaled",
-            method: "upscayl",
+    if (method === "real-esrgan") {
+      try {
+        const upscaylResponse = await fetch("https://api.upscayl.org/upscale", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            image: imageUrl,
+            model: "realesrgan-x4plus",
+            scale: scaleFactor,
+          }),
         })
+
+        if (upscaylResponse.ok) {
+          const result = await upscaylResponse.json()
+          return NextResponse.json({
+            success: true,
+            image: `data:image/png;base64,${result.upscaled_image}`,
+            metadata: {
+              originalSize: "1792x1024",
+              upscaledSize: `${1792 * scaleFactor}x${1024 * scaleFactor}`,
+              scaleFactor: scaleFactor,
+              model: "Real-ESRGAN (Upscayl)",
+              quality: "AI Upscaled",
+              method: "upscayl",
+            },
+          })
+        }
+      } catch (upscaylError) {
+        console.log("Upscayl API failed, using client-side method:", upscaylError)
       }
-    } catch (upscaylError) {
-      console.log("Upscayl API failed, using client-side method:", upscaylError)
     }
 
     // Method 3: Client-side bicubic upscaling (always available)
@@ -128,6 +130,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Error upscaling image:", error)
-    return NextResponse.json({ success: false, error: "Failed to upscale image" }, { status: 500 })
+    return NextResponse.json({ success: false, error: "Failed to upscale image." }, { status: 500 })
   }
 }

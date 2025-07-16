@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
         success: true,
         placeholder: true,
         prompt,
-        image: "/placeholder.svg?height=512&width=512",
+        image: "/placeholder.png?height=512&width=512",
       })
     }
 

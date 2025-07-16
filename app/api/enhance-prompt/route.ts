@@ -1,3 +1,7 @@
+// This file is deprecated and no longer used.
+// The prompt enhancement logic has been moved client-side to components/flow-art-generator.tsx
+// to reduce server load and simplify the architecture.
+
 import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"

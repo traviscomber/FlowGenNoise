@@ -1,3 +1,6 @@
+// This file is deprecated and no longer used.
+// The functionality has been moved to app/api/generate/route.ts for a unified API.
+
 import { type NextRequest, NextResponse } from "next/server"
 import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
 
