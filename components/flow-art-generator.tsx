@@ -424,7 +424,7 @@ export function FlowArtGenerator() {
                   <Alert>
                     <Zap className="h-4 w-4" />
                     <AlertDescription>
-                      Choose dataset pattern, scenario effects, and color palette independently for maximum creativity!
+                      Choose dataset pattern, scenario theme, and color palette independently for maximum creativity!
                     </AlertDescription>
                   </Alert>
                 </TabsContent>
@@ -459,20 +459,22 @@ export function FlowArtGenerator() {
               </div>
 
               <div className="space-y-2">
-                <Label>Scenario Effects</Label>
+                <Label>Scenario Theme</Label>
                 <Select value={scenario} onValueChange={setScenario}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="pure">🔢 Pure Mathematical</SelectItem>
-                    <SelectItem value="forest">🌲 Forest Growth</SelectItem>
-                    <SelectItem value="cosmic">🌌 Cosmic Spiral</SelectItem>
-                    <SelectItem value="ocean">🌊 Ocean Waves</SelectItem>
-                    <SelectItem value="neural">🧠 Neural Network</SelectItem>
-                    <SelectItem value="fire">🔥 Fire Dynamics</SelectItem>
-                    <SelectItem value="ice">❄️ Ice Crystals</SelectItem>
-                    <SelectItem value="desert">🏜️ Desert Dunes</SelectItem>
+                    <SelectItem value="forest">🌲 Forest</SelectItem>
+                    <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
+                    <SelectItem value="ocean">🌊 Ocean</SelectItem>
+                    <SelectItem value="neural">🧠 Neural</SelectItem>
+                    <SelectItem value="fire">🔥 Fire</SelectItem>
+                    <SelectItem value="ice">❄️ Ice</SelectItem>
+                    <SelectItem value="desert">🏜️ Desert</SelectItem>
+                    <SelectItem value="sunset">🌅 Sunset</SelectItem>
+                    <SelectItem value="monochrome">⚫ Monochrome</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -597,7 +599,7 @@ export function FlowArtGenerator() {
                 disabled={isGenerating}
                 className={`w-full ${
                   mode === "ai"
-                    ? "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600"
+                    ? "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-pink-600"
                     : "bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 hover:from-green-600 hover:via-blue-600 hover:to-purple-600"
                 }`}
               >
@@ -627,7 +629,7 @@ export function FlowArtGenerator() {
                             : "Applying AI artistic effects..."
                           : scenario === "pure"
                             ? "Applying pure mathematical visualization..."
-                            : `Applying ${scenario} scenario effects...`
+                            : `Applying ${scenario} scenario theme...`
                         : progress < 90
                           ? "Rendering visualization..."
                           : "Finalizing artwork..."}
