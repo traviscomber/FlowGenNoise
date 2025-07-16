@@ -11,6 +11,14 @@ import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 import { Download, Sparkles, Settings, ImageIcon, Info, Loader2, Zap, Wand2, Edit3 } from "lucide-react"
 import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
 import { ClientUpscaler } from "@/lib/client-upscaler"
@@ -38,7 +46,8 @@ export function FlowArtGenerator() {
 
   // Gallery state
   const [gallery, setGallery] = useState<GeneratedArt[]>([])
-  const [showGallery, setShowGallery] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 6
 
   // Load gallery from localStorage on mount
   useEffect(() => {
@@ -59,6 +68,11 @@ export function FlowArtGenerator() {
     }
   }, [gallery])
 
+  // Reset to first page when gallery changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [gallery.length])
+
   // Generation parameters - separate dataset, scenario, and color palette
   const [dataset, setDataset] = useState("spirals")
   const [scenario, setScenario] = useState("pure")
@@ -73,6 +87,12 @@ export function FlowArtGenerator() {
   const [useCustomPrompt, setUseCustomPrompt] = useState(false)
 
   const { toast } = useToast()
+
+  // Calculate pagination
+  const totalPages = Math.ceil(gallery.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentItems = gallery.slice(startIndex, endIndex)
 
   const enhancePrompt = useCallback(async () => {
     setIsEnhancingPrompt(true)
@@ -160,7 +180,7 @@ export function FlowArtGenerator() {
           id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         }
         setGeneratedArt(newArt)
-        setGallery((prev) => [newArt, ...prev.slice(0, 19)]) // Keep last 20 images
+        setGallery((prev) => [newArt, ...prev])
 
         toast({
           title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
@@ -215,7 +235,7 @@ export function FlowArtGenerator() {
           id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         }
         setGeneratedArt(newArt)
-        setGallery((prev) => [newArt, ...prev.slice(0, 19)]) // Keep last 20 images
+        setGallery((prev) => [newArt, ...prev])
 
         setProgress(100)
         toast({
@@ -415,6 +435,7 @@ export function FlowArtGenerator() {
   const clearGallery = useCallback(() => {
     setGallery([])
     localStorage.removeItem("flowsketch-gallery")
+    setCurrentPage(1)
     toast({
       title: "Gallery Cleared",
       description: "All saved artworks have been removed.",
@@ -526,14 +547,16 @@ export function FlowArtGenerator() {
                   {gallery.length > 0 ? (
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <p className="text-sm text-gray-600">{gallery.length} saved artworks</p>
+                        <p className="text-sm text-gray-600">
+                          {gallery.length} saved artworks • Page {currentPage} of {totalPages}
+                        </p>
                         <Button onClick={clearGallery} variant="outline" size="sm">
                           Clear All
                         </Button>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto">
-                        {gallery.map((art) => (
+                      <div className="grid grid-cols-2 gap-3">
+                        {currentItems.map((art) => (
                           <div
                             key={art.id}
                             className="relative group border rounded-lg overflow-hidden bg-white dark:bg-gray-800"
@@ -582,6 +605,40 @@ export function FlowArtGenerator() {
                           </div>
                         ))}
                       </div>
+
+                      {totalPages > 1 && (
+                        <Pagination>
+                          <PaginationContent>
+                            <PaginationItem>
+                              <PaginationPrevious
+                                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                                className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                              />
+                            </PaginationItem>
+
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                              <PaginationItem key={page}>
+                                <PaginationLink
+                                  onClick={() => setCurrentPage(page)}
+                                  isActive={currentPage === page}
+                                  className="cursor-pointer"
+                                >
+                                  {page}
+                                </PaginationLink>
+                              </PaginationItem>
+                            ))}
+
+                            <PaginationItem>
+                              <PaginationNext
+                                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                                className={
+                                  currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"
+                                }
+                              />
+                            </PaginationItem>
+                          </PaginationContent>
+                        </Pagination>
+                      )}
                     </div>
                   ) : (
                     <div className="text-center py-8 text-gray-500">
