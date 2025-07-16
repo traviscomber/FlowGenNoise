@@ -1,5 +1,7 @@
 "use client"
 
+import { toast as sonnerToast, type ToastT } from "sonner"
+
 /**
  * Global toast store & hook.
  * This implementation lets any component create/update/dismiss a toast
@@ -131,7 +133,7 @@ export function useToast() {
 
   return {
     ...state,
-    toast,
+    toast: (opts: ToastT) => sonnerToast(opts),
     dismiss: (id?: string) => dispatch({ type: ACTION.DISMISS, toastId: id }),
   }
 }
