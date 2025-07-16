@@ -1,21 +1,35 @@
-import { NextResponse } from "next/server"
-import { generateDataset } from "@/lib/flow-model"
-import { generateScatterPlotSVG } from "@/lib/plot-utils"
+import { type NextRequest, NextResponse } from "next/server"
+import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { dataset, seed, numSamples, noise } = await req.json()
+    const body = await request.json()
+    const { dataset, scenario, seed, numSamples, noiseScale, timeStep } = body
 
-    if (!dataset || typeof seed === "undefined" || typeof numSamples === "undefined" || typeof noise === "undefined") {
-      return NextResponse.json({ error: "Missing dataset, seed, number of samples, or noise" }, { status: 400 })
+    const params: GenerationParams = {
+      dataset: dataset || "spirals",
+      scenario: scenario || "forest",
+      seed: seed || Math.floor(Math.random() * 10000),
+      numSamples: numSamples || 2000,
+      noiseScale: noiseScale || 0.05,
+      timeStep: timeStep || 0.01,
     }
 
-    const data = generateDataset(dataset, seed, numSamples, noise)
-    const imageBase64 = generateScatterPlotSVG(data)
+    const svgContent = generateFlowField(params)
 
-    return NextResponse.json({ image: imageBase64 })
+    // Convert SVG to data URL
+    const svgBlob = Buffer.from(svgContent, "utf-8")
+    const base64 = svgBlob.toString("base64")
+    const dataUrl = `data:image/svg+xml;base64,${base64}`
+
+    return NextResponse.json({
+      success: true,
+      imageUrl: dataUrl,
+      svgContent,
+      params,
+    })
   } catch (error) {
-    console.error("Error generating flow art:", error)
-    return NextResponse.json({ error: "Failed to generate flow art" }, { status: 500 })
+    console.error("Error generating art:", error)
+    return NextResponse.json({ success: false, error: "Failed to generate art" }, { status: 500 })
   }
 }
