@@ -293,9 +293,10 @@ export function FlowArtGenerator() {
         setProgress(100)
         toast({
           title: "AI Art Generated! 🤖✨",
-          description: useCustomPrompt
-            ? "Custom enhanced prompt artwork created!"
-            : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork created.`,
+          description:
+            useCustomPrompt && customPrompt.trim().length > 0
+              ? "Custom enhanced prompt artwork created!"
+              : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork created.`,
         })
       }
     } catch (error: any) {
@@ -493,7 +494,7 @@ export function FlowArtGenerator() {
     const scenarioText = scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)
 
     if (mode === "ai") {
-      if (useCustomPrompt) {
+      if (useCustomPrompt && customPrompt.trim().length > 0) {
         return "Generate Custom AI Art"
       }
       return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}`
