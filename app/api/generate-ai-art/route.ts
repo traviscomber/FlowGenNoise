@@ -11,7 +11,7 @@ import { type NextRequest, NextResponse } from "next/server"
  *
  * Docs: https://replicate.com/stability-ai/sdxl-turbo
  */
-const FALLBACK_MODEL_VERSION = "24b08e3b4c4d3e0e29e5d8b0fdfeb58f8a4e43b51355e37cb5879131"
+const FALLBACK_MODEL_VERSION = "6ce01616824380fe974bd42e631834c8b06c8aa5bf3b4ffee48c0253c5c4c1ca" // stability-ai/sdxl-turbo
 
 export async function POST(req: NextRequest) {
   try {
