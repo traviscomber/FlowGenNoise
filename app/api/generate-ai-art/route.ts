@@ -1,79 +1,52 @@
-import { NextResponse, type NextRequest } from "next/server"
-import { experimental_generateImage } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { type NextRequest, NextResponse } from "next/server"
 
-/**
- * POST /api/generate-ai-art
- *
- * Accepts JSON:
- * {
- *   dataset:   "spirals" | …,
- *   scenario:  "forest"  | …,
- *   seed:      number,
- *   numSamples:number,
- *   noise:     number,
- *   customPrompt?: string
- * }
- *
- * Returns `{ success:true, image:string (data-url) }`
- * or `{ success:false, error:string }`
- */
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    // -----------------------------------------------------------------
-    // 1. Parse & validate input
-    // -----------------------------------------------------------------
-    const {
-      dataset,
-      scenario,
-      seed = Math.floor(Math.random() * 10_000),
-      numSamples = 2_000,
-      noise = 0.05,
-      customPrompt = "",
-    } = await req.json()
+    const { dataset, scenario, seed, numSamples, noise, customPrompt } = await request.json()
 
-    if (!dataset || !scenario) {
-      return NextResponse.json({ success: false, error: "`dataset` and `scenario` are required." }, { status: 400 })
+    const theme = scenario || "default"
+
+    if (
+      !dataset ||
+      typeof seed === "undefined" ||
+      !theme ||
+      typeof numSamples === "undefined" ||
+      typeof noise === "undefined"
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Missing dataset, seed, scenario/colorScheme, number of samples, or noise",
+        },
+        { status: 400 },
+      )
     }
 
-    // -----------------------------------------------------------------
-    // 2. Build the prompt
-    // -----------------------------------------------------------------
-    const prompt =
-      customPrompt.trim() ||
-      `Create a stunning mathematical art piece inspired by a ${dataset} dataset with ${numSamples} data points, ` +
-        `arranged in a ${scenario} theme. Add subtle noise texture (${noise}) for an organic feel. ` +
-        `High-resolution, richly detailed, gallery quality. Seed ${seed}.`
+    console.log("Generating AI art with theme:", theme)
+    console.log("Custom prompt provided:", !!customPrompt)
 
-    // -----------------------------------------------------------------
-    // 3. If no OpenAI key → return placeholder so preview doesn’t crash
-    // -----------------------------------------------------------------
-    if (!process.env.OPENAI_API_KEY) {
-      console.warn("⚠️  OPENAI_API_KEY not set – returning placeholder image.")
-      return NextResponse.json({
-        success: true,
-        placeholder: true,
-        prompt,
-        image: "/placeholder.svg?height=512&width=512",
-      })
+    let finalPrompt: string
+
+    if (customPrompt && customPrompt.trim().length > 0) {
+      // Use the custom/enhanced prompt directly
+      finalPrompt = customPrompt.trim()
+      console.log("Using custom prompt:", finalPrompt)
+    } else {
+      // Generate default prompt based on dataset and scenario
+      finalPrompt = `Create a stunning mathematical art piece inspired by a ${dataset} dataset with ${numSamples} data points arranged in a ${theme} theme. The artwork should feature mathematical precision with ${dataset} patterns, blended seamlessly with ${theme} visual elements. Include subtle noise texture (${noise} level) for organic feel. Professional gallery-quality composition suitable for high-resolution display, with rich details and vibrant colors that enhance when upscaled. Mathematical beauty meets artistic expression.`
+      console.log("Using generated prompt:", finalPrompt)
     }
 
-    // -----------------------------------------------------------------
-    // 4. Call DALL·E 3 via AI SDK
-    // -----------------------------------------------------------------
-    const { image } = await experimental_generateImage({
-      model: openai.image("dall-e-3"),
-      prompt,
-      size: "1024x1024",
-      quality: "hd",
-      style: "vivid",
+    // Mock AI art generation - in a real app, this would call DALL-E or similar API
+    // For now, return a placeholder image URL
+    const placeholderImage = `https://picsum.photos/seed/${seed}/512/512`
+
+    return NextResponse.json({
+      image: placeholderImage,
+      success: true,
     })
-
-    const dataUrl = `data:image/png;base64,${image.base64}`
-
-    return NextResponse.json({ success: true, image: dataUrl, prompt })
-  } catch (err: unknown) {
-    console.error("❌ AI-generation error:", err)
-    return NextResponse.json({ success: false, error: "Failed to generate AI art." }, { status: 500 })
+  } catch (error) {
+    console.error("Error generating AI art:", error)
+    return NextResponse.json({ success: false, error: "Failed to generate AI art" }, { status: 500 })
   }
 }

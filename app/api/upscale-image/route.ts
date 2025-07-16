@@ -1,14 +1,16 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { Buffer } from "buffer"
+import { NextResponse } from "next/server"
 
 // Free upscaling using Replicate API with free models
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { imageUrl, scaleFactor = 4, upscaleModel = "real-esrgan" } = await request.json()
+    const { imageData, scaleFactor = 4, upscaleModel = "real-esrgan" } = await req.json()
 
-    if (!imageUrl) {
-      return NextResponse.json({ success: false, error: "Image URL is required" }, { status: 400 })
+    if (!imageData) {
+      return NextResponse.json({ error: "Missing image data" }, { status: 400 })
     }
+
+    // Extract base64 data from data URL
+    const base64Data = imageData.replace(/^data:image\/[a-z]+;base64,/, "")
 
     console.log(`Starting free upscaling with ${upscaleModel} at ${scaleFactor}x...`)
 
@@ -24,7 +26,7 @@ export async function POST(request: NextRequest) {
           body: JSON.stringify({
             version: "42fed1c4974146d4d2414e2be2c5277c7fcf05fcc972f6f8b1a8b5b7137c5f0", // Real-ESRGAN model
             input: {
-              image: imageUrl,
+              image: imageData,
               scale: scaleFactor,
               face_enhance: false,
             },
@@ -79,7 +81,7 @@ export async function POST(request: NextRequest) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          image: imageUrl,
+          image: base64Data,
           model: "realesrgan-x4plus",
           scale: scaleFactor,
         }),
@@ -110,12 +112,11 @@ export async function POST(request: NextRequest) {
     // Simulate processing time
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    // For client-side upscaling, we'll return the original image URL with instructions
+    // For client-side upscaling, we'll return the original image with instructions
     // The actual upscaling will happen in the browser using Canvas API
     return NextResponse.json({
       success: true,
-      upscaledImageUrl: imageUrl,
-      message: "Client-side upscaling will be applied",
+      image: imageData, // Original image
       metadata: {
         originalSize: "1792x1024",
         upscaledSize: `${1792 * scaleFactor}x${1024 * scaleFactor}`,
@@ -126,8 +127,13 @@ export async function POST(request: NextRequest) {
       },
       requiresClientUpscaling: true,
     })
-  } catch (error) {
-    console.error("Error upscaling image:", error)
-    return NextResponse.json({ success: false, error: "Failed to upscale image" }, { status: 500 })
+  } catch (error: any) {
+    console.error("Error in upscaling:", error)
+    return NextResponse.json(
+      {
+        error: "Upscaling failed: " + error.message,
+      },
+      { status: 500 },
+    )
   }
 }
