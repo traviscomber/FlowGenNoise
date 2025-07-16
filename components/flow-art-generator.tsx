@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Download, Save, Sparkles, Wand2, Eye, EyeOff, Palette } from "lucide-react"
+import { Download, Save, Sparkles, Wand2, Eye, EyeOff } from "lucide-react"
 import { ImageIcon } from "lucide-react"
 import { SaveArtworkDialog } from "@/components/gallery/save-artwork-dialog"
 import { useToast } from "@/hooks/use-toast"
@@ -65,55 +65,6 @@ const SCENARIOS = {
   desert: "Wind-carved formations with golden sands, mirages, and oasis reflections",
   sunset: "Golden hour atmosphere with coral skies, lens flares, and warm atmospheric perspective",
   monochrome: "Classical black and white with dramatic chiaroscuro, fine art composition, and pure form",
-}
-
-// Color palettes for each scenario
-const COLOR_PALETTES = {
-  forest: {
-    name: "Emerald Forest",
-    colors: ["#2d5016", "#4a7c59", "#6b8e23", "#8fbc8f", "#90ee90"],
-    description: "Deep forest greens with golden highlights",
-  },
-  cosmic: {
-    name: "Cosmic Nebula",
-    colors: ["#191970", "#4b0082", "#8a2be2", "#9370db", "#ba55d3"],
-    description: "Deep space purples and electric blues",
-  },
-  ocean: {
-    name: "Ocean Depths",
-    colors: ["#006994", "#1e90ff", "#00bfff", "#87ceeb", "#b0e0e6"],
-    description: "Aqua blues and seafoam greens",
-  },
-  neural: {
-    name: "Neural Network",
-    colors: ["#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4", "#ffeaa7"],
-    description: "Vibrant synaptic connections",
-  },
-  fire: {
-    name: "Molten Fire",
-    colors: ["#8b0000", "#dc143c", "#ff4500", "#ff6347", "#ffa500"],
-    description: "Fiery reds and molten oranges",
-  },
-  ice: {
-    name: "Arctic Ice",
-    colors: ["#b0e0e6", "#87ceeb", "#4682b4", "#5f9ea0", "#708090"],
-    description: "Pristine blues and arctic whites",
-  },
-  desert: {
-    name: "Desert Sands",
-    colors: ["#daa520", "#cd853f", "#d2691e", "#bc8f8f", "#f4a460"],
-    description: "Warm golden sands and terracotta",
-  },
-  sunset: {
-    name: "Golden Hour",
-    colors: ["#ff7f50", "#ff6347", "#ff4500", "#ffa500", "#ffb347"],
-    description: "Coral pinks and amber golds",
-  },
-  monochrome: {
-    name: "Classic B&W",
-    colors: ["#2c2c2c", "#4a4a4a", "#696969", "#808080", "#a9a9a9"],
-    description: "Dramatic grayscale tones",
-  },
 }
 
 export function FlowArtGenerator() {
@@ -450,25 +401,6 @@ Seed: ${params.seed} | Noise: ${params.noiseScale} | Flow: ${params.timeStep}`
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
-
-              {/* Color Palette Preview */}
-              <div className="p-3 bg-muted rounded-md">
-                <div className="flex items-center gap-2 mb-2">
-                  <Palette className="h-4 w-4" />
-                  <h4 className="font-medium text-sm">{COLOR_PALETTES[scenario].name}</h4>
-                </div>
-                <p className="text-xs text-muted-foreground mb-3">{COLOR_PALETTES[scenario].description}</p>
-                <div className="flex gap-1">
-                  {COLOR_PALETTES[scenario].colors.map((color, index) => (
-                    <div
-                      key={index}
-                      className="w-8 h-8 rounded-md border border-border shadow-sm"
-                      style={{ backgroundColor: color }}
-                      title={color}
-                    />
-                  ))}
-                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
