@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase"
 
 export interface GalleryItem {
   id: string
@@ -59,7 +59,7 @@ export interface GalleryStats {
 }
 
 class GalleryService {
-  private supabase = createClient()
+  private supabase = supabase
 
   async saveArtwork(artwork: CreateGalleryItem): Promise<GalleryItem | null> {
     try {
