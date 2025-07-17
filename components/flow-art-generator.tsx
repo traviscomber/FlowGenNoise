@@ -1,6 +1,25 @@
 "use client"
 
 import { useState, useCallback, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+import { Download, Sparkles, Settings, ImageIcon, Info, Loader2, Wand2, Edit3, Calculator } from "lucide-react"
 import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
 import { ClientUpscaler } from "@/lib/client-upscaler"
 import { useToast } from "@/hooks/use-toast"
@@ -352,4 +371,647 @@ export function FlowArtGenerator() {
     console.log("Download button clicked!")
 
     try {
-      const imageUrl = generatedArt.upscaledImageUrl || generatedArt
+      const imageUrl = generatedArt.upscaledImageUrl || generatedArt.imageUrl
+      const isEnhanced = !!generatedArt.upscaledImageUrl
+      const fileExtension = generatedArt.mode === "svg" && !isEnhanced ? "svg" : "png"
+      const fileName = `flowsketch-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
+
+      console.log("Downloading:", fileName, "from:", imageUrl)
+
+      // Check if it's a data URL (client-side upscaled or SVG blob)
+      if (imageUrl.startsWith("data:") || imageUrl.startsWith("blob:")) {
+        // Direct download for data URLs and blob URLs
+        const link = document.createElement("a")
+        link.href = imageUrl
+        link.download = fileName
+        link.style.display = "none"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        console.log("Direct download completed")
+      } else {
+        // For external URLs, fetch and convert to blob
+        const response = await fetch(imageUrl, { mode: "cors" })
+        if (!response.ok) {
+          throw new Error("Failed to fetch image for download")
+        }
+
+        const blob = await response.blob()
+        const blobUrl = URL.createObjectURL(blob)
+
+        const link = document.createElement("a")
+        link.href = blobUrl
+        link.download = fileName
+        link.style.display = "none"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+
+        // Clean up the blob URL
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 100)
+        console.log("Blob download completed")
+      }
+
+      toast({
+        title: "Download Complete! 🎨",
+        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} in ${generatedArt.params.colorScheme} colors downloaded.`,
+      })
+    } catch (error: any) {
+      console.error("Download error:", error)
+      toast({
+        title: "Download Failed",
+        description: "Could not download the image. Please try right-clicking and saving the image.",
+        variant: "destructive",
+      })
+    }
+  }, [generatedArt, toast])
+
+  const handleRandomSeed = useCallback(() => {
+    const newSeed = Math.floor(Math.random() * 10000)
+    console.log("Random seed clicked, new seed:", newSeed)
+    setSeed(newSeed)
+  }, [])
+
+  const clearGallery = useCallback(() => {
+    setGallery([])
+    localStorage.removeItem("flowsketch-gallery")
+    setCurrentPage(1)
+    toast({
+      title: "Gallery Cleared",
+      description: "All saved artworks have been removed.",
+    })
+  }, [toast])
+
+  const removeFromGallery = useCallback(
+    (id: string) => {
+      setGallery((prev) => prev.filter((art) => art.id !== id))
+      toast({
+        title: "Artwork Removed",
+        description: "Artwork removed from gallery.",
+      })
+    },
+    [toast],
+  )
+
+  const loadFromGallery = useCallback(
+    (art: GeneratedArt) => {
+      setGeneratedArt(art)
+      setDataset(art.params.dataset)
+      setScenario(art.params.scenario)
+      setColorScheme(art.params.colorScheme)
+      setSeed(art.params.seed)
+      setNumSamples(art.params.numSamples)
+      setNoiseScale(art.params.noiseScale)
+      if (art.customPrompt) {
+        setCustomPrompt(art.customPrompt)
+        setUseCustomPrompt(true)
+      }
+      setMode(art.mode)
+      toast({
+        title: "Artwork Loaded",
+        description: "Settings restored from gallery artwork.",
+      })
+    },
+    [toast],
+  )
+
+  const getButtonText = () => {
+    const scenarioText = scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)
+
+    if (mode === "ai") {
+      if (useCustomPrompt) {
+        return "Generate Custom AI Art"
+      }
+      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}`
+    } else {
+      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}`
+    }
+  }
+
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="text-center space-y-2">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+          FlowSketch Complex Mathematical Art Generator
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          Advanced mathematical datasets with scenario blending for stunning visual results
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Controls */}
+        <div className="lg:col-span-1 space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Generation Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Tabs value={mode} onValueChange={(value) => setMode(value as "svg" | "ai")}>
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="svg">Complex Math</TabsTrigger>
+                  <TabsTrigger value="ai">AI Art</TabsTrigger>
+                  <TabsTrigger value="gallery">Gallery ({gallery.length})</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="svg" className="space-y-4">
+                  <Alert>
+                    <Calculator className="h-4 w-4" />
+                    <AlertDescription>
+                      Complex mathematical datasets with advanced algorithms: Fibonacci spirals, fractal checkerboards,
+                      hyperbolic moons, multi-modal Gaussians, and more!
+                    </AlertDescription>
+                  </Alert>
+                </TabsContent>
+
+                <TabsContent value="ai" className="space-y-4">
+                  <Alert>
+                    <Sparkles className="h-4 w-4" />
+                    <AlertDescription>
+                      Create AI-generated artwork based on your complex mathematical dataset and scenario combination.
+                      Use prompt enhancement for professional results!
+                    </AlertDescription>
+                  </Alert>
+                </TabsContent>
+
+                <TabsContent value="gallery" className="space-y-4">
+                  <Alert>
+                    <ImageIcon className="h-4 w-4" />
+                    <AlertDescription>
+                      Your generated artworks are automatically saved here. Click any image to load its settings.
+                    </AlertDescription>
+                  </Alert>
+
+                  {gallery.length > 0 ? (
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <p className="text-sm text-gray-600">
+                          {gallery.length} saved artworks • Page {currentPage} of {totalPages}
+                        </p>
+                        <Button onClick={clearGallery} variant="outline" size="sm">
+                          Clear All
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        {currentItems.map((art) => (
+                          <div
+                            key={art.id}
+                            className="relative group border rounded-lg overflow-hidden bg-white dark:bg-gray-800"
+                          >
+                            <div className="aspect-square relative">
+                              {art.mode === "svg" && !art.upscaledImageUrl ? (
+                                <div
+                                  className="w-full h-full flex items-center justify-center text-xs"
+                                  dangerouslySetInnerHTML={{ __html: art.svgContent }}
+                                />
+                              ) : (
+                                <img
+                                  src={art.upscaledImageUrl || art.imageUrl}
+                                  alt={`${art.params.dataset} + ${art.params.scenario}`}
+                                  className="w-full h-full object-cover cursor-pointer"
+                                  onClick={() => loadFromGallery(art)}
+                                />
+                              )}
+
+                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center">
+                                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-2">
+                                  <Button size="sm" variant="secondary" onClick={() => loadFromGallery(art)}>
+                                    Load
+                                  </Button>
+                                  <Button size="sm" variant="destructive" onClick={() => removeFromGallery(art.id)}>
+                                    Remove
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="p-2 space-y-1">
+                              <div className="flex gap-1">
+                                <Badge variant="outline" className="text-xs">
+                                  {art.mode}
+                                </Badge>
+                                <Badge variant="outline" className="text-xs">
+                                  {art.params.dataset}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-gray-600 dark:text-gray-400">
+                                {art.params.scenario} • {art.params.colorScheme}
+                              </p>
+                              <p className="text-xs text-gray-500">{new Date(art.timestamp).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {totalPages > 1 && (
+                        <Pagination>
+                          <PaginationContent>
+                            <PaginationItem>
+                              <PaginationPrevious
+                                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                                className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                              />
+                            </PaginationItem>
+
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                              <PaginationItem key={page}>
+                                <PaginationLink
+                                  onClick={() => setCurrentPage(page)}
+                                  isActive={currentPage === page}
+                                  className="cursor-pointer"
+                                >
+                                  {page}
+                                </PaginationLink>
+                              </PaginationItem>
+                            ))}
+
+                            <PaginationItem>
+                              <PaginationNext
+                                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                                className={
+                                  currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"
+                                }
+                              />
+                            </PaginationItem>
+                          </PaginationContent>
+                        </Pagination>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>No artworks in gallery yet</p>
+                      <p className="text-sm mt-1">Generate some complex mathematical art to see it here!</p>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+
+              <div className="space-y-2">
+                <Label>Mathematical Dataset</Label>
+                <Select value={dataset} onValueChange={setDataset}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="spirals">🌀 Complex Spirals (Fibonacci + Logarithmic)</SelectItem>
+                    <SelectItem value="moons">🌙 Hyperbolic Moons (Elliptic Curves)</SelectItem>
+                    <SelectItem value="circles">⭕ Concentric Manifolds (Torus + Möbius)</SelectItem>
+                    <SelectItem value="blobs">🔵 Voronoi Blobs (Lorenz Attractor)</SelectItem>
+                    <SelectItem value="checkerboard">🏁 Fractal Checkerboard (Mandelbrot)</SelectItem>
+                    <SelectItem value="gaussian">📊 Multi-Modal Gaussian (Correlated)</SelectItem>
+                    <SelectItem value="grid">⚏ Non-Linear Grid (Klein Bottle)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Scenario Blend</Label>
+                <Select value={scenario} onValueChange={setScenario}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pure">🔢 Pure Mathematical (Enhanced)</SelectItem>
+                    <SelectItem value="forest">🌲 Forest (L-Systems + Fractals)</SelectItem>
+                    <SelectItem value="cosmic">🌌 Cosmic (Gravitational Lensing)</SelectItem>
+                    <SelectItem value="ocean">🌊 Ocean (Fluid Dynamics + Vortices)</SelectItem>
+                    <SelectItem value="neural">🧠 Neural (Synaptic Plasticity)</SelectItem>
+                    <SelectItem value="fire">🔥 Fire (Combustion + Plasma)</SelectItem>
+                    <SelectItem value="ice">❄️ Ice (Hexagonal Crystals)</SelectItem>
+                    <SelectItem value="desert">🏜️ Desert (Wind Dynamics)</SelectItem>
+                    <SelectItem value="sunset">🌅 Sunset (Atmospheric Scattering)</SelectItem>
+                    <SelectItem value="monochrome">⚫ Monochrome (Interference Patterns)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Color Palette</Label>
+                <Select value={colorScheme} onValueChange={setColorScheme}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="plasma">🟣 Plasma</SelectItem>
+                    <SelectItem value="lava">🔴 Lava</SelectItem>
+                    <SelectItem value="futuristic">🔵 Futuristic</SelectItem>
+                    <SelectItem value="forest">🟢 Forest</SelectItem>
+                    <SelectItem value="ocean">🌊 Ocean</SelectItem>
+                    <SelectItem value="sunset">🌅 Sunset</SelectItem>
+                    <SelectItem value="arctic">❄️ Arctic</SelectItem>
+                    <SelectItem value="neon">💚 Neon</SelectItem>
+                    <SelectItem value="vintage">🟤 Vintage</SelectItem>
+                    <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
+                    <SelectItem value="toxic">🟡 Toxic</SelectItem>
+                    <SelectItem value="ember">🟠 Ember</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* AI Prompt Enhancement Section */}
+              {mode === "ai" && (
+                <div className="space-y-3 p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-semibold flex items-center gap-2">
+                      <Wand2 className="h-4 w-4" />
+                      AI Prompt Enhancement
+                    </Label>
+                    <Button
+                      onClick={enhancePrompt}
+                      disabled={isEnhancingPrompt}
+                      size="sm"
+                      variant="outline"
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600"
+                    >
+                      {isEnhancingPrompt ? (
+                        <>
+                          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                          Enhancing...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-3 w-3 mr-1" />
+                          Enhance
+                        </>
+                      )}
+                    </Button>
+                  </div>
+
+                  <Textarea
+                    placeholder="Click 'Enhance' to generate a complex mathematical AI art prompt, or write your own custom prompt here..."
+                    value={customPrompt}
+                    onChange={(e) => {
+                      setCustomPrompt(e.target.value)
+                      setUseCustomPrompt(e.target.value.length > 0)
+                    }}
+                    rows={4}
+                    className="text-sm resize-none"
+                  />
+
+                  {customPrompt && (
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary" className="text-xs">
+                        <Edit3 className="h-3 w-3 mr-1" />
+                        Custom Prompt Active
+                      </Badge>
+                      <Button
+                        onClick={() => {
+                          setCustomPrompt("")
+                          setUseCustomPrompt(false)
+                        }}
+                        size="sm"
+                        variant="ghost"
+                        className="text-xs h-6 px-2"
+                      >
+                        Clear
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label>Seed: {seed}</Label>
+                <Slider value={[seed]} onValueChange={(value) => setSeed(value[0])} max={10000} min={1} step={1} />
+                <Button variant="outline" size="sm" onClick={handleRandomSeed} disabled={isGenerating}>
+                  Random Seed
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Sample Points: {numSamples}</Label>
+                <Slider
+                  value={[numSamples]}
+                  onValueChange={(value) => setNumSamples(value[0])}
+                  max={5000}
+                  min={100}
+                  step={100}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Noise Scale: {noiseScale}</Label>
+                <Slider
+                  value={[noiseScale]}
+                  onValueChange={(value) => setNoiseScale(value[0])}
+                  max={0.2}
+                  min={0.001}
+                  step={0.001}
+                />
+              </div>
+
+              <Button
+                onClick={generateArt}
+                disabled={isGenerating}
+                className={`w-full ${
+                  mode === "ai"
+                    ? "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-pink-600"
+                    : "bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 hover:from-green-600 hover:via-blue-600 hover:to-purple-600"
+                }`}
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    {mode === "ai" ? "Generating AI Art..." : "Generating Complex Math Art..."}
+                  </>
+                ) : (
+                  <>
+                    {mode === "ai" ? <Sparkles className="h-4 w-4 mr-2" /> : <Calculator className="h-4 w-4 mr-2" />}
+                    {getButtonText()}
+                  </>
+                )}
+              </Button>
+
+              {isGenerating && (
+                <div className="space-y-2">
+                  <Progress value={progress} />
+                  <p className="text-sm text-center text-gray-600">
+                    {progress < 30
+                      ? `Generating complex ${dataset} dataset...`
+                      : progress < 60
+                        ? mode === "ai"
+                          ? useCustomPrompt
+                            ? "Processing custom prompt..."
+                            : "Applying AI artistic effects..."
+                          : scenario === "pure"
+                            ? "Applying advanced mathematical visualization..."
+                            : `Blending with ${scenario} scenario dynamics...`
+                        : progress < 90
+                          ? "Rendering complex visualization..."
+                          : "Finalizing mathematical artwork..."}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Action Buttons */}
+          {generatedArt && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ImageIcon className="h-5 w-5" />
+                  Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button onClick={downloadImage} variant="outline" className="w-full bg-transparent">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download {generatedArt.upscaledImageUrl ? "Enhanced" : "Original"}
+                </Button>
+
+                <Button
+                  onClick={upscaleImage}
+                  disabled={isUpscaling || !!generatedArt.upscaledImageUrl}
+                  variant="outline"
+                  className="w-full bg-transparent"
+                >
+                  {isUpscaling ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      {generatedArt.mode === "svg" ? "Adding Mathematical Detail..." : "Enhancing AI Art..."}
+                    </>
+                  ) : generatedArt.upscaledImageUrl ? (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Enhanced ✓ ({generatedArt.upscaleMethod === "mathematical" ? "16x More Points" : "Pixel Enhanced"}
+                      )
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      {generatedArt.mode === "svg" ? "Add Mathematical Detail" : "Enhance AI Art"}
+                    </>
+                  )}
+                </Button>
+
+                {generatedArt.upscaledImageUrl && generatedArt.upscaleMethod === "mathematical" && (
+                  <Alert>
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      True mathematical upscaling: Re-rendered with 4x scale factor and 16x more data points
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Preview */}
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <ImageIcon className="h-5 w-5" />
+                  Generated Mathematical Artwork
+                </span>
+                {generatedArt && (
+                  <div className="flex gap-2">
+                    <Badge variant={generatedArt.mode === "ai" ? "default" : "outline"}>
+                      {generatedArt.mode === "ai" ? "🤖 AI Art" : "📊 Complex Math"}
+                    </Badge>
+                    <Badge variant="outline">{generatedArt.params.dataset}</Badge>
+                    <Badge variant="outline">
+                      {generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario}
+                    </Badge>
+                    <Badge variant="outline">{generatedArt.params.colorScheme}</Badge>
+                    <Badge variant="outline">{generatedArt.params.numSamples} points</Badge>
+                    {generatedArt.customPrompt && (
+                      <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                        <Wand2 className="w-3 h-3 mr-1" />
+                        Custom Prompt
+                      </Badge>
+                    )}
+                    {generatedArt.upscaledImageUrl && (
+                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        Enhanced
+                      </Badge>
+                    )}
+                  </div>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {generatedArt ? (
+                <div className="space-y-4">
+                  <div className="relative bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden">
+                    {generatedArt.mode === "svg" && !generatedArt.upscaledImageUrl ? (
+                      <div
+                        className="w-full h-96 flex items-center justify-center"
+                        dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                      />
+                    ) : (
+                      <img
+                        src={generatedArt.upscaledImageUrl || generatedArt.imageUrl}
+                        alt="Generated artwork"
+                        className="w-full h-96 object-contain"
+                      />
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">Mode:</span>
+                      <p className="font-medium">{generatedArt.mode === "ai" ? "AI Art" : "Complex Math"}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Dataset:</span>
+                      <p className="font-medium capitalize">{generatedArt.params.dataset}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Scenario:</span>
+                      <p className="font-medium capitalize">
+                        {generatedArt.params.scenario === "pure" ? "Pure Math" : generatedArt.params.scenario}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Colors:</span>
+                      <p className="font-medium capitalize">{generatedArt.params.colorScheme}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Seed:</span>
+                      <p className="font-medium">{generatedArt.params.seed}</p>
+                    </div>
+                  </div>
+
+                  {generatedArt.customPrompt && (
+                    <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg">
+                      <Label className="text-xs font-semibold text-purple-700 dark:text-purple-300">
+                        Custom Prompt Used:
+                      </Label>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-3">
+                        {generatedArt.customPrompt}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="h-96 flex items-center justify-center text-gray-500 dark:text-gray-400">
+                  <div className="text-center">
+                    <Calculator className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>Choose a complex mathematical dataset and scenario blend!</p>
+                    <p className="text-sm mt-2">
+                      Try Complex Spirals + Pure Math + Plasma or Hyperbolic Moons + Cosmic + Futuristic for stunning
+                      results
+                    </p>
+                    <p className="text-sm mt-1 text-purple-600">
+                      Switch to AI Art tab and use prompt enhancement for professional AI artwork! 🤖✨
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  )
+}
