@@ -1,27 +1,44 @@
-import { createClient } from "@supabase/supabase-js"
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 
 /**
- * Returns the single user row for the current JWT.
- * If the query yields 0 **or** >1 rows we gracefully return `null`
- * instead of throwing – preventing “JSON object requested …” errors.
+ * We only create the Supabase client if the public URL and
+ * anonymous key are present. This avoids the
+ * “supabaseKey is required” runtime exception.
  */
-export async function getCurrentUser(token?: string) {
-  // Nothing to do if we have no auth (anonymous access path)
-  if (!token) return null
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", token)
-    .limit(2) // keep the payload tiny & detect duplicates
-    .maybeSingle() // <- avoids the JSON object error
-
-  if (error) {
-    console.error("[marketplace-db] getCurrentUser error ⇒", error)
+let _client: SupabaseClient | null = null
+function getClient(): SupabaseClient | null {
+  if (_client) return _client
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.warn("[marketplace-db] Supabase env vars not found – running in anonymous-only mode.")
     return null
   }
+  _client = createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: { persistSession: false },
+  })
+  return _client
+}
 
+/**
+ * Looks up the profile row for the supplied `userId`.
+ * Returns `null` when:
+ *  • no userId (anonymous visit)
+ *  • Supabase not configured
+ *  • profile missing or duplicated
+ */
+export async function getCurrentUser(userId?: string | null): Promise<Record<string, unknown> | null> {
+  if (!userId) return null
+
+  const supabase = getClient()
+  if (!supabase) return null
+
+  const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).maybeSingle()
+
+  if (error) {
+    console.error("[marketplace-db] getCurrentUser:", error)
+    return null
+  }
   return data ?? null
 }

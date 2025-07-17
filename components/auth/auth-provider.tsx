@@ -1,51 +1,39 @@
 "use client"
 
-import { type ReactNode, createContext, useContext, useEffect, useState } from "react"
+import type React from "react"
+
+import { createContext, useContext, useEffect, useState } from "react"
 import { getCurrentUser } from "@/lib/marketplace-db"
 
-// ---------- Context ---------- //
-export interface User {
+type User = {
   id: string
-  email?: string
   avatar_url?: string
-}
+  full_name?: string
+} | null
 
-interface AuthContextShape {
-  user: User | null
-  loading: boolean
-}
+const AuthContext = createContext<User>(null)
 
-const AuthContext = createContext<AuthContextShape>({
-  user: null,
-  loading: true,
-})
-
-export function useAuth() {
-  return useContext(AuthContext)
-}
-
-// ---------- Provider ---------- //
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+/**
+ * Minimal provider that:
+ *  • gracefully handles missing credentials (anonymous mode)
+ *  • exposes the `user` object (or `null`) via context
+ */
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User>(null)
 
   useEffect(() => {
-    /**
-     * In the “anonymous” build, there is **no JWT**. We still call the helper
-     * so a single code-path works for both authenticated and unauthenticated
-     * deployments. The helper now gracefully resolves to `null`.
-     */
+    // In anonymous mode we don't have a JWT / userId.
+    // When you later add auth, replace the stub below with real logic.
+    const userId = null
     ;(async () => {
-      try {
-        // In a real setup you’d read the token from cookies / localStorage.
-        const token = undefined
-        const current = await getCurrentUser(token)
-        setUser(current)
-      } finally {
-        setLoading(false)
-      }
+      const profile = await getCurrentUser(userId)
+      setUser(profile)
     })()
   }, [])
 
-  return <AuthContext.Provider value={{ user, loading }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>
+}
+
+export function useUser() {
+  return useContext(AuthContext)
 }
