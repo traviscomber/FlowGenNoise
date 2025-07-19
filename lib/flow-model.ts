@@ -807,13 +807,13 @@ function applyScenarioTransform(
 
         // Sand particle dynamics
         const sandShift = Math.sin(windDirection) * windStrength * 0.1
-        const erosionRate = Math.cos(windDirection) * windStrength * 0.05
+        const erosionRateLocal = Math.cos(windDirection) * windStrength * 0.05
 
         // Oasis effect
         const oasisDistance = Math.sqrt((baseX - 0.8) ** 2 + (baseY + 0.5) ** 2)
         const oasisEffect = Math.exp(-oasisDistance * 3) * 0.2
 
-        x = baseX + sandShift - erosionRate
+        x = baseX + sandShift - erosionRateLocal
         y = baseY + duneHeight + oasisEffect
 
         metadata = {
@@ -879,8 +879,8 @@ function applyScenarioTransform(
 
       case "sunset":
         // Add atmospheric light scattering with Rayleigh and Mie effects
-        const altitudeLocal = baseY + 1
-        const atmosphericDensity = Math.exp(-altitudeLocal * 2)
+        const altitude_Local = baseY + 1
+        const atmosphericDensity = Math.exp(-altitude_Local * 2)
 
         // Rayleigh scattering (blue light)
         const rayleighScatter = atmosphericDensity * Math.pow(0.4, -4) * 0.1
@@ -891,16 +891,16 @@ function applyScenarioTransform(
         // Cloud formations
         const cloudDensity = Math.max(0, Math.sin(baseX * 2) * Math.cos(baseY * 1.5) + 0.3) * 0.2
 
-        x = baseX + rayleighScatter * Math.sin(altitudeLocal * 5)
+        x = baseX + rayleighScatter * Math.sin(altitude_Local * 5)
         y = baseY + mieScatter + cloudDensity
 
         metadata = {
-          lightIntensity: Math.max(0, 1 - altitudeLocal * 0.5),
-          colorTemperature: 2000 + 3000 * Math.exp(-altitudeLocal),
+          lightIntensity: Math.max(0, 1 - altitude_Local * 0.5),
+          colorTemperature: 2000 + 3000 * Math.exp(-altitude_Local),
           atmosphericPressure: 1013 * atmosphericDensity,
           humidity: 60 + 30 * Math.sin(baseX + baseY),
           cloudCover: cloudDensity * 100,
-          sunAngle: (Math.atan2(altitudeLocal, baseX) * 180) / Math.PI,
+          sunAngle: (Math.atan2(altitude_Local, baseX) * 180) / Math.PI,
         }
         break
 
@@ -1018,12 +1018,13 @@ function applyScenarioTransform(
       case "plasma":
         // Plasma physics with magnetohydrodynamics
         const magneticField = Math.sin(baseX * 2) * Math.cos(baseY * 2)
-        const electricFieldLocal = Math.cos(baseX * 3) * Math.sin(baseY * 3)
+        // renamed to avoid duplicate identifier
+        const electricFieldPlasma = Math.cos(baseX * 3) * Math.sin(baseY * 3)
 
         // Lorentz force on charged particles
         const charge = rng.next() < 0.5 ? 1 : -1
-        const lorentzX = charge * (electricFieldLocal + magneticField * baseY) * 0.1
-        const lorentzY = charge * (electricFieldLocal - magneticField * baseX) * 0.1
+        const lorentzX = charge * (electricFieldPlasma + magneticField * baseY) * 0.1
+        const lorentzY = charge * (electricFieldPlasma - magneticField * baseX) * 0.1
 
         // Plasma instabilities
         const instability = Math.sin(baseX * 8 + baseY * 6) * Math.exp(-Math.abs(baseX) * 2) * 0.15
@@ -1038,6 +1039,7 @@ function applyScenarioTransform(
         metadata = {
           temperature: 10000 + Math.abs(fusionEnergy) * 100000,
           magneticField: magneticField,
+          electricField: electricFieldPlasma,
           isIonized: true,
           charge: charge,
           fusionRate: fusionProbability * 1000,
@@ -1047,9 +1049,9 @@ function applyScenarioTransform(
 
       case "atmospheric":
         // Advanced atmospheric physics
-        const altitudeLocal = (baseY + 2) * 5000 // 0-20km altitude
-        const pressure = 101325 * Math.exp(-altitudeLocal / 8400) // Barometric formula
-        const temperatureLocal = 288.15 - 0.0065 * altitudeLocal // Standard atmosphere
+        const altitude = (baseY + 2) * 5000 // 0-20km altitude
+        const pressure = 101325 * Math.exp(-altitude / 8400) // Barometric formula
+        const temperature_Local = 288.15 - 0.0065 * altitude // Standard atmosphere
 
         // Rayleigh scattering
         const wavelength = 500e-9 // Green light
@@ -1057,7 +1059,7 @@ function applyScenarioTransform(
         const scattering = ((rayleighCoeff * pressure) / 101325) * 0.0001
 
         // Atmospheric turbulence
-        const turbulenceLocal = Math.sin(baseX * 10) * Math.cos(baseY * 8) * Math.exp(-altitudeLocal / 5000) * 0.1
+        const turbulenceLocal = Math.sin(baseX * 10) * Math.cos(baseY * 8) * Math.exp(-altitude / 5000) * 0.1
 
         // Coriolis effect
         const latitude = baseX * 90 // -90 to 90 degrees
@@ -1068,9 +1070,9 @@ function applyScenarioTransform(
         y = baseY + scattering * Math.sin(baseX * 5) + turbulenceLocal * Math.sin(baseX * 3)
 
         metadata = {
-          altitude: altitudeLocal,
+          altitude: altitude,
           pressure: pressure,
-          temperature: temperatureLocal,
+          temperature: temperature_Local,
           humidity: 50 + 30 * Math.sin(baseX + baseY),
           windSpeed: Math.abs(turbulenceLocal) * 100,
           visibility: Math.max(0.1, 50 - scattering * 1000),
@@ -1089,8 +1091,8 @@ function applyScenarioTransform(
         const orogenicForce = Math.exp(-Math.abs(baseX) * 2) * Math.sin(baseY * 3) * 0.3
 
         // Erosion and weathering
-        const erosionRate = 1e-6 * (1 + Math.abs(Math.sin(baseX * 2))) // m/year
-        const erosionLocal = -erosionRate * geologicalTime * 0.0001
+        const erosionRate_Local = 1e-6 * (1 + Math.abs(Math.sin(baseX * 2))) // m/year
+        const erosionLocal = -erosionRate_Local * geologicalTime * 0.0001
 
         // Sediment deposition
         const sedimentThickness = Math.max(0, Math.sin(baseY * 2) + 0.5) * 0.2
