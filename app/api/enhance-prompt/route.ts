@@ -20,14 +20,16 @@ Current Prompt: ${currentPrompt || "None"}
 
 Generate a professional, museum-quality prompt that includes:
 
-1. MATHEMATICAL FOUNDATION: Specific equations, theorems, and mathematical concepts
-2. PHYSICAL LAWS: Relevant physics principles and quantitative parameters  
+1. MATHEMATICAL FOUNDATION: Describe mathematical concepts as visual patterns and structures
+2. PHYSICAL LAWS: Translate physics principles into visual elements and compositions
 3. VISUAL SPECIFICATIONS: Professional art direction with technical details
 4. LIGHTING & MATERIALS: HDR lighting, PBR materials, subsurface scattering
 5. SCALE & COMPOSITION: From quantum to cosmic scale relationships
 6. ARTISTIC STYLE: Professional photography/digital art techniques
 
-Make it incredibly detailed, scientifically accurate, and artistically sophisticated. Include specific mathematical formulas, physical constants, and professional rendering techniques.`
+Make it incredibly detailed, scientifically accurate, and artistically sophisticated. Focus on visual representation of mathematical and physical concepts.
+
+CRITICAL: End the prompt with "IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text. Pure abstract visual art only. Focus on colors, shapes, patterns, and mathematical structures as visual elements, not written content."`
 
     const { text } = await generateText({
       model: openai("gpt-4o"),

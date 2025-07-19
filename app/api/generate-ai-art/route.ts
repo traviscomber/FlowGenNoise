@@ -25,11 +25,15 @@ export async function POST(req: NextRequest) {
     /* --------------------------------------------------------------------- */
 
     const prompt = customPrompt?.trim().length
-      ? customPrompt.trim()
-      : `Create an ultra-high-resolution mathematical artwork depicting "${dataset}" patterns blended with a "${scenario}" environment. 
+      ? `${customPrompt.trim()}. IMPORTANT: No text, no words, no letters, no typography, no labels, no captions. Pure visual art only.`
+      : `Create an ultra-high-resolution abstract mathematical artwork depicting "${dataset}" patterns blended with a "${scenario}" environment. 
 Colour palette: ${colorScheme}. 
-${numSamples} data points. Noise level ${noise}. 
-Include scientific detail, museum-grade composition, HDR lighting, PBR materials, and professional post-processing. Seed ${seed}.`
+${numSamples} data points with noise level ${noise}. 
+Include scientific detail, museum-grade composition, HDR lighting, PBR materials, and professional post-processing. 
+Seed reference: ${seed}.
+
+IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text. 
+Pure abstract visual art only. Focus on colors, shapes, patterns, and mathematical structures as visual elements, not written content.`
 
     /* --------------------------------------------------------------------- */
     /* 2. Try OpenAI DALL·E 3 first                                          */
