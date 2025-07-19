@@ -1,100 +1,123 @@
-import { NextResponse } from "next/server"
-import { experimental_generateImage } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { type NextRequest, NextResponse } from "next/server"
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { dataset, seed, scenario, colorScheme, numSamples, noise, customPrompt } = await req.json()
+    const { dataset, scenario, colorScheme, seed, numSamples, noise, customPrompt } = await request.json()
 
-    if (
-      !dataset ||
-      typeof seed === "undefined" ||
-      !scenario ||
-      !colorScheme ||
-      typeof numSamples === "undefined" ||
-      typeof noise === "undefined"
-    ) {
-      return NextResponse.json(
-        {
-          error: "Missing dataset, seed, scenario, colorScheme, number of samples, or noise",
-        },
-        { status: 400 },
-      )
-    }
+    // Create base prompt if no custom prompt provided
+    let prompt = customPrompt
 
-    console.log("Generating AI art with:", { dataset, scenario, colorScheme, seed, numSamples, noise })
-    console.log("Custom prompt provided:", !!customPrompt)
-
-    let finalPrompt: string
-
-    if (customPrompt && customPrompt.trim().length > 0) {
-      // Use the custom/enhanced prompt directly
-      finalPrompt = customPrompt.trim()
-      console.log("Using custom prompt:", finalPrompt)
-    } else {
-      // Generate default prompt based on dataset, scenario, and color scheme
-      const colorDescriptions = {
-        pure: "clean mathematical grayscale with precise geometric forms",
-        forest: "rich forest greens with natural earth tones and golden sunlight",
-        cosmic: "deep space blues with stellar whites and nebula purples",
-        ocean: "aquatic blues from deep ocean to seafoam with wave-like gradients",
-        neural: "electric blues and purples with synaptic glowing connections",
-        fire: "warm reds and oranges with flame-like intensity and ember effects",
-        ice: "cool blues and whites with crystalline frost patterns and prismatic light",
-        desert: "warm earth tones with sand dune textures and golden hour lighting",
-        sunset: "gradient warm colors from deep reds to golden yellows with atmospheric effects",
-        monochrome: "sophisticated grayscale with high contrast and minimalist aesthetic",
+    if (!prompt) {
+      // Generate sophisticated mathematical art prompt
+      const datasetDescriptions = {
+        spirals: "Quantum spirals with Fibonacci sequences, logarithmic growth patterns, and Archimedean curves",
+        quantum: "Quantum field fluctuations with wave-particle duality, Schrödinger equations, and probability clouds",
+        strings: "11-dimensional M-theory projections with Calabi-Yau manifolds and brane interactions",
+        fractals: "Fractal dimensions with Hausdorff measures, Julia sets, and Sierpinski triangles",
+        topology: "Topological spaces with Klein bottles, Hopf fibrations, and Riemann surfaces",
+        moons: "Hyperbolic moons with elliptic curves and non-Euclidean geometry",
+        circles: "Manifold torus projections with 4D embeddings and Möbius strips",
+        blobs: "Voronoi dynamics with Lorenz attractors and chaos theory",
+        checkerboard: "Fractal checkerboards with Mandelbrot iterations and complex plane mappings",
+        gaussian: "Multi-modal Gaussian distributions with correlated noise and Perlin fields",
+        grid: "Non-linear grids with Klein bottle transformations and wave distortions",
       }
 
       const scenarioDescriptions = {
-        pure: "pure mathematical visualization with geometric precision",
-        forest: "organic forest growth with fractal tree structures and natural patterns",
-        cosmic: "stellar formations with nebula clouds and cosmic dust effects",
-        ocean: "fluid dynamics with wave patterns and underwater currents",
-        neural: "synaptic neural networks with electric pathways and glowing nodes",
-        fire: "combustion dynamics with flame patterns and ember particles",
-        ice: "crystalline structures with frost formations and light refraction",
-        desert: "sand dune formations with wind patterns and heat shimmer effects",
-        sunset: "atmospheric light scattering with warm gradient transitions",
-        monochrome: "abstract geometric forms with tonal variations",
+        pure: "pure mathematical visualization with sacred geometry, golden ratios, and advanced mathematical structures",
+        quantum: "quantum realm with wave-particle duality, superposition states, and quantum entanglement",
+        cosmic: "cosmic scale with gravitational lensing, dark matter, and relativistic effects",
+        microscopic: "microscopic world with molecular dynamics, Brownian motion, and Van der Waals forces",
+        forest: "living forest with L-system fractals, organic growth patterns, and ecosystem dynamics",
+        ocean: "deep ocean with Navier-Stokes equations, fluid turbulence, and vortex dynamics",
+        neural: "neural networks with synaptic plasticity, information theory, and brain connectivity",
+        crystalline: "crystal lattice with symmetry groups, solid state physics, and piezoelectric effects",
+        plasma: "plasma physics with magnetohydrodynamics, fusion reactions, and Lorentz forces",
+        atmospheric: "atmospheric physics with Rayleigh scattering, Coriolis effects, and fluid mechanics",
+        geological: "geological time with tectonic forces, mineral formation, and deep time processes",
+        biological: "biological systems with DNA helixes, protein folding, and enzyme kinetics",
       }
 
-      const datasetDesc = dataset.charAt(0).toUpperCase() + dataset.slice(1)
-      const colorDesc = colorDescriptions[colorScheme as keyof typeof colorDescriptions] || colorScheme
-      const scenarioDesc = scenarioDescriptions[scenario as keyof typeof scenarioDescriptions] || scenario
+      const colorDescriptions = {
+        plasma: "deep purple to magenta to brilliant yellow plasma gradients",
+        quantum: "probability blue to wave green to particle gold quantum colors",
+        cosmic: "void black to nebula purple to star white cosmic palette",
+        thermal: "absolute zero blue to fusion core white thermal spectrum",
+        spectral: "full electromagnetic spectrum from infrared to ultraviolet",
+        crystalline: "diamond white to sapphire blue to emerald green crystal colors",
+        bioluminescent: "deep sea blue to algae glow green bioluminescent palette",
+        aurora: "solar wind interactions creating aurora borealis colors",
+        metallic: "copper to silver to gold to platinum metallic gradients",
+        prismatic: "light refraction creating rainbow dispersion effects",
+      }
 
-      finalPrompt = `Create a stunning mathematical art piece featuring ${datasetDesc} dataset patterns with ${numSamples} data points, rendered in ${colorDesc} color palette. The artwork should showcase ${scenarioDesc} with mathematical precision and artistic beauty. Include subtle texture (noise level ${noise}) for organic feel. Professional gallery-quality composition, highly detailed, suitable for high-resolution display. Mathematical beauty meets artistic expression. Digital art, masterpiece quality.`
+      prompt = `Ultra-high resolution mathematical art featuring ${datasetDescriptions[dataset] || dataset} in a ${scenarioDescriptions[scenario] || scenario} environment. 
 
-      console.log("Using generated prompt:", finalPrompt)
+Mathematical Foundation: Complex mathematical structures with ${numSamples} precisely calculated data points, incorporating advanced algorithms and theoretical physics principles. Noise factor of ${noise} adds quantum uncertainty and natural variation.
+
+Visual Style: ${colorDescriptions[colorScheme] || colorScheme} color palette with professional HDR lighting, physically-based rendering (PBR), subsurface scattering, and volumetric effects. 
+
+Technical Specifications: 8K resolution, ray-traced reflections, global illumination, depth of field, motion blur where appropriate. Professional photography composition with rule of thirds, leading lines, and dynamic balance.
+
+Artistic Direction: Museum-quality digital art combining scientific accuracy with aesthetic beauty. Intricate details visible at multiple scales from macro to micro. Professional color grading and post-processing effects.
+
+Rendering: Octane render quality, Unreal Engine 5 level detail, photorealistic materials, advanced shader work, particle systems, and procedural generation techniques.
+
+Seed: ${seed} for reproducible mathematical precision.`
     }
 
-    // Generate high-quality base image using DALL-E 3
-    const { image } = await experimental_generateImage({
-      model: openai.image("dall-e-3"),
-      prompt: finalPrompt,
-      quality: "hd",
-      size: "1792x1024",
-      style: "vivid",
+    // Use Replicate API for AI art generation
+    const response = await fetch("https://api.replicate.com/v1/predictions", {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        version:
+          process.env.REPLICATE_MODEL_VERSION || "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4",
+        input: {
+          prompt: prompt,
+          width: 1024,
+          height: 1024,
+          num_inference_steps: 50,
+          guidance_scale: 7.5,
+          seed: seed,
+          scheduler: "DPMSolverMultistep",
+        },
+      }),
     })
 
-    const baseImage = `data:image/png;base64,${image.base64}`
+    if (!response.ok) {
+      throw new Error(`Replicate API error: ${response.status}`)
+    }
+
+    const prediction = await response.json()
+
+    // Poll for completion
+    let result = prediction
+    while (result.status === "starting" || result.status === "processing") {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
+        headers: {
+          Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+        },
+      })
+
+      result = await pollResponse.json()
+    }
+
+    if (result.status === "failed") {
+      throw new Error("AI art generation failed")
+    }
 
     return NextResponse.json({
-      image: baseImage,
-      baseResolution: "1792x1024",
-      readyForUpscaling: true,
-      recommendedUpscale: "4x",
-      promptUsed: finalPrompt,
-      isCustomPrompt: !!customPrompt,
+      image: result.output?.[0] || result.output,
+      prompt: prompt,
     })
   } catch (error: any) {
-    console.error("Error generating AI art:", error)
-    if (error.message.includes("api_key")) {
-      return NextResponse.json(
-        { error: "OpenAI API key is missing or invalid. Please set OPENAI_API_KEY." },
-        { status: 500 },
-      )
-    }
-    return NextResponse.json({ error: "Failed to generate AI art: " + error.message }, { status: 500 })
+    console.error("AI art generation error:", error)
+    return NextResponse.json({ error: "Failed to generate AI art", details: error.message }, { status: 500 })
   }
 }

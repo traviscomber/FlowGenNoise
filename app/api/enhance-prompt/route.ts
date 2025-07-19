@@ -1,101 +1,45 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { dataset, scenario, colorScheme, numSamples, noiseScale, currentPrompt } = await req.json()
+    const { dataset, scenario, colorScheme, numSamples, noiseScale, currentPrompt } = await request.json()
 
-    if (!dataset || !scenario || !colorScheme) {
-      return NextResponse.json({ error: "Missing required parameters" }, { status: 400 })
-    }
+    // Create god-level mathematical art prompt
+    const systemPrompt = `You are a world-class mathematical artist and theoretical physicist who creates museum-quality AI art prompts. Generate incredibly detailed, scientifically accurate prompts that combine advanced mathematics, theoretical physics, and professional art direction.`
 
-    console.log("Enhancing prompt for:", { dataset, scenario, colorScheme, numSamples, noiseScale })
+    const enhancementPrompt = `Create a god-level AI art prompt for generating mathematical artwork with these parameters:
 
-    const enhancementPrompt = `You are a world-renowned expert in mathematical visualization, theoretical physics, and AI art generation. You possess deep knowledge of:
+Dataset: ${dataset}
+Scenario: ${scenario} 
+Color Scheme: ${colorScheme}
+Sample Points: ${numSamples}
+Noise Scale: ${noiseScale}
+Current Prompt: ${currentPrompt || "None"}
 
-MATHEMATICAL DOMAINS:
-- Advanced topology (Klein bottles, Möbius strips, Hopf fibrations)
-- Quantum field theory and string theory visualizations
-- Fractal geometry (Hausdorff dimensions, Julia sets, Mandelbrot sets)
-- Complex analysis and Riemann surfaces
-- Differential geometry and manifold theory
-- Chaos theory and dynamical systems
-- Number theory and prime distributions
+Generate a professional, museum-quality prompt that includes:
 
-ARTISTIC MASTERY:
-- Sacred geometry and golden ratio compositions
-- Color theory with mathematical precision
-- Light physics and atmospheric rendering
-- Texture synthesis using mathematical functions
-- Compositional harmony based on mathematical ratios
+1. MATHEMATICAL FOUNDATION: Specific equations, theorems, and mathematical concepts
+2. PHYSICAL LAWS: Relevant physics principles and quantitative parameters  
+3. VISUAL SPECIFICATIONS: Professional art direction with technical details
+4. LIGHTING & MATERIALS: HDR lighting, PBR materials, subsurface scattering
+5. SCALE & COMPOSITION: From quantum to cosmic scale relationships
+6. ARTISTIC STYLE: Professional photography/digital art techniques
 
-Create an enhanced, museum-quality prompt for generating AI artwork based on these parameters:
-- Dataset: ${dataset} (advanced mathematical structure)
-- Scenario: ${scenario} (environmental/thematic context)
-- Color Scheme: ${colorScheme} (sophisticated palette)
-- Data Points: ${numSamples} (complexity scale)
-- Noise Level: ${noiseScale} (organic variation)
-
-Current prompt: "${currentPrompt || "None provided"}"
-
-Generate a sophisticated, technically precise prompt that:
-
-1. MATHEMATICAL PRECISION: Describe the ${dataset} pattern with advanced mathematical terminology, including:
-   - Specific equations, transformations, or geometric properties
-   - Dimensional analysis and topological characteristics
-   - Quantum mechanical or field theory analogies where applicable
-   - Fractal dimensions and self-similarity properties
-
-2. SCENARIO INTEGRATION: Seamlessly blend ${scenario} elements with mathematical accuracy:
-   - Physical laws governing the scenario (fluid dynamics, thermodynamics, etc.)
-   - Environmental parameters with quantitative descriptions
-   - Realistic material properties and interactions
-   - Scale relationships and dimensional consistency
-
-3. ARTISTIC SOPHISTICATION: Incorporate ${colorScheme} with professional art direction:
-   - Color temperature specifications (Kelvin values)
-   - Lighting models (Rayleigh scattering, subsurface scattering)
-   - Composition using mathematical ratios (golden ratio, rule of thirds)
-   - Texture details based on physical or mathematical properties
-
-4. TECHNICAL EXCELLENCE: Include professional rendering specifications:
-   - High dynamic range (HDR) lighting
-   - Physically based rendering (PBR) materials
-   - Anti-aliasing and sampling quality
-   - Resolution and detail enhancement keywords
-
-5. SCALE AND COMPLEXITY: Reference the ${numSamples} data points and ${noiseScale} noise:
-   - Microscopic to macroscopic scale transitions
-   - Emergent complexity from simple rules
-   - Statistical distributions and probability densities
-   - Organic variation within mathematical constraints
-
-The prompt should be 3-4 sentences, rich in technical detail, and optimized for creating gallery-worthy mathematical art that bridges science and aesthetics. Use terminology that would impress both mathematicians and artists.
-
-Focus on creating breathtaking visualizations that reveal the hidden beauty in mathematical structures while maintaining scientific accuracy and artistic excellence.`
+Make it incredibly detailed, scientifically accurate, and artistically sophisticated. Include specific mathematical formulas, physical constants, and professional rendering techniques.`
 
     const { text } = await generateText({
       model: openai("gpt-4o"),
+      system: systemPrompt,
       prompt: enhancementPrompt,
-      temperature: 0.7,
-      maxTokens: 300,
+      maxTokens: 1000,
+      temperature: 0.8,
     })
 
-    console.log("Enhanced prompt generated:", text)
-
-    return NextResponse.json({
-      enhancedPrompt: text.trim(),
-      originalParams: { dataset, scenario, colorScheme, numSamples, noiseScale },
-    })
+    return NextResponse.json({ enhancedPrompt: text })
   } catch (error: any) {
-    console.error("Error enhancing prompt:", error)
-    if (error.message.includes("api_key")) {
-      return NextResponse.json(
-        { error: "OpenAI API key is missing or invalid. Please set OPENAI_API_KEY." },
-        { status: 500 },
-      )
-    }
-    return NextResponse.json({ error: "Failed to enhance prompt: " + error.message }, { status: 500 })
+    console.error("Prompt enhancement error:", error)
+    return NextResponse.json({ error: "Failed to enhance prompt", details: error.message }, { status: 500 })
   }
 }
