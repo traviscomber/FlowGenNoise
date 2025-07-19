@@ -1,123 +1,117 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { experimental_generateImage } from "ai"
+import { openai } from "@ai-sdk/openai"
 
-export async function POST(request: NextRequest) {
+/**
+ * POST /api/generate-ai-art
+ *
+ * Body:
+ * {
+ *   dataset: string,
+ *   scenario: string,
+ *   colorScheme: string,
+ *   seed: number,
+ *   numSamples: number,
+ *   noise: number,
+ *   customPrompt?: string
+ * }
+ */
+export async function POST(req: NextRequest) {
   try {
-    const { dataset, scenario, colorScheme, seed, numSamples, noise, customPrompt } = await request.json()
+    const { dataset, scenario, colorScheme, seed, numSamples, noise, customPrompt } = await req.json()
 
-    // Create base prompt if no custom prompt provided
-    let prompt = customPrompt
+    /* --------------------------------------------------------------------- */
+    /* 1. Build a prompt (use customPrompt if one was provided)              */
+    /* --------------------------------------------------------------------- */
 
-    if (!prompt) {
-      // Generate sophisticated mathematical art prompt
-      const datasetDescriptions = {
-        spirals: "Quantum spirals with Fibonacci sequences, logarithmic growth patterns, and Archimedean curves",
-        quantum: "Quantum field fluctuations with wave-particle duality, Schrödinger equations, and probability clouds",
-        strings: "11-dimensional M-theory projections with Calabi-Yau manifolds and brane interactions",
-        fractals: "Fractal dimensions with Hausdorff measures, Julia sets, and Sierpinski triangles",
-        topology: "Topological spaces with Klein bottles, Hopf fibrations, and Riemann surfaces",
-        moons: "Hyperbolic moons with elliptic curves and non-Euclidean geometry",
-        circles: "Manifold torus projections with 4D embeddings and Möbius strips",
-        blobs: "Voronoi dynamics with Lorenz attractors and chaos theory",
-        checkerboard: "Fractal checkerboards with Mandelbrot iterations and complex plane mappings",
-        gaussian: "Multi-modal Gaussian distributions with correlated noise and Perlin fields",
-        grid: "Non-linear grids with Klein bottle transformations and wave distortions",
-      }
+    const prompt = customPrompt?.trim().length
+      ? customPrompt.trim()
+      : `Create an ultra-high-resolution mathematical artwork depicting "${dataset}" patterns blended with a "${scenario}" environment. 
+Colour palette: ${colorScheme}. 
+${numSamples} data points. Noise level ${noise}. 
+Include scientific detail, museum-grade composition, HDR lighting, PBR materials, and professional post-processing. Seed ${seed}.`
 
-      const scenarioDescriptions = {
-        pure: "pure mathematical visualization with sacred geometry, golden ratios, and advanced mathematical structures",
-        quantum: "quantum realm with wave-particle duality, superposition states, and quantum entanglement",
-        cosmic: "cosmic scale with gravitational lensing, dark matter, and relativistic effects",
-        microscopic: "microscopic world with molecular dynamics, Brownian motion, and Van der Waals forces",
-        forest: "living forest with L-system fractals, organic growth patterns, and ecosystem dynamics",
-        ocean: "deep ocean with Navier-Stokes equations, fluid turbulence, and vortex dynamics",
-        neural: "neural networks with synaptic plasticity, information theory, and brain connectivity",
-        crystalline: "crystal lattice with symmetry groups, solid state physics, and piezoelectric effects",
-        plasma: "plasma physics with magnetohydrodynamics, fusion reactions, and Lorentz forces",
-        atmospheric: "atmospheric physics with Rayleigh scattering, Coriolis effects, and fluid mechanics",
-        geological: "geological time with tectonic forces, mineral formation, and deep time processes",
-        biological: "biological systems with DNA helixes, protein folding, and enzyme kinetics",
-      }
+    /* --------------------------------------------------------------------- */
+    /* 2. Try OpenAI DALL·E 3 first                                          */
+    /* --------------------------------------------------------------------- */
+    try {
+      const { image } = await experimental_generateImage({
+        model: openai.image("dall-e-3"),
+        prompt,
+        size: "1792x1024",
+        quality: "hd",
+        style: "vivid",
+      })
 
-      const colorDescriptions = {
-        plasma: "deep purple to magenta to brilliant yellow plasma gradients",
-        quantum: "probability blue to wave green to particle gold quantum colors",
-        cosmic: "void black to nebula purple to star white cosmic palette",
-        thermal: "absolute zero blue to fusion core white thermal spectrum",
-        spectral: "full electromagnetic spectrum from infrared to ultraviolet",
-        crystalline: "diamond white to sapphire blue to emerald green crystal colors",
-        bioluminescent: "deep sea blue to algae glow green bioluminescent palette",
-        aurora: "solar wind interactions creating aurora borealis colors",
-        metallic: "copper to silver to gold to platinum metallic gradients",
-        prismatic: "light refraction creating rainbow dispersion effects",
-      }
-
-      prompt = `Ultra-high resolution mathematical art featuring ${datasetDescriptions[dataset] || dataset} in a ${scenarioDescriptions[scenario] || scenario} environment. 
-
-Mathematical Foundation: Complex mathematical structures with ${numSamples} precisely calculated data points, incorporating advanced algorithms and theoretical physics principles. Noise factor of ${noise} adds quantum uncertainty and natural variation.
-
-Visual Style: ${colorDescriptions[colorScheme] || colorScheme} color palette with professional HDR lighting, physically-based rendering (PBR), subsurface scattering, and volumetric effects. 
-
-Technical Specifications: 8K resolution, ray-traced reflections, global illumination, depth of field, motion blur where appropriate. Professional photography composition with rule of thirds, leading lines, and dynamic balance.
-
-Artistic Direction: Museum-quality digital art combining scientific accuracy with aesthetic beauty. Intricate details visible at multiple scales from macro to micro. Professional color grading and post-processing effects.
-
-Rendering: Octane render quality, Unreal Engine 5 level detail, photorealistic materials, advanced shader work, particle systems, and procedural generation techniques.
-
-Seed: ${seed} for reproducible mathematical precision.`
+      return NextResponse.json({
+        image: `data:image/png;base64,${image.base64}`,
+        promptUsed: prompt,
+        provider: "openai",
+      })
+    } catch (openaiErr: any) {
+      console.warn("OpenAI image generation failed – will try Replicate.", openaiErr)
     }
 
-    // Use Replicate API for AI art generation
-    const response = await fetch("https://api.replicate.com/v1/predictions", {
+    /* --------------------------------------------------------------------- */
+    /* 3. Fallback to Replicate only if a token is available                 */
+    /* --------------------------------------------------------------------- */
+    if (!process.env.REPLICATE_API_TOKEN) {
+      throw new Error("Both OpenAI generation failed and REPLICATE_API_TOKEN is missing.")
+    }
+
+    const replicateResponse = await fetch("https://api.replicate.com/v1/predictions", {
       method: "POST",
       headers: {
         Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
         "Content-Type": "application/json",
       },
+      // IMPORTANT: update version & input fields for the model you actually want
       body: JSON.stringify({
-        version:
-          process.env.REPLICATE_MODEL_VERSION || "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4",
+        version: "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4", // example SDXL Turbo
         input: {
-          prompt: prompt,
+          prompt,
           width: 1024,
           height: 1024,
-          num_inference_steps: 50,
-          guidance_scale: 7.5,
-          seed: seed,
-          scheduler: "DPMSolverMultistep",
+          num_inference_steps: 30,
+          guidance_scale: 7,
+          seed,
         },
       }),
     })
 
-    if (!response.ok) {
-      throw new Error(`Replicate API error: ${response.status}`)
+    const prediction = await replicateResponse.json()
+
+    if (!replicateResponse.ok) {
+      console.error("Replicate error payload:", prediction)
+      throw new Error(`Replicate API error ${replicateResponse.status}: ${prediction?.detail || "Unknown"}`)
     }
 
-    const prediction = await response.json()
-
-    // Poll for completion
+    // Poll Replicate prediction until it finishes
     let result = prediction
     while (result.status === "starting" || result.status === "processing") {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
-        headers: {
-          Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
-        },
+      await new Promise((r) => setTimeout(r, 1500))
+      const poll = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
+        headers: { Authorization: `Token ${process.env.REPLICATE_API_TOKEN}` },
       })
-
-      result = await pollResponse.json()
+      result = await poll.json()
     }
 
-    if (result.status === "failed") {
-      throw new Error("AI art generation failed")
+    if (result.status !== "succeeded") {
+      console.error("Replicate final status:", result)
+      throw new Error(`Replicate prediction failed: ${result.status}`)
     }
+
+    // Some models return a single URL, others an array
+    const finalUrl = Array.isArray(result.output) ? result.output[0] : result.output
 
     return NextResponse.json({
-      image: result.output?.[0] || result.output,
-      prompt: prompt,
+      image: finalUrl,
+      promptUsed: prompt,
+      provider: "replicate",
+      replicateStatus: result.status,
     })
-  } catch (error: any) {
-    console.error("AI art generation error:", error)
-    return NextResponse.json({ error: "Failed to generate AI art", details: error.message }, { status: 500 })
+  } catch (err: any) {
+    console.error("AI art generation route error:", err)
+    return NextResponse.json({ error: "AI art generation failed", detail: err.message }, { status: 500 })
   }
 }
