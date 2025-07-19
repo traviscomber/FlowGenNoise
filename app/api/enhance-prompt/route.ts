@@ -12,27 +12,68 @@ export async function POST(req: Request) {
 
     console.log("Enhancing prompt for:", { dataset, scenario, colorScheme, numSamples, noiseScale })
 
-    const enhancementPrompt = `You are an expert AI art prompt engineer specializing in mathematical and scientific visualizations. 
+    const enhancementPrompt = `You are a world-renowned expert in mathematical visualization, theoretical physics, and AI art generation. You possess deep knowledge of:
 
-Create an enhanced, detailed prompt for generating AI artwork based on these parameters:
-- Dataset: ${dataset} (mathematical data pattern)
-- Scenario: ${scenario} (artistic theme/environment)
-- Color Scheme: ${colorScheme} (color palette)
-- Data Points: ${numSamples}
-- Noise Level: ${noiseScale}
+MATHEMATICAL DOMAINS:
+- Advanced topology (Klein bottles, Möbius strips, Hopf fibrations)
+- Quantum field theory and string theory visualizations
+- Fractal geometry (Hausdorff dimensions, Julia sets, Mandelbrot sets)
+- Complex analysis and Riemann surfaces
+- Differential geometry and manifold theory
+- Chaos theory and dynamical systems
+- Number theory and prime distributions
 
-Current prompt (if any): "${currentPrompt || "None provided"}"
+ARTISTIC MASTERY:
+- Sacred geometry and golden ratio compositions
+- Color theory with mathematical precision
+- Light physics and atmospheric rendering
+- Texture synthesis using mathematical functions
+- Compositional harmony based on mathematical ratios
 
-Generate a sophisticated, detailed prompt that:
-1. Describes the mathematical ${dataset} pattern with technical accuracy
-2. Blends it seamlessly with ${scenario} artistic elements
-3. Uses ${colorScheme} color palette effectively
-4. Mentions the ${numSamples} data points for scale
-5. Incorporates the noise level (${noiseScale}) for organic texture
-6. Includes artistic quality descriptors (professional, gallery-quality, high-resolution, detailed)
-7. Balances mathematical precision with artistic beauty
+Create an enhanced, museum-quality prompt for generating AI artwork based on these parameters:
+- Dataset: ${dataset} (advanced mathematical structure)
+- Scenario: ${scenario} (environmental/thematic context)
+- Color Scheme: ${colorScheme} (sophisticated palette)
+- Data Points: ${numSamples} (complexity scale)
+- Noise Level: ${noiseScale} (organic variation)
 
-The prompt should be 2-3 sentences, rich in visual detail, and optimized for AI art generation. Focus on creating stunning mathematical art that would be suitable for galleries or scientific publications.`
+Current prompt: "${currentPrompt || "None provided"}"
+
+Generate a sophisticated, technically precise prompt that:
+
+1. MATHEMATICAL PRECISION: Describe the ${dataset} pattern with advanced mathematical terminology, including:
+   - Specific equations, transformations, or geometric properties
+   - Dimensional analysis and topological characteristics
+   - Quantum mechanical or field theory analogies where applicable
+   - Fractal dimensions and self-similarity properties
+
+2. SCENARIO INTEGRATION: Seamlessly blend ${scenario} elements with mathematical accuracy:
+   - Physical laws governing the scenario (fluid dynamics, thermodynamics, etc.)
+   - Environmental parameters with quantitative descriptions
+   - Realistic material properties and interactions
+   - Scale relationships and dimensional consistency
+
+3. ARTISTIC SOPHISTICATION: Incorporate ${colorScheme} with professional art direction:
+   - Color temperature specifications (Kelvin values)
+   - Lighting models (Rayleigh scattering, subsurface scattering)
+   - Composition using mathematical ratios (golden ratio, rule of thirds)
+   - Texture details based on physical or mathematical properties
+
+4. TECHNICAL EXCELLENCE: Include professional rendering specifications:
+   - High dynamic range (HDR) lighting
+   - Physically based rendering (PBR) materials
+   - Anti-aliasing and sampling quality
+   - Resolution and detail enhancement keywords
+
+5. SCALE AND COMPLEXITY: Reference the ${numSamples} data points and ${noiseScale} noise:
+   - Microscopic to macroscopic scale transitions
+   - Emergent complexity from simple rules
+   - Statistical distributions and probability densities
+   - Organic variation within mathematical constraints
+
+The prompt should be 3-4 sentences, rich in technical detail, and optimized for creating gallery-worthy mathematical art that bridges science and aesthetics. Use terminology that would impress both mathematicians and artists.
+
+Focus on creating breathtaking visualizations that reveal the hidden beauty in mathematical structures while maintaining scientific accuracy and artistic excellence.`
 
     const { text } = await generateText({
       model: openai("gpt-4o"),

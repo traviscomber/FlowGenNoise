@@ -658,13 +658,21 @@ export function FlowArtGenerator() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="spirals">🌀 Complex Spirals (Fibonacci + Logarithmic)</SelectItem>
-                    <SelectItem value="moons">🌙 Hyperbolic Moons (Elliptic Curves)</SelectItem>
-                    <SelectItem value="circles">⭕ Concentric Manifolds (Torus + Möbius)</SelectItem>
-                    <SelectItem value="blobs">🔵 Voronoi Blobs (Lorenz Attractor)</SelectItem>
-                    <SelectItem value="checkerboard">🏁 Fractal Checkerboard (Mandelbrot)</SelectItem>
-                    <SelectItem value="gaussian">📊 Multi-Modal Gaussian (Correlated)</SelectItem>
-                    <SelectItem value="grid">⚏ Non-Linear Grid (Klein Bottle)</SelectItem>
+                    <SelectItem value="spirals">🌀 Quantum Spirals (Fibonacci + Logarithmic + Archimedean)</SelectItem>
+                    <SelectItem value="quantum">⚛️ Quantum Fields (Schrödinger + Heisenberg + Entanglement)</SelectItem>
+                    <SelectItem value="strings">🧬 String Theory (11D M-Theory + Calabi-Yau + Branes)</SelectItem>
+                    <SelectItem value="fractals">
+                      🔺 Fractal Dimensions (Hausdorff + Julia + Sierpinski + Barnsley)
+                    </SelectItem>
+                    <SelectItem value="topology">
+                      🕳️ Topological Spaces (Klein Bottle + Hopf Fibration + Riemann)
+                    </SelectItem>
+                    <SelectItem value="moons">🌙 Hyperbolic Moons (Elliptic Curves + Non-Euclidean)</SelectItem>
+                    <SelectItem value="circles">⭕ Manifold Torus (4D Projections + Möbius Strips)</SelectItem>
+                    <SelectItem value="blobs">🔵 Voronoi Dynamics (Lorenz Attractor + Chaos Theory)</SelectItem>
+                    <SelectItem value="checkerboard">🏁 Fractal Checkerboard (Mandelbrot + Complex Plane)</SelectItem>
+                    <SelectItem value="gaussian">📊 Multi-Modal Gaussian (Correlated + Perlin Noise)</SelectItem>
+                    <SelectItem value="grid">⚏ Non-Linear Grid (Klein Bottle + Wave Distortion)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -676,16 +684,32 @@ export function FlowArtGenerator() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pure">🔢 Pure Mathematical (Enhanced)</SelectItem>
-                    <SelectItem value="forest">🌲 Forest (L-Systems + Fractals)</SelectItem>
-                    <SelectItem value="cosmic">🌌 Cosmic (Gravitational Lensing)</SelectItem>
-                    <SelectItem value="ocean">🌊 Ocean (Fluid Dynamics + Vortices)</SelectItem>
-                    <SelectItem value="neural">🧠 Neural (Synaptic Plasticity)</SelectItem>
-                    <SelectItem value="fire">🔥 Fire (Combustion + Plasma)</SelectItem>
-                    <SelectItem value="ice">❄️ Ice (Hexagonal Crystals)</SelectItem>
-                    <SelectItem value="desert">🏜️ Desert (Wind Dynamics)</SelectItem>
-                    <SelectItem value="sunset">🌅 Sunset (Atmospheric Scattering)</SelectItem>
-                    <SelectItem value="monochrome">⚫ Monochrome (Interference Patterns)</SelectItem>
+                    <SelectItem value="pure">
+                      🔢 Pure Mathematical (Advanced Visualization + Sacred Geometry)
+                    </SelectItem>
+                    <SelectItem value="quantum">⚛️ Quantum Realm (Wave-Particle Duality + Superposition)</SelectItem>
+                    <SelectItem value="cosmic">
+                      🌌 Cosmic Scale (Gravitational Lensing + Dark Matter + Relativity)
+                    </SelectItem>
+                    <SelectItem value="microscopic">
+                      🔬 Microscopic World (Molecular Dynamics + Brownian Motion)
+                    </SelectItem>
+                    <SelectItem value="forest">
+                      🌲 Living Forest (L-Systems + Fractal Growth + Ecosystem Dynamics)
+                    </SelectItem>
+                    <SelectItem value="ocean">🌊 Deep Ocean (Navier-Stokes + Turbulence + Fluid Dynamics)</SelectItem>
+                    <SelectItem value="neural">
+                      🧠 Neural Networks (Synaptic Plasticity + Information Theory)
+                    </SelectItem>
+                    <SelectItem value="crystalline">
+                      💎 Crystal Lattice (Symmetry Groups + Solid State Physics)
+                    </SelectItem>
+                    <SelectItem value="plasma">⚡ Plasma Physics (Magnetohydrodynamics + Fusion Dynamics)</SelectItem>
+                    <SelectItem value="atmospheric">
+                      🌅 Atmospheric Physics (Rayleigh Scattering + Fluid Mechanics)
+                    </SelectItem>
+                    <SelectItem value="geological">🏔️ Geological Time (Tectonic Forces + Mineral Formation)</SelectItem>
+                    <SelectItem value="biological">🧬 Biological Systems (DNA Helixes + Protein Folding)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -697,18 +721,20 @@ export function FlowArtGenerator() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="plasma">🟣 Plasma</SelectItem>
-                    <SelectItem value="lava">🔴 Lava</SelectItem>
-                    <SelectItem value="futuristic">🔵 Futuristic</SelectItem>
-                    <SelectItem value="forest">🟢 Forest</SelectItem>
-                    <SelectItem value="ocean">🌊 Ocean</SelectItem>
-                    <SelectItem value="sunset">🌅 Sunset</SelectItem>
-                    <SelectItem value="arctic">❄️ Arctic</SelectItem>
-                    <SelectItem value="neon">💚 Neon</SelectItem>
-                    <SelectItem value="vintage">🟤 Vintage</SelectItem>
-                    <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
-                    <SelectItem value="toxic">🟡 Toxic</SelectItem>
-                    <SelectItem value="ember">🟠 Ember</SelectItem>
+                    <SelectItem value="plasma">🟣 Plasma (Deep Purple → Magenta → Yellow)</SelectItem>
+                    <SelectItem value="quantum">⚛️ Quantum (Probability Blue → Wave Green → Particle Gold)</SelectItem>
+                    <SelectItem value="cosmic">🌌 Cosmic (Void Black → Nebula Purple → Star White)</SelectItem>
+                    <SelectItem value="thermal">🔥 Thermal (Absolute Zero → Fusion Core)</SelectItem>
+                    <SelectItem value="spectral">🌈 Spectral (Full Electromagnetic Spectrum)</SelectItem>
+                    <SelectItem value="crystalline">
+                      💎 Crystalline (Diamond White → Sapphire Blue → Emerald)
+                    </SelectItem>
+                    <SelectItem value="bioluminescent">🌟 Bioluminescent (Deep Sea → Algae Glow)</SelectItem>
+                    <SelectItem value="aurora">🌌 Aurora (Solar Wind → Magnetic Field Interaction)</SelectItem>
+                    <SelectItem value="metallic">⚡ Metallic (Copper → Silver → Gold → Platinum)</SelectItem>
+                    <SelectItem value="prismatic">🔮 Prismatic (Light Refraction → Rainbow Dispersion)</SelectItem>
+                    <SelectItem value="monochromatic">⚫ Monochromatic (Mathematical Grayscale Perfection)</SelectItem>
+                    <SelectItem value="infrared">🔴 Infrared (Heat Signature Visualization)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

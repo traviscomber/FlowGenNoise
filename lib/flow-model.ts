@@ -28,18 +28,29 @@ export interface UpscaleParams extends GenerationParams {
 
 // Pure 4-color palettes for visual themes
 const colorPalettes = {
-  plasma: ["#0D001A", "#7209B7", "#F72585", "#FFBE0B"], // Deep purple to bright pink to yellow
-  lava: ["#1A0000", "#8B0000", "#FF4500", "#FFD700"], // Deep red to orange to gold
-  futuristic: ["#001122", "#00FFFF", "#0080FF", "#FFFFFF"], // Dark blue to cyan to white
-  forest: ["#0F1B0F", "#228B22", "#32CD32", "#90EE90"], // Dark green to light green
-  ocean: ["#000080", "#0066CC", "#00BFFF", "#E0F6FF"], // Deep blue to light blue
-  sunset: ["#2D1B69", "#FF6B35", "#F7931E", "#FFD23F"], // Purple to orange to yellow
-  arctic: ["#1E3A8A", "#60A5FA", "#E0F2FE", "#FFFFFF"], // Deep blue to white
-  neon: ["#000000", "#FF00FF", "#00FF00", "#FFFF00"], // Black to bright neon colors
-  vintage: ["#8B4513", "#CD853F", "#F4A460", "#FFF8DC"], // Brown to cream
-  cosmic: ["#0B0B2F", "#4B0082", "#9370DB", "#FFD700"], // Deep space to gold
-  toxic: ["#1A1A00", "#66FF00", "#CCFF00", "#FFFF99"], // Dark to bright green-yellow
-  ember: ["#2D0A00", "#CC4400", "#FF8800", "#FFCC66"], // Dark brown to bright orange
+  plasma: ["#0D001A", "#7209B7", "#F72585", "#FFBE0B"],
+  quantum: ["#001122", "#0066FF", "#00FFAA", "#FFD700"],
+  cosmic: ["#000000", "#4B0082", "#9370DB", "#FFFFFF"],
+  thermal: ["#000080", "#FF4500", "#FFD700", "#FFFFFF"],
+  spectral: ["#8B00FF", "#0000FF", "#00FF00", "#FFFF00"],
+  crystalline: ["#E6E6FA", "#4169E1", "#00CED1", "#FFFFFF"],
+  bioluminescent: ["#000080", "#008B8B", "#00FF7F", "#ADFF2F"],
+  aurora: ["#191970", "#00CED1", "#7FFF00", "#FFD700"],
+  metallic: ["#B87333", "#C0C0C0", "#FFD700", "#E5E4E2"],
+  prismatic: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00"],
+  monochromatic: ["#000000", "#404040", "#808080", "#FFFFFF"],
+  infrared: ["#8B0000", "#FF4500", "#FF6347", "#FFA500"],
+  // Keep existing palettes
+  lava: ["#1A0000", "#8B0000", "#FF4500", "#FFD700"],
+  futuristic: ["#001122", "#00FFFF", "#0080FF", "#FFFFFF"],
+  forest: ["#0F1B0F", "#228B22", "#32CD32", "#90EE90"],
+  ocean: ["#000080", "#0066CC", "#00BFFF", "#E0F6FF"],
+  sunset: ["#2D1B69", "#FF6B35", "#F7931E", "#FFD23F"],
+  arctic: ["#1E3A8A", "#60A5FA", "#E0F2FE", "#FFFFFF"],
+  neon: ["#000000", "#FF00FF", "#00FF00", "#FFFF00"],
+  vintage: ["#8B4513", "#CD853F", "#F4A460", "#FFF8DC"],
+  toxic: ["#1A1A00", "#66FF00", "#CCFF00", "#FFFF99"],
+  ember: ["#2D0A00", "#CC4400", "#FF8800", "#FFCC66"],
 }
 
 // Seeded random number generator for consistent results
@@ -75,6 +86,14 @@ export function generateDataset(name: string, seed: number, n_samples: number, n
   switch (name) {
     case "spirals":
       return generateComplexSpirals(rng, n_samples, noise)
+    case "quantum":
+      return generateQuantumFields(rng, n_samples, noise)
+    case "strings":
+      return generateStringTheory(rng, n_samples, noise)
+    case "fractals":
+      return generateFractalDimensions(rng, n_samples, noise)
+    case "topology":
+      return generateTopologicalSpaces(rng, n_samples, noise)
     case "checkerboard":
       return generateFractalCheckerboard(rng, n_samples, noise)
     case "moons":
@@ -97,24 +116,291 @@ function generateComplexSpirals(rng: SeededRandom, n_samples: number, noise: num
   const data: number[][] = []
 
   for (let i = 0; i < n_samples; i++) {
+    const t = (i / n_samples) * 12 * Math.PI
+
+    // Archimedean spiral with golden ratio
+    const phi = (1 + Math.sqrt(5)) / 2
+    const archSpiral = 0.3 * t * Math.cos(t)
+
+    // Logarithmic spiral with Euler's number
+    const logSpiral = Math.exp(0.08 * t) * Math.cos(t * Math.E) * 0.05
+
+    // Fibonacci spiral with prime number modulation
+    const fibSpiral = Math.sqrt(t) * Math.cos(t * phi + isPrime(Math.floor(t)) ? Math.PI / 4 : 0) * 0.2
+
+    // Hyperbolic spiral with chaos theory
+    const hypSpiral = (1 / t) * Math.sin(t * 3.14159) * 0.4
+
+    // Fermat's spiral (parabolic)
+    const fermatSpiral = Math.sqrt(t) * Math.cos(2 * Math.sqrt(t)) * 0.15
+
+    // Cornu spiral (Euler spiral) for clothoid curves
+    const cornuT = t * 0.1
+    const cornuX = Math.cos(cornuT * cornuT) * 0.3
+    const cornuY = Math.sin(cornuT * cornuT) * 0.3
+
+    // Dragon curve fractal influence
+    const dragonScale = Math.pow(0.7, Math.floor(t / Math.PI))
+    const dragonAngle = t * (1 + Math.sin(t * 0.5))
+    const dragonX = dragonScale * Math.cos(dragonAngle) * 0.1
+    const dragonY = dragonScale * Math.sin(dragonAngle) * 0.1
+
+    // Combine all spirals with harmonic oscillations
+    const harmonicX = Math.sin(t * 2) + Math.sin(t * 3) / 2 + Math.sin(t * 5) / 3 + Math.sin(t * 7) / 4
+    const harmonicY = Math.cos(t * 2) + Math.cos(t * 3) / 2 + Math.cos(t * 5) / 3 + Math.cos(t * 7) / 4
+
+    const x =
+      archSpiral +
+      logSpiral +
+      fibSpiral * Math.cos(t) +
+      hypSpiral +
+      fermatSpiral +
+      cornuX +
+      dragonX +
+      harmonicX * 0.05 +
+      noise * rng.gaussian()
+    const y =
+      archSpiral * Math.sin(t) +
+      logSpiral * Math.sin(t * Math.E) +
+      fibSpiral * Math.sin(t * phi) +
+      cornuY +
+      dragonY +
+      harmonicY * 0.05 +
+      noise * rng.gaussian()
+
+    data.push([x * 0.08, y * 0.08])
+  }
+
+  return data
+}
+
+function generateQuantumFields(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+
+  for (let i = 0; i < n_samples; i++) {
+    // Quantum wave function simulation
+    const psi = (i / n_samples) * 4 * Math.PI
+
+    // Schrödinger equation solutions for hydrogen atom
+    const n = Math.floor(rng.range(1, 4)) // Principal quantum number
+    const l = Math.floor(rng.range(0, n)) // Angular momentum
+    const m = Math.floor(rng.range(-l, l + 1)) // Magnetic quantum number
+
+    // Radial wave function (simplified Laguerre polynomials)
+    const r = Math.abs(psi) * 0.5
+    const radialPart = Math.exp(-r / n) * Math.pow(r, l) * (1 + Math.sin(r * n))
+
+    // Angular part (spherical harmonics)
+    const theta = psi
+    const phi = theta * theta
+    const angularPart = Math.sin(theta) * Math.cos(m * phi) * Math.pow(Math.sin(theta), Math.abs(m))
+
+    // Quantum tunneling effect
+    const barrier = Math.exp(-Math.abs(psi - Math.PI) * 2)
+    const tunneling = barrier * Math.sin(psi * 10) * 0.1
+
+    // Heisenberg uncertainty principle visualization
+    const uncertainty = 1 / (1 + Math.abs(psi) * 0.5)
+    const deltaX = uncertainty * rng.gaussian() * 0.1
+    const deltaP = (1 / uncertainty) * rng.gaussian() * 0.1
+
+    // Quantum entanglement correlation
+    const entangled = Math.sin(psi) * Math.cos(psi + Math.PI / 2) * 0.2
+
+    const x = radialPart * Math.cos(theta) + tunneling + deltaX + entangled + noise * rng.gaussian()
+    const y = radialPart * Math.sin(theta) + angularPart * 0.3 + deltaP + noise * rng.gaussian()
+
+    data.push([x * 0.4, y * 0.4])
+  }
+
+  return data
+}
+
+function generateStringTheory(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+
+  for (let i = 0; i < n_samples; i++) {
     const t = (i / n_samples) * 8 * Math.PI
 
-    // Multiple interleaved spirals with different frequencies
-    const spiral1 = 0.5 * t * Math.cos(t)
-    const spiral2 = 0.3 * t * Math.sin(1.5 * t)
-    const spiral3 = 0.2 * t * Math.cos(2.5 * t)
+    // 11-dimensional M-theory projection to 2D
+    const dimensions = []
+    for (let d = 0; d < 11; d++) {
+      dimensions.push(Math.sin((t * (d + 1)) / 11) * Math.cos(t * Math.sqrt(d + 1)))
+    }
 
-    // Fibonacci spiral component
-    const phi = (1 + Math.sqrt(5)) / 2
-    const fibSpiral = Math.sqrt(t) * Math.cos(t * phi)
+    // Calabi-Yau manifold compactification
+    const calabiYau = dimensions.slice(6).reduce((sum, dim, idx) => sum + dim * Math.exp(-idx * 0.5), 0) * 0.1
 
-    // Logarithmic spiral
-    const logSpiral = Math.exp(0.1 * t) * Math.cos(t)
+    // String vibration modes
+    const fundamentalFreq = 1
+    const harmonics = []
+    for (let h = 1; h <= 8; h++) {
+      harmonics.push(Math.sin(t * h * fundamentalFreq) / h)
+    }
+    const stringVibration = harmonics.reduce((sum, h) => sum + h, 0) * 0.2
 
-    const x = spiral1 + spiral2 * 0.5 + fibSpiral * 0.3 + logSpiral * 0.1 + noise * rng.gaussian()
-    const y = spiral1 * Math.sin(t) + spiral3 + fibSpiral * Math.sin(t * phi) * 0.3 + noise * rng.gaussian()
+    // Brane world interactions
+    const braneDistance = Math.abs(Math.sin(t * 0.3)) + 0.1
+    const braneForce = (1 / (braneDistance * braneDistance)) * 0.05
 
-    data.push([x * 0.1, y * 0.1]) // Scale down for visualization
+    // Extra dimensional leakage
+    const extraDimX = dimensions[6] * Math.cos(t * 2) + dimensions[7] * Math.sin(t * 3)
+    const extraDimY = dimensions[8] * Math.cos(t * 5) + dimensions[9] * Math.sin(t * 7)
+
+    // Supersymmetry breaking
+    const susyBreaking = Math.exp(-t * 0.1) * Math.sin(t * 13) * 0.15
+
+    const x =
+      dimensions[0] + stringVibration + extraDimX * 0.3 + braneForce + calabiYau + susyBreaking + noise * rng.gaussian()
+    const y =
+      dimensions[1] + stringVibration * Math.sin(t) + extraDimY * 0.3 + calabiYau * Math.cos(t) + noise * rng.gaussian()
+
+    data.push([x * 0.3, y * 0.3])
+  }
+
+  return data
+}
+
+function generateFractalDimensions(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+
+  for (let i = 0; i < n_samples; i++) {
+    const t = (i / n_samples) * 6 * Math.PI
+
+    // Hausdorff dimension calculation
+    const hausdorffDim = 1.5 + 0.5 * Math.sin(t * 0.2)
+
+    // Sierpinski triangle with variable dimension
+    let sierpX = 0,
+      sierpY = 0
+    let currentX = rng.range(-1, 1),
+      currentY = rng.range(-1, 1)
+    const vertices = [
+      [-1, -1],
+      [1, -1],
+      [0, Math.sqrt(3)],
+    ]
+
+    for (let iter = 0; iter < 10; iter++) {
+      const vertex = vertices[Math.floor(rng.next() * 3)]
+      currentX = (currentX + vertex[0]) * 0.5
+      currentY = (currentY + vertex[1]) * 0.5
+      sierpX += currentX * Math.pow(0.5, iter * hausdorffDim)
+      sierpY += currentY * Math.pow(0.5, iter * hausdorffDim)
+    }
+
+    // Julia set with varying parameters
+    const c_real = -0.7 + 0.3 * Math.sin(t * 0.1)
+    const c_imag = 0.27015 + 0.1 * Math.cos(t * 0.1)
+    let z_real = rng.range(-2, 2)
+    let z_imag = rng.range(-2, 2)
+
+    let juliaIterations = 0
+    const maxJuliaIter = 50
+
+    while (z_real * z_real + z_imag * z_imag < 4 && juliaIterations < maxJuliaIter) {
+      const temp = z_real * z_real - z_imag * z_imag + c_real
+      z_imag = 2 * z_real * z_imag + c_imag
+      z_real = temp
+      juliaIterations++
+    }
+
+    const juliaValue = juliaIterations / maxJuliaIter
+
+    // Barnsley fern with mutations
+    let fernX = 0,
+      fernY = 0
+    for (let f = 0; f < 5; f++) {
+      const r = rng.next()
+      let newX, newY
+
+      if (r < 0.01) {
+        newX = 0
+        newY = 0.16 * fernY
+      } else if (r < 0.86) {
+        newX = 0.85 * fernX + 0.04 * fernY
+        newY = -0.04 * fernX + 0.85 * fernY + 1.6
+      } else if (r < 0.93) {
+        newX = 0.2 * fernX - 0.26 * fernY
+        newY = 0.23 * fernX + 0.22 * fernY + 1.6
+      } else {
+        newX = -0.15 * fernX + 0.28 * fernY
+        newY = 0.26 * fernX + 0.24 * fernY + 0.44
+      }
+
+      fernX = newX
+      fernY = newY
+    }
+
+    // Combine all fractal elements
+    const x = sierpX * 0.3 + z_real * 0.1 + fernX * 0.05 + juliaValue * Math.cos(t) * 0.2 + noise * rng.gaussian()
+    const y = sierpY * 0.3 + z_imag * 0.1 + fernY * 0.05 + juliaValue * Math.sin(t) * 0.2 + noise * rng.gaussian()
+
+    data.push([x * 0.4, y * 0.4])
+  }
+
+  return data
+}
+
+function generateTopologicalSpaces(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+
+  for (let i = 0; i < n_samples; i++) {
+    const t = (i / n_samples) * 4 * Math.PI
+
+    // Klein bottle embedding in 4D, projected to 2D
+    const u = t
+    const v = t * 0.7
+    const kleinX = (2 + Math.cos(v / 2) * Math.sin(u) - Math.sin(v / 2) * Math.sin(2 * u)) * Math.cos(v / 2)
+    const kleinY = (2 + Math.cos(v / 2) * Math.sin(u) - Math.sin(v / 2) * Math.sin(2 * u)) * Math.sin(v / 2)
+    const kleinZ = Math.sin(v / 2) * Math.sin(u) + Math.cos(v / 2) * Math.sin(2 * u)
+    const kleinW = Math.cos(v)
+
+    // Project 4D to 2D with perspective
+    const perspective = 3 / (3 + kleinZ + kleinW * 0.5)
+    const klein2DX = kleinX * perspective
+    const klein2DY = kleinY * perspective
+
+    // Möbius strip with varying width
+    const mobiusU = t
+    const mobiusV = rng.range(-0.5, 0.5) * (1 + 0.3 * Math.sin(t * 2))
+    const mobiusX = (1 + mobiusV * Math.cos(mobiusU / 2)) * Math.cos(mobiusU)
+    const mobiusY = (1 + mobiusV * Math.cos(mobiusU / 2)) * Math.sin(mobiusU)
+    const mobiusZ = mobiusV * Math.sin(mobiusU / 2)
+
+    // Torus knot (trefoil)
+    const p = 3,
+      q = 2 // Trefoil knot parameters
+    const knotR = Math.cos(q * t) + 2
+    const knotX = knotR * Math.cos(p * t)
+    const knotY = knotR * Math.sin(p * t)
+    const knotZ = -Math.sin(q * t)
+
+    // Hopf fibration
+    const hopfTheta = t
+    const hopfPhi = t * Math.sqrt(2)
+    const hopfPsi = t * Math.sqrt(3)
+
+    const hopfX = Math.sin(hopfTheta) * Math.cos(hopfPhi)
+    const hopfY = Math.sin(hopfTheta) * Math.sin(hopfPhi)
+    const hopfZ = Math.cos(hopfTheta)
+    const hopfW = Math.cos(hopfPsi)
+
+    // Stereographic projection from S³ to R³, then to R²
+    const stereoX = hopfX / (1 - hopfW + 0.1)
+    const stereoY = hopfY / (1 - hopfW + 0.1)
+
+    // Riemann surface (complex logarithm)
+    const complex_r = Math.sqrt(t * t + 1)
+    const complex_theta = Math.atan2(1, t) + 2 * Math.PI * Math.floor(t / (2 * Math.PI))
+    const riemannX = Math.log(complex_r) * Math.cos(complex_theta)
+    const riemannY = Math.log(complex_r) * Math.sin(complex_theta)
+
+    // Combine topological elements
+    const x = klein2DX * 0.2 + mobiusX * 0.15 + knotX * 0.1 + stereoX * 0.1 + riemannX * 0.05 + noise * rng.gaussian()
+    const y = klein2DY * 0.2 + mobiusY * 0.15 + knotY * 0.1 + stereoY * 0.1 + riemannY * 0.05 + noise * rng.gaussian()
+
+    data.push([x * 0.5, y * 0.5])
   }
 
   return data
@@ -521,13 +807,13 @@ function applyScenarioTransform(
 
         // Sand particle dynamics
         const sandShift = Math.sin(windDirection) * windStrength * 0.1
-        const erosion = Math.cos(windDirection) * windStrength * 0.05
+        const erosionRate = Math.cos(windDirection) * windStrength * 0.05
 
         // Oasis effect
         const oasisDistance = Math.sqrt((baseX - 0.8) ** 2 + (baseY + 0.5) ** 2)
         const oasisEffect = Math.exp(-oasisDistance * 3) * 0.2
 
-        x = baseX + sandShift - erosion
+        x = baseX + sandShift - erosionRate
         y = baseY + duneHeight + oasisEffect
 
         metadata = {
@@ -572,14 +858,13 @@ function applyScenarioTransform(
         const frostPattern = (Math.sin(baseX * 8) + Math.cos(baseY * 8)) * 0.05
 
         // Hexagonal crystal structure
-        const hexAngle = Math.atan2(baseY, baseX)
-        const hexRadius = Math.sqrt(baseX ** 2 + baseY ** 2)
-        const hexSymmetry = Math.sin(hexAngle * 6) * Math.exp(-hexRadius * 2) * 0.1
+        const hexAngleLocal = Math.atan2(baseY, baseX)
+        const hexSymmetryLocal = Math.sin(hexAngleLocal * 6) * 0.03
 
         // Sublimation effects
         const sublimation = Math.sin(baseX * 2 + baseY * 2) * 0.02
 
-        x = baseX + frostPattern + hexSymmetry
+        x = baseX + frostPattern + hexSymmetryLocal
         y = baseY + crystalGrowth + sublimation
 
         metadata = {
@@ -587,15 +872,15 @@ function applyScenarioTransform(
           crystallineStructure: crystalGrowth * 8,
           frostLevel: Math.abs(frostPattern) * 10,
           temperature: -20 + 10 * Math.sin(baseX * 0.2) - Math.abs(baseY) * 5,
-          iceThickness: Math.max(0, 1 - hexRadius) * 10,
+          iceThickness: Math.max(0, 1 - Math.sqrt(baseX ** 2 + baseY ** 2)) * 10,
           phaseTransition: Math.abs(sublimation) > 0.01,
         }
         break
 
       case "sunset":
         // Add atmospheric light scattering with Rayleigh and Mie effects
-        const altitude = baseY + 1
-        const atmosphericDensity = Math.exp(-altitude * 2)
+        const altitudeLocal = baseY + 1
+        const atmosphericDensity = Math.exp(-altitudeLocal * 2)
 
         // Rayleigh scattering (blue light)
         const rayleighScatter = atmosphericDensity * Math.pow(0.4, -4) * 0.1
@@ -606,16 +891,16 @@ function applyScenarioTransform(
         // Cloud formations
         const cloudDensity = Math.max(0, Math.sin(baseX * 2) * Math.cos(baseY * 1.5) + 0.3) * 0.2
 
-        x = baseX + rayleighScatter * Math.sin(altitude * 5)
+        x = baseX + rayleighScatter * Math.sin(altitudeLocal * 5)
         y = baseY + mieScatter + cloudDensity
 
         metadata = {
-          lightIntensity: Math.max(0, 1 - altitude * 0.5),
-          colorTemperature: 2000 + 3000 * Math.exp(-altitude),
+          lightIntensity: Math.max(0, 1 - altitudeLocal * 0.5),
+          colorTemperature: 2000 + 3000 * Math.exp(-altitudeLocal),
           atmosphericPressure: 1013 * atmosphericDensity,
           humidity: 60 + 30 * Math.sin(baseX + baseY),
           cloudCover: cloudDensity * 100,
-          sunAngle: (Math.atan2(altitude, baseX) * 180) / Math.PI,
+          sunAngle: (Math.atan2(altitudeLocal, baseX) * 180) / Math.PI,
         }
         break
 
@@ -639,6 +924,224 @@ function applyScenarioTransform(
           frequency: Math.sqrt(baseX ** 2 * 25 + baseY ** 2 * 9),
           amplitude: Math.abs(wave1 + wave2),
           phase: Math.atan2(wave2, wave1),
+        }
+        break
+      case "quantum":
+        // Quantum realm with wave-particle duality
+        const waveFunction =
+          Math.sin(baseX * 10) * Math.cos(baseY * 10) * Math.exp(-(baseX * baseX + baseY * baseY) * 2)
+        const particlePosition = rng.gaussian() * 0.1
+        const waveParticleDuality = rng.next() < 0.5 ? waveFunction : particlePosition
+
+        // Quantum superposition
+        const superposition = (Math.sin(baseX * 5) + Math.cos(baseY * 5)) / Math.sqrt(2)
+
+        // Quantum entanglement correlation
+        const entanglementDistance = Math.sqrt((baseX - 0.5) ** 2 + (baseY + 0.3) ** 2)
+        const entanglement = Math.exp(-entanglementDistance * 3) * Math.sin(baseX * baseY * 20)
+
+        x = baseX + waveParticleDuality + superposition * 0.1
+        y = baseY + entanglement * 0.2
+
+        metadata = {
+          waveFunction: waveFunction,
+          isParticle: Math.abs(particlePosition) > 0.05,
+          superpositionState: superposition,
+          entanglementStrength: Math.abs(entanglement),
+          quantumNumber: Math.floor(Math.abs(baseX * baseY * 100)) % 4,
+          uncertainty: Math.abs(waveParticleDuality) * 10,
+        }
+        break
+
+      case "microscopic":
+        // Molecular dynamics and Brownian motion
+        const temperatureLocal = 300 + 50 * Math.sin(baseX * 0.5)
+        const kineticEnergy = temperatureLocal * 1.38e-23 // Boltzmann constant simulation
+
+        // Brownian motion
+        const brownianX = rng.gaussian() * Math.sqrt(kineticEnergy) * 0.1
+        const brownianY = rng.gaussian() * Math.sqrt(kineticEnergy) * 0.1
+
+        // Van der Waals forces
+        const molecularDistance = Math.sqrt(baseX ** 2 + baseY ** 2) + 0.1
+        const vanDerWaals = (1 / Math.pow(molecularDistance, 12) - 1 / Math.pow(molecularDistance, 6)) * 0.01
+
+        // Hydrogen bonding
+        const hydrogenBond = Math.exp(-molecularDistance * 5) * Math.cos(Math.atan2(baseY, baseX) * 3) * 0.05
+
+        x = baseX + brownianX + vanDerWaals * Math.cos(Math.atan2(baseY, baseX))
+        y = baseY + brownianY + vanDerWaals * Math.sin(Math.atan2(baseY, baseX)) + hydrogenBond
+
+        metadata = {
+          temperature: temperatureLocal,
+          kineticEnergy: kineticEnergy * 1e23,
+          isMolecule: rng.next() < 0.3,
+          bondStrength: Math.abs(hydrogenBond) * 100,
+          diffusionRate: Math.sqrt(brownianX ** 2 + brownianY ** 2) * 100,
+          molecularWeight: 10 + rng.range(0, 200),
+        }
+        break
+
+      case "crystalline":
+        // Crystal lattice with symmetry groups
+        const latticeConstant = 0.5
+        const latticeX = Math.round(baseX / latticeConstant) * latticeConstant
+        const latticeY = Math.round(baseY / latticeConstant) * latticeConstant
+
+        // Crystal defects and dislocations
+        const defectProbability = 0.05
+        const hasDefect = rng.next() < defectProbability
+        const defectX = hasDefect ? rng.gaussian() * 0.1 : 0
+        const defectY = hasDefect ? rng.gaussian() * 0.1 : 0
+
+        // Piezoelectric effect
+        const electricFieldLocal = Math.sin(baseX * 3) * Math.cos(baseY * 3)
+        const piezoStrain = electricFieldLocal * 0.02
+
+        // Crystal symmetry (hexagonal)
+        const hexAngle = Math.atan2(baseY, baseX)
+        const hexSymmetry = Math.sin(hexAngle * 6) * 0.03
+
+        x = latticeX + defectX + piezoStrain + hexSymmetry
+        y = latticeY + defectY + piezoStrain * Math.sin(hexAngle)
+
+        metadata = {
+          latticeType: "hexagonal",
+          hasDefect: hasDefect,
+          symmetryGroup: "P6/mmm",
+          electricField: electricFieldLocal,
+          crystalSize: Math.abs(baseX + baseY) * 10,
+          hardness: 7 + rng.range(0, 3), // Mohs scale
+        }
+        break
+
+      case "plasma":
+        // Plasma physics with magnetohydrodynamics
+        const magneticField = Math.sin(baseX * 2) * Math.cos(baseY * 2)
+        const electricFieldLocal = Math.cos(baseX * 3) * Math.sin(baseY * 3)
+
+        // Lorentz force on charged particles
+        const charge = rng.next() < 0.5 ? 1 : -1
+        const lorentzX = charge * (electricFieldLocal + magneticField * baseY) * 0.1
+        const lorentzY = charge * (electricFieldLocal - magneticField * baseX) * 0.1
+
+        // Plasma instabilities
+        const instability = Math.sin(baseX * 8 + baseY * 6) * Math.exp(-Math.abs(baseX) * 2) * 0.15
+
+        // Fusion reactions
+        const fusionProbability = Math.exp(-Math.abs(baseX - baseY) * 5) * 0.1
+        const fusionEnergy = fusionProbability * Math.sin(baseX * baseY * 50) * 0.2
+
+        x = baseX + lorentzX + instability
+        y = baseY + lorentzY + fusionEnergy
+
+        metadata = {
+          temperature: 10000 + Math.abs(fusionEnergy) * 100000,
+          magneticField: magneticField,
+          isIonized: true,
+          charge: charge,
+          fusionRate: fusionProbability * 1000,
+          plasmaDensity: 1e15 + Math.abs(instability) * 1e16,
+        }
+        break
+
+      case "atmospheric":
+        // Advanced atmospheric physics
+        const altitudeLocal = (baseY + 2) * 5000 // 0-20km altitude
+        const pressure = 101325 * Math.exp(-altitudeLocal / 8400) // Barometric formula
+        const temperatureLocal = 288.15 - 0.0065 * altitudeLocal // Standard atmosphere
+
+        // Rayleigh scattering
+        const wavelength = 500e-9 // Green light
+        const rayleighCoeff = (8 * Math.PI ** 3 * (1.33 ** 2 - 1) ** 2) / (3 * wavelength ** 4)
+        const scattering = ((rayleighCoeff * pressure) / 101325) * 0.0001
+
+        // Atmospheric turbulence
+        const turbulenceLocal = Math.sin(baseX * 10) * Math.cos(baseY * 8) * Math.exp(-altitudeLocal / 5000) * 0.1
+
+        // Coriolis effect
+        const latitude = baseX * 90 // -90 to 90 degrees
+        const coriolisParameter = 2 * 7.27e-5 * Math.sin((latitude * Math.PI) / 180)
+        const coriolis = coriolisParameter * baseY * 0.001
+
+        x = baseX + scattering * Math.cos(baseY * 5) + turbulenceLocal + coriolis
+        y = baseY + scattering * Math.sin(baseX * 5) + turbulenceLocal * Math.sin(baseX * 3)
+
+        metadata = {
+          altitude: altitudeLocal,
+          pressure: pressure,
+          temperature: temperatureLocal,
+          humidity: 50 + 30 * Math.sin(baseX + baseY),
+          windSpeed: Math.abs(turbulenceLocal) * 100,
+          visibility: Math.max(0.1, 50 - scattering * 1000),
+        }
+        break
+
+      case "geological":
+        // Geological processes over deep time
+        const geologicalTime = Math.abs(baseX + baseY) * 1e9 // Billions of years
+
+        // Tectonic plate movement
+        const plateVelocity = 2e-9 // 2 cm/year in units per year
+        const tectonicShift = plateVelocity * geologicalTime * Math.sin(baseX * 0.1) * 0.1
+
+        // Mountain building (orogeny)
+        const orogenicForce = Math.exp(-Math.abs(baseX) * 2) * Math.sin(baseY * 3) * 0.3
+
+        // Erosion and weathering
+        const erosionRate = 1e-6 * (1 + Math.abs(Math.sin(baseX * 2))) // m/year
+        const erosionLocal = -erosionRate * geologicalTime * 0.0001
+
+        // Sediment deposition
+        const sedimentThickness = Math.max(0, Math.sin(baseY * 2) + 0.5) * 0.2
+
+        x = baseX + tectonicShift + orogenicForce * Math.cos(baseY)
+        y = baseY + orogenicForce + erosionLocal + sedimentThickness
+
+        metadata = {
+          age: geologicalTime / 1e6, // Million years
+          rockType: Math.floor(rng.next() * 3), // 0: igneous, 1: sedimentary, 2: metamorphic
+          hardness: 2 + rng.range(0, 8), // Mohs scale
+          mineralContent: Math.floor(rng.next() * 10),
+          fossilAge: Math.max(0, geologicalTime - rng.range(0, 5e8)) / 1e6,
+          tectonicActivity: Math.abs(tectonicShift) * 1000,
+        }
+        break
+
+      case "biological":
+        // Biological systems with DNA and protein structures
+        const dnaLength = Math.abs(baseX * baseY) * 1000 + 100
+
+        // DNA double helix
+        const helixRadius = 0.1
+        const helixPitch = 0.34 // nm per base pair
+        const helixAngle = (baseX + baseY) * 10
+        const helixX = helixRadius * Math.cos(helixAngle)
+        const helixY = helixRadius * Math.sin(helixAngle)
+
+        // Protein folding (simplified)
+        const aminoAcids = Math.floor(dnaLength / 3) // Codon translation
+        const foldingEnergy = -Math.log(Math.abs(Math.sin(baseX * 5) * Math.cos(baseY * 5)) + 0.1) * 0.1
+
+        // Enzyme kinetics (Michaelis-Menten)
+        const substrateConc = Math.abs(baseX) + 0.1
+        const km = 0.5 // Michaelis constant
+        const vmax = 1.0 // Maximum velocity
+        const enzymeActivity = ((vmax * substrateConc) / (km + substrateConc)) * 0.1
+
+        // Cell division
+        const cellCycle = Math.sin(baseY * 2) * 0.05
+
+        x = baseX + helixX + foldingEnergy * Math.cos(helixAngle) + enzymeActivity
+        y = baseY + helixY + foldingEnergy * Math.sin(helixAngle) + cellCycle
+
+        metadata = {
+          dnaLength: dnaLength,
+          proteinLength: aminoAcids,
+          foldingStability: -foldingEnergy * 10,
+          enzymeActivity: enzymeActivity * 100,
+          cellPhase: Math.floor((Math.sin(baseY * 2) + 1) * 2), // 0-3 for G1,S,G2,M
+          mutationRate: rng.next() * 1e-6,
         }
         break
 
@@ -901,7 +1404,64 @@ export function generateHighResFlowField(params: UpscaleParams): string {
 
         case "monochrome":
           radius = 0.5 + point.metadata.intensity * 0.5 + point.metadata.amplitude * 0.3
-          opacity = 0.4 + Math.abs(point.metadata.pattern) * 0.4 + point.metadata.contrast * 0.05
+          opacity = 0.4 + Math.abs(point.metadata.pattern) * 0.4
+          break
+        case "quantum":
+          radius = 0.4 + point.metadata.uncertainty * 0.3
+          opacity = 0.3 + point.metadata.entanglementStrength * 0.5
+
+          if (point.metadata.isParticle) {
+            stroke = colors[3]
+            strokeWidth = 0.5
+          }
+          break
+
+        case "microscopic":
+          radius = 0.3 + point.metadata.diffusionRate * 0.1
+          opacity = 0.2 + point.metadata.bondStrength * 0.3
+
+          if (point.metadata.isMolecule) {
+            stroke = colors[3]
+            strokeWidth = 0.3
+          }
+          break
+
+        case "crystalline":
+          radius = 0.3 + point.metadata.crystalSize * 0.05
+          opacity = 0.4 + point.metadata.hardness * 0.03
+
+          if (point.metadata.hasDefect) {
+            stroke = colors[3]
+            strokeWidth = 0.5
+          }
+          break
+
+        case "plasma":
+          radius = 0.4 + point.metadata.temperature * 0.00001
+          opacity = 0.3 + point.metadata.plasmaDensity * 1e-17
+
+          if (point.metadata.isIonized) {
+            stroke = colors[3]
+            strokeWidth = 0.3
+          }
+          break
+
+        case "atmospheric":
+          radius = 0.3 + point.metadata.windSpeed * 0.01
+          opacity = 0.2 + point.metadata.visibility * 0.01
+
+          break
+
+        case "geological":
+          radius = 0.4 + point.metadata.age * 1e-7
+          opacity = 0.3 + point.metadata.tectonicActivity * 0.01
+
+          break
+
+        case "biological":
+          radius = 0.3 + point.metadata.proteinLength * 0.001
+          opacity = 0.2 + point.metadata.enzymeActivity * 0.1
+
           break
 
         default:
