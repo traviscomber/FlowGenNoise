@@ -535,3 +535,4 @@ const FlowArtGenerator: React.FC<FlowArtGeneratorProps> = ({ width = 500, height
 }
 
 export default FlowArtGenerator
+export { FlowArtGenerator }
