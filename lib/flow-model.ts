@@ -1026,8 +1026,8 @@ function applyScenarioTransform(
         const facetReflection = Math.sin(facetAngle * 6) * 0.04
 
         // Piezoelectric and optical properties
-        const electricField = Math.sin(baseX * 4) * Math.cos(baseY * 4)
-        const piezoStrain = electricField * 0.03
+        const crystalElectricField = Math.sin(baseX * 4) * Math.cos(baseY * 4)
+        const piezoStrain = crystalElectricField * 0.03
         const birefringence = Math.sin(facetAngle * 2) * 0.02
 
         x = latticeX + (dislocation ? rng.gaussian() * 0.1 : 0) + piezoStrain + facetReflection
@@ -1042,7 +1042,7 @@ function applyScenarioTransform(
           hasDefect: dislocation || impurity,
           twinned: twinBoundary,
           opticalProperty: Math.floor(rng.next() * 4), // Transparent, translucent, etc.
-          piezoelectric: Math.abs(electricField) > 0.5,
+          piezoelectric: Math.abs(crystalElectricField) > 0.5,
           growthStage: Math.floor(growthRate * 10),
           mineralComposition: Math.floor(rng.next() * 12),
         }
