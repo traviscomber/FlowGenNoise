@@ -1,9 +1,9 @@
-import { FlowArtGenerator } from "@/components/flow-art-generator"
+import { Dome360Planner } from "@/components/dome-360-planner"
 
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <FlowArtGenerator />
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <Dome360Planner />
     </main>
   )
 }
