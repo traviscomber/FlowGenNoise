@@ -26,9 +26,8 @@ export interface UpscaleParams extends GenerationParams {
   extraDetail: boolean
 }
 
-// Enhanced color palettes with unique and artistic combinations
+// Pure 4-color palettes for visual themes
 const colorPalettes = {
-  // Existing palettes
   plasma: ["#0D001A", "#7209B7", "#F72585", "#FFBE0B"],
   quantum: ["#001122", "#0066FF", "#00FFAA", "#FFD700"],
   cosmic: ["#000000", "#4B0082", "#9370DB", "#FFFFFF"],
@@ -41,6 +40,7 @@ const colorPalettes = {
   prismatic: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00"],
   monochromatic: ["#000000", "#404040", "#808080", "#FFFFFF"],
   infrared: ["#8B0000", "#FF4500", "#FF6347", "#FFA500"],
+  // Keep existing palettes
   lava: ["#1A0000", "#8B0000", "#FF4500", "#FFD700"],
   futuristic: ["#001122", "#00FFFF", "#0080FF", "#FFFFFF"],
   forest: ["#0F1B0F", "#228B22", "#32CD32", "#90EE90"],
@@ -51,103 +51,6 @@ const colorPalettes = {
   vintage: ["#8B4513", "#CD853F", "#F4A460", "#FFF8DC"],
   toxic: ["#1A1A00", "#66FF00", "#CCFF00", "#FFFF99"],
   ember: ["#2D0A00", "#CC4400", "#FF8800", "#FFCC66"],
-
-  // NEW ARTISTIC PALETTES
-
-  // Mystical & Magical
-  enchanted: ["#1A0D26", "#4A148C", "#E91E63", "#FFD700"],
-  fairy: ["#2E1065", "#7B1FA2", "#E91E63", "#F8BBD9"],
-  wizard: ["#0D1B2A", "#415A77", "#778DA9", "#E0E1DD"],
-  potion: ["#240046", "#7209B7", "#A663CC", "#4CC9F0"],
-  crystal: ["#03045E", "#0077B6", "#00B4D8", "#90E0EF"],
-
-  // Cyberpunk & Sci-Fi
-  cyberpunk: ["#0A0A0A", "#FF0080", "#00FFFF", "#FFFF00"],
-  matrix: ["#000000", "#003300", "#00FF00", "#66FF66"],
-  synthwave: ["#1A0033", "#FF0080", "#00FFFF", "#FFFF00"],
-  hologram: ["#000033", "#0066FF", "#00FFFF", "#FFFFFF"],
-  android: ["#0D1117", "#58A6FF", "#7C3AED", "#F97316"],
-
-  // Nature & Organic
-  mushroom: ["#2D1B0E", "#8B4513", "#CD853F", "#F5DEB3"],
-  moss: ["#1C2E1A", "#2E5D31", "#4A7C59", "#8FBC8F"],
-  coral: ["#4A0E0E", "#FF6B6B", "#FFB3BA", "#FFCCCB"],
-  jade: ["#0F2027", "#2C5530", "#4A7C59", "#A7C957"],
-  amber: ["#2D1B0E", "#8B4513", "#DAA520", "#FFD700"],
-
-  // Gemstone & Precious
-  ruby: ["#1A0000", "#8B0000", "#DC143C", "#FF69B4"],
-  sapphire: ["#000033", "#191970", "#4169E1", "#87CEEB"],
-  emerald: ["#001A00", "#006400", "#228B22", "#90EE90"],
-  amethyst: ["#2E0854", "#663399", "#9966CC", "#DDA0DD"],
-  opal: ["#1A1A2E", "#16213E", "#E94560", "#F5F5F5"],
-
-  // Atmospheric & Weather
-  storm: ["#1C1C1C", "#4A4A4A", "#708090", "#F0F8FF"],
-  lightning: ["#000033", "#4B0082", "#9370DB", "#FFFF00"],
-  rainbow: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00"],
-  mist: ["#2F4F4F", "#708090", "#B0C4DE", "#F0F8FF"],
-  thunder: ["#191970", "#483D8B", "#6A5ACD", "#E6E6FA"],
-
-  // Artistic & Creative
-  watercolor: ["#E8F4FD", "#B8E6B8", "#FFB3BA", "#FFDFBA"],
-  oil_paint: ["#2C1810", "#8B4513", "#CD853F", "#F5DEB3"],
-  pastel: ["#FFB3E6", "#C7CEEA", "#B5EAD7", "#FFDAC1"],
-  charcoal: ["#1C1C1C", "#2F2F2F", "#696969", "#D3D3D3"],
-  ink: ["#000000", "#1C1C1C", "#4A4A4A", "#FFFFFF"],
-
-  // Seasonal & Time
-  spring: ["#2E5D31", "#4A7C59", "#8FBC8F", "#F0FFF0"],
-  summer: ["#FFD700", "#FFA500", "#FF6347", "#FFFF00"],
-  autumn: ["#8B4513", "#CD853F", "#D2691E", "#F4A460"],
-  winter: ["#4682B4", "#87CEEB", "#B0E0E6", "#F0F8FF"],
-  dawn: ["#2F1B69", "#FF6B35", "#F7931E", "#FFD23F"],
-  midnight: ["#000033", "#191970", "#4B0082", "#9370DB"],
-
-  // Emotional & Mood
-  melancholy: ["#2C3E50", "#34495E", "#7F8C8D", "#BDC3C7"],
-  euphoria: ["#FF1493", "#FF69B4", "#FFB6C1", "#FFC0CB"],
-  serenity: ["#4682B4", "#87CEEB", "#B0E0E6", "#E0F6FF"],
-  passion: ["#8B0000", "#DC143C", "#FF1493", "#FF69B4"],
-  mystery: ["#2E0854", "#4B0082", "#663399", "#9370DB"],
-
-  // Cultural & Historical
-  japanese: ["#1A1A2E", "#16213E", "#E94560", "#F5F5F5"],
-  egyptian: ["#8B4513", "#DAA520", "#FFD700", "#F5DEB3"],
-  nordic: ["#2F4F4F", "#4682B4", "#87CEEB", "#F0F8FF"],
-  aztec: ["#8B4513", "#CD853F", "#DAA520", "#F4A460"],
-  celtic: ["#2E5D31", "#4A7C59", "#8FBC8F", "#F0FFF0"],
-
-  // Abstract & Conceptual
-  void: ["#000000", "#0A0A0A", "#1A1A1A", "#2A2A2A"],
-  infinity: ["#000033", "#4B0082", "#9370DB", "#FFFFFF"],
-  chaos: ["#8B0000", "#FF4500", "#FFD700", "#FFFFFF"],
-  harmony: ["#E6E6FA", "#DDA0DD", "#9370DB", "#4B0082"],
-  balance: ["#000000", "#808080", "#C0C0C0", "#FFFFFF"],
-
-  // Elemental
-  fire: ["#1A0000", "#8B0000", "#FF4500", "#FFD700"],
-  water: ["#000080", "#0066CC", "#00BFFF", "#E0F6FF"],
-  earth: ["#2F4F2F", "#8B4513", "#CD853F", "#F5DEB3"],
-  air: ["#E0F6FF", "#87CEEB", "#4682B4", "#191970"],
-
-  // Psychedelic & Trippy
-  psychedelic: ["#FF00FF", "#00FFFF", "#FFFF00", "#FF0080"],
-  kaleidoscope: ["#FF1493", "#00CED1", "#FFD700", "#9370DB"],
-  fractal: ["#4B0082", "#8A2BE2", "#DA70D6", "#EE82EE"],
-  dimension: ["#000033", "#663399", "#9966CC", "#CCCCFF"],
-
-  // Food & Culinary
-  chocolate: ["#2F1B14", "#8B4513", "#D2691E", "#F4A460"],
-  wine: ["#2F0000", "#8B0000", "#DC143C", "#F08080"],
-  honey: ["#8B4513", "#DAA520", "#FFD700", "#FFFACD"],
-  mint: ["#2E5D31", "#4A7C59", "#8FBC8F", "#F0FFF0"],
-
-  // Architectural & Urban
-  concrete: ["#2F2F2F", "#696969", "#A9A9A9", "#D3D3D3"],
-  brick: ["#8B4513", "#A0522D", "#CD853F", "#F4A460"],
-  glass: ["#4682B4", "#87CEEB", "#B0E0E6", "#F0F8FF"],
-  steel: ["#2F4F4F", "#708090", "#C0C0C0", "#F5F5F5"],
 }
 
 // Seeded random number generator for consistent results
@@ -1122,8 +1025,10 @@ function applyScenarioTransform(
         const facetAngle = Math.atan2(baseY, baseX) + Math.PI / 6
         const facetReflection = Math.sin(facetAngle * 6) * 0.04
 
-        const piezoStrain = 0
-        const birefringence = 0
+        // Piezoelectric and optical properties
+        const crystalField = Math.sin(baseX * 4) * Math.cos(baseY * 4)
+        const piezoStrain = crystalField * 0.03
+        const birefringence = Math.sin(facetAngle * 2) * 0.02
 
         x = latticeX + (dislocation ? rng.gaussian() * 0.1 : 0) + piezoStrain + facetReflection
         y = latticeY + (impurity ? rng.gaussian() * 0.08 : 0) + growthRate + birefringence
@@ -1137,7 +1042,7 @@ function applyScenarioTransform(
           hasDefect: dislocation || impurity,
           twinned: twinBoundary,
           opticalProperty: Math.floor(rng.next() * 4), // Transparent, translucent, etc.
-          piezoelectric: Math.abs(0) > 0.5,
+          piezoelectric: Math.abs(crystalField) > 0.5,
           growthStage: Math.floor(growthRate * 10),
           mineralComposition: Math.floor(rng.next() * 12),
         }
