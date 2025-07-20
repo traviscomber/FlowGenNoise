@@ -933,17 +933,382 @@ export function FlowArtGenerator() {
                                 />
                               )}
 
-                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center">
-                                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-2">
-                                  <Button size="sm" variant="secondary" onClick={() => loadFromGallery(art)}>
-                                    Load
-                                  </Button>
-                                  <Button size="sm" variant="destructive" onClick={() => removeFromGallery(art.id)}>
-                                    Remove
-                                  </Button>
-                                </div>
+                              {/* Hover overlay with Load / Remove buttons */}
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-200 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                                <Button size="sm" variant="secondary" onClick={() => loadFromGallery(art)}>
+                                  Load
+                                </Button>
+                                <Button size="sm" variant="destructive" onClick={() => removeFromGallery(art.id)}>
+                                  Remove
+                                </Button>
                               </div>
                             </div>
 
+                            {/* Minimal caption under each thumbnail */}
                             <div className="p-2 space-y-1">
-                              <div className="flex gap-1 flex-\
+                              <p className="text-xs font-medium truncate">
+                                {art.params.dataset} • {art.params.scenario}
+                              </p>
+                              <div className="flex gap-1 flex-wrap">
+                                {art.isDomeProjection && (
+                                  <span className="text-[10px] px-1 rounded bg-purple-600/20 text-purple-700 dark:text-purple-300">
+                                    Dome
+                                  </span>
+                                )}
+                                {art.is360Panorama && (
+                                  <span className="text-[10px] px-1 rounded bg-blue-600/20 text-blue-700 dark:text-blue-300">
+                                    360°
+                                  </span>
+                                )}
+                                {art.upscaledImageUrl && (
+                                  <span className="text-[10px] px-1 rounded bg-green-600/20 text-green-700 dark:text-green-300">
+                                    Enhanced
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <Button
+                          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                          disabled={currentPage === 1}
+                          variant="outline"
+                          size="sm"
+                        >
+                          Previous
+                        </Button>
+                        <Button
+                          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                          disabled={currentPage === totalPages}
+                          variant="outline"
+                          size="sm"
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500">No saved artworks yet.</p>
+                  )}
+                </TabsContent>
+              </Tabs>
+
+              {/* existing controls below (dome/panorama checkboxes etc.) remain unchanged */}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Advanced Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Dataset</label>
+                  <select
+                    value={dataset}
+                    onChange={(e) => setDataset(e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  >
+                    <option value="spirals">Fibonacci Spirals</option>
+                    <option value="fractal">Fractal Checkerboard</option>
+                    <option value="hyperbolic">Hyperbolic Moons</option>
+                    <option value="gaussian">Multi-Modal Gaussians</option>
+                    <option value="cellular">Cellular Automata</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Scenario</label>
+                  <select
+                    value={scenario}
+                    onChange={(e) => setScenario(e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  >
+                    <option value="pure">Pure Math</option>
+                    <option value="geometric">Geometric Abstraction</option>
+                    <option value="organic">Organic Structures</option>
+                    <option value="futuristic">Futuristic Landscapes</option>
+                    <option value="psychedelic">Psychedelic Visions</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Color Scheme</label>
+                  <select
+                    value={colorScheme}
+                    onChange={(e) => setColorScheme(e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  >
+                    <option value="plasma">Plasma</option>
+                    <option value="viridis">Viridis</option>
+                    <option value="magma">Magma</option>
+                    <option value="inferno">Inferno</option>
+                    <option value="cividis">Cividis</option>
+                    <option value="warm">Warm</option>
+                    <option value="cool">Cool</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Seed</label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="number"
+                      value={seed}
+                      onChange={(e) => setSeed(Number.parseInt(e.target.value))}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    />
+                    <Button type="button" onClick={handleRandomSeed} variant="outline" size="sm">
+                      Random
+                    </Button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Number of Samples
+                  </label>
+                  <input
+                    type="number"
+                    value={numSamples}
+                    onChange={(e) => setNumSamples(Number.parseInt(e.target.value))}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Noise Scale</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={noiseScale}
+                    onChange={(e) => setNoiseScale(Number.parseFloat(e.target.value))}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Time Step</label>
+                  <input
+                    type="number"
+                    step="0.001"
+                    value={timeStep}
+                    onChange={(e) => setTimeStep(Number.parseFloat(e.target.value))}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Generated Art Display */}
+        <div className="lg:col-span-2 space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ImageIcon className="h-5 w-5" />
+                Generated Artwork
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-4">
+                  <Button onClick={generateArt} disabled={isGenerating}>
+                    {isGenerating ? "Generating..." : getButtonText()}
+                  </Button>
+                  {isGenerating ? <progress value={progress} max="100" className="w-full h-2"></progress> : null}
+                </div>
+
+                {mode === "ai" && (
+                  <div className="space-y-2">
+                    <label className="inline-flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-gray-800"
+                        checked={useCustomPrompt}
+                        onChange={(e) => setUseCustomPrompt(e.target.checked)}
+                      />
+                      <span className="text-gray-700 dark:text-gray-300">Use Custom Prompt</span>
+                    </label>
+
+                    {useCustomPrompt && (
+                      <div className="space-y-2">
+                        <input
+                          type="text"
+                          placeholder="Enter your custom prompt here..."
+                          value={customPrompt}
+                          onChange={(e) => setCustomPrompt(e.target.value)}
+                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        />
+                        <Button onClick={enhancePrompt} disabled={isEnhancingPrompt} variant="secondary" size="sm">
+                          {isEnhancingPrompt ? "Enhancing..." : "Enhance Prompt"}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="inline-flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-gray-800"
+                        checked={domeEnabled}
+                        onChange={(e) => setDomeEnabled(e.target.checked)}
+                      />
+                      <span className="text-gray-700 dark:text-gray-300">Dome Projection</span>
+                    </label>
+
+                    {domeEnabled && (
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Dome Diameter (meters)
+                        </label>
+                        <input
+                          type="number"
+                          value={domeDiameter}
+                          onChange={(e) => setDomeDiameter(Number.parseInt(e.target.value))}
+                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        />
+
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Dome Resolution
+                        </label>
+                        <select
+                          value={domeResolution}
+                          onChange={(e) => setDomeResolution(e.target.value)}
+                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        >
+                          <option>4K</option>
+                          <option>6K</option>
+                          <option>8K</option>
+                          <option>12K</option>
+                        </select>
+
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Projection Type
+                        </label>
+                        <select
+                          value={domeProjectionType}
+                          onChange={(e) => setDomeProjectionType(e.target.value)}
+                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        >
+                          <option value="fulldome">Full Dome (Fisheye)</option>
+                          <option value="truncated">Truncated Dome</option>
+                          <option value="perspective">Perspective</option>
+                        </select>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="inline-flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-gray-800"
+                        checked={panorama360Enabled}
+                        onChange={(e) => setPanorama360Enabled(e.target.checked)}
+                      />
+                      <span className="text-gray-700 dark:text-gray-300">360° Panorama</span>
+                    </label>
+
+                    {panorama360Enabled && (
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Panorama Resolution
+                        </label>
+                        <select
+                          value={panoramaResolution}
+                          onChange={(e) => setPanoramaResolution(e.target.value)}
+                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        >
+                          <option>4K</option>
+                          <option>8K</option>
+                          <option>16K</option>
+                        </select>
+
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Panorama Format
+                        </label>
+                        <select
+                          value={panoramaFormat}
+                          onChange={(e) => setPanoramaFormat(e.target.value)}
+                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        >
+                          <option value="equirectangular">Equirectangular</option>
+                          {/* Add other formats if needed */}
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {generatedArt ? (
+                  <div className="space-y-4">
+                    <div className="aspect-w-16 aspect-h-9 relative overflow-hidden rounded-lg">
+                      {generatedArt.mode === "svg" && !generatedArt.upscaledImageUrl ? (
+                        <div
+                          className="w-full h-full flex items-center justify-center"
+                          dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                        />
+                      ) : (
+                        <img
+                          src={generatedArt.upscaledImageUrl || generatedArt.imageUrl}
+                          alt={`${generatedArt.params.dataset} + ${generatedArt.params.scenario}`}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+
+                    <div className="flex space-x-4">
+                      <Button onClick={upscaleImage} disabled={isUpscaling}>
+                        {isUpscaling ? "Upscaling..." : "Enhance Details"}
+                      </Button>
+
+                      <Button onClick={() => downloadImage("regular")}>Download</Button>
+
+                      {generatedArt.isDomeProjection && (
+                        <Button onClick={() => downloadImage("dome")} disabled={isGeneratingDome}>
+                          {isGeneratingDome ? "Generating Dome..." : "Download Dome"}
+                        </Button>
+                      )}
+
+                      {generatedArt.is360Panorama && (
+                        <Button onClick={() => downloadImage("panorama")} disabled={isGenerating360}>
+                          {isGenerating360 ? "Generating 360°..." : "Download 360°"}
+                        </Button>
+                      )}
+
+                      {generatedArt.isDomeProjection && !generatedArt.domeImageUrl && (
+                        <Button onClick={generateDomeProjection} disabled={isGeneratingDome} variant="secondary">
+                          {isGeneratingDome ? "Generating Dome..." : "Generate Dome"}
+                        </Button>
+                      )}
+
+                      {generatedArt.is360Panorama && !generatedArt.panorama360Url && (
+                        <Button onClick={generate360Panorama} disabled={isGenerating360} variant="secondary">
+                          {isGenerating360 ? "Generating 360°..." : "Generate 360°"}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500">Generate artwork to see it here.</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  )
+}
