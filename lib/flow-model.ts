@@ -692,7 +692,7 @@ function applyScenarioTransform(
         }
         break
 
-      case "forest":
+      case "forest": {
         // Enchanted living forest with magical creatures and organic life
         const forestDepth = Math.abs(baseY) + 1
         const canopyDensity = Math.sin(baseX * 2) * Math.cos(baseY * 1.5) + 0.5
@@ -735,8 +735,9 @@ function applyScenarioTransform(
           forestSpirit: rng.next() < 0.02, // Rare forest spirits
         }
         break
+      }
 
-      case "cosmic":
+      case "cosmic": {
         // Deep space with galaxies, nebulae, stars, and cosmic phenomena
         const distance = Math.sqrt(baseX * baseX + baseY * baseY)
         const angle = Math.atan2(baseY, baseX)
@@ -786,8 +787,9 @@ function applyScenarioTransform(
           quasarActivity: distance > 2 && rng.next() < 0.01,
         }
         break
+      }
 
-      case "ocean":
+      case "ocean": {
         // Deep ocean with sea creatures, coral reefs, and marine life
         const depth = Math.max(0, -baseY * 1000 + 500) // 0-1000m depth
         const currentStrength = Math.sin(baseX * 1.5) * Math.cos(baseY * 0.8) * 0.2
@@ -851,8 +853,9 @@ function applyScenarioTransform(
           marineLifeDensity: (coralReef ? 0.8 : 0) + (kelp ? 0.6 : 0) + Math.abs(plankton) * 10,
         }
         break
+      }
 
-      case "neural":
+      case "neural": {
         // Brain networks with neurons, synapses, and neural activity
         const neuralActivity = Math.tanh(baseX * 1.2 + baseY * 0.8)
         const synapticWeight = Math.sin(baseX * 2.5) * Math.cos(baseY * 2.5)
@@ -899,8 +902,9 @@ function applyScenarioTransform(
           plasticity: synapticPlasticity * 100,
         }
         break
+      }
 
-      case "quantum":
+      case "quantum": {
         // Quantum realm with particles, waves, and quantum phenomena
         const waveFunction = Math.sin(baseX * 15) * Math.cos(baseY * 15) * Math.exp(-(baseX ** 2 + baseY ** 2) * 1.5)
         const particlePosition = rng.gaussian() * 0.08
@@ -948,8 +952,9 @@ function applyScenarioTransform(
           fieldStrength: Math.abs(fieldFluctuation) * 100,
         }
         break
+      }
 
-      case "microscopic":
+      case "microscopic": {
         // Molecular world with atoms, molecules, and chemical reactions
         const temperature = 300 + 100 * Math.sin(baseX * 0.8)
         const kineticEnergy = temperature * 1.38e-23 // Boltzmann constant
@@ -1004,9 +1009,10 @@ function applyScenarioTransform(
           molecularWeight: 10 + rng.range(0, 500),
         }
         break
+      }
 
       // Add more contextual scenarios...
-      case "crystalline":
+      case "crystalline": {
         // Crystal formations with gems, minerals, and lattice structures
         const latticeConstant = 0.4
         const latticeX = Math.round(baseX / latticeConstant) * latticeConstant
@@ -1049,8 +1055,9 @@ function applyScenarioTransform(
           mineralComposition: Math.floor(rng.next() * 12),
         }
         break
+      }
 
-      case "plasma":
+      case "plasma": {
         // Plasma physics with ions, electrons, and electromagnetic phenomena
         const magneticField = Math.sin(baseX * 3) * Math.cos(baseY * 3)
         const electricField = Math.cos(baseX * 4) * Math.sin(baseY * 4)
@@ -1094,8 +1101,9 @@ function applyScenarioTransform(
           radiationPower: Math.abs(synchrotronRadiation + bremsstrahlung) * 1000,
         }
         break
+      }
 
-      case "atmospheric":
+      case "atmospheric": {
         // Atmospheric physics with weather patterns and fluid dynamics
         const altitude = Math.abs(baseY) * 10000 // meters
         const pressure = Math.exp(-altitude / 8000) // barometric formula
@@ -1134,8 +1142,9 @@ function applyScenarioTransform(
           airDensity: pressure / (287 * temperature),
         }
         break
+      }
 
-      case "geological":
+      case "geological": {
         // Geological processes with tectonic activity and mineral formation
         const age = Math.abs(baseX * baseY) * 1e9 + 1e6 // years
         const depth = Math.abs(baseY) * 50000 // meters below surface
@@ -1177,8 +1186,9 @@ function applyScenarioTransform(
           rockType: Math.floor(rng.next() * 3), // Igneous, sedimentary, metamorphic
         }
         break
+      }
 
-      case "biological":
+      case "biological": {
         // Biological systems with DNA, proteins, and cellular processes
         const cellType = Math.floor(rng.next() * 5)
         const proteinLength = Math.floor(rng.range(50, 2000))
@@ -1224,6 +1234,7 @@ function applyScenarioTransform(
           metabolicRate: atpProduction / 100,
         }
         break
+      }
 
       default:
         // Default case with basic transformations
