@@ -4,151 +4,42 @@ import { openai } from "@ai-sdk/openai"
 
 export async function POST(request: NextRequest) {
   try {
-    const {
-      dataset,
-      scenario,
-      colorScheme,
-      numSamples,
-      noiseScale,
-      currentPrompt,
-      domeProjection,
-      domeDiameter,
-      domeResolution,
-      panoramic360,
-      panoramaResolution,
-      panoramaFormat,
-      stereographicPerspective,
-    } = await request.json()
+    const { dataset, scenario, colorScheme, numSamples, noiseScale, currentPrompt } = await request.json()
 
-    console.log("Enhancing prompt with parameters:", {
-      dataset,
-      scenario,
-      colorScheme,
-      panoramic360,
-      panoramaFormat,
-      stereographicPerspective,
-      domeProjection,
-    })
+    // Create god-level mathematical art prompt
+    const systemPrompt = `You are a world-class mathematical artist and theoretical physicist who creates museum-quality AI art prompts. Generate incredibly detailed, scientifically accurate prompts that combine advanced mathematics, theoretical physics, and professional art direction.`
 
-    // Build projection-specific context
-    let projectionContext = ""
-    if (panoramic360 && panoramaFormat === "stereographic") {
-      if (stereographicPerspective === "tunnel") {
-        projectionContext = `
-        STEREOGRAPHIC TUNNEL PROJECTION REQUIREMENTS:
-        - Looking UP perspective with sky/ceiling in the center
-        - Buildings, structures, or landscape elements curve around the edges
-        - Fisheye distortion effect with dramatic perspective
-        - Center should be bright (sky, ceiling, or overhead elements)
-        - Edges should contain ground-level or architectural elements
-        - Create immersive upward-looking tunnel effect
-        - Use dramatic lighting from above
-        `
-      } else {
-        projectionContext = `
-        STEREOGRAPHIC LITTLE PLANET PROJECTION REQUIREMENTS:
-        - Looking DOWN perspective with ground/landscape in the center
-        - Sky, horizon, or upper elements curve around the edges
-        - Tiny planet effect with ground as focal point
-        - Center should contain terrain, buildings, or ground elements
-        - Edges should contain sky, clouds, or atmospheric elements
-        - Create miniature world effect
-        - Use natural lighting from above
-        `
-      }
-    } else if (panoramic360) {
-      projectionContext = `
-      360° PANORAMIC REQUIREMENTS:
-      - Equirectangular projection format
-      - Seamless wraparound environment
-      - Immersive skybox suitable for VR
-      - Wide field of view with natural perspective
-      `
-    } else if (domeProjection) {
-      projectionContext = `
-      DOME PROJECTION REQUIREMENTS:
-      - Fisheye perspective optimized for ${domeDiameter}m dome
-      - ${domeResolution} resolution
-      - Immersive 360-degree view
-      - Suitable for planetarium display
-      `
-    }
+    const enhancementPrompt = `Create a god-level AI art prompt for generating mathematical artwork with these parameters:
 
-    // Build mathematical context based on dataset
-    const mathematicalContext = {
-      lorenz: "Lorenz attractor with chaotic butterfly patterns, strange attractors, nonlinear dynamics",
-      rossler: "Rössler attractor with spiral chaotic flows, continuous dynamical systems",
-      henon: "Hénon map discrete chaotic system, fractal basin boundaries",
-      clifford: "Clifford attractor with symmetric chaotic patterns, beautiful strange attractors",
-      mandelbrot: "Mandelbrot set fractal with infinite complexity, self-similar patterns",
-      julia: "Julia set fractals with intricate boundary structures",
-      newton: "Newton fractal with complex root-finding visualization, colorful basins",
-      cellular: "Cellular automata with emergent patterns, Conway's Game of Life",
-      diffusion: "Reaction-diffusion systems with Turing patterns, biological morphogenesis",
-      wave: "Wave interference patterns, standing waves, harmonic oscillations",
-      spirals: "Fibonacci spirals with golden ratio proportions, natural growth patterns",
-      voronoi: "Voronoi diagrams with cellular tessellations, natural partitioning",
-      perlin: "Perlin noise with organic textures, procedural generation",
-    }
+Dataset: ${dataset}
+Scenario: ${scenario} 
+Color Scheme: ${colorScheme}
+Sample Points: ${numSamples}
+Noise Scale: ${noiseScale}
+Current Prompt: ${currentPrompt || "None"}
 
-    // Build scenario context
-    const scenarioContext = {
-      pure: "pure mathematical visualization with abstract geometric forms",
-      urban: "urban environments with buildings, streets, and city architecture",
-      landscape: "natural landscapes with mountains, valleys, and organic terrain",
-      geological: "geological formations with rock structures, mineral patterns",
-      botanical: "botanical structures with plant forms, organic growth patterns",
-      atmospheric: "atmospheric phenomena with clouds, weather, and sky effects",
-      crystalline: "crystalline structures with geometric crystal formations",
-      textile: "textile patterns with fabric textures and woven designs",
-      metallic: "metallic surfaces with reflective materials and industrial textures",
-      organic: "organic textures with natural biological forms",
-      marine: "marine ecosystems with underwater environments and sea life",
-      architectural: "architectural forms with structural engineering and design",
-    }
+Generate a professional, museum-quality prompt that includes:
 
-    const basePrompt =
-      currentPrompt ||
-      `Create a photorealistic ${mathematicalContext[dataset] || dataset} visualization in a ${scenarioContext[scenario] || scenario} setting with ${colorScheme} color palette`
+1. MATHEMATICAL FOUNDATION: Describe mathematical concepts as visual patterns and structures
+2. PHYSICAL LAWS: Translate physics principles into visual elements and compositions
+3. VISUAL SPECIFICATIONS: Professional art direction with technical details
+4. LIGHTING & MATERIALS: HDR lighting, PBR materials, subsurface scattering
+5. SCALE & COMPOSITION: From quantum to cosmic scale relationships
+6. ARTISTIC STYLE: Professional photography/digital art techniques
 
-    const enhancementPrompt = `
-    You are an expert in mathematical visualization and AI art generation. Enhance this prompt for creating stunning photorealistic artwork:
+Make it incredibly detailed, scientifically accurate, and artistically sophisticated. Focus on visual representation of mathematical and physical concepts.
 
-    BASE PROMPT: "${basePrompt}"
-
-    MATHEMATICAL DATASET: ${dataset} - ${mathematicalContext[dataset] || "advanced mathematical patterns"}
-    SCENARIO: ${scenario} - ${scenarioContext[scenario] || scenario}
-    COLOR SCHEME: ${colorScheme}
-    COMPLEXITY: ${numSamples} sample points, noise scale ${noiseScale}
-
-    ${projectionContext}
-
-    ENHANCEMENT REQUIREMENTS:
-    1. Add specific technical details about the mathematical algorithm
-    2. Include photorealistic rendering specifications
-    3. Add atmospheric and lighting details
-    4. Specify material properties and textures
-    5. Include composition and perspective guidance
-    6. Add environmental context appropriate for the scenario
-    7. Ensure the description works well for AI image generation
-    8. Make it vivid and technically precise
-
-    Return only the enhanced prompt, no explanations.
-    `
-
-    console.log("Sending enhancement request to OpenAI...")
+CRITICAL: End the prompt with "IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text. Pure abstract visual art only. Focus on colors, shapes, patterns, and mathematical structures as visual elements, not written content."`
 
     const { text } = await generateText({
       model: openai("gpt-4o"),
+      system: systemPrompt,
       prompt: enhancementPrompt,
-      maxTokens: 500,
+      maxTokens: 1000,
+      temperature: 0.8,
     })
 
-    console.log("Enhanced prompt generated:", text)
-
-    return NextResponse.json({
-      enhancedPrompt: text.trim(),
-    })
+    return NextResponse.json({ enhancedPrompt: text })
   } catch (error: any) {
     console.error("Prompt enhancement error:", error)
     return NextResponse.json({ error: "Failed to enhance prompt", details: error.message }, { status: 500 })
