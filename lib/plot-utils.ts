@@ -63,5 +63,3 @@ export function generateScatterPlotSVG(data: number[][]): string {
   // Encode SVG to base64 data URL
   return `data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`
 }
-
-// This file is currently empty. It can be used for future plotting utilities.

@@ -103,15 +103,7 @@ export function FlowArtGenerator() {
     setIsEnhancingPrompt(true)
 
     try {
-      console.log("Enhancing prompt for:", {
-        dataset,
-        scenario,
-        colorScheme,
-        numSamples,
-        noiseScale,
-        enableStereographic,
-        stereographicPerspective,
-      })
+      console.log("Enhancing prompt for:", { dataset, scenario, colorScheme, numSamples, noiseScale })
 
       const response = await fetch("/api/enhance-prompt", {
         method: "POST",
@@ -123,8 +115,6 @@ export function FlowArtGenerator() {
           numSamples,
           noiseScale,
           currentPrompt: customPrompt,
-          enableStereographic,
-          stereographicPerspective,
         }),
       })
 
@@ -140,7 +130,7 @@ export function FlowArtGenerator() {
 
       toast({
         title: "Prompt Enhanced! ✨",
-        description: `Mathematical concepts and artistic details added${enableStereographic ? ` with ${stereographicPerspective} effects` : ""}.`,
+        description: "Mathematical concepts and artistic details added to your prompt.",
       })
     } catch (error: any) {
       console.error("Prompt enhancement error:", error)
@@ -152,17 +142,7 @@ export function FlowArtGenerator() {
     } finally {
       setIsEnhancingPrompt(false)
     }
-  }, [
-    dataset,
-    scenario,
-    colorScheme,
-    numSamples,
-    noiseScale,
-    customPrompt,
-    enableStereographic,
-    stereographicPerspective,
-    toast,
-  ])
+  }, [dataset, scenario, colorScheme, numSamples, noiseScale, customPrompt, toast])
 
   const generateArt = useCallback(async () => {
     console.log("Generate button clicked! Mode:", mode)
@@ -221,12 +201,9 @@ export function FlowArtGenerator() {
         setGeneratedArt(newArt)
         setGallery((prev) => [newArt, ...prev])
 
-        const projectionText = enableStereographic
-          ? ` (${stereographicPerspective === "little-planet" ? "Little Planet" : "Tunnel Vision"})`
-          : ""
         toast({
           title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
-          description: `Complex ${dataset} dataset with ${scenario === "pure" ? "advanced mathematical" : scenario} ${scenario === "pure" ? "visualization" : "scenario blend"} in ${colorScheme} colors${projectionText}.`,
+          description: `Complex ${dataset} dataset with ${scenario === "pure" ? "advanced mathematical" : scenario} ${scenario === "pure" ? "visualization" : "scenario blend"} in ${colorScheme} colors.`,
         })
       } else {
         // Generate AI art
@@ -241,8 +218,6 @@ export function FlowArtGenerator() {
           numSamples,
           noise: noiseScale,
           customPrompt: useCustomPrompt ? customPrompt : undefined,
-          enableStereographic,
-          stereographicPerspective,
         }
 
         console.log("Sending AI request:", requestBody)
@@ -282,14 +257,11 @@ export function FlowArtGenerator() {
         setGallery((prev) => [newArt, ...prev])
 
         setProgress(100)
-        const projectionText = enableStereographic
-          ? ` with ${stereographicPerspective === "little-planet" ? "Little Planet" : "Tunnel Vision"} effects`
-          : ""
         toast({
           title: "AI Art Generated! 🤖✨",
           description: useCustomPrompt
-            ? `Custom enhanced prompt artwork created${projectionText}!`
-            : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork in ${colorScheme} palette${projectionText}.`,
+            ? "Custom enhanced prompt artwork created!"
+            : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork in ${colorScheme} palette.`,
         })
       }
     } catch (error: any) {
@@ -423,10 +395,7 @@ export function FlowArtGenerator() {
       const imageUrl = generatedArt.upscaledImageUrl || generatedArt.imageUrl
       const isEnhanced = !!generatedArt.upscaledImageUrl
       const fileExtension = generatedArt.mode === "svg" && !isEnhanced ? "svg" : "png"
-      const projectionSuffix = generatedArt.params.enableStereographic
-        ? `-${generatedArt.params.stereographicPerspective}`
-        : ""
-      const fileName = `flowsketch-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${projectionSuffix}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
+      const fileName = `flowsketch-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
 
       console.log("Downloading:", fileName, "from:", imageUrl)
 
@@ -464,12 +433,9 @@ export function FlowArtGenerator() {
         console.log("Blob download completed")
       }
 
-      const projectionText = generatedArt.params.enableStereographic
-        ? ` (${generatedArt.params.stereographicPerspective === "little-planet" ? "Little Planet" : "Tunnel Vision"})`
-        : ""
       toast({
         title: "Download Complete! 🎨",
-        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} in ${generatedArt.params.colorScheme} colors${projectionText} downloaded.`,
+        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} in ${generatedArt.params.colorScheme} colors downloaded.`,
       })
     } catch (error: any) {
       console.error("Download error:", error)
@@ -517,8 +483,6 @@ export function FlowArtGenerator() {
       setSeed(art.params.seed)
       setNumSamples(art.params.numSamples)
       setNoiseScale(art.params.noiseScale)
-      setEnableStereographic(art.params.enableStereographic || false)
-      setStereographicPerspective(art.params.stereographicPerspective || "little-planet")
       if (art.customPrompt) {
         setCustomPrompt(art.customPrompt)
         setUseCustomPrompt(true)
@@ -534,17 +498,14 @@ export function FlowArtGenerator() {
 
   const getButtonText = () => {
     const scenarioText = scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)
-    const projectionText = enableStereographic
-      ? ` (${stereographicPerspective === "little-planet" ? "Little Planet" : "Tunnel"})`
-      : ""
 
     if (mode === "ai") {
       if (useCustomPrompt) {
-        return `Generate Custom AI Art${projectionText}`
+        return "Generate Custom AI Art"
       }
-      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}${projectionText}`
+      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}`
     } else {
-      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}${projectionText}`
+      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}`
     }
   }
 
@@ -650,18 +611,13 @@ export function FlowArtGenerator() {
                             </div>
 
                             <div className="p-2 space-y-1">
-                              <div className="flex gap-1 flex-wrap">
+                              <div className="flex gap-1">
                                 <Badge variant="outline" className="text-xs">
                                   {art.mode}
                                 </Badge>
                                 <Badge variant="outline" className="text-xs">
                                   {art.params.dataset}
                                 </Badge>
-                                {art.params.enableStereographic && (
-                                  <Badge variant="secondary" className="text-xs">
-                                    {art.params.stereographicPerspective === "little-planet" ? "🪐" : "🕳️"}
-                                  </Badge>
-                                )}
                               </div>
                               <p className="text-xs text-gray-600 dark:text-gray-400">
                                 {art.params.scenario} • {art.params.colorScheme}
@@ -804,41 +760,6 @@ export function FlowArtGenerator() {
                 </Select>
               </div>
 
-              <div className="space-y-3 p-4 border rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
-                <div className="flex items-center justify-between">
-                  <Label className="text-sm font-semibold flex items-center gap-2">🌍 Stereographic Projection</Label>
-                  <Switch checked={enableStereographic} onCheckedChange={setEnableStereographic} />
-                </div>
-
-                {enableStereographic && (
-                  <div className="space-y-2">
-                    <Label>Projection Style</Label>
-                    <Select value={stereographicPerspective} onValueChange={setStereographicPerspective}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="little-planet">🪐 Little Planet (Looking Down)</SelectItem>
-                        <SelectItem value="tunnel">🕳️ Tunnel Vision (Looking Up)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
-                {enableStereographic && (
-                  <Alert>
-                    <Info className="h-4 w-4" />
-                    <AlertDescription className="text-xs">
-                      Stereographic projection creates artistic "little planet" or "tunnel" effects perfect for social
-                      media.
-                      {stereographicPerspective === "little-planet"
-                        ? " Little Planet shows the world as if viewed from above a tiny sphere."
-                        : " Tunnel Vision creates a dramatic inward-looking perspective effect."}
-                    </AlertDescription>
-                  </Alert>
-                )}
-              </div>
-
               {/* AI Prompt Enhancement Section */}
               {mode === "ai" && (
                 <div className="space-y-3 p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
@@ -885,12 +806,6 @@ export function FlowArtGenerator() {
                         <Edit3 className="h-3 w-3 mr-1" />
                         Custom Prompt Active
                       </Badge>
-                      {enableStereographic && (
-                        <Badge variant="outline" className="text-xs">
-                          {stereographicPerspective === "little-planet" ? "🪐" : "🕳️"}{" "}
-                          {stereographicPerspective === "little-planet" ? "Little Planet" : "Tunnel"}
-                        </Badge>
-                      )}
                       <Button
                         onClick={() => {
                           setCustomPrompt("")
@@ -935,6 +850,41 @@ export function FlowArtGenerator() {
                   min={0.001}
                   step={0.001}
                 />
+              </div>
+
+              <div className="space-y-3 p-4 border rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-semibold flex items-center gap-2">🌍 Stereographic Projection</Label>
+                  <Switch checked={enableStereographic} onCheckedChange={setEnableStereographic} />
+                </div>
+
+                {enableStereographic && (
+                  <div className="space-y-2">
+                    <Label>Projection Style</Label>
+                    <Select value={stereographicPerspective} onValueChange={setStereographicPerspective}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="little-planet">🪐 Little Planet (Looking Down)</SelectItem>
+                        <SelectItem value="tunnel">🕳️ Tunnel Vision (Looking Up)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                {enableStereographic && (
+                  <Alert>
+                    <Info className="h-4 w-4" />
+                    <AlertDescription className="text-xs">
+                      Stereographic projection creates artistic "little planet" or "tunnel" effects perfect for social
+                      media.
+                      {stereographicPerspective === "little-planet"
+                        ? " Little Planet shows the world as if viewed from above a tiny sphere."
+                        : " Tunnel Vision creates a dramatic inward-looking perspective effect."}
+                    </AlertDescription>
+                  </Alert>
+                )}
               </div>
 
               <Button
@@ -1045,7 +995,7 @@ export function FlowArtGenerator() {
                   Generated Mathematical Artwork
                 </span>
                 {generatedArt && (
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex gap-2">
                     <Badge variant={generatedArt.mode === "ai" ? "default" : "outline"}>
                       {generatedArt.mode === "ai" ? "🤖 AI Art" : "📊 Complex Math"}
                     </Badge>
@@ -1055,13 +1005,6 @@ export function FlowArtGenerator() {
                     </Badge>
                     <Badge variant="outline">{generatedArt.params.colorScheme}</Badge>
                     <Badge variant="outline">{generatedArt.params.numSamples} points</Badge>
-                    {generatedArt.params.enableStereographic && (
-                      <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                        {generatedArt.params.stereographicPerspective === "little-planet"
-                          ? "🪐 Little Planet"
-                          : "🕳️ Tunnel Vision"}
-                      </Badge>
-                    )}
                     {generatedArt.customPrompt && (
                       <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
                         <Wand2 className="w-3 h-3 mr-1" />
@@ -1121,19 +1064,6 @@ export function FlowArtGenerator() {
                     </div>
                   </div>
 
-                  {generatedArt.params.enableStereographic && (
-                    <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg">
-                      <Label className="text-xs font-semibold text-blue-700 dark:text-blue-300">
-                        Stereographic Projection:
-                      </Label>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                        {generatedArt.params.stereographicPerspective === "little-planet"
-                          ? "🪐 Little Planet - Spherical world view from above, perfect for social media"
-                          : "🕳️ Tunnel Vision - Dramatic inward perspective with vanishing point effects"}
-                      </p>
-                    </div>
-                  )}
-
                   {generatedArt.customPrompt && (
                     <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg">
                       <Label className="text-xs font-semibold text-purple-700 dark:text-purple-300">
@@ -1156,10 +1086,6 @@ export function FlowArtGenerator() {
                     </p>
                     <p className="text-sm mt-1 text-purple-600">
                       Switch to AI Art tab and use prompt enhancement for professional AI artwork! 🤖✨
-                    </p>
-                    <p className="text-sm mt-1 text-blue-600">
-                      Enable Stereographic Projection for social media-ready "Little Planet" or "Tunnel Vision" effects!
-                      🌍
                     </p>
                   </div>
                 </div>

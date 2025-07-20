@@ -1,49 +1,19 @@
-import { generateFlowField, generateStereographicProjection } from "@/lib/flow-model"
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
+import { generateFlowField } from "@/lib/flow-model"
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const {
-      dataset,
-      scenario,
-      colorScheme,
-      seed,
-      numSamples,
-      noiseScale,
-      timeStep,
-      enableStereographic,
-      stereographicPerspective,
-    } = await req.json()
+    const params = await request.json()
 
-    let svgContent: string
+    // Generate SVG flow field
+    const svgContent = generateFlowField(params)
 
-    if (enableStereographic) {
-      svgContent = generateStereographicProjection({
-        dataset,
-        scenario,
-        colorScheme,
-        seed,
-        numSamples,
-        noiseScale,
-        timeStep,
-        enableStereographic,
-        stereographicPerspective,
-      })
-    } else {
-      svgContent = generateFlowField({
-        dataset,
-        scenario,
-        colorScheme,
-        seed,
-        numSamples,
-        noiseScale,
-        timeStep,
-      })
-    }
-
-    return NextResponse.json({ svgContent })
-  } catch (error) {
-    console.error("Error generating art:", error)
-    return NextResponse.json({ error: "Failed to generate art" }, { status: 500 })
+    return NextResponse.json({
+      svgContent,
+      success: true,
+    })
+  } catch (error: any) {
+    console.error("Flow field generation error:", error)
+    return NextResponse.json({ error: "Failed to generate flow field", details: error.message }, { status: 500 })
   }
 }

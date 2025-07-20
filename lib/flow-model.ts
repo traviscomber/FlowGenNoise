@@ -692,7 +692,7 @@ function applyScenarioTransform(
         }
         break
 
-      case "forest": {
+      case "forest":
         // Enchanted living forest with magical creatures and organic life
         const forestDepth = Math.abs(baseY) + 1
         const canopyDensity = Math.sin(baseX * 2) * Math.cos(baseY * 1.5) + 0.5
@@ -735,9 +735,8 @@ function applyScenarioTransform(
           forestSpirit: rng.next() < 0.02, // Rare forest spirits
         }
         break
-      }
 
-      case "cosmic": {
+      case "cosmic":
         // Deep space with galaxies, nebulae, stars, and cosmic phenomena
         const distance = Math.sqrt(baseX * baseX + baseY * baseY)
         const angle = Math.atan2(baseY, baseX)
@@ -787,9 +786,8 @@ function applyScenarioTransform(
           quasarActivity: distance > 2 && rng.next() < 0.01,
         }
         break
-      }
 
-      case "ocean": {
+      case "ocean":
         // Deep ocean with sea creatures, coral reefs, and marine life
         const depth = Math.max(0, -baseY * 1000 + 500) // 0-1000m depth
         const currentStrength = Math.sin(baseX * 1.5) * Math.cos(baseY * 0.8) * 0.2
@@ -853,9 +851,8 @@ function applyScenarioTransform(
           marineLifeDensity: (coralReef ? 0.8 : 0) + (kelp ? 0.6 : 0) + Math.abs(plankton) * 10,
         }
         break
-      }
 
-      case "neural": {
+      case "neural":
         // Brain networks with neurons, synapses, and neural activity
         const neuralActivity = Math.tanh(baseX * 1.2 + baseY * 0.8)
         const synapticWeight = Math.sin(baseX * 2.5) * Math.cos(baseY * 2.5)
@@ -902,9 +899,8 @@ function applyScenarioTransform(
           plasticity: synapticPlasticity * 100,
         }
         break
-      }
 
-      case "quantum": {
+      case "quantum":
         // Quantum realm with particles, waves, and quantum phenomena
         const waveFunction = Math.sin(baseX * 15) * Math.cos(baseY * 15) * Math.exp(-(baseX ** 2 + baseY ** 2) * 1.5)
         const particlePosition = rng.gaussian() * 0.08
@@ -952,9 +948,8 @@ function applyScenarioTransform(
           fieldStrength: Math.abs(fieldFluctuation) * 100,
         }
         break
-      }
 
-      case "microscopic": {
+      case "microscopic":
         // Molecular world with atoms, molecules, and chemical reactions
         const temperature = 300 + 100 * Math.sin(baseX * 0.8)
         const kineticEnergy = temperature * 1.38e-23 // Boltzmann constant
@@ -1009,10 +1004,9 @@ function applyScenarioTransform(
           molecularWeight: 10 + rng.range(0, 500),
         }
         break
-      }
 
       // Add more contextual scenarios...
-      case "crystalline": {
+      case "crystalline":
         // Crystal formations with gems, minerals, and lattice structures
         const latticeConstant = 0.4
         const latticeX = Math.round(baseX / latticeConstant) * latticeConstant
@@ -1031,337 +1025,212 @@ function applyScenarioTransform(
         // Crystal growth and facets
         const growthRate = Math.abs(Math.sin(baseX * 3) * Math.cos(baseY * 3)) * 0.05
         const facetAngle = Math.atan2(baseY, baseX) + Math.PI / 6
-        const facetReflection = Math.sin(facetAngle) * 0.7
+        const facetReflection = Math.sin(facetAngle * 6) * 0.04
 
-        x = latticeX + growthRate * Math.cos(facetAngle)
-        y = latticeY + growthRate * Math.sin(facetAngle)
+        // Piezoelectric and optical properties
+        const crystalField = Math.sin(baseX * 4) * Math.cos(baseY * 4)
+        const piezoStrain = crystalField * 0.03
+        const birefringence = Math.sin(facetAngle * 2) * 0.02
+
+        x = latticeX + (dislocation ? rng.gaussian() * 0.1 : 0) + piezoStrain + facetReflection
+        y = latticeY + (impurity ? rng.gaussian() * 0.08 : 0) + growthRate + birefringence
 
         metadata = {
-          crystalSystem: Math.floor(rng.next() * 7), // Cubic, tetragonal, orthorhombic, etc.
-          latticeConstant: latticeConstant,
-          defectType: dislocation ? "dislocation" : impurity ? "impurity" : twinBoundary ? "twin_boundary" : "none",
+          crystalSystem: Math.floor(rng.next() * 7), // Cubic, tetragonal, etc.
           gemstone: gemstone,
-          gemType: gemstone ? gemType : -1,
-          clarity: gemstone ? clarity : 0,
-          refractiveIndex: rng.range(1.4, 2.5),
-          hardness: rng.range(1, 10), // Mohs scale
-          mineralComposition: Math.floor(rng.next() * 10),
-          growthPattern: Math.floor(rng.next() * 5),
+          gemType: gemType,
+          clarity: clarity,
+          hardness: 3 + rng.range(0, 7), // Mohs scale
+          hasDefect: dislocation || impurity,
+          twinned: twinBoundary,
+          opticalProperty: Math.floor(rng.next() * 4), // Transparent, translucent, etc.
+          piezoelectric: Math.abs(crystalField) > 0.5,
+          growthStage: Math.floor(growthRate * 10),
+          mineralComposition: Math.floor(rng.next() * 12),
         }
         break
-      }
 
-      case "futuristic": {
-        // Cyberpunk cityscapes with neon lights, holographic projections, and advanced technology
-        const buildingHeight = Math.abs(baseY) * 100
-        const streetLevel = -10
+      case "plasma":
+        // Plasma physics with ions, electrons, and electromagnetic phenomena
+        const magneticField = Math.sin(baseX * 3) * Math.cos(baseY * 3)
+        const electricField = Math.cos(baseX * 4) * Math.sin(baseY * 4)
 
-        // Holographic projections
-        const hologram = rng.next() < 0.2
-        const hologramType = Math.floor(rng.next() * 5) // Advertisement, art, information, etc.
-        const hologramBrightness = Math.sin(i * 0.2) * 0.5 + 0.5
+        // Charged particle dynamics
+        const charge = rng.next() < 0.5 ? 1 : -1
+        const lorentzForceX = charge * (electricField + magneticField * baseY) * 0.12
+        const lorentzForceY = charge * (electricField - magneticField * baseX) * 0.12
 
-        // Neon lights and digital displays
-        const neonSign = rng.next() < 0.3
-        const neonColor = Math.floor(rng.next() * 4) // Red, green, blue, yellow
-        const digitalDisplay = Math.sin(baseX * 4) * Math.cos(baseY * 3) > 0.7
+        // Plasma instabilities and turbulence
+        const kelvinHelmholtz = Math.sin(baseX * 12 + baseY * 8) * Math.exp(-Math.abs(baseX) * 1.5) * 0.18
+        const rayleighTaylor = Math.cos(baseY * 10) * Math.exp(-Math.abs(baseY) * 2) * 0.15
 
-        // Flying vehicles and drones
-        const flyingVehicle = rng.next() < 0.05
-        const vehicleType = Math.floor(rng.next() * 3) // Car, drone, aircraft
-        const vehicleAltitude = rng.range(10, 200)
+        // Fusion reactions and energy release
+        const fusionCrossSection = Math.exp(-Math.abs(baseX - baseY) * 8) * 0.12
+        const alphaParticle = fusionCrossSection > 0.08 && rng.next() < 0.1
+        const neutronFlux = fusionCrossSection * Math.sin(baseX * baseY * 100) * 0.25
 
-        // Cybernetic implants and augmented reality
-        const cyberneticImplant = rng.next() < 0.1
-        const implantType = Math.floor(rng.next() * 4) // Eye, arm, leg, brain
-        const augmentedReality = Math.sin(baseX * 6 + baseY * 4) > 0.8
+        // Magnetic confinement
+        const magneticBottle = Math.exp(-((baseX ** 2 + baseY ** 2) * 2)) * magneticField * 0.1
+        const plasmoidFormation = Math.abs(magneticField) > 0.7 && rng.next() < 0.05
 
-        // Power grids and energy sources
-        const powerGrid = Math.sin(baseX * 10) * Math.cos(baseY * 8) > 0.6
-        const energySource = Math.floor(rng.next() * 3) // Solar, nuclear, fusion
+        // Electromagnetic radiation
+        const synchrotronRadiation = Math.abs(lorentzForceX + lorentzForceY) * 0.1
+        const bremsstrahlung = charge * electricField * 0.08
 
-        x = baseX + (hologram ? Math.sin(i * 0.3) * 0.1 : 0) + (flyingVehicle ? Math.cos(i * 0.5) * 0.1 : 0)
-        y = baseY + (cyberneticImplant ? Math.sin(i * 0.4) * 0.08 : 0) + (powerGrid ? Math.cos(i * 0.2) * 0.05 : 0)
+        x = baseX + lorentzForceX + kelvinHelmholtz + magneticBottle + synchrotronRadiation
+        y = baseY + lorentzForceY + rayleighTaylor + neutronFlux + bremsstrahlung
 
         metadata = {
-          buildingHeight: buildingHeight,
-          streetLevel: streetLevel,
-          hologram: hologram,
-          hologramType: hologram ? hologramType : -1,
-          hologramBrightness: hologram ? hologramBrightness : 0,
-          neonSign: neonSign,
-          neonColor: neonSign ? neonColor : -1,
-          digitalDisplay: digitalDisplay,
-          flyingVehicle: flyingVehicle,
-          vehicleType: flyingVehicle ? vehicleType : -1,
-          vehicleAltitude: flyingVehicle ? vehicleAltitude : 0,
-          cyberneticImplant: cyberneticImplant,
-          implantType: cyberneticImplant ? implantType : -1,
-          augmentedReality: augmentedReality,
-          powerGrid: powerGrid,
-          energySource: powerGrid ? energySource : -1,
-          populationDensity: buildingHeight * 0.01,
-          crimeRate: rng.range(0, 100),
-          technologyLevel: rng.range(5, 10),
+          temperature: 10000 + Math.abs(fusionCrossSection) * 1000000,
+          density: 1e15 + Math.abs(kelvinHelmholtz) * 1e17,
+          magneticField: magneticField,
+          electricField: electricField,
+          charge: charge,
+          isIonized: true,
+          fusionRate: fusionCrossSection * 10000,
+          alphaParticle: alphaParticle,
+          confinementTime: Math.abs(magneticBottle) * 1000, // milliseconds
+          plasmoid: plasmoidFormation,
+          radiationPower: Math.abs(synchrotronRadiation + bremsstrahlung) * 1000,
         }
         break
-      }
 
-      case "lava": {
-        // Volcanic landscapes with lava flows, volcanic vents, and geothermal activity
-        const elevation = Math.abs(baseY) * 50
-        const lavaFlow = Math.sin(baseX * 3) * Math.cos(baseY * 2) > 0.6
-        const volcanicVent = rng.next() < 0.02
-        const geothermalActivity = Math.sin(baseX * 8 + baseY * 6) * 0.3
+      case "atmospheric":
+        // Atmospheric physics with weather patterns and fluid dynamics
+        const altitude = Math.abs(baseY) * 10000 // meters
+        const pressure = Math.exp(-altitude / 8000) // barometric formula
+        const temperature = 288 - altitude * 0.0065 // standard atmosphere
 
-        // Magma chambers and tectonic plates
-        const magmaChamber = rng.next() < 0.01
-        const tectonicPlate = Math.floor(rng.next() * 4) // Eurasian, African, American, Pacific
+        // Wind patterns and turbulence
+        const windSpeed = Math.sin(baseX * 2) * Math.cos(baseY * 1.5) * 20 + 10
+        const turbulence = Math.sin(baseX * 8 + baseY * 6) * windSpeed * 0.1
+        const jetStream = Math.abs(baseY - 0.3) < 0.1 ? Math.sin(baseX * 4) * 0.2 : 0
 
-        // Ash clouds and pyroclastic flows
-        const ashCloud = rng.next() < 0.05
-        const pyroclasticFlow = ashCloud && Math.sin(baseX * 5 + i * 0.1) > 0.8
+        // Cloud formation and precipitation
+        const humidity = Math.sin(baseX * 3) * Math.cos(baseY * 2) * 50 + 50
+        const cloudCover = humidity > 70 ? (humidity - 70) / 30 : 0
+        const precipitation = cloudCover > 0.8 && rng.next() < 0.3
 
-        // Geysers and hot springs
-        const geyser = rng.next() < 0.03
-        const hotSpring = Math.sin(baseX * 4 + baseY * 3) > 0.7
+        // Atmospheric phenomena
+        const lightning = precipitation && rng.next() < 0.05
+        const aurora = altitude > 80000 && Math.abs(baseX) > 1.5 && rng.next() < 0.02
+        const meteorTrail = altitude > 50000 && rng.next() < 0.001
 
-        x = baseX + (lavaFlow ? Math.sin(i * 0.2) * 0.1 : 0) + (volcanicVent ? Math.cos(i * 0.3) * 0.08 : 0)
-        y = baseY + (geothermalActivity ? Math.sin(i * 0.4) * 0.06 : 0) + (ashCloud ? Math.cos(i * 0.5) * 0.04 : 0)
+        x = baseX + turbulence + jetStream + (lightning ? rng.gaussian() * 0.1 : 0)
+        y = baseY + windSpeed * 0.01 + (aurora ? Math.sin(i * 0.1) * 0.05 : 0)
 
         metadata = {
-          elevation: elevation,
-          lavaFlow: lavaFlow,
-          volcanicVent: volcanicVent,
-          geothermalActivity: geothermalActivity,
-          magmaChamber: magmaChamber,
-          tectonicPlate: magmaChamber ? tectonicPlate : -1,
-          ashCloud: ashCloud,
-          pyroclasticFlow: pyroclasticFlow,
-          geyser: geyser,
-          hotSpring: hotSpring,
-          temperature: 100 + elevation * 0.1,
-          atmosphericPressure: 1 + elevation * 0.01,
-          seismicActivity: rng.range(0, 10),
-          volcanicExplosivityIndex: rng.range(0, 8),
+          altitude: altitude,
+          pressure: pressure,
+          temperature: temperature,
+          windSpeed: windSpeed,
+          humidity: humidity,
+          cloudCover: cloudCover,
+          precipitation: precipitation,
+          lightning: lightning,
+          aurora: aurora,
+          meteorTrail: meteorTrail,
+          visibility: Math.max(0, 10 - cloudCover * 8),
+          airDensity: pressure / (287 * temperature),
         }
         break
-      }
 
-      case "arctic": {
-        // Frozen landscapes with glaciers, icebergs, and polar wildlife
-        const iceThickness = Math.abs(baseY) * 80
-        const glacier = Math.sin(baseX * 2) * Math.cos(baseY * 1.5) > 0.7
-        const iceberg = rng.next() < 0.03
-        const polarWildlife = rng.next() < 0.05
-        const wildlifeType = Math.floor(rng.next() * 4) // Polar bear, penguin, seal, arctic fox
+      case "geological":
+        // Geological processes with tectonic activity and mineral formation
+        const age = Math.abs(baseX * baseY) * 1e9 + 1e6 // years
+        const depth = Math.abs(baseY) * 50000 // meters below surface
 
-        // Aurora borealis and polar nights
-        const auroraBorealis = Math.sin(baseX * 5 + baseY * 3) > 0.8
-        const polarNight = Math.abs(baseY) > 1.5
+        // Tectonic forces
+        const tectonicStress = Math.sin(baseX * 0.5) * Math.cos(baseY * 0.3) * 100
+        const faultLine = Math.abs(tectonicStress) > 80
+        const earthquake = faultLine && rng.next() < 0.01
 
-        // Ice caves and frozen lakes
-        const iceCave = rng.next() < 0.01
-        const frozenLake = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
+        // Volcanic activity
+        const magmaTemperature = 1200 + depth * 0.03
+        const volcanicActivity = depth > 10000 && Math.sin(baseX * baseY * 10) > 0.9
+        const lavaFlow = volcanicActivity && rng.next() < 0.3
 
-        x = baseX + (glacier ? Math.sin(i * 0.3) * 0.1 : 0) + (iceberg ? Math.cos(i * 0.2) * 0.08 : 0)
-        y = baseY + (auroraBorealis ? Math.sin(i * 0.4) * 0.06 : 0) + (polarNight ? Math.cos(i * 0.5) * 0.04 : 0)
+        // Mineral formation
+        const mineralType = Math.floor(rng.next() * 10)
+        const crystalSize = Math.log(age / 1e6) * 0.1
+        const metamorphism = tectonicStress > 50 && depth > 5000
 
-        metadata = {
-          iceThickness: iceThickness,
-          glacier: glacier,
-          iceberg: iceberg,
-          polarWildlife: polarWildlife,
-          wildlifeType: polarWildlife ? wildlifeType : -1,
-          auroraBorealis: auroraBorealis,
-          polarNight: polarNight,
-          iceCave: iceCave,
-          frozenLake: frozenLake,
-          temperature: -20 + iceThickness * 0.01,
-          windSpeed: rng.range(0, 50),
-          snowfall: rng.range(0, 100),
-          iceCrystals: rng.range(0, 100),
-        }
-        break
-      }
+        // Erosion and sedimentation
+        const erosionRate = Math.abs(Math.sin(baseX * 4) * Math.cos(baseY * 3)) * 0.001
+        const sedimentation = erosionRate * Math.exp(-depth / 1000)
 
-      case "sunset": {
-        // Warm sunset landscapes with golden light, silhouettes, and atmospheric effects
-        const horizon = baseY * 50
-        const goldenLight = Math.sin(baseX * 2) * Math.cos(baseY * 1.5) > 0.7
-        const silhouette = rng.next() < 0.05
-        const silhouetteType = Math.floor(rng.next() * 4) // Tree, mountain, building, person
-
-        // Cloud formations and atmospheric haze
-        const cloudFormation = Math.sin(baseX * 5 + baseY * 3) > 0.8
-        const atmosphericHaze = Math.abs(baseY) > 0.5
-
-        // Bird flocks and evening sounds
-        const birdFlock = rng.next() < 0.03
-        const eveningSounds = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
-
-        x = baseX + (goldenLight ? Math.sin(i * 0.3) * 0.1 : 0) + (silhouette ? Math.cos(i * 0.2) * 0.08 : 0)
-        y = baseY + (cloudFormation ? Math.sin(i * 0.4) * 0.06 : 0) + (atmosphericHaze ? Math.cos(i * 0.5) * 0.04 : 0)
-
-        metadata = {
-          horizon: horizon,
-          goldenLight: goldenLight,
-          silhouette: silhouette,
-          silhouetteType: silhouette ? silhouetteType : -1,
-          cloudFormation: cloudFormation,
-          atmosphericHaze: atmosphericHaze,
-          birdFlock: birdFlock,
-          eveningSounds: eveningSounds,
-          temperature: 25 + horizon * 0.01,
-          humidity: rng.range(0, 100),
-          windSpeed: rng.range(0, 20),
-          airQuality: rng.range(0, 100),
-        }
-        break
-      }
-
-      case "toxic": {
-        // Polluted landscapes with toxic waste, chemical spills, and environmental hazards
-        const pollutionLevel = Math.abs(baseY) * 60
-        const toxicWaste = Math.sin(baseX * 3) * Math.cos(baseY * 2) > 0.7
-        const chemicalSpill = rng.next() < 0.03
-        const environmentalHazard = Math.sin(baseX * 8 + baseY * 6) * 0.3
-
-        // Radioactive zones and contaminated water sources
-        const radioactiveZone = rng.next() < 0.01
-        const contaminatedWater = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
-
-        // Mutated creatures and toxic plants
-        const mutatedCreature = rng.next() < 0.05
-        const toxicPlant = Math.sin(baseX * 5 + i * 0.1) > 0.8
-
-        x = baseX + (toxicWaste ? Math.sin(i * 0.2) * 0.1 : 0) + (chemicalSpill ? Math.cos(i * 0.3) * 0.08 : 0)
-        y =
-          baseY +
-          (environmentalHazard ? Math.sin(i * 0.4) * 0.06 : 0) +
-          (radioactiveZone ? Math.cos(i * 0.5) * 0.04 : 0)
-
-        metadata = {
-          pollutionLevel: pollutionLevel,
-          toxicWaste: toxicWaste,
-          chemicalSpill: chemicalSpill,
-          environmentalHazard: environmentalHazard,
-          radioactiveZone: radioactiveZone,
-          contaminatedWater: contaminatedWater,
-          mutatedCreature: mutatedCreature,
-          toxicPlant: toxicPlant,
-          temperature: 30 + pollutionLevel * 0.01,
-          airQuality: Math.max(0, 100 - pollutionLevel),
-          waterQuality: Math.max(0, 100 - pollutionLevel),
-          radiationLevel: rng.range(0, 100),
-        }
-        break
-      }
-
-      case "ember": {
-        // Scorched landscapes with burning forests, volcanic ash, and fiery skies
-        const fireIntensity = Math.abs(baseY) * 70
-        const burningForest = Math.sin(baseX * 3) * Math.cos(baseY * 2) > 0.7
-        const volcanicAsh = rng.next() < 0.03
-        const fierySky = Math.sin(baseX * 8 + baseY * 6) * 0.3
-
-        // Lava rivers and smoldering ruins
-        const lavaRiver = rng.next() < 0.01
-        const smolderingRuins = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
-
-        // Fire creatures and ash spirits
-        const fireCreature = rng.next() < 0.05
-        const ashSpirit = Math.sin(baseX * 5 + i * 0.1) > 0.8
-
-        x = baseX + (burningForest ? Math.sin(i * 0.2) * 0.1 : 0) + (volcanicAsh ? Math.cos(i * 0.3) * 0.08 : 0)
-        y = baseY + (fierySky ? Math.sin(i * 0.4) * 0.06 : 0) + (lavaRiver ? Math.cos(i * 0.5) * 0.04 : 0)
-
-        metadata = {
-          fireIntensity: fireIntensity,
-          burningForest: burningForest,
-          volcanicAsh: volcanicAsh,
-          fierySky: fierySky,
-          lavaRiver: lavaRiver,
-          smolderingRuins: smolderingRuins,
-          fireCreature: fireCreature,
-          ashSpirit: ashSpirit,
-          temperature: 40 + fireIntensity * 0.01,
-          smokeLevel: rng.range(0, 100),
-          emberDensity: rng.range(0, 100),
-          heatRadiation: rng.range(0, 100),
-        }
-        break
-      }
-
-      case "vintage": {
-        // Old-fashioned landscapes with sepia tones, antique objects, and nostalgic atmosphere
-        const age = Math.abs(baseY) * 90
-        const sepiaTone = Math.sin(baseX * 3) * Math.cos(baseY * 2) > 0.7
-        const antiqueObject = rng.next() < 0.03
-        const nostalgicAtmosphere = Math.sin(baseX * 8 + baseY * 6) * 0.3
-
-        // Old buildings and vintage vehicles
-        const oldBuilding = rng.next() < 0.01
-        const vintageVehicle = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
-
-        // Classic characters and retro sounds
-        const classicCharacter = rng.next() < 0.05
-        const retroSounds = Math.sin(baseX * 5 + i * 0.1) > 0.8
-
-        x = baseX + (sepiaTone ? Math.sin(i * 0.2) * 0.1 : 0) + (antiqueObject ? Math.cos(i * 0.3) * 0.08 : 0)
-        y = baseY + (nostalgicAtmosphere ? Math.sin(i * 0.4) * 0.06 : 0) + (oldBuilding ? Math.cos(i * 0.5) * 0.04 : 0)
+        x = baseX + tectonicStress * 0.001 + (earthquake ? rng.gaussian() * 0.2 : 0)
+        y = baseY + sedimentation + (lavaFlow ? Math.sin(i * 0.05) * 0.1 : 0)
 
         metadata = {
           age: age,
-          sepiaTone: sepiaTone,
-          antiqueObject: antiqueObject,
-          nostalgicAtmosphere: nostalgicAtmosphere,
-          oldBuilding: oldBuilding,
-          vintageVehicle: vintageVehicle,
-          classicCharacter: classicCharacter,
-          retroSounds: retroSounds,
-          stylePeriod: Math.floor(rng.next() * 5), // Victorian, Edwardian, Art Deco, etc.
-          fashionStyle: Math.floor(rng.next() * 5),
-          musicGenre: Math.floor(rng.next() * 5),
-          technologyLevel: Math.floor(rng.next() * 5),
+          depth: depth,
+          tectonicActivity: Math.abs(tectonicStress),
+          faultLine: faultLine,
+          earthquake: earthquake,
+          volcanicActivity: volcanicActivity,
+          magmaTemperature: magmaTemperature,
+          mineralType: mineralType,
+          crystalSize: crystalSize,
+          metamorphism: metamorphism,
+          erosionRate: erosionRate,
+          rockType: Math.floor(rng.next() * 3), // Igneous, sedimentary, metamorphic
         }
         break
-      }
 
-      case "neon": {
-        // Vibrant neon landscapes with glowing signs, electric lights, and futuristic vibes
-        const brightness = Math.abs(baseY) * 80
-        const glowingSign = Math.sin(baseX * 3) * Math.cos(baseY * 2) > 0.7
-        const electricLights = rng.next() < 0.03
-        const futuristicVibes = Math.sin(baseX * 8 + baseY * 6) * 0.3
+      case "biological":
+        // Biological systems with DNA, proteins, and cellular processes
+        const cellType = Math.floor(rng.next() * 5)
+        const proteinLength = Math.floor(rng.range(50, 2000))
+        const dnaSequence = Math.floor(rng.next() * 4) // A, T, G, C
 
-        // Neon buildings and electric vehicles
-        const neonBuilding = rng.next() < 0.01
-        const electricVehicle = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
+        // Protein folding and enzyme activity
+        const foldingEnergy = Math.sin(baseX * 10) * Math.cos(baseY * 8) * 100
+        const enzymeActivity = Math.abs(foldingEnergy) > 50 ? Math.exp(-Math.abs(foldingEnergy) / 25) : 0
+        const catalyticSite = enzymeActivity > 0.5 && rng.next() < 0.2
 
-        // Cyberpunk characters and synthwave sounds
-        const cyberpunkCharacter = rng.next() < 0.05
-        const synthwaveSounds = Math.sin(baseX * 5 + i * 0.1) > 0.8
+        // Genetic processes
+        const transcription = rng.next() < 0.1
+        const translation = transcription && rng.next() < 0.8
+        const mutation = rng.next() < 0.001
 
-        x = baseX + (glowingSign ? Math.sin(i * 0.2) * 0.1 : 0) + (electricLights ? Math.cos(i * 0.3) * 0.08 : 0)
-        y = baseY + (futuristicVibes ? Math.sin(i * 0.4) * 0.06 : 0) + (neonBuilding ? Math.cos(i * 0.5) * 0.04 : 0)
+        // Cellular metabolism
+        const atpProduction = Math.sin(baseX * 6) * Math.cos(baseY * 4) * 50 + 50
+        const oxygenConsumption = atpProduction * 0.8
+        const carbonDioxideProduction = oxygenConsumption * 0.9
+
+        // Cell division and growth
+        const cellCycle = Math.floor((baseX + baseY + 2) * 2) % 4 // G1, S, G2, M
+        const mitosis = cellCycle === 3 && rng.next() < 0.05
+        const apoptosis = rng.next() < 0.001
+
+        x = baseX + foldingEnergy * 0.001 + (mitosis ? rng.gaussian() * 0.05 : 0)
+        y = baseY + enzymeActivity * 0.1 + (mutation ? rng.gaussian() * 0.1 : 0)
 
         metadata = {
-          brightness: brightness,
-          glowingSign: glowingSign,
-          electricLights: electricLights,
-          futuristicVibes: futuristicVibes,
-          neonBuilding: neonBuilding,
-          electricVehicle: electricVehicle,
-          cyberpunkCharacter: cyberpunkCharacter,
-          synthwaveSounds: synthwaveSounds,
-          colorPalette: Math.floor(rng.next() * 5), // Neon pink, electric blue, etc.
-          technologyLevel: Math.floor(rng.next() * 5),
-          energySource: Math.floor(rng.next() * 5),
-          cyberneticImplants: Math.floor(rng.next() * 5),
+          cellType: cellType,
+          proteinLength: proteinLength,
+          dnaSequence: dnaSequence,
+          enzymeActivity: enzymeActivity,
+          catalyticSite: catalyticSite,
+          transcription: transcription,
+          translation: translation,
+          mutation: mutation,
+          atpProduction: atpProduction,
+          oxygenConsumption: oxygenConsumption,
+          cellCycle: cellCycle,
+          mitosis: mitosis,
+          apoptosis: apoptosis,
+          metabolicRate: atpProduction / 100,
         }
         break
-      }
+
+      default:
+        // Default case with basic transformations
+        metadata = {
+          intensity: Math.sqrt(baseX * baseX + baseY * baseY),
+          pattern: Math.sin(baseX + baseY),
+        }
     }
 
     transformedPoints.push({ x, y, metadata })
@@ -1372,114 +1241,374 @@ function applyScenarioTransform(
 
 // Helper functions
 function isPrime(n: number): boolean {
-  if (n <= 1) return false
-  for (let i = 2; i <= Math.sqrt(n); i++) {
+  if (n < 2) return false
+  if (n === 2) return true
+  if (n % 2 === 0) return false
+  for (let i = 3; i <= Math.sqrt(n); i += 2) {
     if (n % i === 0) return false
   }
   return true
 }
 
 function fibonacciSpiral(x: number, y: number): number {
+  const phi = (1 + Math.sqrt(5)) / 2
   const r = Math.sqrt(x * x + y * y)
   const theta = Math.atan2(y, x)
-  return Math.exp(theta / 1.618) * r
+  return Math.sin(theta * phi + r * phi) * Math.exp(-r * 0.5)
 }
 
-/**
- * generateHighResFlowField – private helper that renders a high-resolution
- * flow field by generating a dataset, applying a scenario transform, and
- * then converting the points to a string.
- */
-function generateHighResFlowField(params: UpscaleParams): string {
-  const { dataset, scenario, seed, numSamples, noiseScale, timeStep } = params
-
-  // Generate the base dataset
-  const points = generateDataset(dataset, seed, numSamples, noiseScale)
-
-  // Apply scenario transformations
-  const rng = new SeededRandom(seed)
-  const transformedPoints = applyScenarioTransform(points, scenario, rng)
-
-  // Convert points to string format
-  let flowField = ""
-  for (let i = 0; i < transformedPoints.length; i++) {
-    const { x, y } = transformedPoints[i]
-    const angle = Math.atan2(y, x)
-    const magnitude = Math.sqrt(x * x + y * y)
-    const adjustedAngle = angle + timeStep * 0.1 // Animate the flow
-
-    const scaledX = x * params.scaleFactor
-    const scaledY = y * params.scaleFactor
-
-    flowField += `${scaledX.toFixed(3)},${scaledY.toFixed(3)},${adjustedAngle.toFixed(3)}\n`
-  }
-
-  return flowField
-}
-
-/**
- * generateStereographicProjection – private helper that renders a
- * stereographic projection of a flow field.
- */
-/**
- * generateStereographicProjection – renders a stereographic projection
- * (“little-planet” / “tunnel-vision”) of a flow-field dataset.
- */
-export function generateStereographicProjection(
-  params: GenerationParams & { stereographicPerspective?: string },
-): string {
-  const { dataset, scenario, seed, numSamples, noiseScale, timeStep, stereographicPerspective } = params
-
-  // Generate the base dataset
-  const points = generateDataset(dataset, seed, numSamples, noiseScale)
-
-  // Apply scenario transformations
-  const rng = new SeededRandom(seed)
-  const transformedPoints = applyScenarioTransform(points, scenario, rng)
-
-  // Define the perspective point for stereographic projection
-  const perspective =
-    stereographicPerspective === "north"
-      ? { x: 0, y: 1 }
-      : stereographicPerspective === "south"
-        ? { x: 0, y: -1 }
-        : { x: 0, y: 0 }
-
-  // Convert points to string format with stereographic projection
-  let flowField = ""
-  for (let i = 0; i < transformedPoints.length; i++) {
-    const { x, y } = transformedPoints[i]
-
-    // Stereographic projection formula
-    const k = 2 / (1 + (x - perspective.x) ** 2 + (y - perspective.y) ** 2)
-    const projectedX = (x - perspective.x) * k
-    const projectedY = (y - perspective.y) * k
-
-    const angle = Math.atan2(projectedY, projectedX)
-    const adjustedAngle = angle + timeStep * 0.1 // Animate the flow
-
-    flowField += `${projectedX.toFixed(3)},${projectedY.toFixed(3)},${adjustedAngle.toFixed(3)}\n`
-  }
-
-  return flowField
-}
-
-/**
- * generateFlowField – public helper that decides whether to render a normal
- * high-resolution flow field or a stereographic projection, based on the
- * incoming parameters.  This is the function other parts of the app import.
- */
 export function generateFlowField(params: GenerationParams): string {
   if (params.enableStereographic) {
-    // Delegate to the dedicated stereographic renderer.
     return generateStereographicProjection(params)
   }
+  return generateHighResFlowField({ ...params, scaleFactor: 1, highResolution: false, extraDetail: false })
+}
 
-  // For a standard flow-field, reuse the high-res path with neutral settings.
-  return generateHighResFlowField({
-    ...params,
-    scaleFactor: 1,
-    highResolution: false,
-    extraDetail: false,
-  })
+export function generateHighResFlowField(params: UpscaleParams): string {
+  const {
+    dataset,
+    scenario,
+    colorScheme,
+    seed,
+    numSamples,
+    noiseScale,
+    timeStep,
+    scaleFactor,
+    highResolution,
+    extraDetail,
+  } = params
+
+  // Calculate enhanced parameters for upscaling
+  const baseSize = 512
+  const size = baseSize * scaleFactor
+  const enhancedSamples = highResolution ? numSamples * scaleFactor * scaleFactor : numSamples
+
+  const rng = new SeededRandom(seed)
+  const colors = colorPalettes[colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
+
+  // Generate base dataset
+  const basePoints = generateDataset(dataset, seed, enhancedSamples, noiseScale)
+
+  // Apply scenario transformation
+  const transformedPoints = applyScenarioTransform(basePoints, scenario, rng)
+
+  let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`
+
+  // Add background gradient based on color palette
+  svgContent += `
+    <defs>
+      <radialGradient id="bg-${seed}" cx="50%" cy="50%" r="70%">
+        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.9"/>
+        <stop offset="100%" style="stop-color:${colors[1]};stop-opacity:1"/>
+      </radialGradient>
+    </defs>
+    <rect width="${size}" height="${size}" fill="url(#bg-${seed})"/>
+  `
+
+  const centerX = size / 2
+  const centerY = size / 2
+  const scale = size / 8
+
+  // Render points with scenario-specific styling but color palette colors
+  for (let i = 0; i < transformedPoints.length; i++) {
+    const point = transformedPoints[i]
+    const screenX = centerX + point.x * scale
+    const screenY = centerY + point.y * scale
+
+    if (screenX >= 0 && screenX <= size && screenY >= 0 && screenY <= size) {
+      // Use color palette for coloring (cycle through the 4 colors)
+      const colorIndex = Math.floor((i / transformedPoints.length) * 4) % 4
+      const pointColor = colors[colorIndex]
+
+      let radius = 1
+      let opacity = 0.6
+      let strokeWidth = 0
+      let stroke = "none"
+
+      // Apply scenario-specific sizing and effects (but not colors)
+      switch (scenario) {
+        case "pure":
+          // Pure mathematical visualization with enhanced complexity
+          radius = 0.8 + point.metadata.magnitude * 0.5 + Math.abs(point.metadata.harmonicSeries) * 0.3
+          opacity = 0.7 + (point.metadata.magnitude / 3) * 0.3
+
+          // Special highlighting for prime numbers and Fibonacci points
+          if (point.metadata.isPrime) {
+            radius *= 1.5
+            stroke = colors[3]
+            strokeWidth = 0.5
+          }
+          if (Math.abs(point.metadata.fibonacci) > 0.5) {
+            stroke = colors[2]
+            strokeWidth = 0.3
+          }
+          break
+
+        case "cosmic":
+          radius = 0.3 + (point.metadata.isStar ? 3 : 1)
+          opacity = point.metadata.isStar ? 0.9 : 0.5
+
+          if (point.metadata.isStar) {
+            radius = 2 + rng.range(0, 3) + point.metadata.stellarClass * 0.5
+            opacity = 0.9
+            stroke = colors[3]
+            strokeWidth = 0.5
+
+            // Add stellar corona
+            svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 2}" fill="none" stroke="${colors[3]}" stroke-width="0.2" opacity="0.3"/>`
+          }
+
+          if (point.metadata.isBlackHole) {
+            // Draw event horizon
+            svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 3}" fill="${colors[0]}" opacity="0.8"/>`
+            svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 4}" fill="none" stroke="${colors[1]}" stroke-width="1" opacity="0.5"/>`
+          }
+          break
+
+        case "neural":
+          radius = 0.5 + Math.abs(point.metadata.firingRate || 0) * 0.02
+          opacity = 0.3 + Math.abs(point.metadata.synapticStrength || 0) * 0.6
+
+          if (point.metadata.neuronType !== undefined) {
+            stroke = colors[3]
+            strokeWidth = 0.5
+          }
+          break
+
+        default:
+          radius = 0.5 + (point.metadata.intensity || 0) * 0.5
+          opacity = 0.4 + Math.abs(point.metadata.pattern || 0) * 0.4
+      }
+
+      svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="${pointColor}" opacity="${opacity}" stroke="${stroke}" stroke-width="${strokeWidth}"/>`
+    }
+  }
+
+  // Add scenario-specific overlays
+  if (scenario === "pure") {
+    // Add enhanced mathematical grid lines and golden ratio spirals
+    const gridSpacing = size / 12
+    for (let i = 0; i <= 12; i++) {
+      const pos = i * gridSpacing
+      svgContent += `<line x1="${pos}" y1="0" x2="${pos}" y2="${size}" stroke="${colors[1]}" stroke-width="0.3" opacity="0.15"/>`
+      svgContent += `<line x1="0" y1="${pos}" x2="${size}" y2="${pos}" stroke="${colors[1]}" stroke-width="0.3" opacity="0.15"/>`
+    }
+
+    // Add axes with enhanced styling
+    svgContent += `<line x1="${centerX}" y1="0" x2="${centerX}" y2="${size}" stroke="${colors[2]}" stroke-width="1.5" opacity="0.4"/>`
+    svgContent += `<line x1="0" y1="${centerY}" x2="${size}" y2="${centerY}" stroke="${colors[2]}" stroke-width="1.5" opacity="0.4"/>`
+
+    // Add golden ratio spiral
+    const phi = (1 + Math.sqrt(5)) / 2
+    let spiralPath = `M ${centerX} ${centerY}`
+    for (let t = 0; t < 4 * Math.PI; t += 0.1) {
+      const r = Math.exp(t / phi) * 5
+      const x = centerX + r * Math.cos(t)
+      const y = centerY + r * Math.sin(t)
+      if (x >= 0 && x <= size && y >= 0 && y <= size) {
+        spiralPath += ` L ${x} ${y}`
+      }
+    }
+    svgContent += `<path d="${spiralPath}" fill="none" stroke="${colors[3]}" stroke-width="0.8" opacity="0.3"/>`
+  }
+
+  svgContent += "</svg>"
+  return svgContent
+}
+
+/**
+ * generateStereographicProjection – creates "little planet" or "tunnel" stereographic projections
+ * Perfect for social media and artistic stereographic effects
+ */
+export function generateStereographicProjection(
+  params: GenerationParams & {
+    stereographicPerspective?: string
+  },
+): string {
+  const size = 512
+  const center = size / 2
+  const radius = size / 2 - 10
+  const colors = colorPalettes[params.colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
+  const rng = new SeededRandom(params.seed)
+  const isTunnel = params.stereographicPerspective === "tunnel"
+
+  // Generate base mathematical dataset
+  const basePoints = generateDataset(params.dataset, params.seed, params.numSamples, params.noiseScale)
+  const transformedPoints = applyScenarioTransform(basePoints, params.scenario, rng)
+
+  let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`
+
+  // Add circular clipping mask
+  svgContent += `
+    <defs>
+      <clipPath id="circleClip">
+        <circle cx="${center}" cy="${center}" r="${radius}"/>
+      </clipPath>
+      <radialGradient id="stereoGradient" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.9"/>
+        <stop offset="70%" style="stop-color:${colors[1]};stop-opacity:0.6"/>
+        <stop offset="100%" style="stop-color:${colors[2] || colors[0]};stop-opacity:1"/>
+      </radialGradient>
+    </defs>
+  `
+
+  // Background circle
+  svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" fill="url(#stereoGradient)" />`
+
+  // Group all content within the circular clip
+  svgContent += `<g clip-path="url(#circleClip)">`
+
+  // Transform and render mathematical points with stereographic projection
+  for (let i = 0; i < transformedPoints.length; i++) {
+    const point = transformedPoints[i]
+
+    // Convert Cartesian coordinates to polar
+    const originalR = Math.sqrt(point.x * point.x + point.y * point.y)
+    const originalTheta = Math.atan2(point.y, point.x)
+
+    // Apply stereographic projection
+    let projectedR: number
+    if (isTunnel) {
+      // Tunnel effect: invert the projection (center becomes edge, edge becomes center)
+      projectedR = originalR > 0 ? (radius * 0.8) / (1 + originalR * 2) : 0
+    } else {
+      // Little planet effect: normal stereographic projection
+      const normalizedR = Math.min(originalR * 2, 3) // Limit to prevent extreme values
+      projectedR = (normalizedR * radius * 0.4) / (1 + normalizedR * normalizedR * 0.5)
+    }
+
+    // Convert back to Cartesian coordinates
+    const projectedX = center + projectedR * Math.cos(originalTheta)
+    const projectedY = center + projectedR * Math.sin(originalTheta)
+
+    // Ensure point is within the circle
+    const distFromCenter = Math.sqrt((projectedX - center) ** 2 + (projectedY - center) ** 2)
+    if (distFromCenter <= radius * 0.95) {
+      // Use color palette for coloring
+      const colorIndex = Math.floor((i / transformedPoints.length) * colors.length) % colors.length
+      const pointColor = colors[colorIndex]
+
+      // Calculate point size based on distance from center and metadata
+      let pointRadius = 1.5
+      let opacity = 0.7
+
+      // Apply scenario-specific styling
+      switch (params.scenario) {
+        case "pure":
+          pointRadius = 1 + (point.metadata.magnitude || 0) * 2
+          opacity = 0.6 + ((point.metadata.magnitude || 0) / 3) * 0.4
+          if (point.metadata.isPrime) {
+            pointRadius *= 1.3
+          }
+          break
+        case "cosmic":
+          pointRadius = 0.8 + (point.metadata.isStar ? 3 : 1)
+          opacity = point.metadata.isStar ? 0.9 : 0.5
+          break
+        case "forest":
+          pointRadius = 1 + (point.metadata.isTree ? 2 : 0.5)
+          opacity = point.metadata.isTree ? 0.8 : 0.4
+          break
+        case "ocean":
+          pointRadius = 1 + (point.metadata.depth || 0) * 0.5
+          opacity = 0.4 + (point.metadata.depth || 0) * 0.4
+          break
+        case "neural":
+          pointRadius = 1 + Math.abs(point.metadata.firingRate || 0) * 0.02
+          opacity = 0.5 + Math.abs(point.metadata.synapticStrength || 0) * 0.4
+          break
+        default:
+          pointRadius = 1 + (point.metadata.intensity || 0) * 1.5
+          opacity = 0.5 + Math.abs(point.metadata.pattern || 0) * 0.3
+      }
+
+      // Adjust size based on distance from center for depth effect
+      const depthFactor = isTunnel
+        ? (1 - distFromCenter / radius) * 0.5 + 0.5
+        : // Tunnel: smaller at edges
+          (distFromCenter / radius) * 0.5 + 0.5 // Planet: smaller at center
+
+      pointRadius *= depthFactor
+
+      svgContent += `<circle cx="${projectedX.toFixed(2)}" cy="${projectedY.toFixed(2)}" r="${pointRadius.toFixed(2)}" fill="${pointColor}" opacity="${opacity.toFixed(2)}"/>`
+    }
+  }
+
+  // Add connecting lines for some scenarios
+  if (params.scenario === "neural" || params.scenario === "pure") {
+    const connectionCount = Math.min(50, Math.floor(transformedPoints.length / 10))
+    for (let i = 0; i < connectionCount; i++) {
+      const point1 = transformedPoints[i]
+      const point2 =
+        transformedPoints[(i + Math.floor(transformedPoints.length / connectionCount)) % transformedPoints.length]
+
+      // Apply stereographic projection to both points
+      const r1 = Math.sqrt(point1.x * point1.x + point1.y * point1.y)
+      const theta1 = Math.atan2(point1.y, point1.x)
+      const r2 = Math.sqrt(point2.x * point2.x + point2.y * point2.y)
+      const theta2 = Math.atan2(point2.y, point2.x)
+
+      let projR1, projR2
+      if (isTunnel) {
+        projR1 = r1 > 0 ? (radius * 0.8) / (1 + r1 * 2) : 0
+        projR2 = r2 > 0 ? (radius * 0.8) / (1 + r2 * 2) : 0
+      } else {
+        const normR1 = Math.min(r1 * 2, 3)
+        const normR2 = Math.min(r2 * 2, 3)
+        projR1 = (normR1 * radius * 0.4) / (1 + normR1 * normR1 * 0.5)
+        projR2 = (normR2 * radius * 0.4) / (1 + normR2 * normR2 * 0.5)
+      }
+
+      const x1 = center + projR1 * Math.cos(theta1)
+      const y1 = center + projR1 * Math.sin(theta1)
+      const x2 = center + projR2 * Math.cos(theta2)
+      const y2 = center + projR2 * Math.sin(theta2)
+
+      // Check if both points are within the circle
+      const dist1 = Math.sqrt((x1 - center) ** 2 + (y1 - center) ** 2)
+      const dist2 = Math.sqrt((x2 - center) ** 2 + (y2 - center) ** 2)
+
+      if (dist1 <= radius * 0.95 && dist2 <= radius * 0.95) {
+        const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        if (distance < radius * 0.3) {
+          // Only connect nearby points
+          svgContent += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colors[1]}" stroke-width="0.5" opacity="0.3"/>`
+        }
+      }
+    }
+  }
+
+  // Add radial grid lines for reference
+  if (params.scenario === "pure") {
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * 2 * Math.PI
+      const x1 = center + Math.cos(angle) * radius * 0.1
+      const y1 = center + Math.sin(angle) * radius * 0.1
+      const x2 = center + Math.cos(angle) * radius * 0.9
+      const y2 = center + Math.sin(angle) * radius * 0.9
+
+      svgContent += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colors[colors.length - 1]}" stroke-width="0.3" opacity="0.2"/>`
+    }
+
+    // Add concentric circles
+    for (let i = 1; i <= 4; i++) {
+      const circleRadius = (i / 4) * radius * 0.8
+      svgContent += `<circle cx="${center}" cy="${center}" r="${circleRadius.toFixed(2)}" fill="none" stroke="${colors[colors.length - 1]}" stroke-width="0.3" opacity="0.2"/>`
+    }
+  }
+
+  svgContent += `</g>` // Close clipping group
+
+  // Add border ring
+  svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="${colors[colors.length - 1]}" stroke-width="3" opacity="0.8" />`
+
+  // Add projection type label
+  const perspectiveLabel = isTunnel ? "TUNNEL VISION" : "LITTLE PLANET"
+  svgContent += `<text x="${size - 10}" y="${size - 10}" text-anchor="end" font-family="monospace" font-size="8" fill="${colors[colors.length - 1]}" opacity="0.7">${perspectiveLabel}</text>`
+
+  // Add mathematical dataset label
+  svgContent += `<text x="10" y="${size - 10}" text-anchor="start" font-family="monospace" font-size="8" fill="${colors[colors.length - 1]}" opacity="0.7">${params.dataset.toUpperCase()} + ${params.scenario.toUpperCase()}</text>`
+
+  svgContent += "</svg>"
+  return svgContent
 }
