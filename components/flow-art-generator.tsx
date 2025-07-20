@@ -33,7 +33,7 @@ import {
   Globe,
   Eye,
 } from "lucide-react"
-import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
+import { generateFlowField, generateDomeProjection as generateDomeSVG, type GenerationParams } from "@/lib/flow-model"
 import { ClientUpscaler } from "@/lib/client-upscaler"
 import { useToast } from "@/hooks/use-toast"
 
@@ -208,7 +208,7 @@ export function FlowArtGenerator() {
 
       if (generatedArt.mode === "svg") {
         // Generate dome-optimized SVG
-        const domeSvgContent = generateDomeProjection(domeParams)
+        const domeSvgContent = generateDomeSVG(domeParams)
         const svgBlob = new Blob([domeSvgContent], { type: "image/svg+xml" })
         domeImageUrl = URL.createObjectURL(svgBlob)
       } else {
@@ -305,7 +305,7 @@ export function FlowArtGenerator() {
         if (domeEnabled) {
           setProgress(80)
           console.log("Generating dome projection...")
-          const domeSvgContent = generateDomeProjection(params)
+          const domeSvgContent = generateDomeSVG(params)
           const domeSvgBlob = new Blob([domeSvgContent], { type: "image/svg+xml" })
           domeImageUrl = URL.createObjectURL(domeSvgBlob)
         }
