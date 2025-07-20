@@ -1,14 +1,8 @@
 /**
- * FlowSketch – *minimal* fallback version
+ * FlowSketch – Mathematical Art Generator with 360° Panorama Support
  * -----------------------------------------------------------
- * This file defines the public helpers that the rest of the app
- * expects (`generateFlowField` and `generateDomeProjection`).
- *
- * NOTE:  • The SVG that is produced here is purposely simple –
- *          enough to unblock the compilation error while you
- *          continue iterating on the real maths / plotting code.
- *        • Feel free to replace the bodies with your advanced
- *          algorithms later; just keep the function signatures.
+ * This file defines the public helpers that generate mathematical visualizations
+ * in various formats: standard, dome projection, and 360° panoramic skyboxes.
  */
 
 export interface GenerationParams {
@@ -23,6 +17,8 @@ export interface GenerationParams {
   domeDiameter?: number
   domeResolution?: string
   projectionType?: string
+  panoramic360?: boolean
+  panoramaResolution?: string
 }
 
 /* ------------------------------------------------------------------ */
@@ -59,6 +55,17 @@ export const colorPalettes = {
 /* ------------------------------------------------------------------ */
 function paletteColor(palette: readonly string[], idx: number): string {
   return palette[idx % palette.length]
+}
+
+/* ------------------------------------------------------------------ */
+/*  Seeded random number generator for consistent results              */
+/* ------------------------------------------------------------------ */
+function seededRandom(seed: number) {
+  let state = seed
+  return () => {
+    state = (state * 1664525 + 1013904223) % 4294967296
+    return state / 4294967296
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -298,6 +305,205 @@ export function generateDomeProjection(params: GenerationParams): string {
       <text x="${size - 10}" y="20" text-anchor="end" font-family="monospace" font-size="10" 
             fill="${colours[colours.length - 1]}" opacity="0.7">
         FISHEYE ${params.domeDiameter || 30}m ${params.domeResolution || "8K"}
+      </text>
+    </svg>
+  `
+}
+
+/**
+ * generate360Panorama – creates equirectangular 360° panoramic images
+ * Perfect for VR environments, skyboxes, and 360° viewers like Blockade Labs
+ */
+export function generate360Panorama(params: GenerationParams): string {
+  // Equirectangular format: 2:1 aspect ratio (360° x 180°)
+  const width = 1024
+  const height = 512
+  const colours = colorPalettes[params.colorScheme as keyof typeof colorPalettes] ?? colorPalettes.plasma
+  const random = seededRandom(params.seed)
+
+  // Generate mathematical patterns across the full sphere
+  const pathElements: string[] = []
+  const particles: string[] = []
+
+  // Create horizon line and reference grid
+  const gridLines: string[] = []
+
+  // Horizon line (equator)
+  gridLines.push(
+    `<line x1="0" y1="${height / 2}" x2="${width}" y2="${height / 2}" stroke="${colours[colours.length - 1]}" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="5,5"/>`,
+  )
+
+  // Vertical meridian lines (longitude)
+  for (let i = 0; i <= 8; i++) {
+    const x = (i / 8) * width
+    gridLines.push(
+      `<line x1="${x}" y1="0" x2="${x}" y2="${height}" stroke="${colours[colours.length - 1]}" stroke-width="0.5" stroke-opacity="0.2" stroke-dasharray="2,4"/>`,
+    )
+  }
+
+  // Horizontal latitude lines
+  for (let i = 1; i < 4; i++) {
+    const y = (i / 4) * height
+    gridLines.push(
+      `<line x1="0" y1="${y}" x2="${width}" y2="${y}" stroke="${colours[colours.length - 1]}" stroke-width="0.5" stroke-opacity="0.2" stroke-dasharray="2,4"/>`,
+    )
+  }
+
+  // Generate mathematical flow patterns across the sphere
+  const layers = 6
+  const spiralsPerLayer = 4
+
+  for (let layer = 0; layer < layers; layer++) {
+    const layerHeight = height * 0.8 // Leave some margin at poles
+    const layerY = height * 0.1 + (layer / (layers - 1)) * layerHeight
+
+    for (let spiral = 0; spiral < spiralsPerLayer; spiral++) {
+      const colorIndex = (layer + spiral) % colours.length
+      const color = colours[colorIndex]
+
+      // Create flowing mathematical curves across longitude
+      let path = ""
+      const points = Math.floor(params.numSamples / (layers * spiralsPerLayer))
+
+      for (let i = 0; i <= points; i++) {
+        const t = i / points
+
+        // Longitude mapping (0 to 360°)
+        const longitude = t * 2 * Math.PI
+        const x = (longitude / (2 * Math.PI)) * width
+
+        // Add mathematical variations
+        const spiralOffset = (spiral / spiralsPerLayer) * 2 * Math.PI
+        const frequency = 3 + layer * 2
+        const amplitude = height * 0.1 * (1 - layer / layers)
+
+        // Complex mathematical function combining multiple harmonics
+        const mathFunction =
+          Math.sin(longitude * frequency + spiralOffset) * amplitude +
+          Math.cos(longitude * frequency * 0.5 + spiralOffset * 1.5) * amplitude * 0.5 +
+          Math.sin(longitude * frequency * 2 + params.seed * 0.01) * amplitude * 0.3
+
+        // Add noise for organic feel
+        const noise = Math.sin(longitude * 20 + layer) * Math.cos(longitude * 15 + spiral) * params.noiseScale * 30
+
+        const y = layerY + mathFunction + noise
+
+        // Ensure y stays within bounds
+        const clampedY = Math.max(0, Math.min(height, y))
+
+        if (i === 0) {
+          path = `M ${x.toFixed(2)} ${clampedY.toFixed(2)}`
+        } else {
+          path += ` L ${x.toFixed(2)} ${clampedY.toFixed(2)}`
+        }
+      }
+
+      pathElements.push(
+        `<path d="${path}" fill="none" stroke="${color}" stroke-width="2" stroke-opacity="0.8" stroke-linecap="round"/>`,
+      )
+    }
+  }
+
+  // Add celestial objects and atmospheric effects
+  // Sun/moon positions
+  const celestialBodies: string[] = []
+
+  // Sun position (upper portion)
+  const sunX = width * 0.75
+  const sunY = height * 0.25
+  const sunRadius = 20
+
+  celestialBodies.push(
+    `<circle cx="${sunX}" cy="${sunY}" r="${sunRadius}" fill="${colours[colours.length - 1]}" opacity="0.8"/>`,
+    `<circle cx="${sunX}" cy="${sunY}" r="${sunRadius * 1.5}" fill="${colours[colours.length - 1]}" opacity="0.3"/>`,
+    `<circle cx="${sunX}" cy="${sunY}" r="${sunRadius * 2}" fill="${colours[colours.length - 1]}" opacity="0.1"/>`,
+  )
+
+  // Add atmospheric particles and stars
+  for (let i = 0; i < 200; i++) {
+    const x = Math.random() * width
+    const y = Math.random() * height
+    const size = Math.random() * 1.5 + 0.5
+    const opacity = Math.random() * 0.8 + 0.2
+    const color = colours[Math.floor(Math.random() * colours.length)]
+
+    // Vary particle density - more at horizon, fewer at poles
+    const distanceFromHorizon = Math.abs(y - height / 2) / (height / 2)
+    if (Math.random() > distanceFromHorizon * 0.7) {
+      particles.push(
+        `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${size.toFixed(1)}" fill="${color}" opacity="${opacity.toFixed(2)}"/>`,
+      )
+    }
+  }
+
+  // Add flowing energy streams that wrap around
+  const energyStreams: string[] = []
+  for (let stream = 0; stream < 3; stream++) {
+    const streamY = height * (0.3 + stream * 0.2)
+    const color = colours[stream % colours.length]
+
+    let streamPath = ""
+    for (let x = 0; x <= width; x += 5) {
+      const waveHeight = Math.sin((x / width) * 4 * Math.PI + stream * 2) * 30
+      const y = streamY + waveHeight
+
+      if (x === 0) {
+        streamPath = `M ${x} ${y.toFixed(2)}`
+      } else {
+        streamPath += ` L ${x} ${y.toFixed(2)}`
+      }
+    }
+
+    energyStreams.push(
+      `<path d="${streamPath}" fill="none" stroke="${color}" stroke-width="3" stroke-opacity="0.6" filter="url(#panoramaGlow)"/>`,
+    )
+  }
+
+  return `
+    <svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:${colours[1]};stop-opacity:0.8"/>
+          <stop offset="50%" style="stop-color:${colours[0]};stop-opacity:0.6"/>
+          <stop offset="100%" style="stop-color:${colours[2] || colours[0]};stop-opacity:0.9"/>
+        </linearGradient>
+        <filter id="panoramaGlow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge> 
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      
+      <!-- Sky gradient background -->
+      <rect width="100%" height="100%" fill="url(#skyGradient)" />
+      
+      <!-- Reference grid -->
+      ${gridLines.join("\n      ")}
+      
+      <!-- Mathematical flow patterns -->
+      ${pathElements.join("\n      ")}
+      
+      <!-- Energy streams -->
+      ${energyStreams.join("\n      ")}
+      
+      <!-- Celestial bodies -->
+      ${celestialBodies.join("\n      ")}
+      
+      <!-- Atmospheric particles -->
+      ${particles.join("\n      ")}
+      
+      <!-- 360° panorama info -->
+      <text x="10" y="30" font-family="monospace" font-size="12" 
+            fill="${colours[colours.length - 1]}" opacity="0.8">
+        360° PANORAMA • ${params.panoramaResolution || "4K"} • EQUIRECTANGULAR
+      </text>
+      
+      <!-- Horizon marker -->
+      <text x="${width / 2}" y="${height / 2 - 10}" text-anchor="middle" font-family="monospace" font-size="10" 
+            fill="${colours[colours.length - 1]}" opacity="0.6">
+        HORIZON
       </text>
     </svg>
   `
