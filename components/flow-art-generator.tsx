@@ -879,6 +879,9 @@ export function FlowArtGenerator() {
                     <AlertDescription className="text-xs">
                       Stereographic projection creates artistic "little planet" or "tunnel" effects perfect for social
                       media.
+                      {stereographicPerspective === "little-planet"
+                        ? " Little Planet shows the world as if viewed from above a tiny sphere."
+                        : " Tunnel Vision creates a dramatic inward-looking perspective effect."}
                     </AlertDescription>
                   </Alert>
                 )}

@@ -128,10 +128,10 @@ function generateComplexSpirals(rng: SeededRandom, n_samples: number, noise: num
     const logSpiral = Math.exp(0.08 * t) * Math.cos(t * Math.E) * 0.05
 
     // Fibonacci spiral with prime number modulation
-    const fibSpiral = Math.sqrt(t) * Math.cos(t * phi + isPrime(Math.floor(t)) ? Math.PI / 4 : 0) * 0.2
+    const fibSpiral = Math.sqrt(t) * Math.cos(t * phi + (isPrime(Math.floor(t)) ? Math.PI / 4 : 0)) * 0.2
 
     // Hyperbolic spiral with chaos theory
-    const hypSpiral = (1 / t) * Math.sin(t * 3.14159) * 0.4
+    const hypSpiral = (1 / (t + 0.1)) * Math.sin(t * 3.14159) * 0.4
 
     // Fermat's spiral (parabolic)
     const fermatSpiral = Math.sqrt(t) * Math.cos(2 * Math.sqrt(t)) * 0.15
@@ -1095,6 +1095,136 @@ function applyScenarioTransform(
         }
         break
 
+      case "atmospheric":
+        // Atmospheric physics with weather patterns and fluid dynamics
+        const altitude = Math.abs(baseY) * 10000 // meters
+        const pressure = Math.exp(-altitude / 8000) // barometric formula
+        const temperature = 288 - altitude * 0.0065 // standard atmosphere
+
+        // Wind patterns and turbulence
+        const windSpeed = Math.sin(baseX * 2) * Math.cos(baseY * 1.5) * 20 + 10
+        const turbulence = Math.sin(baseX * 8 + baseY * 6) * windSpeed * 0.1
+        const jetStream = Math.abs(baseY - 0.3) < 0.1 ? Math.sin(baseX * 4) * 0.2 : 0
+
+        // Cloud formation and precipitation
+        const humidity = Math.sin(baseX * 3) * Math.cos(baseY * 2) * 50 + 50
+        const cloudCover = humidity > 70 ? (humidity - 70) / 30 : 0
+        const precipitation = cloudCover > 0.8 && rng.next() < 0.3
+
+        // Atmospheric phenomena
+        const lightning = precipitation && rng.next() < 0.05
+        const aurora = altitude > 80000 && Math.abs(baseX) > 1.5 && rng.next() < 0.02
+        const meteorTrail = altitude > 50000 && rng.next() < 0.001
+
+        x = baseX + turbulence + jetStream + (lightning ? rng.gaussian() * 0.1 : 0)
+        y = baseY + windSpeed * 0.01 + (aurora ? Math.sin(i * 0.1) * 0.05 : 0)
+
+        metadata = {
+          altitude: altitude,
+          pressure: pressure,
+          temperature: temperature,
+          windSpeed: windSpeed,
+          humidity: humidity,
+          cloudCover: cloudCover,
+          precipitation: precipitation,
+          lightning: lightning,
+          aurora: aurora,
+          meteorTrail: meteorTrail,
+          visibility: Math.max(0, 10 - cloudCover * 8),
+          airDensity: pressure / (287 * temperature),
+        }
+        break
+
+      case "geological":
+        // Geological processes with tectonic activity and mineral formation
+        const age = Math.abs(baseX * baseY) * 1e9 + 1e6 // years
+        const depth = Math.abs(baseY) * 50000 // meters below surface
+
+        // Tectonic forces
+        const tectonicStress = Math.sin(baseX * 0.5) * Math.cos(baseY * 0.3) * 100
+        const faultLine = Math.abs(tectonicStress) > 80
+        const earthquake = faultLine && rng.next() < 0.01
+
+        // Volcanic activity
+        const magmaTemperature = 1200 + depth * 0.03
+        const volcanicActivity = depth > 10000 && Math.sin(baseX * baseY * 10) > 0.9
+        const lavaFlow = volcanicActivity && rng.next() < 0.3
+
+        // Mineral formation
+        const mineralType = Math.floor(rng.next() * 10)
+        const crystalSize = Math.log(age / 1e6) * 0.1
+        const metamorphism = tectonicStress > 50 && depth > 5000
+
+        // Erosion and sedimentation
+        const erosionRate = Math.abs(Math.sin(baseX * 4) * Math.cos(baseY * 3)) * 0.001
+        const sedimentation = erosionRate * Math.exp(-depth / 1000)
+
+        x = baseX + tectonicStress * 0.001 + (earthquake ? rng.gaussian() * 0.2 : 0)
+        y = baseY + sedimentation + (lavaFlow ? Math.sin(i * 0.05) * 0.1 : 0)
+
+        metadata = {
+          age: age,
+          depth: depth,
+          tectonicActivity: Math.abs(tectonicStress),
+          faultLine: faultLine,
+          earthquake: earthquake,
+          volcanicActivity: volcanicActivity,
+          magmaTemperature: magmaTemperature,
+          mineralType: mineralType,
+          crystalSize: crystalSize,
+          metamorphism: metamorphism,
+          erosionRate: erosionRate,
+          rockType: Math.floor(rng.next() * 3), // Igneous, sedimentary, metamorphic
+        }
+        break
+
+      case "biological":
+        // Biological systems with DNA, proteins, and cellular processes
+        const cellType = Math.floor(rng.next() * 5)
+        const proteinLength = Math.floor(rng.range(50, 2000))
+        const dnaSequence = Math.floor(rng.next() * 4) // A, T, G, C
+
+        // Protein folding and enzyme activity
+        const foldingEnergy = Math.sin(baseX * 10) * Math.cos(baseY * 8) * 100
+        const enzymeActivity = Math.abs(foldingEnergy) > 50 ? Math.exp(-Math.abs(foldingEnergy) / 25) : 0
+        const catalyticSite = enzymeActivity > 0.5 && rng.next() < 0.2
+
+        // Genetic processes
+        const transcription = rng.next() < 0.1
+        const translation = transcription && rng.next() < 0.8
+        const mutation = rng.next() < 0.001
+
+        // Cellular metabolism
+        const atpProduction = Math.sin(baseX * 6) * Math.cos(baseY * 4) * 50 + 50
+        const oxygenConsumption = atpProduction * 0.8
+        const carbonDioxideProduction = oxygenConsumption * 0.9
+
+        // Cell division and growth
+        const cellCycle = Math.floor((baseX + baseY + 2) * 2) % 4 // G1, S, G2, M
+        const mitosis = cellCycle === 3 && rng.next() < 0.05
+        const apoptosis = rng.next() < 0.001
+
+        x = baseX + foldingEnergy * 0.001 + (mitosis ? rng.gaussian() * 0.05 : 0)
+        y = baseY + enzymeActivity * 0.1 + (mutation ? rng.gaussian() * 0.1 : 0)
+
+        metadata = {
+          cellType: cellType,
+          proteinLength: proteinLength,
+          dnaSequence: dnaSequence,
+          enzymeActivity: enzymeActivity,
+          catalyticSite: catalyticSite,
+          transcription: transcription,
+          translation: translation,
+          mutation: mutation,
+          atpProduction: atpProduction,
+          oxygenConsumption: oxygenConsumption,
+          cellCycle: cellCycle,
+          mitosis: mitosis,
+          apoptosis: apoptosis,
+          metabolicRate: atpProduction / 100,
+        }
+        break
+
       default:
         // Default case with basic transformations
         metadata = {
@@ -1188,7 +1318,7 @@ export function generateHighResFlowField(params: UpscaleParams): string {
     if (screenX >= 0 && screenX <= size && screenY >= 0 && screenY <= size) {
       // Use color palette for coloring (cycle through the 4 colors)
       const colorIndex = Math.floor((i / transformedPoints.length) * 4) % 4
-      let pointColor = colors[colorIndex]
+      const pointColor = colors[colorIndex]
 
       let radius = 1
       let opacity = 0.6
@@ -1214,30 +1344,9 @@ export function generateHighResFlowField(params: UpscaleParams): string {
           }
           break
 
-        case "forest":
-          radius = 0.5 + point.metadata.leafDensity * 2 + point.metadata.branchComplexity * 0.1
-          opacity = 0.4 + point.metadata.leafDensity * 0.4 + Math.abs(point.metadata.seasonalFactor) * 0.2
-          if (point.metadata.isTree) {
-            // Draw complex tree structure
-            const branchHeight = point.metadata.treeHeight
-            const branchComplexity = point.metadata.branchComplexity
-
-            for (let branch = 0; branch < Math.min(branchComplexity, 5); branch++) {
-              const branchAngle = ((branch / branchComplexity) * Math.PI) / 3 - Math.PI / 6
-              const branchLength = branchHeight * (1 - branch * 0.2)
-              const endX = screenX + Math.sin(branchAngle) * branchLength
-              const endY = screenY + branchLength
-
-              svgContent += `<line x1="${screenX}" y1="${screenY}" x2="${endX}" y2="${endY}" stroke="${colors[2]}" stroke-width="${2 - branch * 0.3}" opacity="0.7"/>`
-            }
-            radius = 3 + rng.range(0, 4)
-            opacity = 0.8
-          }
-          break
-
         case "cosmic":
-          radius = 0.3 + point.metadata.brightness * 3
-          opacity = 0.2 + point.metadata.brightness * 0.8
+          radius = 0.3 + (point.metadata.isStar ? 3 : 1)
+          opacity = point.metadata.isStar ? 0.9 : 0.5
 
           if (point.metadata.isStar) {
             radius = 2 + rng.range(0, 3) + point.metadata.stellarClass * 0.5
@@ -1256,200 +1365,27 @@ export function generateHighResFlowField(params: UpscaleParams): string {
           }
           break
 
-        case "ocean":
-          radius = 0.4 + point.metadata.depth * 2
-          opacity = 0.3 + point.metadata.depth * 0.5
-
-          if (point.metadata.isWhirlpool) {
-            // Draw whirlpool spiral
-            for (let spiral = 0; spiral < 3; spiral++) {
-              const spiralRadius = radius * (3 - spiral)
-              const spiralOpacity = opacity * (0.8 - spiral * 0.2)
-              svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${spiralRadius}" fill="none" stroke="${colors[1]}" stroke-width="0.5" opacity="${spiralOpacity}"/>`
-            }
-          }
-          break
-
         case "neural":
-          radius = 0.5 + Math.abs(point.metadata.activation) * 2 + point.metadata.firingRate * 0.02
-          opacity = 0.3 + Math.abs(point.metadata.activation) * 0.6
+          radius = 0.5 + Math.abs(point.metadata.firingRate || 0) * 0.02
+          opacity = 0.3 + Math.abs(point.metadata.synapticStrength || 0) * 0.6
 
-          if (point.metadata.isNeuron) {
-            stroke = colors[3]
-            strokeWidth = 0.5 + point.metadata.connectionStrength * 0.5
-
-            // Add synaptic connections with delay visualization
-            if (point.metadata.synapticDelay > 3) {
-              svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 1.5}" fill="none" stroke="${colors[2]}" stroke-width="0.3" opacity="0.4"/>`
-            }
-          }
-          break
-
-        case "fire":
-          radius = 0.4 + point.metadata.heat * 0.001 + point.metadata.combustionRate * 0.01
-          opacity = 0.4 + (point.metadata.heat - 300) * 0.0005
-
-          if (point.metadata.isEmber) {
-            radius = 1 + rng.range(0, 2)
-            opacity = 0.9
-            stroke = colors[3]
-            strokeWidth = 0.3
-          }
-
-          if (point.metadata.smokeParticle) {
-            opacity *= 0.5
-            radius *= 1.5
-          }
-          break
-
-        case "ice":
-          radius = 0.3 + point.metadata.crystallineStructure * 0.3 + point.metadata.iceThickness * 0.1
-          opacity = 0.5 + point.metadata.frostLevel * 0.04
-
-          if (point.metadata.isCrystal) {
-            stroke = colors[3]
-            strokeWidth = 0.3
-
-            // Draw hexagonal crystal structure
-            const hexSize = radius * 0.8
-            let hexPath = `M ${screenX + hexSize} ${screenY}`
-            for (let i = 1; i < 6; i++) {
-              const angle = (i * Math.PI) / 3
-              const hexX = screenX + hexSize * Math.cos(angle)
-              const hexY = screenY + hexSize * Math.sin(angle)
-              hexPath += ` L ${hexX} ${hexY}`
-            }
-            hexPath += " Z"
-            svgContent += `<path d="${hexPath}" fill="none" stroke="${colors[2]}" stroke-width="0.2" opacity="0.6"/>`
-          }
-          break
-
-        case "sunset":
-          radius = 0.4 + point.metadata.lightIntensity * 1.5
-          opacity = 0.3 + point.metadata.lightIntensity * 0.5
-
-          // Color temperature affects the color choice
-          const tempFactor = (point.metadata.colorTemperature - 2000) / 3000
-          const tempColorIndex = Math.floor(tempFactor * 3) % 4
-          pointColor = colors[tempColorIndex]
-
-          if (point.metadata.cloudCover > 50) {
-            opacity *= 0.7
-            radius *= 1.3
-          }
-          break
-
-        case "desert":
-          radius = 0.4 + point.metadata.sandDensity * 1.5 + point.metadata.duneHeight * 0.1
-          opacity = 0.3 + point.metadata.sandDensity * 0.4
-
-          if (point.metadata.isOasis) {
-            stroke = colors[2]
-            strokeWidth = 0.5
-            radius *= 1.5
-          }
-
-          if (point.metadata.sandstormIntensity > 5) {
-            opacity *= 0.6
-            radius *= 0.8
-          }
-          break
-
-        case "monochrome":
-          radius = 0.5 + point.metadata.intensity * 0.5 + point.metadata.amplitude * 0.3
-          opacity = 0.4 + Math.abs(point.metadata.pattern) * 0.4
-          break
-        case "quantum":
-          radius = 0.4 + point.metadata.uncertainty * 0.3
-          opacity = 0.3 + point.metadata.entanglementStrength * 0.5
-
-          if (point.metadata.isParticle) {
+          if (point.metadata.neuronType !== undefined) {
             stroke = colors[3]
             strokeWidth = 0.5
           }
-          break
-
-        case "microscopic":
-          radius = 0.3 + point.metadata.diffusionRate * 0.1
-          opacity = 0.2 + point.metadata.bondStrength * 0.3
-
-          if (point.metadata.isMolecule) {
-            stroke = colors[3]
-            strokeWidth = 0.3
-          }
-          break
-
-        case "crystalline":
-          radius = 0.3 + point.metadata.crystalSize * 0.05
-          opacity = 0.4 + point.metadata.hardness * 0.03
-
-          if (point.metadata.hasDefect) {
-            stroke = colors[3]
-            strokeWidth = 0.5
-          }
-          break
-
-        case "plasma":
-          radius = 0.4 + point.metadata.temperature * 0.00001
-          opacity = 0.3 + point.metadata.density * 1e-17
-
-          if (point.metadata.isIonized) {
-            stroke = colors[3]
-            strokeWidth = 0.3
-          }
-          break
-
-        case "atmospheric":
-          radius = 0.3 + point.metadata.windSpeed * 0.01
-          opacity = 0.2 + point.metadata.visibility * 0.01
-
-          break
-
-        case "geological":
-          radius = 0.4 + point.metadata.age * 1e-7
-          opacity = 0.3 + point.metadata.tectonicActivity * 0.01
-
-          break
-
-        case "biological":
-          radius = 0.3 + point.metadata.proteinLength * 0.001
-          opacity = 0.2 + point.metadata.enzymeActivity * 0.1
-
           break
 
         default:
-          radius = 0.5 + point.metadata.intensity * 0.5
-          opacity = 0.4 + Math.abs(point.metadata.pattern) * 0.4
+          radius = 0.5 + (point.metadata.intensity || 0) * 0.5
+          opacity = 0.4 + Math.abs(point.metadata.pattern || 0) * 0.4
       }
 
       svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="${pointColor}" opacity="${opacity}" stroke="${stroke}" stroke-width="${strokeWidth}"/>`
     }
   }
 
-  // Add scenario-specific overlays with enhanced complexity
-  if (scenario === "neural") {
-    // Add complex neural connections with synaptic delays
-    for (let i = 0; i < Math.min(transformedPoints.length, 300); i++) {
-      const point1 = transformedPoints[i]
-      const point2 = transformedPoints[(i + 1) % transformedPoints.length]
-
-      if (point1.metadata.isNeuron && point2.metadata.isNeuron) {
-        const x1 = centerX + point1.x * scale
-        const y1 = centerY + point1.y * scale
-        const x2 = centerX + point2.x * scale
-        const y2 = centerY + point2.y * scale
-
-        const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-        if (distance < scale * 0.6) {
-          const connectionOpacity = 0.1 + point1.metadata.connectionStrength * point2.metadata.connectionStrength * 0.3
-          const synapticDelay = (point1.metadata.synapticDelay + point2.metadata.synapticDelay) / 2
-          const strokeWidth = 0.5 + synapticDelay * 0.1
-
-          svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${colors[2]}" stroke-width="${strokeWidth}" opacity="${connectionOpacity}"/>`
-        }
-      }
-    }
-  } else if (scenario === "pure") {
+  // Add scenario-specific overlays
+  if (scenario === "pure") {
     // Add enhanced mathematical grid lines and golden ratio spirals
     const gridSpacing = size / 12
     for (let i = 0; i <= 12; i++) {
@@ -1559,8 +1495,8 @@ export function generateStereographicProjection(
       // Apply scenario-specific styling
       switch (params.scenario) {
         case "pure":
-          pointRadius = 1 + point.metadata.magnitude * 2
-          opacity = 0.6 + (point.metadata.magnitude / 3) * 0.4
+          pointRadius = 1 + (point.metadata.magnitude || 0) * 2
+          opacity = 0.6 + ((point.metadata.magnitude || 0) / 3) * 0.4
           if (point.metadata.isPrime) {
             pointRadius *= 1.3
           }
@@ -1574,15 +1510,15 @@ export function generateStereographicProjection(
           opacity = point.metadata.isTree ? 0.8 : 0.4
           break
         case "ocean":
-          pointRadius = 1 + point.metadata.depth * 0.5
-          opacity = 0.4 + point.metadata.depth * 0.4
+          pointRadius = 1 + (point.metadata.depth || 0) * 0.5
+          opacity = 0.4 + (point.metadata.depth || 0) * 0.4
           break
         case "neural":
           pointRadius = 1 + Math.abs(point.metadata.firingRate || 0) * 0.02
           opacity = 0.5 + Math.abs(point.metadata.synapticStrength || 0) * 0.4
           break
         default:
-          pointRadius = 1 + point.metadata.intensity * 1.5
+          pointRadius = 1 + (point.metadata.intensity || 0) * 1.5
           opacity = 0.5 + Math.abs(point.metadata.pattern || 0) * 0.3
       }
 
@@ -1675,117 +1611,4 @@ export function generateStereographicProjection(
 
   svgContent += "</svg>"
   return svgContent
-}
-
-function addStereographicGroundElements(
-  groundElements: string[],
-  scenario: string,
-  size: number,
-  center: number,
-  radius: number,
-  colors: readonly string[],
-  rng: SeededRandom,
-  isTunnel: boolean,
-) {
-  switch (scenario) {
-    case "urban":
-    case "architectural":
-      if (isTunnel) {
-        // Add road-like lines converging to center
-        for (let i = 0; i < 10; i++) {
-          const angle = (i / 10) * 2 * Math.PI
-          const x1 = center + Math.cos(angle) * radius
-          const y1 = center + Math.sin(angle) * radius
-          const x2 = center + Math.cos(angle) * radius * 0.1
-          const y2 = center + Math.sin(angle) * radius * 0.1
-
-          groundElements.push(
-            `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colors[1]}" stroke-width="4" opacity="0.4"/>`,
-          )
-        }
-      } else {
-        // Add grid-like road patterns
-        const gridSpacing = 30
-        for (let x = center - radius; x <= center + radius; x += gridSpacing) {
-          groundElements.push(
-            `<line x1="${x.toFixed(2)}" y1="${(center - radius).toFixed(2)}" x2="${x.toFixed(2)}" y2="${(center + radius).toFixed(2)}" stroke="${colors[1]}" stroke-width="2" opacity="0.3"/>`,
-          )
-        }
-        for (let y = center - radius; y <= center + radius; y += gridSpacing) {
-          groundElements.push(
-            `<line x1="${(center - radius).toFixed(2)}" y1="${y.toFixed(2)}" x2="${(center + radius).toFixed(2)}" y2="${y.toFixed(2)}" stroke="${colors[1]}" stroke-width="2" opacity="0.3"/>`,
-          )
-        }
-      }
-      break
-
-    case "forest":
-    case "botanical":
-      if (isTunnel) {
-        // Add concentric circles for tunnel effect
-        for (let i = 1; i <= 8; i++) {
-          const circleRadius = (i / 8) * radius
-          groundElements.push(
-            `<circle cx="${center}" cy="${center}" r="${circleRadius.toFixed(2)}" fill="none" stroke="${colors[1]}" stroke-width="3" opacity="0.3" stroke-dasharray="5,5"/>`,
-          )
-        }
-      } else {
-        // Add grass-like strokes
-        for (let i = 0; i < 50; i++) {
-          const angle = rng.next() * 2 * Math.PI
-          const dist = rng.next() * radius
-          const x1 = center + Math.cos(angle) * dist
-          const y1 = center + Math.sin(angle) * dist
-          const x2 = x1 + (rng.next() - 0.5) * 10
-          const y2 = y1 + (rng.next() - 0.5) * 10
-
-          groundElements.push(
-            `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colors[2]}" stroke-width="1.5" opacity="0.4"/>`,
-          )
-        }
-      }
-      break
-
-    case "geological":
-      if (isTunnel) {
-        // Add jagged lines converging to center
-        for (let i = 0; i < 8; i++) {
-          const angle = (i / 8) * 2 * Math.PI
-          let path = `M ${center} ${center}`
-          for (let j = 0; j < 5; j++) {
-            const dist = (j / 4) * radius
-            const x = center + Math.cos(angle) * dist + (rng.next() - 0.5) * 20
-            const y = center + Math.sin(angle) * dist + (rng.next() - 0.5) * 20
-            path += ` L ${x.toFixed(2)} ${y.toFixed(2)}`
-          }
-          groundElements.push(`<path d="${path}" fill="none" stroke="${colors[1]}" stroke-width="2" opacity="0.6"/>`)
-        }
-      } else {
-        // Add rock-like circles
-        for (let i = 0; i < 20; i++) {
-          const x = center - radius + rng.next() * radius * 2
-          const y = center - radius + rng.next() * radius * 2
-          const rockSize = 3 + rng.next() * 8
-
-          if ((x - center) ** 2 + (y - center) ** 2 <= radius ** 2) {
-            groundElements.push(
-              `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${rockSize.toFixed(2)}" fill="${colors[1]}" opacity="0.7"/>`,
-            )
-          }
-        }
-      }
-      break
-
-    default:
-      // Default landscape elements
-      if (isTunnel) {
-        for (let i = 1; i <= 5; i++) {
-          const circleRadius = (i / 5) * radius * 0.8
-          groundElements.push(
-            `<circle cx="${center}" cy="${center}" r="${circleRadius.toFixed(2)}" fill="none" stroke="${colors[1]}" stroke-width="2" opacity="0.4"/>`,
-          )
-        }
-      }
-      break
-  }
 }
