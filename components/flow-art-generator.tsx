@@ -1017,10 +1017,17 @@ export function FlowArtGenerator() {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
                     <option value="spirals">Fibonacci Spirals</option>
-                    <option value="fractal">Fractal Checkerboard</option>
-                    <option value="hyperbolic">Hyperbolic Moons</option>
-                    <option value="gaussian">Multi-Modal Gaussians</option>
+                    <option value="fractal">Fractal Patterns</option>
+                    <option value="hyperbolic">Hyperbolic Geometry</option>
+                    <option value="gaussian">Gaussian Fields</option>
                     <option value="cellular">Cellular Automata</option>
+                    <option value="voronoi">Voronoi Diagrams</option>
+                    <option value="perlin">Perlin Noise</option>
+                    <option value="mandelbrot">Mandelbrot Sets</option>
+                    <option value="lorenz">Lorenz Attractors</option>
+                    <option value="julia">Julia Sets</option>
+                    <option value="diffusion">Reaction-Diffusion</option>
+                    <option value="wave">Wave Interference</option>
                   </select>
                 </div>
 
@@ -1031,11 +1038,18 @@ export function FlowArtGenerator() {
                     onChange={(e) => setScenario(e.target.value)}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
-                    <option value="pure">Pure Math</option>
-                    <option value="geometric">Geometric Abstraction</option>
-                    <option value="organic">Organic Structures</option>
-                    <option value="futuristic">Futuristic Landscapes</option>
-                    <option value="psychedelic">Psychedelic Visions</option>
+                    <option value="pure">Pure Mathematics</option>
+                    <option value="landscape">Natural Landscapes</option>
+                    <option value="architectural">Architectural Forms</option>
+                    <option value="geological">Geological Formations</option>
+                    <option value="botanical">Botanical Structures</option>
+                    <option value="atmospheric">Atmospheric Phenomena</option>
+                    <option value="crystalline">Crystalline Structures</option>
+                    <option value="textile">Textile Patterns</option>
+                    <option value="metallic">Metallic Surfaces</option>
+                    <option value="organic">Organic Textures</option>
+                    <option value="urban">Urban Environments</option>
+                    <option value="marine">Marine Ecosystems</option>
                   </select>
                 </div>
 
@@ -1047,12 +1061,27 @@ export function FlowArtGenerator() {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
                     <option value="plasma">Plasma</option>
-                    <option value="viridis">Viridis</option>
-                    <option value="magma">Magma</option>
-                    <option value="inferno">Inferno</option>
-                    <option value="cividis">Cividis</option>
-                    <option value="warm">Warm</option>
-                    <option value="cool">Cool</option>
+                    <option value="quantum">Quantum</option>
+                    <option value="cosmic">Cosmic</option>
+                    <option value="thermal">Thermal</option>
+                    <option value="spectral">Spectral</option>
+                    <option value="crystalline">Crystalline</option>
+                    <option value="bioluminescent">Bioluminescent</option>
+                    <option value="aurora">Aurora</option>
+                    <option value="metallic">Metallic</option>
+                    <option value="prismatic">Prismatic</option>
+                    <option value="monochromatic">Monochromatic</option>
+                    <option value="infrared">Infrared</option>
+                    <option value="lava">Lava</option>
+                    <option value="futuristic">Futuristic</option>
+                    <option value="forest">Forest</option>
+                    <option value="ocean">Ocean</option>
+                    <option value="sunset">Sunset</option>
+                    <option value="arctic">Arctic</option>
+                    <option value="neon">Neon</option>
+                    <option value="vintage">Vintage</option>
+                    <option value="toxic">Toxic</option>
+                    <option value="ember">Ember</option>
                   </select>
                 </div>
 

@@ -79,34 +79,725 @@ function seededRandom(seed: number) {
 export function generateFlowField(params: GenerationParams): string {
   const size = 512
   const colours = colorPalettes[params.colorScheme as keyof typeof colorPalettes] ?? colorPalettes.plasma
+  const random = seededRandom(params.seed)
 
-  // Create a VERY simple multi-arm spiral so we know something renders
-  const arms = 5
-  const turns = 8
+  // Enhanced mathematical patterns based on dataset
   const pathParts: string[] = []
+  const backgroundElements: string[] = []
 
-  for (let a = 0; a < arms; a++) {
-    let path = `M ${size / 2} ${size / 2}`
-    for (let t = 0; t <= 1; t += 1 / (params.numSamples || 2000)) {
-      const angle = turns * 2 * Math.PI * t + (a * 2 * Math.PI) / arms
-      const radius = t * (size / 2) * 0.85
-      const x = size / 2 + radius * Math.cos(angle)
-      const y = size / 2 + radius * Math.sin(angle)
-      path += ` L ${x.toFixed(2)} ${y.toFixed(2)}`
-    }
-    pathParts.push(
-      `<path d="${path}" fill="none" stroke="${paletteColor(colours, a)}" stroke-width="1" stroke-opacity="0.8"/>`,
-    )
+  // Generate base mathematical structure based on dataset
+  switch (params.dataset) {
+    case "spirals":
+      generateFibonacciSpirals(pathParts, size, colours, params, random)
+      break
+    case "fractal":
+      generateFractalPatterns(pathParts, size, colours, params, random)
+      break
+    case "voronoi":
+      generateVoronoiDiagram(pathParts, size, colours, params, random)
+      break
+    case "perlin":
+      generatePerlinNoise(pathParts, size, colours, params, random)
+      break
+    case "mandelbrot":
+      generateMandelbrotSet(pathParts, size, colours, params, random)
+      break
+    case "lorenz":
+      generateLorenzAttractor(pathParts, size, colours, params, random)
+      break
+    case "julia":
+      generateJuliaSet(pathParts, size, colours, params, random)
+      break
+    case "diffusion":
+      generateReactionDiffusion(pathParts, size, colours, params, random)
+      break
+    case "wave":
+      generateWaveInterference(pathParts, size, colours, params, random)
+      break
+    default:
+      generateFibonacciSpirals(pathParts, size, colours, params, random)
   }
+
+  // Apply scenario-based realistic textures and elements
+  applyScenarioEffects(backgroundElements, pathParts, size, colours, params, random)
 
   return `
     <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        ${generateScenarioFilters(params, colours)}
+      </defs>
       <rect width="100%" height="100%" fill="${colours[0]}" />
+      ${backgroundElements.join("\n")}
       ${pathParts.join("\n")}
     </svg>
   `
 }
 
+function generateFibonacciSpirals(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const arms = 8
+  const turns = 12
+  const goldenRatio = 1.618033988749
+
+  for (let a = 0; a < arms; a++) {
+    let path = `M ${size / 2} ${size / 2}`
+    for (let t = 0; t <= 1; t += 1 / (params.numSamples || 2000)) {
+      const angle = turns * 2 * Math.PI * t * goldenRatio + (a * 2 * Math.PI) / arms
+      const radius = t * (size / 2) * 0.85 * Math.sqrt(t)
+
+      // Add noise based on scenario
+      const noiseX = Math.sin(t * 50 + a) * params.noiseScale * 20
+      const noiseY = Math.cos(t * 40 + a) * params.noiseScale * 20
+
+      const x = size / 2 + radius * Math.cos(angle) + noiseX
+      const y = size / 2 + radius * Math.sin(angle) + noiseY
+      path += ` L ${x.toFixed(2)} ${y.toFixed(2)}`
+    }
+    pathParts.push(
+      `<path d="${path}" fill="none" stroke="${paletteColor(colours, a)}" stroke-width="1.5" stroke-opacity="0.8" stroke-linecap="round"/>`,
+    )
+  }
+}
+
+function generateVoronoiDiagram(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const numSites = Math.min(50, Math.max(10, Math.floor(params.numSamples / 100)))
+  const sites: Array<{ x: number; y: number; color: string }> = []
+
+  // Generate random sites
+  for (let i = 0; i < numSites; i++) {
+    sites.push({
+      x: random() * size,
+      y: random() * size,
+      color: colours[i % colours.length],
+    })
+  }
+
+  // Create Voronoi cells (simplified)
+  for (let i = 0; i < sites.length; i++) {
+    const site = sites[i]
+    const cellPath = generateVoronoiCell(site, sites, size, random)
+    pathParts.push(
+      `<path d="${cellPath}" fill="${site.color}" fill-opacity="0.3" stroke="${site.color}" stroke-width="1"/>`,
+    )
+  }
+}
+
+function generateVoronoiCell(
+  site: { x: number; y: number },
+  allSites: Array<{ x: number; y: number }>,
+  size: number,
+  random: () => number,
+): string {
+  // Simplified Voronoi cell generation
+  const points: Array<{ x: number; y: number }> = []
+  const numPoints = 8
+
+  for (let i = 0; i < numPoints; i++) {
+    const angle = (i / numPoints) * 2 * Math.PI
+    const radius = 30 + random() * 40
+    points.push({
+      x: site.x + Math.cos(angle) * radius,
+      y: site.y + Math.sin(angle) * radius,
+    })
+  }
+
+  let path = `M ${points[0].x} ${points[0].y}`
+  for (let i = 1; i < points.length; i++) {
+    path += ` L ${points[i].x} ${points[i].y}`
+  }
+  path += " Z"
+  return path
+}
+
+function generatePerlinNoise(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 32
+  const step = size / gridSize
+
+  for (let x = 0; x < gridSize; x++) {
+    for (let y = 0; y < gridSize; y++) {
+      const noiseValue = simplexNoise(x * 0.1, y * 0.1, params.seed)
+      const intensity = (noiseValue + 1) / 2 // Normalize to 0-1
+
+      if (intensity > 0.3) {
+        const px = x * step
+        const py = y * step
+        const radius = intensity * 8
+        const colorIndex = Math.floor(intensity * colours.length)
+
+        pathParts.push(
+          `<circle cx="${px}" cy="${py}" r="${radius}" fill="${colours[colorIndex]}" opacity="${intensity * 0.8}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateMandelbrotSet(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const maxIterations = 100
+  const zoom = 200
+  const centerX = size / 2
+  const centerY = size / 2
+
+  for (let px = 0; px < size; px += 2) {
+    for (let py = 0; py < size; py += 2) {
+      const x0 = (px - centerX) / zoom - 0.5
+      const y0 = (py - centerY) / zoom
+
+      let x = 0
+      let y = 0
+      let iteration = 0
+
+      while (x * x + y * y <= 4 && iteration < maxIterations) {
+        const xtemp = x * x - y * y + x0
+        y = 2 * x * y + y0
+        x = xtemp
+        iteration++
+      }
+
+      if (iteration < maxIterations) {
+        const colorIndex = iteration % colours.length
+        const opacity = 1 - iteration / maxIterations
+        pathParts.push(
+          `<rect x="${px}" y="${py}" width="2" height="2" fill="${colours[colorIndex]}" opacity="${opacity}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateLorenzAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const sigma = 10
+  const rho = 28
+  const beta = 8 / 3
+  const dt = 0.01
+  const scale = 8
+
+  let x = 1,
+    y = 1,
+    z = 1
+  let path = ""
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = sigma * (y - x) * dt
+    const dy = (x * (rho - z) - y) * dt
+    const dz = (x * y - beta * z) * dt
+
+    x += dx
+    y += dy
+    z += dz
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (i === 0) {
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    } else {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 1000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 1000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.8"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateJuliaSet(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const maxIterations = 100
+  const zoom = 200
+  const centerX = size / 2
+  const centerY = size / 2
+  const cx = -0.7269
+  const cy = 0.1889
+
+  for (let px = 0; px < size; px += 2) {
+    for (let py = 0; py < size; py += 2) {
+      let x = (px - centerX) / zoom
+      let y = (py - centerY) / zoom
+      let iteration = 0
+
+      while (x * x + y * y <= 4 && iteration < maxIterations) {
+        const xtemp = x * x - y * y + cx
+        y = 2 * x * y + cy
+        x = xtemp
+        iteration++
+      }
+
+      if (iteration < maxIterations) {
+        const colorIndex = iteration % colours.length
+        const opacity = 1 - iteration / maxIterations
+        pathParts.push(
+          `<rect x="${px}" y="${py}" width="2" height="2" fill="${colours[colorIndex]}" opacity="${opacity}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateReactionDiffusion(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const step = size / gridSize
+
+  // Simplified reaction-diffusion pattern
+  for (let x = 0; x < gridSize; x++) {
+    for (let y = 0; y < gridSize; y++) {
+      const u = Math.sin(x * 0.2) * Math.cos(y * 0.2)
+      const v = Math.cos(x * 0.15) * Math.sin(y * 0.25)
+
+      const concentration = (u + v + 2) / 4 // Normalize
+
+      if (concentration > 0.4) {
+        const px = x * step
+        const py = y * step
+        const radius = concentration * 6
+        const colorIndex = Math.floor(concentration * colours.length)
+
+        pathParts.push(
+          `<circle cx="${px}" cy="${py}" r="${radius}" fill="${colours[colorIndex]}" opacity="${concentration * 0.7}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateWaveInterference(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const numSources = 4
+  const sources: Array<{ x: number; y: number; frequency: number; amplitude: number }> = []
+
+  // Create wave sources
+  for (let i = 0; i < numSources; i++) {
+    sources.push({
+      x: random() * size,
+      y: random() * size,
+      frequency: 0.02 + random() * 0.03,
+      amplitude: 50 + random() * 50,
+    })
+  }
+
+  // Generate interference pattern
+  for (let x = 0; x < size; x += 4) {
+    for (let y = 0; y < size; y += 4) {
+      let totalAmplitude = 0
+
+      sources.forEach((source) => {
+        const distance = Math.sqrt((x - source.x) ** 2 + (y - source.y) ** 2)
+        const wave = (Math.sin(distance * source.frequency) * source.amplitude) / (1 + distance * 0.01)
+        totalAmplitude += wave
+      })
+
+      const intensity = (totalAmplitude + 200) / 400 // Normalize
+
+      if (intensity > 0.3) {
+        const colorIndex = Math.floor(intensity * colours.length)
+        pathParts.push(
+          `<rect x="${x}" y="${y}" width="4" height="4" fill="${colours[colorIndex]}" opacity="${intensity * 0.8}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateFractalPatterns(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  // Generate a fractal tree or similar pattern
+  const depth = 8
+  const initialLength = size / 4
+
+  function drawFractalBranch(x: number, y: number, angle: number, length: number, currentDepth: number) {
+    if (currentDepth <= 0 || length < 2) return
+
+    const endX = x + Math.cos(angle) * length
+    const endY = y + Math.sin(angle) * length
+
+    const colorIndex = (depth - currentDepth) % colours.length
+    pathParts.push(
+      `<line x1="${x}" y1="${y}" x2="${endX}" y2="${endY}" stroke="${colours[colorIndex]}" stroke-width="${currentDepth * 0.5}" stroke-opacity="0.8"/>`,
+    )
+
+    // Recursive branches
+    const angleOffset = Math.PI / 6 + ((random() - 0.5) * Math.PI) / 12
+    const lengthReduction = 0.7 + random() * 0.2
+
+    drawFractalBranch(endX, endY, angle - angleOffset, length * lengthReduction, currentDepth - 1)
+    drawFractalBranch(endX, endY, angle + angleOffset, length * lengthReduction, currentDepth - 1)
+  }
+
+  // Start from bottom center
+  drawFractalBranch(size / 2, size * 0.9, -Math.PI / 2, initialLength, depth)
+}
+
+function applyScenarioEffects(
+  backgroundElements: string[],
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  switch (params.scenario) {
+    case "landscape":
+      addLandscapeElements(backgroundElements, size, colours, random)
+      break
+    case "architectural":
+      addArchitecturalElements(backgroundElements, size, colours, random)
+      break
+    case "geological":
+      addGeologicalElements(backgroundElements, size, colours, random)
+      break
+    case "botanical":
+      addBotanicalElements(backgroundElements, size, colours, random)
+      break
+    case "atmospheric":
+      addAtmosphericElements(backgroundElements, size, colours, random)
+      break
+    case "crystalline":
+      addCrystallineElements(backgroundElements, size, colours, random)
+      break
+    case "textile":
+      addTextileElements(backgroundElements, size, colours, random)
+      break
+    case "metallic":
+      addMetallicElements(backgroundElements, size, colours, random)
+      break
+    case "organic":
+      addOrganicElements(backgroundElements, size, colours, random)
+      break
+    case "urban":
+      addUrbanElements(backgroundElements, size, colours, random)
+      break
+    case "marine":
+      addMarineElements(backgroundElements, size, colours, random)
+      break
+  }
+}
+
+function addLandscapeElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add mountain silhouettes
+  let mountainPath = `M 0 ${size * 0.7}`
+  for (let x = 0; x <= size; x += 20) {
+    const height = size * 0.7 - random() * size * 0.3
+    mountainPath += ` L ${x} ${height}`
+  }
+  mountainPath += ` L ${size} ${size} L 0 ${size} Z`
+
+  backgroundElements.push(
+    `<path d="${mountainPath}" fill="${colours[1]}" opacity="0.6"/>`,
+    `<circle cx="${size * 0.8}" cy="${size * 0.2}" r="30" fill="${colours[colours.length - 1]}" opacity="0.8"/>`, // Sun
+  )
+}
+
+function addArchitecturalElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add geometric building shapes
+  for (let i = 0; i < 5; i++) {
+    const x = random() * size * 0.8
+    const y = size * 0.5 + random() * size * 0.3
+    const width = 40 + random() * 60
+    const height = 60 + random() * 100
+
+    backgroundElements.push(
+      `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${colours[i % colours.length]}" opacity="0.4" stroke="${colours[(i + 1) % colours.length]}" stroke-width="2"/>`,
+    )
+  }
+}
+
+function addGeologicalElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add crystal-like formations
+  for (let i = 0; i < 8; i++) {
+    const cx = random() * size
+    const cy = random() * size
+    const numSides = 6 + Math.floor(random() * 3)
+    const radius = 20 + random() * 40
+
+    let crystalPath = ""
+    for (let j = 0; j < numSides; j++) {
+      const angle = (j / numSides) * 2 * Math.PI
+      const x = cx + Math.cos(angle) * radius
+      const y = cy + Math.sin(angle) * radius
+
+      if (j === 0) {
+        crystalPath = `M ${x} ${y}`
+      } else {
+        crystalPath += ` L ${x} ${y}`
+      }
+    }
+    crystalPath += " Z"
+
+    backgroundElements.push(
+      `<path d="${crystalPath}" fill="${colours[i % colours.length]}" opacity="0.5" stroke="${colours[(i + 1) % colours.length]}" stroke-width="1"/>`,
+    )
+  }
+}
+
+function addBotanicalElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add leaf-like shapes
+  for (let i = 0; i < 12; i++) {
+    const x = random() * size
+    const y = random() * size
+    const leafSize = 15 + random() * 25
+
+    backgroundElements.push(
+      `<ellipse cx="${x}" cy="${y}" rx="${leafSize}" ry="${leafSize * 2}" fill="${colours[i % colours.length]}" opacity="0.6" transform="rotate(${random() * 360} ${x} ${y})"/>`,
+    )
+  }
+}
+
+function addAtmosphericElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add cloud-like formations
+  for (let i = 0; i < 6; i++) {
+    const x = random() * size
+    const y = random() * size * 0.5
+    const cloudSize = 40 + random() * 60
+
+    // Create cloud with multiple circles
+    for (let j = 0; j < 4; j++) {
+      const offsetX = (random() - 0.5) * cloudSize
+      const offsetY = (random() - 0.5) * cloudSize * 0.5
+      const radius = cloudSize * (0.3 + random() * 0.4)
+
+      backgroundElements.push(
+        `<circle cx="${x + offsetX}" cy="${y + offsetY}" r="${radius}" fill="${colours[i % colours.length]}" opacity="0.3"/>`,
+      )
+    }
+  }
+}
+
+function addCrystallineElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add geometric crystal patterns
+  for (let i = 0; i < 10; i++) {
+    const x = random() * size
+    const y = random() * size
+    const size1 = 10 + random() * 20
+    const size2 = 10 + random() * 20
+
+    backgroundElements.push(
+      `<rect x="${x - size1 / 2}" y="${y - size2 / 2}" width="${size1}" height="${size2}" fill="${colours[i % colours.length]}" opacity="0.7" transform="rotate(${random() * 45} ${x} ${y})"/>`,
+    )
+  }
+}
+
+function addTextileElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add woven pattern
+  const gridSize = 20
+  for (let x = 0; x < size; x += gridSize) {
+    for (let y = 0; y < size; y += gridSize) {
+      if ((Math.floor(x / gridSize) + Math.floor(y / gridSize)) % 2 === 0) {
+        backgroundElements.push(
+          `<rect x="${x}" y="${y}" width="${gridSize}" height="${gridSize}" fill="${colours[0]}" opacity="0.2"/>`,
+        )
+      }
+    }
+  }
+}
+
+function addMetallicElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add metallic shine effects
+  for (let i = 0; i < 5; i++) {
+    const x1 = random() * size
+    const y1 = random() * size
+    const x2 = x1 + (random() - 0.5) * 100
+    const y2 = y1 + (random() - 0.5) * 100
+
+    backgroundElements.push(
+      `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${colours[colours.length - 1]}" stroke-width="3" opacity="0.6"/>`,
+    )
+  }
+}
+
+function addOrganicElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add organic blob shapes
+  for (let i = 0; i < 8; i++) {
+    const cx = random() * size
+    const cy = random() * size
+    const radius = 20 + random() * 40
+
+    let blobPath = ""
+    const numPoints = 8
+    for (let j = 0; j < numPoints; j++) {
+      const angle = (j / numPoints) * 2 * Math.PI
+      const r = radius * (0.7 + random() * 0.6)
+      const x = cx + Math.cos(angle) * r
+      const y = cy + Math.sin(angle) * r
+
+      if (j === 0) {
+        blobPath = `M ${x} ${y}`
+      } else {
+        blobPath += ` Q ${cx + Math.cos(angle - Math.PI / numPoints) * radius} ${cy + Math.sin(angle - Math.PI / numPoints) * radius} ${x} ${y}`
+      }
+    }
+    blobPath += " Z"
+
+    backgroundElements.push(`<path d="${blobPath}" fill="${colours[i % colours.length]}" opacity="0.4"/>`)
+  }
+}
+
+function addUrbanElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add grid pattern for urban feel
+  const gridSpacing = 40
+  for (let x = 0; x <= size; x += gridSpacing) {
+    backgroundElements.push(
+      `<line x1="${x}" y1="0" x2="${x}" y2="${size}" stroke="${colours[1]}" stroke-width="0.5" opacity="0.3"/>`,
+    )
+  }
+  for (let y = 0; y <= size; y += gridSpacing) {
+    backgroundElements.push(
+      `<line x1="0" y1="${y}" x2="${size}" y2="${y}" stroke="${colours[1]}" stroke-width="0.5" opacity="0.3"/>`,
+    )
+  }
+}
+
+function addMarineElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add wave-like patterns
+  for (let i = 0; i < 6; i++) {
+    const y = size * 0.3 + i * size * 0.1
+    let wavePath = `M 0 ${y}`
+
+    for (let x = 0; x <= size; x += 10) {
+      const waveHeight = Math.sin((x / size) * 4 * Math.PI + i) * 20
+      wavePath += ` L ${x} ${y + waveHeight}`
+    }
+
+    backgroundElements.push(
+      `<path d="${wavePath}" fill="none" stroke="${colours[i % colours.length]}" stroke-width="2" opacity="0.6"/>`,
+    )
+  }
+}
+
+function generateScenarioFilters(params: GenerationParams, colours: readonly string[]): string {
+  switch (params.scenario) {
+    case "metallic":
+      return `
+        <filter id="metallic">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1"/>
+          <feColorMatrix values="1.2 0 0 0 0  0 1.2 0 0 0  0 0 1.2 0 0  0 0 0 1 0"/>
+        </filter>
+      `
+    case "atmospheric":
+      return `
+        <filter id="atmospheric">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+          <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1.1 0 0  0 0 0 0.8 0"/>
+        </filter>
+      `
+    default:
+      return ""
+  }
+}
+
+// Simplified noise function
+function simplexNoise(x: number, y: number, seed: number): number {
+  const n = Math.sin(x * 12.9898 + y * 78.233 + seed) * 43758.5453
+  return (n - Math.floor(n)) * 2 - 1
+}
 /**
  * generateDomeProjection – proper fisheye transformation for dome projection.
  * This applies real fisheye mathematics to create immersive dome-ready content.
