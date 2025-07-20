@@ -54,7 +54,8 @@ export function FlowArtGenerator() {
   // 360° panorama settings
   const [panorama360Enabled, setPanorama360Enabled] = useState(true)
   const [panoramaResolution, setPanoramaResolution] = useState("4K")
-  const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
+  const [panoramaFormat, setPanoramaFormat] = useState("stereographic")
+  const [stereographicPerspective, setStereographicPerspective] = useState("little-planet")
 
   // Gallery state
   const [gallery, setGallery] = useState<GeneratedArt[]>([])
@@ -87,8 +88,8 @@ export function FlowArtGenerator() {
 
   // Generation parameters - separate dataset, scenario, and color palette
   const [dataset, setDataset] = useState("spirals")
-  const [scenario, setScenario] = useState("landscape")
-  const [colorScheme, setColorScheme] = useState("plasma")
+  const [scenario, setScenario] = useState("urban")
+  const [colorScheme, setColorScheme] = useState("futuristic")
   const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
   const [numSamples, setNumSamples] = useState(2000)
   const [noiseScale, setNoiseScale] = useState(0.05)
@@ -127,6 +128,7 @@ export function FlowArtGenerator() {
           domeResolution,
           panoramic360: panorama360Enabled,
           panoramaResolution,
+          stereographicPerspective,
         }),
       })
 
@@ -143,7 +145,7 @@ export function FlowArtGenerator() {
       toast({
         title: "Prompt Enhanced! ✨",
         description: panorama360Enabled
-          ? "Mathematical concepts and 360° panorama details added to your prompt."
+          ? "Mathematical concepts and stereographic projection details added to your prompt."
           : domeEnabled
             ? "Mathematical concepts and dome projection details added to your prompt."
             : "Mathematical concepts and artistic details added to your prompt.",
@@ -170,6 +172,7 @@ export function FlowArtGenerator() {
     domeResolution,
     panorama360Enabled,
     panoramaResolution,
+    stereographicPerspective,
     toast,
   ])
 
@@ -190,6 +193,8 @@ export function FlowArtGenerator() {
         ...generatedArt.params,
         panoramic360: true,
         panoramaResolution,
+        panoramaFormat,
+        stereographicPerspective,
       }
 
       let panorama360Url: string
@@ -201,14 +206,20 @@ export function FlowArtGenerator() {
         panorama360Url = URL.createObjectURL(svgBlob)
       } else {
         // Generate AI art optimized for 360° panorama
+        const projectionType =
+          panoramaFormat === "stereographic"
+            ? stereographicPerspective === "tunnel"
+              ? "stereographic tunnel projection looking up at buildings"
+              : "stereographic little planet projection looking down"
+            : "360 degree panoramic view, equirectangular projection"
+
         const response = await fetch("/api/generate-ai-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...panoramaParams,
             customPrompt: useCustomPrompt
-              ? customPrompt +
-                " 360 degree panoramic view, equirectangular projection, immersive skybox environment, seamless wraparound"
+              ? customPrompt + ` ${projectionType}, immersive environment, seamless wraparound`
               : undefined,
           }),
         })
@@ -239,9 +250,14 @@ export function FlowArtGenerator() {
         ),
       )
 
+      const formatDescription =
+        panoramaFormat === "stereographic"
+          ? `${stereographicPerspective} stereographic projection`
+          : "equirectangular panorama"
+
       toast({
         title: "360° Panorama Generated! 🌐",
-        description: `${panoramaResolution} equirectangular panorama ready for VR and skybox use.`,
+        description: `${panoramaResolution} ${formatDescription} ready for VR and immersive viewing.`,
       })
     } catch (error: any) {
       console.error("360° panorama generation error:", error)
@@ -253,7 +269,7 @@ export function FlowArtGenerator() {
     } finally {
       setIsGenerating360(false)
     }
-  }, [generatedArt, panoramaResolution, panoramaFormat, customPrompt, useCustomPrompt, toast])
+  }, [generatedArt, panoramaResolution, panoramaFormat, stereographicPerspective, customPrompt, useCustomPrompt, toast])
 
   const generateDomeProjection = useCallback(async () => {
     if (!generatedArt) return
@@ -359,6 +375,9 @@ export function FlowArtGenerator() {
         projectionType: domeEnabled ? domeProjectionType : undefined,
         panoramic360: panorama360Enabled,
         panoramaResolution: panorama360Enabled ? panoramaResolution : undefined,
+        panoramaFormat: panorama360Enabled ? panoramaFormat : undefined,
+        stereographicPerspective:
+          panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
       }
 
       console.log("Generating with params:", params)
@@ -425,7 +444,9 @@ export function FlowArtGenerator() {
         setGallery((prev) => [newArt, ...prev])
 
         const formatText = panorama360Enabled
-          ? `360° panorama in ${panoramaResolution}`
+          ? panoramaFormat === "stereographic"
+            ? `${stereographicPerspective} stereographic projection in ${panoramaResolution}`
+            : `360° panorama in ${panoramaResolution}`
           : domeEnabled
             ? `${domeDiameter}m dome projection`
             : "standard format"
@@ -439,6 +460,17 @@ export function FlowArtGenerator() {
         setProgress(20)
         console.log("Calling AI art API...")
 
+        const projectionDescription =
+          panorama360Enabled && panoramaFormat === "stereographic"
+            ? stereographicPerspective === "tunnel"
+              ? " stereographic tunnel projection looking up at buildings, fisheye perspective"
+              : " stereographic little planet projection looking down, tiny planet effect"
+            : panorama360Enabled
+              ? " 360 degree panoramic view, equirectangular projection, immersive skybox environment"
+              : domeEnabled
+                ? " optimized for dome projection, fisheye perspective, immersive 360-degree view"
+                : ""
+
         const requestBody = {
           dataset,
           scenario,
@@ -446,19 +478,16 @@ export function FlowArtGenerator() {
           seed,
           numSamples,
           noise: noiseScale,
-          customPrompt: useCustomPrompt
-            ? panorama360Enabled
-              ? customPrompt + " 360 degree panoramic view, equirectangular projection, immersive skybox environment"
-              : domeEnabled
-                ? customPrompt + " optimized for dome projection, fisheye perspective, immersive 360-degree view"
-                : customPrompt
-            : undefined,
+          customPrompt: useCustomPrompt ? customPrompt + projectionDescription : undefined,
           domeProjection: domeEnabled,
           domeDiameter: domeEnabled ? domeDiameter : undefined,
           domeResolution: domeEnabled ? domeResolution : undefined,
           projectionType: domeEnabled ? domeProjectionType : undefined,
           panoramic360: panorama360Enabled,
           panoramaResolution: panorama360Enabled ? panoramaResolution : undefined,
+          panoramaFormat: panorama360Enabled ? panoramaFormat : undefined,
+          stereographicPerspective:
+            panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
         }
 
         console.log("Sending AI request:", requestBody)
@@ -516,7 +545,9 @@ export function FlowArtGenerator() {
 
         setProgress(100)
         const formatText = panorama360Enabled
-          ? `360° panoramic skybox in ${panoramaResolution}`
+          ? panoramaFormat === "stereographic"
+            ? `${stereographicPerspective} stereographic projection in ${panoramaResolution}`
+            : `360° panoramic skybox in ${panoramaResolution}`
           : domeEnabled
             ? `${domeDiameter}m dome projection`
             : `${colorScheme} palette`
@@ -524,7 +555,7 @@ export function FlowArtGenerator() {
         toast({
           title: "AI Art Generated! 🤖✨",
           description: panorama360Enabled
-            ? `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} 360° panoramic skybox created.`
+            ? `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} ${formatText} created.`
             : domeEnabled
               ? `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork optimized for ${domeDiameter}m dome projection.`
               : useCustomPrompt
@@ -561,6 +592,7 @@ export function FlowArtGenerator() {
     panorama360Enabled,
     panoramaResolution,
     panoramaFormat,
+    stereographicPerspective,
     toast,
   ])
 
@@ -829,7 +861,13 @@ export function FlowArtGenerator() {
 
   const getButtonText = () => {
     const scenarioText = scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)
-    const formatText = panorama360Enabled ? ` 360° Skybox` : domeEnabled ? ` for ${domeDiameter}m Dome` : ""
+    const formatText = panorama360Enabled
+      ? panoramaFormat === "stereographic"
+        ? ` ${stereographicPerspective === "tunnel" ? "Tunnel" : "Little Planet"} Projection`
+        : ` 360° Skybox`
+      : domeEnabled
+        ? ` for ${domeDiameter}m Dome`
+        : ""
 
     if (mode === "ai") {
       if (useCustomPrompt) {
@@ -848,29 +886,45 @@ export function FlowArtGenerator() {
           FlowSketch Mathematical Art Generator
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Advanced mathematical datasets with photorealistic dome projection and 360° panoramic skyboxes
+          Advanced mathematical datasets with photorealistic stereographic projections and immersive environments
         </p>
       </div>
 
-      {/* Reference Image */}
+      {/* Reference Images */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ImageIcon className="h-5 w-5" />
-            Reference Style - Little Planet Projection
+            Reference Styles - Stereographic Projections
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="relative">
-            <img
-              src="/reference-little-planet.jpg"
-              alt="Reference little planet projection showing urban landscape with buildings and park"
-              className="w-full max-w-md mx-auto rounded-lg shadow-lg"
-            />
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 text-center">
-              Target style: Photorealistic stereographic projection with realistic textures, lighting, and environments
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="text-center">
+              <img
+                src="/reference-little-planet.jpg"
+                alt="Little planet projection showing urban landscape with buildings and park"
+                className="w-full max-w-sm mx-auto rounded-lg shadow-lg"
+              />
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                <strong>Little Planet:</strong> Looking down perspective with landscape in center
+              </p>
+            </div>
+            <div className="text-center">
+              <img
+                src="/reference-tunnel-projection.jpg"
+                alt="Tunnel projection showing buildings curving around sky center"
+                className="w-full max-w-sm mx-auto rounded-lg shadow-lg"
+              />
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                <strong>Tunnel:</strong> Looking up perspective with sky in center, buildings around edge
+              </p>
+            </div>
           </div>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-4 text-center">
+            Target styles: Photorealistic stereographic projections with realistic textures, lighting, and dramatic
+            perspectives
+          </p>
         </CardContent>
       </Card>
 
@@ -897,8 +951,8 @@ export function FlowArtGenerator() {
                     <Sparkles className="h-4 w-4" />
                     <AlertDescription>
                       Create photorealistic AI-generated artwork with realistic textures, lighting, and environments.
-                      Perfect for creating immersive little planet projections like the reference image above.
-                      {panorama360Enabled && " Automatically optimized for immersive 360° panoramic skyboxes."}
+                      Perfect for creating immersive stereographic projections like the reference images above.
+                      {panorama360Enabled && " Automatically optimized for immersive stereographic projections."}
                       {domeEnabled && " Automatically optimized for immersive dome projection."}
                     </AlertDescription>
                   </Alert>
@@ -910,7 +964,7 @@ export function FlowArtGenerator() {
                     <AlertDescription>
                       Complex mathematical datasets with advanced algorithms: Fibonacci spirals, fractal patterns,
                       Mandelbrot sets, Lorenz attractors, and more!{" "}
-                      {panorama360Enabled && "Optimized for 360° panoramic skyboxes."}
+                      {panorama360Enabled && "Optimized for stereographic projections."}
                       {domeEnabled && "Optimized for dome projection."}
                     </AlertDescription>
                   </Alert>
@@ -1196,7 +1250,7 @@ export function FlowArtGenerator() {
                     {useCustomPrompt && (
                       <div className="space-y-2">
                         <textarea
-                          placeholder="Enter your custom prompt here... (e.g., 'A photorealistic little planet projection of a futuristic city with glass buildings and floating gardens')"
+                          placeholder="Enter your custom prompt here... (e.g., 'A photorealistic stereographic projection of a futuristic city with glass buildings and neon lights')"
                           value={customPrompt}
                           onChange={(e) => setCustomPrompt(e.target.value)}
                           rows={3}
@@ -1272,14 +1326,12 @@ export function FlowArtGenerator() {
                         checked={panorama360Enabled}
                         onChange={(e) => setPanorama360Enabled(e.target.checked)}
                       />
-                      <span className="text-gray-700 dark:text-gray-300">360° Panorama</span>
+                      <span className="text-gray-700 dark:text-gray-300">Stereographic Projection</span>
                     </label>
 
                     {panorama360Enabled && (
                       <div className="space-y-2 mt-2">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                          Panorama Resolution
-                        </label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Resolution</label>
                         <select
                           value={panoramaResolution}
                           onChange={(e) => setPanoramaResolution(e.target.value)}
@@ -1291,16 +1343,32 @@ export function FlowArtGenerator() {
                         </select>
 
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                          Panorama Format
+                          Projection Format
                         </label>
                         <select
                           value={panoramaFormat}
                           onChange={(e) => setPanoramaFormat(e.target.value)}
                           className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         >
+                          <option value="stereographic">Stereographic</option>
                           <option value="equirectangular">Equirectangular</option>
-                          <option value="stereographic">Stereographic (Little Planet)</option>
                         </select>
+
+                        {panoramaFormat === "stereographic" && (
+                          <>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                              Perspective
+                            </label>
+                            <select
+                              value={stereographicPerspective}
+                              onChange={(e) => setStereographicPerspective(e.target.value)}
+                              className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            >
+                              <option value="little-planet">Little Planet (Looking Down)</option>
+                              <option value="tunnel">Tunnel (Looking Up)</option>
+                            </select>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1338,7 +1406,7 @@ export function FlowArtGenerator() {
 
                       {generatedArt.is360Panorama && generatedArt.panorama360Url && (
                         <Button onClick={() => downloadImage("panorama")} variant="secondary">
-                          🌐 Download 360°
+                          🌐 Download Projection
                         </Button>
                       )}
 
@@ -1350,7 +1418,7 @@ export function FlowArtGenerator() {
 
                       {generatedArt.is360Panorama && !generatedArt.panorama360Url && (
                         <Button onClick={generate360Panorama} disabled={isGenerating360} variant="outline">
-                          {isGenerating360 ? "Generating..." : "🌐 Generate 360°"}
+                          {isGenerating360 ? "Generating..." : "🌐 Generate Projection"}
                         </Button>
                       )}
                     </div>
@@ -1372,6 +1440,14 @@ export function FlowArtGenerator() {
                           <strong>Custom Prompt:</strong> {generatedArt.customPrompt}
                         </p>
                       )}
+                      {generatedArt.panoramaSpecs && generatedArt.panoramaSpecs.format === "stereographic" && (
+                        <p>
+                          <strong>Projection:</strong>{" "}
+                          {stereographicPerspective === "tunnel"
+                            ? "Tunnel (Looking Up)"
+                            : "Little Planet (Looking Down)"}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ) : (
@@ -1379,7 +1455,7 @@ export function FlowArtGenerator() {
                     <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>Generate photorealistic artwork to see it here.</p>
                     <p className="text-sm mt-2">
-                      Try the AI mode with "Urban Environments" + "Landscape" for little planet effects!
+                      Try "Urban Environments" + "Stereographic" for dramatic tunnel or little planet effects!
                     </p>
                   </div>
                 )}

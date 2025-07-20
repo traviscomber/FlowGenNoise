@@ -20,6 +20,7 @@ export interface GenerationParams {
   panoramic360?: boolean
   panoramaResolution?: string
   panoramaFormat?: string
+  stereographicPerspective?: string
 }
 
 /* ------------------------------------------------------------------ */
@@ -1004,7 +1005,7 @@ export function generateDomeProjection(params: GenerationParams): string {
 }
 
 /**
- * generate360Panorama – creates equirectangular 360° panoramic images
+ * generate360Panorama – creates equirectangular 360° panoramic images or stereographic projections
  * Perfect for VR environments, skyboxes, and 360° viewers like Blockade Labs
  */
 export function generate360Panorama(params: GenerationParams): string {
@@ -1209,16 +1210,17 @@ export function generate360Panorama(params: GenerationParams): string {
 }
 
 /**
- * generateStereographicProjection – creates "little planet" stereographic projections
- * Perfect for social media and artistic little planet effects like the reference image
+ * generateStereographicProjection – creates "little planet" or "tunnel" stereographic projections
+ * Perfect for social media and artistic stereographic effects like the reference images
  */
 export function generateStereographicProjection(params: GenerationParams): string {
-  // Stereographic projection creates the "little planet" effect
+  // Stereographic projection creates the "little planet" or "tunnel" effect
   const size = 512
   const center = size / 2
   const radius = size / 2 - 10
   const colours = colorPalettes[params.colorScheme as keyof typeof colorPalettes] ?? colorPalettes.plasma
   const random = seededRandom(params.seed)
+  const isTunnel = params.stereographicPerspective === "tunnel"
 
   // Generate mathematical patterns for stereographic transformation
   const pathElements: string[] = []
@@ -1227,25 +1229,41 @@ export function generateStereographicProjection(params: GenerationParams): strin
   // Create realistic ground/landscape base
   const groundElements: string[] = []
 
-  // Generate ground texture based on scenario
+  // Generate ground texture based on scenario and perspective
   switch (params.scenario) {
     case "urban":
     case "architectural":
       // Urban ground with roads and buildings
-      addUrbanStereographicElements(groundElements, size, center, radius, colours, random)
+      if (isTunnel) {
+        addUrbanTunnelElements(groundElements, size, center, radius, colours, random)
+      } else {
+        addUrbanStereographicElements(groundElements, size, center, radius, colours, random)
+      }
       break
     case "landscape":
     case "botanical":
       // Natural landscape with grass and trees
-      addLandscapeStereographicElements(groundElements, size, center, radius, colours, random)
+      if (isTunnel) {
+        addLandscapeTunnelElements(groundElements, size, center, radius, colours, random)
+      } else {
+        addLandscapeStereographicElements(groundElements, size, center, radius, colours, random)
+      }
       break
     case "geological":
       // Rocky/mineral ground
-      addGeologicalStereographicElements(groundElements, size, center, radius, colours, random)
+      if (isTunnel) {
+        addGeologicalTunnelElements(groundElements, size, center, radius, colours, random)
+      } else {
+        addGeologicalStereographicElements(groundElements, size, center, radius, colours, random)
+      }
       break
     default:
       // Default to mixed landscape
-      addLandscapeStereographicElements(groundElements, size, center, radius, colours, random)
+      if (isTunnel) {
+        addUrbanTunnelElements(groundElements, size, center, radius, colours, random)
+      } else {
+        addLandscapeStereographicElements(groundElements, size, center, radius, colours, random)
+      }
   }
 
   // Add mathematical flow patterns transformed to stereographic
@@ -1317,11 +1335,13 @@ export function generateStereographicProjection(params: GenerationParams): strin
     )
   }
 
+  const perspectiveLabel = isTunnel ? "TUNNEL" : "LITTLE PLANET"
+
   return `
     <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="stereographicGradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" style="stop-color:${colours[2] || colours[0]};stop-opacity:0.8"/>
+          <stop offset="0%" style="stop-color:${isTunnel ? colours[colours.length - 1] : colours[2] || colours[0]};stop-opacity:0.8"/>
           <stop offset="70%" style="stop-color:${colours[1]};stop-opacity:0.4"/>
           <stop offset="100%" style="stop-color:${colours[0]};stop-opacity:0.9"/>
         </radialGradient>
@@ -1364,7 +1384,7 @@ export function generateStereographicProjection(params: GenerationParams): strin
       <!-- Label -->
       <text x="${size - 10}" y="20" text-anchor="end" font-family="monospace" font-size="10" 
             fill="${colours[colours.length - 1]}" opacity="0.7">
-        STEREOGRAPHIC ${params.panoramaResolution || "4K"}
+        ${perspectiveLabel} ${params.panoramaResolution || "4K"}
       </text>
     </svg>
   `
@@ -1378,7 +1398,7 @@ function addUrbanStereographicElements(
   colours: readonly string[],
   random: () => number,
 ) {
-  // Add building-like structures around the perimeter
+  // Add building-like structures around the perimeter (little planet view)
   const numBuildings = 12
   for (let i = 0; i < numBuildings; i++) {
     const angle = (i / numBuildings) * 2 * Math.PI
@@ -1392,112 +1412,4 @@ function addUrbanStereographicElements(
     elements.push(
       `<rect x="${x}" y="${y}" width="${buildingWidth}" height="${buildingHeight}" 
        fill="${colours[i % colours.length]}" opacity="0.6" 
-       stroke="${colours[(i + 1) % colours.length]}" stroke-width="1"/>`,
-    )
-  }
-
-  // Add road/path in center
-  const roadElements: string[] = []
-  for (let i = 0; i < 8; i++) {
-    const angle = (i / 8) * 2 * Math.PI
-    const roadR = radius * 0.3
-    const x1 = center
-    const y1 = center
-    const x2 = center + roadR * Math.cos(angle)
-    const y2 = center + roadR * Math.sin(angle)
-
-    roadElements.push(
-      `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" 
-       stroke="${colours[1]}" stroke-width="3" opacity="0.4"/>`,
-    )
-  }
-  elements.push(...roadElements)
-}
-
-function addLandscapeStereographicElements(
-  elements: string[],
-  size: number,
-  center: number,
-  radius: number,
-  colours: readonly string[],
-  random: () => number,
-) {
-  // Add tree-like structures around the perimeter
-  const numTrees = 16
-  for (let i = 0; i < numTrees; i++) {
-    const angle = (i / numTrees) * 2 * Math.PI + random() * 0.3
-    const treeR = radius * (0.5 + random() * 0.3)
-    const treeSize = 8 + random() * 12
-
-    const x = center + treeR * Math.cos(angle)
-    const y = center + treeR * Math.sin(angle)
-
-    // Tree trunk
-    elements.push(
-      `<line x1="${x}" y1="${y}" x2="${x}" y2="${y + treeSize * 0.3}" 
-       stroke="${colours[1]}" stroke-width="2" opacity="0.8"/>`,
-    )
-
-    // Tree canopy
-    elements.push(
-      `<circle cx="${x}" cy="${y}" r="${treeSize}" 
-       fill="${colours[2] || colours[0]}" opacity="0.6"/>`,
-    )
-  }
-
-  // Add grass/ground texture
-  for (let i = 0; i < 50; i++) {
-    const angle = random() * 2 * Math.PI
-    const r = random() * radius * 0.4
-    const x = center + r * Math.cos(angle)
-    const y = center + r * Math.sin(angle)
-    const grassSize = random() * 2 + 0.5
-
-    elements.push(
-      `<circle cx="${x}" cy="${y}" r="${grassSize}" 
-       fill="${colours[2] || colours[0]}" opacity="0.4"/>`,
-    )
-  }
-}
-
-function addGeologicalStereographicElements(
-  elements: string[],
-  size: number,
-  center: number,
-  radius: number,
-  colours: readonly string[],
-  random: () => number,
-) {
-  // Add rock formations
-  const numRocks = 10
-  for (let i = 0; i < numRocks; i++) {
-    const angle = (i / numRocks) * 2 * Math.PI + random() * 0.5
-    const rockR = radius * (0.3 + random() * 0.4)
-    const rockSize = 10 + random() * 15
-
-    const x = center + rockR * Math.cos(angle)
-    const y = center + rockR * Math.sin(angle)
-
-    // Create irregular rock shape
-    let rockPath = ""
-    const numSides = 6 + Math.floor(random() * 3)
-    for (let j = 0; j < numSides; j++) {
-      const sideAngle = (j / numSides) * 2 * Math.PI
-      const sideR = rockSize * (0.7 + random() * 0.6)
-      const sideX = x + sideR * Math.cos(sideAngle)
-      const sideY = y + sideR * Math.sin(sideAngle)
-
-      if (j === 0) {
-        rockPath = `M ${sideX} ${sideY}`
-      } else {
-        rockPath += ` L ${sideX} ${sideY}`
-      }
-    }
-    rockPath += " Z"
-
-    elements.push(
-      `<path d="${rockPath}" fill="${colours[i % colours.length]}" opacity="0.7" 
-       stroke="${colours[(i + 1) % colours.length]}" stroke-width="1"/>`,
-    )
-  }
-}
+       stroke="${colours[(i + 1) % colours.length]}" stroke\
