@@ -42,5 +42,16 @@ const colorPalettes = {
   aurora: ["#191970", "#00CED1", "#7FFF00", "#FFD700"],
   metallic: ["#B87333", "#C0C0C0", "#FFD700", "#E5E4E2"],
   prismatic: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00"],
-  monochromatic: ["#000000", "#404040", "#808080", "#FFFFFF"],\
-  infrared: ["#8B0000\", \"#FF4500\
+  monochromatic: ["#000000", "#404040", "#808080", "#FFFFFF"],
+  infrared: ["#8B0000", "#FF4500", "#FF6347", "#FFA500"],
+  lava: ["#1A0000", "#8B0000", "#FF4500", "#FFD700"],
+  futuristic: ["#001122", "#00FFFF", "#0080FF", "#FFFFFF"],
+  forest: ["#0F1B0F", "#228B22", "#32CD32", "#90EE90"],
+  ocean: ["#000080", "#0066CC", "#00BFFF", "#E0F6FF"],
+  sunset: ["#2D1B69", "#FF6B35", "#F7931E", "#FFD23F"],
+  arctic: ["#1E3A8A", "#60A5FA", "#E0F2FE", "#FFFFFF"],
+  neon: ["#000000", "#FF00FF", "#00FF00", "#FFFF00"],
+  vintage: ["#8B4513", "#CD853F", "#F4A460", "#FFF8DC"],
+  toxic: ["#1A1A00", "#66FF00", "#CCFF00", "#FFFF99"],
+  ember: ["#2D0A00", "#CC4400", "#FF8800", "#FFCC66"],
+}
