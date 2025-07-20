@@ -1466,4 +1466,250 @@ export function generateStereographicProjection(params: GenerationParams): strin
   const perspectiveLabel = isTunnel ? "TUNNEL" : "LITTLE PLANET"
 
   return `
-    <svg viewBox="0 0 ${size} ${size}"
+    <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="stereoGradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" style="stop-color:${colours[0]};stop-opacity:0.15"/>
+          <stop offset="65%" style="stop-color:${colours[1]};stop-opacity:0.4"/>
+          <stop offset="100%" style="stop-color:${colours[2] || colours[0]};stop-opacity:0.8"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Background planet / tunnel disc -->
+      <circle cx="${center}" cy="${center}" r="${radius}" fill="url(#stereoGradient)" />
+
+      <!-- Ground or tunnel base -->
+      ${groundElements.join("\n      ")}
+
+      <!-- Mathematical flow patterns -->
+      ${pathElements.join("\n      ")}
+
+      <!-- Atmospheric / edge particles -->
+      ${atmosphereElements.join("\n      ")}
+
+      <!-- Border ring -->
+      <circle cx="${center}" cy="${center}" r="${radius}" fill="none"
+              stroke="${colours[colours.length - 1]}" stroke-width="3" opacity="0.85" />
+
+      <!-- Projection label -->
+      <text x="${size - 10}" y="${size - 10}" text-anchor="end"
+            font-family="monospace" font-size="10"
+            fill="${colours[colours.length - 1]}" opacity="0.7">
+        ${perspectiveLabel}
+      </text>
+    </svg>
+  `
+}
+
+function addUrbanTunnelElements(
+  groundElements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add road-like lines converging to the center
+  for (let i = 0; i < 10; i++) {
+    const angle = (i / 10) * 2 * Math.PI
+    const x1 = center + Math.cos(angle) * radius
+    const y1 = center + Math.sin(angle) * radius
+    const x2 = center + Math.cos(angle) * radius * 0.1
+    const y2 = center + Math.sin(angle) * radius * 0.1
+
+    groundElements.push(
+      `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colours[1]}" stroke-width="4" opacity="0.4"/>`,
+    )
+  }
+
+  // Add building-like rectangles along the sides
+  for (let i = 0; i < 6; i++) {
+    const angle = (i / 6) * 2 * Math.PI
+    const dist = radius * 0.75
+    const x = center + Math.cos(angle) * dist
+    const y = center + Math.sin(angle) * dist
+    const buildingWidth = 20 + random() * 30
+    const buildingHeight = 50 + random() * 80
+
+    groundElements.push(
+      `<rect x="${(x - buildingWidth / 2).toFixed(2)}" y="${(y - buildingHeight / 2).toFixed(2)}" width="${buildingWidth.toFixed(2)}" height="${buildingHeight.toFixed(2)}" fill="${colours[2]}" opacity="0.5" transform="rotate(${random() * 10 - 5} ${x} ${y})"/>`,
+    )
+  }
+}
+
+function addUrbanStereographicElements(
+  groundElements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add grid-like road patterns
+  const gridSpacing = 30
+  for (let x = center - radius; x <= center + radius; x += gridSpacing) {
+    groundElements.push(
+      `<line x1="${x.toFixed(2)}" y1="${(center - radius).toFixed(2)}" x2="${x.toFixed(2)}" y2="${(center + radius).toFixed(2)}" stroke="${colours[1]}" stroke-width="2" opacity="0.3"/>`,
+    )
+  }
+  for (let y = center - radius; y <= center + radius; y += gridSpacing) {
+    groundElements.push(
+      `<line x1="${(center - radius).toFixed(2)}" y1="${y.toFixed(2)}" x2="${(center + radius).toFixed(2)}" y2="${y.toFixed(2)}" stroke="${colours[1]}" stroke-width="2" opacity="0.3"/>`,
+    )
+  }
+
+  // Add building-like rectangles
+  for (let i = 0; i < 15; i++) {
+    const x = center - radius + random() * radius * 2
+    const y = center - radius + random() * radius * 2
+    const buildingWidth = 10 + random() * 20
+    const buildingHeight = 30 + random() * 50
+
+    // Ensure buildings stay within the circle
+    if ((x - center) ** 2 + (y - center) ** 2 <= radius ** 2) {
+      groundElements.push(
+        `<rect x="${(x - buildingWidth / 2).toFixed(2)}" y="${(y - buildingHeight / 2).toFixed(2)}" width="${buildingWidth.toFixed(2)}" height="${buildingHeight.toFixed(2)}" fill="${colours[2]}" opacity="0.4" transform="rotate(${random() * 20 - 10} ${x} ${y})"/>`,
+      )
+    }
+  }
+}
+
+function addLandscapeTunnelElements(
+  groundElements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add concentric circles for a tunnel effect
+  for (let i = 1; i <= 8; i++) {
+    const circleRadius = (i / 8) * radius
+    groundElements.push(
+      `<circle cx="${center}" cy="${center}" r="${circleRadius.toFixed(2)}" fill="none" stroke="${colours[1]}" stroke-width="3" opacity="0.3" stroke-dasharray="5,5"/>`,
+    )
+  }
+
+  // Add tree-like shapes along the circles
+  for (let i = 0; i < 20; i++) {
+    const circleIndex = Math.floor(random() * 8) + 1
+    const circleRadius = (circleIndex / 8) * radius
+    const angle = random() * 2 * Math.PI
+    const x = center + Math.cos(angle) * circleRadius
+    const y = center + Math.sin(angle) * circleRadius
+    const treeSize = 5 + random() * 10
+
+    groundElements.push(
+      `<ellipse cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" rx="${treeSize.toFixed(2)}" ry="${(treeSize * 1.5).toFixed(2)}" fill="${colours[2]}" opacity="0.6" transform="rotate(${random() * 360} ${x} ${y})"/>`,
+    )
+  }
+}
+
+function addLandscapeStereographicElements(
+  groundElements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add grass-like strokes
+  for (let i = 0; i < 50; i++) {
+    const angle = random() * 2 * Math.PI
+    const dist = random() * radius
+    const x1 = center + Math.cos(angle) * dist
+    const y1 = center + Math.sin(angle) * dist
+    const x2 = x1 + (random() - 0.5) * 10
+    const y2 = y1 + (random() - 0.5) * 10
+
+    groundElements.push(
+      `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colours[2]}" stroke-width="1.5" opacity="0.4"/>`,
+    )
+  }
+
+  // Add tree-like circles
+  for (let i = 0; i < 10; i++) {
+    const x = center - radius + random() * radius * 2
+    const y = center - radius + random() * radius * 2
+    const treeSize = 5 + random() * 15
+
+    // Ensure trees stay within the circle
+    if ((x - center) ** 2 + (y - center) ** 2 <= radius ** 2) {
+      groundElements.push(
+        `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${treeSize.toFixed(2)}" fill="${colours[2]}" opacity="0.5"/>`,
+      )
+    }
+  }
+}
+
+function addGeologicalTunnelElements(
+  groundElements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add jagged lines converging to the center
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * 2 * Math.PI
+    let path = `M ${center} ${center}`
+    for (let j = 0; j < 5; j++) {
+      const dist = (j / 4) * radius
+      const x = center + Math.cos(angle) * dist + (random() - 0.5) * 20
+      const y = center + Math.sin(angle) * dist + (random() - 0.5) * 20
+      path += ` L ${x.toFixed(2)} ${y.toFixed(2)}`
+    }
+    groundElements.push(`<path d="${path}" fill="none" stroke="${colours[1]}" stroke-width="2" opacity="0.6"/>`)
+  }
+
+  // Add crystal-like shapes
+  for (let i = 0; i < 12; i++) {
+    const angle = random() * 2 * Math.PI
+    const dist = radius * 0.6 + random() * radius * 0.3
+    const x = center + Math.cos(angle) * dist
+    const y = center + Math.sin(angle) * dist
+    const crystalSize = 5 + random() * 10
+
+    groundElements.push(
+      `<rect x="${(x - crystalSize / 2).toFixed(2)}" y="${(y - crystalSize / 2).toFixed(2)}" width="${crystalSize.toFixed(2)}" height="${crystalSize.toFixed(2)}" fill="${colours[3]}" opacity="0.7" transform="rotate(${random() * 45} ${x} ${y})"/>`,
+    )
+  }
+}
+
+function addGeologicalStereographicElements(
+  groundElements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add rock-like circles
+  for (let i = 0; i < 20; i++) {
+    const x = center - radius + random() * radius * 2
+    const y = center - radius + random() * radius * 2
+    const rockSize = 3 + random() * 8
+
+    // Ensure rocks stay within the circle
+    if ((x - center) ** 2 + (y - center) ** 2 <= radius ** 2) {
+      groundElements.push(
+        `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${rockSize.toFixed(2)}" fill="${colours[1]}" opacity="0.7"/>`,
+      )
+    }
+  }
+
+  // Add mineral-like lines
+  for (let i = 0; i < 30; i++) {
+    const angle = random() * 2 * Math.PI
+    const dist = random() * radius
+    const x1 = center + Math.cos(angle) * dist
+    const y1 = center + Math.sin(angle) * dist
+    const x2 = x1 + (random() - 0.5) * 5
+    const y2 = y1 + (random() - 0.5) * 5
+
+    groundElements.push(
+      `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colours[3]}" stroke-width="1" opacity="0.5"/>`,
+    )
+  }
+}
