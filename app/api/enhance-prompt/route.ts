@@ -2,45 +2,122 @@ import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 
+/**
+ * POST /api/enhance-prompt
+ *
+ * Request JSON:
+ * {
+ *   dataset: string,
+ *   scenario: string,
+ *   colorScheme: string,
+ *   numSamples: number,
+ *   noiseScale: number,
+ *   currentPrompt?: string,
+ *   enableStereographic?: boolean,
+ *   stereographicPerspective?: "little-planet" | "tunnel"
+ * }
+ */
 export async function POST(request: NextRequest) {
   try {
-    const { dataset, scenario, colorScheme, numSamples, noiseScale, currentPrompt } = await request.json()
+    const {
+      dataset,
+      scenario,
+      colorScheme,
+      numSamples,
+      noiseScale,
+      currentPrompt,
+      enableStereographic,
+      stereographicPerspective,
+    } = await request.json()
 
-    // Create god-level mathematical art prompt
-    const systemPrompt = `You are a world-class mathematical artist and theoretical physicist who creates museum-quality AI art prompts. Generate incredibly detailed, scientifically accurate prompts that combine advanced mathematics, theoretical physics, and professional art direction.`
+    /* ------------------------------------------------------------------ */
+    /* 1. Build a comprehensive “base” prompt from the supplied settings  */
+    /* ------------------------------------------------------------------ */
+    let basePrompt = `Generate a highly detailed, abstract mathematical artwork.
+The core structure is derived from a "${dataset}" dataset, featuring intricate patterns like ${
+      dataset === "spirals"
+        ? "Fibonacci, logarithmic, and Archimedean spirals with golden-ratio modulations"
+        : dataset === "quantum"
+          ? "Schrödinger wave functions, Heisenberg uncertainty principles, and quantum-entanglement correlations"
+          : dataset === "strings"
+            ? "11-dimensional M-theory projections, Calabi-Yau compactifications, and string-vibration modes"
+            : dataset === "fractals"
+              ? "Hausdorff dimensions, Sierpiński-triangle iterations, Julia-set dynamics, and Barnsley-fern mutations"
+              : dataset === "topology"
+                ? "Klein-bottle embeddings, Möbius strips, torus knots, and Hopf fibrations"
+                : dataset === "moons"
+                  ? "hyperbolic curves, elliptic functions, and non-Euclidean geometries forming crescent shapes"
+                  : dataset === "circles"
+                    ? "concentric manifold projections, 4-D torus embeddings, and Möbius-strip influences"
+                    : dataset === "blobs"
+                      ? "Voronoi dynamics, Lorenz-attractor chaos, and turbulent-flow patterns"
+                      : dataset === "checkerboard"
+                        ? "fractal checkerboards with Mandelbrot-like iterations and complex-plane distortions"
+                        : dataset === "gaussian"
+                          ? "multi-modal Gaussian distributions with correlated noise and Perlin-like distortions"
+                          : dataset === "grid"
+                            ? "non-linear grid distortions, Klein-bottle transformations, and wave-like effects"
+                            : "complex mathematical structures"
+    }.`
 
-    const enhancementPrompt = `Create a god-level AI art prompt for generating mathematical artwork with these parameters:
+    basePrompt += ` The visual narrative is blended with a "${scenario}" scenario, evoking ${
+      scenario === "pure"
+        ? "sacred geometry and a sense of profound cosmic order"
+        : scenario === "quantum"
+          ? "the probabilistic nature of the quantum realm with shimmering particles and energy fields"
+          : scenario === "cosmic"
+            ? "vast cosmic scales, gravitational lensing, and distant nebulae"
+            : scenario === "microscopic"
+              ? "intricate molecular dynamics and protein folding"
+              : scenario === "forest"
+                ? "an enchanted fractal forest of bioluminescent flora"
+                : scenario === "ocean"
+                  ? "the mysterious deep ocean with swirling currents and ancient coral formations"
+                  : scenario === "neural"
+                    ? "the architecture of neural networks with firing neurons and synaptic connections"
+                    : scenario === "crystalline"
+                      ? "perfect crystal lattices and gemstone formations"
+                      : scenario === "plasma"
+                        ? "dynamic plasma physics with charged-particle interactions"
+                        : scenario === "atmospheric"
+                          ? "majestic atmospheric phenomena such as auroras and lightning"
+                          : scenario === "geological"
+                            ? "tectonic movements, volcanic eruptions, and mineral crystallisation"
+                            : scenario === "biological"
+                              ? "the fundamental processes of DNA helices and cellular metabolism"
+                              : "a unique artistic interpretation"
+    }.`
 
-Dataset: ${dataset}
-Scenario: ${scenario} 
-Color Scheme: ${colorScheme}
-Sample Points: ${numSamples}
-Noise Scale: ${noiseScale}
-Current Prompt: ${currentPrompt || "None"}
+    basePrompt += ` The artwork is rendered in a "${colorScheme}" colour palette with approximately ${numSamples} sample points and a noise scale of ${noiseScale}.`
 
-Generate a professional, museum-quality prompt that includes:
+    if (enableStereographic) {
+      basePrompt +=
+        stereographicPerspective === "little-planet"
+          ? ` Apply a "Little-Planet" stereographic projection, wrapping the scene into a tiny spherical world with a curved horizon and an intimate, miniature-universe aesthetic.`
+          : ` Apply a "Tunnel-Vision" stereographic projection, drawing the viewer into an inward-curving vortex with a hypnotic vanishing-point centre.`
+    }
 
-1. MATHEMATICAL FOUNDATION: Describe mathematical concepts as visual patterns and structures
-2. PHYSICAL LAWS: Translate physics principles into visual elements and compositions
-3. VISUAL SPECIFICATIONS: Professional art direction with technical details
-4. LIGHTING & MATERIALS: HDR lighting, PBR materials, subsurface scattering
-5. SCALE & COMPOSITION: From quantum to cosmic scale relationships
-6. ARTISTIC STYLE: Professional photography/digital art techniques
+    basePrompt += ` The final image must be high-resolution, visually stunning, and conceptually rich.`
 
-Make it incredibly detailed, scientifically accurate, and artistically sophisticated. Focus on visual representation of mathematical and physical concepts.
+    /* ------------------------------------------------------------------ */
+    /* 2. Enhance the prompt with GPT-4o                                  */
+    /* ------------------------------------------------------------------ */
+    const SYSTEM_MESSAGE =
+      "You are a world-class mathematical artist and theoretical physicist that writes museum-quality AI-art prompts."
 
-CRITICAL: End the prompt with "IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text. Pure abstract visual art only. Focus on colors, shapes, patterns, and mathematical structures as visual elements, not written content."`
+    const GPT_TEMPERATURE = 0.8 // renamed so no duplicate “temperature” identifier
 
-    const { text } = await generateText({
+    const { text: enhancedPrompt } = await generateText({
       model: openai("gpt-4o"),
-      system: systemPrompt,
-      prompt: enhancementPrompt,
-      maxTokens: 1000,
+      system: SYSTEM_MESSAGE,
+      prompt: `Elevate the following draft prompt. Use advanced artistic terminology, describe lighting, materials, atmosphere, and ensure the mathematics remains visually represented.\n\nDraft prompt:\n"""${currentPrompt || basePrompt}"""\n\nEnhanced prompt:`,
+      temperature: GPT_TEMPERATURE,
+      maxTokens: 900,
     })
 
-    return NextResponse.json({ enhancedPrompt: text })
-  } catch (error: any) {
-    console.error("Prompt enhancement error:", error)
-    return NextResponse.json({ error: "Failed to enhance prompt", details: error.message }, { status: 500 })
+    return NextResponse.json({ enhancedPrompt })
+  } catch (err: any) {
+    console.error("Prompt-enhancement error:", err)
+    return NextResponse.json({ error: "Failed to enhance prompt", details: err.message }, { status: 500 })
   }
 }
