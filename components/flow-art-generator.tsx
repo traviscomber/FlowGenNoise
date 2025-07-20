@@ -546,14 +546,33 @@ export function FlowArtGenerator() {
       console.log("Download button clicked!", isDome ? "Dome version" : "Regular version")
 
       try {
-        const imageUrl = isDome
-          ? generatedArt.domeImageUrl || generatedArt.imageUrl
-          : generatedArt.upscaledImageUrl || generatedArt.imageUrl
+        let imageUrl: string
+        let fileExtension: string
+        let fileName: string
 
-        const isEnhanced = !!generatedArt.upscaledImageUrl && !isDome
-        const fileExtension = generatedArt.mode === "svg" && !isEnhanced ? "svg" : "png"
-        const domePrefix = isDome ? "dome-" : ""
-        const fileName = `flowsketch-${domePrefix}${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
+        if (isDome) {
+          // For dome downloads, ensure we have a dome image
+          if (!generatedArt.domeImageUrl) {
+            toast({
+              title: "Dome Image Not Available",
+              description: "Please generate the dome projection first.",
+              variant: "destructive",
+            })
+            return
+          }
+          imageUrl = generatedArt.domeImageUrl
+          fileExtension = "png" // Dome projections are always rasterized
+          const domeSpec = generatedArt.domeSpecs
+            ? `-${generatedArt.domeSpecs.diameter}m-${generatedArt.domeSpecs.resolution}`
+            : ""
+          fileName = `flowsketch-dome-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${domeSpec}.${fileExtension}`
+        } else {
+          // For regular downloads
+          imageUrl = generatedArt.upscaledImageUrl || generatedArt.imageUrl
+          const isEnhanced = !!generatedArt.upscaledImageUrl
+          fileExtension = generatedArt.mode === "svg" && !isEnhanced ? "svg" : "png"
+          fileName = `flowsketch-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
+        }
 
         console.log("Downloading:", fileName, "from:", imageUrl)
 
@@ -595,7 +614,7 @@ export function FlowArtGenerator() {
           title: "Download Complete! 🎨",
           description: isDome
             ? `Dome projection for ${generatedArt.domeSpecs?.diameter}m dome downloaded.`
-            : `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} in ${generatedArt.params.colorScheme} colors downloaded.`,
+            : `${generatedArt.upscaledImageUrl ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} in ${generatedArt.params.colorScheme} colors downloaded.`,
         })
       } catch (error: any) {
         console.error("Download error:", error)
