@@ -4,7 +4,16 @@ import { openai } from "@ai-sdk/openai"
 
 export async function POST(request: NextRequest) {
   try {
-    const { dataset, scenario, colorScheme, numSamples, noiseScale, currentPrompt } = await request.json()
+    const {
+      dataset,
+      scenario,
+      colorScheme,
+      numSamples,
+      noiseScale,
+      currentPrompt,
+      enableStereographic,
+      stereographicPerspective,
+    } = await request.json()
 
     // Create god-level mathematical art prompt
     const systemPrompt = `You are a world-class mathematical artist and theoretical physicist who creates museum-quality AI art prompts. Generate incredibly detailed, scientifically accurate prompts that combine advanced mathematics, theoretical physics, and professional art direction.`
@@ -16,6 +25,8 @@ Scenario: ${scenario}
 Color Scheme: ${colorScheme}
 Sample Points: ${numSamples}
 Noise Scale: ${noiseScale}
+Stereographic Projection: ${enableStereographic ? "ENABLED" : "DISABLED"}
+${enableStereographic ? `Projection Style: ${stereographicPerspective} (${stereographicPerspective === "little-planet" ? "Looking down perspective creating a tiny planet effect" : "Looking up perspective creating a tunnel vision effect"})` : ""}
 Current Prompt: ${currentPrompt || "None"}
 
 Generate a professional, museum-quality prompt that includes:
@@ -26,8 +37,11 @@ Generate a professional, museum-quality prompt that includes:
 4. LIGHTING & MATERIALS: HDR lighting, PBR materials, subsurface scattering
 5. SCALE & COMPOSITION: From quantum to cosmic scale relationships
 6. ARTISTIC STYLE: Professional photography/digital art techniques
+${enableStereographic ? `7. STEREOGRAPHIC EFFECTS: Incorporate ${stereographicPerspective === "little-planet" ? "little planet spherical distortion effects, curved horizon lines, and miniature world perspective" : "tunnel vision perspective with dramatic inward curvature, vanishing point effects, and immersive depth"}` : ""}
 
 Make it incredibly detailed, scientifically accurate, and artistically sophisticated. Focus on visual representation of mathematical and physical concepts.
+
+${enableStereographic ? `STEREOGRAPHIC NOTE: The artwork should have ${stereographicPerspective === "little-planet" ? "a spherical, planet-like curvature with the viewer looking down at a miniature world. Include curved horizons, radial perspective, and the sense of viewing a tiny sphere from above." : "a dramatic tunnel or vortex-like perspective with strong inward curvature. Include vanishing point effects, radial distortion, and the sense of looking into an infinite tunnel or void."}` : ""}
 
 CRITICAL: End the prompt with "IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text. Pure abstract visual art only. Focus on colors, shapes, patterns, and mathematical structures as visual elements, not written content."`
 
@@ -35,7 +49,7 @@ CRITICAL: End the prompt with "IMPORTANT: No text, no words, no letters, no typo
       model: openai("gpt-4o"),
       system: systemPrompt,
       prompt: enhancementPrompt,
-      maxTokens: 1000,
+      maxTokens: 1200,
       temperature: 0.8,
     })
 
