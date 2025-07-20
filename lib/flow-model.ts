@@ -1421,7 +1421,13 @@ function generateHighResFlowField(params: UpscaleParams): string {
  * generateStereographicProjection – private helper that renders a
  * stereographic projection of a flow field.
  */
-function generateStereographicProjection(params: GenerationParams): string {
+/**
+ * generateStereographicProjection – renders a stereographic projection
+ * (“little-planet” / “tunnel-vision”) of a flow-field dataset.
+ */
+export function generateStereographicProjection(
+  params: GenerationParams & { stereographicPerspective?: string },
+): string {
   const { dataset, scenario, seed, numSamples, noiseScale, timeStep, stereographicPerspective } = params
 
   // Generate the base dataset
@@ -1432,7 +1438,12 @@ function generateStereographicProjection(params: GenerationParams): string {
   const transformedPoints = applyScenarioTransform(points, scenario, rng)
 
   // Define the perspective point for stereographic projection
-  const perspective = stereographicPerspective === "north" ? { x: 0, y: 1 } : { x: 0, y: -1 }
+  const perspective =
+    stereographicPerspective === "north"
+      ? { x: 0, y: 1 }
+      : stereographicPerspective === "south"
+        ? { x: 0, y: -1 }
+        : { x: 0, y: 0 }
 
   // Convert points to string format with stereographic projection
   let flowField = ""
@@ -1440,12 +1451,11 @@ function generateStereographicProjection(params: GenerationParams): string {
     const { x, y } = transformedPoints[i]
 
     // Stereographic projection formula
-    const k = 2 / (1 + (x - perspective.x) * (x - perspective.x) + (y - perspective.y) * (y - perspective.y))
+    const k = 2 / (1 + (x - perspective.x) ** 2 + (y - perspective.y) ** 2)
     const projectedX = (x - perspective.x) * k
     const projectedY = (y - perspective.y) * k
 
     const angle = Math.atan2(projectedY, projectedX)
-    const magnitude = Math.sqrt(projectedX * projectedX + projectedY * projectedY)
     const adjustedAngle = angle + timeStep * 0.1 // Animate the flow
 
     flowField += `${projectedX.toFixed(3)},${projectedY.toFixed(3)},${adjustedAngle.toFixed(3)}\n`
