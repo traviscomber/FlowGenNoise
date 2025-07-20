@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
 import {
   Pagination,
   PaginationContent,
@@ -19,7 +20,19 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import { Download, Sparkles, Settings, ImageIcon, Info, Loader2, Wand2, Edit3, Calculator } from "lucide-react"
+import {
+  Download,
+  Sparkles,
+  Settings,
+  ImageIcon,
+  Info,
+  Loader2,
+  Wand2,
+  Edit3,
+  Calculator,
+  Globe,
+  Eye,
+} from "lucide-react"
 import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
 import { ClientUpscaler } from "@/lib/client-upscaler"
 import { useToast } from "@/hooks/use-toast"
@@ -28,12 +41,19 @@ interface GeneratedArt {
   svgContent: string
   imageUrl: string
   upscaledImageUrl?: string
+  domeImageUrl?: string
   params: GenerationParams
   mode: "svg" | "ai"
   upscaleMethod?: "cloudinary" | "client" | "mathematical"
   customPrompt?: string
   timestamp: number
   id: string
+  isDomeProjection?: boolean
+  domeSpecs?: {
+    diameter: number
+    resolution: string
+    projectionType: string
+  }
 }
 
 export function FlowArtGenerator() {
@@ -41,8 +61,15 @@ export function FlowArtGenerator() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isUpscaling, setIsUpscaling] = useState(false)
   const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false)
+  const [isGeneratingDome, setIsGeneratingDome] = useState(false)
   const [progress, setProgress] = useState(0)
   const [mode, setMode] = useState<"svg" | "ai">("svg")
+
+  // Dome projection settings
+  const [domeEnabled, setDomeEnabled] = useState(true)
+  const [domeDiameter, setDomeDiameter] = useState(30)
+  const [domeResolution, setDomeResolution] = useState("8K")
+  const [domeProjectionType, setDomeProjectionType] = useState("fulldome")
 
   // Gallery state
   const [gallery, setGallery] = useState<GeneratedArt[]>([])
@@ -110,6 +137,9 @@ export function FlowArtGenerator() {
           numSamples,
           noiseScale,
           currentPrompt: customPrompt,
+          domeProjection: domeEnabled,
+          domeDiameter,
+          domeResolution,
         }),
       })
 
@@ -125,7 +155,9 @@ export function FlowArtGenerator() {
 
       toast({
         title: "Prompt Enhanced! ✨",
-        description: "Mathematical concepts and artistic details added to your prompt.",
+        description: domeEnabled
+          ? "Mathematical concepts and dome projection details added to your prompt."
+          : "Mathematical concepts and artistic details added to your prompt.",
       })
     } catch (error: any) {
       console.error("Prompt enhancement error:", error)
@@ -137,7 +169,102 @@ export function FlowArtGenerator() {
     } finally {
       setIsEnhancingPrompt(false)
     }
-  }, [dataset, scenario, colorScheme, numSamples, noiseScale, customPrompt, toast])
+  }, [
+    dataset,
+    scenario,
+    colorScheme,
+    numSamples,
+    noiseScale,
+    customPrompt,
+    domeEnabled,
+    domeDiameter,
+    domeResolution,
+    toast,
+  ])
+
+  const generateDomeProjection = useCallback(async () => {
+    if (!generatedArt) return
+
+    setIsGeneratingDome(true)
+    try {
+      console.log("Generating dome projection...")
+
+      const domeSpecs = {
+        diameter: domeDiameter,
+        resolution: domeResolution,
+        projectionType: domeProjectionType,
+      }
+
+      // Generate dome-optimized version
+      const domeParams = {
+        ...generatedArt.params,
+        domeProjection: true,
+        domeDiameter,
+        domeResolution,
+        projectionType: domeProjectionType,
+      }
+
+      let domeImageUrl: string
+
+      if (generatedArt.mode === "svg") {
+        // Generate dome-optimized SVG
+        const domeSvgContent = generateDomeProjection(domeParams)
+        const svgBlob = new Blob([domeSvgContent], { type: "image/svg+xml" })
+        domeImageUrl = URL.createObjectURL(svgBlob)
+      } else {
+        // Generate AI art optimized for dome
+        const response = await fetch("/api/generate-ai-art", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...domeParams,
+            customPrompt: useCustomPrompt
+              ? customPrompt + " optimized for dome projection, fisheye perspective, immersive 360-degree view"
+              : undefined,
+          }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`Dome AI generation failed: ${response.status}`)
+        }
+
+        const data = await response.json()
+        domeImageUrl = data.image
+      }
+
+      setGeneratedArt((prev) =>
+        prev
+          ? {
+              ...prev,
+              domeImageUrl,
+              isDomeProjection: true,
+              domeSpecs,
+            }
+          : null,
+      )
+
+      // Update gallery
+      setGallery((prev) =>
+        prev.map((art) =>
+          art.id === generatedArt.id ? { ...art, domeImageUrl, isDomeProjection: true, domeSpecs } : art,
+        ),
+      )
+
+      toast({
+        title: "Dome Projection Generated! 🌐",
+        description: `${domeDiameter}m dome projection in ${domeResolution} resolution created.`,
+      })
+    } catch (error: any) {
+      console.error("Dome generation error:", error)
+      toast({
+        title: "Dome Generation Failed",
+        description: error.message || "Failed to generate dome projection. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsGeneratingDome(false)
+    }
+  }, [generatedArt, domeDiameter, domeResolution, domeProjectionType, customPrompt, useCustomPrompt, toast])
 
   const generateArt = useCallback(async () => {
     console.log("Generate button clicked! Mode:", mode)
@@ -153,6 +280,10 @@ export function FlowArtGenerator() {
         numSamples,
         noiseScale,
         timeStep,
+        domeProjection: domeEnabled,
+        domeDiameter: domeEnabled ? domeDiameter : undefined,
+        domeResolution: domeEnabled ? domeResolution : undefined,
+        projectionType: domeEnabled ? domeProjectionType : undefined,
       }
 
       console.log("Generating with params:", params)
@@ -170,21 +301,41 @@ export function FlowArtGenerator() {
         const imageUrl = URL.createObjectURL(svgBlob)
         console.log("Blob URL created:", imageUrl)
 
+        let domeImageUrl: string | undefined
+        if (domeEnabled) {
+          setProgress(80)
+          console.log("Generating dome projection...")
+          const domeSvgContent = generateDomeProjection(params)
+          const domeSvgBlob = new Blob([domeSvgContent], { type: "image/svg+xml" })
+          domeImageUrl = URL.createObjectURL(domeSvgBlob)
+        }
+
         setProgress(100)
         const newArt = {
           svgContent,
           imageUrl,
+          domeImageUrl,
           params,
           mode: "svg" as const,
           timestamp: Date.now(),
           id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          isDomeProjection: domeEnabled,
+          domeSpecs: domeEnabled
+            ? {
+                diameter: domeDiameter,
+                resolution: domeResolution,
+                projectionType: domeProjectionType,
+              }
+            : undefined,
         }
         setGeneratedArt(newArt)
         setGallery((prev) => [newArt, ...prev])
 
         toast({
           title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
-          description: `Complex ${dataset} dataset with ${scenario === "pure" ? "advanced mathematical" : scenario} ${scenario === "pure" ? "visualization" : "scenario blend"} in ${colorScheme} colors.`,
+          description: domeEnabled
+            ? `Complex ${dataset} dataset with ${scenario === "pure" ? "advanced mathematical" : scenario} visualization optimized for ${domeDiameter}m dome projection.`
+            : `Complex ${dataset} dataset with ${scenario === "pure" ? "advanced mathematical" : scenario} ${scenario === "pure" ? "visualization" : "scenario blend"} in ${colorScheme} colors.`,
         })
       } else {
         // Generate AI art
@@ -198,7 +349,15 @@ export function FlowArtGenerator() {
           seed,
           numSamples,
           noise: noiseScale,
-          customPrompt: useCustomPrompt ? customPrompt : undefined,
+          customPrompt: useCustomPrompt
+            ? domeEnabled
+              ? customPrompt + " optimized for dome projection, fisheye perspective, immersive 360-degree view"
+              : customPrompt
+            : undefined,
+          domeProjection: domeEnabled,
+          domeDiameter: domeEnabled ? domeDiameter : undefined,
+          domeResolution: domeEnabled ? domeResolution : undefined,
+          projectionType: domeEnabled ? domeProjectionType : undefined,
         }
 
         console.log("Sending AI request:", requestBody)
@@ -228,11 +387,20 @@ export function FlowArtGenerator() {
         const newArt = {
           svgContent: "",
           imageUrl: data.image,
+          domeImageUrl: data.domeImage || data.image,
           params,
           mode: "ai" as const,
           customPrompt: useCustomPrompt ? customPrompt : undefined,
           timestamp: Date.now(),
           id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          isDomeProjection: domeEnabled,
+          domeSpecs: domeEnabled
+            ? {
+                diameter: domeDiameter,
+                resolution: domeResolution,
+                projectionType: domeProjectionType,
+              }
+            : undefined,
         }
         setGeneratedArt(newArt)
         setGallery((prev) => [newArt, ...prev])
@@ -240,9 +408,11 @@ export function FlowArtGenerator() {
         setProgress(100)
         toast({
           title: "AI Art Generated! 🤖✨",
-          description: useCustomPrompt
-            ? "Custom enhanced prompt artwork created!"
-            : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork in ${colorScheme} palette.`,
+          description: domeEnabled
+            ? `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork optimized for ${domeDiameter}m dome projection.`
+            : useCustomPrompt
+              ? "Custom enhanced prompt artwork created!"
+              : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork in ${colorScheme} palette.`,
         })
       }
     } catch (error: any) {
@@ -267,6 +437,10 @@ export function FlowArtGenerator() {
     mode,
     useCustomPrompt,
     customPrompt,
+    domeEnabled,
+    domeDiameter,
+    domeResolution,
+    domeProjectionType,
     toast,
   ])
 
@@ -362,69 +536,78 @@ export function FlowArtGenerator() {
     }
   }, [generatedArt, toast])
 
-  const downloadImage = useCallback(async () => {
-    if (!generatedArt) {
-      console.log("No generated art to download")
-      return
-    }
-
-    console.log("Download button clicked!")
-
-    try {
-      const imageUrl = generatedArt.upscaledImageUrl || generatedArt.imageUrl
-      const isEnhanced = !!generatedArt.upscaledImageUrl
-      const fileExtension = generatedArt.mode === "svg" && !isEnhanced ? "svg" : "png"
-      const fileName = `flowsketch-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
-
-      console.log("Downloading:", fileName, "from:", imageUrl)
-
-      // Check if it's a data URL (client-side upscaled or SVG blob)
-      if (imageUrl.startsWith("data:") || imageUrl.startsWith("blob:")) {
-        // Direct download for data URLs and blob URLs
-        const link = document.createElement("a")
-        link.href = imageUrl
-        link.download = fileName
-        link.style.display = "none"
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        console.log("Direct download completed")
-      } else {
-        // For external URLs, fetch and convert to blob
-        const response = await fetch(imageUrl, { mode: "cors" })
-        if (!response.ok) {
-          throw new Error("Failed to fetch image for download")
-        }
-
-        const blob = await response.blob()
-        const blobUrl = URL.createObjectURL(blob)
-
-        const link = document.createElement("a")
-        link.href = blobUrl
-        link.download = fileName
-        link.style.display = "none"
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-
-        // Clean up the blob URL
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 100)
-        console.log("Blob download completed")
+  const downloadImage = useCallback(
+    async (isDome = false) => {
+      if (!generatedArt) {
+        console.log("No generated art to download")
+        return
       }
 
-      toast({
-        title: "Download Complete! 🎨",
-        description: `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} in ${generatedArt.params.colorScheme} colors downloaded.`,
-      })
-    } catch (error: any) {
-      console.error("Download error:", error)
-      toast({
-        title: "Download Failed",
-        description: "Could not download the image. Please try right-clicking and saving the image.",
-        variant: "destructive",
-      })
-    }
-  }, [generatedArt, toast])
+      console.log("Download button clicked!", isDome ? "Dome version" : "Regular version")
+
+      try {
+        const imageUrl = isDome
+          ? generatedArt.domeImageUrl || generatedArt.imageUrl
+          : generatedArt.upscaledImageUrl || generatedArt.imageUrl
+
+        const isEnhanced = !!generatedArt.upscaledImageUrl && !isDome
+        const fileExtension = generatedArt.mode === "svg" && !isEnhanced ? "svg" : "png"
+        const domePrefix = isDome ? "dome-" : ""
+        const fileName = `flowsketch-${domePrefix}${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
+
+        console.log("Downloading:", fileName, "from:", imageUrl)
+
+        // Check if it's a data URL (client-side upscaled or SVG blob)
+        if (imageUrl.startsWith("data:") || imageUrl.startsWith("blob:")) {
+          // Direct download for data URLs and blob URLs
+          const link = document.createElement("a")
+          link.href = imageUrl
+          link.download = fileName
+          link.style.display = "none"
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          console.log("Direct download completed")
+        } else {
+          // For external URLs, fetch and convert to blob
+          const response = await fetch(imageUrl, { mode: "cors" })
+          if (!response.ok) {
+            throw new Error("Failed to fetch image for download")
+          }
+
+          const blob = await response.blob()
+          const blobUrl = URL.createObjectURL(blob)
+
+          const link = document.createElement("a")
+          link.href = blobUrl
+          link.download = fileName
+          link.style.display = "none"
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+
+          // Clean up the blob URL
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 100)
+          console.log("Blob download completed")
+        }
+
+        toast({
+          title: "Download Complete! 🎨",
+          description: isDome
+            ? `Dome projection for ${generatedArt.domeSpecs?.diameter}m dome downloaded.`
+            : `${isEnhanced ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} in ${generatedArt.params.colorScheme} colors downloaded.`,
+        })
+      } catch (error: any) {
+        console.error("Download error:", error)
+        toast({
+          title: "Download Failed",
+          description: "Could not download the image. Please try right-clicking and saving the image.",
+          variant: "destructive",
+        })
+      }
+    },
+    [generatedArt, toast],
+  )
 
   const handleRandomSeed = useCallback(() => {
     const newSeed = Math.floor(Math.random() * 10000)
@@ -466,6 +649,12 @@ export function FlowArtGenerator() {
         setCustomPrompt(art.customPrompt)
         setUseCustomPrompt(true)
       }
+      if (art.domeSpecs) {
+        setDomeEnabled(true)
+        setDomeDiameter(art.domeSpecs.diameter)
+        setDomeResolution(art.domeSpecs.resolution)
+        setDomeProjectionType(art.domeSpecs.projectionType)
+      }
       setMode(art.mode)
       toast({
         title: "Artwork Loaded",
@@ -477,14 +666,15 @@ export function FlowArtGenerator() {
 
   const getButtonText = () => {
     const scenarioText = scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)
+    const domeText = domeEnabled ? ` for ${domeDiameter}m Dome` : ""
 
     if (mode === "ai") {
       if (useCustomPrompt) {
-        return "Generate Custom AI Art"
+        return `Generate Custom AI Art${domeText}`
       }
-      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}`
+      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}${domeText}`
     } else {
-      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}`
+      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}${domeText}`
     }
   }
 
@@ -492,10 +682,10 @@ export function FlowArtGenerator() {
     <div className="container mx-auto p-6 space-y-6">
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-          FlowSketch Complex Mathematical Art Generator
+          FlowSketch Mathematical Art Generator
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Advanced mathematical datasets with scenario blending for stunning visual results
+          Advanced mathematical datasets with dome projection for immersive experiences
         </p>
       </div>
 
@@ -522,7 +712,8 @@ export function FlowArtGenerator() {
                     <Calculator className="h-4 w-4" />
                     <AlertDescription>
                       Complex mathematical datasets with advanced algorithms: Fibonacci spirals, fractal checkerboards,
-                      hyperbolic moons, multi-modal Gaussians, and more!
+                      hyperbolic moons, multi-modal Gaussians, and more!{" "}
+                      {domeEnabled && "Optimized for dome projection."}
                     </AlertDescription>
                   </Alert>
                 </TabsContent>
@@ -532,7 +723,7 @@ export function FlowArtGenerator() {
                     <Sparkles className="h-4 w-4" />
                     <AlertDescription>
                       Create AI-generated artwork based on your complex mathematical dataset and scenario combination.
-                      Use prompt enhancement for professional results!
+                      {domeEnabled && " Automatically optimized for immersive dome projection."}
                     </AlertDescription>
                   </Alert>
                 </TabsContent>
@@ -590,17 +781,28 @@ export function FlowArtGenerator() {
                             </div>
 
                             <div className="p-2 space-y-1">
-                              <div className="flex gap-1">
+                              <div className="flex gap-1 flex-wrap">
                                 <Badge variant="outline" className="text-xs">
                                   {art.mode}
                                 </Badge>
                                 <Badge variant="outline" className="text-xs">
                                   {art.params.dataset}
                                 </Badge>
+                                {art.isDomeProjection && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    <Globe className="h-3 w-3 mr-1" />
+                                    Dome
+                                  </Badge>
+                                )}
                               </div>
                               <p className="text-xs text-gray-600 dark:text-gray-400">
                                 {art.params.scenario} • {art.params.colorScheme}
                               </p>
+                              {art.domeSpecs && (
+                                <p className="text-xs text-blue-600 dark:text-blue-400">
+                                  {art.domeSpecs.diameter}m • {art.domeSpecs.resolution}
+                                </p>
+                              )}
                               <p className="text-xs text-gray-500">{new Date(art.timestamp).toLocaleDateString()}</p>
                             </div>
                           </div>
@@ -650,6 +852,70 @@ export function FlowArtGenerator() {
                   )}
                 </TabsContent>
               </Tabs>
+
+              {/* Dome Projection Settings */}
+              <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Globe className="h-4 w-4" />
+                    Dome Projection
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="dome-enabled" className="text-sm">
+                      Enable Dome Projection
+                    </Label>
+                    <Switch id="dome-enabled" checked={domeEnabled} onCheckedChange={setDomeEnabled} />
+                  </div>
+
+                  {domeEnabled && (
+                    <>
+                      <div className="space-y-2">
+                        <Label className="text-sm">Dome Diameter (meters)</Label>
+                        <Slider
+                          value={[domeDiameter]}
+                          onValueChange={(value) => setDomeDiameter(value[0])}
+                          max={100}
+                          min={5}
+                          step={1}
+                        />
+                        <div className="text-xs text-gray-600 text-center">{domeDiameter}m</div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm">Resolution</Label>
+                        <Select value={domeResolution} onValueChange={setDomeResolution}>
+                          <SelectTrigger className="h-8">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="4K">4K (4096×4096)</SelectItem>
+                            <SelectItem value="6K">6K (6144×6144)</SelectItem>
+                            <SelectItem value="8K">8K (8192×8192)</SelectItem>
+                            <SelectItem value="12K">12K (12288×12288)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm">Projection Type</Label>
+                        <Select value={domeProjectionType} onValueChange={setDomeProjectionType}>
+                          <SelectTrigger className="h-8">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="fulldome">Fulldome (180°)</SelectItem>
+                            <SelectItem value="planetarium">Planetarium</SelectItem>
+                            <SelectItem value="immersive">Immersive Experience</SelectItem>
+                            <SelectItem value="scientific">Scientific Visualization</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
 
               <div className="space-y-2">
                 <Label>Mathematical Dataset</Label>
@@ -769,7 +1035,11 @@ export function FlowArtGenerator() {
                   </div>
 
                   <Textarea
-                    placeholder="Click 'Enhance' to generate a complex mathematical AI art prompt, or write your own custom prompt here..."
+                    placeholder={
+                      domeEnabled
+                        ? "Click 'Enhance' to generate a complex mathematical AI art prompt optimized for dome projection, or write your own custom prompt here..."
+                        : "Click 'Enhance' to generate a complex mathematical AI art prompt, or write your own custom prompt here..."
+                    }
                     value={customPrompt}
                     onChange={(e) => {
                       setCustomPrompt(e.target.value)
@@ -785,6 +1055,12 @@ export function FlowArtGenerator() {
                         <Edit3 className="h-3 w-3 mr-1" />
                         Custom Prompt Active
                       </Badge>
+                      {domeEnabled && (
+                        <Badge variant="outline" className="text-xs">
+                          <Globe className="h-3 w-3 mr-1" />
+                          Dome Optimized
+                        </Badge>
+                      )}
                       <Button
                         onClick={() => {
                           setCustomPrompt("")
@@ -837,7 +1113,9 @@ export function FlowArtGenerator() {
                 className={`w-full ${
                   mode === "ai"
                     ? "bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:to-pink-600"
-                    : "bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 hover:from-green-600 hover:via-blue-600 hover:to-purple-600"
+                    : domeEnabled
+                      ? "bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600"
+                      : "bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 hover:from-green-600 hover:via-blue-600 hover:to-purple-600"
                 }`}
               >
                 {isGenerating ? (
@@ -847,7 +1125,13 @@ export function FlowArtGenerator() {
                   </>
                 ) : (
                   <>
-                    {mode === "ai" ? <Sparkles className="h-4 w-4 mr-2" /> : <Calculator className="h-4 w-4 mr-2" />}
+                    {mode === "ai" ? (
+                      <Sparkles className="h-4 w-4 mr-2" />
+                    ) : domeEnabled ? (
+                      <Globe className="h-4 w-4 mr-2" />
+                    ) : (
+                      <Calculator className="h-4 w-4 mr-2" />
+                    )}
                     {getButtonText()}
                   </>
                 )}
@@ -867,9 +1151,11 @@ export function FlowArtGenerator() {
                           : scenario === "pure"
                             ? "Applying advanced mathematical visualization..."
                             : `Blending with ${scenario} scenario dynamics...`
-                        : progress < 90
+                        : progress < 80
                           ? "Rendering complex visualization..."
-                          : "Finalizing mathematical artwork..."}
+                          : domeEnabled
+                            ? "Optimizing for dome projection..."
+                            : "Finalizing mathematical artwork..."}
                   </p>
                 </div>
               )}
@@ -886,10 +1172,17 @@ export function FlowArtGenerator() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button onClick={downloadImage} variant="outline" className="w-full bg-transparent">
+                <Button onClick={() => downloadImage(false)} variant="outline" className="w-full bg-transparent">
                   <Download className="h-4 w-4 mr-2" />
                   Download {generatedArt.upscaledImageUrl ? "Enhanced" : "Original"}
                 </Button>
+
+                {generatedArt.domeImageUrl && (
+                  <Button onClick={() => downloadImage(true)} variant="outline" className="w-full bg-transparent">
+                    <Globe className="h-4 w-4 mr-2" />
+                    Download Dome Projection
+                  </Button>
+                )}
 
                 <Button
                   onClick={upscaleImage}
@@ -916,6 +1209,27 @@ export function FlowArtGenerator() {
                   )}
                 </Button>
 
+                {!generatedArt.domeImageUrl && domeEnabled && (
+                  <Button
+                    onClick={generateDomeProjection}
+                    disabled={isGeneratingDome}
+                    variant="outline"
+                    className="w-full bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20"
+                  >
+                    {isGeneratingDome ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Generating Dome Projection...
+                      </>
+                    ) : (
+                      <>
+                        <Globe className="h-4 w-4 mr-2" />
+                        Generate Dome Projection
+                      </>
+                    )}
+                  </Button>
+                )}
+
                 {generatedArt.upscaledImageUrl && generatedArt.upscaleMethod === "mathematical" && (
                   <Alert>
                     <Info className="h-4 w-4" />
@@ -939,7 +1253,7 @@ export function FlowArtGenerator() {
                   Generated Mathematical Artwork
                 </span>
                 {generatedArt && (
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     <Badge variant={generatedArt.mode === "ai" ? "default" : "outline"}>
                       {generatedArt.mode === "ai" ? "🤖 AI Art" : "📊 Complex Math"}
                     </Badge>
@@ -949,6 +1263,12 @@ export function FlowArtGenerator() {
                     </Badge>
                     <Badge variant="outline">{generatedArt.params.colorScheme}</Badge>
                     <Badge variant="outline">{generatedArt.params.numSamples} points</Badge>
+                    {generatedArt.isDomeProjection && (
+                      <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                        <Globe className="w-3 h-3 mr-1" />
+                        {generatedArt.domeSpecs?.diameter}m Dome
+                      </Badge>
+                    )}
                     {generatedArt.customPrompt && (
                       <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
                         <Wand2 className="w-3 h-3 mr-1" />
@@ -968,20 +1288,59 @@ export function FlowArtGenerator() {
             <CardContent>
               {generatedArt ? (
                 <div className="space-y-4">
-                  <div className="relative bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden">
-                    {generatedArt.mode === "svg" && !generatedArt.upscaledImageUrl ? (
-                      <div
-                        className="w-full h-96 flex items-center justify-center"
-                        dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
-                      />
-                    ) : (
-                      <img
-                        src={generatedArt.upscaledImageUrl || generatedArt.imageUrl}
-                        alt="Generated artwork"
-                        className="w-full h-96 object-contain"
-                      />
-                    )}
-                  </div>
+                  <Tabs defaultValue="regular" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="regular">Regular View</TabsTrigger>
+                      <TabsTrigger value="dome" disabled={!generatedArt.domeImageUrl}>
+                        Dome Projection {!generatedArt.domeImageUrl && "(Generate First)"}
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="regular" className="space-y-4">
+                      <div className="relative bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden">
+                        {generatedArt.mode === "svg" && !generatedArt.upscaledImageUrl ? (
+                          <div
+                            className="w-full h-96 flex items-center justify-center"
+                            dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                          />
+                        ) : (
+                          <img
+                            src={generatedArt.upscaledImageUrl || generatedArt.imageUrl}
+                            alt="Generated artwork"
+                            className="w-full h-96 object-contain"
+                          />
+                        )}
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="dome" className="space-y-4">
+                      {generatedArt.domeImageUrl ? (
+                        <div className="relative bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden">
+                          <img
+                            src={generatedArt.domeImageUrl || "/placeholder.svg"}
+                            alt="Dome projection artwork"
+                            className="w-full h-96 object-contain"
+                          />
+                          <div className="absolute top-2 right-2">
+                            <Badge className="bg-blue-500 text-white">
+                              <Eye className="w-3 h-3 mr-1" />
+                              Dome View
+                            </Badge>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="h-96 flex items-center justify-center text-gray-500 dark:text-gray-400 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 rounded-lg">
+                          <div className="text-center">
+                            <Globe className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                            <p>Dome projection not generated yet</p>
+                            <p className="text-sm mt-2">
+                              Click "Generate Dome Projection" to create dome-optimized version
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </TabsContent>
+                  </Tabs>
 
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                     <div>
@@ -1008,6 +1367,19 @@ export function FlowArtGenerator() {
                     </div>
                   </div>
 
+                  {generatedArt.domeSpecs && (
+                    <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg">
+                      <Label className="text-xs font-semibold text-blue-700 dark:text-blue-300">
+                        Dome Specifications:
+                      </Label>
+                      <div className="text-xs text-gray-600 dark:text-gray-400 mt-1 grid grid-cols-3 gap-2">
+                        <div>Diameter: {generatedArt.domeSpecs.diameter}m</div>
+                        <div>Resolution: {generatedArt.domeSpecs.resolution}</div>
+                        <div>Type: {generatedArt.domeSpecs.projectionType}</div>
+                      </div>
+                    </div>
+                  )}
+
                   {generatedArt.customPrompt && (
                     <div className="p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg">
                       <Label className="text-xs font-semibold text-purple-700 dark:text-purple-300">
@@ -1025,11 +1397,11 @@ export function FlowArtGenerator() {
                     <Calculator className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>Choose a complex mathematical dataset and scenario blend!</p>
                     <p className="text-sm mt-2">
-                      Try Complex Spirals + Pure Math + Plasma or Hyperbolic Moons + Cosmic + Futuristic for stunning
+                      Try Complex Spirals + Pure Math + Plasma or Hyperbolic Moons + Cosmic + Quantum for stunning
                       results
                     </p>
                     <p className="text-sm mt-1 text-purple-600">
-                      Switch to AI Art tab and use prompt enhancement for professional AI artwork! 🤖✨
+                      Enable dome projection for immersive {domeDiameter}m dome experiences! 🌐✨
                     </p>
                   </div>
                 </div>
