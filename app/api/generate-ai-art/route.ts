@@ -24,12 +24,10 @@ export async function POST(request: NextRequest) {
     /* ------------------------------------------------------------ */
     /* 2 — Generate the image                                       */
     /* ------------------------------------------------------------ */
-    const TEMPERATURE = 0.8
 
     const { imageUrl } = await experimental_generateImage({
       model: openai("dall-e-3"), // Stable DALL·E 3 via AI SDK
       prompt,
-      temperature: TEMPERATURE,
       size,
     })
 

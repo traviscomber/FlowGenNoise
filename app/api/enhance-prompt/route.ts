@@ -56,13 +56,13 @@ IMPORTANT: No text, labels, letters, or equations visible.
     /* ------------------------------------------------------------ */
     /* 4 — Call GPT-4o with ONE temperature constant                */
     /* ------------------------------------------------------------ */
-    const TEMPERATURE = 0.8
+    const LLM_TEMPERATURE = 0.8
 
     const { text: enhancedPrompt } = await generateText({
       model: openai("gpt-4o"),
       system: systemPrompt,
       prompt: enhancementPrompt,
-      temperature: TEMPERATURE,
+      temperature: LLM_TEMPERATURE,
       maxTokens: 1_000,
     })
 
