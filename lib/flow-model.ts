@@ -83,6 +83,2350 @@ function simplexNoise(x: number, y: number, seed: number): number {
   return (n - Math.floor(n)) * 2 - 1
 }
 
+function generateAizawaAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  let z = 0
+  const a = 0.95
+  const b = 0.7
+  const c = 0.6
+  const d = 3.5
+  const e = 0.25
+  const f = 0.1
+  const dt = 0.01
+  const scale = 150
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = (z - b) * x - d * y
+    const dy = d * x + (z - b) * y
+    const dz = c + a * z - (z * z * z) / 3 - (x * x + y * y) * (1 + e * z) + f * z * x * x * x
+    x += dx * dt
+    y += dy * dt
+    z += dz * dt
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateThomasAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  let z = 0
+  const b = 0.19
+  const dt = 0.02
+  const scale = 150
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = Math.sin(y) - b * x
+    const dy = Math.sin(z) - b * y
+    const dz = Math.sin(x) - b * z
+    x += dx * dt
+    y += dy * dt
+    z += dz * dt
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateDadrasAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  let z = 0
+  const a = 1.56
+  const b = 0.1
+  const c = 4.2
+  const d = 1.0
+  const e = 1.0
+  const dt = 0.01
+  const scale = 80
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = y - a * x + b * y * z
+    const dy = c * y - x * z + z
+    const dz = d * x * y - e * z
+    x += dx * dt
+    y += dy * dt
+    z += dz * dt
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateChenAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  let z = 0
+  const a = 36
+  const b = 3
+  const c = 28
+  const dt = 0.005
+  const scale = 10
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = a * (y - x) * dt
+    const dy = (c - a) * x - x * z + c * y * dt
+    const dz = x * y - b * z * dt
+    x += dx
+    y += dy
+    z += dz
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateRabinovichFabrikant(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  let z = 0
+  const a = 0.14
+  const b = 0.1
+  const dt = 0.02
+  const scale = 150
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = (y * (z - 1) + a * x) * dt
+    const dy = (-x * (z - 1) + a * y) * dt
+    const dz = (1 - z + x * y - b * (x * x) - b * (y * y)) * dt
+    x += dx
+    y += dy
+    z += dz
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateSprottAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  let z = 0
+  const a = 0.4
+  const dt = 0.02
+  const scale = 150
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = y
+    const dy = -x + y * z
+    const dz = a - y * y
+    x += dx * dt
+    y += dy * dt
+    z += dz * dt
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateFourWingAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  let z = 0
+  const a = 0.2
+  const b = 0.01
+  const c = -1.0
+  const dt = 0.01
+  const scale = 150
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = a * x + y * z
+    const dy = b * x - x * z
+    const dz = c * z + x * y
+    x += dx * dt
+    y += dy * dt
+    z += dz * dt
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateNewtonFractal(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const maxIterations = 50
+  const zoom = 150
+  const centerX = size / 2
+  const centerY = size / 2
+
+  for (let px = 0; px < size; px += 2) {
+    for (let py = 0; py < size; py += 2) {
+      let x = (px - centerX) / zoom
+      let y = (py - centerY) / zoom
+
+      for (let i = 0; i < maxIterations; i++) {
+        const x2 = x * x
+        const y2 = y * y
+        const x3 = x2 * x
+        const y3 = y2 * y
+
+        const denominator = 4 * (x2 + y2) * (x2 + y2)
+        if (denominator === 0) break
+
+        const newX = (2 * x3 - 2 * x + 2 * x * y2) / denominator
+        const newY = (-2 * y3 + 2 * y - 2 * x2 * y) / denominator
+
+        x -= newX
+        y -= newY
+
+        if (newX * newX + newY * newY < 0.0001) {
+          const colorIndex = i % colours.length
+          const opacity = 1 - i / maxIterations
+          pathParts.push(
+            `<rect x="${px}" y="${py}" width="2" height="2" fill="${colours[colorIndex]}" opacity="${opacity}"/>`,
+          )
+          break
+        }
+      }
+    }
+  }
+}
+
+function generateBurningShip(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const maxIterations = 100
+  const zoom = 200
+  const centerX = size / 2
+  const centerY = size / 2
+
+  for (let px = 0; px < size; px += 2) {
+    for (let py = 0; py < size; py += 2) {
+      const x0 = (px - centerX) / zoom
+      const y0 = (py - centerY) / zoom
+      let x = 0
+      let y = 0
+      let iteration = 0
+
+      while (x * x + y * y <= 4 && iteration < maxIterations) {
+        const xtemp = x * x - y * y + x0
+        y = Math.abs(2 * x * y) + y0
+        x = xtemp
+        iteration++
+      }
+
+      if (iteration < maxIterations) {
+        const colorIndex = iteration % colours.length
+        const opacity = 1 - iteration / maxIterations
+        pathParts.push(
+          `<rect x="${px}" y="${py}" width="2" height="2" fill="${colours[colorIndex]}" opacity="${opacity}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateTricorn(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const maxIterations = 100
+  const zoom = 200
+  const centerX = size / 2
+  const centerY = size / 2
+
+  for (let px = 0; px < size; px += 2) {
+    for (let py = 0; py < size; py += 2) {
+      const x0 = (px - centerX) / zoom
+      const y0 = (py - centerY) / zoom
+      let x = 0
+      let y = 0
+      let iteration = 0
+
+      while (x * x + y * y <= 4 && iteration < maxIterations) {
+        const xtemp = x * x - y * y + x0
+        y = -2 * x * y + y0
+        x = xtemp
+        iteration++
+      }
+
+      if (iteration < maxIterations) {
+        const colorIndex = iteration % colours.length
+        const opacity = 1 - iteration / maxIterations
+        pathParts.push(
+          `<rect x="${px}" y="${py}" width="2" height="2" fill="${colours[colorIndex]}" opacity="${opacity}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateMultibrot(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const power = 3 // Adjust for different Multibrot sets
+  const maxIterations = 100
+  const zoom = 200
+  const centerX = size / 2
+  const centerY = size / 2
+
+  for (let px = 0; px < size; px += 2) {
+    for (let py = 0; py < size; py += 2) {
+      const x0 = (px - centerX) / zoom
+      const y0 = (py - centerY) / zoom
+      let x = 0
+      let y = 0
+      let iteration = 0
+
+      while (x * x + y * y <= 4 && iteration < maxIterations) {
+        let xtemp = x
+        let ytemp = y
+
+        // Complex number exponentiation (z^power)
+        for (let i = 1; i < power; i++) {
+          const xNew = xtemp * x - ytemp * y
+          const yNew = xtemp * y + ytemp * x
+          xtemp = xNew
+          ytemp = yNew
+        }
+
+        x = xtemp + x0
+        y = ytemp + y0
+        iteration++
+      }
+
+      if (iteration < maxIterations) {
+        const colorIndex = iteration % colours.length
+        const opacity = 1 - iteration / maxIterations
+        pathParts.push(
+          `<rect x="${px}" y="${py}" width="2" height="2" fill="${colours[colorIndex]}" opacity="${opacity}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generatePhoenixFractal(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const maxIterations = 100
+  const zoom = 200
+  const centerX = size / 2
+  const centerY = size / 2
+  const p = -0.5 // Phoenix parameter
+
+  for (let px = 0; px < size; px += 2) {
+    for (let py = 0; py < size; py += 2) {
+      const x0 = (px - centerX) / zoom
+      const y0 = (py - centerY) / zoom
+      let x = 0
+      let y = 0
+      let x_prev = 0
+      let y_prev = 0
+      let iteration = 0
+
+      while (x * x + y * y <= 4 && iteration < maxIterations) {
+        const xtemp = x * x - y * y + x0 + p * x_prev
+        y = 2 * x * y + y0 + p * y_prev
+        x_prev = x
+        y_prev = y
+        x = xtemp
+        iteration++
+      }
+
+      if (iteration < maxIterations) {
+        const colorIndex = iteration % colours.length
+        const opacity = 1 - iteration / maxIterations
+        pathParts.push(
+          `<rect x="${px}" y="${py}" width="2" height="2" fill="${colours[colorIndex]}" opacity="${opacity}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateBarnsleyFern(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0
+  let y = 0
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const rand = random()
+
+    let xNew, yNew
+    if (rand < 0.01) {
+      xNew = 0
+      yNew = 0.16 * y
+    } else if (rand < 0.86) {
+      xNew = 0.85 * x + 0.04 * y
+      yNew = -0.04 * x + 0.85 * y + 1.6
+    } else if (rand < 0.93) {
+      xNew = 0.2 * x - 0.26 * y
+      yNew = 0.23 * x + 0.22 * y + 1.6
+    } else {
+      xNew = -0.15 * x + 0.28 * y
+      yNew = 0.26 * x + 0.24 * y + 0.44
+    }
+
+    x = xNew
+    y = yNew
+
+    const px = size / 2 + x * 50
+    const py = size - y * 50
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      const colorIndex = Math.floor(y * 5) % colours.length
+      pathParts.push(`<rect x="${px}" y="${py}" width="1" height="1" fill="${colours[colorIndex]}" opacity="0.7"/>`)
+    }
+  }
+}
+
+function generateSierpinskiTriangle(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const depth = 7
+
+  function drawTriangle(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, depth: number) {
+    if (depth === 0) {
+      const colorIndex = depth % colours.length
+      pathParts.push(
+        `<polygon points="${x1},${y1} ${x2},${y2} ${x3},${y3}" fill="${colours[colorIndex]}" opacity="0.8"/>`,
+      )
+      return
+    }
+
+    const midX12 = (x1 + x2) / 2
+    const midY12 = (y1 + y2) / 2
+    const midX23 = (x2 + x3) / 2
+    const midY23 = (y2 + y3) / 2
+    const midX31 = (x3 + x1) / 2
+    const midY31 = (y3 + y1) / 2
+
+    drawTriangle(x1, y1, midX12, midY12, midX31, midY31, depth - 1)
+    drawTriangle(x2, y2, midX12, midY12, midX23, midY23, depth - 1)
+    drawTriangle(x3, y3, midX31, midY31, midX23, midY23, depth - 1)
+  }
+
+  const x1 = size / 2
+  const y1 = 50
+  const x2 = 50
+  const y2 = size - 50
+  const x3 = size - 50
+  const y3 = size - 50
+
+  drawTriangle(x1, y1, x2, y2, x3, y3, depth)
+}
+
+function generateDragonCurve(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const iterations = 12
+  let path = `M ${size / 2} ${size / 2}`
+  let x = size / 2
+  let y = size / 2
+  let angle = 0
+  const length = 8
+
+  function turn(direction: number) {
+    angle += direction * (Math.PI / 2)
+  }
+
+  function forward() {
+    x += length * Math.cos(angle)
+    y += length * Math.sin(angle)
+    path += ` L ${x.toFixed(2)} ${y.toFixed(2)}`
+  }
+
+  let sequence = [1] // Initial sequence
+
+  for (let i = 0; i < iterations; i++) {
+    const newSequence = sequence
+      .slice()
+      .reverse()
+      .map((val) => -val)
+    sequence = sequence.concat([1], newSequence)
+  }
+
+  sequence.forEach((direction) => {
+    turn(direction)
+    forward()
+  })
+
+  const colorIndex = 0 % colours.length
+  pathParts.push(
+    `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="1" stroke-opacity="0.8"/>`,
+  )
+}
+
+function generateHilbertCurve(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const iterations = 5
+  let path = `M 0 0`
+  let x = 0
+  let y = 0
+  let angle = 0
+  const length = size / (2 ** iterations - 1)
+
+  function turnRight() {
+    angle += Math.PI / 2
+  }
+
+  function turnLeft() {
+    angle -= Math.PI / 2
+  }
+
+  function forward() {
+    x += length * Math.cos(angle)
+    y += length * Math.sin(angle)
+    path += ` L ${x.toFixed(2)} ${y.toFixed(2)}`
+  }
+
+  function hilbert(i: number) {
+    if (i <= 0) return
+
+    turnLeft()
+    hilbert(i - 1)
+    forward()
+    turnRight()
+    hilbert(i - 1)
+    forward()
+    hilbert(i - 1)
+    turnRight()
+    forward()
+    turnLeft()
+    hilbert(i - 1)
+  }
+
+  hilbert(iterations)
+
+  const colorIndex = 0 % colours.length
+  pathParts.push(
+    `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="2" stroke-opacity="0.8" transform="translate(${length / 2}, ${length / 2}) scale(1, -1)"/>`,
+  )
+}
+
+function generateKochSnowflake(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const iterations = 4
+
+  function koch(x1: number, y1: number, x2: number, y2: number, depth: number) {
+    if (depth === 0) {
+      pathParts.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${colours[0]}" stroke-width="1"/>`)
+      return
+    }
+
+    const dx = x2 - x1
+    const dy = y2 - y1
+
+    const xA = x1 + dx / 3
+    const yA = y1 + dy / 3
+    const xC = x2 - dx / 3
+    const yC = y2 - dy / 3
+
+    const xB = xA + (dx / 3) * Math.cos(Math.PI / 3) - (dy / 3) * Math.sin(Math.PI / 3)
+    const yB = yA + (dx / 3) * Math.sin(Math.PI / 3) + (dy / 3) * Math.cos(Math.PI / 3)
+
+    koch(x1, y1, xA, yA, depth - 1)
+    koch(xA, yA, xB, yB, depth - 1)
+    koch(xB, yB, xC, yC, depth - 1)
+    koch(xC, yC, x2, y2, depth - 1)
+  }
+
+  const side = size * 0.8
+  const height = (side * Math.sqrt(3)) / 2
+  const x1 = size / 2 - side / 2
+  const y1 = size / 2 + height / 2
+  const x2 = size / 2 + side / 2
+  const y2 = size / 2 + height / 2
+  const x3 = size / 2
+  const y3 = size / 2 - height / 2
+
+  koch(x1, y1, x2, y2, iterations)
+  koch(x2, y2, x3, y3, iterations)
+  koch(x3, y3, x1, y1, iterations)
+}
+
+function generateLSystem(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const axiom = "F"
+  const rules = {
+    F: "FF+[+F-F-F]-[-F+F+F] ",
+    "+": "+",
+    "-": "-",
+    "[": "[",
+    "]": "]",
+  }
+  let sentence = axiom
+  const iterations = 5
+  const angle = 25 // degrees
+  let path = `M ${size / 2} ${size * 0.9}`
+  let x = size / 2
+  let y = size * 0.9
+  let currentAngle = -Math.PI / 2 // Upwards
+
+  // Generate the L-system string
+  for (let i = 0; i < iterations; i++) {
+    let nextSentence = ""
+    for (const char of sentence) {
+      nextSentence += rules[char as keyof typeof rules] || char
+    }
+    sentence = nextSentence
+  }
+
+  // Interpret the L-system string
+  const stack: { x: number; y: number; angle: number }[] = []
+
+  for (const char of sentence) {
+    if (char === "F") {
+      const newX = x + Math.cos(currentAngle) * 5
+      const newY = y + Math.sin(currentAngle) * 5
+      path += ` L ${newX.toFixed(2)} ${newY.toFixed(2)}`
+      x = newX
+      y = newY
+    } else if (char === "+") {
+      currentAngle += (angle * Math.PI) / 180
+    } else if (char === "-") {
+      currentAngle -= (angle * Math.PI) / 180
+    } else if (char === "[") {
+      stack.push({ x: x, y: y, angle: currentAngle })
+    } else if (char === "]") {
+      const state = stack.pop()
+      if (state) {
+        x = state.x
+        y = state.y
+        currentAngle = state.angle
+        path += ` M ${x.toFixed(2)} ${y.toFixed(2)}`
+      }
+    }
+  }
+
+  const colorIndex = 0 % colours.length
+  pathParts.push(
+    `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="1" stroke-opacity="0.8"/>`,
+  )
+}
+
+function generateCellularAutomata(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const rule = 30 // Rule number (0-255)
+  const numRows = 64
+  const cellSize = size / numRows
+
+  // Convert rule to binary
+  const ruleSet = rule.toString(2).padStart(8, "0").split("").map(Number)
+
+  // Initialize the first row
+  const grid: number[][] = [Array(numRows).fill(0)]
+  grid[0][Math.floor(numRows / 2)] = 1
+
+  // Generate subsequent rows
+  for (let i = 1; i < numRows; i++) {
+    grid[i] = Array(numRows).fill(0)
+    for (let j = 0; j < numRows; j++) {
+      const left = grid[i - 1][(j - 1 + numRows) % numRows]
+      const center = grid[i - 1][j]
+      const right = grid[i - 1][(j + 1) % numRows]
+
+      // Calculate the rule index
+      const ruleIndex = 7 - (left * 4 + center * 2 + right)
+
+      // Apply the rule
+      grid[i][j] = ruleSet[ruleIndex]
+    }
+  }
+
+  // Render the grid
+  for (let i = 0; i < numRows; i++) {
+    for (let j = 0; j < numRows; j++) {
+      if (grid[i][j] === 1) {
+        const x = j * cellSize
+        const y = i * cellSize
+        const colorIndex = 0 % colours.length
+        pathParts.push(
+          `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="0.9"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateGameOfLife(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let grid: number[][] = []
+
+  // Initialize the grid randomly
+  for (let i = 0; i < gridSize; i++) {
+    grid[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      grid[i][j] = random() > 0.5 ? 1 : 0
+    }
+  }
+
+  // Simulate the game for a few generations
+  for (let generation = 0; generation < 30; generation++) {
+    const nextGrid: number[][] = []
+    for (let i = 0; i < gridSize; i++) {
+      nextGrid[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        let neighbors = 0
+        for (let x = -1; x <= 1; x++) {
+          for (let y = -1; y <= 1; y++) {
+            if (x === 0 && y === 0) continue
+            const neighborX = (i + x + gridSize) % gridSize
+            const neighborY = (j + y + gridSize) % gridSize
+            neighbors += grid[neighborX][neighborY]
+          }
+        }
+
+        // Apply the rules of the Game of Life
+        if (grid[i][j] === 1) {
+          nextGrid[i][j] = neighbors === 2 || neighbors === 3 ? 1 : 0
+        } else {
+          nextGrid[i][j] = neighbors === 3 ? 1 : 0
+        }
+      }
+    }
+    grid = nextGrid
+  }
+
+  // Render the final grid
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (grid[i][j] === 1) {
+        const x = j * cellSize
+        const y = i * cellSize
+        const colorIndex = 0 % colours.length
+        pathParts.push(
+          `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="0.9"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateTuringPattern(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridA: number[][] = []
+  let gridB: number[][] = []
+
+  // Initialize the grids randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridA[i] = []
+    gridB[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridA[i][j] = 0.5 + random() * 0.1
+      gridB[i][j] = 0.25 + random() * 0.05
+    }
+  }
+
+  // Define reaction-diffusion parameters
+  const dA = 1.0
+  const dB = 0.5
+  const feed = 0.055
+  const kill = 0.062
+
+  // Simulate the reaction-diffusion process
+  for (let step = 0; step < 20; step++) {
+    const nextGridA: number[][] = []
+    const nextGridB: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridA[i] = []
+      nextGridB[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const a = gridA[i][j]
+        const b = gridB[i][j]
+
+        // Calculate Laplacian using a simple 5-point stencil
+        const laplaceA =
+          gridA[(i - 1 + gridSize) % gridSize][j] +
+          gridA[(i + 1) % gridSize][j] +
+          gridA[i][(j - 1 + gridSize) % gridSize] +
+          gridA[i][(j + 1) % gridSize] -
+          4 * a
+        const laplaceB =
+          gridB[(i - 1 + gridSize) % gridSize][j] +
+          gridB[(i + 1) % gridSize][j] +
+          gridB[i][(j - 1 + gridSize) % gridSize] +
+          gridB[i][(j + 1) % gridSize] -
+          4 * b
+
+        // Apply the reaction-diffusion equations
+        const aChange = dA * laplaceA - a * b * b + feed * (1 - a)
+        const bChange = dB * laplaceB + a * b * b - (kill + feed) * b
+
+        nextGridA[i][j] = a + aChange
+        nextGridB[i][j] = b + bChange
+      }
+    }
+
+    gridA = nextGridA
+    gridB = nextGridB
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const a = gridA[i][j]
+      const intensity = Math.max(0, Math.min(1, a)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateGrayScott(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridA: number[][] = []
+  let gridB: number[][] = []
+
+  // Initialize the grids randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridA[i] = []
+    gridB[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridA[i][j] = 1
+      gridB[i][j] = 0
+    }
+  }
+
+  // Add a small disturbance
+  for (let i = gridSize / 2 - 5; i < gridSize / 2 + 5; i++) {
+    for (let j = gridSize / 2 - 5; j < gridSize / 2 + 5; j++) {
+      gridB[i][j] = 1
+    }
+  }
+
+  // Define Gray-Scott parameters
+  const dA = 1.0
+  const dB = 0.5
+  const feed = 0.055
+  const kill = 0.062
+
+  // Simulate the reaction-diffusion process
+  for (let step = 0; step < 20; step++) {
+    const nextGridA: number[][] = []
+    const nextGridB: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridA[i] = []
+      nextGridB[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const a = gridA[i][j]
+        const b = gridB[i][j]
+
+        // Calculate Laplacian using a simple 5-point stencil
+        const laplaceA =
+          gridA[(i - 1 + gridSize) % gridSize][j] +
+          gridA[(i + 1) % gridSize][j] +
+          gridA[i][(j - 1 + gridSize) % gridSize] +
+          gridA[i][(j + 1) % gridSize] -
+          4 * a
+        const laplaceB =
+          gridB[(i - 1 + gridSize) % gridSize][j] +
+          gridB[(i + 1) % gridSize][j] +
+          gridB[i][(j - 1 + gridSize) % gridSize] +
+          gridB[i][(j + 1) % gridSize] -
+          4 * b
+
+        // Apply the reaction-diffusion equations
+        const aChange = dA * laplaceA - a * b * b + feed * (1 - a)
+        const bChange = dB * laplaceB + a * b * b - (kill + feed) * b
+
+        nextGridA[i][j] = a + aChange
+        nextGridB[i][j] = b + bChange
+      }
+    }
+
+    gridA = nextGridA
+    gridB = nextGridB
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const b = gridB[i][j]
+      const intensity = Math.max(0, Math.min(1, b)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateBelousovZhabotinsky(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridU: number[][] = []
+  let gridV: number[][] = []
+
+  // Initialize the grids randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridU[i] = []
+    gridV[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridU[i][j] = 0.5 + random() * 0.1
+      gridV[i][j] = 0.25 + random() * 0.05
+    }
+  }
+
+  // Define BZ parameters
+  const epsilon = 0.02
+  const q = 0.002
+  const k = 0.005
+
+  // Simulate the BZ reaction
+  for (let step = 0; step < 20; step++) {
+    const nextGridU: number[][] = []
+    const nextGridV: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridU[i] = []
+      nextGridV[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const u = gridU[i][j]
+        const v = gridV[i][j]
+
+        // Calculate Laplacian using a simple 5-point stencil
+        const laplaceU =
+          gridU[(i - 1 + gridSize) % gridSize][j] +
+          gridU[(i + 1) % gridSize][j] +
+          gridU[i][(j - 1 + gridSize) % gridSize] +
+          gridU[i][(j + 1) % gridSize] -
+          4 * u
+        const laplaceV =
+          gridV[(i - 1 + gridSize) % gridSize][j] +
+          gridV[(i + 1) % gridSize][j] +
+          gridV[i][(j - 1 + gridSize) % gridSize] +
+          gridV[i][(j + 1) % gridSize] -
+          4 * v
+
+        // Apply the BZ equations
+        const uChange = u - u * u * u + q * v * v + k * laplaceU
+        const vChange = epsilon * (u - v - u * u * u) + k * laplaceV
+
+        nextGridU[i][j] = u + uChange
+        nextGridV[i][j] = v + vChange
+      }
+    }
+
+    gridU = nextGridU
+    gridV = nextGridV
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const u = gridU[i][j]
+      const intensity = Math.max(0, Math.min(1, u)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateFitzHughNagumo(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridV: number[][] = []
+  let gridW: number[][] = []
+
+  // Initialize the grids randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridV[i] = []
+    gridW[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridV[i][j] = -0.7 + random() * 0.2
+      gridW[i][j] = 0.5 + random() * 0.1
+    }
+  }
+
+  // Define FHN parameters
+  const a = 0.7
+  const b = 0.8
+  const epsilon = 0.08
+  const Iext = 0.5
+
+  // Simulate the FHN equations
+  for (let step = 0; step < 20; step++) {
+    const nextGridV: number[][] = []
+    const nextGridW: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridV[i] = []
+      nextGridW[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const v = gridV[i][j]
+        const w = gridW[i][j]
+
+        // Calculate Laplacian using a simple 5-point stencil
+        const laplaceV =
+          gridV[(i - 1 + gridSize) % gridSize][j] +
+          gridV[(i + 1) % gridSize][j] +
+          gridV[i][(j - 1 + gridSize) % gridSize] +
+          gridV[i][(j + 1) % gridSize] -
+          4 * v
+
+        // Apply the FHN equations
+        const vChange = v - (v * v * v) / 3 - w + Iext + 0.2 * laplaceV
+        const wChange = epsilon * (v + a - b * w)
+
+        nextGridV[i][j] = v + vChange
+        nextGridW[i][j] = w + wChange
+      }
+    }
+
+    gridV = nextGridV
+    gridW = nextGridW
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const v = gridV[i][j]
+      const intensity = Math.max(0, Math.min(1, (v + 1) / 2)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateHodgkinHuxley(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridV: number[][] = []
+  let gridM: number[][] = []
+  let gridH: number[][] = []
+  let gridN: number[][] = []
+
+  // Initialize the grids randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridV[i] = []
+    gridM[i] = []
+    gridH[i] = []
+    gridN[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridV[i][j] = -65 + random() * 10
+      gridM[i][j] = 0.05 + random() * 0.02
+      gridH[i][j] = 0.6 + random() * 0.1
+      gridN[i][j] = 0.3 + random() * 0.1
+    }
+  }
+
+  // Define HH parameters
+  const gNa = 120
+  const gK = 36
+  const gL = 0.3
+  const ENa = 50
+  const EK = -77
+  const EL = -54.3
+  const Cm = 1
+
+  // Simulate the HH equations
+  for (let step = 0; step < 20; step++) {
+    const nextGridV: number[][] = []
+    const nextGridM: number[][] = []
+    const nextGridH: number[][] = []
+    const nextGridN: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridV[i] = []
+      nextGridM[i] = []
+      nextGridH[i] = []
+      nextGridN[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const V = gridV[i][j]
+        const m = gridM[i][j]
+        const h = gridH[i][j]
+        const n = gridN[i][j]
+
+        // Calculate alpha and beta rates
+        const alphaM = (0.1 * (25 - V)) / (Math.exp((25 - V) / 10) - 1)
+        const betaM = 4 * Math.exp(-V / 18)
+        const alphaH = 0.07 * Math.exp(-V / 20)
+        const betaH = 1 / (Math.exp((30 - V) / 10) + 1)
+        const alphaN = (0.01 * (10 - V)) / (Math.exp((10 - V) / 10) - 1)
+        const betaN = 0.125 * Math.exp(-V / 80)
+
+        // Calculate derivatives
+        const dV = -(gNa * m * m * m * h * (V - ENa) + gK * n * n * n * n * (V - EK) + gL * (V - EL)) / Cm
+        const dm = alphaM * (1 - m) - betaM * m
+        const dh = alphaH * (1 - h) - betaH * h
+        const dn = alphaN * (1 - n) - betaN * n
+
+        nextGridV[i][j] = V + dV
+        nextGridM[i][j] = m + dm
+        nextGridH[i][j] = h + dh
+        nextGridN[i][j] = n + dn
+      }
+    }
+
+    gridV = nextGridV
+    gridM = nextGridM
+    gridH = nextGridH
+    gridN = nextGridN
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const V = gridV[i][j]
+      const intensity = Math.max(0, Math.min(1, (V + 80) / 40)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateKuramotoSivashinsky(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let grid: number[][] = []
+
+  // Initialize the grid randomly
+  for (let i = 0; i < gridSize; i++) {
+    grid[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      grid[i][j] = random() * 2 * Math.PI
+    }
+  }
+
+  // Define KS parameters
+  const nu = 1 // Viscosity
+  const L = 2 * Math.PI // Domain size
+
+  // Simulate the KS equation
+  for (let step = 0; step < 20; step++) {
+    const nextGrid: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGrid[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const u = grid[i][j]
+
+        // Calculate derivatives using finite differences
+        const uxxxx =
+          grid[(i - 2 + gridSize) % gridSize][j] -
+          4 * grid[(i - 1 + gridSize) % gridSize][j] +
+          6 * grid[i][j] -
+          4 * grid[(i + 1) % gridSize][j] +
+          grid[(i + 2) % gridSize][j]
+        const ux = (grid[(i + 1) % gridSize][j] - grid[(i - 1 + gridSize) % gridSize][j]) / 2
+
+        // Apply the KS equation
+        const uChange = -nu * uxxxx - u * ux
+
+        nextGrid[i][j] = u + uChange
+      }
+    }
+
+    grid = nextGrid
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const u = grid[i][j]
+      const intensity = Math.max(0, Math.min(1, (Math.sin(u) + 1) / 2)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateNavierStokes(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridU: number[][] = []
+  let gridV: number[][] = []
+
+  // Initialize the grids randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridU[i] = []
+    gridV[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridU[i][j] = random() - 0.5
+      gridV[i][j] = random() - 0.5
+    }
+  }
+
+  // Define NS parameters
+  const viscosity = 0.0001
+  const force = 0.01
+
+  // Simulate the NS equations
+  for (let step = 0; step < 20; step++) {
+    const nextGridU: number[][] = []
+    const nextGridV: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridU[i] = []
+      nextGridV[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const u = gridU[i][j]
+        const v = gridV[i][j]
+
+        // Calculate derivatives using finite differences
+        const uxx = gridU[(i - 1 + gridSize) % gridSize][j] - 2 * gridU[i][j] + gridU[(i + 1) % gridSize][j]
+        const uyy = gridU[i][(j - 1 + gridSize) % gridSize] - 2 * gridU[i][j] + gridU[i][(j + 1) % gridSize]
+        const vxx = gridV[(i - 1 + gridSize) % gridSize][j] - 2 * gridV[i][j] + gridV[(i + 1) % gridSize][j]
+        const vyy = gridV[i][(j - 1 + gridSize) % gridSize] - 2 * gridV[i][j] + gridV[i][(j + 1) % gridSize]
+
+        const dudx = (gridU[(i + 1) % gridSize][j] - gridU[(i - 1 + gridSize) % gridSize][j]) / 2
+        const dudy = (gridU[i][(j + 1) % gridSize] - gridU[i][(j - 1 + gridSize) % gridSize]) / 2
+        const dvdx = (gridV[(i + 1) % gridSize][j] - gridV[(i - 1 + gridSize) % gridSize][j]) / 2
+        const dvdy = (gridV[i][(j + 1) % gridSize] - gridV[i][(j - 1 + gridSize) % gridSize]) / 2
+
+        // Apply the NS equations
+        const uChange = -u * dudx - v * dudy + viscosity * (uxx + uyy) + force * Math.sin(i / 10)
+        const vChange = -u * dvdx - v * dvdy + viscosity * (vxx + vyy)
+
+        nextGridU[i][j] = u + uChange
+        nextGridV[i][j] = v + vChange
+      }
+    }
+
+    gridU = nextGridU
+    gridV = nextGridV
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const u = gridU[i][j]
+      const v = gridV[i][j]
+      const velocity = Math.sqrt(u * u + v * v)
+      const intensity = Math.max(0, Math.min(1, velocity * 10)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateSchrodinger(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridPsiR: number[][] = []
+  let gridPsiI: number[][] = []
+
+  // Initialize the grids randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridPsiR[i] = []
+    gridPsiI[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridPsiR[i][j] = random() - 0.5
+      gridPsiI[i][j] = random() - 0.5
+    }
+  }
+
+  // Define Schrodinger parameters
+  const hbar = 1
+  const mass = 1
+  const dt = 0.001
+  const V = 0 // Potential energy
+
+  // Simulate the Schrodinger equation
+  for (let step = 0; step < 20; step++) {
+    const nextGridPsiR: number[][] = []
+    const nextGridPsiI: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridPsiR[i] = []
+      nextGridPsiI[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const psiR = gridPsiR[i][j]
+        const psiI = gridPsiI[i][j]
+
+        // Calculate Laplacian using finite differences
+        const laplacePsiR =
+          gridPsiR[(i - 1 + gridSize) % gridSize][j] +
+          gridPsiR[(i + 1) % gridSize][j] +
+          gridPsiR[i][(j - 1 + gridSize) % gridSize] +
+          gridPsiR[i][(j + 1) % gridSize] -
+          4 * psiR
+        const laplacePsiI =
+          gridPsiI[(i - 1 + gridSize) % gridSize][j] +
+          gridPsiI[(i + 1) % gridSize][j] +
+          gridPsiI[i][(j - 1 + gridSize) % gridSize] +
+          gridPsiI[i][(j + 1) % gridSize] -
+          4 * psiI
+
+        // Apply the Schrodinger equation
+        const psiRChange = -(hbar / (2 * mass)) * laplacePsiI - V * psiI
+        const psiIChange = (hbar / (2 * mass)) * laplacePsiR + V * psiR
+
+        nextGridPsiR[i][j] = psiR + psiRChange * dt
+        nextGridPsiI[i][j] = psiI + psiIChange * dt
+      }
+    }
+
+    gridPsiR = nextGridPsiR
+    gridPsiI = nextGridPsiI
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const psiR = gridPsiR[i][j]
+      const psiI = gridPsiI[i][j]
+      const intensity = Math.max(0, Math.min(1, psiR * psiR + psiI * psiI)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateKleinGordon(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridPhi: number[][] = []
+  let gridPhiT: number[][] = []
+
+  // Initialize the grids randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridPhi[i] = []
+    gridPhiT[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridPhi[i][j] = random() - 0.5
+      gridPhiT[i][j] = 0
+    }
+  }
+
+  // Define Klein-Gordon parameters
+  const mass = 1
+  const dt = 0.01
+  const c = 1 // Speed of light
+
+  // Simulate the Klein-Gordon equation
+  for (let step = 0; step < 20; step++) {
+    const nextGridPhi: number[][] = []
+    const nextGridPhiT: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridPhi[i] = []
+      nextGridPhiT[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const phi = gridPhi[i][j]
+        const phiT = gridPhiT[i][j]
+
+        // Calculate Laplacian using finite differences
+        const laplacePhi =
+          gridPhi[(i - 1 + gridSize) % gridSize][j] +
+          gridPhi[(i + 1) % gridSize][j] +
+          gridPhi[i][(j - 1 + gridSize) % gridSize] +
+          gridPhi[i][(j + 1) % gridSize] -
+          4 * phi
+
+        // Apply the Klein-Gordon equation
+        const phiTT = c * c * laplacePhi - mass * mass * phi
+        const phiTChange = phiTT
+        const phiChange = phiT
+
+        nextGridPhiT[i][j] = phiT + phiTChange * dt
+        nextGridPhi[i][j] = phi + phiChange * dt
+      }
+    }
+
+    gridPhi = nextGridPhi
+    gridPhiT = nextGridPhiT
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const phi = gridPhi[i][j]
+      const intensity = Math.max(0, Math.min(1, (phi + 0.5) / 1)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateSineGordon(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridPhi: number[][] = []
+  let gridPhiT: number[][] = []
+
+  // Initialize the grids randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridPhi[i] = []
+    gridPhiT[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridPhi[i][j] = random() * 2 * Math.PI
+      gridPhiT[i][j] = 0
+    }
+  }
+
+  // Define Sine-Gordon parameters
+  const dt = 0.01
+  const c = 1 // Speed of light
+
+  // Simulate the Sine-Gordon equation
+  for (let step = 0; step < 20; step++) {
+    const nextGridPhi: number[][] = []
+    const nextGridPhiT: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridPhi[i] = []
+      nextGridPhiT[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const phi = gridPhi[i][j]
+        const phiT = gridPhiT[i][j]
+
+        // Calculate Laplacian using finite differences
+        const laplacePhi =
+          gridPhi[(i - 1 + gridSize) % gridSize][j] +
+          gridPhi[(i + 1) % gridSize][j] +
+          gridPhi[i][(j - 1 + gridSize) % gridSize] +
+          gridPhi[i][(j + 1) % gridSize] -
+          4 * phi
+
+        // Apply the Sine-Gordon equation
+        const phiTT = c * c * laplacePhi - Math.sin(phi)
+        const phiTChange = phiTT
+        const phiChange = phiT
+
+        nextGridPhiT[i][j] = phiT + phiTChange * dt
+        nextGridPhi[i][j] = phi + phiChange * dt
+      }
+    }
+
+    gridPhi = nextGridPhi
+    gridPhiT = nextGridPhiT
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const phi = gridPhi[i][j]
+      const intensity = Math.max(0, Math.min(1, (Math.sin(phi) + 1) / 2)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateKortewegDeVries(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridU: number[][] = []
+
+  // Initialize the grid randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridU[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridU[i][j] = Math.sin((2 * Math.PI * j) / gridSize) + 0.1 * Math.sin((2 * Math.PI * 2 * j) / gridSize)
+    }
+  }
+
+  // Define KdV parameters
+  const dt = 0.001
+  const dx = 1
+  const alpha = 1
+  const beta = 1
+
+  // Simulate the KdV equation
+  for (let step = 0; step < 20; step++) {
+    const nextGridU: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridU[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const u = gridU[i][j]
+
+        // Calculate derivatives using finite differences
+        const dudx = (gridU[i][(j + 1) % gridSize] - gridU[i][(j - 1 + gridSize) % gridSize]) / (2 * dx)
+        const d3udx3 =
+          (gridU[i][(j + 2) % gridSize] -
+            2 * gridU[i][(j + 1) % gridSize] +
+            2 * gridU[i][(j - 1 + gridSize) % gridSize] -
+            gridU[i][(j - 2 + gridSize) % gridSize]) /
+          (2 * dx * dx * dx)
+
+        // Apply the KdV equation
+        const uChange = -alpha * u * dudx - beta * d3udx3
+
+        nextGridU[i][j] = u + uChange * dt
+      }
+    }
+
+    gridU = nextGridU
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const u = gridU[i][j]
+      const intensity = Math.max(0, Math.min(1, (u + 1) / 2)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateBurgersEquation(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridU: number[][] = []
+
+  // Initialize the grid randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridU[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridU[i][j] = Math.sin((2 * Math.PI * j) / gridSize) + 0.1 * Math.sin((2 * Math.PI * 2 * j) / gridSize)
+    }
+  }
+
+  // Define Burgers' equation parameters
+  const dt = 0.001
+  const dx = 1
+  const nu = 0.01 // Viscosity
+
+  // Simulate Burgers' equation
+  for (let step = 0; step < 20; step++) {
+    const nextGridU: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridU[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const u = gridU[i][j]
+
+        // Calculate derivatives using finite differences
+        const dudx = (gridU[i][(j + 1) % gridSize] - gridU[i][(j - 1 + gridSize) % gridSize]) / (2 * dx)
+        const d2udx2 =
+          (gridU[i][(j + 1) % gridSize] - 2 * gridU[i][j] + gridU[i][(j - 1 + gridSize) % gridSize]) / (dx * dx)
+
+        // Apply Burgers' equation
+        const uChange = -u * dudx + nu * d2udx2
+
+        nextGridU[i][j] = u + uChange * dt
+      }
+    }
+
+    gridU = nextGridU
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const u = gridU[i][j]
+      const intensity = Math.max(0, Math.min(1, (u + 1) / 2)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateHeatEquation(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  let gridT: number[][] = []
+
+  // Initialize the grid randomly
+  for (let i = 0; i < gridSize; i++) {
+    gridT[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      gridT[i][j] = random()
+    }
+  }
+
+  // Define Heat equation parameters
+  const dt = 0.001
+  const dx = 1
+  const alpha = 0.1 // Thermal diffusivity
+
+  // Simulate Heat equation
+  for (let step = 0; step < 20; step++) {
+    const nextGridT: number[][] = []
+
+    for (let i = 0; i < gridSize; i++) {
+      nextGridT[i] = []
+      for (let j = 0; j < gridSize; j++) {
+        const T = gridT[i][j]
+
+        // Calculate Laplacian using finite differences
+        const laplaceT =
+          gridT[(i - 1 + gridSize) % gridSize][j] +
+          gridT[(i + 1) % gridSize][j] +
+          gridT[i][(j - 1 + gridSize) % gridSize] +
+          gridT[i][(j + 1) % gridSize] -
+          4 * T
+
+        // Apply Heat equation
+        const TChange = alpha * laplaceT
+
+        nextGridT[i][j] = T + TChange * dt
+      }
+    }
+
+    gridT = nextGridT
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const T = gridT[i][j]
+      const intensity = Math.max(0, Math.min(1, T)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateLaplaceEquation(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  const gridU: number[][] = []
+
+  // Initialize the grid with boundary conditions
+  for (let i = 0; i < gridSize; i++) {
+    gridU[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      if (i === 0 || i === gridSize - 1 || j === 0 || j === gridSize - 1) {
+        // Boundary conditions: set to random values
+        gridU[i][j] = random()
+      } else {
+        // Interior points: initialize to 0
+        gridU[i][j] = 0
+      }
+    }
+  }
+
+  // Solve Laplace equation using iterative method
+  for (let iteration = 0; iteration < 50; iteration++) {
+    for (let i = 1; i < gridSize - 1; i++) {
+      for (let j = 1; j < gridSize - 1; j++) {
+        // Update interior points using average of neighbors
+        gridU[i][j] =
+          (gridU[(i - 1 + gridSize) % gridSize][j] +
+            gridU[(i + 1) % gridSize][j] +
+            gridU[i][(j - 1 + gridSize) % gridSize] +
+            gridU[i][(j + 1) % gridSize]) /
+          4
+      }
+    }
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const u = gridU[i][j]
+      const intensity = Math.max(0, Math.min(1, u)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generatePoissonEquation(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  const gridU: number[][] = []
+  const gridF: number[][] = [] // Source term
+
+  // Initialize the grid with boundary conditions and source term
+  for (let i = 0; i < gridSize; i++) {
+    gridU[i] = []
+    gridF[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      if (i === 0 || i === gridSize - 1 || j === 0 || j === gridSize - 1) {
+        // Boundary conditions: set to 0
+        gridU[i][j] = 0
+      } else {
+        // Interior points: initialize to 0
+        gridU[i][j] = 0
+      }
+
+      // Source term: create a simple source in the center
+      const centerX = gridSize / 2
+      const centerY = gridSize / 2
+      const distance = Math.sqrt((i - centerX) ** 2 + (j - centerY) ** 2)
+      gridF[i][j] = distance < gridSize / 4 ? 1 : 0
+    }
+  }
+
+  // Solve Poisson equation using iterative method
+  for (let iteration = 0; iteration < 50; iteration++) {
+    for (let i = 1; i < gridSize - 1; i++) {
+      for (let j = 1; j < gridSize - 1; j++) {
+        // Update interior points using average of neighbors and source term
+        gridU[i][j] =
+          (gridU[(i - 1 + gridSize) % gridSize][j] +
+            gridU[(i + 1) % gridSize][j] +
+            gridU[i][(j - 1 + gridSize) % gridSize] +
+            gridU[i][(j + 1) % gridSize] -
+            gridF[i][j] * cellSize * cellSize) /
+          4
+      }
+    }
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const u = gridU[i][j]
+      const intensity = Math.max(0, Math.min(1, u)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateHelmholtzEquation(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const cellSize = size / gridSize
+  const gridU: number[][] = []
+
+  // Initialize the grid with boundary conditions
+  for (let i = 0; i < gridSize; i++) {
+    gridU[i] = []
+    for (let j = 0; j < gridSize; j++) {
+      if (i === 0 || i === gridSize - 1 || j === 0 || j === gridSize - 1) {
+        // Boundary conditions: set to random values
+        gridU[i][j] = random()
+      } else {
+        // Interior points: initialize to 0
+        gridU[i][j] = 0
+      }
+    }
+  }
+
+  // Define Helmholtz equation parameters
+  const kSquared = 1 // Wave number squared
+
+  // Solve Helmholtz equation using iterative method
+  for (let iteration = 0; iteration < 50; iteration++) {
+    for (let i = 1; i < gridSize - 1; i++) {
+      for (let j = 1; j < gridSize - 1; j++) {
+        // Update interior points using average of neighbors
+        gridU[i][j] =
+          (gridU[(i - 1 + gridSize) % gridSize][j] +
+            gridU[(i + 1) % gridSize][j] +
+            gridU[i][(j - 1 + gridSize) % gridSize] +
+            gridU[i][(j + 1) % gridSize][j] =
+          (gridU[(i - 1 + gridSize) % gridSize][j] +
+            gridU[(i + 1) % gridSize][j] +
+            gridU[i][(j - 1 + gridSize) % gridSize] +
+            gridU[i][(j + 1) % gridSize]) /
+          (4 - kSquared * cellSize * cellSize)
+      }
+      \
+    }
+  }
+
+  // Render the pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      const u = gridU[i][j]
+      const intensity = Math.max(0, Math.min(1, u)) // Clamp to 0-1
+      const x = j * cellSize
+      const y = i * cellSize
+      const colorIndex = Math.floor(intensity * (colours.length - 1))
+      pathParts.push(
+        `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${intensity}"/>`,
+      )
+    }
+  }
+}
+
+function generateHalvorsenAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  let z = 0
+  const a = 1.4
+  const dt = 0.01
+  const scale = 20
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = -a * x - 4 * y - 4 * z - y * y
+    const dy = -a * y - 4 * z - 4 * x - z * z
+    const dz = -a * z - 4 * x - 4 * y - x * x
+    x += dx * dt
+    y += dy * dt
+    z += dz * dt
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateIkedaMap(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  const u = 0.9
+  const dt = 0.01
+  const scale = 150
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const tn = 0.4 - 6 / (1 + x * x + y * y)
+    const xNext = 1 + u * (x * Math.cos(tn) - y * Math.sin(tn))
+    const yNext = u * (x * Math.sin(tn) + y * Math.cos(tn))
+    x = xNext
+    y = yNext
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateTinkerbellMap(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  const a = 0.9
+  const b = -0.6013
+  const c = 2.0
+  const d = 0.5
+  const dt = 0.01
+  const scale = 80
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const xNext = x * x - y * y + a * x + b * y
+    const yNext = 2 * x * y + c * x + d * y
+    x = xNext
+    y = yNext
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateGingerbreadMap(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  const dt = 0.01
+  const scale = 80
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const xNext = 1 - y + Math.abs(x)
+    const yNext = x
+    x = xNext
+    y = yNext
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateDuffingOscillator(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  const a = 2.75
+  const b = 0.2
+  const c = 0.3
+  const dt = 0.01
+  const scale = 150
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = y
+    const dy = -b * x - c * y - x * x * x + a * Math.cos(dt * i)
+    x += dx * dt
+    y += dy * dt
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateChuaCircuit(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 0.1
+  let y = 0
+  let z = 0
+  const a = 10
+  const b = 16
+  const c = 14.87
+  const m0 = -1.143
+  const m1 = -0.714
+  const dt = 0.01
+  const scale = 10
+
+  let path = `M ${size / 2} ${size / 2}`
+
+  function chuaFunction(x: number): number {
+    const h = m1 * x + 0.5 * (m0 - m1) * (Math.abs(x + 1) - Math.abs(x - 1))
+    return h
+  }
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = a * (y - x + 0.2 * x) * dt
+    const dy = (x - y + z) * dt
+    const dz = -b * y - c * z * dt
+    x += dx
+    y += dy
+    z += dz
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
 /**
  * generateFlowField - Creates mathematical art visualizations
  * Returns an SVG string that the UI can preview.
@@ -133,6 +2477,132 @@ export function generateFlowField(params: GenerationParams): string {
       break
     case "clifford":
       generateCliffordAttractor(pathParts, size, colours, params, random)
+      break
+    case "aizawa":
+      generateAizawaAttractor(pathParts, size, colours, params, random)
+      break
+    case "thomas":
+      generateThomasAttractor(pathParts, size, colours, params, random)
+      break
+    case "dadras":
+      generateDadrasAttractor(pathParts, size, colours, params, random)
+      break
+    case "chen":
+      generateChenAttractor(pathParts, size, colours, params, random)
+      break
+    case "rabinovich":
+      generateRabinovichFabrikant(pathParts, size, colours, params, random)
+      break
+    case "sprott":
+      generateSprottAttractor(pathParts, size, colours, params, random)
+      break
+    case "fourwing":
+      generateFourWingAttractor(pathParts, size, colours, params, random)
+      break
+    case "newton":
+      generateNewtonFractal(pathParts, size, colours, params, random)
+      break
+    case "burning":
+      generateBurningShip(pathParts, size, colours, params, random)
+      break
+    case "tricorn":
+      generateTricorn(pathParts, size, colours, params, random)
+      break
+    case "multibrot":
+      generateMultibrot(pathParts, size, colours, params, random)
+      break
+    case "phoenix":
+      generatePhoenixFractal(pathParts, size, colours, params, random)
+      break
+    case "barnsley":
+      generateBarnsleyFern(pathParts, size, colours, params, random)
+      break
+    case "sierpinski":
+      generateSierpinskiTriangle(pathParts, size, colours, params, random)
+      break
+    case "dragoncurve":
+      generateDragonCurve(pathParts, size, colours, params, random)
+      break
+    case "hilbertcurve":
+      generateHilbertCurve(pathParts, size, colours, params, random)
+      break
+    case "kochsnowflake":
+      generateKochSnowflake(pathParts, size, colours, params, random)
+      break
+    case "lsystem":
+      generateLSystem(pathParts, size, colours, params, random)
+      break
+    case "cellular":
+      generateCellularAutomata(pathParts, size, colours, params, random)
+      break
+    case "gameoflife":
+      generateGameOfLife(pathParts, size, colours, params, random)
+      break
+    case "turing":
+      generateTuringPattern(pathParts, size, colours, params, random)
+      break
+    case "grayscott":
+      generateGrayScott(pathParts, size, colours, params, random)
+      break
+    case "belousov":
+      generateBelousovZhabotinsky(pathParts, size, colours, params, random)
+      break
+    case "fitzhugh":
+      generateFitzHughNagumo(pathParts, size, colours, params, random)
+      break
+    case "hodgkin":
+      generateHodgkinHuxley(pathParts, size, colours, params, random)
+      break
+    case "kuramoto":
+      generateKuramotoSivashinsky(pathParts, size, colours, params, random)
+      break
+    case "navier":
+      generateNavierStokes(pathParts, size, colours, params, random)
+      break
+    case "schrodinger":
+      generateSchrodinger(pathParts, size, colours, params, random)
+      break
+    case "klein":
+      generateKleinGordon(pathParts, size, colours, params, random)
+      break
+    case "sine":
+      generateSineGordon(pathParts, size, colours, params, random)
+      break
+    case "korteweg":
+      generateKortewegDeVries(pathParts, size, colours, params, random)
+      break
+    case "burgers":
+      generateBurgersEquation(pathParts, size, colours, params, random)
+      break
+    case "heat":
+      generateHeatEquation(pathParts, size, colours, params, random)
+      break
+    case "laplace":
+      generateLaplaceEquation(pathParts, size, colours, params, random)
+      break
+    case "poisson":
+      generatePoissonEquation(pathParts, size, colours, params, random)
+      break
+    case "helmholtz":
+      generateHelmholtzEquation(pathParts, size, colours, params, random)
+      break
+    case "halvorsen":
+      generateHalvorsenAttractor(pathParts, size, colours, params, random)
+      break
+    case "ikeda":
+      generateIkedaMap(pathParts, size, colours, params, random)
+      break
+    case "tinkerbell":
+      generateTinkerbellMap(pathParts, size, colours, params, random)
+      break
+    case "gingerbread":
+      generateGingerbreadMap(pathParts, size, colours, params, random)
+      break
+    case "duffing":
+      generateDuffingOscillator(pathParts, size, colours, params, random)
+      break
+    case "chua":
+      generateChuaCircuit(pathParts, size, colours, params, random)
       break
     default:
       generateFibonacciSpirals(pathParts, size, colours, params, random)
@@ -1466,250 +3936,85 @@ export function generateStereographicProjection(params: GenerationParams): strin
   const perspectiveLabel = isTunnel ? "TUNNEL" : "LITTLE PLANET"
 
   return `
-    <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 ${size} ${size}"  width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="stereoGradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" style="stop-color:${colours[0]};stop-opacity:0.15"/>
-          <stop offset="65%" style="stop-color:${colours[1]};stop-opacity:0.4"/>
-          <stop offset="100%" style="stop-color:${colours[2] || colours[0]};stop-opacity:0.8"/>
+          <stop offset="0%" style="stop-color:${colours[1]};stop-opacity:0.2"/>
+          <stop offset="70%" style="stop-color:${colours[0]};stop-opacity:0.6"/>
+          <stop offset="100%" style="stop-color:${colours[colours.length - 1]};stop-opacity:0.9"/>
         </radialGradient>
+        <clipPath id="stereoClip">
+          <circle cx="${center}" cy="${center}" r="${radius}" />
+        </clipPath>
+        <filter id="stereoGlow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge> 
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
       </defs>
-
-      <!-- Background planet / tunnel disc -->
+      
+      <!-- Background -->
+      <rect width="100%" height="100%" fill="${colours[0]}" />
       <circle cx="${center}" cy="${center}" r="${radius}" fill="url(#stereoGradient)" />
-
-      <!-- Ground or tunnel base -->
-      ${groundElements.join("\n      ")}
-
-      <!-- Mathematical flow patterns -->
-      ${pathElements.join("\n      ")}
-
-      <!-- Atmospheric / edge particles -->
-      ${atmosphereElements.join("\n      ")}
-
+      
+      <!-- Main content clipped to circle -->
+      <g clip-path="url(#stereoClip)" filter="url(#stereoGlow)">
+        <!-- Ground/landscape elements -->
+        ${groundElements.join("\n        ")}
+        
+        <!-- Mathematical flow patterns -->
+        ${pathElements.join("\n        ")}
+        
+        <!-- Atmospheric effects -->
+        ${atmosphereElements.join("\n        ")}
+      </g>
+      
       <!-- Border ring -->
-      <circle cx="${center}" cy="${center}" r="${radius}" fill="none"
-              stroke="${colours[colours.length - 1]}" stroke-width="3" opacity="0.85" />
-
-      <!-- Projection label -->
-      <text x="${size - 10}" y="${size - 10}" text-anchor="end"
-            font-family="monospace" font-size="10"
-            fill="${colours[colours.length - 1]}" opacity="0.7">
-        ${perspectiveLabel}
+      <circle cx="${center}" cy="${center}" r="${radius}" 
+              fill="none" stroke="${colours[colours.length - 1]}" 
+              stroke-width="3" stroke-opacity="0.8"/>
+      
+      <!-- Center point -->
+      <circle cx="${center}" cy="${center}" r="2" fill="${colours[colours.length - 1]}" opacity="0.9"/>
+      
+      <!-- Projection info -->
+      <text x="${size - 10}" y="20" text-anchor="end" font-family="monospace" font-size="10" 
+            fill="${colours[colours.length - 1]}" opacity="0.8">
+        STEREOGRAPHIC • ${perspectiveLabel}
       </text>
     </svg>
   `
 }
 
-function addUrbanTunnelElements(
-  groundElements: string[],
-  size: number,
-  center: number,
-  radius: number,
-  colours: readonly string[],
-  random: () => number,
-) {
-  // Add road-like lines converging to the center
-  for (let i = 0; i < 10; i++) {
-    const angle = (i / 10) * 2 * Math.PI
-    const x1 = center + Math.cos(angle) * radius
-    const y1 = center + Math.sin(angle) * radius
-    const x2 = center + Math.cos(angle) * radius * 0.1
-    const y2 = center + Math.sin(angle) * radius * 0.1
-
-    groundElements.push(
-      `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colours[1]}" stroke-width="4" opacity="0.4"/>`,
-    )
-  }
-
-  // Add building-like rectangles along the sides
-  for (let i = 0; i < 6; i++) {
-    const angle = (i / 6) * 2 * Math.PI
-    const dist = radius * 0.75
-    const x = center + Math.cos(angle) * dist
-    const y = center + Math.sin(angle) * dist
-    const buildingWidth = 20 + random() * 30
-    const buildingHeight = 50 + random() * 80
-
-    groundElements.push(
-      `<rect x="${(x - buildingWidth / 2).toFixed(2)}" y="${(y - buildingHeight / 2).toFixed(2)}" width="${buildingWidth.toFixed(2)}" height="${buildingHeight.toFixed(2)}" fill="${colours[2]}" opacity="0.5" transform="rotate(${random() * 10 - 5} ${x} ${y})"/>`,
-    )
-  }
-}
-
+// Helper functions for stereographic ground elements
 function addUrbanStereographicElements(
-  groundElements: string[],
+  elements: string[],
   size: number,
   center: number,
   radius: number,
   colours: readonly string[],
   random: () => number,
 ) {
-  // Add grid-like road patterns
-  const gridSpacing = 30
-  for (let x = center - radius; x <= center + radius; x += gridSpacing) {
-    groundElements.push(
-      `<line x1="${x.toFixed(2)}" y1="${(center - radius).toFixed(2)}" x2="${x.toFixed(2)}" y2="${(center + radius).toFixed(2)}" stroke="${colours[1]}" stroke-width="2" opacity="0.3"/>`,
-    )
-  }
-  for (let y = center - radius; y <= center + radius; y += gridSpacing) {
-    groundElements.push(
-      `<line x1="${(center - radius).toFixed(2)}" y1="${y.toFixed(2)}" x2="${(center + radius).toFixed(2)}" y2="${y.toFixed(2)}" stroke="${colours[1]}" stroke-width="2" opacity="0.3"/>`,
-    )
-  }
-
-  // Add building-like rectangles
-  for (let i = 0; i < 15; i++) {
-    const x = center - radius + random() * radius * 2
-    const y = center - radius + random() * radius * 2
-    const buildingWidth = 10 + random() * 20
-    const buildingHeight = 30 + random() * 50
-
-    // Ensure buildings stay within the circle
-    if ((x - center) ** 2 + (y - center) ** 2 <= radius ** 2) {
-      groundElements.push(
-        `<rect x="${(x - buildingWidth / 2).toFixed(2)}" y="${(y - buildingHeight / 2).toFixed(2)}" width="${buildingWidth.toFixed(2)}" height="${buildingHeight.toFixed(2)}" fill="${colours[2]}" opacity="0.4" transform="rotate(${random() * 20 - 10} ${x} ${y})"/>`,
-      )
-    }
-  }
-}
-
-function addLandscapeTunnelElements(
-  groundElements: string[],
-  size: number,
-  center: number,
-  radius: number,
-  colours: readonly string[],
-  random: () => number,
-) {
-  // Add concentric circles for a tunnel effect
-  for (let i = 1; i <= 8; i++) {
-    const circleRadius = (i / 8) * radius
-    groundElements.push(
-      `<circle cx="${center}" cy="${center}" r="${circleRadius.toFixed(2)}" fill="none" stroke="${colours[1]}" stroke-width="3" opacity="0.3" stroke-dasharray="5,5"/>`,
-    )
-  }
-
-  // Add tree-like shapes along the circles
-  for (let i = 0; i < 20; i++) {
-    const circleIndex = Math.floor(random() * 8) + 1
-    const circleRadius = (circleIndex / 8) * radius
-    const angle = random() * 2 * Math.PI
-    const x = center + Math.cos(angle) * circleRadius
-    const y = center + Math.sin(angle) * circleRadius
-    const treeSize = 5 + random() * 10
-
-    groundElements.push(
-      `<ellipse cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" rx="${treeSize.toFixed(2)}" ry="${(treeSize * 1.5).toFixed(2)}" fill="${colours[2]}" opacity="0.6" transform="rotate(${random() * 360} ${x} ${y})"/>`,
-    )
-  }
-}
-
-function addLandscapeStereographicElements(
-  groundElements: string[],
-  size: number,
-  center: number,
-  radius: number,
-  colours: readonly string[],
-  random: () => number,
-) {
-  // Add grass-like strokes
-  for (let i = 0; i < 50; i++) {
-    const angle = random() * 2 * Math.PI
-    const dist = random() * radius
-    const x1 = center + Math.cos(angle) * dist
-    const y1 = center + Math.sin(angle) * dist
-    const x2 = x1 + (random() - 0.5) * 10
-    const y2 = y1 + (random() - 0.5) * 10
-
-    groundElements.push(
-      `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colours[2]}" stroke-width="1.5" opacity="0.4"/>`,
-    )
-  }
-
-  // Add tree-like circles
-  for (let i = 0; i < 10; i++) {
-    const x = center - radius + random() * radius * 2
-    const y = center - radius + random() * radius * 2
-    const treeSize = 5 + random() * 15
-
-    // Ensure trees stay within the circle
-    if ((x - center) ** 2 + (y - center) ** 2 <= radius ** 2) {
-      groundElements.push(
-        `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${treeSize.toFixed(2)}" fill="${colours[2]}" opacity="0.5"/>`,
-      )
-    }
-  }
-}
-
-function addGeologicalTunnelElements(
-  groundElements: string[],
-  size: number,
-  center: number,
-  radius: number,
-  colours: readonly string[],
-  random: () => number,
-) {
-  // Add jagged lines converging to the center
-  for (let i = 0; i < 8; i++) {
-    const angle = (i / 8) * 2 * Math.PI
-    let path = `M ${center} ${center}`
-    for (let j = 0; j < 5; j++) {
-      const dist = (j / 4) * radius
-      const x = center + Math.cos(angle) * dist + (random() - 0.5) * 20
-      const y = center + Math.sin(angle) * dist + (random() - 0.5) * 20
-      path += ` L ${x.toFixed(2)} ${y.toFixed(2)}`
-    }
-    groundElements.push(`<path d="${path}" fill="none" stroke="${colours[1]}" stroke-width="2" opacity="0.6"/>`)
-  }
-
-  // Add crystal-like shapes
+  // Add building blocks around the perimeter
   for (let i = 0; i < 12; i++) {
-    const angle = random() * 2 * Math.PI
-    const dist = radius * 0.6 + random() * radius * 0.3
-    const x = center + Math.cos(angle) * dist
-    const y = center + Math.sin(angle) * dist
-    const crystalSize = 5 + random() * 10
+    const angle = (i / 12) * 2 * Math.PI
+    const r = radius * (0.6 + random() * 0.2)
+    const x = center + r * Math.cos(angle)
+    const y = center + r * Math.sin(angle)
+    const buildingWidth = 15 + random() * 20
+    const buildingHeight = 20 + random() * 30
 
-    groundElements.push(
-      `<rect x="${(x - crystalSize / 2).toFixed(2)}" y="${(y - crystalSize / 2).toFixed(2)}" width="${crystalSize.toFixed(2)}" height="${crystalSize.toFixed(2)}" fill="${colours[3]}" opacity="0.7" transform="rotate(${random() * 45} ${x} ${y})"/>`,
+    elements.push(
+      `<rect x="${x - buildingWidth / 2}" y="${y - buildingHeight / 2}" width="${buildingWidth}" height="${buildingHeight}" 
+             fill="${colours[i % colours.length]}" opacity="0.7" 
+             transform="rotate(${(angle * 180) / Math.PI} ${x} ${y})"/>`,
     )
   }
-}
 
-function addGeologicalStereographicElements(
-  groundElements: string[],
-  size: number,
-  center: number,
-  radius: number,
-  colours: readonly string[],
-  random: () => number,
-) {
-  // Add rock-like circles
-  for (let i = 0; i < 20; i++) {
-    const x = center - radius + random() * radius * 2
-    const y = center - radius + random() * radius * 2
-    const rockSize = 3 + random() * 8
-
-    // Ensure rocks stay within the circle
-    if ((x - center) ** 2 + (y - center) ** 2 <= radius ** 2) {
-      groundElements.push(
-        `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${rockSize.toFixed(2)}" fill="${colours[1]}" opacity="0.7"/>`,
-      )
-    }
-  }
-
-  // Add mineral-like lines
-  for (let i = 0; i < 30; i++) {
-    const angle = random() * 2 * Math.PI
-    const dist = random() * radius
-    const x1 = center + Math.cos(angle) * dist
-    const y1 = center + Math.sin(angle) * dist
-    const x2 = x1 + (random() - 0.5) * 5
-    const y2 = y1 + (random() - 0.5) * 5
-
-    groundElements.push(
-      `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colours[3]}" stroke-width="1" opacity="0.5"/>`,
-    )
-  }
-}
+  // Add road network
+  for (let ring = 1; ring <= 3; ring++) {
+    const ringRadius = (ring / 3) * radius * 0.8
+    const roadPath = ""
+    for (let i = 0; i <= 32; i++) {
