@@ -101,27 +101,204 @@ export function generateFlowField(params: GenerationParams): string {
 }
 
 /**
- * generateDomeProjection – placeholder fisheye render.
- * For now we simply wrap the regular field in a circle mask so it
- * *looks* hemispherical.  Proper fisheye maths can be plugged in later.
+ * generateDomeProjection – proper fisheye transformation for dome projection.
+ * This applies real fisheye mathematics to create immersive dome-ready content.
  */
 export function generateDomeProjection(params: GenerationParams): string {
-  const base = generateFlowField(params) // reuse the field
-
-  // Strip outer <svg> tags from base so we can embed as <defs>/<use>
-  const inner = base.replace(/^<svg[^>]*>|<\/svg>$/g, "")
   const size = 512
+  const center = size / 2
+  const radius = size / 2
+  const colours = colorPalettes[params.colorScheme as keyof typeof colorPalettes] ?? colorPalettes.plasma
+
+  // Generate the base flow field data points for transformation
+  const points: Array<{ x: number; y: number; color: string }> = []
+
+  // Create more complex spiral patterns for fisheye transformation
+  const arms = 8
+  const turns = 12
+  const layers = 5
+
+  for (let layer = 0; layer < layers; layer++) {
+    for (let a = 0; a < arms; a++) {
+      const colorIndex = (a + layer) % colours.length
+      const layerRadius = (layer + 1) / layers
+
+      for (let t = 0; t <= 1; t += 1 / (params.numSamples / (arms * layers))) {
+        // Original cartesian coordinates
+        const angle = turns * 2 * Math.PI * t + (a * 2 * Math.PI) / arms
+        const r = t * layerRadius * 0.9
+
+        // Apply fisheye transformation
+        // Convert to spherical coordinates then to fisheye projection
+        const theta = (r * Math.PI) / 2 // Map radius to hemisphere angle (0 to π/2)
+        const phi = angle
+
+        // Fisheye projection: map hemisphere to circle
+        // Using equidistant projection: r_fisheye = f * theta
+        const fisheyeRadius = (theta / (Math.PI / 2)) * radius * 0.95
+
+        // Add some noise and distortion for more organic feel
+        const noiseX = Math.sin(t * 50 + a) * Math.cos(t * 30) * params.noiseScale * 20
+        const noiseY = Math.cos(t * 40 + a) * Math.sin(t * 35) * params.noiseScale * 20
+
+        const x = center + fisheyeRadius * Math.cos(phi) + noiseX
+        const y = center + fisheyeRadius * Math.sin(phi) + noiseY
+
+        // Only include points within the fisheye circle
+        const distFromCenter = Math.sqrt((x - center) ** 2 + (y - center) ** 2)
+        if (distFromCenter <= radius * 0.98) {
+          points.push({
+            x: x,
+            y: y,
+            color: colours[colorIndex],
+          })
+        }
+      }
+    }
+  }
+
+  // Add radial grid lines for dome reference
+  const gridLines: string[] = []
+  const gridRings = 6
+  const gridSpokes = 12
+
+  // Concentric circles (elevation lines)
+  for (let ring = 1; ring <= gridRings; ring++) {
+    const ringRadius = (ring / gridRings) * radius * 0.95
+    const circumference = 2 * Math.PI * ringRadius
+    const steps = Math.max(32, Math.floor(circumference / 8))
+
+    let path = ""
+    for (let i = 0; i <= steps; i++) {
+      const angle = (i / steps) * 2 * Math.PI
+      const x = center + ringRadius * Math.cos(angle)
+      const y = center + ringRadius * Math.sin(angle)
+      path += i === 0 ? `M ${x.toFixed(2)} ${y.toFixed(2)}` : ` L ${x.toFixed(2)} ${y.toFixed(2)}`
+    }
+
+    gridLines.push(
+      `<path d="${path}" fill="none" stroke="${colours[colours.length - 1]}" stroke-width="0.5" stroke-opacity="0.3" stroke-dasharray="2,2"/>`,
+    )
+  }
+
+  // Radial lines (azimuth lines)
+  for (let spoke = 0; spoke < gridSpokes; spoke++) {
+    const angle = (spoke / gridSpokes) * 2 * Math.PI
+    const x1 = center
+    const y1 = center
+    const x2 = center + radius * 0.95 * Math.cos(angle)
+    const y2 = center + radius * 0.95 * Math.sin(angle)
+
+    gridLines.push(
+      `<line x1="${x1}" y1="${y1}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colours[colours.length - 1]}" stroke-width="0.5" stroke-opacity="0.2" stroke-dasharray="1,3"/>`,
+    )
+  }
+
+  // Create paths from points
+  const pathElements: string[] = []
+
+  // Group points by color and create smooth paths
+  const pointsByColor = new Map<string, Array<{ x: number; y: number }>>()
+  points.forEach((point) => {
+    if (!pointsByColor.has(point.color)) {
+      pointsByColor.set(point.color, [])
+    }
+    pointsByColor.get(point.color)!.push({ x: point.x, y: point.y })
+  })
+
+  pointsByColor.forEach((colorPoints, color) => {
+    // Create multiple smooth curves for each color
+    const chunkSize = Math.max(10, Math.floor(colorPoints.length / 20))
+    for (let i = 0; i < colorPoints.length; i += chunkSize) {
+      const chunk = colorPoints.slice(i, i + chunkSize)
+      if (chunk.length < 3) continue
+
+      let path = `M ${chunk[0].x.toFixed(2)} ${chunk[0].y.toFixed(2)}`
+
+      // Create smooth curves using quadratic bezier curves
+      for (let j = 1; j < chunk.length - 1; j++) {
+        const current = chunk[j]
+        const next = chunk[j + 1]
+        const cpX = (current.x + next.x) / 2
+        const cpY = (current.y + next.y) / 2
+        path += ` Q ${current.x.toFixed(2)} ${current.y.toFixed(2)} ${cpX.toFixed(2)} ${cpY.toFixed(2)}`
+      }
+
+      // Add final point
+      const last = chunk[chunk.length - 1]
+      path += ` L ${last.x.toFixed(2)} ${last.y.toFixed(2)}`
+
+      pathElements.push(
+        `<path d="${path}" fill="none" stroke="${color}" stroke-width="1.5" stroke-opacity="0.8" stroke-linecap="round"/>`,
+      )
+    }
+  })
+
+  // Add some particle effects for enhanced fisheye feel
+  const particles: string[] = []
+  for (let i = 0; i < 100; i++) {
+    const angle = Math.random() * 2 * Math.PI
+    const r = Math.random() * radius * 0.9
+    const x = center + r * Math.cos(angle)
+    const y = center + r * Math.sin(angle)
+    const size = Math.random() * 2 + 0.5
+    const opacity = Math.random() * 0.6 + 0.2
+    const color = colours[Math.floor(Math.random() * colours.length)]
+
+    particles.push(
+      `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${size.toFixed(1)}" fill="${color}" opacity="${opacity.toFixed(2)}"/>`,
+    )
+  }
 
   return `
     <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <clipPath id="hemisphere">
-          <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2}" />
+        <radialGradient id="domeGradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" style="stop-color:${colours[0]};stop-opacity:0.1"/>
+          <stop offset="70%" style="stop-color:${colours[1]};stop-opacity:0.3"/>
+          <stop offset="100%" style="stop-color:${colours[0]};stop-opacity:0.8"/>
+        </radialGradient>
+        <clipPath id="fisheyeClip">
+          <circle cx="${center}" cy="${center}" r="${radius * 0.98}" />
         </clipPath>
+        <filter id="fisheyeGlow">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+          <feMerge> 
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
       </defs>
-      <g clip-path="url(#hemisphere)">
-        ${inner}
+      
+      <!-- Background with fisheye gradient -->
+      <rect width="100%" height="100%" fill="${colours[0]}" />
+      <circle cx="${center}" cy="${center}" r="${radius}" fill="url(#domeGradient)" />
+      
+      <!-- Main content clipped to fisheye circle -->
+      <g clip-path="url(#fisheyeClip)" filter="url(#fisheyeGlow)">
+        <!-- Grid lines for dome reference -->
+        ${gridLines.join("\n        ")}
+        
+        <!-- Main flow field paths -->
+        ${pathElements.join("\n        ")}
+        
+        <!-- Particle effects -->
+        ${particles.join("\n        ")}
       </g>
+      
+      <!-- Fisheye border ring -->
+      <circle cx="${center}" cy="${center}" r="${radius * 0.98}" 
+              fill="none" stroke="${colours[colours.length - 1]}" 
+              stroke-width="3" stroke-opacity="0.8"/>
+      
+      <!-- Center point (zenith marker) -->
+      <circle cx="${center}" cy="${center}" r="3" fill="${colours[colours.length - 1]}" opacity="0.9"/>
+      
+      <!-- Dome projection info text -->
+      <text x="${size - 10}" y="20" text-anchor="end" font-family="monospace" font-size="10" 
+            fill="${colours[colours.length - 1]}" opacity="0.7">
+        FISHEYE ${params.domeDiameter || 30}m ${params.domeResolution || "8K"}
+      </text>
     </svg>
   `
 }
