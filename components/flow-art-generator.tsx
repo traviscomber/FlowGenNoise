@@ -43,7 +43,7 @@ export function FlowArtGenerator() {
   const [isGeneratingDome, setIsGeneratingDome] = useState(false)
   const [isGenerating360, setIsGenerating360] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [mode, setMode] = useState<"svg" | "ai">("svg")
+  const [mode, setMode] = useState<"svg" | "ai">("ai") // Default to AI mode for realistic results
 
   // Dome projection settings
   const [domeEnabled, setDomeEnabled] = useState(false)
@@ -87,7 +87,7 @@ export function FlowArtGenerator() {
 
   // Generation parameters - separate dataset, scenario, and color palette
   const [dataset, setDataset] = useState("spirals")
-  const [scenario, setScenario] = useState("pure")
+  const [scenario, setScenario] = useState("landscape")
   const [colorScheme, setColorScheme] = useState("plasma")
   const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
   const [numSamples, setNumSamples] = useState(2000)
@@ -848,9 +848,31 @@ export function FlowArtGenerator() {
           FlowSketch Mathematical Art Generator
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Advanced mathematical datasets with dome projection and 360° panoramic skyboxes
+          Advanced mathematical datasets with photorealistic dome projection and 360° panoramic skyboxes
         </p>
       </div>
+
+      {/* Reference Image */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ImageIcon className="h-5 w-5" />
+            Reference Style - Little Planet Projection
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="relative">
+            <img
+              src="/reference-little-planet.jpg"
+              alt="Reference little planet projection showing urban landscape with buildings and park"
+              className="w-full max-w-md mx-auto rounded-lg shadow-lg"
+            />
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 text-center">
+              Target style: Photorealistic stereographic projection with realistic textures, lighting, and environments
+            </p>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Controls */}
@@ -865,30 +887,31 @@ export function FlowArtGenerator() {
             <CardContent className="space-y-4">
               <Tabs value={mode} onValueChange={(value) => setMode(value as "svg" | "ai")}>
                 <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="svg">Complex Math</TabsTrigger>
-                  <TabsTrigger value="ai">AI Art</TabsTrigger>
+                  <TabsTrigger value="ai">Photorealistic AI</TabsTrigger>
+                  <TabsTrigger value="svg">Mathematical SVG</TabsTrigger>
                   <TabsTrigger value="gallery">Gallery ({gallery.length})</TabsTrigger>
                 </TabsList>
-
-                <TabsContent value="svg" className="space-y-4">
-                  <Alert>
-                    <Calculator className="h-4 w-4" />
-                    <AlertDescription>
-                      Complex mathematical datasets with advanced algorithms: Fibonacci spirals, fractal checkerboards,
-                      hyperbolic moons, multi-modal Gaussians, and more!{" "}
-                      {panorama360Enabled && "Optimized for 360° panoramic skyboxes."}
-                      {domeEnabled && "Optimized for dome projection."}
-                    </AlertDescription>
-                  </Alert>
-                </TabsContent>
 
                 <TabsContent value="ai" className="space-y-4">
                   <Alert>
                     <Sparkles className="h-4 w-4" />
                     <AlertDescription>
-                      Create AI-generated artwork based on your complex mathematical dataset and scenario combination.
+                      Create photorealistic AI-generated artwork with realistic textures, lighting, and environments.
+                      Perfect for creating immersive little planet projections like the reference image above.
                       {panorama360Enabled && " Automatically optimized for immersive 360° panoramic skyboxes."}
                       {domeEnabled && " Automatically optimized for immersive dome projection."}
+                    </AlertDescription>
+                  </Alert>
+                </TabsContent>
+
+                <TabsContent value="svg" className="space-y-4">
+                  <Alert>
+                    <Calculator className="h-4 w-4" />
+                    <AlertDescription>
+                      Complex mathematical datasets with advanced algorithms: Fibonacci spirals, fractal patterns,
+                      Mandelbrot sets, Lorenz attractors, and more!{" "}
+                      {panorama360Enabled && "Optimized for 360° panoramic skyboxes."}
+                      {domeEnabled && "Optimized for dome projection."}
                     </AlertDescription>
                   </Alert>
                 </TabsContent>
@@ -950,6 +973,11 @@ export function FlowArtGenerator() {
                                 {art.params.dataset} • {art.params.scenario}
                               </p>
                               <div className="flex gap-1 flex-wrap">
+                                {art.mode === "ai" && (
+                                  <span className="text-[10px] px-1 rounded bg-green-600/20 text-green-700 dark:text-green-300">
+                                    AI
+                                  </span>
+                                )}
                                 {art.isDomeProjection && (
                                   <span className="text-[10px] px-1 rounded bg-purple-600/20 text-purple-700 dark:text-purple-300">
                                     Dome
@@ -961,7 +989,7 @@ export function FlowArtGenerator() {
                                   </span>
                                 )}
                                 {art.upscaledImageUrl && (
-                                  <span className="text-[10px] px-1 rounded bg-green-600/20 text-green-700 dark:text-green-300">
+                                  <span className="text-[10px] px-1 rounded bg-orange-600/20 text-orange-700 dark:text-orange-300">
                                     Enhanced
                                   </span>
                                 )}
@@ -995,8 +1023,6 @@ export function FlowArtGenerator() {
                   )}
                 </TabsContent>
               </Tabs>
-
-              {/* existing controls below (dome/panorama checkboxes etc.) remain unchanged */}
             </CardContent>
           </Card>
 
@@ -1150,10 +1176,9 @@ export function FlowArtGenerator() {
             <CardContent className="space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
-                  <Button onClick={generateArt} disabled={isGenerating}>
-                    {isGenerating ? "Generating..." : getButtonText()}
+                  <Button onClick={generateArt} disabled={isGenerating} className="flex-1">
+                    {isGenerating ? `Generating... ${progress}%` : getButtonText()}
                   </Button>
-                  {isGenerating ? <progress value={progress} max="100" className="w-full h-2"></progress> : null}
                 </div>
 
                 {mode === "ai" && (
@@ -1170,15 +1195,15 @@ export function FlowArtGenerator() {
 
                     {useCustomPrompt && (
                       <div className="space-y-2">
-                        <input
-                          type="text"
-                          placeholder="Enter your custom prompt here..."
+                        <textarea
+                          placeholder="Enter your custom prompt here... (e.g., 'A photorealistic little planet projection of a futuristic city with glass buildings and floating gardens')"
                           value={customPrompt}
                           onChange={(e) => setCustomPrompt(e.target.value)}
+                          rows={3}
                           className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         />
                         <Button onClick={enhancePrompt} disabled={isEnhancingPrompt} variant="secondary" size="sm">
-                          {isEnhancingPrompt ? "Enhancing..." : "Enhance Prompt"}
+                          {isEnhancingPrompt ? "Enhancing..." : "✨ Enhance Prompt"}
                         </Button>
                       </div>
                     )}
@@ -1198,7 +1223,7 @@ export function FlowArtGenerator() {
                     </label>
 
                     {domeEnabled && (
-                      <div className="space-y-2">
+                      <div className="space-y-2 mt-2">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                           Dome Diameter (meters)
                         </label>
@@ -1251,7 +1276,7 @@ export function FlowArtGenerator() {
                     </label>
 
                     {panorama360Enabled && (
-                      <div className="space-y-2">
+                      <div className="space-y-2 mt-2">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                           Panorama Resolution
                         </label>
@@ -1274,7 +1299,7 @@ export function FlowArtGenerator() {
                           className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         >
                           <option value="equirectangular">Equirectangular</option>
-                          {/* Add other formats if needed */}
+                          <option value="stereographic">Stereographic (Little Planet)</option>
                         </select>
                       </div>
                     )}
@@ -1283,55 +1308,80 @@ export function FlowArtGenerator() {
 
                 {generatedArt ? (
                   <div className="space-y-4">
-                    <div className="aspect-w-16 aspect-h-9 relative overflow-hidden rounded-lg">
+                    <div className="relative overflow-hidden rounded-lg border">
                       {generatedArt.mode === "svg" && !generatedArt.upscaledImageUrl ? (
                         <div
-                          className="w-full h-full flex items-center justify-center"
+                          className="w-full min-h-[400px] flex items-center justify-center bg-gray-50 dark:bg-gray-900"
                           dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
                         />
                       ) : (
                         <img
                           src={generatedArt.upscaledImageUrl || generatedArt.imageUrl}
                           alt={`${generatedArt.params.dataset} + ${generatedArt.params.scenario}`}
-                          className="w-full h-full object-cover"
+                          className="w-full h-auto max-h-[600px] object-contain"
                         />
                       )}
                     </div>
 
-                    <div className="flex space-x-4">
-                      <Button onClick={upscaleImage} disabled={isUpscaling}>
-                        {isUpscaling ? "Upscaling..." : "Enhance Details"}
+                    <div className="flex flex-wrap gap-2">
+                      <Button onClick={upscaleImage} disabled={isUpscaling} variant="outline">
+                        {isUpscaling ? "Enhancing..." : "🔍 Enhance Details"}
                       </Button>
 
-                      <Button onClick={() => downloadImage("regular")}>Download</Button>
+                      <Button onClick={() => downloadImage("regular")}>📥 Download</Button>
 
-                      {generatedArt.isDomeProjection && (
-                        <Button onClick={() => downloadImage("dome")} disabled={isGeneratingDome}>
-                          {isGeneratingDome ? "Generating Dome..." : "Download Dome"}
+                      {generatedArt.isDomeProjection && generatedArt.domeImageUrl && (
+                        <Button onClick={() => downloadImage("dome")} variant="secondary">
+                          🏛️ Download Dome
                         </Button>
                       )}
 
-                      {generatedArt.is360Panorama && (
-                        <Button onClick={() => downloadImage("panorama")} disabled={isGenerating360}>
-                          {isGenerating360 ? "Generating 360°..." : "Download 360°"}
+                      {generatedArt.is360Panorama && generatedArt.panorama360Url && (
+                        <Button onClick={() => downloadImage("panorama")} variant="secondary">
+                          🌐 Download 360°
                         </Button>
                       )}
 
                       {generatedArt.isDomeProjection && !generatedArt.domeImageUrl && (
-                        <Button onClick={generateDomeProjection} disabled={isGeneratingDome} variant="secondary">
-                          {isGeneratingDome ? "Generating Dome..." : "Generate Dome"}
+                        <Button onClick={generateDomeProjection} disabled={isGeneratingDome} variant="outline">
+                          {isGeneratingDome ? "Generating..." : "🏛️ Generate Dome"}
                         </Button>
                       )}
 
                       {generatedArt.is360Panorama && !generatedArt.panorama360Url && (
-                        <Button onClick={generate360Panorama} disabled={isGenerating360} variant="secondary">
-                          {isGenerating360 ? "Generating 360°..." : "Generate 360°"}
+                        <Button onClick={generate360Panorama} disabled={isGenerating360} variant="outline">
+                          {isGenerating360 ? "Generating..." : "🌐 Generate 360°"}
                         </Button>
+                      )}
+                    </div>
+
+                    <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                      <p>
+                        <strong>Mode:</strong> {generatedArt.mode === "ai" ? "Photorealistic AI" : "Mathematical SVG"}
+                      </p>
+                      <p>
+                        <strong>Dataset:</strong> {generatedArt.params.dataset} • <strong>Scenario:</strong>{" "}
+                        {generatedArt.params.scenario}
+                      </p>
+                      <p>
+                        <strong>Color Scheme:</strong> {generatedArt.params.colorScheme} • <strong>Seed:</strong>{" "}
+                        {generatedArt.params.seed}
+                      </p>
+                      {generatedArt.customPrompt && (
+                        <p>
+                          <strong>Custom Prompt:</strong> {generatedArt.customPrompt}
+                        </p>
                       )}
                     </div>
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-500">Generate artwork to see it here.</p>
+                  <div className="text-center py-12 text-gray-500">
+                    <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>Generate photorealistic artwork to see it here.</p>
+                    <p className="text-sm mt-2">
+                      Try the AI mode with "Urban Environments" + "Landscape" for little planet effects!
+                    </p>
+                  </div>
                 )}
               </div>
             </CardContent>
