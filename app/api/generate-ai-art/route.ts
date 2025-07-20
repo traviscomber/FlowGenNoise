@@ -36,24 +36,35 @@ export async function POST(req: NextRequest) {
     /* 1. Build a prompt (use customPrompt if one was provided)              */
     /* --------------------------------------------------------------------- */
 
-    let basePrompt = `Create an ultra-high-resolution abstract mathematical artwork depicting "${dataset}" patterns blended with a "${scenario}" environment.
-Colour palette: ${colorScheme}.
-${numSamples} data points with noise level ${noise}.
-Include scientific detail, museum-grade composition, HDR lighting, PBR materials, and professional post-processing.
-Seed reference: ${seed}.`
+    let prompt =
+      customPrompt ||
+      `Generate a highly detailed, abstract mathematical artwork.
+Dataset: ${dataset}
+Scenario: ${scenario}
+Color Scheme: ${colorScheme}
+Number of Sample Points: ${numSamples}
+Noise Scale: ${noise}
+`
 
     if (enableStereographic) {
-      const projectionDescription =
-        stereographicPerspective === "little-planet"
-          ? "Apply a 'little planet' stereographic projection, creating a spherical, miniature world effect with a curved horizon and a sense of looking down onto a tiny sphere. Ensure the mathematical patterns conform to this unique perspective."
-          : "Apply a 'tunnel vision' stereographic projection, creating a dramatic inward-looking perspective with a central vanishing point and a sense of looking up into a deep tunnel. Ensure the mathematical patterns conform to this unique perspective."
-      basePrompt += ` ${projectionDescription}`
+      if (stereographicPerspective === "little-planet") {
+        prompt += `Apply a dramatic little planet stereographic projection effect, creating a spherical, miniature world view. Emphasize curved horizons, radial distortion, and a sense of looking down onto a tiny, self-contained universe. The mathematical patterns should wrap seamlessly around this spherical form, creating a captivating, immersive visual.`
+      } else if (stereographicPerspective === "tunnel") {
+        prompt += `Apply an intense tunnel vision stereographic projection effect, creating a deep, immersive vortex. Emphasize strong inward curvature, a central vanishing point, and a sense of infinite depth. The mathematical patterns should stretch and distort along this tunnel, drawing the viewer's eye into the core of the artwork.`
+      }
     }
 
-    const prompt = customPrompt?.trim().length
-      ? `${customPrompt.trim()}. IMPORTANT: No text, no words, no letters, no typography, no labels, no captions. Pure visual art only.`
-      : `${basePrompt} IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text.
-Pure abstract visual art only. Focus on colors, shapes, patterns, and mathematical structures as visual elements, not written content.`
+    // Add a general artistic and technical enhancement if no custom prompt is provided
+    if (!customPrompt) {
+      prompt += `
+Render this as an ultra-high-resolution, museum-grade composition. Incorporate advanced HDR lighting, physically based rendering (PBR) materials with subtle subsurface scattering, and a cinematic, photorealistic quality. The composition should balance intricate detail with grand scale, from quantum-level textures to cosmic-scale structures. Use a blend of abstract digital art and professional photography techniques.
+`
+    }
+
+    // Critical instruction to ensure pure abstract visual art
+    prompt += `IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text. Pure abstract visual art only. Focus on colors, shapes, patterns, and mathematical structures as visual elements, not written content.`
+
+    console.log("Final prompt sent to AI:", prompt)
 
     /* --------------------------------------------------------------------- */
     /* 2. Try OpenAI DALL·E 3 first                                          */

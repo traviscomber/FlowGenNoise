@@ -2,22 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 
-/**
- * POST /api/enhance-prompt
- *
- * Body:
- * {
- *   dataset: string,
- *   scenario: string,
- *   colorScheme: string,
- *   numSamples: number,
- *   noiseScale: number,
- *   currentPrompt?: string,
- *   enableStereographic?: boolean,
- *   stereographicPerspective?: string
- * }
- */
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const {
       dataset,
@@ -28,37 +13,49 @@ export async function POST(req: NextRequest) {
       currentPrompt,
       enableStereographic,
       stereographicPerspective,
-    } = await req.json()
+    } = await request.json()
 
-    const systemPrompt = `You are an AI art prompt enhancer. Your task is to take a basic description of a mathematical artwork and expand it into a highly detailed, professional, and artistic prompt suitable for advanced AI image generation models like DALL-E 3 or Midjourney. Focus on adding rich visual descriptors, artistic styles, lighting, textures, and complex mathematical concepts.
+    // Create god-level mathematical art prompt
+    const systemPrompt = `You are a world-class mathematical artist and theoretical physicist who creates museum-quality AI art prompts. Generate incredibly detailed, scientifically accurate prompts that combine advanced mathematics, theoretical physics, and professional art direction.`
 
-Guidelines:
-- Incorporate the dataset, scenario, color scheme, number of samples, and noise scale into the prompt.
-- Use terms like "ultra-high-resolution", "museum-grade composition", "HDR lighting", "PBR materials", "cinematic", "photorealistic", "abstract", "surreal", "futuristic".
-- Emphasize mathematical precision and beauty.
-- If 'enableStereographic' is true, describe the specific stereographic projection effect ('little-planet' or 'tunnel') in detail, ensuring the mathematical patterns conform to this perspective.
-- Ensure the output is a single, coherent paragraph.
-- IMPORTANT: The final prompt MUST NOT contain any text, words, letters, typography, labels, captions, or mathematical equations visible as text. It should be purely visual art description.
-- IMPORTANT: Do not include any instructions or conversational text in the output, only the enhanced prompt.`
+    const enhancementPrompt = `Create a god-level AI art prompt for generating mathematical artwork with these parameters:
 
-    const userPrompt = `Enhance the following art concept:
 Dataset: ${dataset}
-Scenario: ${scenario}
+Scenario: ${scenario} 
 Color Scheme: ${colorScheme}
-Number of Samples: ${numSamples}
+Sample Points: ${numSamples}
 Noise Scale: ${noiseScale}
-${enableStereographic ? `Stereographic Projection: ${stereographicPerspective}` : ""}
-${currentPrompt ? `Current User Idea: ${currentPrompt}` : ""}`
+Stereographic Projection: ${enableStereographic ? "ENABLED" : "DISABLED"}
+${enableStereographic ? `Projection Style: ${stereographicPerspective} (${stereographicPerspective === "little-planet" ? "Looking down perspective creating a tiny planet effect" : "Looking up perspective creating a tunnel vision effect"})` : ""}
+Current Prompt: ${currentPrompt || "None"}
 
-    const { text: enhancedPrompt } = await generateText({
+Generate a professional, museum-quality prompt that includes:
+
+1. MATHEMATICAL FOUNDATION: Describe mathematical concepts as visual patterns and structures
+2. PHYSICAL LAWS: Translate physics principles into visual elements and compositions
+3. VISUAL SPECIFICATIONS: Professional art direction with technical details
+4. LIGHTING & MATERIALS: HDR lighting, PBR materials, subsurface scattering
+5. SCALE & COMPOSITION: From quantum to cosmic scale relationships
+6. ARTISTIC STYLE: Professional photography/digital art techniques
+${enableStereographic ? `7. STEREOGRAPHIC EFFECTS: Incorporate ${stereographicPerspective === "little-planet" ? "little planet spherical distortion effects, curved horizon lines, and miniature world perspective" : "tunnel vision perspective with dramatic inward curvature, vanishing point effects, and immersive depth"}` : ""}
+
+Make it incredibly detailed, scientifically accurate, and artistically sophisticated. Focus on visual representation of mathematical and physical concepts.
+
+${enableStereographic ? `STEREOGRAPHIC NOTE: The artwork should have ${stereographicPerspective === "little-planet" ? "a spherical, planet-like curvature with the viewer looking down at a miniature world. Include curved horizons, radial perspective, and the sense of viewing a tiny sphere from above." : "a dramatic tunnel or vortex-like perspective with strong inward curvature. Include vanishing point effects, radial distortion, and the sense of looking into an infinite tunnel or void."}` : ""}
+
+CRITICAL: End the prompt with "IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text. Pure abstract visual art only. Focus on colors, shapes, patterns, and mathematical structures as visual elements, not written content."`
+
+    const { text } = await generateText({
       model: openai("gpt-4o"),
       system: systemPrompt,
-      prompt: userPrompt,
+      prompt: enhancementPrompt,
+      maxTokens: 1200,
+      temperature: 0.8,
     })
 
-    return NextResponse.json({ enhancedPrompt })
+    return NextResponse.json({ enhancedPrompt: text })
   } catch (error: any) {
     console.error("Prompt enhancement error:", error)
-    return NextResponse.json({ error: "Failed to enhance prompt", detail: error.message }, { status: 500 })
+    return NextResponse.json({ error: "Failed to enhance prompt", details: error.message }, { status: 500 })
   }
 }
