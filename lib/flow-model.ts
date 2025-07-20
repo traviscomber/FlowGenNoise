@@ -1031,4 +1031,445 @@ function applyScenarioTransform(
         // Crystal growth and facets
         const growthRate = Math.abs(Math.sin(baseX * 3) * Math.cos(baseY * 3)) * 0.05
         const facetAngle = Math.atan2(baseY, baseX) + Math.PI / 6
-        const facetReflection = Math.sin(facetAngle\
+        const facetReflection = Math.sin(facetAngle) * 0.7
+
+        x = latticeX + growthRate * Math.cos(facetAngle)
+        y = latticeY + growthRate * Math.sin(facetAngle)
+
+        metadata = {
+          crystalSystem: Math.floor(rng.next() * 7), // Cubic, tetragonal, orthorhombic, etc.
+          latticeConstant: latticeConstant,
+          defectType: dislocation ? "dislocation" : impurity ? "impurity" : twinBoundary ? "twin_boundary" : "none",
+          gemstone: gemstone,
+          gemType: gemstone ? gemType : -1,
+          clarity: gemstone ? clarity : 0,
+          refractiveIndex: rng.range(1.4, 2.5),
+          hardness: rng.range(1, 10), // Mohs scale
+          mineralComposition: Math.floor(rng.next() * 10),
+          growthPattern: Math.floor(rng.next() * 5),
+        }
+        break
+      }
+
+      case "futuristic": {
+        // Cyberpunk cityscapes with neon lights, holographic projections, and advanced technology
+        const buildingHeight = Math.abs(baseY) * 100
+        const streetLevel = -10
+
+        // Holographic projections
+        const hologram = rng.next() < 0.2
+        const hologramType = Math.floor(rng.next() * 5) // Advertisement, art, information, etc.
+        const hologramBrightness = Math.sin(i * 0.2) * 0.5 + 0.5
+
+        // Neon lights and digital displays
+        const neonSign = rng.next() < 0.3
+        const neonColor = Math.floor(rng.next() * 4) // Red, green, blue, yellow
+        const digitalDisplay = Math.sin(baseX * 4) * Math.cos(baseY * 3) > 0.7
+
+        // Flying vehicles and drones
+        const flyingVehicle = rng.next() < 0.05
+        const vehicleType = Math.floor(rng.next() * 3) // Car, drone, aircraft
+        const vehicleAltitude = rng.range(10, 200)
+
+        // Cybernetic implants and augmented reality
+        const cyberneticImplant = rng.next() < 0.1
+        const implantType = Math.floor(rng.next() * 4) // Eye, arm, leg, brain
+        const augmentedReality = Math.sin(baseX * 6 + baseY * 4) > 0.8
+
+        // Power grids and energy sources
+        const powerGrid = Math.sin(baseX * 10) * Math.cos(baseY * 8) > 0.6
+        const energySource = Math.floor(rng.next() * 3) // Solar, nuclear, fusion
+
+        x = baseX + (hologram ? Math.sin(i * 0.3) * 0.1 : 0) + (flyingVehicle ? Math.cos(i * 0.5) * 0.1 : 0)
+        y = baseY + (cyberneticImplant ? Math.sin(i * 0.4) * 0.08 : 0) + (powerGrid ? Math.cos(i * 0.2) * 0.05 : 0)
+
+        metadata = {
+          buildingHeight: buildingHeight,
+          streetLevel: streetLevel,
+          hologram: hologram,
+          hologramType: hologram ? hologramType : -1,
+          hologramBrightness: hologram ? hologramBrightness : 0,
+          neonSign: neonSign,
+          neonColor: neonSign ? neonColor : -1,
+          digitalDisplay: digitalDisplay,
+          flyingVehicle: flyingVehicle,
+          vehicleType: flyingVehicle ? vehicleType : -1,
+          vehicleAltitude: flyingVehicle ? vehicleAltitude : 0,
+          cyberneticImplant: cyberneticImplant,
+          implantType: cyberneticImplant ? implantType : -1,
+          augmentedReality: augmentedReality,
+          powerGrid: powerGrid,
+          energySource: powerGrid ? energySource : -1,
+          populationDensity: buildingHeight * 0.01,
+          crimeRate: rng.range(0, 100),
+          technologyLevel: rng.range(5, 10),
+        }
+        break
+      }
+
+      case "lava": {
+        // Volcanic landscapes with lava flows, volcanic vents, and geothermal activity
+        const elevation = Math.abs(baseY) * 50
+        const lavaFlow = Math.sin(baseX * 3) * Math.cos(baseY * 2) > 0.6
+        const volcanicVent = rng.next() < 0.02
+        const geothermalActivity = Math.sin(baseX * 8 + baseY * 6) * 0.3
+
+        // Magma chambers and tectonic plates
+        const magmaChamber = rng.next() < 0.01
+        const tectonicPlate = Math.floor(rng.next() * 4) // Eurasian, African, American, Pacific
+
+        // Ash clouds and pyroclastic flows
+        const ashCloud = rng.next() < 0.05
+        const pyroclasticFlow = ashCloud && Math.sin(baseX * 5 + i * 0.1) > 0.8
+
+        // Geysers and hot springs
+        const geyser = rng.next() < 0.03
+        const hotSpring = Math.sin(baseX * 4 + baseY * 3) > 0.7
+
+        x = baseX + (lavaFlow ? Math.sin(i * 0.2) * 0.1 : 0) + (volcanicVent ? Math.cos(i * 0.3) * 0.08 : 0)
+        y = baseY + (geothermalActivity ? Math.sin(i * 0.4) * 0.06 : 0) + (ashCloud ? Math.cos(i * 0.5) * 0.04 : 0)
+
+        metadata = {
+          elevation: elevation,
+          lavaFlow: lavaFlow,
+          volcanicVent: volcanicVent,
+          geothermalActivity: geothermalActivity,
+          magmaChamber: magmaChamber,
+          tectonicPlate: magmaChamber ? tectonicPlate : -1,
+          ashCloud: ashCloud,
+          pyroclasticFlow: pyroclasticFlow,
+          geyser: geyser,
+          hotSpring: hotSpring,
+          temperature: 100 + elevation * 0.1,
+          atmosphericPressure: 1 + elevation * 0.01,
+          seismicActivity: rng.range(0, 10),
+          volcanicExplosivityIndex: rng.range(0, 8),
+        }
+        break
+      }
+
+      case "arctic": {
+        // Frozen landscapes with glaciers, icebergs, and polar wildlife
+        const iceThickness = Math.abs(baseY) * 80
+        const glacier = Math.sin(baseX * 2) * Math.cos(baseY * 1.5) > 0.7
+        const iceberg = rng.next() < 0.03
+        const polarWildlife = rng.next() < 0.05
+        const wildlifeType = Math.floor(rng.next() * 4) // Polar bear, penguin, seal, arctic fox
+
+        // Aurora borealis and polar nights
+        const auroraBorealis = Math.sin(baseX * 5 + baseY * 3) > 0.8
+        const polarNight = Math.abs(baseY) > 1.5
+
+        // Ice caves and frozen lakes
+        const iceCave = rng.next() < 0.01
+        const frozenLake = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
+
+        x = baseX + (glacier ? Math.sin(i * 0.3) * 0.1 : 0) + (iceberg ? Math.cos(i * 0.2) * 0.08 : 0)
+        y = baseY + (auroraBorealis ? Math.sin(i * 0.4) * 0.06 : 0) + (polarNight ? Math.cos(i * 0.5) * 0.04 : 0)
+
+        metadata = {
+          iceThickness: iceThickness,
+          glacier: glacier,
+          iceberg: iceberg,
+          polarWildlife: polarWildlife,
+          wildlifeType: polarWildlife ? wildlifeType : -1,
+          auroraBorealis: auroraBorealis,
+          polarNight: polarNight,
+          iceCave: iceCave,
+          frozenLake: frozenLake,
+          temperature: -20 + iceThickness * 0.01,
+          windSpeed: rng.range(0, 50),
+          snowfall: rng.range(0, 100),
+          iceCrystals: rng.range(0, 100),
+        }
+        break
+      }
+
+      case "sunset": {
+        // Warm sunset landscapes with golden light, silhouettes, and atmospheric effects
+        const horizon = baseY * 50
+        const goldenLight = Math.sin(baseX * 2) * Math.cos(baseY * 1.5) > 0.7
+        const silhouette = rng.next() < 0.05
+        const silhouetteType = Math.floor(rng.next() * 4) // Tree, mountain, building, person
+
+        // Cloud formations and atmospheric haze
+        const cloudFormation = Math.sin(baseX * 5 + baseY * 3) > 0.8
+        const atmosphericHaze = Math.abs(baseY) > 0.5
+
+        // Bird flocks and evening sounds
+        const birdFlock = rng.next() < 0.03
+        const eveningSounds = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
+
+        x = baseX + (goldenLight ? Math.sin(i * 0.3) * 0.1 : 0) + (silhouette ? Math.cos(i * 0.2) * 0.08 : 0)
+        y = baseY + (cloudFormation ? Math.sin(i * 0.4) * 0.06 : 0) + (atmosphericHaze ? Math.cos(i * 0.5) * 0.04 : 0)
+
+        metadata = {
+          horizon: horizon,
+          goldenLight: goldenLight,
+          silhouette: silhouette,
+          silhouetteType: silhouette ? silhouetteType : -1,
+          cloudFormation: cloudFormation,
+          atmosphericHaze: atmosphericHaze,
+          birdFlock: birdFlock,
+          eveningSounds: eveningSounds,
+          temperature: 25 + horizon * 0.01,
+          humidity: rng.range(0, 100),
+          windSpeed: rng.range(0, 20),
+          airQuality: rng.range(0, 100),
+        }
+        break
+      }
+
+      case "toxic": {
+        // Polluted landscapes with toxic waste, chemical spills, and environmental hazards
+        const pollutionLevel = Math.abs(baseY) * 60
+        const toxicWaste = Math.sin(baseX * 3) * Math.cos(baseY * 2) > 0.7
+        const chemicalSpill = rng.next() < 0.03
+        const environmentalHazard = Math.sin(baseX * 8 + baseY * 6) * 0.3
+
+        // Radioactive zones and contaminated water sources
+        const radioactiveZone = rng.next() < 0.01
+        const contaminatedWater = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
+
+        // Mutated creatures and toxic plants
+        const mutatedCreature = rng.next() < 0.05
+        const toxicPlant = Math.sin(baseX * 5 + i * 0.1) > 0.8
+
+        x = baseX + (toxicWaste ? Math.sin(i * 0.2) * 0.1 : 0) + (chemicalSpill ? Math.cos(i * 0.3) * 0.08 : 0)
+        y =
+          baseY +
+          (environmentalHazard ? Math.sin(i * 0.4) * 0.06 : 0) +
+          (radioactiveZone ? Math.cos(i * 0.5) * 0.04 : 0)
+
+        metadata = {
+          pollutionLevel: pollutionLevel,
+          toxicWaste: toxicWaste,
+          chemicalSpill: chemicalSpill,
+          environmentalHazard: environmentalHazard,
+          radioactiveZone: radioactiveZone,
+          contaminatedWater: contaminatedWater,
+          mutatedCreature: mutatedCreature,
+          toxicPlant: toxicPlant,
+          temperature: 30 + pollutionLevel * 0.01,
+          airQuality: Math.max(0, 100 - pollutionLevel),
+          waterQuality: Math.max(0, 100 - pollutionLevel),
+          radiationLevel: rng.range(0, 100),
+        }
+        break
+      }
+
+      case "ember": {
+        // Scorched landscapes with burning forests, volcanic ash, and fiery skies
+        const fireIntensity = Math.abs(baseY) * 70
+        const burningForest = Math.sin(baseX * 3) * Math.cos(baseY * 2) > 0.7
+        const volcanicAsh = rng.next() < 0.03
+        const fierySky = Math.sin(baseX * 8 + baseY * 6) * 0.3
+
+        // Lava rivers and smoldering ruins
+        const lavaRiver = rng.next() < 0.01
+        const smolderingRuins = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
+
+        // Fire creatures and ash spirits
+        const fireCreature = rng.next() < 0.05
+        const ashSpirit = Math.sin(baseX * 5 + i * 0.1) > 0.8
+
+        x = baseX + (burningForest ? Math.sin(i * 0.2) * 0.1 : 0) + (volcanicAsh ? Math.cos(i * 0.3) * 0.08 : 0)
+        y = baseY + (fierySky ? Math.sin(i * 0.4) * 0.06 : 0) + (lavaRiver ? Math.cos(i * 0.5) * 0.04 : 0)
+
+        metadata = {
+          fireIntensity: fireIntensity,
+          burningForest: burningForest,
+          volcanicAsh: volcanicAsh,
+          fierySky: fierySky,
+          lavaRiver: lavaRiver,
+          smolderingRuins: smolderingRuins,
+          fireCreature: fireCreature,
+          ashSpirit: ashSpirit,
+          temperature: 40 + fireIntensity * 0.01,
+          smokeLevel: rng.range(0, 100),
+          emberDensity: rng.range(0, 100),
+          heatRadiation: rng.range(0, 100),
+        }
+        break
+      }
+
+      case "vintage": {
+        // Old-fashioned landscapes with sepia tones, antique objects, and nostalgic atmosphere
+        const age = Math.abs(baseY) * 90
+        const sepiaTone = Math.sin(baseX * 3) * Math.cos(baseY * 2) > 0.7
+        const antiqueObject = rng.next() < 0.03
+        const nostalgicAtmosphere = Math.sin(baseX * 8 + baseY * 6) * 0.3
+
+        // Old buildings and vintage vehicles
+        const oldBuilding = rng.next() < 0.01
+        const vintageVehicle = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
+
+        // Classic characters and retro sounds
+        const classicCharacter = rng.next() < 0.05
+        const retroSounds = Math.sin(baseX * 5 + i * 0.1) > 0.8
+
+        x = baseX + (sepiaTone ? Math.sin(i * 0.2) * 0.1 : 0) + (antiqueObject ? Math.cos(i * 0.3) * 0.08 : 0)
+        y = baseY + (nostalgicAtmosphere ? Math.sin(i * 0.4) * 0.06 : 0) + (oldBuilding ? Math.cos(i * 0.5) * 0.04 : 0)
+
+        metadata = {
+          age: age,
+          sepiaTone: sepiaTone,
+          antiqueObject: antiqueObject,
+          nostalgicAtmosphere: nostalgicAtmosphere,
+          oldBuilding: oldBuilding,
+          vintageVehicle: vintageVehicle,
+          classicCharacter: classicCharacter,
+          retroSounds: retroSounds,
+          stylePeriod: Math.floor(rng.next() * 5), // Victorian, Edwardian, Art Deco, etc.
+          fashionStyle: Math.floor(rng.next() * 5),
+          musicGenre: Math.floor(rng.next() * 5),
+          technologyLevel: Math.floor(rng.next() * 5),
+        }
+        break
+      }
+
+      case "neon": {
+        // Vibrant neon landscapes with glowing signs, electric lights, and futuristic vibes
+        const brightness = Math.abs(baseY) * 80
+        const glowingSign = Math.sin(baseX * 3) * Math.cos(baseY * 2) > 0.7
+        const electricLights = rng.next() < 0.03
+        const futuristicVibes = Math.sin(baseX * 8 + baseY * 6) * 0.3
+
+        // Neon buildings and electric vehicles
+        const neonBuilding = rng.next() < 0.01
+        const electricVehicle = Math.sin(baseX * 4) * Math.cos(baseY * 3) < -0.8
+
+        // Cyberpunk characters and synthwave sounds
+        const cyberpunkCharacter = rng.next() < 0.05
+        const synthwaveSounds = Math.sin(baseX * 5 + i * 0.1) > 0.8
+
+        x = baseX + (glowingSign ? Math.sin(i * 0.2) * 0.1 : 0) + (electricLights ? Math.cos(i * 0.3) * 0.08 : 0)
+        y = baseY + (futuristicVibes ? Math.sin(i * 0.4) * 0.06 : 0) + (neonBuilding ? Math.cos(i * 0.5) * 0.04 : 0)
+
+        metadata = {
+          brightness: brightness,
+          glowingSign: glowingSign,
+          electricLights: electricLights,
+          futuristicVibes: futuristicVibes,
+          neonBuilding: neonBuilding,
+          electricVehicle: electricVehicle,
+          cyberpunkCharacter: cyberpunkCharacter,
+          synthwaveSounds: synthwaveSounds,
+          colorPalette: Math.floor(rng.next() * 5), // Neon pink, electric blue, etc.
+          technologyLevel: Math.floor(rng.next() * 5),
+          energySource: Math.floor(rng.next() * 5),
+          cyberneticImplants: Math.floor(rng.next() * 5),
+        }
+        break
+      }
+    }
+
+    transformedPoints.push({ x, y, metadata })
+  }
+
+  return transformedPoints
+}
+
+// Helper functions
+function isPrime(n: number): boolean {
+  if (n <= 1) return false
+  for (let i = 2; i <= Math.sqrt(n); i++) {
+    if (n % i === 0) return false
+  }
+  return true
+}
+
+function fibonacciSpiral(x: number, y: number): number {
+  const r = Math.sqrt(x * x + y * y)
+  const theta = Math.atan2(y, x)
+  return Math.exp(theta / 1.618) * r
+}
+
+/**
+ * generateHighResFlowField – private helper that renders a high-resolution
+ * flow field by generating a dataset, applying a scenario transform, and
+ * then converting the points to a string.
+ */
+function generateHighResFlowField(params: UpscaleParams): string {
+  const { dataset, scenario, seed, numSamples, noiseScale, timeStep } = params
+
+  // Generate the base dataset
+  const points = generateDataset(dataset, seed, numSamples, noiseScale)
+
+  // Apply scenario transformations
+  const rng = new SeededRandom(seed)
+  const transformedPoints = applyScenarioTransform(points, scenario, rng)
+
+  // Convert points to string format
+  let flowField = ""
+  for (let i = 0; i < transformedPoints.length; i++) {
+    const { x, y } = transformedPoints[i]
+    const angle = Math.atan2(y, x)
+    const magnitude = Math.sqrt(x * x + y * y)
+    const adjustedAngle = angle + timeStep * 0.1 // Animate the flow
+
+    const scaledX = x * params.scaleFactor
+    const scaledY = y * params.scaleFactor
+
+    flowField += `${scaledX.toFixed(3)},${scaledY.toFixed(3)},${adjustedAngle.toFixed(3)}\n`
+  }
+
+  return flowField
+}
+
+/**
+ * generateStereographicProjection – private helper that renders a
+ * stereographic projection of a flow field.
+ */
+function generateStereographicProjection(params: GenerationParams): string {
+  const { dataset, scenario, seed, numSamples, noiseScale, timeStep, stereographicPerspective } = params
+
+  // Generate the base dataset
+  const points = generateDataset(dataset, seed, numSamples, noiseScale)
+
+  // Apply scenario transformations
+  const rng = new SeededRandom(seed)
+  const transformedPoints = applyScenarioTransform(points, scenario, rng)
+
+  // Define the perspective point for stereographic projection
+  const perspective = stereographicPerspective === "north" ? { x: 0, y: 1 } : { x: 0, y: -1 }
+
+  // Convert points to string format with stereographic projection
+  let flowField = ""
+  for (let i = 0; i < transformedPoints.length; i++) {
+    const { x, y } = transformedPoints[i]
+
+    // Stereographic projection formula
+    const k = 2 / (1 + (x - perspective.x) * (x - perspective.x) + (y - perspective.y) * (y - perspective.y))
+    const projectedX = (x - perspective.x) * k
+    const projectedY = (y - perspective.y) * k
+
+    const angle = Math.atan2(projectedY, projectedX)
+    const magnitude = Math.sqrt(projectedX * projectedX + projectedY * projectedY)
+    const adjustedAngle = angle + timeStep * 0.1 // Animate the flow
+
+    flowField += `${projectedX.toFixed(3)},${projectedY.toFixed(3)},${adjustedAngle.toFixed(3)}\n`
+  }
+
+  return flowField
+}
+
+/**
+ * generateFlowField – public helper that decides whether to render a normal
+ * high-resolution flow field or a stereographic projection, based on the
+ * incoming parameters.  This is the function other parts of the app import.
+ */
+export function generateFlowField(params: GenerationParams): string {
+  if (params.enableStereographic) {
+    // Delegate to the dedicated stereographic renderer.
+    return generateStereographicProjection(params)
+  }
+
+  // For a standard flow-field, reuse the high-res path with neutral settings.
+  return generateHighResFlowField({
+    ...params,
+    scaleFactor: 1,
+    highResolution: false,
+    extraDetail: false,
+  })
+}
