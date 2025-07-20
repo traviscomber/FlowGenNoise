@@ -1410,6 +1410,147 @@ function addUrbanStereographicElements(
     const y = center + buildingR * Math.sin(angle) - buildingHeight / 2
 
     elements.push(
-      `<rect x="${x}" y="${y}" width="${buildingWidth}" height="${buildingHeight}" 
-       fill="${colours[i % colours.length]}" opacity="0.6" 
-       stroke="${colours[(i + 1) % colours.length]}" stroke\
+      `<rect x="${x}" y="${y}" width="${buildingWidth}" height="${buildingHeight}"
+        fill="${colours[i % colours.length]}" opacity="0.6"
+        stroke="${colours[(i + 1) % colours.length]}" stroke-width="1"/>`,
+    )
+  }
+  // Add road/path in centre
+  const roadElements: string[] = []
+  const roadWidth = radius * 0.2
+  roadElements.push(`<circle cx="${center}" cy="${center}" r="${roadWidth}" fill="#444" opacity="0.7"/>`)
+  elements.push(...roadElements)
+}
+
+function addLandscapeStereographicElements(
+  elements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add tree-like structures around the perimeter (little planet view)
+  const numTrees = 24
+  for (let i = 0; i < numTrees; i++) {
+    const angle = (i / numTrees) * 2 * Math.PI
+    const treeR = radius * (0.6 + random() * 0.2)
+    const trunkLen = 10 + random() * 20
+    const x = center + treeR * Math.cos(angle) - trunkLen / 2
+    const y = center + treeR * Math.sin(angle) - trunkLen / 2
+
+    elements.push(
+      `<rect x="${x}" y="${y}" width="${trunkLen}" height="${trunkLen}"
+        fill="${colours[i % colours.length]}" opacity="0.6"
+        stroke="${colours[(i + 1) % colours.length]}" stroke-width="1"/>`,
+    )
+  }
+}
+
+function addGeologicalStereographicElements(
+  elements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add rock-like structures around the perimeter (little planet view)
+  const numRocks = 20
+  for (let i = 0; i < numRocks; i++) {
+    const angle = (i / numRocks) * 2 * Math.PI
+    const rockR = radius * (0.6 + random() * 0.2)
+    const rockLen = 10 + random() * 20
+    const x = center + rockR * Math.cos(angle) - rockLen / 2
+    const y = center + rockR * Math.sin(angle) - rockLen / 2
+
+    elements.push(
+      `<rect x="${x}" y="${y}" width="${rockLen}" height="${rockLen}"
+        fill="${colours[i % colours.length]}" opacity="0.6"
+        stroke="${colours[(i + 1) % colours.length]}" stroke-width="1"/>`,
+    )
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  NEW “tunnel” helpers (simple placeholders - extend later)          */
+/* ------------------------------------------------------------------ */
+
+function addUrbanTunnelElements(
+  elements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Buildings now point *inward* (looking up).  Draw simple blocks fading to centre.
+  const numBuildings = 16
+  for (let i = 0; i < numBuildings; i++) {
+    const angle = (i / numBuildings) * 2 * Math.PI
+    const dist = radius * (0.2 + random() * 0.3)
+    const height = radius * (0.6 + random() * 0.3)
+    const x1 = center + dist * Math.cos(angle)
+    const y1 = center + dist * Math.sin(angle)
+    const x2 = center + (dist + height) * Math.cos(angle)
+    const y2 = center + (dist + height) * Math.sin(angle)
+    elements.push(
+      `<polygon points="${x1},${y1} ${x2},${y2}"
+        fill="${colours[i % colours.length]}" opacity="0.5"/>`,
+    )
+  }
+}
+
+function addLandscapeTunnelElements(
+  elements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Simple tree silhouettes pointing inward
+  const numTrees = 24
+  for (let i = 0; i < numTrees; i++) {
+    const angle = (i / numTrees) * 2 * Math.PI
+    const dist = radius * (0.15 + random() * 0.25)
+    const trunkLen = radius * 0.5
+    const x1 = center + dist * Math.cos(angle)
+    const y1 = center + dist * Math.sin(angle)
+    const x2 = center + (dist + trunkLen) * Math.cos(angle)
+    const y2 = center + (dist + trunkLen) * Math.sin(angle)
+    elements.push(
+      `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+        stroke="${colours[2] || colours[0]}" stroke-width="2" opacity="0.6"/>`,
+    )
+  }
+}
+
+function addGeologicalTunnelElements(
+  elements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Rocky spikes pointing towards centre
+  const numRocks = 20
+  for (let i = 0; i < numRocks; i++) {
+    const angle = (i / numRocks) * 2 * Math.PI
+    const dist = radius * (0.1 + random() * 0.25)
+    const spikeLen = radius * (0.4 + random() * 0.2)
+    const baseX = center + dist * Math.cos(angle)
+    const baseY = center + dist * Math.sin(angle)
+    const tipX = center + (dist + spikeLen) * Math.cos(angle)
+    const tipY = center + (dist + spikeLen) * Math.sin(angle)
+    elements.push(
+      `<line x1="${baseX}" y1="${baseY}" x2="${tipX}" y2="${tipY}"
+        stroke="${colours[i % colours.length]}" stroke-width="3" opacity="0.5"/>`,
+    )
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  End of file                                                        */
+/* ------------------------------------------------------------------ */
