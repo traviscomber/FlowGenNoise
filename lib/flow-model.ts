@@ -1502,95 +1502,176 @@ export function generateStereographicProjection(
 
   let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`
 
-  // Add background gradient
+  // Add circular clipping mask
   svgContent += `
     <defs>
+      <clipPath id="circleClip">
+        <circle cx="${center}" cy="${center}" r="${radius}"/>
+      </clipPath>
       <radialGradient id="stereoGradient" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.15"/>
-        <stop offset="65%" style="stop-color:${colors[1]};stop-opacity:0.4"/>
-        <stop offset="100%" style="stop-color:${colors[2] || colors[0]};stop-opacity:0.8"/>
+        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.9"/>
+        <stop offset="70%" style="stop-color:${colors[1]};stop-opacity:0.6"/>
+        <stop offset="100%" style="stop-color:${colors[2] || colors[0]};stop-opacity:1"/>
       </radialGradient>
     </defs>
-    <circle cx="${center}" cy="${center}" r="${radius}" fill="url(#stereoGradient)" />
   `
 
-  // Add ground/landscape elements based on scenario
-  const groundElements: string[] = []
-  addStereographicGroundElements(groundElements, params.scenario, size, center, radius, colors, rng, isTunnel)
-  svgContent += groundElements.join("\n")
+  // Background circle
+  svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" fill="url(#stereoGradient)" />`
 
-  // Transform mathematical points to stereographic projection
-  const pathElements: string[] = []
-  const layers = 4
-  const spiralsPerLayer = 6
+  // Group all content within the circular clip
+  svgContent += `<g clip-path="url(#circleClip)">`
 
-  for (let layer = 0; layer < layers; layer++) {
-    for (let spiral = 0; spiral < spiralsPerLayer; spiral++) {
-      const colorIndex = (layer + spiral) % colors.length
-      const color = colors[colorIndex]
+  // Transform and render mathematical points with stereographic projection
+  for (let i = 0; i < transformedPoints.length; i++) {
+    const point = transformedPoints[i]
 
-      let path = ""
-      const points = Math.floor(params.numSamples / (layers * spiralsPerLayer))
+    // Convert Cartesian coordinates to polar
+    const originalR = Math.sqrt(point.x * point.x + point.y * point.y)
+    const originalTheta = Math.atan2(point.y, point.x)
 
-      for (let i = 0; i <= points; i++) {
-        const t = i / points
-        const angle = t * 4 * Math.PI + (spiral / spiralsPerLayer) * 2 * Math.PI
-        const r = (t * 0.8 + 0.1) * radius
+    // Apply stereographic projection
+    let projectedR: number
+    if (isTunnel) {
+      // Tunnel effect: invert the projection (center becomes edge, edge becomes center)
+      projectedR = originalR > 0 ? (radius * 0.8) / (1 + originalR * 2) : 0
+    } else {
+      // Little planet effect: normal stereographic projection
+      const normalizedR = Math.min(originalR * 2, 3) // Limit to prevent extreme values
+      projectedR = (normalizedR * radius * 0.4) / (1 + normalizedR * normalizedR * 0.5)
+    }
 
-        // Apply stereographic transformation
-        const sphereR = r / radius // Normalize to 0-1
-        const sphereTheta = angle
+    // Convert back to Cartesian coordinates
+    const projectedX = center + projectedR * Math.cos(originalTheta)
+    const projectedY = center + projectedR * Math.sin(originalTheta)
 
-        // Stereographic projection formula
-        const projR = (2 * sphereR) / (1 + sphereR * sphereR)
-        const finalR = projR * radius * 0.9
+    // Ensure point is within the circle
+    const distFromCenter = Math.sqrt((projectedX - center) ** 2 + (projectedY - center) ** 2)
+    if (distFromCenter <= radius * 0.95) {
+      // Use color palette for coloring
+      const colorIndex = Math.floor((i / transformedPoints.length) * colors.length) % colors.length
+      const pointColor = colors[colorIndex]
 
-        // Add mathematical variations
-        const mathVariation = Math.sin(angle * 3 + layer) * Math.cos(angle * 2 + spiral) * 20
-        const noise = Math.sin(angle * 10 + params.seed * 0.01) * params.noiseScale * 15
+      // Calculate point size based on distance from center and metadata
+      let pointRadius = 1.5
+      let opacity = 0.7
 
-        const x = center + (finalR + mathVariation + noise) * Math.cos(sphereTheta)
-        const y = center + (finalR + mathVariation + noise) * Math.sin(sphereTheta)
-
-        // Ensure points stay within the circle
-        const distFromCenter = Math.sqrt((x - center) ** 2 + (y - center) ** 2)
-        if (distFromCenter <= radius * 0.95) {
-          if (i === 0) {
-            path = `M ${x.toFixed(2)} ${y.toFixed(2)}`
-          } else {
-            path += ` L ${x.toFixed(2)} ${y.toFixed(2)}`
+      // Apply scenario-specific styling
+      switch (params.scenario) {
+        case "pure":
+          pointRadius = 1 + point.metadata.magnitude * 2
+          opacity = 0.6 + (point.metadata.magnitude / 3) * 0.4
+          if (point.metadata.isPrime) {
+            pointRadius *= 1.3
           }
-        }
+          break
+        case "cosmic":
+          pointRadius = 0.8 + (point.metadata.isStar ? 3 : 1)
+          opacity = point.metadata.isStar ? 0.9 : 0.5
+          break
+        case "forest":
+          pointRadius = 1 + (point.metadata.isTree ? 2 : 0.5)
+          opacity = point.metadata.isTree ? 0.8 : 0.4
+          break
+        case "ocean":
+          pointRadius = 1 + point.metadata.depth * 0.5
+          opacity = 0.4 + point.metadata.depth * 0.4
+          break
+        case "neural":
+          pointRadius = 1 + Math.abs(point.metadata.firingRate || 0) * 0.02
+          opacity = 0.5 + Math.abs(point.metadata.synapticStrength || 0) * 0.4
+          break
+        default:
+          pointRadius = 1 + point.metadata.intensity * 1.5
+          opacity = 0.5 + Math.abs(point.metadata.pattern || 0) * 0.3
       }
 
-      if (path) {
-        pathElements.push(
-          `<path d="${path}" fill="none" stroke="${color}" stroke-width="1.5" stroke-opacity="0.7" stroke-linecap="round"/>`,
-        )
+      // Adjust size based on distance from center for depth effect
+      const depthFactor = isTunnel
+        ? (1 - distFromCenter / radius) * 0.5 + 0.5
+        : // Tunnel: smaller at edges
+          (distFromCenter / radius) * 0.5 + 0.5 // Planet: smaller at center
+
+      pointRadius *= depthFactor
+
+      svgContent += `<circle cx="${projectedX.toFixed(2)}" cy="${projectedY.toFixed(2)}" r="${pointRadius.toFixed(2)}" fill="${pointColor}" opacity="${opacity.toFixed(2)}"/>`
+    }
+  }
+
+  // Add connecting lines for some scenarios
+  if (params.scenario === "neural" || params.scenario === "pure") {
+    const connectionCount = Math.min(50, Math.floor(transformedPoints.length / 10))
+    for (let i = 0; i < connectionCount; i++) {
+      const point1 = transformedPoints[i]
+      const point2 =
+        transformedPoints[(i + Math.floor(transformedPoints.length / connectionCount)) % transformedPoints.length]
+
+      // Apply stereographic projection to both points
+      const r1 = Math.sqrt(point1.x * point1.x + point1.y * point1.y)
+      const theta1 = Math.atan2(point1.y, point1.x)
+      const r2 = Math.sqrt(point2.x * point2.x + point2.y * point2.y)
+      const theta2 = Math.atan2(point2.y, point2.x)
+
+      let projR1, projR2
+      if (isTunnel) {
+        projR1 = r1 > 0 ? (radius * 0.8) / (1 + r1 * 2) : 0
+        projR2 = r2 > 0 ? (radius * 0.8) / (1 + r2 * 2) : 0
+      } else {
+        const normR1 = Math.min(r1 * 2, 3)
+        const normR2 = Math.min(r2 * 2, 3)
+        projR1 = (normR1 * radius * 0.4) / (1 + normR1 * normR1 * 0.5)
+        projR2 = (normR2 * radius * 0.4) / (1 + normR2 * normR2 * 0.5)
+      }
+
+      const x1 = center + projR1 * Math.cos(theta1)
+      const y1 = center + projR1 * Math.sin(theta1)
+      const x2 = center + projR2 * Math.cos(theta2)
+      const y2 = center + projR2 * Math.sin(theta2)
+
+      // Check if both points are within the circle
+      const dist1 = Math.sqrt((x1 - center) ** 2 + (y1 - center) ** 2)
+      const dist2 = Math.sqrt((x2 - center) ** 2 + (y2 - center) ** 2)
+
+      if (dist1 <= radius * 0.95 && dist2 <= radius * 0.95) {
+        const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        if (distance < radius * 0.3) {
+          // Only connect nearby points
+          svgContent += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colors[1]}" stroke-width="0.5" opacity="0.3"/>`
+        }
       }
     }
   }
 
-  svgContent += pathElements.join("\n")
+  // Add radial grid lines for reference
+  if (params.scenario === "pure") {
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * 2 * Math.PI
+      const x1 = center + Math.cos(angle) * radius * 0.1
+      const y1 = center + Math.sin(angle) * radius * 0.1
+      const x2 = center + Math.cos(angle) * radius * 0.9
+      const y2 = center + Math.sin(angle) * radius * 0.9
 
-  // Add atmospheric effects around the edge
-  for (let i = 0; i < 20; i++) {
-    const angle = (i / 20) * 2 * Math.PI
-    const r = radius * (0.85 + Math.random() * 0.1)
-    const x = center + r * Math.cos(angle)
-    const y = center + r * Math.sin(angle)
-    const size = Math.random() * 3 + 1
-    const opacity = Math.random() * 0.5 + 0.3
+      svgContent += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colors[colors.length - 1]}" stroke-width="0.3" opacity="0.2"/>`
+    }
 
-    svgContent += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${size.toFixed(1)}" fill="${colors[colors.length - 1]}" opacity="${opacity.toFixed(2)}"/>`
+    // Add concentric circles
+    for (let i = 1; i <= 4; i++) {
+      const circleRadius = (i / 4) * radius * 0.8
+      svgContent += `<circle cx="${center}" cy="${center}" r="${circleRadius.toFixed(2)}" fill="none" stroke="${colors[colors.length - 1]}" stroke-width="0.3" opacity="0.2"/>`
+    }
   }
 
-  // Border ring
-  svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="${colors[colors.length - 1]}" stroke-width="3" opacity="0.85" />`
+  svgContent += `</g>` // Close clipping group
 
-  // Projection label
-  const perspectiveLabel = isTunnel ? "TUNNEL" : "LITTLE PLANET"
-  svgContent += `<text x="${size - 10}" y="${size - 10}" text-anchor="end" font-family="monospace" font-size="10" fill="${colors[colors.length - 1]}" opacity="0.7">${perspectiveLabel}</text>`
+  // Add border ring
+  svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="${colors[colors.length - 1]}" stroke-width="3" opacity="0.8" />`
+
+  // Add projection type label
+  const perspectiveLabel = isTunnel ? "TUNNEL VISION" : "LITTLE PLANET"
+  svgContent += `<text x="${size - 10}" y="${size - 10}" text-anchor="end" font-family="monospace" font-size="8" fill="${colors[colors.length - 1]}" opacity="0.7">${perspectiveLabel}</text>`
+
+  // Add mathematical dataset label
+  svgContent += `<text x="10" y="${size - 10}" text-anchor="start" font-family="monospace" font-size="8" fill="${colors[colors.length - 1]}" opacity="0.7">${params.dataset.toUpperCase()} + ${params.scenario.toUpperCase()}</text>`
 
   svgContent += "</svg>"
   return svgContent
