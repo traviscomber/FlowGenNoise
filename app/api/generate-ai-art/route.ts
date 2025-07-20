@@ -1,24 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { experimental_generateImage } from "ai"
+import { experimental_generateImage, NoImageGeneratedError } from "ai"
 import { openai } from "@ai-sdk/openai"
 
-/**
- * POST /api/generate-ai-art
- *
- * Body:
- * {
- *   dataset: string,
- *   scenario: string,
- *   colorScheme: string,
- *   seed: number,
- *   numSamples: number,
- *   noise: number,
- *   customPrompt?: string,
- *   enableStereographic?: boolean,
- *   stereographicPerspective?: string
- * }
- */
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const {
       dataset,
@@ -30,123 +14,124 @@ export async function POST(req: NextRequest) {
       customPrompt,
       enableStereographic,
       stereographicPerspective,
-    } = await req.json()
+    } = await request.json()
 
-    /* --------------------------------------------------------------------- */
-    /* 1. Build a prompt (use customPrompt if one was provided)              */
-    /* --------------------------------------------------------------------- */
+    let finalPrompt = customPrompt
 
-    let prompt =
-      customPrompt ||
-      `Generate a highly detailed, abstract mathematical artwork.
-Dataset: ${dataset}
-Scenario: ${scenario}
-Color Scheme: ${colorScheme}
-Number of Sample Points: ${numSamples}
-Noise Scale: ${noise}
-`
+    // If no custom prompt is provided, or if it's empty after enhancement, generate a default detailed prompt
+    if (!finalPrompt) {
+      let basePrompt = `Generate a highly detailed, abstract mathematical artwork.
+      The core structure is derived from a "${dataset}" dataset, featuring intricate patterns like ${
+        dataset === "spirals"
+          ? "Fibonacci, logarithmic, and Archimedean spirals with golden ratio and prime number modulations"
+          : dataset === "quantum"
+            ? "Schrödinger wave functions, Heisenberg uncertainty principles, and quantum entanglement correlations"
+            : dataset === "strings"
+              ? "11-dimensional M-theory projections, Calabi-Yau manifold compactifications, and string vibration modes"
+              : dataset === "fractals"
+                ? "Hausdorff dimensions, Sierpinski triangle iterations, Julia set dynamics, and Barnsley fern mutations"
+                : dataset === "topology"
+                  ? "Klein bottle embeddings, Möbius strips, Torus knots, and Hopf fibrations"
+                  : dataset === "moons"
+                    ? "hyperbolic curves, elliptic functions, and non-Euclidean geometries forming crescent shapes"
+                    : dataset === "circles"
+                      ? "concentric manifold projections, 4D torus embeddings, and Möbius strip influences"
+                      : dataset === "blobs"
+                        ? "Voronoi dynamics, Lorenz attractor chaos, and turbulent flow patterns"
+                        : dataset === "checkerboard"
+                          ? "fractal checkerboard patterns with Mandelbrot-like iterations and complex plane distortions"
+                          : dataset === "gaussian"
+                            ? "multi-modal Gaussian distributions with correlated noise and Perlin-like distortions"
+                            : dataset === "grid"
+                              ? "non-linear grid distortions, Klein bottle transformations, and wave-like effects"
+                              : "complex mathematical structures"
+      }.`
 
-    if (enableStereographic) {
-      if (stereographicPerspective === "little-planet") {
-        prompt += `Apply a dramatic little planet stereographic projection effect, creating a spherical, miniature world view. Emphasize curved horizons, radial distortion, and a sense of looking down onto a tiny, self-contained universe. The mathematical patterns should wrap seamlessly around this spherical form, creating a captivating, immersive visual.`
-      } else if (stereographicPerspective === "tunnel") {
-        prompt += `Apply an intense tunnel vision stereographic projection effect, creating a deep, immersive vortex. Emphasize strong inward curvature, a central vanishing point, and a sense of infinite depth. The mathematical patterns should stretch and distort along this tunnel, drawing the viewer's eye into the core of the artwork.`
+      basePrompt += ` The visual narrative is blended with a "${scenario}" scenario, evoking ${
+        scenario === "pure"
+          ? "sacred geometry, advanced mathematical visualization, and a sense of profound cosmic order"
+          : scenario === "quantum"
+            ? "the ethereal and probabilistic nature of the quantum realm, with shimmering particles and wave-like energy fields"
+            : scenario === "cosmic"
+              ? "vast cosmic scales, gravitational lensing, dark matter halos, and distant nebulae with stellar nurseries"
+              : scenario === "microscopic"
+                ? "the intricate world of molecular dynamics, Brownian motion, chemical bonds, and protein folding"
+                : scenario === "forest"
+                  ? "an enchanted living forest, with L-system fractal trees, bioluminescent flora, and hidden magical energies"
+                  : scenario === "ocean"
+                    ? "the mysterious deep ocean, with bioluminescent creatures, swirling currents, and ancient coral formations"
+                    : scenario === "neural"
+                      ? "the complex architecture of neural networks, with firing neurons, synaptic connections, and intricate brainwave patterns"
+                      : scenario === "crystalline"
+                        ? "perfect crystalline lattice structures, gemstone formations, and subtle light refractions within minerals"
+                        : scenario === "plasma"
+                          ? "dynamic plasma physics, electromagnetic fields, charged particle interactions, and controlled fusion reactions"
+                          : scenario === "atmospheric"
+                            ? "majestic atmospheric phenomena, swirling clouds, lightning strikes, and the ethereal glow of auroras"
+                            : scenario === "geological"
+                              ? "the immense forces of geological time, tectonic plate movements, volcanic eruptions, and mineral crystallization"
+                              : scenario === "biological"
+                                ? "the fundamental processes of biological systems, DNA helices, protein synthesis, and cellular metabolism"
+                                : "a unique artistic interpretation"
+      }.`
+
+      basePrompt += ` The artwork is rendered in a "${colorScheme}" color palette, featuring ${
+        colorScheme === "plasma"
+          ? "deep purples, vibrant magentas, and electric yellows, creating an energetic and fluid visual"
+          : colorScheme === "quantum"
+            ? "probability blues, wave greens, and particle golds, suggesting an otherworldly, ethereal glow"
+            : colorScheme === "cosmic"
+              ? "void blacks, nebula purples, and stark star whites, capturing the grandeur of deep space"
+              : colorScheme === "thermal"
+                ? "absolute zero blues transitioning to fiery oranges and molten golds, depicting intense heat gradients"
+                : colorScheme === "spectral"
+                  ? "a full electromagnetic spectrum, with vibrant reds, greens, and blues blending seamlessly"
+                  : colorScheme === "crystalline"
+                    ? "diamond whites, sapphire blues, and emerald greens, reflecting purity and geometric precision"
+                    : colorScheme === "bioluminescent"
+                      ? "deep sea blues and greens with glowing algae and ethereal light trails"
+                      : colorScheme === "aurora"
+                        ? "deep indigos, teal greens, and golden yellows, mimicking the dance of the northern lights"
+                        : colorScheme === "metallic"
+                          ? "shimmering coppers, silvers, golds, and platinums, evoking a sense of precious metals"
+                          : colorScheme === "prismatic"
+                            ? "intense light refraction, with a full rainbow dispersion and vibrant, sharp color separation"
+                            : colorScheme === "monochromatic"
+                              ? "a perfect grayscale spectrum, emphasizing mathematical form and shadow play"
+                              : colorScheme === "infrared"
+                                ? "deep reds, fiery oranges, and warm yellows, visualizing heat signatures and hidden energies"
+                                : "a rich and harmonious blend of colors"
+      }.`
+
+      basePrompt += ` It incorporates approximately ${numSamples} sample points, with a subtle noise scale of ${noise} to introduce organic imperfections and depth.`
+
+      if (enableStereographic) {
+        if (stereographicPerspective === "little-planet") {
+          basePrompt += ` The entire composition is transformed into a stunning 'Little Planet' stereographic projection, creating a spherical, miniature world effect where the edges of the scene wrap around to form a tiny globe. Emphasize the curved horizon, the sense of looking down onto a small, self-contained universe, and the distortion that makes distant elements appear closer to the center. The perspective should be grand yet intimate, like a tiny celestial body.`
+        } else if (stereographicPerspective === "tunnel") {
+          basePrompt += ` The artwork is projected into a dramatic 'Tunnel Vision' stereographic effect, pulling the viewer into an infinite, inward-curving vortex. Highlight the strong vanishing point at the center, the radial lines converging, and the sense of being drawn into a deep, mesmerizing abyss. The distortion should create a powerful, immersive, and almost hypnotic tunnel-like experience.`
+        }
       }
+
+      basePrompt += ` The final image should be a high-resolution, visually stunning, and conceptually rich piece of digital art, suitable for a gallery display. Focus on intricate details, vibrant colors, and a sense of dynamic mathematical beauty.`
+      finalPrompt = basePrompt
     }
 
-    // Add a general artistic and technical enhancement if no custom prompt is provided
-    if (!customPrompt) {
-      prompt += `
-Render this as an ultra-high-resolution, museum-grade composition. Incorporate advanced HDR lighting, physically based rendering (PBR) materials with subtle subsurface scattering, and a cinematic, photorealistic quality. The composition should balance intricate detail with grand scale, from quantum-level textures to cosmic-scale structures. Use a blend of abstract digital art and professional photography techniques.
-`
-    }
-
-    // Critical instruction to ensure pure abstract visual art
-    prompt += `IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text. Pure abstract visual art only. Focus on colors, shapes, patterns, and mathematical structures as visual elements, not written content.`
-
-    console.log("Final prompt sent to AI:", prompt)
-
-    /* --------------------------------------------------------------------- */
-    /* 2. Try OpenAI DALL·E 3 first                                          */
-    /* --------------------------------------------------------------------- */
-    try {
-      const { image } = await experimental_generateImage({
-        model: openai.image("dall-e-3"),
-        prompt,
-        size: "1792x1024",
-        quality: "hd",
-        style: "vivid",
-      })
-
-      return NextResponse.json({
-        image: `data:image/png;base64,${image.base64}`,
-        promptUsed: prompt,
-        provider: "openai",
-      })
-    } catch (openaiErr: any) {
-      console.warn("OpenAI image generation failed – will try Replicate.", openaiErr)
-    }
-
-    /* --------------------------------------------------------------------- */
-    /* 3. Fallback to Replicate only if a token is available                 */
-    /* --------------------------------------------------------------------- */
-    if (!process.env.REPLICATE_API_TOKEN) {
-      throw new Error("Both OpenAI generation failed and REPLICATE_API_TOKEN is missing.")
-    }
-
-    const replicateResponse = await fetch("https://api.replicate.com/v1/predictions", {
-      method: "POST",
-      headers: {
-        Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-      // IMPORTANT: update version & input fields for the model you actually want
-      body: JSON.stringify({
-        version: "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4", // example SDXL Turbo
-        input: {
-          prompt,
-          width: 1024,
-          height: 1024,
-          num_inference_steps: 30,
-          guidance_scale: 7,
-          seed,
-        },
-      }),
+    const { image } = await experimental_generateImage({
+      model: openai.image("dall-e-3"),
+      prompt: finalPrompt,
     })
 
-    const prediction = await replicateResponse.json()
-
-    if (!replicateResponse.ok) {
-      console.error("Replicate error payload:", prediction)
-      throw new Error(`Replicate API error ${replicateResponse.status}: ${prediction?.detail || "Unknown"}`)
+    return NextResponse.json({ image: image.base64 })
+  } catch (error: any) {
+    console.error("AI image generation error:", error)
+    if (NoImageGeneratedError.isInstance(error)) {
+      console.error("No image generated:", error.cause, error.responses)
+      return NextResponse.json(
+        { error: "AI model failed to generate an image.", details: error.cause?.message || "Unknown error" },
+        { status: 500 },
+      )
     }
-
-    // Poll Replicate prediction until it finishes
-    let result = prediction
-    while (result.status === "starting" || result.status === "processing") {
-      await new Promise((r) => setTimeout(r, 1500))
-      const poll = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
-        headers: { Authorization: `Token ${process.env.REPLICATE_API_TOKEN}` },
-      })
-      result = await poll.json()
-    }
-
-    if (result.status !== "succeeded") {
-      console.error("Replicate final status:", result)
-      throw new Error(`Replicate prediction failed: ${result.status}`)
-    }
-
-    // Some models return a single URL, others an array
-    const finalUrl = Array.isArray(result.output) ? result.output[0] : result.output
-
-    return NextResponse.json({
-      image: finalUrl,
-      promptUsed: prompt,
-      provider: "replicate",
-      replicateStatus: result.status,
-    })
-  } catch (err: any) {
-    console.error("AI art generation route error:", err)
-    return NextResponse.json({ error: "AI art generation failed", detail: err.message }, { status: 500 })
+    return NextResponse.json({ error: "Failed to generate AI art", details: error.message }, { status: 500 })
   }
 }

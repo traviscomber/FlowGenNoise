@@ -15,45 +15,113 @@ export async function POST(request: NextRequest) {
       stereographicPerspective,
     } = await request.json()
 
-    // Create god-level mathematical art prompt
-    const systemPrompt = `You are a world-class mathematical artist and theoretical physicist who creates museum-quality AI art prompts. Generate incredibly detailed, scientifically accurate prompts that combine advanced mathematics, theoretical physics, and professional art direction.`
+    let basePrompt = `Generate a highly detailed, abstract mathematical artwork.
+    The core structure is derived from a "${dataset}" dataset, featuring intricate patterns like ${
+      dataset === "spirals"
+        ? "Fibonacci, logarithmic, and Archimedean spirals with golden ratio and prime number modulations"
+        : dataset === "quantum"
+          ? "Schrödinger wave functions, Heisenberg uncertainty principles, and quantum entanglement correlations"
+          : dataset === "strings"
+            ? "11-dimensional M-theory projections, Calabi-Yau manifold compactifications, and string vibration modes"
+            : dataset === "fractals"
+              ? "Hausdorff dimensions, Sierpinski triangle iterations, Julia set dynamics, and Barnsley fern mutations"
+              : dataset === "topology"
+                ? "Klein bottle embeddings, Möbius strips, Torus knots, and Hopf fibrations"
+                : dataset === "moons"
+                  ? "hyperbolic curves, elliptic functions, and non-Euclidean geometries forming crescent shapes"
+                  : dataset === "circles"
+                    ? "concentric manifold projections, 4D torus embeddings, and Möbius strip influences"
+                    : dataset === "blobs"
+                      ? "Voronoi dynamics, Lorenz attractor chaos, and turbulent flow patterns"
+                      : dataset === "checkerboard"
+                        ? "fractal checkerboard patterns with Mandelbrot-like iterations and complex plane distortions"
+                        : dataset === "gaussian"
+                          ? "multi-modal Gaussian distributions with correlated noise and Perlin-like distortions"
+                          : dataset === "grid"
+                            ? "non-linear grid distortions, Klein bottle transformations, and wave-like effects"
+                            : "complex mathematical structures"
+    }.`
 
-    const enhancementPrompt = `Create a god-level AI art prompt for generating mathematical artwork with these parameters:
+    basePrompt += ` The visual narrative is blended with a "${scenario}" scenario, evoking ${
+      scenario === "pure"
+        ? "sacred geometry, advanced mathematical visualization, and a sense of profound cosmic order"
+        : scenario === "quantum"
+          ? "the ethereal and probabilistic nature of the quantum realm, with shimmering particles and wave-like energy fields"
+          : scenario === "cosmic"
+            ? "vast cosmic scales, gravitational lensing, dark matter halos, and distant nebulae with stellar nurseries"
+            : scenario === "microscopic"
+              ? "the intricate world of molecular dynamics, Brownian motion, chemical bonds, and protein folding"
+              : scenario === "forest"
+                ? "an enchanted living forest, with L-system fractal trees, bioluminescent flora, and hidden magical energies"
+                : scenario === "ocean"
+                  ? "the mysterious deep ocean, with bioluminescent creatures, swirling currents, and ancient coral formations"
+                  : scenario === "neural"
+                    ? "the complex architecture of neural networks, with firing neurons, synaptic connections, and intricate brainwave patterns"
+                    : scenario === "crystalline"
+                      ? "perfect crystalline lattice structures, gemstone formations, and subtle light refractions within minerals"
+                      : scenario === "plasma"
+                        ? "dynamic plasma physics, electromagnetic fields, charged particle interactions, and controlled fusion reactions"
+                        : scenario === "atmospheric"
+                          ? "majestic atmospheric phenomena, swirling clouds, lightning strikes, and the ethereal glow of auroras"
+                          : scenario === "geological"
+                            ? "the immense forces of geological time, tectonic plate movements, volcanic eruptions, and mineral crystallization"
+                            : scenario === "biological"
+                              ? "the fundamental processes of biological systems, DNA helices, protein synthesis, and cellular metabolism"
+                              : "a unique artistic interpretation"
+    }.`
 
-Dataset: ${dataset}
-Scenario: ${scenario} 
-Color Scheme: ${colorScheme}
-Sample Points: ${numSamples}
-Noise Scale: ${noiseScale}
-Stereographic Projection: ${enableStereographic ? "ENABLED" : "DISABLED"}
-${enableStereographic ? `Projection Style: ${stereographicPerspective} (${stereographicPerspective === "little-planet" ? "Looking down perspective creating a tiny planet effect" : "Looking up perspective creating a tunnel vision effect"})` : ""}
-Current Prompt: ${currentPrompt || "None"}
+    basePrompt += ` The artwork is rendered in a "${colorScheme}" color palette, featuring ${
+      colorScheme === "plasma"
+        ? "deep purples, vibrant magentas, and electric yellows, creating an energetic and fluid visual"
+        : colorScheme === "quantum"
+          ? "probability blues, wave greens, and particle golds, suggesting an otherworldly, ethereal glow"
+          : colorScheme === "cosmic"
+            ? "void blacks, nebula purples, and stark star whites, capturing the grandeur of deep space"
+            : colorScheme === "thermal"
+              ? "absolute zero blues transitioning to fiery oranges and molten golds, depicting intense heat gradients"
+              : colorScheme === "spectral"
+                ? "a full electromagnetic spectrum, with vibrant reds, greens, and blues blending seamlessly"
+                : colorScheme === "crystalline"
+                  ? "diamond whites, sapphire blues, and emerald greens, reflecting purity and geometric precision"
+                  : colorScheme === "bioluminescent"
+                    ? "deep sea blues and greens with glowing algae and ethereal light trails"
+                    : colorScheme === "aurora"
+                      ? "deep indigos, teal greens, and golden yellows, mimicking the dance of the northern lights"
+                      : colorScheme === "metallic"
+                        ? "shimmering coppers, silvers, golds, and platinums, evoking a sense of precious metals"
+                        : colorScheme === "prismatic"
+                          ? "intense light refraction, with a full rainbow dispersion and vibrant, sharp color separation"
+                          : colorScheme === "monochromatic"
+                            ? "a perfect grayscale spectrum, emphasizing mathematical form and shadow play"
+                            : colorScheme === "infrared"
+                              ? "deep reds, fiery oranges, and warm yellows, visualizing heat signatures and hidden energies"
+                              : "a rich and harmonious blend of colors"
+    }.`
 
-Generate a professional, museum-quality prompt that includes:
+    basePrompt += ` It incorporates approximately ${numSamples} sample points, with a subtle noise scale of ${noiseScale} to introduce organic imperfections and depth.`
 
-1. MATHEMATICAL FOUNDATION: Describe mathematical concepts as visual patterns and structures
-2. PHYSICAL LAWS: Translate physics principles into visual elements and compositions
-3. VISUAL SPECIFICATIONS: Professional art direction with technical details
-4. LIGHTING & MATERIALS: HDR lighting, PBR materials, subsurface scattering
-5. SCALE & COMPOSITION: From quantum to cosmic scale relationships
-6. ARTISTIC STYLE: Professional photography/digital art techniques
-${enableStereographic ? `7. STEREOGRAPHIC EFFECTS: Incorporate ${stereographicPerspective === "little-planet" ? "little planet spherical distortion effects, curved horizon lines, and miniature world perspective" : "tunnel vision perspective with dramatic inward curvature, vanishing point effects, and immersive depth"}` : ""}
+    if (enableStereographic) {
+      if (stereographicPerspective === "little-planet") {
+        basePrompt += ` The entire composition is transformed into a stunning 'Little Planet' stereographic projection, creating a spherical, miniature world effect where the edges of the scene wrap around to form a tiny globe. Emphasize the curved horizon, the sense of looking down onto a small, self-contained universe, and the distortion that makes distant elements appear closer to the center. The perspective should be grand yet intimate, like a tiny celestial body.`
+      } else if (stereographicPerspective === "tunnel") {
+        basePrompt += ` The artwork is projected into a dramatic 'Tunnel Vision' stereographic effect, pulling the viewer into an infinite, inward-curving vortex. Highlight the strong vanishing point at the center, the radial lines converging, and the sense of being drawn into a deep, mesmerizing abyss. The distortion should create a powerful, immersive, and almost hypnotic tunnel-like experience.`
+      }
+    }
 
-Make it incredibly detailed, scientifically accurate, and artistically sophisticated. Focus on visual representation of mathematical and physical concepts.
+    basePrompt += ` The final image should be a high-resolution, visually stunning, and conceptually rich piece of digital art, suitable for a gallery display. Focus on intricate details, vibrant colors, and a sense of dynamic mathematical beauty.`
 
-${enableStereographic ? `STEREOGRAPHIC NOTE: The artwork should have ${stereographicPerspective === "little-planet" ? "a spherical, planet-like curvature with the viewer looking down at a miniature world. Include curved horizons, radial perspective, and the sense of viewing a tiny sphere from above." : "a dramatic tunnel or vortex-like perspective with strong inward curvature. Include vanishing point effects, radial distortion, and the sense of looking into an infinite tunnel or void."}` : ""}
+    const promptToEnhance = currentPrompt || basePrompt
 
-CRITICAL: End the prompt with "IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text. Pure abstract visual art only. Focus on colors, shapes, patterns, and mathematical structures as visual elements, not written content."`
-
-    const { text } = await generateText({
+    const result = await generateText({
       model: openai("gpt-4o"),
-      system: systemPrompt,
-      prompt: enhancementPrompt,
-      maxTokens: 1200,
-      temperature: 0.8,
+      prompt: `Enhance the following art generation prompt to be more descriptive, artistic, and detailed, suitable for a high-quality AI image generator. Incorporate advanced artistic terminology, lighting, texture, and atmospheric elements. Ensure the core mathematical and scenario descriptions are preserved and expanded upon.
+
+      Original Prompt: "${promptToEnhance}"
+
+      Enhanced Prompt:`,
     })
 
-    return NextResponse.json({ enhancedPrompt: text })
+    return NextResponse.json({ enhancedPrompt: result.text })
   } catch (error: any) {
     console.error("Prompt enhancement error:", error)
     return NextResponse.json({ error: "Failed to enhance prompt", details: error.message }, { status: 500 })
