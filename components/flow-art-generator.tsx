@@ -1,114 +1,770 @@
 "use client"
 
-import type React from "react"
-import { useState, useRef, useEffect } from "react"
+import { useState, useCallback, useEffect } from "react"
+import { generateFlowField, generateDomeProjection as generateDomeSVG, type GenerationParams } from "@/lib/flow-model"
+import { ClientUpscaler } from "@/lib/client-upscaler"
+import { useToast } from "@/hooks/use-toast"
 
-const datasets = [
-  // Attractors & Chaotic Systems
-  { value: "lorenz", label: "Lorenz Attractor" },
-  { value: "rossler", label: "Rössler Attractor" },
-  { value: "henon", label: "Hénon Map" },
-  { value: "clifford", label: "Clifford Attractor" },
-  { value: "ikeda", label: "Ikeda Map" },
-  { value: "tinkerbell", label: "Tinkerbell Map" },
-  { value: "gingerbread", label: "Gingerbread Map" },
-  { value: "duffing", label: "Duffing Oscillator" },
-  { value: "chua", label: "Chua's Circuit" },
-  { value: "halvorsen", label: "Halvorsen Attractor" },
-  { value: "aizawa", label: "Aizawa Attractor" },
-  { value: "thomas", label: "Thomas Attractor" },
-  { value: "dadras", label: "Dadras Attractor" },
-  { value: "chen", label: "Chen Attractor" },
-  { value: "rabinovich", label: "Rabinovich-Fabrikant" },
-  { value: "sprott", label: "Sprott Attractor" },
-  { value: "fourwing", label: "Four-Wing Attractor" },
-
-  // Fractals
-  { value: "mandelbrot", label: "Mandelbrot Set" },
-  { value: "julia", label: "Julia Set" },
-  { value: "newton", label: "Newton Fractal" },
-  { value: "burning", label: "Burning Ship" },
-  { value: "tricorn", label: "Tricorn" },
-  { value: "multibrot", label: "Multibrot Set" },
-  { value: "phoenix", label: "Phoenix Fractal" },
-  { value: "barnsley", label: "Barnsley Fern" },
-  { value: "sierpinski", label: "Sierpinski Triangle" },
-  { value: "dragon", label: "Dragon Curve" },
-  { value: "hilbert", label: "Hilbert Curve" },
-  { value: "koch", label: "Koch Snowflake" },
-  { value: "lsystem", label: "L-System" },
-
-  // Cellular Automata
-  { value: "cellular", label: "Cellular Automata" },
-  { value: "gameoflife", label: "Game of Life" },
-
-  // Reaction-Diffusion Systems
-  { value: "diffusion", label: "Reaction-Diffusion" },
-  { value: "turing", label: "Turing Patterns" },
-  { value: "gray-scott", label: "Gray-Scott Model" },
-  { value: "belousov", label: "Belousov-Zhabotinsky" },
-  { value: "fitzhugh", label: "FitzHugh-Nagumo" },
-  { value: "hodgkin", label: "Hodgkin-Huxley" },
-
-  // Wave & Field Equations
-  { value: "wave", label: "Wave Interference" },
-  { value: "kuramoto", label: "Kuramoto-Sivashinsky" },
-  { value: "navier", label: "Navier-Stokes" },
-  { value: "schrodinger", label: "Schrödinger Equation" },
-  { value: "klein", label: "Klein-Gordon" },
-  { value: "sine-gordon", label: "Sine-Gordon" },
-  { value: "kdv", label: "Korteweg-de Vries" },
-  { value: "burgers", label: "Burgers Equation" },
-  { value: "heat", label: "Heat Equation" },
-  { value: "laplace", label: "Laplace Equation" },
-  { value: "poisson", label: "Poisson Equation" },
-  { value: "helmholtz", label: "Helmholtz Equation" },
-
-  // Geometric & Noise
-  { value: "spirals", label: "Fibonacci Spirals" },
-  { value: "fractal", label: "Fractal Trees" },
-  { value: "voronoi", label: "Voronoi Diagram" },
-  { value: "perlin", label: "Perlin Noise" },
-]
-
-const FlowArtGenerator = () => {
-  const [selectedDataset, setSelectedDataset] = useState(datasets[0].value)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    // Example drawing logic (replace with actual algorithm based on selectedDataset)
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = "black"
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = "white"
-    ctx.font = "20px Arial"
-    ctx.fillText(`Selected: ${selectedDataset}`, 50, 50)
-  }, [selectedDataset])
-
-  const handleDatasetChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDataset(event.target.value)
+interface GeneratedArt {
+  svgContent: string
+  imageUrl: string
+  upscaledImageUrl?: string
+  domeImageUrl?: string
+  panorama360Url?: string
+  params: GenerationParams
+  mode: "svg" | "ai"
+  upscaleMethod?: "cloudinary" | "client" | "mathematical"
+  customPrompt?: string
+  timestamp: number
+  id: string
+  isDomeProjection?: boolean
+  is360Panorama?: boolean
+  domeSpecs?: {
+    diameter: number
+    resolution: string
+    projectionType: string
   }
-
-  return (
-    <div>
-      <h1>Flow Art Generator</h1>
-      <select value={selectedDataset} onChange={handleDatasetChange}>
-        {datasets.map((dataset) => (
-          <option key={dataset.value} value={dataset.value}>
-            {dataset.label}
-          </option>
-        ))}
-      </select>
-      <canvas ref={canvasRef} width={800} height={600} style={{ border: "1px solid black" }}></canvas>
-    </div>
-  )
+  panoramaSpecs?: {
+    resolution: string
+    format: string
+  }
 }
 
-export default FlowArtGenerator
-export { FlowArtGenerator }
+export function FlowArtGenerator() {
+ const [generatedArt, setGeneratedArt] = useState<GeneratedArt | null>(null)
+ const [isGenerating, setIsGenerating] = useState(false)
+ const [isUpscaling, setIsUpscaling] = useState(false)
+ const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false)
+ const [isGeneratingDome, setIsGeneratingDome] = useState(false)
+ const [isGenerating360, setIsGenerating360] = useState(false)
+ const [progress, setProgress] = useState(0)
+ const [mode, setMode] = useState<"svg" | "ai">("ai") // Default to AI mode for realistic results
+
+ // Dome projection settings
+ const [domeEnabled, setDomeEnabled] = useState(false)
+ const [domeDiameter, setDomeDiameter] = useState(30)
+ const [domeResolution, setDomeResolution] = useState("8K")
+ const [domeProjectionType, setDomeProjectionType] = useState("fulldome")
+
+ // 360° panorama settings
+ const [panorama360Enabled, setPanorama360Enabled] = useState(true)
+ const [panoramaResolution, setPanoramaResolution] = useState("4K")
+ const [panoramaFormat, setPanoramaFormat] = useState("stereographic")
+ const [stereographicPerspective, setStereographicPerspective] = useState("little-planet")
+
+ // Gallery state
+ const [gallery, setGallery] = useState<GeneratedArt[]>([])
+ const [currentPage, setCurrentPage] = useState(1)
+ const itemsPerPage = 6
+
+ // Load gallery from localStorage on mount
+ useEffect(() => {
+   const savedGallery = localStorage.getItem("flowsketch-gallery")
+   if (savedGallery) {
+     try {
+       setGallery(JSON.parse(savedGallery))
+     } catch (error) {
+       console.error("Failed to load gallery from localStorage:", error)
+     }
+   }
+ }, [])
+
+ // Save gallery to localStorage whenever it changes
+ useEffect(() => {
+   if (gallery.length > 0) {
+     localStorage.setItem("flowsketch-gallery", JSON.stringify(gallery))
+   }
+ }, [gallery])
+
+ // Reset to first page when gallery changes
+ useEffect(() => {
+   setCurrentPage(1)
+ }, [gallery.length])
+
+ // Generation parameters - separate dataset, scenario, and color palette
+ const [dataset, setDataset] = useState("spirals")
+ const [scenario, setScenario] = useState("urban")
+ const [colorScheme, setColorScheme] = useState("futuristic")
+ const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
+ const [numSamples, setNumSamples] = useState(2000)
+ const [noiseScale, setNoiseScale] = useState(0.05)
+ const [timeStep, setTimeStep] = useState(0.01)
+
+ // AI Art prompt enhancement
+ const [customPrompt, setCustomPrompt] = useState("")
+ const [useCustomPrompt, setUseCustomPrompt] = useState(false)
+
+ const { toast } = useToast()
+
+ // Calculate pagination
+ const totalPages = Math.ceil(gallery.length / itemsPerPage)
+ const startIndex = (currentPage - 1) * itemsPerPage
+ const endIndex = startIndex + itemsPerPage
+ const currentItems = gallery.slice(startIndex, endIndex)
+
+ const enhancePrompt = useCallback(async () => {
+   setIsEnhancingPrompt(true)
+
+   try {
+     console.log("Enhancing prompt for:", { dataset, scenario, colorScheme, numSamples, noiseScale })
+
+     const response = await fetch("/api/enhance-prompt", {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       body: JSON.stringify({
+         dataset,
+         scenario,
+         colorScheme,
+         numSamples,
+         noiseScale,
+         currentPrompt: customPrompt,
+         domeProjection: domeEnabled,
+         domeDiameter,
+         domeResolution,
+         panoramic360: panorama360Enabled,
+         panoramaResolution,
+         panoramaFormat,
+         stereographicPerspective,
+       }),
+     })
+
+     if (!response.ok) {
+       throw new Error(`Failed to enhance prompt: ${response.status}`)
+     }
+
+     const data = await response.json()
+     console.log("Enhanced prompt received:", data.enhancedPrompt)
+
+     setCustomPrompt(data.enhancedPrompt)
+     setUseCustomPrompt(true)
+
+     toast({
+       title: "Prompt Enhanced! ✨",
+       description: panorama360Enabled
+         ? "Mathematical concepts and stereographic projection details added to your prompt."
+         : domeEnabled
+           ? "Mathematical concepts and dome projection details added to your prompt."
+           : "Mathematical concepts and artistic details added to your prompt.",
+     })
+   } catch (error: any) {
+     console.error("Prompt enhancement error:", error)
+     toast({
+       title: "Enhancement Failed",
+       description: "Could not enhance prompt. Please try again.",
+       variant: "destructive",
+     })
+   } finally {
+     setIsEnhancingPrompt(false)
+   }
+ }, [
+   dataset,
+   scenario,
+   colorScheme,
+   numSamples,
+   noiseScale,
+   customPrompt,
+   domeEnabled,
+   domeDiameter,
+   domeResolution,
+   panorama360Enabled,
+   panoramaResolution,
+   panoramaFormat,
+   stereographicPerspective,
+   toast,
+ ])
+
+ const generate360Panorama = useCallback(async () => {
+   if (!generatedArt) return
+
+   setIsGenerating360(true)
+   try {
+     console.log("Generating 360° panorama...")
+
+     const panoramaSpecs = {
+       resolution: panoramaResolution,
+       format: panoramaFormat,
+     }
+
+     // Generate 360° panorama version
+     const panoramaParams = {
+       ...generatedArt.params,
+       panoramic360: true,
+       panoramaResolution,
+       panoramaFormat,
+       stereographicPerspective,
+     }
+
+     let panorama360Url: string
+
+     if (generatedArt.mode === "svg") {
+       // Generate 360° panorama SVG
+       const panoramaSvgContent = generate360Panorama(panoramaParams)
+       const svgBlob = new Blob([panoramaSvgContent], { type: "image/svg+xml" })
+       panorama360Url = URL.createObjectURL(svgBlob)
+     } else {
+       // Generate AI art optimized for 360° panorama
+       const projectionType =
+         panoramaFormat === "stereographic"
+           ? stereographicPerspective === "tunnel"
+             ? "stereographic tunnel projection looking up at buildings"
+             : "stereographic little planet projection looking down"
+           : "360 degree panoramic view, equirectangular projection"
+
+       const response = await fetch("/api/generate-ai-art", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({
+           ...panoramaParams,
+           customPrompt: useCustomPrompt
+             ? customPrompt + ` ${projectionType}, immersive environment, seamless wraparound`
+             : undefined,
+         }),
+       })
+
+       if (!response.ok) {
+         throw new Error(`360° panorama AI generation failed: ${response.status}`)
+       }
+
+       const data = await response.json()
+       panorama360Url = data.image
+     }
+
+     setGeneratedArt((prev) =>
+       prev
+         ? {
+             ...prev,
+             panorama360Url,
+             is360Panorama: true,
+             panoramaSpecs,
+           }
+         : null,
+     )
+
+     // Update gallery
+     setGallery((prev) =>
+       prev.map((art) =>
+         art.id === generatedArt.id ? { ...art, panorama360Url, is360Panorama: true, panoramaSpecs } : art,
+       ),
+     )
+
+     const formatDescription =
+       panoramaFormat === "stereographic"
+         ? `${stereographicPerspective} stereographic projection`
+         : "equirectangular panorama"
+
+     toast({
+       title: "360° Panorama Generated! 🌐",
+       description: `${panoramaResolution} ${formatDescription} ready for VR and immersive viewing.`,
+     })
+   } catch (error: any) {
+     console.error("360° panorama generation error:", error)
+     toast({
+       title: "360° Panorama Generation Failed",
+       description: error.message || "Failed to generate 360° panorama. Please try again.",
+       variant: "destructive",
+     })
+   } finally {
+     setIsGenerating360(false)
+   }
+ }, [generatedArt, panoramaResolution, panoramaFormat, stereographicPerspective, customPrompt, useCustomPrompt, toast])
+
+ const generateDomeProjection = useCallback(async () => {
+   if (!generatedArt) return
+
+   setIsGeneratingDome(true)
+   try {
+     console.log("Generating dome projection...")
+
+     const domeSpecs = {
+       diameter: domeDiameter,
+       resolution: domeResolution,
+       projectionType: domeProjectionType,
+     }
+
+     // Generate dome-optimized version
+     const domeParams = {
+       ...generatedArt.params,
+       domeProjection: true,
+       domeDiameter,
+       domeResolution,
+       projectionType: domeProjectionType,
+     }
+
+     let domeImageUrl: string
+
+     if (generatedArt.mode === "svg") {
+       // Generate dome-optimized SVG
+       const domeSvgContent = generateDomeSVG(domeParams)
+       const svgBlob = new Blob([domeSvgContent], { type: "image/svg+xml" })
+       domeImageUrl = URL.createObjectURL(svgBlob)
+     } else {
+       // Generate AI art optimized for dome
+       const response = await fetch("/api/generate-ai-art", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({
+           ...domeParams,
+           customPrompt: useCustomPrompt
+             ? customPrompt + " optimized for dome projection, fisheye perspective, immersive 360-degree view"
+             : undefined,
+         }),
+       })
+
+       if (!response.ok) {
+         throw new Error(`Dome AI generation failed: ${response.status}`)
+       }
+
+       const data = await response.json()
+       domeImageUrl = data.image
+     }
+
+     setGeneratedArt((prev) =>
+       prev
+         ? {
+             ...prev,
+             domeImageUrl,
+             isDomeProjection: true,
+             domeSpecs,
+           }
+         : null,
+     )
+
+     // Update gallery
+     setGallery((prev) =>
+       prev.map((art) =>
+         art.id === generatedArt.id ? { ...art, domeImageUrl, isDomeProjection: true, domeSpecs } : art,
+       ),
+     )
+
+     toast({
+       title: "Dome Projection Generated! 🌐",
+       description: `${domeDiameter}m dome projection in ${domeResolution} resolution created.`,
+     })
+   } catch (error: any) {
+     console.error("Dome generation error:", error)
+     toast({
+       title: "Dome Generation Failed",
+       description: error.message || "Failed to generate dome projection. Please try again.",
+       variant: "destructive",
+     })
+   } finally {
+     setIsGeneratingDome(false)
+   }
+ }, [generatedArt, domeDiameter, domeResolution, domeProjectionType, customPrompt, useCustomPrompt, toast])
+
+ const generateArt = useCallback(async () => {
+   console.log("Generate button clicked! Mode:", mode)
+   setIsGenerating(true)
+   setProgress(0)
+
+   try {
+     const params: GenerationParams = {
+       dataset,
+       scenario,
+       colorScheme,
+       seed,
+       numSamples,
+       noiseScale,
+       timeStep,
+       domeProjection: domeEnabled,
+       domeDiameter: domeEnabled ? domeDiameter : undefined,
+       domeResolution: domeEnabled ? domeResolution : undefined,
+       projectionType: domeEnabled ? domeProjectionType : undefined,
+       panoramic360: panorama360Enabled,
+       panoramaResolution: panorama360Enabled ? panoramaResolution : undefined,
+       panoramaFormat: panorama360Enabled ? panoramaFormat : undefined,
+       stereographicPerspective:
+         panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
+     }
+
+     console.log("Generating with params:", params)
+
+     if (mode === "svg") {
+       // Generate SVG flow field
+       setProgress(30)
+       console.log("Generating SVG content...")
+       const svgContent = generateFlowField(params)
+       console.log("SVG generated, length:", svgContent.length)
+
+       setProgress(50)
+       // Convert SVG to data URL
+       const svgBlob = new Blob([svgContent], { type: "image/svg+xml" })
+       const imageUrl = URL.createObjectURL(svgBlob)
+       console.log("Blob URL created:", imageUrl)
+
+       let domeImageUrl: string | undefined
+       let panorama360Url: string | undefined
+
+       if (domeEnabled) {
+         setProgress(65)
+         console.log("Generating dome projection...")
+         const domeSvgContent = generateDomeSVG(params)
+         const domeSvgBlob = new Blob([domeSvgContent], { type: "image/svg+xml" })
+         domeImageUrl = URL.createObjectURL(domeSvgBlob)
+       }
+
+       if (panorama360Enabled) {
+         setProgress(80)
+         console.log("Generating 360° panorama...")
+         const panoramaSvgContent = generate360Panorama(params)
+         const panoramaSvgBlob = new Blob([panoramaSvgContent], { type: "image/svg+xml" })
+         panorama360Url = URL.createObjectURL(panoramaSvgBlob)
+       }
+
+       setProgress(100)
+       const newArt = {
+         svgContent,
+         imageUrl,
+         domeImageUrl,
+         panorama360Url,
+         params,
+         mode: "svg" as const,
+         timestamp: Date.now(),
+         id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+         isDomeProjection: domeEnabled,
+         is360Panorama: panorama360Enabled,
+         domeSpecs: domeEnabled
+           ? {
+               diameter: domeDiameter,
+               resolution: domeResolution,
+               projectionType: domeProjectionType,
+             }
+           : undefined,
+         panoramaSpecs: panorama360Enabled
+           ? {
+               resolution: panoramaResolution,
+               format: panoramaFormat,
+             }
+           : undefined,
+       }
+       setGeneratedArt(newArt)
+       setGallery((prev) => [newArt, ...prev])
+
+       const formatText = panorama360Enabled
+         ? panoramaFormat === "stereographic"
+           ? `${stereographicPerspective} stereographic projection in ${panoramaResolution}`
+           : `360° panorama in ${panoramaResolution}`
+         : domeEnabled
+           ? `${domeDiameter}m dome projection`
+           : "standard format"
+
+       toast({
+         title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
+         description: `Complex ${dataset} dataset with ${scenario === "pure" ? "advanced mathematical" : scenario} visualization in ${formatText}.`,
+       })
+     } else {
+       // Generate AI art
+       setProgress(20)
+       console.log("Calling AI art API...")
+
+       const projectionDescription =
+         panorama360Enabled && panoramaFormat === "stereographic"
+           ? stereographicPerspective === "tunnel"
+             ? " stereographic tunnel projection looking up at buildings, fisheye perspective"
+             : " stereographic little planet projection looking down, tiny planet effect"
+           : panorama360Enabled
+             ? " 360 degree panoramic view, equirectangular projection, immersive skybox environment"
+             : domeEnabled
+               ? " optimized for dome projection, fisheye perspective, immersive 360-degree view"
+               : ""
+
+       const requestBody = {
+         dataset,
+         scenario,
+         colorScheme,
+         seed,
+         numSamples,
+         noise: noiseScale,
+         customPrompt: useCustomPrompt ? customPrompt + projectionDescription : undefined,
+         domeProjection: domeEnabled,
+         domeDiameter: domeEnabled ? domeDiameter : undefined,
+         domeResolution: domeEnabled ? domeResolution : undefined,
+         projectionType: domeEnabled ? domeProjectionType : undefined,
+         panoramic360: panorama360Enabled,
+         panoramaResolution: panorama360Enabled ? panoramaResolution : undefined,
+         panoramaFormat: panorama360Enabled ? panoramaFormat : undefined,
+         stereographicPerspective:
+           panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
+       }
+
+       console.log("Sending AI request:", requestBody)
+
+       const response = await fetch("/api/generate-ai-art", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify(requestBody),
+       })
+
+       console.log("AI API Response status:", response.status)
+
+       if (!response.ok) {
+         const errorText = await response.text()
+         console.error("AI API error response:", errorText)
+         throw new Error(`AI API failed: ${response.status} - ${errorText}`)
+       }
+
+       const data = await response.json()
+       console.log("AI art response received:", data)
+
+       if (!data.image) {
+         throw new Error("AI API returned no image")
+       }
+
+       setProgress(80)
+       const newArt = {
+         svgContent: "",
+         imageUrl: data.image,
+         domeImageUrl: data.domeImage,
+         panorama360Url: data.panoramaImage || data.image,
+         params,
+         mode: "ai" as const,
+         customPrompt: useCustomPrompt ? customPrompt : undefined,
+         timestamp: Date.now(),
+         id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+         isDomeProjection: domeEnabled,
+         is360Panorama: panorama360Enabled,
+         domeSpecs: domeEnabled
+           ? {
+               diameter: domeDiameter,
+               resolution: domeResolution,
+               projectionType: domeProjectionType,
+             }
+           : undefined,
+         panoramaSpecs: panorama360Enabled
+           ? {
+               resolution: panoramaResolution,
+               format: panoramaFormat,
+             }
+           : undefined,
+       }
+       setGeneratedArt(newArt)
+       setGallery((prev) => [newArt, ...prev])
+
+       setProgress(100)
+       const formatText = panorama360Enabled
+         ? panoramaFormat === "stereographic"
+           ? `${stereographicPerspective} stereographic projection in ${panoramaResolution}`
+           : `360° panoramic skybox in ${panoramaResolution}`
+         : domeEnabled
+           ? `${domeDiameter}m dome projection`
+           : `${colorScheme} palette`
+
+       toast({
+         title: "AI Art Generated! 🤖✨",
+         description: panorama360Enabled
+           ? `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} ${formatText} created.`
+           : domeEnabled
+             ? `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork optimized for ${domeDiameter}m dome projection.`
+             : useCustomPrompt
+               ? "Custom enhanced prompt artwork created!"
+               : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork in ${colorScheme} palette.`,
+       })
+     }
+   } catch (error: any) {
+     console.error("Generation error:", error)
+     toast({
+       title: "Generation Failed",
+       description: error.message || "Failed to generate artwork. Please try again.",
+       variant: "destructive",
+     })
+   } finally {
+     setIsGenerating(false)
+     setProgress(0)
+   }
+ }, [
+   dataset,
+   scenario,
+   colorScheme,
+   seed,
+   numSamples,
+   noiseScale,
+   timeStep,
+   mode,
+   useCustomPrompt,
+   customPrompt,
+   domeEnabled,
+   domeDiameter,
+   domeResolution,
+   domeProjectionType,
+   panorama360Enabled,
+   panoramaResolution,
+   panoramaFormat,
+   stereographicPerspective,
+   toast,
+ ])
+
+ const upscaleImage = useCallback(async () => {
+   if (!generatedArt) {
+     console.log("No generated art to upscale")
+     return
+   }
+
+   console.log("Upscale button clicked!")
+   setIsUpscaling(true)
+
+   try {
+     // For SVG mode, use mathematical upscaling to add real detail
+     if (generatedArt.mode === "svg") {
+       console.log("Using mathematical upscaling for SVG...")
+       toast({
+         title: "Mathematical Upscaling",
+         description: "Re-rendering visualization with 4x more detail points...",
+       })
+
+       // Convert SVG to data URL first
+       let imageDataUrl = generatedArt.imageUrl
+       if (generatedArt.imageUrl.startsWith("blob:")) {
+         const canvas = document.createElement("canvas")
+         const ctx = canvas.getContext("2d")
+         const img = new Image()
+
+         await new Promise((resolve, reject) => {
+           img.onload = () => {
+             canvas.width = 512
+             canvas.height = 512
+             ctx?.drawImage(img, 0, 0, 512, 512)
+             imageDataUrl = canvas.toDataURL("image/png")
+             resolve(void 0)
+           }
+           img.onerror = reject
+           img.src = generatedArt.imageUrl
+         })
+       }
+
+       // Apply mathematical upscaling with generation parameters
+       const upscaledDataUrl = await ClientUpscaler.upscaleImage(imageDataUrl, 4)
+
+       setGeneratedArt((prev) =>
+         prev
+           ? {
+               ...prev,
+               upscaledImageUrl: upscaledDataUrl,
+               upscaleMethod: "mathematical",
+             }
+           : null,
+       )
+
+       toast({
+         title: "Mathematical Upscaling Complete! ✨",
+         description: "Added 16x more data points with enhanced resolution.",
+       })
+     } else {
+       // For AI art, use client-side upscaling
+       console.log("Using pixel-based upscaling for AI art...")
+       toast({
+         title: "AI Art Enhancement",
+         description: "Applying advanced pixel enhancement to AI artwork...",
+       })
+
+       const upscaledDataUrl = await ClientUpscaler.upscaleImage(generatedArt.imageUrl, 4)
+
+       setGeneratedArt((prev) =>
+         prev
+           ? {
+               ...prev,
+               upscaledImageUrl: upscaledDataUrl,
+               upscaleMethod: "client",
+             }
+           : null,
+       )
+
+       toast({
+         title: "AI Art Enhancement Complete! 🤖✨",
+         description: "Applied advanced pixel enhancement to your AI artwork.",
+       })
+     }
+   } catch (error: any) {
+     console.error("Upscale error:", error)
+     toast({
+       title: "Upscaling Failed",
+       description: "Enhancement failed. Please try again.",
+       variant: "destructive",
+     })
+   } finally {
+     setIsUpscaling(false)
+   }
+ }, [generatedArt, toast])
+
+ const downloadImage = useCallback(
+   async (format: "regular" | "dome" | "panorama" = "regular") => {
+     if (!generatedArt) {
+       console.log("No generated art to download")
+       return
+     }
+
+     console.log("Download button clicked!", format)
+
+     try {
+       let imageUrl: string
+       let fileExtension: string
+       let fileName: string
+
+       if (format === "dome") {
+         // For dome downloads, ensure we have a dome image
+         if (!generatedArt.domeImageUrl) {
+           toast({
+             title: "Dome Image Not Available",
+             description: "Please generate the dome projection first.",
+             variant: "destructive",
+           })
+           return
+         }
+         imageUrl = generatedArt.domeImageUrl
+         fileExtension = "png"
+         const domeSpec = generatedArt.domeSpecs
+           ? `-${generatedArt.domeSpecs.diameter}m-${generatedArt.domeSpecs.resolution}`
+           : ""
+         fileName = `flowsketch-dome-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${domeSpec}.${fileExtension}`
+       } else if (format === "panorama") {
+         // For 360° panorama downloads
+         if (!generatedArt.panorama360Url) {
+           toast({
+             title: "360° Panorama Not Available",
+             description: "Please generate the 360° panorama first.",
+             variant: "destructive",
+           })
+           return
+         }
+         imageUrl = generatedArt.panorama360Url
+         fileExtension = "png"
+         const panoramaSpec = generatedArt.panoramaSpecs
+           ? `-${generatedArt.panoramaSpecs.resolution}-${generatedArt.panoramaSpecs.format}`
+           : ""
+         fileName = `flowsketch-360panorama-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${panoramaSpec}.${fileExtension}`
+       } else {
+         // For regular downloads
+         imageUrl = generatedArt.upscaledImageUrl || generatedArt.imageUrl
+         const isEnhanced = !!generatedArt.upscaledImageUrl
+         fileExtension = generatedArt.mode === "svg" && !isEnhanced ? "svg" : "png"
+         fileName = `flowsketch-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
+       }
+
+       console.log("Downloading:", fileName, "from:", imageUrl)
+
+       // Check if it's a data URL (client-side upscaled or SVG blob)
+       if (imageUrl.startsWith("data:") || imageUrl.startsWith("blob:")) {
+         // Direct download for data URLs and blob URLs
+         const link = document.createElement("a")
+         link.href = imageUrl
+         link.download = fileName
+         link.style.display = "none"
+         document.body.appendChild(link)
+         link.click()
+         document.body.removeChild(link)
+         console.log("Direct download completed")
+       } else {
+         // For external URLs, fetch and convert to blob
+         const response = await fetch(imageUrl, { mode: "cors" })
+         if (!response.ok) {
+           throw new Error("Failed to fetch image for download")
+         }
+
+         const blob = await response.blob()
+         const blobUrl = URL.createObjectURL(blob)
+
+         const link = document.createElement("a")
+         link.href = blobUrl
+         link.download = fileName
+         link.style.display = "none"
+         document.body.appendChild(link)
+         link.click()

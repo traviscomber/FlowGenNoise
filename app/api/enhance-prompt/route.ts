@@ -4,83 +4,153 @@ import { openai } from "@ai-sdk/openai"
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
     const {
-      prompt,
       dataset,
       scenario,
       colorScheme,
+      numSamples,
+      noiseScale,
+      currentPrompt,
       domeProjection,
       domeDiameter,
       domeResolution,
-      projectionType,
       panoramic360,
       panoramaResolution,
       panoramaFormat,
       stereographicPerspective,
-    } = body
+    } = await request.json()
 
-    // Build context about the current settings
-    let contextInfo = `Current settings:
-- Mathematical Dataset: ${dataset}
-- Scenario: ${scenario}
-- Color Scheme: ${colorScheme}`
+    console.log("Enhancing prompt with parameters:", {
+      dataset,
+      scenario,
+      colorScheme,
+      panoramic360,
+      panoramaFormat,
+      stereographicPerspective,
+      domeProjection,
+    })
 
-    if (domeProjection) {
-      contextInfo += `
-- Dome Projection: ${domeDiameter}m diameter, ${domeResolution} resolution
-- Projection Type: ${projectionType}`
-    }
-
-    if (panoramic360) {
-      contextInfo += `
-- 360° Panorama: ${panoramaResolution} resolution`
-
-      if (panoramaFormat === "stereographic") {
-        contextInfo += `
-- Stereographic Format: ${stereographicPerspective} perspective (${stereographicPerspective === "tunnel" ? "upward-looking tunnel view" : "little planet effect"})`
+    // Build projection-specific context
+    let projectionContext = ""
+    if (panoramic360 && panoramaFormat === "stereographic") {
+      if (stereographicPerspective === "tunnel") {
+        projectionContext = `
+        STEREOGRAPHIC TUNNEL PROJECTION REQUIREMENTS:
+        - Looking UP perspective with sky/ceiling in the center
+        - Buildings, structures, or landscape elements curve around the edges
+        - Fisheye distortion effect with dramatic perspective
+        - Center should be bright (sky, ceiling, or overhead elements)
+        - Edges should contain ground-level or architectural elements
+        - Create immersive upward-looking tunnel effect
+        - Use dramatic lighting from above
+        `
       } else {
-        contextInfo += `
-- Format: Equirectangular (standard 360° panorama)`
+        projectionContext = `
+        STEREOGRAPHIC LITTLE PLANET PROJECTION REQUIREMENTS:
+        - Looking DOWN perspective with ground/landscape in the center
+        - Sky, horizon, or upper elements curve around the edges
+        - Tiny planet effect with ground as focal point
+        - Center should contain terrain, buildings, or ground elements
+        - Edges should contain sky, clouds, or atmospheric elements
+        - Create miniature world effect
+        - Use natural lighting from above
+        `
       }
+    } else if (panoramic360) {
+      projectionContext = `
+      360° PANORAMIC REQUIREMENTS:
+      - Equirectangular projection format
+      - Seamless wraparound environment
+      - Immersive skybox suitable for VR
+      - Wide field of view with natural perspective
+      `
+    } else if (domeProjection) {
+      projectionContext = `
+      DOME PROJECTION REQUIREMENTS:
+      - Fisheye perspective optimized for ${domeDiameter}m dome
+      - ${domeResolution} resolution
+      - Immersive 360-degree view
+      - Suitable for planetarium display
+      `
     }
+
+    // Build mathematical context based on dataset
+    const mathematicalContext = {
+      lorenz: "Lorenz attractor with chaotic butterfly patterns, strange attractors, nonlinear dynamics",
+      rossler: "Rössler attractor with spiral chaotic flows, continuous dynamical systems",
+      henon: "Hénon map discrete chaotic system, fractal basin boundaries",
+      clifford: "Clifford attractor with symmetric chaotic patterns, beautiful strange attractors",
+      mandelbrot: "Mandelbrot set fractal with infinite complexity, self-similar patterns",
+      julia: "Julia set fractals with intricate boundary structures",
+      newton: "Newton fractal with complex root-finding visualization, colorful basins",
+      cellular: "Cellular automata with emergent patterns, Conway's Game of Life",
+      diffusion: "Reaction-diffusion systems with Turing patterns, biological morphogenesis",
+      wave: "Wave interference patterns, standing waves, harmonic oscillations",
+      spirals: "Fibonacci spirals with golden ratio proportions, natural growth patterns",
+      voronoi: "Voronoi diagrams with cellular tessellations, natural partitioning",
+      perlin: "Perlin noise with organic textures, procedural generation",
+    }
+
+    // Build scenario context
+    const scenarioContext = {
+      pure: "pure mathematical visualization with abstract geometric forms",
+      urban: "urban environments with buildings, streets, and city architecture",
+      landscape: "natural landscapes with mountains, valleys, and organic terrain",
+      geological: "geological formations with rock structures, mineral patterns",
+      botanical: "botanical structures with plant forms, organic growth patterns",
+      atmospheric: "atmospheric phenomena with clouds, weather, and sky effects",
+      crystalline: "crystalline structures with geometric crystal formations",
+      textile: "textile patterns with fabric textures and woven designs",
+      metallic: "metallic surfaces with reflective materials and industrial textures",
+      organic: "organic textures with natural biological forms",
+      marine: "marine ecosystems with underwater environments and sea life",
+      architectural: "architectural forms with structural engineering and design",
+    }
+
+    const basePrompt =
+      currentPrompt ||
+      `Create a photorealistic ${mathematicalContext[dataset] || dataset} visualization in a ${scenarioContext[scenario] || scenario} setting with ${colorScheme} color palette`
+
+    const enhancementPrompt = `
+    You are an expert in mathematical visualization and AI art generation. Enhance this prompt for creating stunning photorealistic artwork:
+
+    BASE PROMPT: "${basePrompt}"
+
+    MATHEMATICAL DATASET: ${dataset} - ${mathematicalContext[dataset] || "advanced mathematical patterns"}
+    SCENARIO: ${scenario} - ${scenarioContext[scenario] || scenario}
+    COLOR SCHEME: ${colorScheme}
+    COMPLEXITY: ${numSamples} sample points, noise scale ${noiseScale}
+
+    ${projectionContext}
+
+    ENHANCEMENT REQUIREMENTS:
+    1. Add specific technical details about the mathematical algorithm
+    2. Include photorealistic rendering specifications
+    3. Add atmospheric and lighting details
+    4. Specify material properties and textures
+    5. Include composition and perspective guidance
+    6. Add environmental context appropriate for the scenario
+    7. Ensure the description works well for AI image generation
+    8. Make it vivid and technically precise
+
+    Return only the enhanced prompt, no explanations.
+    `
+
+    console.log("Sending enhancement request to OpenAI...")
 
     const { text } = await generateText({
       model: openai("gpt-4o"),
-      system: `You are an expert in mathematical art generation and visualization. Your task is to enhance prompts for creating mathematical flow field visualizations.
-
-The system generates mathematical art using various datasets like fractals, attractors, wave functions, and geometric patterns. It can output in different formats:
-- Standard 2D visualization
-- Dome projection (fisheye for planetarium domes)
-- 360° panoramic (equirectangular for VR/skyboxes)
-- Stereographic projection (little planet or tunnel effects)
-
-When enhancing prompts, consider:
-1. Mathematical accuracy and visual appeal
-2. The chosen dataset's mathematical properties
-3. How the scenario affects the visual interpretation
-4. Color theory and palette harmony
-5. The output format's specific requirements
-6. Artistic composition and flow
-
-Provide detailed, creative enhancements that will result in stunning mathematical visualizations.`,
-      prompt: `Please enhance this prompt for mathematical art generation: "${prompt}"
-
-${contextInfo}
-
-Provide an enhanced version that:
-1. Incorporates the mathematical dataset characteristics
-2. Considers the scenario context
-3. Optimizes for the chosen output format
-4. Suggests specific visual elements and compositions
-5. Maintains mathematical accuracy while being visually striking
-
-Enhanced prompt:`,
+      prompt: enhancementPrompt,
+      maxTokens: 500,
     })
 
-    return NextResponse.json({ enhancedPrompt: text })
-  } catch (error) {
-    console.error("Error enhancing prompt:", error)
-    return NextResponse.json({ error: "Failed to enhance prompt" }, { status: 500 })
+    console.log("Enhanced prompt generated:", text)
+
+    return NextResponse.json({
+      enhancedPrompt: text.trim(),
+    })
+  } catch (error: any) {
+    console.error("Prompt enhancement error:", error)
+    return NextResponse.json({ error: "Failed to enhance prompt", details: error.message }, { status: 500 })
   }
 }

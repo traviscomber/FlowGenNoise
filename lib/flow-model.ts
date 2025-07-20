@@ -23,6 +23,90 @@ export interface GenerationParams {
   stereographicPerspective?: string
 }
 
+// Seeded random number generator
+class SeededRandom {
+  private seed: number
+
+  constructor(seed: number) {
+    this.seed = seed
+  }
+
+  next(): number {
+    this.seed = (this.seed * 9301 + 49297) % 233280
+    return this.seed / 233280
+  }
+}
+
+// Color schemes
+const colorSchemes = {
+  plasma: [
+    "#0d0887",
+    "#46039f",
+    "#7201a8",
+    "#9c179e",
+    "#bd3786",
+    "#d8576b",
+    "#ed7953",
+    "#fb9f3a",
+    "#fdca26",
+    "#f0f921",
+  ],
+  quantum: ["#000428", "#004e92", "#009ffd", "#00d2ff", "#ffffff", "#ff0080", "#8b00ff", "#4b0082", "#000428"],
+  cosmic: [
+    "#0f0f23",
+    "#1a1a3a",
+    "#2d1b69",
+    "#4c2a85",
+    "#6a4c93",
+    "#8b5a8c",
+    "#a8677c",
+    "#c17767",
+    "#d4874b",
+    "#e09819",
+  ],
+  thermal: [
+    "#000000",
+    "#330000",
+    "#660000",
+    "#990000",
+    "#cc0000",
+    "#ff0000",
+    "#ff3300",
+    "#ff6600",
+    "#ff9900",
+    "#ffcc00",
+  ],
+  spectral: [
+    "#9e0142",
+    "#d53e4f",
+    "#f46d43",
+    "#fdae61",
+    "#fee08b",
+    "#e6f598",
+    "#abdda4",
+    "#66c2a5",
+    "#3288bd",
+    "#5e4fa2",
+  ],
+  crystalline: ["#e8f4f8", "#b8e6f0", "#88d8e8", "#58cae0", "#28bcd8", "#1e90d0", "#1464c8", "#0a38c0", "#000cb8"],
+  bioluminescent: ["#001122", "#003344", "#005566", "#007788", "#0099aa", "#00bbcc", "#00ddee", "#00ffff", "#66ffff"],
+  aurora: ["#001100", "#003300", "#005500", "#007700", "#009900", "#00bb00", "#00dd00", "#00ff00", "#66ff66"],
+  metallic: ["#2c2c2c", "#404040", "#545454", "#686868", "#7c7c7c", "#909090", "#a4a4a4", "#b8b8b8", "#cccccc"],
+  prismatic: ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80", "#00ffff", "#0080ff", "#0000ff"],
+  monochromatic: ["#000000", "#1a1a1a", "#333333", "#4d4d4d", "#666666", "#808080", "#999999", "#b3b3b3", "#cccccc"],
+  infrared: ["#000000", "#330000", "#660000", "#990000", "#cc0000", "#ff0000", "#ff3333", "#ff6666", "#ff9999"],
+  lava: ["#000000", "#4d0000", "#990000", "#cc3300", "#ff6600", "#ff9900", "#ffcc00", "#ffff00", "#ffffff"],
+  futuristic: ["#0a0a0a", "#1a1a2e", "#16213e", "#0f3460", "#533483", "#7209b7", "#a663cc", "#4cc9f0", "#7209b7"],
+  forest: ["#0d2818", "#1e3a2e", "#2f4f3f", "#4a6741", "#6b8e23", "#8fbc8f", "#adff2f", "#9acd32", "#228b22"],
+  ocean: ["#000080", "#191970", "#0000cd", "#0000ff", "#1e90ff", "#00bfff", "#87ceeb", "#87cefa", "#b0e0e6"],
+  sunset: ["#2d1b69", "#8b1538", "#da4167", "#f78764", "#ffc49b", "#f4e4c1", "#f9844a", "#ee6c4d", "#3d5a80"],
+  arctic: ["#e6f3ff", "#cce7ff", "#b3dbff", "#99cfff", "#80c3ff", "#66b7ff", "#4dabff", "#339fff", "#1a93ff"],
+  neon: ["#ff006e", "#fb5607", "#ffbe0b", "#8338ec", "#3a86ff", "#06ffa5", "#ff006e", "#c77dff", "#560bad"],
+  vintage: ["#8b4513", "#a0522d", "#cd853f", "#daa520", "#b8860b", "#d2691e", "#bc8f8f", "#f4a460", "#deb887"],
+  toxic: ["#39ff14", "#32cd32", "#00ff00", "#adff2f", "#7fff00", "#9acd32", "#00ff7f", "#00fa9a", "#98fb98"],
+  ember: ["#1a0000", "#4d0000", "#800000", "#b30000", "#e60000", "#ff1a1a", "#ff4d4d", "#ff8080", "#ffb3b3"],
+}
+
 /* ------------------------------------------------------------------ */
 /*  Colour palettes (kept – many parts of the UI reference them)      */
 /* ------------------------------------------------------------------ */
@@ -2372,3 +2456,516 @@ function generateHelmholtzEquation(
 /* ------------------------------------------------------------------ */
 /*  End of file                                                        */
 /* ------------------------------------------------------------------ */
+
+// Mathematical dataset generators
+const generateLorenzAttractorFn = (params: GenerationParams): string => {
+  const { seed, numSamples, noiseScale } = params
+  const rng = new SeededRandom(seed)
+
+  let x = 1,
+    y = 1,
+    z = 1
+  const dt = 0.01
+  const sigma = 10,
+    rho = 28,
+    beta = 8 / 3
+
+  let path = `M ${400 + x * 10} ${300 + y * 10}`
+
+  for (let i = 0; i < numSamples; i++) {
+    const dx = sigma * (y - x) * dt
+    const dy = (x * (rho - z) - y) * dt
+    const dz = (x * y - beta * z) * dt
+
+    x += dx + (rng.next() - 0.5) * noiseScale
+    y += dy + (rng.next() - 0.5) * noiseScale
+    z += dz + (rng.next() - 0.5) * noiseScale
+
+    path += ` L ${400 + x * 10} ${300 + y * 10}`
+  }
+
+  return path
+}
+
+const generateMandelbrotSetFn = (params: GenerationParams): string => {
+  const { seed, numSamples } = params
+  const rng = new SeededRandom(seed)
+
+  let points = ""
+  const maxIter = 100
+
+  for (let i = 0; i < numSamples; i++) {
+    const cx = (rng.next() - 0.5) * 4
+    const cy = (rng.next() - 0.5) * 4
+
+    let x = 0,
+      y = 0,
+      iter = 0
+
+    while (x * x + y * y < 4 && iter < maxIter) {
+      const xtemp = x * x - y * y + cx
+      y = 2 * x * y + cy
+      x = xtemp
+      iter++
+    }
+
+    if (iter < maxIter) {
+      const px = 400 + cx * 100
+      const py = 300 + cy * 100
+      points += `<circle cx="${px}" cy="${py}" r="1" opacity="${iter / maxIter}"/>`
+    }
+  }
+
+  return points
+}
+
+const generateJuliaSetFn = (params: GenerationParams): string => {
+  const { seed, numSamples } = params
+  const rng = new SeededRandom(seed)
+
+  const cx = -0.7269
+  const cy = 0.1889
+  let points = ""
+  const maxIter = 100
+
+  for (let i = 0; i < numSamples; i++) {
+    let x = (rng.next() - 0.5) * 4
+    let y = (rng.next() - 0.5) * 4
+    let iter = 0
+
+    while (x * x + y * y < 4 && iter < maxIter) {
+      const xtemp = x * x - y * y + cx
+      y = 2 * x * y + cy
+      x = xtemp
+      iter++
+    }
+
+    if (iter < maxIter) {
+      const px = 400 + x * 50
+      const py = 300 + y * 50
+      points += `<circle cx="${px}" cy="${py}" r="1" opacity="${iter / maxIter}"/>`
+    }
+  }
+
+  return points
+}
+
+const generateFibonacciSpiralFn = (params: GenerationParams): string => {
+  const { seed, numSamples, noiseScale } = params
+  const rng = new SeededRandom(seed)
+
+  const phi = (1 + Math.sqrt(5)) / 2
+  let path = ""
+
+  for (let i = 0; i < numSamples; i++) {
+    const angle = (i * 2 * Math.PI) / phi
+    const radius = Math.sqrt(i) * 5
+
+    const x = 400 + radius * Math.cos(angle) + (rng.next() - 0.5) * noiseScale * 10
+    const y = 300 + radius * Math.sin(angle) + (rng.next() - 0.5) * noiseScale * 10
+
+    if (i === 0) {
+      path = `M ${x} ${y}`
+    } else {
+      path += ` L ${x} ${y}`
+    }
+  }
+
+  return path
+}
+
+const generateVoronoiDiagramFn = (params: GenerationParams): string => {
+  const { seed, numSamples } = params
+  const rng = new SeededRandom(seed)
+
+  // Generate seed points
+  const seeds = []
+  for (let i = 0; i < Math.min(numSamples / 100, 50); i++) {
+    seeds.push({
+      x: rng.next() * 800,
+      y: rng.next() * 600,
+    })
+  }
+
+  let polygons = ""
+
+  // Simple Voronoi approximation
+  for (let i = 0; i < seeds.length; i++) {
+    const seed = seeds[i]
+    polygons += `<circle cx="${seed.x}" cy="${seed.y}" r="${20 + rng.next() * 30}" fill-opacity="0.3"/>`
+  }
+
+  return polygons
+}
+
+const generatePerlinNoiseFn = (params: GenerationParams): string => {
+  const { seed, numSamples, noiseScale } = params
+  const rng = new SeededRandom(seed)
+
+  let path = ""
+  const gridSize = Math.sqrt(numSamples)
+
+  for (let x = 0; x < gridSize; x++) {
+    for (let y = 0; y < gridSize; y++) {
+      const noise = (rng.next() - 0.5) * noiseScale * 100
+      const px = (x / gridSize) * 800
+      const py = (y / gridSize) * 600 + noise
+
+      if (x === 0 && y === 0) {
+        path = `M ${px} ${py}`
+      } else {
+        path += ` L ${px} ${py}`
+      }
+    }
+  }
+
+  return path
+}
+
+// Additional mathematical generators
+const generateRosslerAttractorFn = (params: GenerationParams): string => {
+  const { seed, numSamples, noiseScale } = params
+  const rng = new SeededRandom(seed)
+
+  let x = 1,
+    y = 1,
+    z = 1
+  const dt = 0.01
+  const a = 0.2,
+    b = 0.2,
+    c = 5.7
+
+  let path = `M ${400 + x * 20} ${300 + y * 20}`
+
+  for (let i = 0; i < numSamples; i++) {
+    const dx = (-y - z) * dt
+    const dy = (x + a * y) * dt
+    const dz = (b + z * (x - c)) * dt
+
+    x += dx + (rng.next() - 0.5) * noiseScale
+    y += dy + (rng.next() - 0.5) * noiseScale
+    z += dz + (rng.next() - 0.5) * noiseScale
+
+    path += ` L ${400 + x * 20} ${300 + y * 20}`
+  }
+
+  return path
+}
+
+const generateHenonMapFn = (params: GenerationParams): string => {
+  const { seed, numSamples, noiseScale } = params
+  const rng = new SeededRandom(seed)
+
+  let x = 0,
+    y = 0
+  const a = 1.4,
+    b = 0.3
+  let points = ""
+
+  for (let i = 0; i < numSamples; i++) {
+    const xnext = 1 - a * x * x + y
+    const ynext = b * x
+
+    x = xnext + (rng.next() - 0.5) * noiseScale
+    y = ynext + (rng.next() - 0.5) * noiseScale
+
+    const px = 400 + x * 200
+    const py = 300 + y * 200
+
+    points += `<circle cx="${px}" cy="${py}" r="0.5"/>`
+  }
+
+  return points
+}
+
+// Main generation function
+export const generateFlowField = (params: GenerationParams): string => {
+  const colors = colorSchemes[params.colorScheme as keyof typeof colorSchemes] || colorSchemes.plasma
+
+  let content = ""
+
+  switch (params.dataset) {
+    case "lorenz":
+      content = `<path d="${generateLorenzAttractorFn(params)}" fill="none" stroke="${colors[5]}" stroke-width="0.5"/>`
+      break
+    case "rossler":
+      content = `<path d="${generateRosslerAttractorFn(params)}" fill="none" stroke="${colors[6]}" stroke-width="0.5"/>`
+      break
+    case "henon":
+      content = generateHenonMapFn(params)
+      break
+    case "mandelbrot":
+      content = generateMandelbrotSetFn(params)
+      break
+    case "julia":
+      content = generateJuliaSetFn(params)
+      break
+    case "spirals":
+      content = `<path d="${generateFibonacciSpiralFn(params)}" fill="none" stroke="${colors[4]}" stroke-width="1"/>`
+      break
+    case "voronoi":
+      content = generateVoronoiDiagramFn(params)
+      break
+    case "perlin":
+      content = `<path d="${generatePerlinNoiseFn(params)}" fill="none" stroke="${colors[3]}" stroke-width="0.5"/>`
+      break
+    default:
+      content = `<path d="${generateFibonacciSpiralFn(params)}" fill="none" stroke="${colors[4]}" stroke-width="1"/>`
+  }
+
+  // Apply color scheme
+  const gradient = colors
+    .map((color, i) => `<stop offset="${(i / (colors.length - 1)) * 100}%" stop-color="${color}"/>`)
+    .join("")
+
+  return `
+    <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          ${gradient}
+        </linearGradient>
+        <radialGradient id="radialGradient" cx="50%" cy="50%" r="50%">
+          ${gradient}
+        </radialGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#radialGradient)" opacity="0.1"/>
+      <g stroke="url(#flowGradient)" fill="url(#flowGradient)">
+        ${content}
+      </g>
+    </svg>
+  `
+}
+
+// Dome projection function
+export const generateDomeProjection = (params: GenerationParams): string => {
+  const baseContent = generateFlowField(params)
+
+  // Apply fisheye transformation for dome projection
+  return baseContent.replace("<svg", '<svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet"')
+}
+
+// 360° panorama generation with stereographic projection
+export const generate360Panorama = (params: GenerationParams): string => {
+  const colors = colorSchemes[params.colorScheme as keyof typeof colorSchemes] || colorSchemes.plasma
+
+  if (params.panoramaFormat === "stereographic") {
+    return generateStereographicProjection(params)
+  }
+
+  // Equirectangular format
+  const baseContent = generateFlowField(params)
+  return baseContent.replace('width="800" height="600"', 'width="1600" height="800" viewBox="0 0 1600 800"')
+}
+
+// Stereographic projection generator
+const generateStereographicProjection = (params: GenerationParams): string => {
+  const colors = colorSchemes[params.colorScheme as keyof typeof colorSchemes] || colorSchemes.plasma
+  const { seed, numSamples, scenario, stereographicPerspective } = params
+  const rng = new SeededRandom(seed)
+
+  const centerX = 400
+  const centerY = 400
+  const radius = 350
+
+  let elements = ""
+
+  // Generate base mathematical pattern
+  let basePattern = ""
+  switch (params.dataset) {
+    case "lorenz":
+      basePattern = generateLorenzAttractorFn(params)
+      break
+    case "spirals":
+      basePattern = generateFibonacciSpiralFn(params)
+      break
+    default:
+      basePattern = generateFibonacciSpiralFn(params)
+  }
+
+  // Apply stereographic transformation
+  const transformedPattern = basePattern.replace(/(\d+\.?\d*)\s+(\d+\.?\d*)/g, (match, x, y) => {
+    const px = Number.parseFloat(x) - 400
+    const py = Number.parseFloat(y) - 300
+
+    // Stereographic projection transformation
+    const r = Math.sqrt(px * px + py * py)
+    const theta = Math.atan2(py, px)
+
+    let newR, newX, newY
+
+    if (stereographicPerspective === "tunnel") {
+      // Tunnel projection (looking up)
+      newR = radius * (1 - Math.exp(-r / 100))
+      newX = centerX + newR * Math.cos(theta)
+      newY = centerY + newR * Math.sin(theta)
+    } else {
+      // Little planet projection (looking down)
+      newR = radius * Math.exp(-r / 200)
+      newX = centerX + newR * Math.cos(theta)
+      newY = centerY + newR * Math.sin(theta)
+    }
+
+    return `${newX} ${newY}`
+  })
+
+  // Add scenario-specific elements
+  if (scenario === "urban") {
+    elements += addUrbanStereographicElements(params, centerX, centerY, radius)
+  } else if (scenario === "landscape") {
+    elements += addLandscapeStereographicElements(params, centerX, centerY, radius)
+  } else if (scenario === "geological") {
+    elements += addGeologicalStereographicElements(params, centerX, centerY, radius)
+  }
+
+  const gradient = colors
+    .map((color, i) => `<stop offset="${(i / (colors.length - 1)) * 100}%" stop-color="${color}"/>`)
+    .join("")
+
+  return `
+    <svg width="800" height="800" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          ${gradient}
+        </linearGradient>
+        <radialGradient id="radialGradient" cx="50%" cy="50%" r="50%">
+          ${gradient}
+        </radialGradient>
+        <clipPath id="circleClip">
+          <circle cx="${centerX}" cy="${centerY}" r="${radius}"/>
+        </clipPath>
+      </defs>
+      <rect width="100%" height="100%" fill="${colors[0]}"/>
+      <circle cx="${centerX}" cy="${centerY}" r="${radius}" fill="url(#radialGradient)" opacity="0.3"/>
+      <g clip-path="url(#circleClip)">
+        <path d="${transformedPattern}" fill="none" stroke="url(#flowGradient)" stroke-width="1"/>
+        ${elements}
+      </g>
+      <circle cx="${centerX}" cy="${centerY}" r="${radius}" fill="none" stroke="${colors[8]}" stroke-width="2"/>
+    </svg>
+  `
+}
+
+// Helper functions for scenario-specific elements
+const addUrbanStereographicElements = (
+  params: GenerationParams,
+  centerX: number,
+  centerY: number,
+  radius: number,
+): string => {
+  const { seed, stereographicPerspective } = params
+  const rng = new SeededRandom(seed + 1000)
+  let elements = ""
+
+  if (stereographicPerspective === "tunnel") {
+    // Tunnel view: buildings around edges, sky in center
+    for (let i = 0; i < 20; i++) {
+      const angle = (i / 20) * 2 * Math.PI
+      const r = radius * (0.7 + rng.next() * 0.3)
+      const x = centerX + r * Math.cos(angle)
+      const y = centerY + r * Math.sin(angle)
+      const height = 20 + rng.next() * 40
+
+      elements += `<rect x="${x - 5}" y="${y - height}" width="10" height="${height}" fill="#444" opacity="0.8"/>`
+    }
+
+    // Sky elements in center
+    elements += `<circle cx="${centerX}" cy="${centerY}" r="50" fill="#87CEEB" opacity="0.6"/>`
+  } else {
+    // Little planet: ground in center, sky around edges
+    elements += `<circle cx="${centerX}" cy="${centerY}" r="100" fill="#228B22" opacity="0.7"/>`
+
+    // Buildings on the "ground"
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * 2 * Math.PI
+      const r = 60 + rng.next() * 40
+      const x = centerX + r * Math.cos(angle)
+      const y = centerY + r * Math.sin(angle)
+
+      elements += `<rect x="${x - 3}" y="${y - 15}" width="6" height="15" fill="#666" opacity="0.9"/>`
+    }
+  }
+
+  return elements
+}
+
+const addLandscapeStereographicElements = (
+  params: GenerationParams,
+  centerX: number,
+  centerY: number,
+  radius: number,
+): string => {
+  const { seed, stereographicPerspective } = params
+  const rng = new SeededRandom(seed + 2000)
+  let elements = ""
+
+  if (stereographicPerspective === "tunnel") {
+    // Tunnel view: landscape around edges, sky in center
+    for (let i = 0; i < 30; i++) {
+      const angle = (i / 30) * 2 * Math.PI
+      const r = radius * (0.6 + rng.next() * 0.4)
+      const x = centerX + r * Math.cos(angle)
+      const y = centerY + r * Math.sin(angle)
+
+      elements += `<circle cx="${x}" cy="${y}" r="${2 + rng.next() * 3}" fill="#228B22" opacity="0.7"/>`
+    }
+
+    // Sky in center
+    elements += `<circle cx="${centerX}" cy="${centerY}" r="80" fill="#87CEEB" opacity="0.5"/>`
+  } else {
+    // Little planet: terrain in center
+    elements += `<circle cx="${centerX}" cy="${centerY}" r="120" fill="#8B4513" opacity="0.6"/>`
+    elements += `<circle cx="${centerX}" cy="${centerY}" r="80" fill="#228B22" opacity="0.8"/>`
+
+    // Trees and vegetation
+    for (let i = 0; i < 15; i++) {
+      const angle = (i / 15) * 2 * Math.PI
+      const r = 50 + rng.next() * 30
+      const x = centerX + r * Math.cos(angle)
+      const y = centerY + r * Math.sin(angle)
+
+      elements += `<circle cx="${x}" cy="${y}" r="4" fill="#006400" opacity="0.9"/>`
+    }
+  }
+
+  return elements
+}
+
+const addGeologicalStereographicElements = (
+  params: GenerationParams,
+  centerX: number,
+  centerY: number,
+  radius: number,
+): string => {
+  const { seed, stereographicPerspective } = params
+  const rng = new SeededRandom(seed + 3000)
+  let elements = ""
+
+  if (stereographicPerspective === "tunnel") {
+    // Tunnel view: rock formations around edges
+    for (let i = 0; i < 25; i++) {
+      const angle = (i / 25) * 2 * Math.PI
+      const r = radius * (0.5 + rng.next() * 0.5)
+      const x = centerX + r * Math.cos(angle)
+      const y = centerY + r * Math.sin(angle)
+      const size = 3 + rng.next() * 8
+
+      elements += `<polygon points="${x},${y - size} ${x + size},${y + size} ${x - size},${y + size}" fill="#8B4513" opacity="0.8"/>`
+    }
+  } else {
+    // Little planet: geological center
+    elements += `<circle cx="${centerX}" cy="${centerY}" r="100" fill="#A0522D" opacity="0.7"/>`
+
+    // Rock formations
+    for (let i = 0; i < 20; i++) {
+      const angle = (i / 20) * 2 * Math.PI
+      const r = 40 + rng.next() * 60
+      const x = centerX + r * Math.cos(angle)
+      const y = centerY + r * Math.sin(angle)
+      const size = 2 + rng.next() * 5
+
+      elements += `<polygon points="${x},${y - size} ${x + size},${y + size} ${x - size},${y + size}" fill="#654321" opacity="0.9"/>`
+    }
+  }
+
+  return elements
+}
