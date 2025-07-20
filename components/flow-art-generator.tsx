@@ -111,3 +111,4 @@ const FlowArtGenerator = () => {
 }
 
 export default FlowArtGenerator
+export { FlowArtGenerator }
