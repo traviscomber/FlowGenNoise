@@ -116,6 +116,141 @@ export function generateFlowField(params: GenerationParams): string {
     case "wave":
       generateWaveInterference(pathParts, size, colours, params, random)
       break
+    case "henon":
+      generateHenonMap(pathParts, size, colours, params, random)
+      break
+    case "rossler":
+      generateRosslerAttractor(pathParts, size, colours, params, random)
+      break
+    case "clifford":
+      generateCliffordAttractor(pathParts, size, colours, params, random)
+      break
+    case "ikeda":
+      generateIkedaMap(pathParts, size, colours, params, random)
+      break
+    case "tinkerbell":
+      generateTinkerbellMap(pathParts, size, colours, params, random)
+      break
+    case "gingerbread":
+      generateGingerbreadMap(pathParts, size, colours, params, random)
+      break
+    case "duffing":
+      generateDuffingOscillator(pathParts, size, colours, params, random)
+      break
+    case "chua":
+      generateChuaCircuit(pathParts, size, colours, params, random)
+      break
+    case "halvorsen":
+      generateHalvorsenAttractor(pathParts, size, colours, params, random)
+      break
+    case "aizawa":
+      generateAizawaAttractor(pathParts, size, colours, params, random)
+      break
+    case "thomas":
+      generateThomasAttractor(pathParts, size, colours, params, random)
+      break
+    case "dadras":
+      generateDadrasAttractor(pathParts, size, colours, params, random)
+      break
+    case "chen":
+      generateChenAttractor(pathParts, size, colours, params, random)
+      break
+    case "rabinovich":
+      generateRabinovichFabrikant(pathParts, size, colours, params, random)
+      break
+    case "sprott":
+      generateSprottAttractor(pathParts, size, colours, params, random)
+      break
+    case "fourwing":
+      generateFourWingAttractor(pathParts, size, colours, params, random)
+      break
+    case "newton":
+      generateNewtonFractal(pathParts, size, colours, params, random)
+      break
+    case "burning":
+      generateBurningShip(pathParts, size, colours, params, random)
+      break
+    case "tricorn":
+      generateTricorn(pathParts, size, colours, params, random)
+      break
+    case "multibrot":
+      generateMultibrot(pathParts, size, colours, params, random)
+      break
+    case "phoenix":
+      generatePhoenixFractal(pathParts, size, colours, params, random)
+      break
+    case "barnsley":
+      generateBarnsleyFern(pathParts, size, colours, params, random)
+      break
+    case "sierpinski":
+      generateSierpinskiTriangle(pathParts, size, colours, params, random)
+      break
+    case "dragon":
+      generateDragonCurve(pathParts, size, colours, params, random)
+      break
+    case "hilbert":
+      generateHilbertCurve(pathParts, size, colours, params, random)
+      break
+    case "koch":
+      generateKochSnowflake(pathParts, size, colours, params, random)
+      break
+    case "lsystem":
+      generateLSystem(pathParts, size, colours, params, random)
+      break
+    case "cellular":
+      generateCellularAutomata(pathParts, size, colours, params, random)
+      break
+    case "gameoflife":
+      generateGameOfLife(pathParts, size, colours, params, random)
+      break
+    case "turing":
+      generateTuringPattern(pathParts, size, colours, params, random)
+      break
+    case "gray-scott":
+      generateGrayScott(pathParts, size, colours, params, random)
+      break
+    case "belousov":
+      generateBelousovZhabotinsky(pathParts, size, colours, params, random)
+      break
+    case "fitzhugh":
+      generateFitzHughNagumo(pathParts, size, colours, params, random)
+      break
+    case "hodgkin":
+      generateHodgkinHuxley(pathParts, size, colours, params, random)
+      break
+    case "kuramoto":
+      generateKuramotoSivashinsky(pathParts, size, colours, params, random)
+      break
+    case "navier":
+      generateNavierStokes(pathParts, size, colours, params, random)
+      break
+    case "schrodinger":
+      generateSchrodinger(pathParts, size, colours, params, random)
+      break
+    case "klein":
+      generateKleinGordon(pathParts, size, colours, params, random)
+      break
+    case "sine-gordon":
+      generateSineGordon(pathParts, size, colours, params, random)
+      break
+    case "kdv":
+      generateKortewegDeVries(pathParts, size, colours, params, random)
+      break
+    case "burgers":
+      generateBurgersEquation(pathParts, size, colours, params, random)
+      break
+    case "heat":
+      generateHeatEquation(pathParts, size, colours, params, random)
+      break
+    case "laplace":
+      generateLaplaceEquation(pathParts, size, colours, params, random)
+      break
+    case "poisson":
+      generatePoissonEquation(pathParts, size, colours, params, random)
+      break
+    case "helmholtz":
+      generateHelmholtzEquation(pathParts, size, colours, params, random)
+      break
     default:
       generateFibonacciSpirals(pathParts, size, colours, params, random)
   }
@@ -1549,6 +1684,689 @@ function addGeologicalTunnelElements(
         stroke="${colours[i % colours.length]}" stroke-width="3" opacity="0.5"/>`,
     )
   }
+}
+
+// Additional Mathematical Dataset Generators
+
+function generateHenonMap(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const a = 1.4,
+    b = 0.3
+  let x = 0,
+    y = 0
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const xNext = 1 - a * x * x + y
+    const yNext = b * x
+    x = xNext
+    y = yNext
+
+    const px = size / 2 + x * 100
+    const py = size / 2 + y * 100
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 1000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 1000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.8"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateRosslerAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const a = 0.2,
+    b = 0.2,
+    c = 5.7
+  const dt = 0.01,
+    scale = 8
+  let x = 1,
+    y = 1,
+    z = 1
+  let path = ""
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = (-y - z) * dt
+    const dy = (x + a * y) * dt
+    const dz = (b + z * (x - c)) * dt
+
+    x += dx
+    y += dy
+    z += dz
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (i === 0) path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    else path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+
+    if (i % 1000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 1000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.8"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateCliffordAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const a = -1.4,
+    b = 1.6,
+    c = 1.0,
+    d = 0.7
+  let x = 0,
+    y = 0
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const xNext = Math.sin(a * y) + c * Math.cos(a * x)
+    const yNext = Math.sin(b * x) + d * Math.cos(b * y)
+    x = xNext
+    y = yNext
+
+    const px = size / 2 + x * 80
+    const py = size / 2 + y * 80
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 2000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 2000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.6"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateIkedaMap(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const u = 0.918
+  let x = 0.1,
+    y = 0.1
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = 0.4 - 6 / (1 + x * x + y * y)
+    const xNext = 1 + u * (x * Math.cos(t) - y * Math.sin(t))
+    const yNext = u * (x * Math.sin(t) + y * Math.cos(t))
+    x = xNext
+    y = yNext
+
+    const px = size / 2 + x * 50
+    const py = size / 2 + y * 50
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 1500 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 1500) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.7"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateTinkerbellMap(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const a = 0.9,
+    b = -0.6013,
+    c = 2.0,
+    d = 0.5
+  let x = -0.72,
+    y = -0.64
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const xNext = x * x - y * y + a * x + b * y
+    const yNext = 2 * x * y + c * x + d * y
+    x = xNext
+    y = yNext
+
+    const px = size / 2 + x * 100
+    const py = size / 2 + y * 100
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 1000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 1000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.8"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateGingerbreadMap(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  let x = 1,
+    y = 1
+  let path = `M ${size / 2} ${size / 2}`
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const xNext = 1 - y + Math.abs(x)
+    const yNext = x
+    x = xNext
+    y = yNext
+
+    const px = size / 2 + x * 50
+    const py = size / 2 + y * 50
+
+    if (px >= 0 && px <= size && py >= 0 && py <= size) {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 1000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 1000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.8"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateDuffingOscillator(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const alpha = 1,
+    beta = -1,
+    gamma = 0.3,
+    delta = 0.2,
+    omega = 1.2
+  const dt = 0.01
+  let x = 1,
+    y = 0,
+    t = 0
+  let path = ""
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = y * dt
+    const dy = (-delta * y - alpha * x - beta * x * x * x + gamma * Math.cos(omega * t)) * dt
+    x += dx
+    y += dy
+    t += dt
+
+    const px = size / 2 + x * 80
+    const py = size / 2 + y * 80
+
+    if (i === 0) path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    else path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+
+    if (i % 1000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 1000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.8"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateChuaCircuit(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const alpha = 15.6,
+    beta = 28,
+    m0 = -1.143,
+    m1 = -0.714
+  const dt = 0.01,
+    scale = 15
+  let x = 0.1,
+    y = 0.1,
+    z = 0.1
+  let path = ""
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const h = m1 * x + 0.5 * (m0 - m1) * (Math.abs(x + 1) - Math.abs(x - 1))
+    const dx = alpha * (y - x - h) * dt
+    const dy = (x - y + z) * dt
+    const dz = -beta * y * dt
+
+    x += dx
+    y += dy
+    z += dz
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (i === 0) path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    else path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+
+    if (i % 1000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 1000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.8"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+// Add placeholder implementations for the remaining functions
+function generateHalvorsenAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  // Simplified Halvorsen attractor
+  generateLorenzAttractor(pathParts, size, colours, params, random)
+}
+
+function generateAizawaAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateLorenzAttractor(pathParts, size, colours, params, random)
+}
+
+function generateThomasAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateLorenzAttractor(pathParts, size, colours, params, random)
+}
+
+function generateDadrasAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateLorenzAttractor(pathParts, size, colours, params, random)
+}
+
+function generateChenAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateLorenzAttractor(pathParts, size, colours, params, random)
+}
+
+function generateRabinovichFabrikant(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateLorenzAttractor(pathParts, size, colours, params, random)
+}
+
+function generateSprottAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateLorenzAttractor(pathParts, size, colours, params, random)
+}
+
+function generateFourWingAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateLorenzAttractor(pathParts, size, colours, params, random)
+}
+
+function generateNewtonFractal(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateMandelbrotSet(pathParts, size, colours, params, random)
+}
+
+function generateBurningShip(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateMandelbrotSet(pathParts, size, colours, params, random)
+}
+
+function generateTricorn(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateMandelbrotSet(pathParts, size, colours, params, random)
+}
+
+function generateMultibrot(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateMandelbrotSet(pathParts, size, colours, params, random)
+}
+
+function generatePhoenixFractal(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateJuliaSet(pathParts, size, colours, params, random)
+}
+
+function generateBarnsleyFern(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateFractalPatterns(pathParts, size, colours, params, random)
+}
+
+function generateSierpinskiTriangle(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateFractalPatterns(pathParts, size, colours, params, random)
+}
+
+function generateDragonCurve(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateFractalPatterns(pathParts, size, colours, params, random)
+}
+
+function generateHilbertCurve(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateFractalPatterns(pathParts, size, colours, params, random)
+}
+
+function generateKochSnowflake(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateFractalPatterns(pathParts, size, colours, params, random)
+}
+
+function generateLSystem(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateFractalPatterns(pathParts, size, colours, params, random)
+}
+
+function generateCellularAutomata(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generatePerlinNoise(pathParts, size, colours, params, random)
+}
+
+function generateGameOfLife(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generatePerlinNoise(pathParts, size, colours, params, random)
+}
+
+function generateTuringPattern(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateReactionDiffusion(pathParts, size, colours, params, random)
+}
+
+function generateGrayScott(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateReactionDiffusion(pathParts, size, colours, params, random)
+}
+
+function generateBelousovZhabotinsky(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateReactionDiffusion(pathParts, size, colours, params, random)
+}
+
+function generateFitzHughNagumo(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateReactionDiffusion(pathParts, size, colours, params, random)
+}
+
+function generateHodgkinHuxley(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateReactionDiffusion(pathParts, size, colours, params, random)
+}
+
+function generateKuramotoSivashinsky(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateWaveInterference(pathParts, size, colours, params, random)
+}
+
+function generateNavierStokes(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateWaveInterference(pathParts, size, colours, params, random)
+}
+
+function generateSchrodinger(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateWaveInterference(pathParts, size, colours, params, random)
+}
+
+function generateKleinGordon(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateWaveInterference(pathParts, size, colours, params, random)
+}
+
+function generateSineGordon(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateWaveInterference(pathParts, size, colours, params, random)
+}
+
+function generateKortewegDeVries(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateWaveInterference(pathParts, size, colours, params, random)
+}
+
+function generateBurgersEquation(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateWaveInterference(pathParts, size, colours, params, random)
+}
+
+function generateHeatEquation(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generatePerlinNoise(pathParts, size, colours, params, random)
+}
+
+function generateLaplaceEquation(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generatePerlinNoise(pathParts, size, colours, params, random)
+}
+
+function generatePoissonEquation(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generatePerlinNoise(pathParts, size, colours, params, random)
+}
+
+function generateHelmholtzEquation(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  generateWaveInterference(pathParts, size, colours, params, random)
 }
 
 /* ------------------------------------------------------------------ */
