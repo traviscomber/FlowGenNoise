@@ -13,26 +13,46 @@ import { openai } from "@ai-sdk/openai"
  *   seed: number,
  *   numSamples: number,
  *   noise: number,
- *   customPrompt?: string
+ *   customPrompt?: string,
+ *   enableStereographic?: boolean,
+ *   stereographicPerspective?: string
  * }
  */
 export async function POST(req: NextRequest) {
   try {
-    const { dataset, scenario, colorScheme, seed, numSamples, noise, customPrompt } = await req.json()
+    const {
+      dataset,
+      scenario,
+      colorScheme,
+      seed,
+      numSamples,
+      noise,
+      customPrompt,
+      enableStereographic,
+      stereographicPerspective,
+    } = await req.json()
 
     /* --------------------------------------------------------------------- */
     /* 1. Build a prompt (use customPrompt if one was provided)              */
     /* --------------------------------------------------------------------- */
 
+    let basePrompt = `Create an ultra-high-resolution abstract mathematical artwork depicting "${dataset}" patterns blended with a "${scenario}" environment.
+Colour palette: ${colorScheme}.
+${numSamples} data points with noise level ${noise}.
+Include scientific detail, museum-grade composition, HDR lighting, PBR materials, and professional post-processing.
+Seed reference: ${seed}.`
+
+    if (enableStereographic) {
+      const projectionDescription =
+        stereographicPerspective === "little-planet"
+          ? "Apply a 'little planet' stereographic projection, creating a spherical, miniature world effect with a curved horizon and a sense of looking down onto a tiny sphere. Ensure the mathematical patterns conform to this unique perspective."
+          : "Apply a 'tunnel vision' stereographic projection, creating a dramatic inward-looking perspective with a central vanishing point and a sense of looking up into a deep tunnel. Ensure the mathematical patterns conform to this unique perspective."
+      basePrompt += ` ${projectionDescription}`
+    }
+
     const prompt = customPrompt?.trim().length
       ? `${customPrompt.trim()}. IMPORTANT: No text, no words, no letters, no typography, no labels, no captions. Pure visual art only.`
-      : `Create an ultra-high-resolution abstract mathematical artwork depicting "${dataset}" patterns blended with a "${scenario}" environment. 
-Colour palette: ${colorScheme}. 
-${numSamples} data points with noise level ${noise}. 
-Include scientific detail, museum-grade composition, HDR lighting, PBR materials, and professional post-processing. 
-Seed reference: ${seed}.
-
-IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text. 
+      : `${basePrompt} IMPORTANT: No text, no words, no letters, no typography, no labels, no captions, no mathematical equations visible as text.
 Pure abstract visual art only. Focus on colors, shapes, patterns, and mathematical structures as visual elements, not written content.`
 
     /* --------------------------------------------------------------------- */
