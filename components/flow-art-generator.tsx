@@ -207,7 +207,8 @@ export function FlowArtGenerator() {
           body: JSON.stringify({
             ...panoramaParams,
             customPrompt: useCustomPrompt
-              ? customPrompt + " 360 degree panoramic view, equirectangular projection, immersive skybox environment, seamless wraparound"
+              ? customPrompt +
+                " 360 degree panoramic view, equirectangular projection, immersive skybox environment, seamless wraparound"
               : undefined,
           }),
         })
@@ -747,11 +748,12 @@ export function FlowArtGenerator() {
 
         toast({
           title: "Download Complete! 🎨",
-          description: format === "panorama"
-            ? `360° panoramic skybox in ${generatedArt.panoramaSpecs?.resolution} downloaded.`
-            : format === "dome"
-              ? `Dome projection for ${generatedArt.domeSpecs?.diameter}m dome downloaded.`
-              : `${generatedArt.upscaledImageUrl ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} in ${generatedArt.params.colorScheme} colors downloaded.`,
+          description:
+            format === "panorama"
+              ? `360° panoramic skybox in ${generatedArt.panoramaSpecs?.resolution} downloaded.`
+              : format === "dome"
+                ? `Dome projection for ${generatedArt.domeSpecs?.diameter}m dome downloaded.`
+                : `${generatedArt.upscaledImageUrl ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} in ${generatedArt.params.colorScheme} colors downloaded.`,
         })
       } catch (error: any) {
         console.error("Download error:", error)
@@ -827,11 +829,7 @@ export function FlowArtGenerator() {
 
   const getButtonText = () => {
     const scenarioText = scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)
-    const formatText = panorama360Enabled
-      ? ` 360° Skybox`
-      : domeEnabled
-        ? ` for ${domeDiameter}m Dome`
-        : ""
+    const formatText = panorama360Enabled ? ` 360° Skybox` : domeEnabled ? ` for ${domeDiameter}m Dome` : ""
 
     if (mode === "ai") {
       if (useCustomPrompt) {
@@ -927,4 +925,413 @@ export function FlowArtGenerator() {
                                   dangerouslySetInnerHTML={{ __html: art.svgContent }}
                                 />
                               ) : (
-                                <img\
+                                <img
+                                  src={art.upscaledImageUrl || art.imageUrl}
+                                  alt={`${art.params.dataset} + ${art.params.scenario}`}
+                                  className="w-full h-full object-cover cursor-pointer"
+                                  onClick={() => loadFromGallery(art)}
+                                />
+                              )}
+                            </div>
+                            <div className="absolute top-0 left-0 w-full h-full bg-black/20 group-hover:bg-black/40 transition-colors duration-200 flex items-center justify-center">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                onClick={() => removeFromGallery(art.id)}
+                              >
+                                Remove
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {totalPages > 1 && (
+                        <div className="flex justify-between items-center">
+                          <Button
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            variant="outline"
+                            size="sm"
+                          >
+                            Previous
+                          </Button>
+                          <Button
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            variant="outline"
+                            size="sm"
+                          >
+                            Next
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500">No artworks saved yet.</p>
+                  )}
+                </TabsContent>
+              </Tabs>
+
+              {mode !== "gallery" && (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Dataset</label>
+                      <select
+                        value={dataset}
+                        onChange={(e) => setDataset(e.target.value)}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                      >
+                        <option value="spirals">Fibonacci Spirals</option>
+                        <option value="fractal">Fractal Checkerboard</option>
+                        <option value="hyperbolic">Hyperbolic Moons</option>
+                        <option value="gaussian">Multi-Modal Gaussians</option>
+                        <option value="cellular">Cellular Automata</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Scenario</label>
+                      <select
+                        value={scenario}
+                        onChange={(e) => setScenario(e.target.value)}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                      >
+                        <option value="pure">Pure Math</option>
+                        <option value="organic">Organic Growth</option>
+                        <option value="geometric">Geometric Abstraction</option>
+                        <option value="cyberpunk">Cyberpunk Dystopia</option>
+                        <option value="steampunk">Steampunk Dreams</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Color Scheme</label>
+                      <select
+                        value={colorScheme}
+                        onChange={(e) => setColorScheme(e.target.value)}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                      >
+                        <option value="plasma">Plasma</option>
+                        <option value="viridis">Viridis</option>
+                        <option value="magma">Magma</option>
+                        <option value="inferno">Inferno</option>
+                        <option value="cividis">Cividis</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Random Seed</label>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          value={seed}
+                          onChange={(e) => setSeed(Number.parseInt(e.target.value))}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                        />
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                          <Button onClick={handleRandomSeed} variant="ghost" size="icon">
+                            🎲
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Number of Samples
+                      </label>
+                      <input
+                        type="number"
+                        value={numSamples}
+                        onChange={(e) => setNumSamples(Number.parseInt(e.target.value))}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Noise Scale</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={noiseScale}
+                        onChange={(e) => setNoiseScale(Number.parseFloat(e.target.value))}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Time Step</label>
+                    <input
+                      type="number"
+                      step="0.001"
+                      value={timeStep}
+                      onChange={(e) => setTimeStep(Number.parseFloat(e.target.value))}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                    />
+                  </div>
+
+                  {mode === "ai" && (
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="useCustomPrompt"
+                          checked={useCustomPrompt}
+                          onChange={(e) => setUseCustomPrompt(e.target.checked)}
+                          className="rounded text-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-0"
+                        />
+                        <label
+                          htmlFor="useCustomPrompt"
+                          className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                        >
+                          Use Custom Prompt
+                        </label>
+                      </div>
+
+                      {useCustomPrompt && (
+                        <div className="space-y-2">
+                          <label
+                            htmlFor="customPrompt"
+                            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                          >
+                            Custom Prompt
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              id="customPrompt"
+                              value={customPrompt}
+                              onChange={(e) => setCustomPrompt(e.target.value)}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                            />
+                            <Button
+                              onClick={enhancePrompt}
+                              disabled={isEnhancingPrompt}
+                              variant="ghost"
+                              size="icon"
+                              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                            >
+                              {isEnhancingPrompt ? "Enhancing..." : "✨"}
+                            </Button>
+                          </div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Enhance your prompt with mathematical concepts and artistic details.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="border-t pt-4 mt-4">
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="domeEnabled"
+                        checked={domeEnabled}
+                        onChange={(e) => setDomeEnabled(e.target.checked)}
+                        className="rounded text-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-0"
+                      />
+                      <label htmlFor="domeEnabled" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Enable Dome Projection
+                      </label>
+                    </div>
+
+                    {domeEnabled && (
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                              Diameter (m)
+                            </label>
+                            <input
+                              type="number"
+                              value={domeDiameter}
+                              onChange={(e) => setDomeDiameter(Number.parseInt(e.target.value))}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                              Resolution
+                            </label>
+                            <select
+                              value={domeResolution}
+                              onChange={(e) => setDomeResolution(e.target.value)}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                            >
+                              <option value="4K">4K</option>
+                              <option value="8K">8K</option>
+                              <option value="16K">16K</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Projection Type
+                          </label>
+                          <select
+                            value={domeProjectionType}
+                            onChange={(e) => setDomeProjectionType(e.target.value)}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                          >
+                            <option value="fulldome">Full Dome</option>
+                            <option value="hemispherical">Hemispherical</option>
+                            <option value="circular">Circular</option>
+                          </select>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="panorama360Enabled"
+                        checked={panorama360Enabled}
+                        onChange={(e) => setPanorama360Enabled(e.target.checked)}
+                        className="rounded text-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-0"
+                      />
+                      <label
+                        htmlFor="panorama360Enabled"
+                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                      >
+                        Enable 360° Panorama
+                      </label>
+                    </div>
+
+                    {panorama360Enabled && (
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                              Resolution
+                            </label>
+                            <select
+                              value={panoramaResolution}
+                              onChange={(e) => setPanoramaResolution(e.target.value)}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                            >
+                              <option value="4K">4K</option>
+                              <option value="8K">8K</option>
+                              <option value="16K">16K</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Format</label>
+                            <select
+                              value={panoramaFormat}
+                              onChange={(e) => setPanoramaFormat(e.target.value)}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                            >
+                              <option value="equirectangular">Equirectangular</option>
+                              <option value="cubemap">Cubemap</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          <Button onClick={generateArt} disabled={isGenerating} className="w-full">
+            {isGenerating ? `Generating... ${progress}%` : getButtonText()}
+          </Button>
+        </div>
+
+        {/* Generated Art Display */}
+        <div className="lg:col-span-2 space-y-4">
+          {generatedArt ? (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ImageIcon className="h-5 w-5" />
+                  Generated Artwork
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {generatedArt.is360Panorama && generatedArt.panorama360Url ? (
+                  <div className="relative">
+                    <img
+                      src={generatedArt.panorama360Url || "/placeholder.svg"}
+                      alt="360° Panorama"
+                      className="w-full rounded-md"
+                    />
+                    <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-md">
+                      360° Panorama
+                    </div>
+                  </div>
+                ) : generatedArt.isDomeProjection && generatedArt.domeImageUrl ? (
+                  <div className="relative">
+                    <img
+                      src={generatedArt.domeImageUrl || "/placeholder.svg"}
+                      alt="Dome Projection"
+                      className="w-full rounded-md"
+                    />
+                    <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-md">
+                      Dome Projection
+                    </div>
+                  </div>
+                ) : generatedArt.mode === "svg" && !generatedArt.upscaledImageUrl ? (
+                  <div
+                    className="w-full aspect-square relative border rounded-md overflow-hidden bg-white dark:bg-gray-800"
+                    dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                  />
+                ) : (
+                  <img
+                    src={generatedArt.upscaledImageUrl || generatedArt.imageUrl}
+                    alt={`${generatedArt.params.dataset} + ${generatedArt.params.scenario}`}
+                    className="w-full rounded-md"
+                  />
+                )}
+
+                <div className="flex justify-between items-center">
+                  <div className="space-x-2">
+                    <Button onClick={upscaleImage} disabled={isUpscaling} variant="outline">
+                      {isUpscaling ? "Enhancing..." : "Enhance Details"}
+                    </Button>
+                    <Button onClick={() => downloadImage("regular")} variant="secondary">
+                      Download
+                    </Button>
+                    {generatedArt.isDomeProjection && (
+                      <Button onClick={() => downloadImage("dome")} variant="secondary">
+                        Download Dome
+                      </Button>
+                    )}
+                    {generatedArt.is360Panorama && (
+                      <Button onClick={() => downloadImage("panorama")} variant="secondary">
+                        Download 360°
+                      </Button>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {generatedArt.mode === "svg" ? "Complex Math Visualization" : "AI-Generated Artwork"}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>No Artwork Generated Yet</CardTitle>
+                <CardContent>Adjust the settings and click "Generate" to create your unique artwork.</CardContent>
+              </CardHeader>
+            </Card>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
