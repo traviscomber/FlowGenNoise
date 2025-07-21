@@ -4,14 +4,25 @@ import { openai } from "@ai-sdk/openai"
 
 /**
  * POST /api/enhance-prompt
- * Enhances (or builds) a “god-level” prompt for AI-image generation.
- * Response → { enhancedPrompt: string }
+ *
+ * Body:
+ * {
+ *   dataset: string
+ *   scenario: string
+ *   colorScheme: string
+ *   numSamples: number
+ *   noiseScale: number
+ *   currentPrompt?: string
+ * }
+ *
+ * Response:
+ *   { enhancedPrompt: string }
  */
 export async function POST(request: NextRequest) {
   try {
-    /* ──────────────────────────────────────────────────────────
-       1. Read parameters from the client
-    ────────────────────────────────────────────────────────── */
+    /* ------------------------------------------------------------------ */
+    /* 1. Parse request body                                              */
+    /* ------------------------------------------------------------------ */
     const {
       dataset,
       scenario,
@@ -28,55 +39,55 @@ export async function POST(request: NextRequest) {
       currentPrompt?: string
     } = await request.json()
 
-    /* ──────────────────────────────────────────────────────────
-       2. Fallback prompt if nothing was supplied
-    ────────────────────────────────────────────────────────── */
-    const fallback = `
-Generate a highly-detailed abstract mathematical artwork.
+    /* ------------------------------------------------------------------ */
+    /* 2. Build a basic fallback prompt                                   */
+    /* ------------------------------------------------------------------ */
+    const basePrompt = `
+Generate a highly detailed, abstract mathematical artwork:
 
-• DATASET  = ${dataset}
-• SCENARIO = ${scenario}
-• PALETTE  = ${colorScheme}
-• SAMPLES  ≈ ${numSamples}
-• NOISE    = ${noiseScale}
+• Dataset .......... ${dataset}
+• Scenario ......... ${scenario}
+• Color scheme ..... ${colorScheme}
+• Sample points .... ≈${numSamples}
+• Noise scale ...... ${noiseScale}
 
-Focus on mathematical beauty, rich lighting, and gallery-grade polish.
+Focus on mathematical elegance, dramatic lighting, and gallery-grade polish.
 `.trim()
 
-    /* ──────────────────────────────────────────────────────────
-       3. Instruction for the LLM
-    ────────────────────────────────────────────────────────── */
-    const system =
-      "You are a world-class mathematical artist and theoretical physicist who writes museum-quality AI-art prompts."
+    /* ------------------------------------------------------------------ */
+    /* 3. Instruction sent to the LLM                                     */
+    /* ------------------------------------------------------------------ */
+    const SYSTEM_PROMPT =
+      "You are a world-class mathematical artist and theoretical physicist who writes museum-quality prompts for AI image generators."
 
-    const user = `
-Elevate the following draft prompt. Use advanced artistic vocabulary,
-describe lighting, physical materials, atmosphere, scale and composition.
+    const enhancementPrompt = `
+Elevate the draft below with advanced artistic language.
+Include lighting, materials, atmosphere, scale, and composition.
 Finish with:
-IMPORTANT: No text, labels, letters or equations visible.
+IMPORTANT: No text, letters, labels, captions, or equations visible.
 
-"""${currentPrompt || fallback}"""
+"""${currentPrompt?.trim() || basePrompt}"""
 `.trim()
 
-    /* ──────────────────────────────────────────────────────────
-       4. Call GPT-4o  (one temperature constant only)
-    ────────────────────────────────────────────────────────── */
-    const LLM_TEMPERATURE = 0.8
+    /* ------------------------------------------------------------------ */
+    /* 4. Call GPT-4o (single temp constant, no duplicates)               */
+    /* ------------------------------------------------------------------ */
+    const LLM_TEMP = 0.8
 
     const { text } = await generateText({
       model: openai("gpt-4o"),
-      system,
-      prompt: user,
-      temperature: LLM_TEMPERATURE,
+      system: SYSTEM_PROMPT,
+      prompt: enhancementPrompt,
+      temperature: LLM_TEMP,
       maxTokens: 1_000,
     })
 
-    /* ──────────────────────────────────────────────────────────
-       5. Return the enhanced prompt (or fallback)
-    ────────────────────────────────────────────────────────── */
-    return NextResponse.json({ enhancedPrompt: text || fallback })
-  } catch (error: any) {
-    console.error("enhance-prompt error:", error)
-    return NextResponse.json({ error: "Failed to enhance prompt", detail: error.message }, { status: 500 })
+    /* ------------------------------------------------------------------ */
+    /* 5. Return the enhanced prompt                                     */
+    /* ------------------------------------------------------------------ */
+    return NextResponse.json({ enhancedPrompt: text || basePrompt })
+  } catch (err: any) {
+    console.error("enhance-prompt error:", err)
+    return NextResponse.json({ error: "Failed to enhance prompt", details: err.message }, { status: 500 })
   }
 }
