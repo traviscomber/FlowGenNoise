@@ -1,6 +1,8 @@
 "use client"
 
 import { generateFlowArtData, type FlowParameters } from "./flow-model"
+import { Vector3 } from "three"
+import type { FlowField } from "./flow-model"
 
 /**
  * Draws the flow art data onto a canvas.
@@ -139,4 +141,79 @@ export function generateSvgFromFlowData(params: FlowParameters): string {
 
   svgContent += "</svg>"
   return svgContent
+}
+
+export function generateFlowFieldPoints(
+  flow: FlowField,
+  initialPosition: Vector3,
+  numPoints: number,
+  dt: number,
+  noiseStrength: number,
+  params: any,
+  stereographic = false,
+): Vector3[] {
+  const points: Vector3[] = []
+  const currentPosition = initialPosition.clone()
+
+  for (let i = 0; i < numPoints; i++) {
+    const flowVector = flow(currentPosition, params).multiplyScalar(dt)
+
+    // Add random noise
+    const noise = new Vector3(
+      (Math.random() - 0.5) * 2 * noiseStrength,
+      (Math.random() - 0.5) * 2 * noiseStrength,
+      (Math.random() - 0.5) * 2 * noiseStrength,
+    ).multiplyScalar(dt)
+
+    currentPosition.add(flowVector).add(noise)
+
+    if (stereographic) {
+      // Stereographic projection from 3D to 2D plane (z=0)
+      // P' = (P_x / (1 - P_z), P_y / (1 - P_z), 0) assuming projection from (0,0,1)
+      const sx = currentPosition.x / (1 - currentPosition.z)
+      const sy = currentPosition.y / (1 - currentPosition.z)
+      points.push(new Vector3(sx, sy, 0))
+    } else {
+      points.push(currentPosition.clone())
+    }
+  }
+  return points
+}
+
+export function getMinMax(points: Vector3[]): {
+  minX: number
+  maxX: number
+  minY: number
+  maxY: number
+  minZ: number
+  maxZ: number
+} {
+  if (points.length === 0) {
+    return {
+      minX: 0,
+      maxX: 0,
+      minY: 0,
+      maxY: 0,
+      minZ: 0,
+      maxZ: 0,
+    }
+  }
+
+  let minX = Number.POSITIVE_INFINITY,
+    maxX = Number.NEGATIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY,
+    maxY = Number.NEGATIVE_INFINITY
+  let minZ = Number.POSITIVE_INFINITY,
+    maxZ = Number.NEGATIVE_INFINITY
+
+  for (const p of points) {
+    minX = Math.min(minX, p.x)
+    maxX = Math.max(maxX, p.x)
+    minY = Math.min(minY, p.y)
+    maxY = Math.max(maxY, p.y)
+    minZ = Math.min(minZ, p.z)
+    maxZ = Math.max(maxZ, p.z)
+  }
+
+  return { minX, maxX, minY, maxY, minZ, maxZ }
 }

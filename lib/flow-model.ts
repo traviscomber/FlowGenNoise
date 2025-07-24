@@ -1,4 +1,5 @@
-// This file was previously truncated. Here's its full content.
+import { Vector3 } from "three"
+
 export interface FlowParameters {
   dataset: string // e.g., "spirals", "fractals", "quantum"
   scenario: string // e.g., "pure", "cosmic", "neural"
@@ -18,59 +19,144 @@ export interface GalleryItem {
   ai_enhanced_prompt?: string
 }
 
-// Predefined datasets, scenarios, and color schemes for selection
-export const DATASETS = [
-  { value: "spirals", label: "🌀 Quantum Spirals" },
-  { value: "fractals", label: "🔺 Fractal Dimensions" },
-  { value: "quantum", label: "⚛️ Quantum Fields" },
-  { value: "topology", label: "🕳️ Topological Spaces" },
-  { value: "checkerboard", label: "🏁 Fractal Checkerboard" },
-  { value: "moons", label: "🌙 Hyperbolic Moons" },
-  { value: "gaussian", label: "📊 Multi-Modal Gaussian" },
-  { value: "grid", label: "⚏ Non-Linear Grids" },
-  { value: "circles", label: "⭕ Concentric Manifolds" },
-  { value: "blobs", label: "🔵 Voronoi Dynamics" },
-  { value: "strings", label: "🧬 String Theory" },
-]
+export type FlowField = (p: Vector3) => Vector3
 
-export const SCENARIOS = [
-  { value: "pure", label: "🔢 Pure Mathematical" },
-  { value: "quantum", label: "⚛️ Quantum Realm" },
-  { value: "cosmic", label: "🌌 Cosmic Scale" },
-  { value: "microscopic", label: "🔬 Microscopic World" },
-  { value: "living_forest", label: "🌲 Living Forest" },
-  { value: "deep_ocean", label: "🌊 Deep Ocean" },
-  { value: "neural", label: "🧠 Neural Networks" },
-  { value: "crystal", label: "💎 Crystal Lattice" },
-  { value: "plasma", label: "⚡ Plasma Physics" },
-  { value: "atmospheric", label: "🌅 Atmospheric Physics" },
-  { value: "geological", label: "🏔️ Geological Time" },
-  { value: "biological", label: "🧬 Biological Systems" },
+export const DATASETS = [
+  {
+    name: "Lorenz Attractor",
+    description: "A chaotic system known for its butterfly effect.",
+    params: {
+      sigma: 10,
+      rho: 28,
+      beta: 8 / 3,
+    },
+    flow: (p: Vector3, params: any) => {
+      const { sigma, rho, beta } = params
+      const dx = sigma * (p.y - p.x)
+      const dy = p.x * (rho - p.z) - p.y
+      const dz = p.x * p.y - beta * p.z
+      return new Vector3(dx, dy, dz)
+    },
+  },
+  {
+    name: "Rossler Attractor",
+    description: "A simpler chaotic system, often used as an example.",
+    params: {
+      a: 0.2,
+      b: 0.2,
+      c: 5.7,
+    },
+    flow: (p: Vector3, params: any) => {
+      const { a, b, c } = params
+      const dx = -p.y - p.z
+      const dy = p.x + a * p.y
+      const dz = b + p.z * (p.x - c)
+      return new Vector3(dx, dy, dz)
+    },
+  },
+  {
+    name: "Duffing Oscillator",
+    description: "A non-linear oscillator exhibiting chaotic behavior.",
+    params: {
+      delta: 0.2,
+      gamma: 0.3,
+      omega: 1.0,
+      alpha: 1.0,
+      beta: -1.0,
+    },
+    flow: (p: Vector3, params: any) => {
+      const { delta, gamma, omega, alpha, beta } = params
+      const x = p.x
+      const y = p.y
+      const dx = y
+      const dy = -delta * y - alpha * x - beta * x * x * x + gamma * Math.cos(omega * p.z) // p.z is time
+      return new Vector3(dx, dy, 1) // 1 for time progression
+    },
+  },
+  {
+    name: "Aizawa Attractor",
+    description: "A complex chaotic system with interesting visual properties.",
+    params: {
+      a: 0.95,
+      b: 0.7,
+      c: 0.6,
+      d: 3.5,
+      e: 0.25,
+      f: 0.1,
+    },
+    flow: (p: Vector3, params: any) => {
+      const { a, b, c, d, e, f } = params
+      const dx = (p.z - b) * p.x - d * p.y
+      const dy = d * p.x + (p.z - b) * p.y
+      const dz = c + a * p.z - (p.x * p.x + p.y * p.y) * (1 + e * p.z) + f * p.z * p.x * p.x * p.x
+      return new Vector3(dx, dy, dz)
+    },
+  },
+  {
+    name: "Thomas Attractor",
+    description: "A simple 3D chaotic system.",
+    params: {
+      b: 0.2,
+    },
+    flow: (p: Vector3, params: any) => {
+      const { b } = params
+      const dx = -b * p.x + p.y - p.z
+      const dy = -b * p.y + p.z - p.x
+      const dz = -b * p.z + p.x - p.y
+      return new Vector3(dx, dy, dz)
+    },
+  },
 ]
 
 export const COLOR_SCHEMES = [
-  { value: "plasma", label: "🟣 Plasma" },
-  { value: "quantum", label: "⚛️ Quantum" },
-  { value: "cosmic", label: "🌌 Cosmic" },
-  { value: "thermal", label: "🔥 Thermal" },
-  { value: "spectral", label: "🌈 Spectral" },
-  { value: "crystalline", label: "💎 Crystalline" },
-  { value: "bioluminescent", label: "🌟 Bioluminescent" },
-  { value: "aurora", label: "🌌 Aurora" },
-  { value: "metallic", label: "⚡ Metallic" },
-  { value: "prismatic", label: "🔮 Prismatic" },
-  { value: "monochromatic", label: "⚫ Monochromatic" },
-  { value: "infrared", label: "🔴 Infrared" },
-  { value: "lava", label: "🌋 Lava" },
-  { value: "futuristic", label: "✨ Futuristic" },
-  { value: "forest", label: "🌳 Forest" },
-  { value: "ocean", label: "🌊 Ocean" },
-  { value: "sunset", label: "🌅 Sunset" },
-  { value: "arctic", label: "❄️ Arctic" },
-  { value: "neon", label: "💡 Neon" },
-  { value: "vintage", label: "🎞️ Vintage" },
-  { value: "toxic", label: "☣️ Toxic" },
-  { value: "ember", label: "🔥 Ember" },
+  { name: "Plasma", colors: ["#000000", "#0000FF", "#FF00FF", "#FFFF00", "#FFFFFF"] },
+  { name: "Viridis", colors: ["#440154", "#414487", "#2A788E", "#22A884", "#7AD151", "#FDE725"] },
+  { name: "Inferno", colors: ["#000004", "#2C1A5B", "#781C6D", "#BB3754", "#ED6925", "#FCF754"] },
+  { name: "Magma", colors: ["#000004", "#3B0F70", "#8C2981", "#DE4968", "#FE9F6D", "#FCF754"] },
+  { name: "Cividis", colors: ["#00204D", "#004F73", "#00876C", "#74B75F", "#D0EE11"] },
+  { name: "Twilight", colors: ["#000000", "#400040", "#800080", "#C000C0", "#FF00FF"] },
+  { name: "Rainbow", colors: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#9400D3"] },
+  { name: "Grayscale", colors: ["#000000", "#FFFFFF"] },
+  { name: "Ocean", colors: ["#000080", "#00FFFF", "#ADD8E6", "#87CEEB", "#4682B4"] },
+  { name: "Forest", colors: ["#006400", "#228B22", "#32CD32", "#90EE90", "#ADFF2F"] },
+]
+
+export const SCENARIOS = [
+  {
+    name: "Standard",
+    description: "Default flow field visualization.",
+    initialPosition: new Vector3(0.1, 0.1, 0.1),
+    noiseStrength: 0.0,
+    stereographic: false,
+  },
+  {
+    name: "Turbulent",
+    description: "Adds noise for a more chaotic, turbulent look.",
+    initialPosition: new Vector3(0.1, 0.1, 0.1),
+    noiseStrength: 0.5,
+    stereographic: false,
+  },
+  {
+    name: "Stereographic Projection",
+    description: "Projects the 3D flow onto a 2D plane.",
+    initialPosition: new Vector3(0.1, 0.1, 0.1),
+    noiseStrength: 0.0,
+    stereographic: true,
+  },
+  {
+    name: "Warped Space",
+    description: "Combines noise and stereographic projection.",
+    initialPosition: new Vector3(0.1, 0.1, 0.1),
+    noiseStrength: 0.3,
+    stereographic: true,
+  },
+  {
+    name: "Zoomed In",
+    description: "Starts closer to the origin for detailed views.",
+    initialPosition: new Vector3(0.001, 0.001, 0.001),
+    noiseStrength: 0.0,
+    stereographic: false,
+  },
 ]
 
 export const DEFAULT_FLOW_PARAMETERS: FlowParameters = {
@@ -168,7 +254,7 @@ const vectorFields: { [key: string]: VectorField } = {
     return { dx, dy }
   },
   quantum: (x, y, noise, noiseScale) => {
-    const n = noise.noise(x * y * 5 + n * 2)
+    const n = noise.noise(x * y * 5 + noiseScale * 2)
     const dx = Math.sin(x * y * 5 + n * 2)
     const dy = Math.cos(x * y * 5 + n * 2)
     return { dx, dy }
@@ -1351,4 +1437,244 @@ function applyScenarioTransform(
           charge: Math.floor(rng.next() * 3) - 1, // -1, 0, 1
           waveFunction: waveFunction,
           isObserved: observationCollapse,
-          ent
+          entanglement: entangled,
+          tunneling: tunneled,
+          coherence: coherenceTime,
+          virtualParticle: virtualParticle,
+          fieldStrength: Math.abs(fieldFluctuation) * 100,
+        }
+        break
+      }
+
+      case "crystal": {
+        // Crystal lattice with atoms, defects, and crystalline structures
+        const latticeConstant = 0.2
+        const atomPositionX = Math.round(baseX / latticeConstant) * latticeConstant
+        const atomPositionY = Math.round(baseY / latticeConstant) * latticeConstant
+
+        // Atomic vibrations and thermal energy
+        const thermalVibrationX = Math.sin(i * 0.2) * 0.03
+        const thermalVibrationY = Math.cos(i * 0.2) * 0.03
+
+        // Crystal defects and impurities
+        const vacancyDefect = rng.next() < 0.01
+        const interstitialDefect = rng.next() < 0.005
+        const impurityAtom = rng.next() < 0.02
+
+        // Grain boundaries and crystal orientation
+        const grainBoundary = Math.abs(baseX + baseY) > 1.5
+        const crystalOrientation = Math.atan2(baseY, baseX)
+
+        // Phonons and lattice waves
+        const phononWaveX = Math.sin(baseX * 10 + i * 0.1) * 0.05
+        const phononWaveY = Math.cos(baseY * 10 + i * 0.1) * 0.05
+
+        // Piezoelectric effect
+        const piezoelectricStress = Math.sin(baseX * 5) * Math.cos(baseY * 5) * 0.02
+        const electricField = piezoelectricStress * 100
+
+        x = atomPositionX + thermalVibrationX + phononWaveX + piezoelectricStress
+        y = atomPositionY + thermalVibrationY + phononWaveY
+
+        metadata = {
+          atomType: Math.floor(rng.next() * 8), // Silicon, carbon, oxygen, etc.
+          latticePosition: { x: atomPositionX, y: atomPositionY },
+          thermalEnergy: Math.abs(thermalVibrationX + thermalVibrationY) * 100,
+          vacancyDefect: vacancyDefect,
+          interstitialDefect: interstitialDefect,
+          impurityAtom: impurityAtom,
+          grainBoundary: grainBoundary,
+          crystalOrientation: crystalOrientation,
+          phononFrequency: Math.abs(phononWaveX + phononWaveY) * 100,
+          electricField: electricField,
+        }
+        break
+      }
+
+      case "plasma": {
+        // Plasma physics with charged particles, magnetic fields, and electromagnetic radiation
+        const electronDensity = Math.sin(baseX * 8) * Math.cos(baseY * 8) * 0.5 + 0.5
+        const ionDensity = Math.cos(baseX * 10) * Math.sin(baseY * 10) * 0.5 + 0.5
+
+        // Magnetic field lines
+        const magneticFieldX = Math.sin(baseX * 3) * 0.2
+        const magneticFieldY = Math.cos(baseY * 3) * 0.2
+
+        // Electromagnetic radiation
+        const emRadiation = Math.sin(i * 0.3) * 0.1
+        const radiationFrequency = Math.abs(emRadiation) * 100
+
+        // Plasma instabilities
+        const plasmaInstability = rng.next() < 0.05 && Math.sin(i * 0.5) > 0.8
+        const instabilityDisruption = plasmaInstability ? rng.gaussian() * 0.1 : 0
+
+        // Fusion reactions
+        const fusionReaction = rng.next() < 0.01 && electronDensity > 0.8 && ionDensity > 0.8
+        const fusionEnergy = fusionReaction ? 0.2 : 0
+
+        // Plasma waves
+        const plasmaWaveX = Math.sin(baseX * 15 + i * 0.2) * 0.08
+        const plasmaWaveY = Math.cos(baseY * 15 + i * 0.2) * 0.08
+
+        x = baseX + magneticFieldX + emRadiation + instabilityDisruption + plasmaWaveX + fusionEnergy
+        y = baseY + magneticFieldY + plasmaWaveY
+
+        metadata = {
+          electronDensity: electronDensity,
+          ionDensity: ionDensity,
+          magneticFieldStrength: Math.sqrt(magneticFieldX ** 2 + magneticFieldY ** 2),
+          radiationFrequency: radiationFrequency,
+          plasmaInstability: plasmaInstability,
+          fusionReaction: fusionReaction,
+          plasmaTemperature: electronDensity * 10000, // Kelvin
+          plasmaPressure: ionDensity * 100, // Pascals
+        }
+        break
+      }
+
+      case "atmospheric": {
+        // Atmospheric physics with weather patterns, clouds, and atmospheric phenomena
+        const altitude = Math.max(0, -baseY * 1000 + 500) // 0-1000m altitude
+        const windSpeed = Math.sin(baseX * 2) * Math.cos(baseY * 1.5) * 0.3
+
+        // Cloud formations
+        const cloudDensity = Math.sin(baseX * 5) * Math.cos(baseY * 4) * 0.5 + 0.5
+        const cloudType = Math.floor(rng.next() * 6) // Cumulus, stratus, cirrus, etc.
+
+        // Precipitation
+        const precipitation = rng.next() < 0.1 && cloudDensity > 0.7
+        const rainIntensity = precipitation ? Math.sin(i * 0.3) * 0.2 : 0
+
+        // Atmospheric pressure
+        const atmosphericPressure = 101325 - altitude * 10 // Pascals
+
+        // Temperature gradient
+        const temperature = 25 - altitude * 0.0065 // Celsius
+
+        // Turbulence and wind shear
+        const turbulence = Math.sin(baseX * 8 + baseY * 6) * windSpeed * 0.5
+        const windShear = Math.cos(baseX * 6 + baseY * 8) * windSpeed * 0.3
+
+        x = baseX + windSpeed + turbulence
+        y = baseY + windShear + rainIntensity
+
+        metadata = {
+          altitude: altitude,
+          temperature: temperature,
+          windSpeed: Math.abs(windSpeed) * 10, // km/h
+          cloudDensity: cloudDensity,
+          cloudType: cloudType,
+          precipitation: precipitation,
+          atmosphericPressure: atmosphericPressure,
+          humidity: Math.sin(baseX + baseY) * 0.5 + 0.5,
+          visibility: Math.max(0, 10 - cloudDensity * 8), // km
+        }
+        break
+      }
+
+      case "geological": {
+        // Geological time with tectonic plates, erosion, and geological formations
+        const depth = Math.max(0, -baseY * 1000 + 500) // 0-1000m depth
+        const tectonicActivity = Math.sin(baseX * 2) * Math.cos(baseY * 1.5) * 0.2
+
+        // Tectonic plate boundaries
+        const plateBoundary = Math.abs(baseX + baseY) > 1.5
+        const plateType = Math.floor(rng.next() * 4) // Convergent, divergent, transform, etc.
+
+        // Erosion and weathering
+        const erosionRate = Math.sin(baseX * 5) * Math.cos(baseY * 4) * 0.1
+        const sedimentDeposit = erosionRate * 0.8
+
+        // Volcanic activity
+        const volcanicActivity = rng.next() < 0.05 && depth > 500
+        const lavaFlow = volcanicActivity ? Math.sin(i * 0.3) * 0.2 : 0
+
+        // Seismic activity
+        const seismicActivity = rng.next() < 0.02 && plateBoundary
+        const earthquakeMagnitude = seismicActivity ? rng.range(4, 8) : 0
+
+        x = baseX + tectonicActivity + erosionRate + lavaFlow
+        y = baseY + sedimentDeposit
+
+        metadata = {
+          depth: depth,
+          plateBoundary: plateBoundary,
+          plateType: plateType,
+          erosionRate: Math.abs(erosionRate) * 10, // mm/year
+          sedimentDeposit: sedimentDeposit,
+          volcanicActivity: volcanicActivity,
+          earthquakeMagnitude: earthquakeMagnitude,
+          rockType: Math.floor(rng.next() * 8), // Igneous, sedimentary, metamorphic, etc.
+          geologicalAge: depth * 1000000, // Years
+        }
+        break
+      }
+
+      case "biological": {
+        // Biological systems with cells, DNA, and organic life
+        const cellDensity = Math.sin(baseX * 8) * Math.cos(baseY * 8) * 0.5 + 0.5
+        const dnaStructure = Math.cos(baseX * 10) * Math.sin(baseY * 10) * 0.2
+
+        // Cell division and growth
+        const cellDivision = rng.next() < 0.1 && cellDensity > 0.8
+        const cellGrowth = cellDivision ? Math.sin(i * 0.3) * 0.1 : 0
+
+        // Genetic mutations
+        const geneticMutation = rng.next() < 0.01
+        const mutationEffect = geneticMutation ? rng.gaussian() * 0.05 : 0
+
+        // Protein synthesis
+        const proteinSynthesis = Math.sin(baseX * 15 + i * 0.2) * 0.08
+        const proteinType = Math.floor(rng.next() * 12) // Enzyme, antibody, hormone, etc.
+
+        x = baseX + dnaStructure + cellGrowth + mutationEffect + proteinSynthesis
+        y = baseY
+
+        metadata = {
+          cellType: Math.floor(rng.next() * 10), // Neuron, muscle, epithelial, etc.
+          cellDensity: cellDensity,
+          dnaStructure: dnaStructure,
+          cellDivision: cellDivision,
+          geneticMutation: geneticMutation,
+          proteinType: proteinType,
+          metabolicRate: cellDensity * 100, // Arbitrary units
+          organismType: Math.floor(rng.next() * 6), // Bacteria, plant, animal, etc.
+        }
+        break
+      }
+
+      default:
+        // Default scenario - no transformation
+        metadata = {
+          default: true,
+        }
+        break
+    }
+
+    transformedPoints.push({ x, y, metadata })
+  }
+
+  return transformedPoints
+}
+
+// Helper function to check if a number is prime
+function isPrime(num: number): boolean {
+  if (num <= 1) return false
+  if (num <= 3) return true
+
+  if (num % 2 === 0 || num % 3 === 0) return false
+
+  for (let i = 5; i * i <= num; i = i + 6) {
+    if (num % i === 0 || num % (i + 2) === 0) return false
+  }
+
+  return true
+}
+
+// Helper function to generate a Fibonacci spiral
+function fibonacciSpiral(x: number, y: number): number {
+  const angle = Math.atan2(y, x)
+  const radius = Math.sqrt(x * x + y * y)
+  const fibonacci = Math.round(radius)
+  return fibonacci
+}

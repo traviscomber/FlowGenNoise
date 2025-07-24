@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server"
 import Replicate from "replicate"
 
 const replicate = new Replicate({
@@ -9,44 +10,31 @@ export async function POST(req: Request) {
     const { prompt } = await req.json()
 
     if (!prompt) {
-      return new Response(JSON.stringify({ error: "Prompt is required" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      })
+      return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
 
     // Use a text-to-image model from Replicate
-    // Example model: stability-ai/sdxl
-    // You can find other models at https://replicate.com/explore
+    // Example: stability-ai/sdxl:da775e53394c2e7d455dfb3182a1e5c36689c8ffce87eb4e1758d472c3924137
     const output = await replicate.run(
-      "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfdc46ce7a0b41fd11988cd39944",
+      "stability-ai/sdxl:da775e53394c2e7d455dfb3182a1e5c36689c8ffce87eb4e1758d472c3924137",
       {
         input: {
           prompt: prompt,
-          num_inference_steps: 25,
-          guidance_scale: 7.5,
           width: 768,
           height: 768,
+          num_inference_steps: 25,
+          guidance_scale: 7.5,
         },
       },
     )
 
-    // The output from Replicate is typically an array of image URLs
-    const imageUrl = Array.isArray(output) && output.length > 0 ? output[0] : null
-
-    if (!imageUrl) {
-      throw new Error("No image URL received from AI model.")
+    if (!output || !Array.isArray(output) || output.length === 0 || typeof output[0] !== "string") {
+      throw new Error("Replicate did not return a valid image URL.")
     }
 
-    return new Response(JSON.stringify({ imageUrl }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    })
+    return NextResponse.json({ imageUrl: output[0] })
   } catch (error) {
     console.error("Error generating AI art:", error)
-    return new Response(JSON.stringify({ error: (error as Error).message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    })
+    return NextResponse.json({ error: "Failed to generate AI art" }, { status: 500 })
   }
 }

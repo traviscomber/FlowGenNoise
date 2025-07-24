@@ -3,8 +3,12 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { type VariantProps, cva } from "class-variance-authority"
-import { PanelLeft } from "lucide-react"
+import { PanelLeft, ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { ResizablePanel } from "@/components/ui/resizable"
+import { Link } from "next-view-transitions"
+import { usePathname } from "next/navigation"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { buttonVariants } from "@/components/ui/button"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -130,18 +134,81 @@ const SidebarProvider = React.forwardRef<
 })
 SidebarProvider.displayName = "SidebarProvider"
 
-interface SidebarProps extends React.ComponentProps<typeof ResizablePanel> {
-  className?: string
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode
 }
 
-const Sidebar = React.forwardRef<React.ElementRef<typeof ResizablePanel>, SidebarProps>(
+export function SidebarComponent({ className, children, ...props }: SidebarProps) {
+  const pathname = usePathname()
+  const [isCollapsed, setIsCollapsed] = React.useState(false)
+
+  return (
+    <div
+      className={cn(
+        "relative flex h-full flex-col border-r bg-background transition-all duration-300",
+        isCollapsed ? "w-16" : "w-64",
+        className,
+      )}
+      {...props}
+    >
+      <div className="flex h-14 items-center justify-between px-4">
+        {!isCollapsed && <h3 className="text-lg font-semibold">Navigation</h3>}
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "h-7 w-7")}
+        >
+          {isCollapsed ? <ChevronRightIcon className="h-4 w-4" /> : <ChevronLeftIcon className="h-4 w-4" />}
+          <span className="sr-only">Toggle Sidebar</span>
+        </button>
+      </div>
+      <ScrollArea className="flex-1 px-3 py-2">
+        <nav className="grid items-start gap-2">
+          {React.Children.map(children, (child) => {
+            if (React.isValidElement(child) && child.type === SidebarLink) {
+              return React.cloneElement(child, {
+                isCollapsed,
+                isActive: pathname === child.props.href,
+              })
+            }
+            return child
+          })}
+        </nav>
+      </ScrollArea>
+    </div>
+  )
+}
+
+interface SidebarLinkProps extends React.ComponentPropsWithoutRef<typeof Link> {
+  icon: React.ElementType
+  isCollapsed?: boolean
+  isActive?: boolean
+}
+
+export function SidebarLink({ icon: Icon, isCollapsed, isActive, className, children, ...props }: SidebarLinkProps) {
+  return (
+    <Link
+      className={cn(
+        buttonVariants({ variant: isActive ? "secondary" : "ghost" }),
+        "justify-start",
+        isCollapsed ? "h-9 w-9 p-0" : "h-9 px-4",
+        className,
+      )}
+      {...props}
+    >
+      <Icon className={cn("h-4 w-4", !isCollapsed && "mr-3")} />
+      {!isCollapsed && children}
+    </Link>
+  )
+}
+
+const SidebarResizable = React.forwardRef<React.ElementRef<typeof ResizablePanel>, SidebarProps>(
   ({ className, children, ...props }, ref) => (
     <ResizablePanel ref={ref} className={cn("flex flex-col h-full", className)} {...props}>
       {children}
     </ResizablePanel>
   ),
 )
-Sidebar.displayName = "Sidebar"
+SidebarResizable.displayName = "SidebarResizable"
 
 const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.ComponentProps<typeof Button>>(
   ({ className, onClick, ...props }, ref) => {
@@ -537,7 +604,6 @@ const SidebarMenuSubButton = React.forwardRef<
 SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
 
 export {
-  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
@@ -561,4 +627,5 @@ export {
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,
+  SidebarResizable,
 }

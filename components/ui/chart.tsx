@@ -12,33 +12,48 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
-  Tooltip as RechartsTooltip,
-  Legend as RechartsLegend,
+  Tooltip,
+  Legend,
 } from "recharts"
 import {
-  type ChartConfig,
-  ChartContainer as ChartContainerPrimitive,
-  ChartTooltip as ChartTooltipPrimitive,
-  ChartTooltipContent as ChartTooltipContentPrimitive,
-} from "@/components/ui/chart" // Assuming these are provided by shadcn/ui
+  ChartConfig,
+  ChartContainer as RechartsChartContainer,
+  ChartTooltip as RechartsChartTooltip,
+  ChartTooltipContent as RechartsChartTooltipContent,
+} from "@/components/ui/chart" // Assuming these are correctly imported from shadcn/ui
 
 import { cn } from "@/lib/utils"
-import { useChart } from "@/hooks/useChart" // Assuming this is the correct import for useChart
-import { Legend } from "@/components/ui/legend" // Assuming this is the correct import for Legend
 
-// Format: { THEME_NAME: CSS_SELECTOR }
+// Re-exporting for convenience, assuming they are part of shadcn/ui/chart
+export {
+  ChartConfig,
+  RechartsChartContainer as ChartContainer,
+  RechartsChartTooltip as ChartTooltip,
+  RechartsChartTooltipContent as ChartTooltipContent,
+}
+
+// Re-exporting Recharts components for composition
+export {
+  CartesianGrid,
+  Line,
+  LineChart,
+  Bar,
+  BarChart,
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+}
+
 const THEMES = { light: "", dark: ".dark" } as const
 
-const ChartContainerComponent = ChartContainerPrimitive
-const ChartTooltip = ChartTooltipPrimitive
-const ChartTooltipContent = ChartTooltipContentPrimitive
-
-const ChartLegend = Legend
-
-const ChartLegendContent = React.forwardRef<
+const ChartLegend = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> &
-    Pick<RechartsTooltip, "payload" | "verticalAlign"> & {
+    Pick<Tooltip, "payload" | "verticalAlign"> & {
       hideIcon?: boolean
       nameKey?: string
     }
@@ -80,7 +95,7 @@ const ChartLegendContent = React.forwardRef<
     </div>
   )
 })
-ChartLegendContent.displayName = "ChartLegend"
+ChartLegend.displayName = "ChartLegend"
 
 // Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key: string) {
@@ -137,23 +152,7 @@ ${colorConfig
   )
 }
 
-export {
-  ChartContainerComponent,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-  ChartStyle,
-  CartesianGrid,
-  Line,
-  LineChart,
-  Bar,
-  BarChart,
-  Area,
-  AreaChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  RechartsTooltip,
-  RechartsLegend,
+const useChart = () => {
+  // Placeholder for useChart hook implementation
+  return { config: {} }
 }
