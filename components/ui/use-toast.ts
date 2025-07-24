@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import type { ToastActionElement, ToastProps } from "@/components/ui/toast"
+import type { ToastProps } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
@@ -11,7 +11,7 @@ type ToasterToast = ToastProps & {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
-  action?: ToastActionElement
+  action?: React.ReactNode
 }
 
 const actionTypes = {
@@ -24,7 +24,7 @@ const actionTypes = {
 let count = 0
 
 function genId() {
-  count = (count + 1) % Number.MAX_VALUE
+  count = (count + 1) % Number.MAX_SAFE_INTEGER
   return count.toString()
 }
 
@@ -39,11 +39,11 @@ type Action =
     }
   | {
       type: typeof actionTypes.DISMISS_TOAST
-      toastId?: string
+      toastId?: ToasterToast["id"]
     }
   | {
       type: typeof actionTypes.REMOVE_TOAST
-      toastId?: string
+      toastId?: ToasterToast["id"]
     }
 
 interface State {
@@ -107,12 +107,6 @@ export const reducer = (state: State, action: Action): State => {
       }
     }
     case actionTypes.REMOVE_TOAST:
-      if (action.toastId === undefined) {
-        return {
-          ...state,
-          toasts: [],
-        }
-      }
       return {
         ...state,
         toasts: state.toasts.filter((t) => t.id !== action.toastId),
@@ -131,31 +125,34 @@ function setState(action: Action) {
   listeners.forEach((listener) => listener(state))
 }
 
-const dispatch = (action: Action) => {
+function dispatch(action: Action) {
   setState(action)
 }
 
-export const useToast = () => {
-  const [activeToasts, setActiveToasts] = React.useState(state.toasts)
+export function useToast() {
+  const [toasts, setToasts] = React.useState(state.toasts)
 
   React.useEffect(() => {
-    const listener = (newState: State) => {
-      setActiveToasts(newState.toasts)
-    }
-
-    listeners.push(listener)
+    listeners.push(setToasts)
     return () => {
-      const index = listeners.indexOf(listener)
+      const index = listeners.indexOf(setToasts)
       if (index > -1) {
         listeners.splice(index, 1)
       }
     }
-  }, [])
+  }, [toasts])
 
   return {
-    toasts: activeToasts,
+    toasts,
     toast: ({ ...props }: ToastProps) => {
       const id = genId()
+
+      const update = (props: ToasterToast) =>
+        dispatch({
+          type: actionTypes.UPDATE_TOAST,
+          toast: { ...props, id },
+        })
+      const dismiss = () => dispatch({ type: actionTypes.DISMISS_TOAST, toastId: id })
 
       dispatch({
         type: actionTypes.ADD_TOAST,
@@ -164,18 +161,15 @@ export const useToast = () => {
           id,
           open: true,
           onOpenChange: (open) => {
-            if (!open) {
-              dispatch({
-                type: actionTypes.DISMISS_TOAST,
-                toastId: id,
-              })
-            }
+            if (!open) dismiss()
           },
         },
       })
+
       return {
         id: id,
-        dismiss: () => dispatch({ type: actionTypes.DISMISS_TOAST, toastId: id }),
+        dismiss,
+        update,
       }
     },
   }

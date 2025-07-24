@@ -20,5 +20,5 @@ export function useMobile() {
     }
   }, [])
 
-  return isMobile
+  return { isMobile }
 }

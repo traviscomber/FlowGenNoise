@@ -55,6 +55,55 @@ const colorPalettes = {
   ember: ["#2D0A00", "#CC4400", "#FF8800", "#FFCC66"],
 }
 
+export interface FlowParameters {
+  dataset: string
+  scenario: string
+  noise: number
+  samples: number
+  colorScheme: string
+  stereographic: boolean
+}
+
+export interface GalleryItem {
+  id: string
+  image_url: string
+  parameters: FlowParameters
+  created_at: string
+  prompt?: string
+  ai_enhanced_prompt?: string
+}
+
+export const DATASETS = [
+  { value: "mandelbrot", label: "Mandelbrot Set" },
+  { value: "julia", label: "Julia Set" },
+  { value: "lyapunov", label: "Lyapunov Exponent" },
+  { value: "newton", label: "Newton Fractal" },
+]
+
+export const SCENARIOS = [
+  { value: "default", label: "Default" },
+  { value: "spiral", label: "Spiral" },
+  { value: "warp", label: "Warp" },
+  { value: "kaleidoscope", label: "Kaleidoscope" },
+]
+
+export const COLOR_SCHEMES = [
+  { value: "plasma", label: "Plasma" },
+  { value: "viridis", label: "Viridis" },
+  { value: "magma", label: "Magma" },
+  { value: "cividis", label: "Cividis" },
+  { value: "twilight", label: "Twilight" },
+]
+
+export const DEFAULT_FLOW_PARAMETERS: FlowParameters = {
+  dataset: "mandelbrot",
+  scenario: "default",
+  noise: 0.5,
+  samples: 100000,
+  colorScheme: "plasma",
+  stereographic: false,
+}
+
 // Seeded random number generator for consistent results
 class SeededRandom {
   private seed: number

@@ -1,29 +1,24 @@
-import { NextResponse } from "next/server"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
+import { NextResponse } from "next/server"
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { prompt } = await req.json()
+    const { prompt } = await request.json()
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
 
-    const { text } = await generateText({
-      model: openai("gpt-4o"),
-      prompt: `Enhance the following art generation prompt to be more descriptive, creative, and suitable for an AI image generator. Focus on visual details, artistic styles, and mood. Make it concise and impactful, around 50-100 words.
-
-Original prompt: "${prompt}"
-
-Enhanced prompt:`,
-      temperature: 0.7,
-      maxTokens: 100,
+    // Use the generateText function from the AI SDK
+    const { text: enhancedPrompt } = await generateText({
+      model: openai("gpt-4o"), // Using gpt-4o model
+      prompt: `Enhance the following art generation prompt to be more descriptive and creative, suitable for an AI image generator. Focus on visual details, style, and mood. Keep it concise, around 50-100 words: "${prompt}"`,
     })
 
-    return NextResponse.json({ enhancedPrompt: text })
+    return NextResponse.json({ success: true, enhancedPrompt })
   } catch (error) {
     console.error("Error enhancing prompt:", error)
-    return NextResponse.json({ error: "Failed to enhance prompt" }, { status: 500 })
+    return NextResponse.json({ success: false, error: "Failed to enhance prompt" }, { status: 500 })
   }
 }

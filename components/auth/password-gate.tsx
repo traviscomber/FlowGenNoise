@@ -1,10 +1,11 @@
 "use client"
 
-import type React from "react"
+import { useEffect } from "react"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
+
+import type React from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Eye, EyeOff, Lock } from "lucide-react"
@@ -104,7 +105,7 @@ export function PasswordGate({ children }: PasswordGateProps) {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="relative">
-                <Input
+                <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
                   value={password}

@@ -1,148 +1,116 @@
 "use client"
 
 import * as React from "react"
-import * as RechartsPrimitive from "recharts"
-import { ChartContext } from "./ChartContext" // Import ChartContext from the correct file
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  Bar,
+  BarChart,
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+} from "recharts"
+import {
+  ChartContainer as BaseChartContainer,
+  ChartTooltip as BaseChartTooltip,
+  ChartTooltipContent as BaseChartTooltipContent,
+} from "@/components/ui/chart" // Assuming these are provided by shadcn/ui
 
 import { cn } from "@/lib/utils"
 
-// Workaround for https://github.com/recharts/recharts/issues/3615
-const Tooltip = RechartsPrimitive.Tooltip
-
-function Chart({
-  config,
-  children,
-  className,
-  ...props
-}: React.ComponentProps<typeof RechartsPrimitive.ResponsiveContainer> & {
-  config: ChartContext["config"]
-} & (
-    | {
-        data: Record<string, any>[]
-        categories: string[]
-      }
-    | {
-        data?: never
-        categories?: never
-      }
-  )) {
-  return (
-    <ChartContext.Provider value={{ config, ...props }}>
-      <div className={cn("h-[400px] w-full", className)}>
-        <RechartsPrimitive.ResponsiveContainer {...props}>{children}</RechartsPrimitive.ResponsiveContainer>
-      </div>
-    </ChartContext.Provider>
-  )
+// Re-exporting the base components for convenience
+export {
+  BaseChartContainer as ChartContainer,
+  BaseChartTooltip as ChartTooltip,
+  BaseChartTooltipContent as ChartTooltipContent,
 }
 
-// Helper to use accessible colors from tailwind config.
-function ChartTooltip({
-  active,
-  payload,
-  className,
-  formatter,
-  content,
-  ...props
-}: React.ComponentProps<typeof Tooltip> & {
-  formatter?: (value: number, name: string, props: { payload: Record<string, any> }) => [string, string]
-  content?: React.ComponentProps<typeof ChartTooltipContent>["content"]
-}) {
-  const { config } = React.useContext(ChartContext)
+// You can define your own Chart components here, or use the base ones directly.
+// For example, if you want to wrap Recharts components with some default styling or props:
 
-  if (active && payload && payload.length) {
-    const item = payload[0]
-    const _formatter =
-      typeof formatter === "function"
-        ? formatter
-        : (value: number, name: string) => {
-            const entry = config[name]
-            if (entry && entry.label) {
-              return [value, entry.label]
-            }
-            return [value, name]
-          }
-    return (
-      <Tooltip
-        active={active}
-        payload={payload}
-        formatter={_formatter}
-        content={({ active, payload }) => {
-          if (active && payload && payload.length) {
-            return (
-              <ChartTooltipContent
-                className={className}
-                item={item}
-                payload={payload}
-                config={config}
-                content={content}
-              />
-            )
-          }
+const ChartLine = React.forwardRef<React.ElementRef<typeof Line>, React.ComponentPropsWithoutRef<typeof Line>>(
+  ({ className, ...props }, ref) => <Line ref={ref} className={cn(className)} {...props} />,
+)
+ChartLine.displayName = "ChartLine"
 
-          return null
-        }}
-        {...props}
-      />
-    )
-  }
+const ChartBar = React.forwardRef<React.ElementRef<typeof Bar>, React.ComponentPropsWithoutRef<typeof Bar>>(
+  ({ className, ...props }, ref) => <Bar ref={ref} className={cn(className)} {...props} />,
+)
+ChartBar.displayName = "ChartBar"
 
-  return null
+const ChartArea = React.forwardRef<React.ElementRef<typeof Area>, React.ComponentPropsWithoutRef<typeof Area>>(
+  ({ className, ...props }, ref) => <Area ref={ref} className={cn(className)} {...props} />,
+)
+ChartArea.displayName = "ChartArea"
+
+const ChartXAxis = React.forwardRef<React.ElementRef<typeof XAxis>, React.ComponentPropsWithoutRef<typeof XAxis>>(
+  ({ className, ...props }, ref) => <XAxis ref={ref} className={cn(className)} {...props} />,
+)
+ChartXAxis.displayName = "ChartXAxis"
+
+const ChartYAxis = React.forwardRef<React.ElementRef<typeof YAxis>, React.ComponentPropsWithoutRef<typeof YAxis>>(
+  ({ className, ...props }, ref) => <YAxis ref={ref} className={cn(className)} {...props} />,
+)
+ChartYAxis.displayName = "ChartYAxis"
+
+const ChartCartesianGrid = React.forwardRef<
+  React.ElementRef<typeof CartesianGrid>,
+  React.ComponentPropsWithoutRef<typeof CartesianGrid>
+>(({ className, ...props }, ref) => <CartesianGrid ref={ref} className={cn(className)} {...props} />)
+ChartCartesianGrid.displayName = "ChartCartesianGrid"
+
+const ChartTooltipComponent = React.forwardRef<
+  React.ElementRef<typeof Tooltip>,
+  React.ComponentPropsWithoutRef<typeof Tooltip>
+>(({ className, ...props }, ref) => <Tooltip ref={ref} className={cn(className)} {...props} />)
+ChartTooltipComponent.displayName = "ChartTooltipComponent"
+
+const ChartLegend = React.forwardRef<React.ElementRef<typeof Legend>, React.ComponentPropsWithoutRef<typeof Legend>>(
+  ({ className, ...props }, ref) => <Legend ref={ref} className={cn(className)} {...props} />,
+)
+ChartLegend.displayName = "ChartLegend"
+
+const ChartResponsiveContainer = React.forwardRef<
+  React.ElementRef<typeof ResponsiveContainer>,
+  React.ComponentPropsWithoutRef<typeof ResponsiveContainer>
+>(({ className, ...props }, ref) => <ResponsiveContainer ref={ref} className={cn(className)} {...props} />)
+ChartResponsiveContainer.displayName = "ChartResponsiveContainer"
+
+// You can also create wrapper components for the main chart types
+const ChartLineChart = React.forwardRef<
+  React.ElementRef<typeof LineChart>,
+  React.ComponentPropsWithoutRef<typeof LineChart>
+>(({ className, ...props }, ref) => <LineChart ref={ref} className={cn(className)} {...props} />)
+ChartLineChart.displayName = "ChartLineChart"
+
+const ChartBarChart = React.forwardRef<
+  React.ElementRef<typeof BarChart>,
+  React.ComponentPropsWithoutRef<typeof BarChart>
+>(({ className, ...props }, ref) => <BarChart ref={ref} className={cn(className)} {...props} />)
+ChartBarChart.displayName = "ChartBarChart"
+
+const ChartAreaChart = React.forwardRef<
+  React.ElementRef<typeof AreaChart>,
+  React.ComponentPropsWithoutRef<typeof AreaChart>
+>(({ className, ...props }, ref) => <AreaChart ref={ref} className={cn(className)} {...props} />)
+ChartAreaChart.displayName = "ChartAreaChart"
+
+export {
+  ChartLine,
+  ChartBar,
+  ChartArea,
+  ChartXAxis,
+  ChartYAxis,
+  ChartCartesianGrid,
+  ChartTooltipComponent as ChartTooltip, // Renamed to avoid conflict with BaseChartTooltip
+  ChartLegend,
+  ChartResponsiveContainer,
+  ChartLineChart,
+  ChartBarChart,
+  ChartAreaChart,
 }
-
-interface ChartTooltipContentProps extends React.ComponentPropsWithoutRef<"div"> {
-  item: RechartsPrimitive.TooltipProps["payload"][number]
-  payload: RechartsPrimitive.TooltipProps["payload"]
-  config: ChartContext["config"]
-  content?: React.ComponentProps<typeof ChartTooltipContent>["content"]
-}
-
-const ChartTooltipContent = React.forwardRef<HTMLDivElement, ChartTooltipContentProps>(
-  ({ className, item, payload, config, content, ...props }, ref) => {
-    if (content) {
-      return (
-        <div ref={ref} className={cn("p-2", className)} {...props}>
-          {content({ item, payload, config })}
-        </div>
-      )
-    }
-
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          "grid min-w-[130px] items-center gap-1.5 rounded-lg border bg-white px-2.5 py-1.5 text-xs shadow-xl dark:bg-zinc-950",
-          className,
-        )}
-        {...props}
-      >
-        {payload.map((item) => {
-          const key = item.dataKey as keyof typeof config
-
-          return (
-            <div key={item.dataKey} className="flex items-center justify-between space-x-2">
-              <ChartTooltipLabel className="shrink-0" style={{ color: config[key]?.color }}>
-                {config[key]?.label || item.dataKey}
-              </ChartTooltipLabel>
-              <ChartTooltipValue>{item.value as number}</ChartTooltipValue>
-            </div>
-          )
-        })}
-      </div>
-    )
-  },
-)
-ChartTooltipContent.displayName = "ChartTooltipContent"
-
-const ChartTooltipLabel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => <div ref={ref} className={cn("flex items-center", className)} {...props} />,
-)
-ChartTooltipLabel.displayName = "ChartTooltipLabel"
-
-const ChartTooltipValue = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("relative ml-auto font-medium tabular-nums", className)} {...props} />
-  ),
-)
-ChartTooltipValue.displayName = "ChartTooltipValue"
-
-export { Chart, ChartTooltip, ChartTooltipContent }

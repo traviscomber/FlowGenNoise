@@ -590,3 +590,6 @@ export {
   SidebarTrigger,
   useSidebar,
 }
+
+// This file was previously used for a sidebar but is no longer in use.
+// It is kept here for historical context but is not actively used in the application.

@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server"
-import { ClientUpscaler } from "@/lib/client-upscaler"
+import { upscaleImage } from "@/lib/client-upscaler" // Assuming client-upscaler.ts contains the Replicate logic
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { imageDataUrl, scaleFactor } = await req.json()
+    const { imageUrl } = await request.json()
 
-    if (!imageDataUrl || typeof scaleFactor !== "number") {
-      return NextResponse.json({ error: "Invalid request parameters" }, { status: 400 })
+    if (!imageUrl) {
+      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
     }
 
-    // Use the client-side upscaler logic
-    const upscaledDataUrl = await ClientUpscaler.upscaleImage(imageDataUrl, scaleFactor)
+    const upscaledUrl = await upscaleImage(imageUrl)
 
-    return NextResponse.json({ upscaledImageUrl: upscaledDataUrl })
+    return NextResponse.json({ success: true, upscaledUrl })
   } catch (error) {
-    console.error("Error upscaling image:", error)
-    return NextResponse.json({ error: "Failed to upscale image" }, { status: 500 })
+    console.error("Error in upscale-image API:", error)
+    return NextResponse.json({ success: false, error: "Failed to upscale image" }, { status: 500 })
   }
 }

@@ -1,73 +1,57 @@
 import { NextResponse } from "next/server"
-import { experimental_generateImage } from "ai"
-import { openai } from "@ai-sdk/openai"
 import Replicate from "replicate"
 
-// Initialize Replicate client
+// Initialize Replicate client with the API token from environment variables
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 })
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    const { prompt } = await req.json()
+    const { prompt } = await request.json()
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
 
-    let imageUrl: string | undefined
+    if (!process.env.REPLICATE_API_TOKEN) {
+      console.warn("REPLICATE_API_TOKEN is not set. AI art generation will not work.")
+      return NextResponse.json({ error: "AI art generation is not configured." }, { status: 500 })
+    }
 
-    // Attempt to use OpenAI DALL-E 3 first
-    if (process.env.OPENAI_API_KEY) {
-      try {
-        const { url } = await experimental_generateImage({
-          model: openai("dall-e-3"),
+    console.log("Generating AI art with prompt:", prompt)
+
+    // Use a text-to-image model from Replicate
+    // Example: stability-ai/sdxl
+    const output = await replicate.run(
+      "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de75666d65e85c78093a68784d9d81e",
+      {
+        input: {
           prompt: prompt,
-          quality: "hd",
-          style: "natural",
-          size: "1024x1024",
-        })
-        imageUrl = url
-      } catch (openaiError) {
-        console.warn("OpenAI DALL-E 3 failed, falling back to Replicate:", openaiError)
-      }
+          width: 768,
+          height: 768,
+          num_inference_steps: 25,
+          guidance_scale: 7.5,
+        },
+      },
+    )
+
+    // The output from Replicate is typically an array of URLs or a single URL
+    let imageUrl: string | null = null
+    if (Array.isArray(output) && output.length > 0) {
+      imageUrl = output[0] as string
+    } else if (typeof output === "string") {
+      imageUrl = output
     }
 
-    // Fallback to Replicate if OpenAI failed or not configured
-    if (!imageUrl && process.env.REPLICATE_API_TOKEN) {
-      try {
-        const output = await replicate.run(
-          "stability-ai/sdxl:39ed52f2a78e934b3ba6e2fe167842eccd310f2ae99a31aa29ea79bcc9f6cece",
-          {
-            input: {
-              prompt: prompt,
-              width: 1024,
-              height: 1024,
-              num_outputs: 1,
-              num_inference_steps: 50,
-              guidance_scale: 7.5,
-              scheduler: "K_EULER_ANCESTRAL",
-              seed: Math.floor(Math.random() * 1000000000),
-            },
-          },
-        )
-        // Replicate returns an array of URLs
-        if (Array.isArray(output) && output.length > 0) {
-          imageUrl = output[0] as string
-        }
-      } catch (replicateError) {
-        console.error("Replicate image generation failed:", replicateError)
-      }
+    if (imageUrl) {
+      return NextResponse.json({ success: true, imageUrl })
+    } else {
+      console.error("Failed to get image URL from Replicate output:", output)
+      return NextResponse.json({ success: false, error: "Failed to generate AI art" }, { status: 500 })
     }
-
-    if (!imageUrl) {
-      return NextResponse.json({ error: "Failed to generate image with available AI models." }, { status: 500 })
-    }
-
-    return NextResponse.json({ imageUrl })
   } catch (error) {
-    console.error("Error in AI art generation route:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error("Error generating AI art:", error)
+    return NextResponse.json({ success: false, error: "Failed to generate AI art" }, { status: 500 })
   }
 }

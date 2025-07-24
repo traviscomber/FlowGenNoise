@@ -1,4 +1,11 @@
 // Client-side image upscaling using Canvas API
+import Replicate from "replicate"
+
+// Initialize Replicate client with the API token from environment variables
+const replicate = new Replicate({
+  auth: process.env.REPLICATE_API_TOKEN,
+})
+
 export class ClientUpscaler {
   static async upscaleImage(imageDataUrl: string, scaleFactor: number): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -147,5 +154,41 @@ export class ClientUpscaler {
     }
 
     return enhanced
+  }
+
+  /**
+   * Upscales an image using a Replicate model.
+   * @param imageUrl The URL of the image to upscale.
+   * @returns The URL of the upscaled image.
+   */
+  static async upscaleImageWithReplicate(imageUrl: string): Promise<string> {
+    if (!process.env.REPLICATE_API_TOKEN) {
+      console.warn("REPLICATE_API_TOKEN is not set. Image upscaling will not work.")
+      return imageUrl // Return original image if API token is missing
+    }
+
+    try {
+      const output = await replicate.run(
+        "nightmareai/real-esrgan:4222a49e337756d53a881a2f98120699856080c6e79245c7750567579c2a2352",
+        {
+          input: {
+            image: imageUrl,
+            scale: 4, // Upscale by 4x
+          },
+        },
+      )
+      // The output from Replicate is typically an array of URLs or a single URL
+      if (Array.isArray(output) && output.length > 0) {
+        return output[0] as string
+      } else if (typeof output === "string") {
+        return output
+      } else {
+        console.error("Unexpected output from Replicate:", output)
+        return imageUrl
+      }
+    } catch (error) {
+      console.error("Error upscaling image with Replicate:", error)
+      return imageUrl // Return original image on error
+    }
   }
 }

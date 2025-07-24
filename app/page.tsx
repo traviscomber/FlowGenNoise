@@ -1,8 +1,8 @@
-import { FlowArtGenerator } from "@/components/flow-art-generator"
+import FlowArtGenerator from "@/components/flow-art-generator"
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8 lg:p-12">
       <FlowArtGenerator />
     </main>
   )
