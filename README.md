@@ -100,3 +100,4 @@ This project can be easily deployed to Vercel.
 ## Contributing
 
 Feel free to fork the repository, open issues, and submit pull requests.
+\`\`\`
