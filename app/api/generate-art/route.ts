@@ -1,19 +1,41 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { generateFlowField } from "@/lib/flow-model"
+import { generateFlowArtData } from "@/lib/flow-model"
+import { getSvgDataUrl } from "@/lib/plot-utils"
+import { NextResponse } from "next/server"
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const params = await request.json()
+    const {
+      dataset,
+      scenario,
+      colorScheme,
+      seed,
+      numSamples,
+      noiseScale,
+      timeStep,
+      enableStereographic,
+      stereographicPerspective,
+      width,
+      height,
+    } = await req.json()
 
-    // Generate SVG flow field
-    const svgContent = generateFlowField(params)
-
-    return NextResponse.json({
-      svgContent,
-      success: true,
+    const { points, colors } = generateFlowArtData({
+      dataset,
+      scenario,
+      colorScheme,
+      seed,
+      numSamples,
+      noiseScale,
+      timeStep,
+      enableStereographic,
+      stereographicPerspective,
     })
-  } catch (error: any) {
-    console.error("Flow field generation error:", error)
-    return NextResponse.json({ error: "Failed to generate flow field", details: error.message }, { status: 500 })
+
+    // Generate SVG data URL
+    const svgDataUrl = getSvgDataUrl(points, colors, enableStereographic, stereographicPerspective, width, height)
+
+    return NextResponse.json({ imageUrl: svgDataUrl })
+  } catch (error) {
+    console.error("Error generating art:", error)
+    return NextResponse.json({ error: "Failed to generate art" }, { status: 500 })
   }
 }

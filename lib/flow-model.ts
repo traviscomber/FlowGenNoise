@@ -295,15 +295,16 @@ function generateFractalDimensions(rng: SeededRandom, n_samples: number, noise: 
     const c_real = -0.7 + 0.3 * Math.sin(t * 0.1)
     const c_imag = 0.27015 + 0.1 * Math.cos(t * 0.1)
     let z_real = rng.range(-2, 2)
-    const z_imag = rng.range(-2, 2)
+    let z_imag = rng.range(-2, 2)
 
     let juliaIterations = 0
     const maxJuliaIter = 50
 
     while (z_real * z_real + z_imag * z_imag < 4 && juliaIterations < maxJuliaIter) {
       const temp = z_real * z_real - z_imag * z_imag + c_real
-      zy = 2 * z_real * z_imag + c_imag
+      const zy = 2 * z_real * z_imag + c_imag // Corrected: declare zy
       z_real = temp
+      z_imag = zy // Corrected: assign to z_imag
       juliaIterations++
     }
 
@@ -929,4 +930,924 @@ function applyScenarioTransform(
         // Quantum tunneling
         const barrier = Math.abs(baseX) > 1 || Math.abs(baseY) > 1
         const tunnelingProbability = barrier ? Math.exp(-Math.abs(baseX + baseY) * 3) : 1
-        const tunneled = barrier && rng.next() <
+        const tunneled = barrier && rng.next() < tunnelingProbability
+
+        // Quantum foam and spacetime curvature
+        const quantumFoam = Math.sin(baseX * 50) * Math.cos(baseY * 50) * 0.01
+        const spacetimeCurvature = Math.sqrt(baseX ** 2 + baseY ** 2) * 0.05
+
+        x = baseX + quantumState + spookyAction + vacuumFluctuation + (tunneled ? 0.2 : 0) + quantumFoam
+        y = baseY + superposition + spookyAction * 0.8 + vacuumFluctuation * 0.5 + quantumFoam * 0.8
+
+        metadata = {
+          isParticle: observationCollapse,
+          isWave: !observationCollapse,
+          quantumSpin: rng.next() < 0.5 ? "up" : "down",
+          entangled: entangled,
+          coherence: coherenceTime,
+          virtualParticle: virtualParticle,
+          tunneled: tunneled,
+          spacetimeDistortion: spacetimeCurvature,
+          quantumFieldStrength: Math.abs(waveFunction) * 10,
+          particleType: Math.floor(rng.next() * 6), // Electron, photon, neutrino, quark, gluon, Higgs
+          quantumGravity: Math.abs(quantumFoam) * 100,
+          quantumFluctuation: Math.abs(vacuumFluctuation) * 100,
+        }
+        break
+      }
+
+      case "microscopic": {
+        // Microscopic world with cells, bacteria, viruses, and molecular structures
+        const cellDensity = Math.sin(baseX * 5) * Math.cos(baseY * 5) + 0.5
+        const molecularVibration = Math.sin(baseX * 20 + baseY * 20 + i * 0.5) * 0.01
+
+        // Cell division and growth
+        const cellCycle = Math.sin(i * 0.05) * 0.1
+        const mitosis = cellCycle > 0.8 && rng.next() < 0.1
+        const cellGrowth = mitosis ? 0.05 : 0
+
+        // Bacterial colonies and biofilms
+        const bacterialColony = cellDensity > 0.7 && rng.next() < 0.2
+        const biofilmMatrix = bacterialColony ? Math.sin(baseX * 10) * Math.cos(baseY * 8) * 0.05 : 0
+
+        // Viral replication and infection
+        const virusPresent = rng.next() < 0.01
+        const viralReplication = virusPresent ? Math.sin(i * 0.2) * 0.1 : 0
+        const infectedCell = virusPresent && rng.next() < 0.5
+
+        // DNA/RNA strands and genetic code
+        const dnaHelix = Math.sin(baseX * 12) * Math.cos(baseY * 12) * 0.03
+        const geneticMutation = rng.next() < 0.005
+
+        // Nanobots and microscopic machinery
+        const nanobot = rng.next() < 0.002
+        const nanobotTrail = nanobot ? Math.sin(i * 0.1) * 0.05 : 0
+
+        // Brownian motion
+        const brownianX = rng.gaussian() * 0.02
+        const brownianY = rng.gaussian() * 0.02
+
+        x =
+          baseX +
+          cellGrowth +
+          biofilmMatrix +
+          viralReplication +
+          dnaHelix +
+          nanobotTrail +
+          brownianX +
+          molecularVibration
+        y =
+          baseY +
+          cellGrowth * 0.8 +
+          biofilmMatrix * 0.5 +
+          viralReplication * 0.8 +
+          dnaHelix * 0.5 +
+          nanobotTrail * 0.8 +
+          brownianY
+
+        metadata = {
+          cellType: Math.floor(rng.next() * 5), // Prokaryotic, eukaryotic, plant, animal, fungal
+          isBacteria: bacterialColony,
+          isVirus: virusPresent,
+          isDNA: geneticMutation,
+          isNanobot: nanobot,
+          mitosis: mitosis,
+          infectionStatus: infectedCell ? "infected" : "healthy",
+          geneticCode: geneticMutation ? "mutated" : "normal",
+          molecularWeight: Math.abs(molecularVibration) * 1000,
+          pHLevel: 7 + Math.sin(baseX) * 0.5,
+          nutrientConcentration: 100 * Math.exp(-(baseX ** 2 + baseY ** 2) * 0.5),
+          enzymeActivity: Math.abs(molecularVibration) * 50,
+        }
+        break
+      }
+
+      case "crystal": {
+        // Crystal lattice with atomic bonds, energy fields, and geometric precision
+        const latticeStrength = Math.sin(baseX * 4) * Math.cos(baseY * 4) + 0.5
+        const atomicVibration = Math.sin(baseX * 10 + baseY * 10 + i * 0.2) * 0.02
+
+        // Crystal growth patterns
+        const growthRate = Math.abs(latticeStrength) * 0.1
+        const crystalDefect = rng.next() < 0.01
+        const dislocation = crystalDefect ? 0.05 : 0
+
+        // Energy fields and light refraction
+        const energyField = Math.sin(baseX * 6) * Math.cos(baseY * 6) * 0.1
+        const lightRefraction = Math.sin(baseX * 3 + baseY * 3) * 0.08
+        const photonEmission = rng.next() < 0.03 && energyField > 0.05
+
+        // Quantum dots and impurities
+        const quantumDot = rng.next() < 0.005
+        const impurity = quantumDot ? 0.03 : 0
+
+        // Piezoelectric effect
+        const pressurePoint = Math.abs(baseX) < 0.1 && Math.abs(baseY) < 0.1
+        const electricalCharge = pressurePoint ? Math.sin(i * 0.1) * 0.05 : 0
+
+        // Phonons (lattice vibrations)
+        const phononX = Math.sin(baseX * 15 + i * 0.05) * 0.01
+        const phononY = Math.cos(baseY * 15 + i * 0.05) * 0.01
+
+        x =
+          baseX +
+          growthRate +
+          dislocation +
+          energyField +
+          lightRefraction +
+          impurity +
+          electricalCharge +
+          phononX +
+          atomicVibration
+        y =
+          baseY +
+          growthRate * 0.8 +
+          dislocation * 0.5 +
+          energyField * 0.8 +
+          lightRefraction * 0.5 +
+          impurity * 0.8 +
+          electricalCharge * 0.5 +
+          phononY
+
+        metadata = {
+          crystalSystem: Math.floor(rng.next() * 7), // Cubic, hexagonal, tetragonal, etc.
+          bondStrength: latticeStrength,
+          hasDefect: crystalDefect,
+          isQuantumDot: quantumDot,
+          isPiezoelectric: pressurePoint,
+          photonEmitting: photonEmission,
+          latticeConstant: 0.5 + Math.abs(atomicVibration) * 0.1,
+          energyBandGap: 1 + Math.abs(energyField) * 2, // eV
+          refractiveIndex: 1.5 + Math.abs(lightRefraction) * 0.2,
+          electricalConductivity: pressurePoint ? 100 : 0.01,
+          thermalConductivity: 50 + Math.abs(atomicVibration) * 100,
+          phononEnergy: Math.abs(phononX + phononY) * 100,
+        }
+        break
+      }
+
+      case "plasma": {
+        // Plasma physics with ionized gas, magnetic fields, and fusion reactions
+        const plasmaDensity = Math.sin(baseX * 3) * Math.cos(baseY * 3) + 0.5
+        const magneticFieldStrength = Math.sin(baseX * 2) * Math.cos(baseY * 2) * 0.3
+
+        // Ionized particles and electron flow
+        const electronFlowX = Math.sin(baseY * 10 + i * 0.1) * 0.05
+        const electronFlowY = Math.cos(baseX * 10 + i * 0.1) * 0.05
+        const ionMotion = Math.sin(baseX * 15 + baseY * 15) * 0.03
+
+        // Fusion reactions and energy release
+        const fusionReaction = plasmaDensity > 0.8 && magneticFieldStrength > 0.2 && rng.next() < 0.005
+        const energyBurst = fusionReaction ? 0.1 : 0
+
+        // Magnetic confinement and instabilities
+        const magneticConfinement = Math.exp(-(baseX ** 2 + baseY ** 2) * 0.5) * 0.1
+        const plasmaInstability = magneticConfinement < 0.05 && rng.next() < 0.02
+
+        // Solar flares and coronal mass ejections
+        const solarFlare = rng.next() < 0.001
+        const coronalEjection = solarFlare ? Math.sin(i * 0.05) * 0.1 : 0
+
+        // Aurora borealis effects
+        const aurora = Math.abs(baseY) > 1.5 && rng.next() < 0.05
+        const auroraGlow = aurora ? Math.sin(baseX * 5) * 0.1 : 0
+
+        // Cherenkov radiation
+        const cherenkov = rng.next() < 0.008 && plasmaDensity > 0.6
+        const cherenkovLight = cherenkov ? Math.sin(i * 0.3) * 0.08 : 0
+
+        x =
+          baseX +
+          electronFlowX +
+          ionMotion +
+          energyBurst +
+          magneticConfinement +
+          coronalEjection +
+          auroraGlow +
+          cherenkovLight
+        y =
+          baseY +
+          electronFlowY +
+          ionMotion * 0.8 +
+          energyBurst * 0.5 +
+          magneticConfinement * 0.8 +
+          coronalEjection * 0.5 +
+          auroraGlow * 0.8 +
+          cherenkovLight * 0.5
+
+        metadata = {
+          plasmaState: plasmaDensity > 0.7 ? "hot" : "cold",
+          magneticField: magneticFieldStrength,
+          isFusion: fusionReaction,
+          isInstability: plasmaInstability,
+          isSolarFlare: solarFlare,
+          hasAurora: aurora,
+          hasCherenkov: cherenkov,
+          temperature: plasmaDensity * 10000000, // Kelvin
+          density: plasmaDensity * 1e20, // particles/m³
+          confinementTime: magneticConfinement * 100, // seconds
+          energyOutput: energyBurst * 1e10, // Joules
+          particleVelocity: Math.abs(electronFlowX + electronFlowY) * 1e6, // m/s
+          radiationLevel: Math.abs(cherenkovLight) * 100,
+        }
+        break
+      }
+
+      case "atmospheric": {
+        // Atmospheric physics with weather patterns, clouds, and climate phenomena
+        const airPressure = 1013 + Math.sin(baseX * 2) * Math.cos(baseY * 2) * 50 // hPa
+        const temperature = 20 + Math.sin(baseX * 0.5) * Math.cos(baseY * 0.5) * 15 // Celsius
+
+        // Cloud formation and precipitation
+        const cloudDensity = Math.max(0, Math.sin(baseY * 3) * Math.cos(baseX * 2) + 0.3)
+        const rain = cloudDensity > 0.7 && rng.next() < 0.1
+        const lightning = cloudDensity > 0.9 && rng.next() < 0.005
+        const snowflake = temperature < 0 && cloudDensity > 0.5 && rng.next() < 0.05
+
+        // Wind currents and turbulence
+        const windSpeed = Math.abs(Math.sin(baseX * 4 + i * 0.02) * Math.cos(baseY * 3)) * 0.1
+        const turbulence = windSpeed * Math.sin(baseX * 10 + baseY * 8) * 0.05
+
+        // Atmospheric optics (rainbows, halos)
+        const rainbow = rain && Math.abs(baseX) < 0.1 && Math.abs(baseY) < 0.1 && rng.next() < 0.01
+        const halo = snowflake && Math.abs(baseX) < 0.2 && Math.abs(baseY) < 0.2 && rng.next() < 0.008
+
+        // Climate zones and biomes
+        const latitude = baseY * 90 // -90 to 90
+        const longitude = baseX * 180 // -180 to 180
+        const biomeType = getBiome(latitude, temperature)
+
+        // Ozone layer and UV radiation
+        const ozoneLayer = 1 - Math.exp(-Math.abs(baseY) * 2) * 0.5
+        const uvRadiation = (1 - ozoneLayer) * 0.1
+
+        // Greenhouse effect and CO2 levels
+        const co2Level = 420 + Math.sin(i * 0.01) * 20 // ppm
+        const greenhouseEffect = (co2Level - 400) * 0.001
+
+        x = baseX + windSpeed * Math.cos(i * 0.01) + turbulence + (rainbow ? 0.1 : 0) + greenhouseEffect
+        y = baseY + windSpeed * Math.sin(i * 0.01) + (rain ? 0.05 : 0) + (lightning ? 0.08 : 0) + uvRadiation
+
+        metadata = {
+          airPressure: airPressure,
+          temperature: temperature,
+          humidity: cloudDensity * 100,
+          isRaining: rain,
+          hasLightning: lightning,
+          isSnowing: snowflake,
+          hasRainbow: rainbow,
+          hasHalo: halo,
+          windSpeed: windSpeed * 100, // km/h
+          cloudType: cloudDensity > 0.8 ? "cumulonimbus" : cloudDensity > 0.5 ? "stratus" : "cirrus",
+          biome: biomeType,
+          ozoneLevel: ozoneLayer * 100,
+          co2Level: co2Level,
+          climateZone:
+            latitude > 60 || latitude < -60 ? "polar" : latitude > 30 || latitude < -30 ? "temperate" : "tropical",
+        }
+        break
+      }
+
+      case "geological": {
+        // Geological time with tectonic plates, volcanic activity, and erosion
+        const elevation = Math.sin(baseX * 3) * Math.cos(baseY * 3) * 0.5 // km
+        const plateMovement = Math.sin(baseX * 0.8 + i * 0.005) * Math.cos(baseY * 0.6) * 0.1
+
+        // Tectonic plate boundaries and earthquakes
+        const faultLine = Math.abs(baseX - baseY) < 0.1 || Math.abs(baseX + baseY) < 0.1
+        const earthquake = faultLine && rng.next() < 0.001
+        const seismicWave = earthquake ? Math.sin(i * 0.1) * 0.05 : 0
+
+        // Volcanic activity and magma flow
+        const volcano = rng.next() < 0.002 && elevation > 0.3
+        const eruption = volcano && rng.next() < 0.1
+        const lavaFlow = eruption ? Math.sin(i * 0.08) * 0.08 : 0
+
+        // Erosion and sedimentation
+        const erosionRate = Math.abs(elevation) * 0.05
+        const sedimentDeposit = erosionRate * Math.sin(baseX * 5) * 0.03
+
+        // Mineral formation and crystal growth
+        const mineralVein = rng.next() < 0.05
+        const crystalGrowth = mineralVein ? Math.sin(i * 0.03) * 0.02 : 0
+
+        // Fossilization and ancient life
+        const fossil = rng.next() < 0.0005
+        const ancientLife = fossil ? Math.floor(rng.next() * 5) : "none" // Trilobite, dinosaur, etc.
+
+        // Geothermal vents and hot springs
+        const geothermalVent = rng.next() < 0.003 && elevation < -0.1
+        const hotSpring = geothermalVent ? Math.sin(baseX * 10) * 0.03 : 0
+
+        // Ice ages and glaciation
+        const iceAge = Math.sin(i * 0.001) > 0.5 // Long-term climate cycle
+        const glacier = iceAge && elevation > 0.4 && rng.next() < 0.1
+
+        x =
+          baseX +
+          plateMovement +
+          seismicWave +
+          lavaFlow +
+          sedimentDeposit +
+          crystalGrowth +
+          hotSpring +
+          (glacier ? 0.05 : 0)
+        y =
+          baseY +
+          elevation * 0.1 +
+          plateMovement * 0.8 +
+          seismicWave * 0.5 +
+          lavaFlow * 0.8 +
+          sedimentDeposit * 0.5 +
+          crystalGrowth * 0.8 +
+          hotSpring * 0.5 +
+          (glacier ? 0.08 : 0)
+
+        metadata = {
+          elevation: elevation,
+          rockType: Math.floor(rng.next() * 3), // Igneous, sedimentary, metamorphic
+          isFaultLine: faultLine,
+          hasEarthquake: earthquake,
+          isVolcano: volcano,
+          hasEruption: eruption,
+          hasMineralVein: mineralVein,
+          hasFossil: fossil,
+          ancientLife: ancientLife,
+          geothermalActivity: geothermalVent,
+          isGlacier: glacier,
+          erosionRate: erosionRate * 100, // mm/year
+          sedimentThickness: Math.abs(sedimentDeposit) * 100, // meters
+          crustalStress: Math.abs(plateMovement) * 100, // MPa
+          magmaChamberPressure: eruption ? 1000 : 100, // MPa
+          geologicalAge: i * 1000000, // Years
+        }
+        break
+      }
+
+      case "biological": {
+        // Biological systems with cells, organs, and physiological processes
+        const cellActivity = Math.sin(baseX * 5) * Math.cos(baseY * 5) + 0.5
+        const metabolicRate = Math.abs(cellActivity) * 0.1
+
+        // Organ systems and tissue differentiation
+        const organType = Math.floor(rng.next() * 5) // Heart, lung, brain, liver, kidney
+        const tissueGrowth = cellActivity > 0.7 && rng.next() < 0.1
+        const differentiation = tissueGrowth ? 0.05 : 0
+
+        // Blood flow and circulation
+        const bloodPressure = 120 + Math.sin(i * 0.05) * 20 // mmHg
+        const bloodFlow = Math.sin(baseX * 10 + i * 0.1) * 0.05
+        const oxygenation = bloodFlow > 0.03 ? 0.02 : 0
+
+        // Immune response and pathogen detection
+        const pathogenPresent = rng.next() < 0.005
+        const immuneCell = pathogenPresent ? Math.sin(i * 0.2) * 0.08 : 0
+        const inflammation = pathogenPresent && rng.next() < 0.5
+
+        // Hormone regulation and feedback loops
+        const hormoneLevel = Math.sin(i * 0.03) * 0.1 + 0.5
+        const feedbackLoop = hormoneLevel > 0.8 ? 0.03 : 0
+
+        // Sensory perception and neural signals
+        const neuralSignal = Math.sin(baseX * 15 + baseY * 15) * 0.03
+        const sensoryInput = neuralSignal > 0.02 ? 0.02 : 0
+
+        // DNA repair and aging
+        const dnaDamage = rng.next() < 0.001
+        const dnaRepair = dnaDamage ? 0.01 : 0
+        const agingEffect = i * 0.00001
+
+        x = baseX + differentiation + bloodFlow + immuneCell + feedbackLoop + sensoryInput + dnaRepair + agingEffect
+        y =
+          baseY +
+          metabolicRate * 0.8 +
+          differentiation * 0.5 +
+          bloodFlow * 0.8 +
+          immuneCell * 0.5 +
+          feedbackLoop * 0.8 +
+          sensoryInput * 0.5 +
+          dnaRepair * 0.5
+
+        metadata = {
+          cellState: cellActivity > 0.7 ? "active" : "resting",
+          organFunction: organType,
+          bloodPressure: bloodPressure,
+          oxygenSaturation: oxygenation * 100,
+          hasPathogen: pathogenPresent,
+          inflammation: inflammation,
+          hormoneType: Math.floor(rng.next() * 4), // Insulin, adrenaline, cortisol, estrogen
+          neuralSignalStrength: Math.abs(neuralSignal) * 100,
+          dnaIntegrity: 1 - dnaDamage,
+          biologicalAge: i * 0.01, // Years
+          metabolicEfficiency: metabolicRate * 100,
+          immuneResponse: immuneCell > 0.05,
+          homeostasis: Math.abs(hormoneLevel - 0.5) < 0.1,
+        }
+        break
+      }
+
+      case "cosmic_scale": {
+        // Cosmic scale with superclusters, dark energy, and the expansion of the universe
+        const cosmicWebDensity = Math.sin(baseX * 0.5) * Math.cos(baseY * 0.5) + 0.5
+        const darkEnergyDensity = Math.sin(baseX * 0.2 + i * 0.001) * 0.1 + 0.7
+
+        // Galaxy clusters and superclusters
+        const galaxyCluster = cosmicWebDensity > 0.7 && rng.next() < 0.05
+        const superclusterCore = galaxyCluster && Math.sin(baseX * 0.1) > 0.8
+        const galaxyHalo = superclusterCore ? Math.sin(baseX * 2) * Math.cos(baseY * 2) * 0.1 : 0
+
+        // Expansion of the universe (Hubble's Law)
+        const distance = Math.sqrt(baseX * baseX + baseY * baseY)
+        const recessionVelocity = distance * 70 // km/s/Mpc (Hubble constant)
+        const expansionEffect = recessionVelocity * 0.0001
+
+        // Dark matter filaments
+        const darkMatterFilament = cosmicWebDensity > 0.6 && rng.next() < 0.1
+        const filamentDensity = darkMatterFilament ? Math.sin(baseX * 3) * Math.cos(baseY * 3) * 0.05 : 0
+
+        // Cosmic microwave background radiation
+        const cmbFluctuation = Math.sin(baseX * 100 + baseY * 100) * 0.001
+        const cmbTemperature = 2.725 + cmbFluctuation // Kelvin
+
+        // Gravitational waves
+        const gravitationalWave = rng.next() < 0.0001
+        const spacetimeRipple = gravitationalWave ? Math.sin(i * 0.05) * 0.02 : 0
+
+        // Quasars and active galactic nuclei
+        const quasar = rng.next() < 0.0008 && galaxyCluster
+        const agnJet = quasar ? Math.sin(i * 0.03) * 0.08 : 0
+
+        x =
+          baseX +
+          expansionEffect * Math.cos(Math.atan2(baseY, baseX)) +
+          galaxyHalo +
+          filamentDensity +
+          spacetimeRipple +
+          agnJet
+        y =
+          baseY +
+          expansionEffect * Math.sin(Math.atan2(baseY, baseX)) +
+          galaxyHalo * 0.8 +
+          filamentDensity * 0.5 +
+          spacetimeRipple * 0.8 +
+          agnJet * 0.5
+
+        metadata = {
+          cosmicWebDensity: cosmicWebDensity,
+          darkEnergyDensity: darkEnergyDensity,
+          isGalaxyCluster: galaxyCluster,
+          isSuperclusterCore: superclusterCore,
+          recessionVelocity: recessionVelocity,
+          hasDarkMatterFilament: darkMatterFilament,
+          cmbTemperature: cmbTemperature,
+          hasGravitationalWave: gravitationalWave,
+          isQuasar: quasar,
+          universeAge: 13.8, // Billion years
+          cosmicExpansionRate: expansionEffect * 100,
+          galaxyCount: Math.floor(cosmicWebDensity * 1000),
+          darkMatterPercentage: 27 + Math.sin(i * 0.001) * 5,
+          darkEnergyPercentage: 68 + Math.cos(i * 0.001) * 5,
+        }
+        break
+      }
+
+      case "microscopic_world": {
+        // Microscopic world with subatomic particles, quantum fluctuations, and string theory
+        const quantumFieldFluctuation = Math.sin(baseX * 20) * Math.cos(baseY * 20) * 0.05
+        const stringVibrationAmplitude = Math.sin(baseX * 15 + baseY * 15 + i * 0.3) * 0.03
+
+        // Subatomic particles (quarks, leptons)
+        const particleType = Math.floor(rng.next() * 6) // Up, Down, Electron, Neutrino, Photon, Gluon
+        const particleSpin = rng.next() < 0.5 ? "up" : "down"
+        const particleInteraction = Math.sin(baseX * 30 + baseY * 30) * 0.01
+
+        // Quantum foam and spacetime ripples
+        const quantumFoam = Math.sin(baseX * 50) * Math.cos(baseY * 50) * 0.005
+        const spacetimeRipple = Math.sin(i * 0.05) * 0.01
+
+        // Extra dimensions (compactified)
+        const extraDimX = Math.sin(baseX * 5 + i * 0.1) * 0.02
+        const extraDimY = Math.cos(baseY * 5 + i * 0.1) * 0.02
+
+        // Virtual particles and vacuum energy
+        const virtualParticle = rng.next() < 0.05
+        const vacuumEnergy = virtualParticle ? Math.sin(i * 0.2) * 0.03 : 0
+
+        // Quantum entanglement and non-locality
+        const entangledPair = Math.floor(i / 2) * 2
+        const entangled = i === entangledPair || i === entangledPair + 1
+        const nonLocalityEffect = entangled ? Math.sin(i * 0.1) * 0.04 : 0
+
+        // Higgs field and mass generation
+        const higgsFieldStrength = 1 + Math.sin(baseX * 8 + baseY * 8) * 0.2
+        const massGeneration = higgsFieldStrength > 1.1 && rng.next() < 0.01
+
+        x =
+          baseX +
+          quantumFieldFluctuation +
+          stringVibrationAmplitude +
+          particleInteraction +
+          quantumFoam +
+          extraDimX +
+          vacuumEnergy +
+          nonLocalityEffect
+        y =
+          baseY +
+          quantumFieldFluctuation * 0.8 +
+          stringVibrationAmplitude * 0.5 +
+          particleInteraction * 0.8 +
+          quantumFoam * 0.5 +
+          extraDimY * 0.8 +
+          vacuumEnergy * 0.5 +
+          nonLocalityEffect * 0.5
+
+        metadata = {
+          particleType: particleType,
+          particleSpin: particleSpin,
+          quantumFieldStrength: Math.abs(quantumFieldFluctuation) * 100,
+          stringVibration: stringVibrationAmplitude * 100,
+          hasExtraDimension: extraDimX !== 0 || extraDimY !== 0,
+          isVirtualParticle: virtualParticle,
+          isEntangled: entangled,
+          higgsField: higgsFieldStrength,
+          massGenerated: massGeneration,
+          quantumGravityEffect: Math.abs(quantumFoam) * 1000,
+          vacuumEnergyDensity: Math.abs(vacuumEnergy) * 1000,
+          nonLocality: nonLocalityEffect * 100,
+          fundamentalForce: Math.floor(rng.next() * 4), // Strong, Weak, Electromagnetic, Gravitational
+        }
+        break
+      }
+
+      case "living_forest": {
+        // Living forest with ancient trees, glowing flora, and hidden spirits
+        const treeDensity = Math.sin(baseX * 2) * Math.cos(baseY * 2) + 0.5
+        const glowingFloraIntensity = Math.sin(baseX * 4 + baseY * 4) * 0.1 + 0.1
+
+        // Ancient tree roots and branches
+        const rootSystem = Math.sin(baseX * 8) * Math.cos(baseY * 6) * 0.08
+        const branchCanopy = Math.abs(baseY) * 0.15
+        const ancientBark = Math.abs(treeDensity) > 0.5 ? 0.05 : 0
+
+        // Forest spirits and elemental beings
+        const forestSpirit = rng.next() < 0.005
+        const elementalAura = forestSpirit ? Math.sin(i * 0.1) * 0.05 : 0
+        const spiritTrail = forestSpirit ? Math.sin(i * 0.2) * 0.03 : 0
+
+        // Bioluminescent fungi and glowing moss
+        const bioluminescentFungi = rng.next() < 0.02 && glowingFloraIntensity > 0.1
+        const glowingMoss = bioluminescentFungi ? Math.sin(baseX * 10) * 0.03 : 0
+
+        // Whispering winds and rustling leaves
+        const windWhisper = Math.sin(baseX * 3 + i * 0.01) * 0.05
+        const leafRustle = Math.cos(baseY * 4 + i * 0.02) * 0.04
+
+        // Hidden pathways and magical clearings
+        const hiddenPath = Math.abs(baseX - 0.5) < 0.1 && Math.abs(baseY + 0.5) < 0.1
+        const magicClearing = hiddenPath ? Math.sin(i * 0.05) * 0.08 : 0
+
+        // Fauna presence (deer, owls, foxes)
+        const deer = rng.next() < 0.003
+        const owl = rng.next() < 0.002
+        const fox = rng.next() < 0.004
+
+        x = baseX + rootSystem + elementalAura + glowingMoss + windWhisper + magicClearing + (deer ? 0.05 : 0)
+        y = baseY + branchCanopy + spiritTrail + glowingMoss * 0.8 + leafRustle + magicClearing * 0.5 + (owl ? 0.03 : 0)
+
+        metadata = {
+          treeAge: Math.floor(treeDensity * 1000) + 100, // Years
+          floraType: Math.floor(rng.next() * 4), // Fungi, moss, fern, flower
+          isGlowing: glowingFloraIntensity > 0.1,
+          hasSpirit: forestSpirit,
+          spiritType: Math.floor(rng.next() * 3), // Dryad, Sylph, Gnome
+          windStrength: Math.abs(windWhisper) * 10, // km/h
+          leafColor: Math.floor(rng.next() * 5), // Green, red, yellow, brown, blue (magical)
+          hiddenPath: hiddenPath,
+          animalPresence: deer || owl || fox,
+          forestHealth: treeDensity * 100,
+          magicalEnergy: glowingFloraIntensity * 100,
+          soundscape: windWhisper + leafRustle,
+        }
+        break
+      }
+
+      case "deep_ocean": {
+        // Deep ocean with abyssal plains, hydrothermal vents, and unique life forms
+        const abyssalDepth = Math.max(0, -baseY * 10000 + 5000) // 0-10000m depth
+        const hydrothermalActivity = Math.sin(baseX * 3) * Math.cos(baseY * 3) * 0.1 + 0.05
+
+        // Hydrothermal vents and black smokers
+        const ventPlume = hydrothermalActivity > 0.1 && rng.next() < 0.05
+        const mineralPrecipitation = ventPlume ? Math.sin(i * 0.1) * 0.05 : 0
+
+        // Chemosynthetic ecosystems
+        const chemosyntheticLife = hydrothermalActivity > 0.08 && rng.next() < 0.1
+        const tubeWormColony = chemosyntheticLife ? Math.sin(baseX * 8) * Math.cos(baseY * 6) * 0.03 : 0
+
+        // Abyssal creatures (anglerfish, giant squid)
+        const anglerfish = rng.next() < 0.001 && abyssalDepth > 3000
+        const giantSquid = rng.next() < 0.0005 && abyssalDepth > 5000
+        const deepSeaJelly = rng.next() < 0.01 && abyssalDepth > 1000
+
+        // Ocean trenches and subduction zones
+        const oceanTrench = Math.abs(baseX) > 1.5 && Math.abs(baseY) > 1.5
+        const subductionZone = oceanTrench && rng.next() < 0.001
+        const trenchDepth = oceanTrench ? Math.sin(i * 0.02) * 0.1 : 0
+
+        // Marine snow and detritus
+        const marineSnow = Math.sin(baseX * 20 + baseY * 20 + i * 0.5) * 0.01
+        const detritusFall = marineSnow > 0.005 ? 0.005 : 0
+
+        // Deep ocean currents and thermohaline circulation
+        const deepCurrent = Math.sin(baseX * 0.5 + i * 0.001) * 0.08
+        const thermohalineFlow = Math.exp(-abyssalDepth * 0.0001) * Math.sin(baseX * 0.8) * 0.05
+
+        x =
+          baseX +
+          mineralPrecipitation +
+          tubeWormColony +
+          trenchDepth +
+          marineSnow +
+          deepCurrent +
+          (anglerfish ? 0.05 : 0)
+        y =
+          baseY +
+          hydrothermalActivity * 0.5 +
+          tubeWormColony * 0.8 +
+          trenchDepth * 0.5 +
+          detritusFall +
+          thermohalineFlow +
+          (giantSquid ? 0.08 : 0)
+
+        metadata = {
+          depth: abyssalDepth,
+          temperature: 2 + abyssalDepth * 0.0001, // Near freezing
+          pressure: 1 + abyssalDepth * 0.1, // High pressure
+          hasHydrothermalVent: hydrothermalActivity > 0.05,
+          hasChemosyntheticLife: chemosyntheticLife,
+          creatureType: anglerfish
+            ? "anglerfish"
+            : giantSquid
+              ? "giant_squid"
+              : deepSeaJelly
+                ? "deep_sea_jelly"
+                : "none",
+          isOceanTrench: oceanTrench,
+          marineSnowDensity: marineSnow * 100,
+          currentSpeed: Math.abs(deepCurrent) * 10, // km/h
+          oxygenLevel: Math.max(0, 1 - abyssalDepth * 0.0001),
+          nutrientAvailability: hydrothermalActivity * 100,
+          geologicalFeature: subductionZone ? "subduction_zone" : "abyssal_plain",
+          biomass: chemosyntheticLife ? 100 : 1,
+        }
+        break
+      }
+
+      case "biological_systems": {
+        // Biological systems with cellular automata, genetic algorithms, and emergent behavior
+        const cellularActivity = Math.sin(baseX * 5) * Math.cos(baseY * 5) + 0.5
+        const geneticDiversity = Math.sin(baseX * 2 + i * 0.01) * 0.1 + 0.5
+
+        // Cellular automata patterns (Conway's Game of Life)
+        const cellState = cellularActivity > 0.7 ? 1 : 0 // Live or dead
+        const neighborCount = countNeighbors(points, i, 0.1) // Count live neighbors
+        const nextCellState = applyGameOfLifeRules(cellState, neighborCount)
+        const cellGrowth = nextCellState === 1 && cellState === 0 ? 0.05 : 0
+
+        // Genetic algorithms and evolution
+        const mutationRate = 0.01
+        const crossoverEvent = rng.next() < 0.05
+        const adaptation = geneticDiversity * 0.1
+
+        // Emergent behavior and self-organization
+        const flockingBehavior = Math.sin(baseX * 8 + baseY * 6) * 0.05
+        const swarmIntelligence = flockingBehavior > 0.03 ? 0.02 : 0
+
+        // Protein folding and molecular dynamics
+        const proteinFold = Math.sin(baseX * 12 + baseY * 12) * 0.03
+        const molecularInteraction = proteinFold > 0.02 ? 0.01 : 0
+
+        // Ecosystem dynamics and predator-prey models
+        const predatorPreyCycle = Math.sin(i * 0.02) * 0.1
+        const populationDensity = 1 + predatorPreyCycle
+
+        // Biofeedback loops and homeostatic regulation
+        const feedbackLoop = Math.sin(baseX * 3 + baseY * 3) * 0.04
+        const homeostasis = Math.abs(feedbackLoop) < 0.01 ? 0.02 : 0
+
+        x =
+          baseX +
+          cellGrowth +
+          adaptation +
+          flockingBehavior +
+          molecularInteraction +
+          populationDensity * 0.01 +
+          homeostasis
+        y =
+          baseY +
+          cellGrowth * 0.8 +
+          adaptation * 0.5 +
+          flockingBehavior * 0.8 +
+          molecularInteraction * 0.5 +
+          populationDensity * 0.008 +
+          homeostasis * 0.5
+
+        metadata = {
+          cellState: cellState,
+          nextCellState: nextCellState,
+          geneticFitness: geneticDiversity * 100,
+          mutationOccurred: rng.next() < mutationRate,
+          crossoverOccurred: crossoverEvent,
+          emergentProperty: flockingBehavior > 0.03,
+          proteinStability: proteinFold * 100,
+          populationSize: Math.floor(populationDensity * 1000),
+          homeostasisAchieved: homeostasis > 0.01,
+          ecosystemHealth: geneticDiversity * 100,
+          biologicalComplexity: neighborCount,
+          selfOrganization: swarmIntelligence > 0,
+          evolutionaryPressure: Math.abs(predatorPreyCycle) * 10,
+        }
+        break
+      }
+
+      case "geological_time": {
+        // Geological time with continental drift, ice ages, and mass extinctions
+        const continentalDrift = Math.sin(baseX * 0.1 + i * 0.0001) * 0.5
+        const iceSheetExtent = Math.sin(i * 0.00005) * 0.3 + 0.5 // Long-term cycle
+
+        // Tectonic plate collisions and mountain building
+        const collisionZone = Math.abs(baseX - 0.5) < 0.2 && Math.abs(baseY + 0.5) < 0.2
+        const mountainBuilding = collisionZone ? Math.sin(i * 0.0002) * 0.1 : 0
+
+        // Volcanic super-eruptions and climate impact
+        const supervolcano = rng.next() < 0.00001
+        const climateImpact = supervolcano ? Math.sin(i * 0.00003) * 0.2 : 0
+
+        // Mass extinctions and biodiversity loss
+        const extinctionEvent = rng.next() < 0.000005
+        const biodiversityLoss = extinctionEvent ? Math.sin(i * 0.00002) * 0.1 : 0
+
+        // Fossil record and evolutionary leaps
+        const fossilRecord = Math.sin(i * 0.00001) * 0.05
+        const evolutionaryLeap = rng.next() < 0.000001
+
+        // Ocean basin formation and sea level changes
+        const oceanBasin = Math.abs(baseY) > 1.5
+        const seaLevelChange = oceanBasin ? Math.sin(i * 0.00004) * 0.1 : 0
+
+        // Asteroid impacts and their aftermath
+        const asteroidImpact = rng.next() < 0.0000001
+        const impactCrater = asteroidImpact ? Math.sin(i * 0.00001) * 0.05 : 0
+
+        x = baseX + continentalDrift + mountainBuilding + climateImpact + biodiversityLoss + fossilRecord + impactCrater
+        y =
+          baseY +
+          iceSheetExtent * 0.1 +
+          continentalDrift * 0.8 +
+          mountainBuilding * 0.5 +
+          climateImpact * 0.8 +
+          biodiversityLoss * 0.5 +
+          seaLevelChange +
+          impactCrater * 0.8
+
+        metadata = {
+          continentalPosition: continentalDrift * 100, // km
+          iceAge: iceSheetExtent > 0.7,
+          isMountainRange: mountainBuilding > 0.05,
+          isSupervolcano: supervolcano,
+          hasExtinctionEvent: extinctionEvent,
+          hasEvolutionaryLeap: evolutionaryLeap,
+          oceanDepth: seaLevelChange * 1000, // meters
+          hasAsteroidImpact: asteroidImpact,
+          geologicalEra: getGeologicalEra(i * 1000000), // Years
+          tectonicActivity: Math.abs(continentalDrift) * 10, // cm/year
+          climateStability: 1 - Math.abs(climateImpact) * 10,
+          biodiversityLevel: 1 - biodiversityLoss,
+          fossilDensity: Math.abs(fossilRecord) * 100,
+          seaLevel: seaLevelChange * 100, // meters
+          impactEnergy: asteroidImpact ? 1e10 : 0, // Megatons
+        }
+        break
+      }
+
+      default:
+        metadata = {
+          magnitude: Math.sqrt(baseX * baseX + baseY * baseY),
+          angle: Math.atan2(baseY, baseX),
+        }
+        break
+    }
+
+    transformedPoints.push({ x, y, metadata })
+  }
+
+  return transformedPoints
+}
+
+// Helper functions for scenarios
+function isPrime(num: number): boolean {
+  if (num <= 1) return false
+  for (let i = 2; i <= Math.sqrt(num); i++) {
+    if (num % i === 0) return false
+  }
+  return true
+}
+
+function fibonacciSpiral(x: number, y: number): boolean {
+  const angle = Math.atan2(y, x)
+  const r = Math.sqrt(x * x + y * y)
+  const goldenRatio = (1 + Math.sqrt(5)) / 2
+  const expectedR = Math.exp(angle / goldenRatio)
+  return Math.abs(r - expectedR) < 0.1
+}
+
+function getBiome(latitude: number, temperature: number): string {
+  if (latitude > 60 || latitude < -60) {
+    return temperature < 0 ? "tundra" : "taiga"
+  } else if (latitude > 30 || latitude < -30) {
+    if (temperature > 20) return "temperate_forest"
+    if (temperature > 10) return "grassland"
+    return "desert"
+  } else {
+    if (temperature > 25) return "tropical_rainforest"
+    if (temperature > 15) return "savanna"
+    return "chaparral"
+  }
+}
+
+function countNeighbors(points: number[][], currentIndex: number, radius: number): number {
+  let liveNeighbors = 0
+  const [cx, cy] = points[currentIndex]
+
+  for (let i = 0; i < points.length; i++) {
+    if (i === currentIndex) continue
+    const [nx, ny] = points[i]
+    const dist = Math.sqrt((cx - nx) ** 2 + (cy - ny) ** 2)
+    if (dist < radius) {
+      // Assuming "live" if point exists within radius
+      liveNeighbors++
+    }
+  }
+  return liveNeighbors
+}
+
+function applyGameOfLifeRules(currentState: number, liveNeighbors: number): number {
+  if (currentState === 1) {
+    // Live cell
+    if (liveNeighbors < 2 || liveNeighbors > 3) {
+      return 0 // Dies
+    }
+    return 1 // Lives
+  } else {
+    // Dead cell
+    if (liveNeighbors === 3) {
+      return 1 // Becomes alive
+    }
+    return 0 // Stays dead
+  }
+}
+
+function getGeologicalEra(yearsAgo: number): string {
+  if (yearsAgo < 66000000) return "Cenozoic"
+  if (yearsAgo < 252000000) return "Mesozoic"
+  if (yearsAgo < 541000000) return "Paleozoic"
+  if (yearsAgo < 4000000000) return "Proterozoic"
+  return "Archean"
+}
+
+// Main function to generate flow art data
+export function generateFlowArtData(params: GenerationParams) {
+  const { dataset, scenario, colorScheme, seed, numSamples, noiseScale, timeStep } = params
+
+  const rawPoints = generateDataset(dataset, seed, numSamples, noiseScale)
+  const transformedPoints = applyScenarioTransform(rawPoints, scenario, new SeededRandom(seed))
+
+  const colors = colorPalettes[colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
+
+  // Normalize points to fit within a 0-1 range for canvas
+  let minX = Number.POSITIVE_INFINITY,
+    maxX = Number.NEGATIVE_INFINITY,
+    minY = Number.POSITIVE_INFINITY,
+    maxY = Number.NEGATIVE_INFINITY
+  for (const p of transformedPoints) {
+    minX = Math.min(minX, p.x)
+    maxX = Math.max(maxX, p.x)
+    minY = Math.min(minY, p.y)
+    maxY = Math.max(maxY, p.y)
+  }
+
+  const rangeX = maxX - minX
+  const rangeY = maxY - minY
+
+  const normalizedPoints = transformedPoints.map((p) => ({
+    x: (p.x - minX) / rangeX,
+    y: (p.y - minY) / rangeY,
+    metadata: p.metadata,
+  }))
+
+  return {
+    points: normalizedPoints,
+    colors: colors,
+    bounds: { minX, maxX, minY, maxY },
+  }
+}

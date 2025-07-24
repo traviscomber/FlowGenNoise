@@ -1,197 +1,316 @@
-export function generateScatterPlotSVG(data: number[][]): string {
-  const width = 600
-  const height = 400
-  const margin = 40 // Margin for padding
+export function drawFlowArt(
+  canvas: HTMLCanvasElement,
+  points: Array<{ x: number; y: number; metadata: any }>,
+  colors: string[],
+  stereographicProjection: boolean,
+  stereographicPerspective: string,
+) {
+  const ctx = canvas.getContext("2d")
+  if (!ctx) return
 
-  // Find min/max for scaling
-  let minX = Number.POSITIVE_INFINITY,
-    maxX = Number.NEGATIVE_INFINITY,
-    minY = Number.POSITIVE_INFINITY,
-    maxY = Number.NEGATIVE_INFINITY
-  for (const [x, y] of data) {
-    minX = Math.min(minX, x)
-    maxX = Math.max(maxX, x)
-    minY = Math.min(minY, y)
-    maxY = Math.max(maxY, y)
-  }
+  const width = canvas.width
+  const height = canvas.height
 
-  // Add some padding to the data range
-  const paddingFactor = 0.1
-  const rangeX = maxX - minX
-  const rangeY = maxY - minY
-  minX -= rangeX * paddingFactor
-  maxX += rangeX * paddingFactor
-  minY -= rangeY * paddingFactor
-  maxY += rangeY * paddingFactor
+  ctx.clearRect(0, 0, width, height)
+  ctx.fillStyle = "black" // Background color
+  ctx.fillRect(0, 0, width, height)
 
-  // Scaling functions to map data coordinates to SVG pixel coordinates
-  const scaleX = (val: number) => margin + ((val - minX) / (maxX - minX)) * (width - 2 * margin)
-  const scaleY = (val: number) => height - margin - ((val - minY) / (maxY - minY)) * (height - 2 * margin) // Invert Y for SVG
-
-  // For color mapping (c=np.linalg.norm(X, axis=1), cmap='magma')
-  const norms = data.map(([x, y]) => Math.sqrt(x * x + y * y))
-  const minNorm = Math.min(...norms)
-  const maxNorm = Math.max(...norms)
-
-  const getColor = (norm: number) => {
-    // Simple linear interpolation for a 'magma' like effect
-    // Approximating magma colormap with a gradient from purple to yellow
-    const t = (norm - minNorm) / (maxNorm - minNorm)
-    const r = Math.floor(255 * t)
-    const g = Math.floor(255 * t)
-    const b = Math.floor(255 * (1 - t))
-    return `rgb(${r}, ${g}, ${b})`
-  }
-
-  let circles = ""
-  const pointRadius = 2 // Radius for SVG points
-
-  for (let i = 0; i < data.length; i++) {
-    const [x, y] = data[i]
-    const norm = norms[i]
-    const color = getColor(norm)
-    circles += `<circle cx="${scaleX(x)}" cy="${scaleY(y)}" r="${pointRadius}" fill="${color}" fill-opacity="0.8" />`
-  }
-
-  const svgContent = `
-        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="0" width="${width}" height="${height}" fill="white"/>
-          ${circles}
-        </svg>
-      `
-
-  // Encode SVG to base64 data URL
-  return `data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`
-}
-
-/**
- * plotPointsToSvg - Converts an array of points into an SVG string.
- * This function is designed to be flexible and can be extended to support
- * different SVG elements (circles, paths, etc.) and styling based on point data.
- */
-export function plotPointsToSvg(
-  points: { x: number; y: number; metadata?: any }[],
-  colorScheme: string,
-  width: number = 512,
-  height: number = 512,
-): string {
-  let svgContent = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
-
-  // Determine color palette based on scheme
-  const colors = getColorPalette(colorScheme)
-
-  // Add background gradient based on color palette
-  svgContent += `
-    <defs>
-      <radialGradient id="bg-gradient" cx="50%" cy="50%" r="70%">
-        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.9"/>
-        <stop offset="100%" style="stop-color:${colors[1]};stop-opacity:1"/>
-      </radialGradient>
-    </defs>
-    <rect width="${width}" height="${height}" fill="url(#bg-gradient)"/>
-  `
-
-  const minX = Math.min(...points.map((p) => p.x))
-  const maxX = Math.max(...points.map((p) => p.x))
-  const minY = Math.min(...points.map((p) => p.y))
-  const maxY = Math.max(...points.map((p) => p.y))
-
-  const rangeX = maxX - minX
-  const rangeY = maxY - minY
-
-  const scaleX = width / (rangeX === 0 ? 1 : rangeX) * 0.8 // Scale to fit with some padding
-  const scaleY = height / (rangeY === 0 ? 1 : rangeY) * 0.8
-
-  const offsetX = (width - rangeX * scaleX) / 2 - minX * scaleX
-  const offsetY = (height - rangeY * scaleY) / 2 - minY * scaleY
+  const pointSize = 1.5 // Base point size
 
   for (let i = 0; i < points.length; i++) {
-    const p = points[i]
-    const screenX = p.x * scaleX + offsetX
-    const screenY = p.y * scaleY + offsetY
+    let { x, y, metadata } = points[i]
 
-    // Cycle through the color palette
-    const color = colors[i % colors.length]
-
-    let radius = 1.5 // Default radius
-    let opacity = 0.7 // Default opacity
-
-    // Apply dynamic styling based on metadata (if available)
-    if (p.metadata) {
-      if (p.metadata.isStar) {
-        radius = 3 + Math.random() * 2 // Larger stars
-        opacity = 0.9
-      } else if (p.metadata.isBlackHole) {
-        radius = 10 // Very large for black hole
-        opacity = 0.9
-        svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="black" opacity="${opacity}"/>`
-        svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 1.2}" fill="none" stroke="white" stroke-width="0.5" opacity="0.3"/>`
-        continue // Skip default circle for black hole
-      } else if (p.metadata.isTree) {
-        radius = 2 + Math.random() * 1 // Trees
-        opacity = 0.8
-      } else if (p.metadata.isFirefly) {
-        radius = 1 + Math.random() * 0.5 // Small, glowing
-        opacity = 0.9
-        svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="${color}" opacity="${opacity}"/>`
-        svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 2}" fill="none" stroke="${color}" stroke-width="0.2" opacity="0.4"/>`
-        continue
-      } else if (p.metadata.isEnzyme) {
-        radius = 2.5
-        opacity = 0.9
-      } else if (p.metadata.isIonized) {
-        radius = 1.8
-        opacity = 0.8
-      } else if (p.metadata.lightning) {
-        radius = 4
-        opacity = 1
-        svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="yellow" opacity="${opacity}"/>`
-        continue
-      } else if (p.metadata.earthquake) {
-        radius = 5
-        opacity = 1
-        svgContent += `<rect x="${screenX - radius / 2}" y="${screenY - radius / 2}" width="${radius}" height="${radius}" fill="red" opacity="${opacity}"/>`
-        continue
-      } else if (p.metadata.mitosis) {
-        radius = 3
-        opacity = 0.9
-      } else if (p.metadata.isObserved) {
-        radius = 2.5
-        opacity = 1
-      }
+    // Apply stereographic projection if enabled
+    if (stereographicProjection) {
+      ;[x, y] = applyStereographicProjection(x, y, stereographicPerspective)
     }
 
-    svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="${color}" opacity="${opacity}"/>`
-  }
+    // Map normalized [0,1] coordinates to canvas dimensions
+    const displayX = x * width
+    const displayY = y * height
 
-  svgContent += "</svg>"
-  return svgContent
+    // Determine color based on metadata or simple gradient
+    let color = colors[Math.floor((i / points.length) * colors.length)]
+
+    // Example: Color based on 'magnitude' metadata for 'pure' scenario
+    if (metadata && typeof metadata.magnitude === "number") {
+      const colorIndex = Math.floor((metadata.magnitude / 2) * colors.length) // Assuming magnitude up to ~2
+      color = colors[Math.min(colors.length - 1, Math.max(0, colorIndex))]
+    }
+    // Example: Color based on 'isTree' for 'forest' scenario
+    if (metadata && typeof metadata.isTree === "boolean") {
+      color = metadata.isTree ? "#228B22" : "#8B4513" // Green for trees, brown for ground
+    }
+    // Example: Color based on 'isStar' for 'cosmic' scenario
+    if (metadata && typeof metadata.isStar === "boolean") {
+      color = metadata.isStar ? "#FFD700" : "#4B0082" // Gold for stars, indigo for space
+    }
+    // Example: Color based on 'depth' for 'ocean' scenario
+    if (metadata && typeof metadata.depth === "number") {
+      const depthNormalized = metadata.depth / 1000 // Normalize depth to 0-1
+      const deepColor = `rgb(0, 0, ${Math.floor(50 + depthNormalized * 200)})`
+      const shallowColor = `rgb(0, ${Math.floor(100 + (1 - depthNormalized) * 150)}, ${Math.floor(
+        200 + (1 - depthNormalized) * 50,
+      )})`
+      color = depthNormalized > 0.5 ? deepColor : shallowColor
+    }
+    // Example: Color based on 'neuronType' for 'neural' scenario
+    if (metadata && typeof metadata.neuronType === "number") {
+      const neuronColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"]
+      color = neuronColors[metadata.neuronType % neuronColors.length]
+    }
+    // Example: Color based on 'isParticle' for 'quantum' scenario
+    if (metadata && typeof metadata.isParticle === "boolean") {
+      color = metadata.isParticle ? "#00FFFF" : "#FF00FF" // Cyan for particles, magenta for waves
+    }
+    // Example: Color based on 'cellState' for 'microscopic' scenario
+    if (metadata && typeof metadata.cellState === "number") {
+      color = metadata.cellState === 1 ? "#00FF00" : "#FF0000" // Green for live, red for dead
+    }
+    // Example: Color based on 'crystalSystem' for 'crystal' scenario
+    if (metadata && typeof metadata.crystalSystem === "number") {
+      const crystalColors = ["#ADD8E6", "#87CEEB", "#6495ED", "#4169E1", "#1E90FF", "#00BFFF", "#00CED1"]
+      color = crystalColors[metadata.crystalSystem % crystalColors.length]
+    }
+    // Example: Color based on 'plasmaState' for 'plasma' scenario
+    if (metadata && typeof metadata.plasmaState === "string") {
+      color = metadata.plasmaState === "hot" ? "#FF4500" : "#00FFFF" // Orange-red for hot, cyan for cold
+    }
+    // Example: Color based on 'temperature' for 'atmospheric' scenario
+    if (metadata && typeof metadata.temperature === "number") {
+      const tempNormalized = (metadata.temperature + 20) / 50 // Normalize -20 to 30 C
+      const coldColor = `rgb(0, 0, ${Math.floor(150 + tempNormalized * 100)})`
+      const hotColor = `rgb(${Math.floor(150 + tempNormalized * 100)}, 0, 0)`
+      color = tempNormalized > 0.5 ? hotColor : coldColor
+    }
+    // Example: Color based on 'rockType' for 'geological' scenario
+    if (metadata && typeof metadata.rockType === "number") {
+      const rockColors = ["#8B4513", "#A0522D", "#D2B48C"] // Brown, Sienna, Tan
+      color = rockColors[metadata.rockType % rockColors.length]
+    }
+    // Example: Color based on 'cellState' for 'biological' scenario
+    if (metadata && typeof metadata.cellState === "string") {
+      color = metadata.cellState === "active" ? "#00FF00" : "#FFD700" // Green for active, gold for resting
+    }
+    // Example: Color based on 'isGalaxyCluster' for 'cosmic_scale' scenario
+    if (metadata && typeof metadata.isGalaxyCluster === "boolean") {
+      color = metadata.isGalaxyCluster ? "#FFD700" : "#4B0082" // Gold for clusters, indigo for void
+    }
+    // Example: Color based on 'particleType' for 'microscopic_world' scenario
+    if (metadata && typeof metadata.particleType === "number") {
+      const particleColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"]
+      color = particleColors[metadata.particleType % particleColors.length]
+    }
+    // Example: Color based on 'isGlowing' for 'living_forest' scenario
+    if (metadata && typeof metadata.isGlowing === "boolean") {
+      color = metadata.isGlowing ? "#00FF00" : "#228B22" // Bright green for glowing, dark green for normal
+    }
+    // Example: Color based on 'hasHydrothermalVent' for 'deep_ocean' scenario
+    if (metadata && typeof metadata.hasHydrothermalVent === "boolean") {
+      color = metadata.hasHydrothermalVent ? "#FF4500" : "#000080" // Orange-red for vents, deep blue for ocean
+    }
+    // Example: Color based on 'emergentProperty' for 'biological_systems' scenario
+    if (metadata && typeof metadata.emergentProperty === "boolean") {
+      color = metadata.emergentProperty ? "#00FFFF" : "#FF00FF" // Cyan for emergent, magenta for individual
+    }
+    // Example: Color based on 'isIceAge' for 'geological_time' scenario
+    if (metadata && typeof metadata.isIceAge === "boolean") {
+      color = metadata.isIceAge ? "#ADD8E6" : "#8B4513" // Light blue for ice age, brown for normal
+    }
+
+    ctx.fillStyle = color
+    ctx.beginPath()
+    ctx.arc(displayX, displayY, pointSize, 0, Math.PI * 2)
+    ctx.fill()
+  }
 }
 
-function getColorPalette(scheme: string): string[] {
-  const palettes: { [key: string]: string[] } = {
-    plasma: ["#0D001A", "#7209B7", "#F72585", "#FFBE0B"],
-    quantum: ["#001122", "#0066FF", "#00FFAA", "#FFD700"],
-    cosmic: ["#000000", "#4B0082", "#9370DB", "#FFFFFF"],
-    thermal: ["#000080", "#FF4500", "#FFD700", "#FFFFFF"],
-    spectral: ["#8B00FF", "#0000FF", "#00FF00", "#FFFF00"],
-    crystalline: ["#E6E6FA", "#4169E1", "#00CED1", "#FFFFFF"],
-    bioluminescent: ["#000080", "#008B8B", "#00FF7F", "#ADFF2F"],
-    aurora: ["#191970", "#00CED1", "#7FFF00", "#FFD700"],
-    metallic: ["#B87333", "#C0C0C0", "#FFD700", "#E5E4E2"],
-    prismatic: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00"],
-    monochromatic: ["#000000", "#404040", "#808080", "#FFFFFF"],
-    infrared: ["#8B0000", "#FF4500", "#FF6347", "#FFA500"],
-    lava: ["#1A0000", "#8B0000", "#FF4500", "#FFD700"],
-    futuristic: ["#001122", "#00FFFF", "#0080FF", "#FFFFFF"],
-    forest: ["#0F1B0F", "#228B22", "#32CD32", "#90EE90"],
-    ocean: ["#000080", "#0066CC", "#00BFFF", "#E0F6FF"],
-    sunset: ["#2D1B69", "#FF6B35", "#F7931E", "#FFD23F"],
-    arctic: ["#1E3A8A", "#60A5FA", "#E0F2FE", "#FFFFFF"],
-    neon: ["#000000", "#FF00FF", "#00FF00", "#FFFF00"],
-    vintage: ["#8B4513", "#CD853F", "#F4A460", "#FFF8DC"],
-    toxic: ["#1A1A00", "#66FF00", "#CCFF00", "#FFFF99"],
-    ember: ["#2D0A00", "#CC4400", "#FF8800", "#FFCC66"],
+function applyStereographicProjection(x: number, y: number, perspective: string): [number, number] {
+  // Normalize x, y from [0,1] to [-1,1] for projection
+  const nx = x * 2 - 1
+  const ny = y * 2 - 1
+
+  let X, Y, Z
+  // Map 2D point to a sphere (e.g., unit sphere)
+  // This is a simplified inverse stereographic projection to get a 3D point
+  // For a "little planet" effect, we project from the top of the sphere.
+  // For "tunnel vision", we project from the side.
+
+  if (perspective === "little_planet") {
+    // Inverse stereographic projection from plane to sphere (from North Pole)
+    const r2 = nx * nx + ny * ny
+    X = (2 * nx) / (1 + r2)
+    Y = (2 * ny) / (1 + r2)
+    Z = (1 - r2) / (1 + r2) // Z is height, North Pole is (0,0,1)
+  } else {
+    // Inverse stereographic projection from plane to sphere (from a side point, e.g., (1,0,0))
+    const r2 = nx * nx + ny * ny
+    X = (r2 - 1) / (r2 + 1) // X is depth
+    Y = (2 * nx) / (r2 + 1)
+    Z = (2 * ny) / (r2 + 1)
   }
-  return palettes[scheme] || palettes.plasma // Default to plasma
+
+  // Now project back to 2D plane from a different perspective point
+  // For "little planet", project from South Pole (0,0,-1)
+  // For "tunnel vision", project from a point far along X axis (e.g., (2,0,0))
+
+  let projectedX, projectedY
+
+  if (perspective === "little_planet") {
+    // Project from South Pole (0,0,-1) back to plane Z=0
+    // The projection point is (0,0,-1). The plane is z=0.
+    // Line from (0,0,-1) to (X,Y,Z) intersects z=0 at:
+    // x_proj = X / (1+Z)
+    // y_proj = Y / (1+Z)
+    const divisor = 1 + Z
+    projectedX = X / divisor
+    projectedY = Y / divisor
+  } else {
+    // Project from a point (2,0,0) back to plane X=0
+    // The projection point is (2,0,0). The plane is x=0.
+    // Line from (2,0,0) to (X,Y,Z) intersects x=0 at:
+    // y_proj = Y * (2 / (2 - X))
+    // z_proj = Z * (2 / (2 - X))
+    const divisor = 2 - X
+    projectedX = Y / divisor // This becomes the new X
+    projectedY = Z / divisor // This becomes the new Y
+  }
+
+  // Normalize back to [0,1] range for canvas
+  // These values can go outside [-1,1] depending on projection, so we need to clamp or handle
+  const finalX = (projectedX + 1) / 2
+  const finalY = (projectedY + 1) / 2
+
+  // Clamp values to ensure they stay within the canvas bounds
+  return [Math.max(0, Math.min(1, finalX)), Math.max(0, Math.min(1, finalY))]
+}
+
+export function downloadImage(dataUrl: string, filename: string) {
+  const link = document.createElement("a")
+  link.href = dataUrl
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+
+export function getSvgDataUrl(
+  points: Array<{ x: number; y: number; metadata: any }>,
+  colors: string[],
+  stereographicProjection: boolean,
+  stereographicPerspective: string,
+  width: number,
+  height: number,
+): string {
+  let svgContent = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
+  svgContent += `<rect width="${width}" height="${height}" fill="black"/>` // Background
+
+  const pointRadius = 1.5 // Base radius for SVG circles
+
+  for (let i = 0; i < points.length; i++) {
+    let { x, y, metadata } = points[i]
+
+    // Apply stereographic projection if enabled
+    if (stereographicProjection) {
+      ;[x, y] = applyStereographicProjection(x, y, stereographicPerspective)
+    }
+
+    // Map normalized [0,1] coordinates to SVG dimensions
+    const displayX = x * width
+    const displayY = y * height
+
+    // Determine color based on metadata or simple gradient
+    let color = colors[Math.floor((i / points.length) * colors.length)]
+
+    // Example: Color based on 'magnitude' metadata for 'pure' scenario
+    if (metadata && typeof metadata.magnitude === "number") {
+      const colorIndex = Math.floor((metadata.magnitude / 2) * colors.length) // Assuming magnitude up to ~2
+      color = colors[Math.min(colors.length - 1, Math.max(0, colorIndex))]
+    }
+    // Example: Color based on 'isTree' for 'forest' scenario
+    if (metadata && typeof metadata.isTree === "boolean") {
+      color = metadata.isTree ? "#228B22" : "#8B4513" // Green for trees, brown for ground
+    }
+    // Example: Color based on 'isStar' for 'cosmic' scenario
+    if (metadata && typeof metadata.isStar === "boolean") {
+      color = metadata.isStar ? "#FFD700" : "#4B0082" // Gold for stars, indigo for space
+    }
+    // Example: Color based on 'depth' for 'ocean' scenario
+    if (metadata && typeof metadata.depth === "number") {
+      const depthNormalized = metadata.depth / 1000 // Normalize depth to 0-1
+      const deepColor = `rgb(0, 0, ${Math.floor(50 + depthNormalized * 200)})`
+      const shallowColor = `rgb(0, ${Math.floor(100 + (1 - depthNormalized) * 150)}, ${Math.floor(
+        200 + (1 - depthNormalized) * 50,
+      )})`
+      color = depthNormalized > 0.5 ? deepColor : shallowColor
+    }
+    // Example: Color based on 'neuronType' for 'neural' scenario
+    if (metadata && typeof metadata.neuronType === "number") {
+      const neuronColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"]
+      color = neuronColors[metadata.neuronType % neuronColors.length]
+    }
+    // Example: Color based on 'isParticle' for 'quantum' scenario
+    if (metadata && typeof metadata.isParticle === "boolean") {
+      color = metadata.isParticle ? "#00FFFF" : "#FF00FF" // Cyan for particles, magenta for waves
+    }
+    // Example: Color based on 'cellState' for 'microscopic' scenario
+    if (metadata && typeof metadata.cellState === "number") {
+      color = metadata.cellState === 1 ? "#00FF00" : "#FF0000" // Green for live, red for dead
+    }
+    // Example: Color based on 'crystalSystem' for 'crystal' scenario
+    if (metadata && typeof metadata.crystalSystem === "number") {
+      const crystalColors = ["#ADD8E6", "#87CEEB", "#6495ED", "#4169E1", "#1E90FF", "#00BFFF", "#00CED1"]
+      color = crystalColors[metadata.crystalSystem % crystalColors.length]
+    }
+    // Example: Color based on 'plasmaState' for 'plasma' scenario
+    if (metadata && typeof metadata.plasmaState === "string") {
+      color = metadata.plasmaState === "hot" ? "#FF4500" : "#00FFFF" // Orange-red for hot, cyan for cold
+    }
+    // Example: Color based on 'temperature' for 'atmospheric' scenario
+    if (metadata && typeof metadata.temperature === "number") {
+      const tempNormalized = (metadata.temperature + 20) / 50 // Normalize -20 to 30 C
+      const coldColor = `rgb(0, 0, ${Math.floor(150 + tempNormalized * 100)})`
+      const hotColor = `rgb(${Math.floor(150 + tempNormalized * 100)}, 0, 0)`
+      color = tempNormalized > 0.5 ? hotColor : coldColor
+    }
+    // Example: Color based on 'rockType' for 'geological' scenario
+    if (metadata && typeof metadata.rockType === "number") {
+      const rockColors = ["#8B4513", "#A0522D", "#D2B48C"] // Brown, Sienna, Tan
+      color = rockColors[metadata.rockType % rockColors.length]
+    }
+    // Example: Color based on 'cellState' for 'biological' scenario
+    if (metadata && typeof metadata.cellState === "string") {
+      color = metadata.cellState === "active" ? "#00FF00" : "#FFD700" // Green for active, gold for resting
+    }
+    // Example: Color based on 'isGalaxyCluster' for 'cosmic_scale' scenario
+    if (metadata && typeof metadata.isGalaxyCluster === "boolean") {
+      color = metadata.isGalaxyCluster ? "#FFD700" : "#4B0082" // Gold for clusters, indigo for void
+    }
+    // Example: Color based on 'particleType' for 'microscopic_world' scenario
+    if (metadata && typeof metadata.particleType === "number") {
+      const particleColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"]
+      color = particleColors[metadata.particleType % particleColors.length]
+    }
+    // Example: Color based on 'isGlowing' for 'living_forest' scenario
+    if (metadata && typeof metadata.isGlowing === "boolean") {
+      color = metadata.isGlowing ? "#00FF00" : "#228B22" // Bright green for glowing, dark green for normal
+    }
+    // Example: Color based on 'hasHydrothermalVent' for 'deep_ocean' scenario
+    if (metadata && typeof metadata.hasHydrothermalVent === "boolean") {
+      color = metadata.hasHydrothermalVent ? "#FF4500" : "#000080" // Orange-red for vents, deep blue for ocean
+    }
+    // Example: Color based on 'emergentProperty' for 'biological_systems' scenario
+    if (metadata && typeof metadata.emergentProperty === "boolean") {
+      color = metadata.emergentProperty ? "#00FFFF" : "#FF00FF" // Cyan for emergent, magenta for individual
+    }
+    // Example: Color based on 'isIceAge' for 'geological_time' scenario
+    if (metadata && typeof metadata.isIceAge === "boolean") {
+      color = metadata.isIceAge ? "#ADD8E6" : "#8B4513" // Light blue for ice age, brown for normal
+    }
+
+    svgContent += `<circle cx="${displayX}" cy="${displayY}" r="${pointRadius}" fill="${color}"/>`
+  }
+
+  svgContent += `</svg>`
+  return `data:image/svg+xml;base64,${btoa(svgContent)}`
 }

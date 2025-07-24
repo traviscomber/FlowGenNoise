@@ -1,13 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: (config) => {
-    config.externals.push({
-      "node-fetch": "commonjs node-fetch",
-      "bufferutil": "commonjs bufferutil",
-      "utf-8-validate": "commonjs utf-8-validate",
-    });
-    return config;
-  },
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -16,6 +8,16 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
+  },
+  webpack: (config, { isServer }) => {
+    // For client-side image upscaling, ensure 'canvas' is not bundled on the server
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        canvas: false,
+      };
+    }
+    return config;
   },
 };
 

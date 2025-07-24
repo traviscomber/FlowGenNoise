@@ -94,3 +94,4 @@ If you want to use the gallery feature with Supabase, you need to create a `gall
 ## Contributing
 
 Feel free to fork the repository, make improvements, and submit pull requests.
+\`\`\`
