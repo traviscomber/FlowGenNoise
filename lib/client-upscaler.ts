@@ -189,3 +189,13 @@ export async function upscaleImage(imageSrc: string, onProgress?: (progress: num
     }
   })
 }
+
+// This file would contain client-side upscaling logic if needed,
+// e.g., using a WebAssembly model or a different API.
+// For now, upscaling is handled server-side via Replicate.
+
+export const clientUpscaleImage = async (imageUrl: string): Promise<string> => {
+  // Placeholder for client-side upscaling logic
+  console.log("Client-side upscaling not implemented. Using server-side.")
+  return imageUrl // Return original image for now
+}

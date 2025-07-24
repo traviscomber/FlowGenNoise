@@ -1,4 +1,5 @@
 import { Vector2, Vector3 } from "three"
+import { Complex, mandelbrot, julia, transformPointStereographic } from "./plot-utils"
 
 export type FlowFieldPoint = {
   position: Vector3
@@ -20,6 +21,20 @@ export type FlowFieldConfig = {
   seed: number
   enableStereographic: boolean
   stereographicPerspective: "little-planet" | "tunnel"
+}
+
+interface GenerateFlowArtOptions {
+  dataset: string
+  scenario: string
+  numSamples: number
+  noiseScale: number
+  enableStereographic: boolean
+  stereographicPerspective: "little-planet" | "tunnel"
+}
+
+interface FlowArtData {
+  points: { x: number; y: number; value: number }[]
+  connections: { x1: number; y1: number; x2: number; y2: number }[]
 }
 
 const GOLDEN_RATIO = (1 + Math.sqrt(5)) / 2
@@ -458,6 +473,152 @@ export function generateFlowField({
   }
 
   return flowField
+}
+
+export function generateFlowArt({
+  dataset,
+  scenario,
+  numSamples,
+  noiseScale,
+  enableStereographic,
+  stereographicPerspective,
+}: GenerateFlowArtOptions): FlowArtData {
+  const points: { x: number; y: number; value: number }[] = []
+  const connections: { x1: number; y1: number; x2: number; y2: number }[] = []
+
+  const width = 1000
+  const height = 1000
+
+  // Define bounds for the mathematical functions
+  let xMin = -2
+  let xMax = 2
+  let yMin = -2
+  let yMax = 2
+
+  // Adjust bounds based on dataset and scenario
+  if (dataset === "mandelbrot") {
+    xMin = -2.5
+    xMax = 1.5
+    yMin = -2
+    yMax = 2
+    if (scenario === "zoom") {
+      // Zoom into a specific part of the Mandelbrot set
+      xMin = -0.75
+      xMax = -0.74
+      yMin = 0.1
+      yMax = 0.11
+    }
+  } else if (dataset === "julia") {
+    xMin = -1.5
+    xMax = 1.5
+    yMin = -1.5
+    yMax = 1.5
+  } else if (dataset === "lorenz") {
+    xMin = -30
+    xMax = 30
+    yMin = -30
+    yMax = 30
+  } else if (dataset === "sierpinski") {
+    xMin = 0
+    xMax = 1
+    yMin = 0
+    yMax = 1
+  }
+
+  for (let i = 0; i < numSamples; i++) {
+    let x: number, y: number, value: number
+
+    // Generate points based on dataset
+    if (dataset === "mandelbrot") {
+      const real = xMin + Math.random() * (xMax - xMin)
+      const imag = yMin + Math.random() * (yMax - yMin)
+      value = mandelbrot(new Complex(real, imag))
+      x = real
+      y = imag
+    } else if (dataset === "julia") {
+      const real = xMin + Math.random() * (xMax - xMin)
+      const imag = yMin + Math.random() * (yMax - yMin)
+      // Example Julia set constant (can be made dynamic)
+      const c = new Complex(-0.70176, -0.3842)
+      value = julia(new Complex(real, imag), c)
+      x = real
+      y = imag
+    } else if (dataset === "lorenz") {
+      // Lorenz attractor simulation (simplified for point generation)
+      const dt = 0.01
+      const sigma = 10
+      const rho = 28
+      const beta = 8 / 3
+      let lx = Math.random() * 60 - 30 // Initial x
+      let ly = Math.random() * 60 - 30 // Initial y
+      let lz = Math.random() * 60 - 30 // Initial z
+
+      for (let j = 0; j < 100; j++) {
+        // Run a few iterations to get a point on the attractor
+        const dx = sigma * (ly - lx) * dt
+        const dy = (lx * (rho - lz) - ly) * dt
+        const dz = (lx * ly - beta * lz) * dt
+        lx += dx
+        ly += dy
+        lz += dz
+      }
+      x = lx
+      y = ly
+      value = lz // Use z-coordinate for value
+    } else if (dataset === "sierpinski") {
+      // Sierpinski triangle (Chaos Game)
+      const vertices = [
+        { x: 0.5, y: 1 },
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+      ]
+      const currentPoint = { x: Math.random(), y: Math.random() }
+      for (let j = 0; j < 100; j++) {
+        const randomIndex = Math.floor(Math.random() * 3)
+        const targetVertex = vertices[randomIndex]
+        currentPoint.x = (currentPoint.x + targetVertex.x) / 2
+        currentPoint.y = (currentPoint.y + targetVertex.y) / 2
+      }
+      x = currentPoint.x
+      y = currentPoint.y
+      value = (x + y) / 2 // Simple value based on position
+    } else {
+      // Default random points
+      x = Math.random() * (xMax - xMin) + xMin
+      y = Math.random() * (yMax - yMin) + yMin
+      value = Math.random()
+    }
+
+    // Apply noise
+    x += (Math.random() - 0.5) * noiseScale * (xMax - xMin)
+    y += (Math.random() - 0.5) * noiseScale * (yMax - yMin)
+
+    // Apply stereographic projection if enabled
+    if (enableStereographic) {
+      const projected = transformPointStereographic(
+        { x, y, z: value * 2 - 1 }, // Normalize value to -1 to 1 for Z
+        stereographicPerspective,
+      )
+      x = projected.x
+      y = projected.y
+      // Value remains the same for coloring, or could be adjusted based on depth
+    }
+
+    points.push({ x, y, value })
+  }
+
+  // Generate connections (simplified: connect random nearby points)
+  // This is a very basic connection logic. For complex patterns,
+  // you'd need more sophisticated algorithms (e.g., Delaunay triangulation, k-NN).
+  for (let i = 0; i < numSamples / 100; i++) {
+    const p1 = points[Math.floor(Math.random() * points.length)]
+    const p2 = points[Math.floor(Math.random() * points.length)]
+    if (p1 && p2) {
+      connections.push({ x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y })
+    }
+  }
+
+  return { points, connections }
 }
 
 export function generateStereographicProjection(point: Vector3, perspective: "little-planet" | "tunnel"): Vector2 {

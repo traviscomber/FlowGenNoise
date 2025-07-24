@@ -63,3 +63,4 @@ This project is an abstract mathematical art generator with AI prompt enhancemen
     yarn dev
     \`\`\`
     Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+\`\`\`
