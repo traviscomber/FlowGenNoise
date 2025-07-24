@@ -1,21 +1,22 @@
 "use client"
 
-import * as React from "react"
+import { useState, useEffect } from "react"
 
-export function useMediaQuery(query: string) {
-  const [value, setValue] = React.useState(false)
+export function useMobile() {
+  const [isMobile, setIsMobile] = useState(false)
 
-  React.useEffect(() => {
-    function onChange(event: MediaQueryListEvent) {
-      setValue(event.matches)
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768) // Tailwind's 'md' breakpoint
     }
 
-    const result = matchMedia(query)
-    result.addEventListener("change", onChange)
-    setValue(result.matches)
+    checkMobile() // Check on mount
+    window.addEventListener("resize", checkMobile) // Add event listener for resize
 
-    return () => result.removeEventListener("change", onChange)
-  }, [query])
+    return () => {
+      window.removeEventListener("resize", checkMobile) // Clean up on unmount
+    }
+  }, [])
 
-  return value
+  return isMobile
 }

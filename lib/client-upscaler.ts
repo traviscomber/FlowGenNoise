@@ -1,15 +1,4 @@
-// Client-side image upscaling using Canvas API and external upscaler library
-// This file is intentionally left blank as upscaling is handled server-side via Replicate API.
-// The client-side component `FlowArtGenerator.tsx` calls the `/api/upscale-image` route.
-
-class Upscaler {
-  constructor(options: { model: any }) {
-    // Placeholder for future use if needed
-  }
-}
-
-let upscaler: Upscaler | null = null
-
+// Client-side image upscaling using Canvas API
 export class ClientUpscaler {
   static async upscaleImage(imageDataUrl: string, scaleFactor: number): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -159,20 +148,4 @@ export class ClientUpscaler {
 
     return enhanced
   }
-}
-
-export async function getUpscaler() {
-  if (!upscaler) {
-    upscaler = new Upscaler({
-      model: null, // Placeholder for future use if needed
-    })
-  }
-  return upscaler
-}
-
-export async function upscaleImage(imageSrc: string, onProgress?: (progress: number) => void): Promise<string> {
-  // Placeholder for future use if needed
-  return new Promise((resolve, reject) => {
-    reject(new Error("Upscaling is handled server-side via Replicate API"))
-  })
 }

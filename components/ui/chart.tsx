@@ -1,176 +1,148 @@
 "use client"
 
 import * as React from "react"
-import type { VariantProps } from "class-variance-authority"
-import { Bar, type BarChart, Line, type LineChart, Pie, type PieChart, Scatter, type ScatterChart } from "recharts"
-import type { chartVariants } from "@/lib/chartVariants" // Assuming chartVariants is declared in this file
+import * as RechartsPrimitive from "recharts"
+import { ChartContext } from "./ChartContext" // Import ChartContext from the correct file
 
 import { cn } from "@/lib/utils"
 
-const ChartContext = React.createContext<ChartContextType>({} as ChartContextType)
+// Workaround for https://github.com/recharts/recharts/issues/3615
+const Tooltip = RechartsPrimitive.Tooltip
 
-type ChartContextType = {
-  config: ChartConfig
-}
-
-type ChartConfig = {
-  [key: string]: {
-    label?: string
-    color?: string
-    icon?: React.ComponentType
-  }
-}
-
-type ChartProps = {
-  config: ChartConfig
-  children: React.ReactNode
-} & React.ComponentPropsWithoutRef<"div">
-
-function Chart({ config, className, children, ...props }: ChartProps) {
+function Chart({
+  config,
+  children,
+  className,
+  ...props
+}: React.ComponentProps<typeof RechartsPrimitive.ResponsiveContainer> & {
+  config: ChartContext["config"]
+} & (
+    | {
+        data: Record<string, any>[]
+        categories: string[]
+      }
+    | {
+        data?: never
+        categories?: never
+      }
+  )) {
   return (
-    <ChartContext.Provider value={{ config }}>
-      <div
-        data-chart={true}
-        className={cn("flex h-96 w-full flex-col items-center justify-center", className)}
-        {...props}
-      >
-        {children}
+    <ChartContext.Provider value={{ config, ...props }}>
+      <div className={cn("h-[400px] w-full", className)}>
+        <RechartsPrimitive.ResponsiveContainer {...props}>{children}</RechartsPrimitive.ResponsiveContainer>
       </div>
     </ChartContext.Provider>
   )
 }
 
-const ChartContainer = React.forwardRef<
-  HTMLDivElement,
-  {
-    children: React.ReactNode
-    className?: string
-  } & VariantProps<typeof chartVariants>
->(({ className, children, ...props }, ref) => {
-  return (
-    <div ref={ref} className={cn("flex aspect-video w-full", className)} {...props}>
-      {children}
-    </div>
-  )
-})
-ChartContainer.displayName = "ChartContainer"
-
-const ChartTooltip = ({
+// Helper to use accessible colors from tailwind config.
+function ChartTooltip({
   active,
   payload,
-  label,
-}: {
-  active?: boolean
-  payload?: any[]
-  label?: string
-}) => {
+  className,
+  formatter,
+  content,
+  ...props
+}: React.ComponentProps<typeof Tooltip> & {
+  formatter?: (value: number, name: string, props: { payload: Record<string, any> }) => [string, string]
+  content?: React.ComponentProps<typeof ChartTooltipContent>["content"]
+}) {
   const { config } = React.useContext(ChartContext)
 
   if (active && payload && payload.length) {
+    const item = payload[0]
+    const _formatter =
+      typeof formatter === "function"
+        ? formatter
+        : (value: number, name: string) => {
+            const entry = config[name]
+            if (entry && entry.label) {
+              return [value, entry.label]
+            }
+            return [value, name]
+          }
     return (
-      <div className="rounded-lg border bg-background p-2 text-sm shadow-md">
-        <div className="grid gap-1">
-          {label && <div className="font-medium">{label}</div>}
-          {payload.map((item: any) => {
-            const color = config[item.dataKey]?.color || item.color
-            const label = config[item.dataKey]?.label || item.dataKey
+      <Tooltip
+        active={active}
+        payload={payload}
+        formatter={_formatter}
+        content={({ active, payload }) => {
+          if (active && payload && payload.length) {
             return (
-              <div key={item.dataKey} className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: color }} />
-                  <span>{label}</span>
-                </div>
-                <span className="font-mono font-medium tabular-nums">{item.value}</span>
-              </div>
+              <ChartTooltipContent
+                className={className}
+                item={item}
+                payload={payload}
+                config={config}
+                content={content}
+              />
             )
-          })}
-        </div>
-      </div>
+          }
+
+          return null
+        }}
+        {...props}
+      />
     )
   }
 
   return null
 }
 
-const ChartLegend = ({
-  payload,
-}: {
-  payload?: any[]
-}) => {
-  const { config } = React.useContext(ChartContext)
+interface ChartTooltipContentProps extends React.ComponentPropsWithoutRef<"div"> {
+  item: RechartsPrimitive.TooltipProps["payload"][number]
+  payload: RechartsPrimitive.TooltipProps["payload"]
+  config: ChartContext["config"]
+  content?: React.ComponentProps<typeof ChartTooltipContent>["content"]
+}
 
-  if (payload) {
+const ChartTooltipContent = React.forwardRef<HTMLDivElement, ChartTooltipContentProps>(
+  ({ className, item, payload, config, content, ...props }, ref) => {
+    if (content) {
+      return (
+        <div ref={ref} className={cn("p-2", className)} {...props}>
+          {content({ item, payload, config })}
+        </div>
+      )
+    }
+
     return (
-      <div className="flex flex-wrap items-center justify-center gap-4 p-2">
-        {payload.map((item: any) => {
-          const color = config[item.dataKey]?.color || item.color
-          const label = config[item.dataKey]?.label || item.dataKey
+      <div
+        ref={ref}
+        className={cn(
+          "grid min-w-[130px] items-center gap-1.5 rounded-lg border bg-white px-2.5 py-1.5 text-xs shadow-xl dark:bg-zinc-950",
+          className,
+        )}
+        {...props}
+      >
+        {payload.map((item) => {
+          const key = item.dataKey as keyof typeof config
+
           return (
-            <div key={item.dataKey} className="flex items-center gap-2">
-              <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: color }} />
-              <span>{label}</span>
+            <div key={item.dataKey} className="flex items-center justify-between space-x-2">
+              <ChartTooltipLabel className="shrink-0" style={{ color: config[key]?.color }}>
+                {config[key]?.label || item.dataKey}
+              </ChartTooltipLabel>
+              <ChartTooltipValue>{item.value as number}</ChartTooltipValue>
             </div>
           )
         })}
       </div>
     )
-  }
+  },
+)
+ChartTooltipContent.displayName = "ChartTooltipContent"
 
-  return null
-}
+const ChartTooltipLabel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn("flex items-center", className)} {...props} />,
+)
+ChartTooltipLabel.displayName = "ChartTooltipLabel"
 
-const ChartPrimitive = React.forwardRef<
-  any,
-  {
-    children: React.ReactNode
-  } & (
-    | React.ComponentProps<typeof BarChart>
-    | React.ComponentProps<typeof LineChart>
-    | React.ComponentProps<typeof PieChart>
-    | React.ComponentProps<typeof ScatterChart>
-  )
->(({ children, ...props }, ref) => {
-  const { config } = React.useContext(ChartContext)
-  const chartProps = {
-    ...props,
-    style: {
-      ...props.style,
-      direction: "ltr",
-    },
-  }
-  return (
-    <ChartPrimitive.Root ref={ref} {...chartProps}>
-      {children}
-    </ChartPrimitive.Root>
-  )
-})
+const ChartTooltipValue = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("relative ml-auto font-medium tabular-nums", className)} {...props} />
+  ),
+)
+ChartTooltipValue.displayName = "ChartTooltipValue"
 
-const ChartBar = React.forwardRef<any, React.ComponentProps<typeof Bar>>(({ className, ...props }, ref) => {
-  const { config } = React.useContext(ChartContext)
-  const color = config[props.dataKey as string]?.color
-
-  return <Bar ref={ref} className={cn("fill-primary", className)} fill={color} {...props} />
-})
-
-const ChartLine = React.forwardRef<any, React.ComponentProps<typeof Line>>(({ className, ...props }, ref) => {
-  const { config } = React.useContext(ChartContext)
-  const color = config[props.dataKey as string]?.color
-
-  return <Line ref={ref} className={cn("stroke-primary", className)} stroke={color} {...props} />
-})
-
-const ChartPie = React.forwardRef<any, React.ComponentProps<typeof Pie>>(({ className, ...props }, ref) => {
-  const { config } = React.useContext(ChartContext)
-  const color = config[props.dataKey as string]?.color
-
-  return <Pie ref={ref} className={cn("fill-primary", className)} fill={color} {...props} />
-})
-
-const ChartScatter = React.forwardRef<any, React.ComponentProps<typeof Scatter>>(({ className, ...props }, ref) => {
-  const { config } = React.useContext(ChartContext)
-  const color = config[props.dataKey as string]?.color
-
-  return <Scatter ref={ref} className={cn("fill-primary", className)} fill={color} {...props} />
-})
-
-export { Chart, ChartContainer, ChartTooltip, ChartLegend, ChartPrimitive, ChartBar, ChartLine, ChartPie, ChartScatter }
+export { Chart, ChartTooltip, ChartTooltipContent }

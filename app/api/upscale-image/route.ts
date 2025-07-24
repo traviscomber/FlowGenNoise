@@ -1,9 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import Replicate from "replicate"
 
-const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN,
-})
+export const runtime = "edge"
 
 /**
  * POST /api/upscale-image
@@ -15,17 +13,28 @@ const replicate = new Replicate({
  * Response:
  *   { upscaledImageUrl: string }
  */
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const { imageUrl }: { imageUrl: string } = await request.json()
+    const { imageUrl } = await req.json()
 
     if (!imageUrl) {
       return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
     }
 
-    // Use a specific image upscaling model, e.g., Real-ESRGAN
+    if (!process.env.REPLICATE_API_TOKEN) {
+      return NextResponse.json({ error: "REPLICATE_API_TOKEN is not set" }, { status: 500 })
+    }
+
+    const replicate = new Replicate({
+      auth: process.env.REPLICATE_API_TOKEN,
+    })
+
+    // Use a suitable image upscaling model from Replicate
+    // Example: stability-ai/stable-diffusion-xl
+    // You might need to find a dedicated upscaling model or adjust parameters
+    // For a simple upscale, we can use a general image-to-image model with a high scale factor
     const output = await replicate.run(
-      "nightmareai/real-esrgan:42fed1c4974146ea4952a37168e170c773901d520246c73500247f97696d36d7",
+      "nightmareai/real-esrgan:42fed1c4974146ea49526d747c5699356754a30385c966f78650500958767d17", // A common ESRGAN model
       {
         input: {
           image: imageUrl,
@@ -34,15 +43,15 @@ export async function POST(request: NextRequest) {
       },
     )
 
-    const upscaledImageUrl = Array.isArray(output) && output.length > 0 ? output[0] : null
+    const upscaledImageUrl = Array.isArray(output) ? output[0] : output
 
     if (!upscaledImageUrl) {
-      throw new Error("Failed to upscale image from Replicate.")
+      throw new Error("Replicate did not return an upscaled image URL.")
     }
 
     return NextResponse.json({ upscaledImageUrl })
-  } catch (err: any) {
-    console.error("[upscale-image] error:", err)
-    return NextResponse.json({ error: "Failed to upscale image", details: err.message }, { status: 500 })
+  } catch (error: any) {
+    console.error("Upscale image error:", error)
+    return NextResponse.json({ error: "Failed to upscale image", details: error.message }, { status: 500 })
   }
 }

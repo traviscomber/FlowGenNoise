@@ -1,12 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { OTPInput, Slot, type OTPInputProps } from "input-otp"
+import { OTPInput, Slot, OTPInputContext } from "input-otp"
 import { Minus } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-const InputOTP = React.forwardRef<React.ElementRef<typeof OTPInput>, OTPInputProps>(
+const InputOTP = React.forwardRef<React.ElementRef<typeof OTPInput>, React.ComponentPropsWithoutRef<typeof OTPInput>>(
   ({ className, containerClassName, ...props }, ref) => (
     <OTPInput
       ref={ref}
@@ -26,18 +26,31 @@ InputOTPGroup.displayName = "InputOTPGroup"
 const InputOTPSlot = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot> & { index: number }
->(({ index, className, ...props }, ref) => (
-  <Slot
-    ref={ref}
-    index={index}
-    className={cn(
-      "relative flex h-9 w-9 items-center justify-center border-y border-r border-input text-sm shadow-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
-      "focus:z-10 focus:border-primary focus:ring-2 focus:ring-ring",
-      className,
-    )}
-    {...props}
-  />
-))
+>(({ index, className, ...props }, ref) => {
+  const inputOTPContext = React.useContext(OTPInputContext)
+  const { char, hasFocused, isActive } = inputOTPContext.slots[index]
+
+  return (
+    <Slot
+      ref={ref}
+      index={index}
+      className={cn(
+        "relative flex h-9 w-9 items-center justify-center border-y border-r border-input text-sm shadow-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
+        isActive && "z-10 ring-1 ring-ring",
+        hasFocused && "outline-none ring-1 ring-ring",
+        className,
+      )}
+      {...props}
+    >
+      {char}
+      {isActive && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="h-4 w-px animate-caret-blink bg-foreground" />
+        </div>
+      )}
+    </Slot>
+  )
+})
 InputOTPSlot.displayName = "InputOTPSlot"
 
 const InputOTPSeparator = React.forwardRef<React.ElementRef<"div">, React.ComponentPropsWithoutRef<"div">>(

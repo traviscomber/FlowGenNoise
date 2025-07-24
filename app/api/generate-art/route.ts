@@ -1,44 +1,19 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { generateFlowArt } from "@/lib/flow-model"
+import { generateFlowField } from "@/lib/flow-model"
 
-/**
- * POST /api/generate-art
- * Body:
- * {
- *   dataset: string,
- *   scenario: string,
- *   colorScheme: string,
- *   numSamples: number,
- *   noiseScale: number,
- *   enableStereographic: boolean,
- *   stereographicPerspective: "little-planet" | "tunnel"
- * }
- *
- * Response:
- *   { svg: string }
- */
 export async function POST(request: NextRequest) {
   try {
-    const { dataset, scenario, colorScheme, numSamples, noiseScale, enableStereographic, stereographicPerspective } =
-      await request.json()
+    const params = await request.json()
 
-    if (!dataset || !scenario || !colorScheme || !numSamples || !noiseScale) {
-      return NextResponse.json({ error: "Missing required parameters" }, { status: 400 })
-    }
+    // Generate SVG flow field
+    const svgContent = generateFlowField(params)
 
-    const svg = generateFlowArt({
-      dataset,
-      scenario,
-      colorScheme,
-      numSamples,
-      noiseScale,
-      enableStereographic,
-      stereographicPerspective,
+    return NextResponse.json({
+      svgContent,
+      success: true,
     })
-
-    return NextResponse.json({ svg })
-  } catch (err: any) {
-    console.error("[generate-art] error:", err)
-    return NextResponse.json({ error: "Failed to generate mathematical art", details: err.message }, { status: 500 })
+  } catch (error: any) {
+    console.error("Flow field generation error:", error)
+    return NextResponse.json({ error: "Failed to generate flow field", details: error.message }, { status: 500 })
   }
 }

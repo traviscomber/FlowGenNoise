@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack: (config) => {
+    config.externals.push({
+      "node-fetch": "commonjs node-fetch",
+      "bufferutil": "commonjs bufferutil",
+      "utf-8-validate": "commonjs utf-8-validate",
+    });
+    return config;
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -7,22 +15,8 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "replicate.delivery",
-      },
-      {
-        protocol: "https",
-        hostname: "oaidalleapiprodscus.blob.core.windows.net",
-      },
-      {
-        protocol: "https",
-        hostname: "hebbkx1anhila5yf.public.blob.vercel-storage.com",
-      },
-    ],
     unoptimized: true,
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;
