@@ -1,4 +1,9 @@
-// Client-side image upscaling using Canvas API
+// Client-side image upscaling using Canvas API and external upscaler library
+import { Upscaler } from "upscaler"
+import upscaleModel from "upscaler/models/div2k/2x"
+
+let upscaler: Upscaler | null = null
+
 export class ClientUpscaler {
   static async upscaleImage(imageDataUrl: string, scaleFactor: number): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -148,4 +153,39 @@ export class ClientUpscaler {
 
     return enhanced
   }
+}
+
+export async function getUpscaler() {
+  if (!upscaler) {
+    upscaler = new Upscaler({
+      model: upscaleModel,
+    })
+  }
+  return upscaler
+}
+
+export async function upscaleImage(imageSrc: string, onProgress?: (progress: number) => void): Promise<string> {
+  const currentUpscaler = await getUpscaler()
+
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.crossOrigin = "anonymous" // Set crossOrigin to anonymous to avoid CORS issues
+    img.src = imageSrc
+
+    img.onload = async () => {
+      try {
+        const upscaledImage = await currentUpscaler.upscale(img, {
+          output: "base64",
+          progress: onProgress,
+        })
+        resolve(upscaledImage as string)
+      } catch (error) {
+        reject(error)
+      }
+    }
+
+    img.onerror = (error) => {
+      reject(new Error(`Failed to load image for upscaling: ${error}`))
+    }
+  })
 }

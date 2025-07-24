@@ -1,19 +1,44 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { generateFlowField } from "@/lib/flow-model"
 
+/**
+ * POST /api/generate-art
+ * Generates mathematical flow field data based on client parameters.
+ * Response → { flowField: FlowFieldPoint[] }
+ */
 export async function POST(request: NextRequest) {
   try {
-    const params = await request.json()
+    const {
+      width,
+      height,
+      depth,
+      numSamples,
+      noiseScale,
+      dataset,
+      scenario,
+      colorScheme,
+      seed,
+      enableStereographic,
+      stereographicPerspective,
+    } = await request.json()
 
-    // Generate SVG flow field
-    const svgContent = generateFlowField(params)
-
-    return NextResponse.json({
-      svgContent,
-      success: true,
+    const flowField = generateFlowField({
+      width,
+      height,
+      depth,
+      numSamples,
+      noiseScale,
+      dataset,
+      scenario,
+      colorScheme,
+      seed,
+      enableStereographic,
+      stereographicPerspective,
     })
+
+    return NextResponse.json({ flowField })
   } catch (error: any) {
-    console.error("Flow field generation error:", error)
-    return NextResponse.json({ error: "Failed to generate flow field", details: error.message }, { status: 500 })
+    console.error("Generate art error:", error)
+    return NextResponse.json({ error: "Failed to generate art", details: error.message }, { status: 500 })
   }
 }
