@@ -7,74 +7,75 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'replicate.delivery',
+        hostname: 'oaidalleapiprodscus.blob.core.windows.net',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'oaidalleapidev2.blob.core.windows.net',
+        hostname: 'replicate.delivery',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pbxt.replicate.delivery',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'avatars.githubusercontent.com',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'cdn.discordapp.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'public.blob.vercel-storage.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'source.unsplash.com',
+        hostname: 'plus.unsplash.com',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'v0.dev',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: '*.supabase.co', // Allow images from Supabase storage
+        hostname: 'blob.v0.dev',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co', // Allow images from Supabase storage
+        port: '',
+        pathname: '/**',
       },
     ],
-  },
-  webpack: (config, { isServer }) => {
-    // For client-side image upscaling, ensure 'canvas' is not bundled on the server
-    // This is needed for Replicate's client-side usage if you were to use it directly in the browser.
-    // However, for server-side API routes, it's not strictly necessary.
-    // If you encounter issues with 'fs' or 'path' in client-side bundles,
-    // you might need to add fallbacks.
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        canvas: false,
-        fs: false,
-        path: false,
-        // Add other Node.js modules if they cause issues in the browser bundle
-      };
-    }
-    return config;
+    unoptimized: true,
   },
 };
 

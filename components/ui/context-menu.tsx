@@ -29,9 +29,8 @@ ContextMenuContent.displayName = ContextMenuPrimitive.Content.displayName
 
 const ContextMenuItem = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Item> & {
-    inset?: boolean
-  }
+  React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Item> &
+    Pick<ContextMenuPrimitive.ItemProps, "onSelect" | "disabled">
 >(({ className, inset, ...props }, ref) => (
   <ContextMenuPrimitive.Item
     ref={ref}
@@ -117,9 +116,9 @@ const ContextMenuShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLS
 }
 ContextMenuShortcut.displayName = "ContextMenuShortcut"
 
-const ContextMenuSub = ContextMenuPrimitive.Sub
+const ContextSub = ContextMenuPrimitive.Sub
 
-const ContextMenuSubTrigger = React.forwardRef<
+const ContextSubTrigger = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.SubTrigger>,
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.SubTrigger> & {
     inset?: boolean
@@ -138,9 +137,9 @@ const ContextMenuSubTrigger = React.forwardRef<
     <ChevronRight className="ml-auto h-4 w-4" />
   </ContextMenuPrimitive.SubTrigger>
 ))
-ContextMenuSubTrigger.displayName = ContextMenuPrimitive.SubTrigger.displayName
+ContextSubTrigger.displayName = ContextMenuPrimitive.SubTrigger.displayName
 
-const ContextMenuSubContent = React.forwardRef<
+const ContextSubContent = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.SubContent>,
   React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.SubContent>
 >(({ className, ...props }, ref) => (
@@ -155,7 +154,7 @@ const ContextMenuSubContent = React.forwardRef<
     />
   </ContextMenuPrimitive.Portal>
 ))
-ContextMenuSubContent.displayName = ContextMenuPrimitive.SubContent.displayName
+ContextSubContent.displayName = ContextMenuPrimitive.SubContent.displayName
 
 export {
   ContextMenu,
@@ -167,7 +166,7 @@ export {
   ContextMenuLabel,
   ContextMenuSeparator,
   ContextMenuShortcut,
-  ContextMenuSub,
-  ContextMenuSubTrigger,
-  ContextMenuSubContent,
+  ContextSub,
+  ContextSubTrigger,
+  ContextSubContent,
 }

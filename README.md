@@ -1,31 +1,53 @@
-# FlowSketch Art Generator
+# FlowSketch Complex Mathematical Art Generator
 
-This is a mathematical art generator that allows users to create stunning visuals based on various mathematical functions and parameters. It includes features for AI prompt enhancement, stereographic projection, and a gallery to save and manage generated artworks.
+FlowSketch is an advanced web application that allows users to generate stunning and unique mathematical art. It combines complex mathematical datasets with various scenarios and color schemes to create intricate visual results. Users can also leverage AI to enhance their art prompts and generate AI-powered artwork.
 
 ## Features
 
-- **Mathematical Art Generation**: Choose from different datasets and scenarios to generate unique art.
-- **AI Prompt Enhancement**: Enhance your art prompts using AI to get more creative results.
-- **Stereographic Projection**: Apply stereographic projection for a different visual perspective.
-- **Parameter Control**: Adjust noise, samples, and other parameters to fine-tune your art.
-- **Color Schemes**: Select from various color schemes to customize the look of your artwork.
-- **Gallery**: Save, load, and delete your generated artworks.
-- **Download & Upscale**: Download your art or upscale it for higher resolution.
+- **Mathematical Art Generation**:
+  - Select from a variety of complex mathematical datasets (e.g., Quantum Spirals, Fractal Dimensions, Topological Spaces).
+  - Blend with different scenarios (e.g., Pure Mathematical, Quantum Realm, Cosmic Scale).
+  - Choose from diverse color palettes (e.g., Plasma, Quantum, Cosmic).
+  - Adjust parameters like seed, number of samples, noise scale, and time step.
+  - Enable Stereographic Projection for artistic "little planet" or "tunnel vision" effects.
+
+- **AI Art Generation & Enhancement**:
+  - Use AI to enhance your custom art prompts, adding descriptive and creative details.
+  - Generate AI-powered artwork based on your enhanced or custom prompts.
+
+- **Image Actions**:
+  - Download generated artwork as PNG.
+  - Upscale images for higher resolution and detail (mathematical upscaling for SVG, pixel-based for AI art).
+
+- **Art Gallery**:
+  - Automatically saves generated artworks to a local gallery (using localStorage).
+  - Load previous artworks and their settings from the gallery.
+  - Remove artworks from the gallery.
+
+## Technologies Used
+
+- **Next.js**: React framework for building the web application.
+- **React**: UI library for building interactive user interfaces.
+- **Tailwind CSS**: Utility-first CSS framework for styling.
+- **shadcn/ui**: Reusable UI components built with Radix UI and Tailwind CSS.
+- **Lucide React**: Icon library.
+- **AI SDK**: For integrating AI models (e.g., OpenAI for prompt enhancement and AI art generation).
+- **Supabase**: (Optional) For persistent storage of gallery items (requires environment variables).
+- **HTML Canvas API**: For rendering mathematical art client-side.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- npm or Yarn
-- Supabase project (for gallery functionality)
+- Node.js (v18.18.0 or later)
+- npm or yarn
 
 ### Installation
 
 1.  **Clone the repository:**
     \`\`\`bash
-    git clone https://github.com/your-username/flowsketch-art-generator.git
-    cd flowsketch-art-generator
+    git clone https://github.com/your-username/flowsketch.git
+    cd flowsketch
     \`\`\`
 
 2.  **Install dependencies:**
@@ -35,45 +57,56 @@ This is a mathematical art generator that allows users to create stunning visual
     yarn install
     \`\`\`
 
-3.  **Set up Environment Variables:**
-    Create a `.env.local` file in the root of your project and add the following:
+3.  **Environment Variables:**
+    Create a `.env.local` file in the root of your project and add the following environment variables. These are crucial for AI features and optional for Supabase gallery integration.
 
     \`\`\`env
-    NEXT_PUBLIC_SUPABASE_URL="YOUR_SUPABASE_URL"
-    NEXT_PUBLIC_SUPABASE_ANON_KEY="YOUR_SUPABASE_ANON_KEY"
-    OPENAI_API_KEY="YOUR_OPENAI_API_KEY" # For AI prompt enhancement
-    REPLICATE_API_TOKEN="YOUR_REPLICATE_API_TOKEN" # For image upscaling
-    \`\`\`
-    Replace the placeholder values with your actual Supabase, OpenAI, and Replicate API keys.
+    # Required for AI features (e.g., prompt enhancement, AI art generation)
+    OPENAI_API_KEY=your_openai_api_key_here
+    REPLICATE_API_TOKEN=your_replicate_api_token_here # Used for AI art generation
 
-4.  **Run the development server:**
-    \`\`\`bash
-    npm run dev
-    # or
-    yarn dev
+    # Optional: For Supabase gallery integration
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
     \`\`\`
+    Replace `your_openai_api_key_here`, `your_replicate_api_token_here`, `your_supabase_project_url`, and `your_supabase_anon_key` with your actual keys.
 
-    Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+    **Note on Supabase:** If you plan to use the gallery feature with Supabase, you'll need to set up a Supabase project and create a `gallery_items` table. A basic SQL script for this might look like:
+
+    \`\`\`sql
+    CREATE TABLE gallery_items (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      image_url TEXT NOT NULL,
+      prompt TEXT,
+      parameters JSONB,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+    \`\`\`
+    You'll also need to enable the `uuid-ossp` extension in your Supabase project for `uuid_generate_v4()`.
+
+### Running the Development Server
+
+\`\`\`bash
+npm run dev
+# or
+yarn dev
+\`\`\`
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
 ## Project Structure
 
 - `app/`: Next.js App Router pages and API routes.
-- `components/`: React components, including UI components from `shadcn/ui`.
-- `lib/`: Utility functions, Supabase client, and plotting logic.
+- `components/`: Reusable React components, including `FlowArtGenerator` and `shadcn/ui` components.
+- `hooks/`: Custom React hooks.
+- `lib/`: Utility functions and core logic (e.g., `flow-model.ts` for mathematical art generation, `client-upscaler.ts` for image upscaling, `supabase.ts` for Supabase client).
 - `public/`: Static assets.
 - `styles/`: Global CSS.
 
-## API Endpoints
-
-- `/api/generate-art`: Generates mathematical art based on provided parameters.
-- `/api/enhance-prompt`: Enhances a given prompt using an AI model.
-- `/api/upscale-image`: Upscales an image using a third-party AI service.
-- `/api/generate-ai-art`: Generates AI art based on a prompt.
-
 ## Contributing
 
-Feel free to fork the repository, make improvements, and submit pull requests.
+Feel free to fork the repository, open issues, and submit pull requests.
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is open-source and available under the [MIT License](LICENSE).

@@ -1,5 +1,5 @@
 {
-  "name": "flowsketch-art-generator",
+  "name": "flowsketch-deployment",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -38,6 +38,7 @@
     "@radix-ui/react-toggle-group": "latest",
     "@radix-ui/react-tooltip": "latest",
     "@supabase/supabase-js": "latest",
+    "@tremor/react": "latest",
     "ai": "latest",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

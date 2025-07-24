@@ -74,28 +74,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-/* Custom styles for gradients and effects */
-.bg-gradient-to-br {
-  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
-}
-
-.bg-gradient-to-r {
-  background-image: linear-gradient(to right, var(--tw-gradient-stops));
-}
-
-.bg-clip-text {
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.text-transparent {
-  color: transparent;
-}
-
-/* For SVG rendering in img tags */
-img[src$=".svg"] {
-  image-rendering: -webkit-optimize-contrast; /* For Safari */
-  image-rendering: crisp-edges; /* For Firefox */
-  image-rendering: pixelated; /* For Chrome */
-}

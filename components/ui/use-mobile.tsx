@@ -1,24 +1,23 @@
+// This file was previously truncated. Here's its full content.
 "use client"
 
 import { useState, useEffect } from "react"
 
-const MOBILE_BREAKPOINT = 768
-
-export default function useMobile() {
+export function useMobile() {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+      setIsMobile(window.innerWidth < 768) // Example breakpoint for mobile
     }
 
-    checkMobile() // Check on mount
-    window.addEventListener("resize", checkMobile) // Add event listener for resize
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
 
     return () => {
-      window.removeEventListener("resize", checkMobile) // Clean up on unmount
+      window.removeEventListener("resize", checkMobile)
     }
   }, [])
 
-  return { isMobile: false } // Always return false for now
+  return isMobile
 }

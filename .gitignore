@@ -23,11 +23,18 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 
 # local env files
 .env*.local
-.vercel/
-.turbo/
+.env
 
-# vercel artifacts
+# vercel
 .vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# supabase
+supabase/
