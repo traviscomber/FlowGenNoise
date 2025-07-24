@@ -37,33 +37,50 @@ export async function POST(request: NextRequest) {
     let finalPrompt = customPrompt
     if (!customPrompt) {
       const datasetDescriptions = {
-        spirals: "fibonacci spiral patterns with golden ratio mathematics",
-        fractal: "intricate fractal patterns with recursive geometry",
-        hyperbolic: "hyperbolic geometry with curved space mathematics",
-        gaussian: "gaussian field distributions with statistical patterns",
-        cellular: "cellular automata with emergent complex patterns",
-        voronoi: "voronoi diagram tessellations with organic boundaries",
-        perlin: "perlin noise fields with natural organic textures",
-        mandelbrot: "mandelbrot set fractals with infinite detail",
-        lorenz: "lorenz attractor chaos theory visualizations",
-        julia: "julia set fractals with complex number mathematics",
-        diffusion: "reaction-diffusion patterns with chemical-like formations",
-        wave: "wave interference patterns with harmonic mathematics",
+        spiral: "fibonacci spiral patterns with golden ratio mathematics and organic curves",
+        checkerboard: "checkerboard grid patterns with alternating mathematical tessellations",
+        neural: "neural network patterns with interconnected nodes and synaptic connections",
+        fractal: "intricate fractal tree patterns with recursive branching geometry",
+        wave: "wave function patterns with harmonic oscillations and interference",
+        particle: "particle system dynamics with swarm behavior and emergent patterns",
+        mandala: "sacred geometry mandalas with symmetrical mathematical precision",
+        crystal: "crystal lattice structures with geometric mineral formations",
+        flow: "flow field patterns with vector mathematics and fluid dynamics",
+        noise: "perlin noise fields with organic natural textures and gradients",
+        cellular: "cellular automata patterns with emergent complex behaviors",
+        attractor: "strange attractor patterns with chaotic mathematical beauty",
       }
 
       const scenarioDescriptions = {
-        pure: "pure mathematical visualization with abstract forms",
-        landscape: "natural landscape with mountains, valleys, and organic terrain",
-        architectural: "architectural structures with geometric buildings and urban design",
-        geological: "geological rock formations with natural stone textures",
-        botanical: "botanical plant structures with organic growth patterns",
-        atmospheric: "atmospheric phenomena with clouds, mist, and weather effects",
-        crystalline: "crystalline structures with geometric crystal formations",
-        textile: "textile fabric patterns with woven and embroidered textures",
-        metallic: "metallic surfaces with reflective and industrial materials",
-        organic: "organic textures with natural biological forms",
-        urban: "urban environments with city streets, buildings, and infrastructure",
-        marine: "marine underwater ecosystems with aquatic life and coral",
+        "live-forest":
+          "enchanted living forest with magical fairies dancing between trees, colorful butterflies with fractal wings, glowing mushrooms, sparkling dewdrops, and mystical woodland creatures",
+        heads:
+          "surreal collection of artistic heads with crazy psychedelic patterns, abstract facial features, geometric mind-bending designs, kaleidoscopic eyes, and trippy neural pathways",
+        underwater:
+          "vibrant underwater world with tropical fish swimming in schools, colorful coral reefs, floating jellyfish, sea anemones, and bioluminescent marine life",
+        space:
+          "cosmic space odyssey with swirling nebulae, distant galaxies, twinkling stars, colorful planets, asteroid fields, and cosmic dust clouds",
+        cyberpunk:
+          "futuristic cyberpunk cityscape with neon lights, holographic displays, digital rain, chrome surfaces, and high-tech urban architecture",
+        dreamscape:
+          "surreal dreamlike landscape with floating objects, impossible architecture, melting clocks, gravity-defying elements, and ethereal atmospheres",
+        tribal:
+          "ancient tribal patterns with sacred symbols, totemic designs, indigenous art motifs, ceremonial masks, and spiritual geometric forms",
+        steampunk:
+          "Victorian steampunk world with brass gears, steam pipes, clockwork mechanisms, copper machinery, and industrial vintage aesthetics",
+        bioluminescent:
+          "glowing bioluminescent environment with phosphorescent organisms, luminous plants, radiant fungi, and naturally glowing life forms",
+        crystalline:
+          "magical crystal caves with prismatic gems, mineral formations, refracting light beams, rainbow reflections, and sparkling geodes",
+        volcanic:
+          "dramatic volcanic landscape with flowing lava streams, molten rock, fire eruptions, glowing embers, and intense heat distortions",
+        arctic:
+          "pristine arctic tundra with ice formations, snow crystals, aurora borealis, frozen landscapes, and crystalline beauty",
+        desert:
+          "mystical desert oasis with sand dunes, cacti silhouettes, mirages, palm trees, and golden sunset lighting",
+        jungle:
+          "ancient jungle temple with overgrown vines, exotic wildlife, mysterious ruins, tropical vegetation, and hidden archaeological treasures",
+        pure: "pure mathematical visualization with abstract geometric forms and clean mathematical beauty",
       }
 
       const colorDescriptions = {
@@ -96,7 +113,7 @@ export async function POST(request: NextRequest) {
       if (panoramic360 && panoramaFormat === "stereographic") {
         if (stereographicPerspective === "tunnel") {
           projectionText =
-            ", stereographic tunnel projection with fisheye perspective looking upward, sky in center, buildings curved around edges"
+            ", stereographic tunnel projection with fisheye perspective looking upward, sky in center, elements curved around edges"
         } else {
           projectionText =
             ", stereographic little planet projection with fisheye perspective looking downward, landscape in center forming tiny planet effect"
@@ -105,7 +122,7 @@ export async function POST(request: NextRequest) {
         projectionText = ", optimized for dome projection with fisheye perspective, immersive 360-degree view"
       }
 
-      finalPrompt = `Photorealistic ${datasetDescriptions[dataset as keyof typeof datasetDescriptions] || dataset} integrated into ${scenarioDescriptions[scenario as keyof typeof scenarioDescriptions] || scenario} with ${colorDescriptions[colorScheme as keyof typeof colorDescriptions] || colorScheme}${projectionText}, highly detailed, professional photography, dramatic lighting, ultra-realistic textures`
+      finalPrompt = `Photorealistic ${datasetDescriptions[dataset as keyof typeof datasetDescriptions] || dataset} integrated into ${scenarioDescriptions[scenario as keyof typeof scenarioDescriptions] || scenario} with ${colorDescriptions[colorScheme as keyof typeof colorDescriptions] || colorScheme}${projectionText}, highly detailed, professional photography, dramatic lighting, ultra-realistic textures, magical atmosphere`
     }
 
     // Truncate prompt if too long (DALL-E has limits)

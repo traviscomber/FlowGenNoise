@@ -5,34 +5,33 @@ export async function POST(request: NextRequest) {
     const { imageUrl, fileName } = await request.json()
 
     if (!imageUrl) {
-      return NextResponse.json({ success: false, error: "No image URL provided" }, { status: 400 })
+      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
     }
 
     // Fetch the image from the external URL
-    const response = await fetch(imageUrl)
+    const response = await fetch(imageUrl, {
+      headers: {
+        "User-Agent": "FlowSketch-Art-Generator/1.0",
+      },
+    })
 
     if (!response.ok) {
       throw new Error(`Failed to fetch image: ${response.status}`)
     }
 
     const imageBuffer = await response.arrayBuffer()
+    const contentType = response.headers.get("content-type") || "image/png"
 
-    // Return the image as a blob with proper headers
+    // Return the image as a blob
     return new NextResponse(imageBuffer, {
       headers: {
-        "Content-Type": response.headers.get("content-type") || "image/jpeg",
-        "Content-Disposition": `attachment; filename="${fileName}"`,
-        "Content-Length": imageBuffer.byteLength.toString(),
+        "Content-Type": contentType,
+        "Content-Disposition": `attachment; filename="${fileName || "image.png"}"`,
+        "Access-Control-Allow-Origin": "*",
       },
     })
   } catch (error) {
     console.error("Download proxy error:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : "Unknown error occurred",
-      },
-      { status: 500 },
-    )
+    return NextResponse.json({ error: "Failed to download image" }, { status: 500 })
   }
 }
