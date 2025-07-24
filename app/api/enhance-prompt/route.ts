@@ -1,27 +1,10 @@
-import { type NextRequest, NextResponse } from "next/server"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 
-/**
- * POST /api/enhance-prompt
- * Body:
- * {
- *   dataset: string
- *   scenario: string
- *   colorScheme: string
- *   numSamples: number
- *   noiseScale: number
- *   currentPrompt?: string
- *   enableStereographic: boolean // Added for stereographic projection
- *   stereographicPerspective: "little-planet" | "tunnel" // Added for stereographic projection
- * }
- *
- * Response:
- *   { enhancedPrompt: string }
- */
-export async function POST(request: NextRequest) {
+export const runtime = "edge"
+
+export async function POST(req: Request) {
   try {
-    /* ── 1. Parse request ─────────────────────────────────────────────── */
     const {
       dataset,
       scenario,
@@ -31,60 +14,49 @@ export async function POST(request: NextRequest) {
       currentPrompt,
       enableStereographic,
       stereographicPerspective,
-    }: {
-      dataset: string
-      scenario: string
-      colorScheme: string
-      numSamples: number
-      noiseScale: number
-      currentPrompt?: string
-      enableStereographic: boolean
-      stereographicPerspective: "little-planet" | "tunnel"
-    } = await request.json()
+    } = await req.json()
 
-    /* ── 2. Build a fallback (base) prompt ───────────────────────────── */
-    const basePrompt = `
-Generate a highly detailed, abstract mathematical artwork.
+    const basePrompt = `Generate a highly detailed and artistic prompt for an AI image generation model. The image should represent abstract mathematical art with the following characteristics:`
 
-• Dataset .......... ${dataset}
-• Scenario ......... ${scenario}
-• Colour scheme .... ${colorScheme}
-• Sample points .... ≈${numSamples}
-• Noise scale ...... ${noiseScale}
-${enableStereographic ? `• Stereographic Projection: ${stereographicPerspective === "little-planet" ? "Little Planet" : "Tunnel Vision"}` : ""}
+    const details = [
+      `Dataset: ${dataset} - Describe this dataset visually (e.g., "intricate fractal patterns," "chaotic yet beautiful Lorenz attractor curves," "geometric Sierpinski triangles," "complex Mandelbrot set boundaries").`,
+      `Scenario: ${scenario} - Describe the dynamic or perspective (e.g., "a deep, immersive zoom into the fractal," "a mesmerizing rotation through the attractor's space," "a fluid morphing of mathematical forms," "a journey through a fractal landscape").`,
+      `Color Scheme: ${colorScheme} - Describe the color palette and its mood (e.g., "vibrant plasma colors with electric blues and fiery oranges," "ethereal viridis gradients with deep purples and bright yellows," "dark and intense magma tones," "harmonious cividis hues," "a full spectrum rainbow").`,
+      `Number of Samples: ${numSamples} - Emphasize density and detail (e.g., "extremely high detail," "dense and intricate," "millions of tiny points forming a cohesive image").`,
+      `Noise Scale: ${noiseScale} - Describe the level of organic imperfection or smoothness (e.g., "subtle organic noise for a natural feel," "minimal noise for pristine mathematical precision," "a delicate scattering of points").`,
+    ]
 
-Focus on mathematical elegance, dramatic lighting, and gallery-grade polish.
-`.trim()
+    if (enableStereographic) {
+      details.push(
+        `Stereographic Projection: ${stereographicPerspective} - Describe the visual effect (e.g., "a 'little planet' effect where the mathematical space wraps around a sphere," "a 'tunnel vision' effect creating an infinite, converging corridor of patterns").`,
+      )
+    }
 
-    /* ── 3. Compose instructions for GPT-4o ───────────────────────────── */
-    const SYSTEM_PROMPT =
-      "You are a world-class mathematical artist and theoretical physicist who writes museum-quality prompts for AI image generators."
+    if (currentPrompt) {
+      details.push(
+        `User's additional input: "${currentPrompt}". Incorporate this seamlessly into the artistic description.`,
+      )
+    }
 
-    const USER_PROMPT = `
-Elevate the following draft using advanced artistic language.
-Describe lighting, materials, atmosphere, scale, and composition.
-${enableStereographic ? `Specifically incorporate the chosen stereographic projection style: ${stereographicPerspective === "little-planet" ? "a spherical, planet-like curvature with the viewer looking down at a miniature world. Include curved horizons, radial perspective, and the sense of viewing a tiny sphere from above." : "a dramatic tunnel or vortex-like perspective with strong inward curvature. Include vanishing point effects, radial distortion, and the sense of looking into an infinite tunnel or void."}` : ""}
-Finish with:
-IMPORTANT: No text, letters, labels, captions, or equations visible.
+    const fullPrompt = `${basePrompt}\n\n${details.map((d) => `- ${d}`).join("\n")}\n\nEnsure the prompt is evocative, highly descriptive, and suitable for generating a visually stunning and complex abstract image. Focus on artistic style, lighting, texture, and overall atmosphere. Do not include any instructions or conversational text in the final prompt, only the prompt itself.`
 
-"""${currentPrompt?.trim() || basePrompt}"""
-`.trim()
+    const LLM_TEMP = 0.7 // Define temperature here
 
-    /* ── 4. Call GPT-4o (single temperature constant!) ───────────────── */
-    const LLM_TEMP = 0.8 // This is the only temperature constant
-
-    const { text } = await generateText({
+    const { text: enhancedPrompt } = await generateText({
       model: openai("gpt-4o"),
-      system: SYSTEM_PROMPT,
-      prompt: USER_PROMPT,
-      temperature: LLM_TEMP, // This is the only temperature property
-      maxTokens: 1_000,
+      prompt: fullPrompt,
+      temperature: LLM_TEMP, // Use the defined temperature
     })
 
-    /* ── 5. Return the enhanced prompt ───────────────────────────────── */
-    return NextResponse.json({ enhancedPrompt: text || basePrompt })
-  } catch (err: any) {
-    console.error("[enhance-prompt] error:", err)
-    return NextResponse.json({ error: "Failed to enhance prompt", details: err.message }, { status: 500 })
+    return new Response(JSON.stringify({ enhancedPrompt }), {
+      headers: { "Content-Type": "application/json" },
+      status: 200,
+    })
+  } catch (error: any) {
+    console.error("Error enhancing prompt:", error)
+    return new Response(JSON.stringify({ details: error.message || "Internal Server Error" }), {
+      headers: { "Content-Type": "application/json" },
+      status: 500,
+    })
   }
 }

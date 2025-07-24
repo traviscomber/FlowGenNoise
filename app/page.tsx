@@ -1,10 +1,9 @@
 import FlowArtGenerator from "@/components/flow-art-generator"
-import PasswordGate from "@/components/auth/password-gate"
 
 export default function Home() {
   return (
-    <PasswordGate>
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
       <FlowArtGenerator />
-    </PasswordGate>
+    </main>
   )
 }

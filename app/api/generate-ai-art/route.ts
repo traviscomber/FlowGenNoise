@@ -1,53 +1,43 @@
-import { type NextRequest, NextResponse } from "next/server"
-import Replicate from "replicate"
+import { experimental_generateImage } from "ai"
+import { openai } from "@ai-sdk/openai"
 
-const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN,
-})
+export const runtime = "edge"
 
-/**
- * POST /api/generate-ai-art
- * Body:
- * {
- *   prompt: string
- * }
- *
- * Response:
- *   { imageUrl: string }
- */
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { prompt }: { prompt: string } = await request.json()
+    const { prompt } = await req.json()
 
     if (!prompt) {
-      return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
+      return new Response(JSON.stringify({ detail: "Prompt is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      })
     }
 
-    // Use a specific model for AI art generation, e.g., Stable Diffusion XL
-    // The model version should be specified in REPLICATE_MODEL_VERSION env var
-    const output = await replicate.run(
-      process.env.REPLICATE_MODEL_VERSION ||
-        "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a892f1b1c7bdc70a55dcd654bd3d33635f44cf6584",
+    const { url } = await experimental_generateImage({
+      model: openai.dallE("dall-e-3"),
+      prompt: prompt,
+      quality: "hd",
+      style: "vivid",
+      size: "1024x1024",
+    })
+
+    return new Response(
+      JSON.stringify({
+        image: url,
+        promptUsed: prompt,
+        provider: "DALL-E 3",
+      }),
       {
-        input: {
-          prompt: prompt,
-          width: 1024,
-          height: 1024,
-          num_inference_steps: 50,
-          guidance_scale: 7.5,
-        },
+        headers: { "Content-Type": "application/json" },
+        status: 200,
       },
     )
-
-    const imageUrl = Array.isArray(output) && output.length > 0 ? output[0] : null
-
-    if (!imageUrl) {
-      throw new Error("Failed to generate image from Replicate.")
-    }
-
-    return NextResponse.json({ imageUrl })
-  } catch (err: any) {
-    console.error("[generate-ai-art] error:", err)
-    return NextResponse.json({ error: "Failed to generate AI art", details: err.message }, { status: 500 })
+  } catch (error: any) {
+    console.error("Error generating AI art:", error)
+    return new Response(JSON.stringify({ detail: error.message || "Internal Server Error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    })
   }
 }

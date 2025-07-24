@@ -1,6 +1,12 @@
 // Client-side image upscaling using Canvas API and external upscaler library
-import { Upscaler } from "upscaler"
-import upscaleModel from "upscaler/models/div2k/2x"
+// This file is intentionally left blank as upscaling is handled server-side via Replicate API.
+// The client-side component `FlowArtGenerator.tsx` calls the `/api/upscale-image` route.
+
+class Upscaler {
+  constructor(options: { model: any }) {
+    // Placeholder for future use if needed
+  }
+}
 
 let upscaler: Upscaler | null = null
 
@@ -158,44 +164,15 @@ export class ClientUpscaler {
 export async function getUpscaler() {
   if (!upscaler) {
     upscaler = new Upscaler({
-      model: upscaleModel,
+      model: null, // Placeholder for future use if needed
     })
   }
   return upscaler
 }
 
 export async function upscaleImage(imageSrc: string, onProgress?: (progress: number) => void): Promise<string> {
-  const currentUpscaler = await getUpscaler()
-
+  // Placeholder for future use if needed
   return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.crossOrigin = "anonymous" // Set crossOrigin to anonymous to avoid CORS issues
-    img.src = imageSrc
-
-    img.onload = async () => {
-      try {
-        const upscaledImage = await currentUpscaler.upscale(img, {
-          output: "base64",
-          progress: onProgress,
-        })
-        resolve(upscaledImage as string)
-      } catch (error) {
-        reject(error)
-      }
-    }
-
-    img.onerror = (error) => {
-      reject(new Error(`Failed to load image for upscaling: ${error}`))
-    }
+    reject(new Error("Upscaling is handled server-side via Replicate API"))
   })
-}
-
-// This file would contain client-side upscaling logic if needed,
-// e.g., using a WebAssembly model or a different API.
-// For now, upscaling is handled server-side via Replicate.
-
-export const clientUpscaleImage = async (imageUrl: string): Promise<string> => {
-  // Placeholder for client-side upscaling logic
-  console.log("Client-side upscaling not implemented. Using server-side.")
-  return imageUrl // Return original image for now
 }

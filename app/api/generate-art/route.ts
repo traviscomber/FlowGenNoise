@@ -1,59 +1,49 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { generateFlowArt } from "@/lib/flow-model" // Assuming this function exists
-import { plotPointsToSVG } from "@/lib/plot-utils" // Assuming this function exists
+import { generateFlowField } from "@/lib/flow-model"
+import { drawFlowFieldToSVG } from "@/lib/plot-utils"
 
-/**
- * POST /api/generate-art
- * Body:
- * {
- *   dataset: string
- *   scenario: string
- *   colorScheme: string
- *   numSamples: number
- *   noiseScale: number
- *   enableStereographic: boolean
- *   stereographicPerspective: "little-planet" | "tunnel"
- * }
- *
- * Response:
- *   { svg: string }
- */
-export async function POST(request: NextRequest) {
+export const runtime = "edge"
+
+export async function POST(req: Request) {
   try {
     const {
+      width = 800,
+      height = 600,
+      depth = 100,
+      numSamples,
+      noiseScale,
       dataset,
       scenario,
       colorScheme,
-      numSamples,
-      noiseScale,
+      seed = Math.floor(Math.random() * 100000),
       enableStereographic,
       stereographicPerspective,
-    }: {
-      dataset: string
-      scenario: string
-      colorScheme: string
-      numSamples: number
-      noiseScale: number
-      enableStereographic: boolean
-      stereographicPerspective: "little-planet" | "tunnel"
-    } = await request.json()
+    } = await req.json()
 
-    // Generate mathematical points based on parameters
-    const { points, connections } = generateFlowArt({
-      dataset,
-      scenario,
+    const flowField = generateFlowField({
+      width,
+      height,
+      depth,
       numSamples,
       noiseScale,
+      dataset,
+      scenario,
+      colorScheme,
+      seed,
       enableStereographic,
       stereographicPerspective,
     })
 
-    // Plot points and connections to SVG
-    const svg = plotPointsToSVG(points, connections, colorScheme)
+    const svg = drawFlowFieldToSVG(flowField, width, height)
 
-    return NextResponse.json({ svg })
-  } catch (err: any) {
-    console.error("[generate-art] error:", err)
-    return NextResponse.json({ error: "Failed to generate mathematical art", details: err.message }, { status: 500 })
+    return new Response(JSON.stringify({ svg }), {
+      headers: { "Content-Type": "application/json" },
+      status: 200,
+    })
+  } catch (error: any) {
+    console.error("Error generating mathematical art:", error)
+    return new Response(JSON.stringify({ details: error.message || "Internal Server Error" }), {
+      headers: { "Content-Type": "application/json" },
+      status: 500,
+    })
   }
 }

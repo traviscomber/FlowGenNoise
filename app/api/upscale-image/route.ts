@@ -1,31 +1,27 @@
-import { type NextRequest, NextResponse } from "next/server"
 import Replicate from "replicate"
+
+export const runtime = "edge"
 
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 })
 
-/**
- * POST /api/upscale-image
- * Body:
- * {
- *   imageUrl: string
- * }
- *
- * Response:
- *   { upscaledImageUrl: string }
- */
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { imageUrl }: { imageUrl: string } = await request.json()
+    const { imageUrl } = await req.json()
 
     if (!imageUrl) {
-      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
+      return new Response(JSON.stringify({ details: "Image URL is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      })
     }
 
-    // Use a specific upscaling model, e.g., Real-ESRGAN
+    // Use a suitable image upscaling model from Replicate
+    // Example: stability-ai/stable-diffusion-xl-base-1.0 for general upscaling
+    // Or a dedicated upscaler like "nightmareai/real-esrgan" if available and suitable
     const output = await replicate.run(
-      "nightmareai/real-esrgan:42fed1c4974146ea495a874562553715a3570cc3767952917204935dd25273dc",
+      "nightmareai/real-esrgan:42fed1c4974146ea49526d7477563c9979ad7922991f003799029566681c846b",
       {
         input: {
           image: imageUrl,
@@ -34,15 +30,17 @@ export async function POST(request: NextRequest) {
       },
     )
 
-    const upscaledImageUrl = Array.isArray(output) && output.length > 0 ? output[0] : null
+    const upscaledImageUrl = Array.isArray(output) ? output[0] : output
 
-    if (!upscaledImageUrl) {
-      throw new Error("Failed to upscale image from Replicate.")
-    }
-
-    return NextResponse.json({ upscaledImageUrl })
-  } catch (err: any) {
-    console.error("[upscale-image] error:", err)
-    return NextResponse.json({ error: "Failed to upscale image", details: err.message }, { status: 500 })
+    return new Response(JSON.stringify({ upscaledImageUrl }), {
+      headers: { "Content-Type": "application/json" },
+      status: 200,
+    })
+  } catch (error: any) {
+    console.error("Error upscaling image:", error)
+    return new Response(JSON.stringify({ details: error.message || "Internal Server Error" }), {
+      headers: { "Content-Type": "application/json" },
+      status: 500,
+    })
   }
 }
