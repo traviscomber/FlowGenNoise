@@ -1,24 +1,28 @@
-// This file was previously truncated. Here's its full content.
 import { createClient } from "@supabase/supabase-js"
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-// Ensure Supabase client is only created once (singleton pattern)
-let cachedSupabase: ReturnType<typeof createClient> | null = null
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error("Missing Supabase URL or Anon Key environment variables.")
+}
 
-export const supabase = (() => {
-  if (cachedSupabase) {
-    return cachedSupabase
+// Client-side Supabase client (singleton pattern)
+let supabaseClientInstance: ReturnType<typeof createClient> | null = null
+
+export function getSupabaseClient() {
+  if (!supabaseClientInstance) {
+    supabaseClientInstance = createClient(supabaseUrl!, supabaseAnonKey!)
   }
+  return supabaseClientInstance
+}
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn(
-      "Supabase environment variables NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are not set. Supabase features will be disabled.",
-    )
-    return null
-  }
-
-  cachedSupabase = createClient(supabaseUrl, supabaseAnonKey)
-  return cachedSupabase
-})()
+// Server-side Supabase client (for API routes, server actions)
+// This client should use the service role key for elevated privileges if needed,
+// but for typical user-scoped operations, the anon key is sufficient.
+// For server actions/route handlers, you might want to create a new client
+// per request to ensure proper session handling, or use a pattern like:
+// import { createServerClient } from '@supabase/ssr'
+// export const createServerSupabaseClient = (cookies) => createServerClient(supabaseUrl, supabaseAnonKey, { cookies })
+// For simplicity here, we'll just export a direct client for server-side use.
+export const supabaseServer = createClient(supabaseUrl, supabaseAnonKey)

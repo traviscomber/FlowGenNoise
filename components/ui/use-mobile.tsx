@@ -1,14 +1,13 @@
-// This file was previously truncated. Here's its full content.
 "use client"
 
 import { useState, useEffect } from "react"
 
-export function useMobile() {
+export const useMobile = () => {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768) // Example breakpoint for mobile
+      setIsMobile(window.innerWidth < 768) // Tailwind's 'md' breakpoint
     }
 
     checkMobile()

@@ -1,20 +1,68 @@
-import { NextResponse } from "next/server"
-import { generateFlowArtData } from "@/lib/flow-model"
+import {
+  generateFlowField,
+  generateHighResFlowField,
+  type GenerationParams,
+  type UpscaleParams,
+} from "@/lib/flow-model"
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const { parameters } = await request.json()
+    const {
+      dataset,
+      scenario,
+      colorScheme,
+      seed,
+      numSamples,
+      noiseScale,
+      timeStep,
+      enableStereographic,
+      stereographicPerspective,
+      scaleFactor,
+      highResolution,
+      extraDetail,
+    } = (await req.json()) as GenerationParams & UpscaleParams
 
-    if (!parameters) {
-      return NextResponse.json({ error: "Parameters are required" }, { status: 400 })
+    let svgString: string
+
+    if (enableStereographic) {
+      svgString = generateFlowField({
+        dataset,
+        scenario,
+        colorScheme,
+        seed,
+        numSamples,
+        noiseScale,
+        timeStep,
+        enableStereographic,
+        stereographicPerspective,
+      })
+    } else {
+      svgString = generateHighResFlowField({
+        dataset,
+        scenario,
+        colorScheme,
+        seed,
+        numSamples,
+        noiseScale,
+        timeStep,
+        scaleFactor,
+        highResolution,
+        extraDetail,
+      })
     }
 
-    // Generate the raw data (points and colors) for the flow art
-    const data = generateFlowArtData(parameters)
+    // Convert SVG string to a data URL
+    const svgDataUrl = `data:image/svg+xml;base64,${Buffer.from(svgString).toString("base64")}`
 
-    return NextResponse.json({ success: true, data })
+    return new Response(JSON.stringify({ imageUrl: svgDataUrl }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    })
   } catch (error) {
-    console.error("Error generating art data:", error)
-    return NextResponse.json({ error: "Failed to generate art data" }, { status: 500 })
+    console.error("Error generating art:", error)
+    return new Response(JSON.stringify({ error: (error as Error).message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    })
   }
 }

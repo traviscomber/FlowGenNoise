@@ -8,8 +8,8 @@ import { Toaster } from "@/components/ui/toaster"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "FlowSketch",
-  description: "Complex Mathematical Art Generator",
+  title: "FlowSketch Art Generator",
+  description: "Generate stunning mathematical and AI art with FlowSketch.",
     generator: 'v0.dev'
 }
 

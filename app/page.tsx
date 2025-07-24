@@ -1,9 +1,12 @@
 import FlowArtGenerator from "@/components/flow-art-generator"
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-8 lg:p-12">
-      <FlowArtGenerator />
-    </main>
-  )
+  // You can wrap FlowArtGenerator with PasswordGate if you want to protect it
+  // For example:
+  // return (
+  //   <PasswordGate>
+  //     <FlowArtGenerator />
+  //   </PasswordGate>
+  // )
+  return <FlowArtGenerator />
 }

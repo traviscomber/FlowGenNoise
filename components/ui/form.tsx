@@ -16,14 +16,14 @@ type FormFieldContextValue<
   name: TName
 }
 
-const FormFieldContext = React.createContext<FormFieldContextValue | undefined>(undefined)
+const FormFieldContext = React.createContext<FormFieldContextValue>({} as FormFieldContextValue)
 
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
->({
-  ...props
-}: Controller<TFieldValues, TName>) => {
+>(
+  props: React.PropsWithChildren<Controller<TFieldValues, TName>>,
+) => {
   return (
     <FormFieldContext.Provider value={{ name: props.name }}>
       <Controller {...props} />
@@ -36,18 +36,20 @@ const useFormField = () => {
   const itemContext = React.useContext(FormItemContext)
   const { getFieldState, formState } = useFormContext()
 
+  const fieldState = getFieldState(fieldContext.name, formState)
+
   if (!fieldContext) {
     throw new Error("useFormField should be used within <FormField>")
   }
 
-  const fieldState = getFieldState(fieldContext.name, formState)
+  const { id } = itemContext
 
   return {
+    id,
     name: fieldContext.name,
-    id: itemContext.id,
-    formItemId: `${itemContext.id}-form-item`,
-    formDescriptionId: `${itemContext.id}-form-item-description`,
-    formMessageId: `${itemContext.id}-form-item-message`,
+    formItemId: `${id}-form-item`,
+    formDescriptionId: `${id}-form-item-description`,
+    formMessageId: `${id}-form-item-message`,
     ...fieldState,
   }
 }
@@ -56,7 +58,7 @@ type FormItemContextValue = {
   id: string
 }
 
-const FormItemContext = React.createContext<FormItemContextValue | undefined>(undefined)
+const FormItemContext = React.createContext<FormItemContextValue>({} as FormItemContextValue)
 
 const FormItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => {

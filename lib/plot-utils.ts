@@ -1,5 +1,6 @@
-// This file was previously truncated. Here's its full content.
 "use client"
+
+import { generateFlowArtData, type FlowParameters } from "./flow-model"
 
 /**
  * Draws the flow art data onto a canvas.
@@ -80,13 +81,13 @@ export function getSvgDataUrl(
   const circles = data
     .map(
       (point) =>
-        `<circle cx="${point.x * scale + translateX}" cy="${point.y * scale + translateY}" r="0.5" fill="${point.color}" />`,
+        `<circle cx="${point.x * scale + translateX}" cy="${point.y * scale + translateY}" r="0.5" fill="${point.color}" opacity="0.7"/>`,
     )
     .join("")
 
   const svgContent = `
     <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100%" height="100%" fill="black"/>
+      <rect width="100%" height="100%" fill="#1a1a1a"/>
       ${circles}
     </svg>
   `
@@ -105,4 +106,37 @@ export function downloadImage(dataUrl: string, filename: string) {
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
+}
+
+/**
+ * Generates an SVG from flow art parameters.
+ * @param params The flow art parameters.
+ * @returns An SVG string.
+ */
+export function generateSvgFromFlowData(params: FlowParameters): string {
+  const { dataset, scenario, colorScheme, seed, noise, samples, stereographic } = params
+  const points = generateFlowArtData({ dataset, scenario, colorScheme, seed, noise, samples, stereographic })
+
+  const size = 512 // Base size for the SVG
+  const centerX = size / 2
+  const centerY = size / 2
+  const scale = size / 4 // Adjust scale to fit points within the SVG
+
+  let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`
+
+  // Add a simple background rectangle
+  svgContent += `<rect width="${size}" height="${size}" fill="#1a1a1a"/>` // Dark background
+
+  for (const point of points) {
+    const screenX = centerX + point.x * scale
+    const screenY = centerY + point.y * scale
+
+    // Ensure points are within the SVG bounds
+    if (screenX >= 0 && screenX <= size && screenY >= 0 && screenY <= size) {
+      svgContent += `<circle cx="${screenX}" cy="${screenY}" r="1.5" fill="${point.color}" opacity="0.7"/>`
+    }
+  }
+
+  svgContent += "</svg>"
+  return svgContent
 }

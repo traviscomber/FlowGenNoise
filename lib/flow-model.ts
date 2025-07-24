@@ -1,3 +1,411 @@
+// This file was previously truncated. Here's its full content.
+export interface FlowParameters {
+  dataset: string // e.g., "spirals", "fractals", "quantum"
+  scenario: string // e.g., "pure", "cosmic", "neural"
+  colorScheme: string // e.g., "plasma", "quantum", "thermal"
+  seed: number
+  noise: number
+  samples: number
+  stereographic: boolean // Whether to apply stereographic projection
+}
+
+export interface GalleryItem {
+  id: string
+  image_url: string
+  prompt: string
+  parameters: FlowParameters
+  created_at: string
+  ai_enhanced_prompt?: string
+}
+
+// Predefined datasets, scenarios, and color schemes for selection
+export const DATASETS = [
+  { value: "spirals", label: "🌀 Quantum Spirals" },
+  { value: "fractals", label: "🔺 Fractal Dimensions" },
+  { value: "quantum", label: "⚛️ Quantum Fields" },
+  { value: "topology", label: "🕳️ Topological Spaces" },
+  { value: "checkerboard", label: "🏁 Fractal Checkerboard" },
+  { value: "moons", label: "🌙 Hyperbolic Moons" },
+  { value: "gaussian", label: "📊 Multi-Modal Gaussian" },
+  { value: "grid", label: "⚏ Non-Linear Grids" },
+  { value: "circles", label: "⭕ Concentric Manifolds" },
+  { value: "blobs", label: "🔵 Voronoi Dynamics" },
+  { value: "strings", label: "🧬 String Theory" },
+]
+
+export const SCENARIOS = [
+  { value: "pure", label: "🔢 Pure Mathematical" },
+  { value: "quantum", label: "⚛️ Quantum Realm" },
+  { value: "cosmic", label: "🌌 Cosmic Scale" },
+  { value: "microscopic", label: "🔬 Microscopic World" },
+  { value: "living_forest", label: "🌲 Living Forest" },
+  { value: "deep_ocean", label: "🌊 Deep Ocean" },
+  { value: "neural", label: "🧠 Neural Networks" },
+  { value: "crystal", label: "💎 Crystal Lattice" },
+  { value: "plasma", label: "⚡ Plasma Physics" },
+  { value: "atmospheric", label: "🌅 Atmospheric Physics" },
+  { value: "geological", label: "🏔️ Geological Time" },
+  { value: "biological", label: "🧬 Biological Systems" },
+]
+
+export const COLOR_SCHEMES = [
+  { value: "plasma", label: "🟣 Plasma" },
+  { value: "quantum", label: "⚛️ Quantum" },
+  { value: "cosmic", label: "🌌 Cosmic" },
+  { value: "thermal", label: "🔥 Thermal" },
+  { value: "spectral", label: "🌈 Spectral" },
+  { value: "crystalline", label: "💎 Crystalline" },
+  { value: "bioluminescent", label: "🌟 Bioluminescent" },
+  { value: "aurora", label: "🌌 Aurora" },
+  { value: "metallic", label: "⚡ Metallic" },
+  { value: "prismatic", label: "🔮 Prismatic" },
+  { value: "monochromatic", label: "⚫ Monochromatic" },
+  { value: "infrared", label: "🔴 Infrared" },
+  { value: "lava", label: "🌋 Lava" },
+  { value: "futuristic", label: "✨ Futuristic" },
+  { value: "forest", label: "🌳 Forest" },
+  { value: "ocean", label: "🌊 Ocean" },
+  { value: "sunset", label: "🌅 Sunset" },
+  { value: "arctic", label: "❄️ Arctic" },
+  { value: "neon", label: "💡 Neon" },
+  { value: "vintage", label: "🎞️ Vintage" },
+  { value: "toxic", label: "☣️ Toxic" },
+  { value: "ember", label: "🔥 Ember" },
+]
+
+export const DEFAULT_FLOW_PARAMETERS: FlowParameters = {
+  dataset: "spirals",
+  scenario: "pure",
+  colorScheme: "plasma",
+  seed: Math.floor(Math.random() * 100000),
+  noise: 0.01,
+  samples: 50000,
+  stereographic: false,
+}
+
+// Utility function to get a pseudo-random number generator
+function mulberry32(seed: number) {
+  return () => {
+    let t = (seed += 0x6d2b79f5)
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+// Perlin noise implementation (simplified for 2D)
+class PerlinNoise {
+  private p: number[]
+  private rand: () => number
+
+  constructor(seed: number) {
+    this.rand = mulberry32(seed)
+    this.p = Array.from({ length: 512 }, (_, i) => i)
+    this.shuffle(this.p)
+    this.p = this.p.concat(this.p) // Duplicate for convenience
+  }
+
+  private shuffle(array: number[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(this.rand() * (i + 1))
+      ;[array[i], array[j]] = [array[j], array[i]]
+    }
+  }
+
+  private fade(t: number) {
+    return t * t * t * (t * (t * 6 - 15) + 10)
+  }
+
+  private lerp(a: number, b: number, t: number) {
+    return a + t * (b - a)
+  }
+
+  private grad(hash: number, x: number, y: number) {
+    const h = hash & 15
+    const u = h < 8 ? x : y
+    const v = h < 4 ? y : h === 12 || h === 14 ? x : 0
+    return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v)
+  }
+
+  noise(x: number, y: number) {
+    const X = Math.floor(x) & 255
+    const Y = Math.floor(y) & 255
+
+    x -= Math.floor(x)
+    y -= Math.floor(y)
+
+    const u = this.fade(x)
+    const v = this.fade(y)
+
+    const A = this.p[X] + Y
+    const B = this.p[X + 1] + Y
+
+    return this.lerp(
+      this.lerp(this.grad(this.p[A], x, y), this.grad(this.p[B], x - 1, y), u),
+      this.lerp(this.grad(this.p[A + 1], x, y - 1), this.grad(this.p[B + 1], x - 1, y - 1), u),
+      v,
+    )
+  }
+}
+
+// Vector field functions
+type VectorField = (x: number, y: number, noise: PerlinNoise, noiseScale: number) => { dx: number; dy: number }
+
+const vectorFields: { [key: string]: VectorField } = {
+  // Pure mathematical fields
+  spirals: (x, y, noise, noiseScale) => {
+    const angle = Math.atan2(y, x)
+    const radius = Math.sqrt(x * x + y * y)
+    const n = noise.noise(x * noiseScale, y * noiseScale) * 0.5
+    const dx = -y + x * n
+    const dy = x + y * n
+    return { dx, dy }
+  },
+  fractals: (x, y, noise, noiseScale) => {
+    const n = noise.noise(x * noiseScale, y * noiseScale)
+    const dx = Math.sin(x * 3 + n * 5) + Math.cos(y * 2)
+    const dy = Math.cos(y * 3 + n * 5) + Math.sin(x * 2)
+    return { dx, dy }
+  },
+  quantum: (x, y, noise, noiseScale) => {
+    const n = noise.noise(x * y * 5 + n * 2)
+    const dx = Math.sin(x * y * 5 + n * 2)
+    const dy = Math.cos(x * y * 5 + n * 2)
+    return { dx, dy }
+  },
+  topology: (x, y, noise, noiseScale) => {
+    const n = noise.noise(x * noiseScale, y * noiseScale)
+    const dx = Math.sin(x * 2 + n) * Math.cos(y * 3)
+    const dy = Math.cos(y * 2 + n) * Math.sin(x * 3)
+    return { dx, dy }
+  },
+  checkerboard: (x, y, noise, noiseScale) => {
+    const n = noise.noise(x * noiseScale, y * noiseScale)
+    const dx = Math.sin(x * 10) * Math.cos(y * 10 + n)
+    const dy = Math.cos(y * 10) * Math.sin(x * 10 + n)
+    return { dx, dy }
+  },
+  moons: (x, y, noise, noiseScale) => {
+    const n = noise.noise(x * noiseScale, y * noiseScale)
+    const r = Math.sqrt(x * x + y * y)
+    const theta = Math.atan2(y, x)
+    const dx = -y / (r * r + n)
+    const dy = x / (r * r + n)
+    return { dx, dy }
+  },
+  gaussian: (x, y, noise, noiseScale) => {
+    const n = noise.noise(x * noiseScale, y * noiseScale)
+    const dx = -x * Math.exp(-(x * x + y * y) / 2) + n * 0.1
+    const dy = -y * Math.exp(-(x * x + y * y) / 2) + n * 0.1
+    return { dx, dy }
+  },
+  grid: (x, y, noise, noiseScale) => {
+    const n = noise.noise(x * noiseScale, y * noiseScale)
+    const dx = Math.sin(x * 5 + n) * 0.5
+    const dy = Math.cos(y * 5 + n) * 0.5
+    return { dx, dy }
+  },
+  circles: (x, y, noise, noiseScale) => {
+    const n = noise.noise(x * noiseScale, y * noiseScale)
+    const r = Math.sqrt(x * x + y * y)
+    const dx = -y / (r + n * 0.5)
+    const dy = x / (r + n * 0.5)
+    return { dx, dy }
+  },
+  blobs: (x, y, noise, noiseScale) => {
+    const n = noise.noise(x * noiseScale, y * noiseScale)
+    const dx = Math.sin(x * 2 + y * 3 + n)
+    const dy = Math.cos(x * 3 - y * 2 + n)
+    return { dx, dy }
+  },
+  strings: (x, y, noise, noiseScale) => {
+    const n = noise.noise(x * noiseScale, y * noiseScale)
+    const dx = Math.sin(x * 4 + n) + Math.cos(y * 4)
+    const dy = Math.cos(y * 4 + n) + Math.sin(x * 4)
+    return { dx, dy }
+  },
+}
+
+// Color palette functions
+type ColorPalette = (t: number) => string
+
+const colorPalettes: { [key: string]: ColorPalette } = {
+  plasma: (t) => {
+    const r = Math.floor(Math.sin(t * Math.PI) * 127 + 128)
+    const g = Math.floor(Math.sin(t * Math.PI * 2) * 127 + 128)
+    const b = Math.floor(Math.sin(t * Math.PI * 3) * 127 + 128)
+    return `rgb(${r},${g},${b})`
+  },
+  quantum: (t) => {
+    const r = Math.floor(Math.sin(t * Math.PI * 0.5) * 255)
+    const g = Math.floor(Math.cos(t * Math.PI * 0.5) * 255)
+    const b = Math.floor(Math.sin(t * Math.PI) * 255)
+    return `rgb(${r},${g},${b})`
+  },
+  cosmic: (t) => {
+    const r = Math.floor(t * 50)
+    const g = Math.floor(t * 10)
+    const b = Math.floor(t * 200)
+    return `rgb(${r},${g},${b})`
+  },
+  thermal: (t) => {
+    const r = Math.floor(t * 255)
+    const g = Math.floor(t * 100)
+    const b = Math.floor(t * 50)
+    return `rgb(${r},${g},${b})`
+  },
+  spectral: (t) => {
+    const hue = t * 360
+    return `hsl(${hue}, 100%, 50%)`
+  },
+  crystalline: (t) => {
+    const r = Math.floor(t * 100 + 155)
+    const g = Math.floor(t * 200 + 55)
+    const b = Math.floor(t * 255)
+    return `rgb(${r},${g},${b})`
+  },
+  bioluminescent: (t) => {
+    const r = Math.floor(t * 50)
+    const g = Math.floor(t * 200 + 55)
+    const b = Math.floor(t * 255)
+    return `rgb(${r},${g},${b})`
+  },
+  aurora: (t) => {
+    const r = Math.floor(Math.sin(t * Math.PI * 0.7) * 100 + 50)
+    const g = Math.floor(Math.sin(t * Math.PI * 1.2) * 150 + 100)
+    const b = Math.floor(Math.sin(t * Math.PI * 1.5) * 200 + 50)
+    return `rgb(${r},${g},${b})`
+  },
+  metallic: (t) => {
+    const gray = Math.floor(t * 200 + 55)
+    return `rgb(${gray},${gray},${gray})`
+  },
+  prismatic: (t) => {
+    const r = Math.floor(Math.sin(t * Math.PI * 2 + 0) * 127 + 128)
+    const g = Math.floor(Math.sin(t * Math.PI * 2 + 2) * 127 + 128)
+    const b = Math.floor(Math.sin(t * Math.PI * 2 + 4) * 127 + 128)
+    return `rgb(${r},${g},${b})`
+  },
+  monochromatic: (t) => {
+    const gray = Math.floor(t * 255)
+    return `rgb(${gray},${gray},${gray})`
+  },
+  infrared: (t) => {
+    const r = Math.floor(t * 255)
+    const g = Math.floor((1 - t) * 255)
+    const b = 0
+    return `rgb(${r},${g},${b})`
+  },
+  lava: (t) => {
+    const r = Math.floor(255 * Math.min(1, t * 2))
+    const g = Math.floor(255 * Math.max(0, t * 2 - 1))
+    const b = 0
+    return `rgb(${r},${g},${b})`
+  },
+  futuristic: (t) => {
+    const r = Math.floor(t * 50 + 50)
+    const g = Math.floor(t * 150 + 100)
+    const b = Math.floor(t * 200 + 50)
+    return `rgb(${r},${g},${b})`
+  },
+  forest: (t) => {
+    const r = Math.floor(t * 50)
+    const g = Math.floor(t * 150 + 100)
+    const b = Math.floor(t * 50)
+    return `rgb(${r},${g},${b})`
+  },
+  ocean: (t) => {
+    const r = Math.floor(t * 50)
+    const g = Math.floor(t * 100)
+    const b = Math.floor(t * 200 + 50)
+    return `rgb(${r},${g},${b})`
+  },
+  sunset: (t) => {
+    const r = Math.floor(t * 255)
+    const g = Math.floor(t * 150)
+    const b = Math.floor(t * 50)
+    return `rgb(${r},${g},${b})`
+  },
+  arctic: (t) => {
+    const r = Math.floor(t * 50 + 200)
+    const g = Math.floor(t * 100 + 150)
+    const b = Math.floor(t * 200 + 50)
+    return `rgb(${r},${g},${b})`
+  },
+  neon: (t) => {
+    const r = Math.floor(Math.sin(t * Math.PI * 2 + 0) * 127 + 128)
+    const g = Math.floor(Math.sin(t * Math.PI * 2 + 2) * 127 + 128)
+    const b = Math.floor(Math.sin(t * Math.PI * 2 + 4) * 127 + 128)
+    return `rgb(${r},${g},${b})`
+  },
+  vintage: (t) => {
+    const r = Math.floor(t * 100 + 100)
+    const g = Math.floor(t * 80 + 80)
+    const b = Math.floor(t * 60 + 60)
+    return `rgb(${r},${g},${b})`
+  },
+  toxic: (t) => {
+    const r = Math.floor(t * 50)
+    const g = Math.floor(t * 200 + 50)
+    const b = Math.floor(t * 50)
+    return `rgb(${r},${g},${b})`
+  },
+  ember: (t) => {
+    const r = Math.floor(t * 255)
+    const g = Math.floor(t * 100)
+    const b = Math.floor(t * 20)
+    return `rgb(${r},${g},${b})`
+  },
+}
+
+// Main generation function
+export function generateFlowArtData(params: FlowParameters) {
+  const { dataset, scenario, colorScheme, seed, noise, samples, stereographic } = params
+
+  const rand = mulberry32(seed)
+  const perlin = new PerlinNoise(seed)
+
+  const field = vectorFields[dataset]
+  const palette = colorPalettes[colorScheme]
+
+  if (!field || !palette) {
+    throw new Error("Invalid dataset or color scheme selected.")
+  }
+
+  const points = []
+  for (let i = 0; i < samples; i++) {
+    let x = (rand() * 4 - 2) * 1.5 // Start points within a larger range
+    let y = (rand() * 4 - 2) * 1.5
+
+    // Simulate particle movement through the field
+    for (let j = 0; j < 100; j++) {
+      // More steps for smoother trails
+      const { dx, dy } = field(x, y, perlin, noise)
+      const len = Math.sqrt(dx * dx + dy * dy)
+      if (len > 0) {
+        x += (dx / len) * 0.01 // Smaller step size
+        y += (dy / len) * 0.01
+      }
+
+      // Apply stereographic projection if enabled
+      if (stereographic) {
+        const r2 = x * x + y * y
+        const z = (r2 - 1) / (r2 + 1)
+        const scale = 1 / (1 - z) // Projection scale factor
+        x *= scale
+        y *= scale
+      }
+
+      // Add point to array if within bounds
+      if (x > -2 && x < 2 && y > -2 && y < 2) {
+        const color = palette(j / 100) // Color based on age/progress
+        points.push({ x, y, color })
+      }
+    }
+  }
+  return points
+}
+
 /**
  * A simple seeded pseudo-random number generator (PRNG).
  * Not cryptographically secure, but sufficient for reproducible dataset generation.
@@ -29,7 +437,7 @@ export interface UpscaleParams extends GenerationParams {
 }
 
 // Pure 4-color palettes for visual themes
-const colorPalettes = {
+const colorPalettesOld = {
   plasma: ["#0D001A", "#7209B7", "#F72585", "#FFBE0B"],
   quantum: ["#001122", "#0066FF", "#00FFAA", "#FFD700"],
   cosmic: ["#000000", "#4B0082", "#9370DB", "#FFFFFF"],
@@ -943,683 +1351,4 @@ function applyScenarioTransform(
           charge: Math.floor(rng.next() * 3) - 1, // -1, 0, 1
           waveFunction: waveFunction,
           isObserved: observationCollapse,
-          entangled: entangled,
-          coherenceTime: coherenceTime * 1000, // femtoseconds
-          tunneled: tunneled,
-          virtualParticle: virtualParticle,
-          uncertainty: Math.abs(quantumState) * 10,
-          quantumNumber: Math.floor(Math.abs(baseX * baseY * 100)) % 4,
-          fieldStrength: Math.abs(fieldFluctuation) * 100,
-        }
-        break
-      }
-
-      case "microscopic": {
-        // Molecular world with atoms, molecules, and chemical reactions
-        const temperature = 300 + 100 * Math.sin(baseX * 0.8)
-        const kineticEnergy = temperature * 1.38e-23 // Boltzmann constant
-
-        // Brownian motion
-        const brownianX = rng.gaussian() * Math.sqrt(kineticEnergy) * 0.15
-        const brownianY = rng.gaussian() * Math.sqrt(kineticEnergy) * 0.15
-
-        // Molecular interactions
-        const molecularDistance = Math.sqrt(baseX ** 2 + baseY ** 2) + 0.05
-        const vanDerWaals = (1 / Math.pow(molecularDistance, 12) - 1 / Math.pow(molecularDistance, 6)) * 0.02
-
-        // Chemical bonds
-        const covalentBond = molecularDistance < 0.3 && rng.next() < 0.2
-        const ionicBond = molecularDistance < 0.4 && rng.next() < 0.1
-        const hydrogenBond = Math.exp(-molecularDistance * 8) * Math.cos(Math.atan2(baseY, baseX) * 3) * 0.08
-
-        // Enzyme activity and catalysis
-        const enzyme = rng.next() < 0.05
-        const substrate = rng.next() < 0.3
-        const catalysis = enzyme && substrate && molecularDistance < 0.2
-
-        // Protein folding
-        const aminoAcid = rng.next() < 0.4
-        const proteinFold = aminoAcid ? Math.sin(baseX * 5 + baseY * 3) * 0.06 : 0
-
-        // DNA replication and transcription
-        const nucleotide = rng.next() < 0.25
-        const basePair = nucleotide && Math.sin(baseX * 8) > 0.5
-        const transcription = basePair && rng.next() < 0.1
-
-        // Cellular organelles
-        const mitochondria = rng.next() < 0.02
-        const ribosome = rng.next() < 0.08
-        const endoplasmicReticulum = Math.sin(baseX * 4) * Math.cos(baseY * 3) > 0.7
-
-        x = baseX + brownianX + vanDerWaals * Math.cos(Math.atan2(baseY, baseX)) + proteinFold
-        y = baseY + brownianY + vanDerWaals * Math.sin(Math.atan2(baseY, baseX)) + hydrogenBond
-
-        metadata = {
-          moleculeType: Math.floor(rng.next() * 8), // Water, protein, lipid, etc.
-          temperature: temperature,
-          kineticEnergy: kineticEnergy * 1e23,
-          bondType: covalentBond ? "covalent" : ionicBond ? "ionic" : hydrogenBond > 0.05 ? "hydrogen" : "none",
-          isEnzyme: enzyme,
-          isSubstrate: substrate,
-          catalyticActivity: catalysis ? 100 : 0,
-          proteinStructure: aminoAcid ? Math.floor(rng.next() * 4) : -1, // Primary, secondary, tertiary, quaternary
-          geneticMaterial: nucleotide,
-          organelle: mitochondria ? "mitochondria" : ribosome ? "ribosome" : endoplasmicReticulum ? "ER" : "cytoplasm",
-          diffusionRate: Math.sqrt(brownianX ** 2 + brownianY ** 2) * 1000,
-          molecularWeight: 10 + rng.range(0, 500),
-        }
-        break
-      }
-
-      // Add more contextual scenarios...
-      case "crystalline": {
-        // Crystal formations with gems, minerals, and lattice structures
-        const latticeConstant = 0.4
-        const latticeX = Math.round(baseX / latticeConstant) * latticeConstant
-        const latticeY = Math.round(baseY / latticeConstant) * latticeConstant
-
-        // Crystal defects and impurities
-        const dislocation = rng.next() < 0.03
-        const impurity = rng.next() < 0.08
-        const twinBoundary = Math.sin(baseX * 5) * Math.cos(baseY * 5) > 0.8
-
-        // Gemstone formation
-        const gemstone = rng.next() < 0.01
-        const gemType = Math.floor(rng.next() * 6) // Diamond, ruby, sapphire, etc.
-        const clarity = rng.range(0.5, 1.0)
-
-        // Crystal growth and facets
-        const growthRate = Math.abs(Math.sin(baseX * 3) * Math.cos(baseY * 3)) * 0.05
-        const facetAngle = Math.atan2(baseY, baseX) + Math.PI / 6
-        const facetReflection = Math.sin(facetAngle * 6) * 0.04
-
-        // Piezoelectric and optical properties
-        const crystalField = Math.sin(baseX * 4) * Math.cos(baseY * 4)
-        const piezoStrain = crystalField * 0.03
-        const birefringence = Math.sin(facetAngle * 2) * 0.02
-
-        x = latticeX + (dislocation ? rng.gaussian() * 0.1 : 0) + piezoStrain + facetReflection
-        y = latticeY + (impurity ? rng.gaussian() * 0.08 : 0) + growthRate + birefringence
-
-        metadata = {
-          crystalSystem: Math.floor(rng.next() * 7), // Cubic, tetragonal, etc.
-          gemstone: gemstone,
-          gemType: gemType,
-          clarity: clarity,
-          hardness: 3 + rng.range(0, 7), // Mohs scale
-          hasDefect: dislocation || impurity,
-          twinned: twinBoundary,
-          opticalProperty: Math.floor(rng.next() * 4), // Transparent, translucent, etc.
-          piezoelectric: Math.abs(crystalField) > 0.5,
-          growthStage: Math.floor(growthRate * 10),
-          mineralComposition: Math.floor(rng.next() * 12),
-        }
-        break
-      }
-
-      case "plasma": {
-        // Plasma physics with ions, electrons, and electromagnetic phenomena
-        const magneticField = Math.sin(baseX * 3) * Math.cos(baseY * 3)
-        const electricField = Math.cos(baseX * 4) * Math.sin(baseY * 4)
-
-        // Charged particle dynamics
-        const charge = rng.next() < 0.5 ? 1 : -1
-        const lorentzForceX = charge * (electricField + magneticField * baseY) * 0.12
-        const lorentzForceY = charge * (electricField - magneticField * baseX) * 0.12
-
-        // Plasma instabilities and turbulence
-        const kelvinHelmholtz = Math.sin(baseX * 12 + baseY * 8) * Math.exp(-Math.abs(baseX) * 1.5) * 0.18
-        const rayleighTaylor = Math.cos(baseY * 10) * Math.exp(-Math.abs(baseY) * 2) * 0.15
-
-        // Fusion reactions and energy release
-        const fusionCrossSection = Math.exp(-Math.abs(baseX - baseY) * 8) * 0.12
-        const alphaParticle = fusionCrossSection > 0.08 && rng.next() < 0.1
-        const neutronFlux = fusionCrossSection * Math.sin(baseX * baseY * 100) * 0.25
-
-        // Magnetic confinement
-        const magneticBottle = Math.exp(-((baseX ** 2 + baseY ** 2) * 2)) * magneticField * 0.1
-        const plasmoidFormation = Math.abs(magneticField) > 0.7 && rng.next() < 0.05
-
-        // Electromagnetic radiation
-        const synchrotronRadiation = Math.abs(lorentzForceX + lorentzForceY) * 0.1
-        const bremsstrahlung = charge * electricField * 0.08
-
-        x = baseX + lorentzForceX + kelvinHelmholtz + magneticBottle + synchrotronRadiation
-        y = baseY + lorentzForceY + rayleighTaylor + neutronFlux + bremsstrahlung
-
-        metadata = {
-          temperature: 10000 + Math.abs(fusionCrossSection) * 1000000,
-          density: 1e15 + Math.abs(kelvinHelmholtz) * 1e17,
-          magneticField: magneticField,
-          electricField: electricField,
-          charge: charge,
-          isIonized: true,
-          fusionRate: fusionCrossSection * 10000,
-          alphaParticle: alphaParticle,
-          confinementTime: Math.abs(magneticBottle) * 1000, // milliseconds
-          plasmoid: plasmoidFormation,
-          radiationPower: Math.abs(synchrotronRadiation + bremsstrahlung) * 1000,
-        }
-        break
-      }
-
-      case "atmospheric": {
-        // Atmospheric physics with weather patterns and fluid dynamics
-        const altitude = Math.abs(baseY) * 10000 // meters
-        const pressure = Math.exp(-altitude / 8000) // barometric formula
-        const temperature = 288 - altitude * 0.0065 // standard atmosphere
-
-        // Wind patterns and turbulence
-        const windSpeed = Math.sin(baseX * 2) * Math.cos(baseY * 1.5) * 20 + 10
-        const turbulence = Math.sin(baseX * 8 + baseY * 6) * windSpeed * 0.1
-        const jetStream = Math.abs(baseY - 0.3) < 0.1 ? Math.sin(baseX * 4) * 0.2 : 0
-
-        // Cloud formation and precipitation
-        const humidity = Math.sin(baseX * 3) * Math.cos(baseY * 2) * 50 + 50
-        const cloudCover = humidity > 70 ? (humidity - 70) / 30 : 0
-        const precipitation = cloudCover > 0.8 && rng.next() < 0.3
-
-        // Atmospheric phenomena
-        const lightning = precipitation && rng.next() < 0.05
-        const aurora = altitude > 80000 && Math.abs(baseX) > 1.5 && rng.next() < 0.02
-        const meteorTrail = altitude > 50000 && rng.next() < 0.001
-
-        x = baseX + turbulence + jetStream + (lightning ? rng.gaussian() * 0.1 : 0)
-        y = baseY + windSpeed * 0.01 + (aurora ? Math.sin(i * 0.1) * 0.05 : 0)
-
-        metadata = {
-          altitude: altitude,
-          pressure: pressure,
-          temperature: temperature,
-          windSpeed: windSpeed,
-          humidity: humidity,
-          cloudCover: cloudCover,
-          precipitation: precipitation,
-          lightning: lightning,
-          aurora: aurora,
-          meteorTrail: meteorTrail,
-          visibility: Math.max(0, 10 - cloudCover * 8),
-          airDensity: pressure / (287 * temperature),
-        }
-        break
-      }
-
-      case "geological": {
-        // Geological processes with tectonic activity and mineral formation
-        const age = Math.abs(baseX * baseY) * 1e9 + 1e6 // years
-        const depth = Math.abs(baseY) * 50000 // meters below surface
-
-        // Tectonic forces
-        const tectonicStress = Math.sin(baseX * 0.5) * Math.cos(baseY * 0.3) * 100
-        const faultLine = Math.abs(tectonicStress) > 80
-        const earthquake = faultLine && rng.next() < 0.01
-
-        // Volcanic activity
-        const magmaTemperature = 1200 + depth * 0.03
-        const volcanicActivity = depth > 10000 && Math.sin(baseX * baseY * 10) > 0.9
-        const lavaFlow = volcanicActivity && rng.next() < 0.3
-
-        // Mineral formation
-        const mineralType = Math.floor(rng.next() * 10)
-        const crystalSize = Math.log(age / 1e6) * 0.1
-        const metamorphism = tectonicStress > 50 && depth > 5000
-
-        // Erosion and sedimentation
-        const erosionRate = Math.abs(Math.sin(baseX * 4) * Math.cos(baseY * 3)) * 0.001
-        const sedimentation = erosionRate * Math.exp(-depth / 1000)
-
-        x = baseX + tectonicStress * 0.001 + (earthquake ? rng.gaussian() * 0.2 : 0)
-        y = baseY + sedimentation + (lavaFlow ? Math.sin(i * 0.05) * 0.1 : 0)
-
-        metadata = {
-          age: age,
-          depth: depth,
-          tectonicActivity: Math.abs(tectonicStress),
-          faultLine: faultLine,
-          earthquake: earthquake,
-          volcanicActivity: volcanicActivity,
-          magmaTemperature: magmaTemperature,
-          mineralType: mineralType,
-          crystalSize: crystalSize,
-          metamorphism: metamorphism,
-          erosionRate: erosionRate,
-          rockType: Math.floor(rng.next() * 3), // Igneous, sedimentary, metamorphic
-        }
-        break
-      }
-
-      case "biological": {
-        // Biological systems with DNA, proteins, and cellular processes
-        const cellType = Math.floor(rng.next() * 5)
-        const proteinLength = Math.floor(rng.range(50, 2000))
-        const dnaSequence = Math.floor(rng.next() * 4) // A, T, G, C
-
-        // Protein folding and enzyme activity
-        const foldingEnergy = Math.sin(baseX * 10) * Math.cos(baseY * 8) * 100
-        const enzymeActivity = Math.abs(foldingEnergy) > 50 ? Math.exp(-Math.abs(foldingEnergy) / 25) : 0
-        const catalyticSite = enzymeActivity > 0.5 && rng.next() < 0.2
-
-        // Genetic processes
-        const transcription = rng.next() < 0.1
-        const translation = transcription && rng.next() < 0.8
-        const mutation = rng.next() < 0.001
-
-        // Cellular metabolism
-        const atpProduction = Math.sin(baseX * 6) * Math.cos(baseY * 4) * 50 + 50
-        const oxygenConsumption = atpProduction * 0.8
-        const carbonDioxideProduction = oxygenConsumption * 0.9
-
-        // Cell division and growth
-        const cellCycle = Math.floor((baseX + baseY + 2) * 2) % 4 // G1, S, G2, M
-        const mitosis = cellCycle === 3 && rng.next() < 0.05
-        const apoptosis = rng.next() < 0.001
-
-        x = baseX + foldingEnergy * 0.001 + (mitosis ? rng.gaussian() * 0.05 : 0)
-        y = baseY + enzymeActivity * 0.1 + (mutation ? rng.gaussian() * 0.1 : 0)
-
-        metadata = {
-          cellType: cellType,
-          proteinLength: proteinLength,
-          dnaSequence: dnaSequence,
-          enzymeActivity: enzymeActivity,
-          catalyticSite: catalyticSite,
-          transcription: transcription,
-          translation: translation,
-          mutation: mutation,
-          atpProduction: atpProduction,
-          oxygenConsumption: oxygenConsumption,
-          cellCycle: cellCycle,
-          mitosis: mitosis,
-          apoptosis: apoptosis,
-          metabolicRate: atpProduction / 100,
-        }
-        break
-      }
-
-      default:
-        // Default case with basic transformations
-        metadata = {
-          intensity: Math.sqrt(baseX * baseX + baseY * baseY),
-          pattern: Math.sin(baseX + baseY),
-        }
-    }
-
-    transformedPoints.push({ x, y, metadata })
-  }
-
-  return transformedPoints
-}
-
-// Helper functions
-function isPrime(n: number): boolean {
-  if (n < 2) return false
-  if (n === 2) return true
-  if (n % 2 === 0) return false
-  for (let i = 3; i <= Math.sqrt(n); i += 2) {
-    if (n % i === 0) return false
-  }
-  return true
-}
-
-function fibonacciSpiral(x: number, y: number): number {
-  const phi = (1 + Math.sqrt(5)) / 2
-  const r = Math.sqrt(x * x + y * y)
-  const theta = Math.atan2(y, x)
-  return Math.sin(theta * phi + r * phi) * Math.exp(-r * 0.5)
-}
-
-export function generateFlowField(params: GenerationParams): string {
-  if (params.enableStereographic) {
-    return generateStereographicProjection(params)
-  }
-  return generateHighResFlowField({ ...params, scaleFactor: 1, highResolution: false, extraDetail: false })
-}
-
-export function generateHighResFlowField(params: UpscaleParams): string {
-  const {
-    dataset,
-    scenario,
-    colorScheme,
-    seed,
-    numSamples,
-    noiseScale,
-    timeStep,
-    scaleFactor,
-    highResolution,
-    extraDetail,
-  } = params
-
-  // Calculate enhanced parameters for upscaling
-  const baseSize = 512
-  const size = baseSize * scaleFactor
-  const enhancedSamples = highResolution ? numSamples * scaleFactor * scaleFactor : numSamples
-
-  const rng = new SeededRandom(seed)
-  const colors = colorPalettes[colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-
-  // Generate base dataset
-  const basePoints = generateDataset(dataset, seed, enhancedSamples, noiseScale)
-
-  // Apply scenario transformation
-  const transformedPoints = applyScenarioTransform(basePoints, scenario, rng)
-
-  let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`
-
-  // Add background gradient based on color palette
-  svgContent += `
-    <defs>
-      <radialGradient id="bg-${seed}" cx="50%" cy="50%" r="70%">
-        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.9"/>
-        <stop offset="100%" style="stop-color:${colors[1]};stop-opacity:1"/>
-      </radialGradient>
-    </defs>
-    <rect width="${size}" height="${size}" fill="url(#bg-${seed})"/>
-  `
-
-  const centerX = size / 2
-  const centerY = size / 2
-  const scale = size / 8
-
-  // Render points with scenario-specific styling but color palette colors
-  for (let i = 0; i < transformedPoints.length; i++) {
-    const point = transformedPoints[i]
-    const screenX = centerX + point.x * scale
-    const screenY = centerY + point.y * scale
-
-    if (screenX >= 0 && screenX <= size && screenY >= 0 && screenY <= size) {
-      // Use color palette for coloring (cycle through the 4 colors)
-      const colorIndex = Math.floor((i / transformedPoints.length) * 4) % 4
-      const pointColor = colors[colorIndex]
-
-      let radius = 1
-      let opacity = 0.6
-      let strokeWidth = 0
-      let stroke = "none"
-
-      // Apply scenario-specific sizing and effects (but not colors)
-      switch (scenario) {
-        case "pure":
-          // Pure mathematical visualization with enhanced complexity
-          radius = 0.8 + point.metadata.magnitude * 0.5 + Math.abs(point.metadata.harmonicSeries) * 0.3
-          opacity = 0.7 + (point.metadata.magnitude / 3) * 0.3
-
-          // Special highlighting for prime numbers and Fibonacci points
-          if (point.metadata.isPrime) {
-            radius *= 1.5
-            stroke = colors[3]
-            strokeWidth = 0.5
-          }
-          if (Math.abs(point.metadata.fibonacci) > 0.5) {
-            stroke = colors[2]
-            strokeWidth = 0.3
-          }
-          break
-
-        case "cosmic":
-          radius = 0.3 + (point.metadata.isStar ? 3 : 1)
-          opacity = point.metadata.isStar ? 0.9 : 0.5
-
-          if (point.metadata.isStar) {
-            radius = 2 + rng.range(0, 3) + point.metadata.stellarClass * 0.5
-            opacity = 0.9
-            stroke = colors[3]
-            strokeWidth = 0.5
-
-            // Add stellar corona
-            svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 2}" fill="none" stroke="${colors[3]}" stroke-width="0.2" opacity="0.3"/>`
-          }
-
-          if (point.metadata.isBlackHole) {
-            // Draw event horizon
-            svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 3}" fill="${colors[0]}" opacity="0.8"/>`
-            svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 4}" fill="none" stroke="${colors[1]}" stroke-width="1" opacity="0.5"/>`
-          }
-          break
-
-        case "neural":
-          radius = 0.5 + Math.abs(point.metadata.firingRate || 0) * 0.02
-          opacity = 0.3 + Math.abs(point.metadata.synapticStrength || 0) * 0.6
-
-          if (point.metadata.neuronType !== undefined) {
-            stroke = colors[3]
-            strokeWidth = 0.5
-          }
-          break
-
-        default:
-          radius = 0.5 + (point.metadata.intensity || 0) * 0.5
-          opacity = 0.4 + Math.abs(point.metadata.pattern || 0) * 0.4
-      }
-
-      svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="${pointColor}" opacity="${opacity}" stroke="${stroke}" stroke-width="${strokeWidth}"/>`
-    }
-  }
-
-  // Add scenario-specific overlays
-  if (scenario === "pure") {
-    // Add enhanced mathematical grid lines and golden ratio spirals
-    const gridSpacing = size / 12
-    for (let i = 0; i <= 12; i++) {
-      const pos = i * gridSpacing
-      svgContent += `<line x1="${pos}" y1="0" x2="${pos}" y2="${size}" stroke="${colors[1]}" stroke-width="0.3" opacity="0.15"/>`
-      svgContent += `<line x1="0" y1="${pos}" x2="${size}" y2="${pos}" stroke="${colors[1]}" stroke-width="0.3" opacity="0.15"/>`
-    }
-
-    // Add axes with enhanced styling
-    svgContent += `<line x1="${centerX}" y1="0" x2="${centerX}" y2="${size}" stroke="${colors[2]}" stroke-width="1.5" opacity="0.4"/>`
-    svgContent += `<line x1="0" y1="${centerY}" x2="${size}" y2="${centerY}" stroke="${colors[2]}" stroke-width="1.5" opacity="0.4"/>`
-
-    // Add golden ratio spiral
-    const phi = (1 + Math.sqrt(5)) / 2
-    let spiralPath = `M ${centerX} ${centerY}`
-    for (let t = 0; t < 4 * Math.PI; t += 0.1) {
-      const r = Math.exp(t / phi) * 5
-      const x = centerX + r * Math.cos(t)
-      const y = centerY + r * Math.sin(t)
-      if (x >= 0 && x <= size && y >= 0 && y <= size) {
-        spiralPath += ` L ${x} ${y}`
-      }
-    }
-    svgContent += `<path d="${spiralPath}" fill="none" stroke="${colors[3]}" stroke-width="0.8" opacity="0.3"/>`
-  }
-
-  svgContent += "</svg>"
-  return svgContent
-}
-
-/**
- * generateStereographicProjection – creates "little planet" or "tunnel" stereographic projections
- * Perfect for social media and artistic stereographic effects
- */
-export function generateStereographicProjection(
-  params: GenerationParams & {
-    stereographicPerspective?: string
-  },
-): string {
-  const size = 512
-  const center = size / 2
-  const radius = size / 2 - 10
-  const colors = colorPalettes[params.colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-  const rng = new SeededRandom(params.seed)
-  const isTunnel = params.stereographicPerspective === "tunnel"
-
-  // Generate base mathematical dataset
-  const basePoints = generateDataset(params.dataset, params.seed, params.numSamples, params.noiseScale)
-  const transformedPoints = applyScenarioTransform(basePoints, params.scenario, rng)
-
-  let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`
-
-  // Add circular clipping mask
-  svgContent += `
-    <defs>
-      <clipPath id="circleClip">
-        <circle cx="${center}" cy="${center}" r="${radius}"/>
-      </clipPath>
-      <radialGradient id="stereoGradient" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.9"/>
-        <stop offset="70%" style="stop-color:${colors[1]};stop-opacity:0.6"/>
-        <stop offset="100%" style="stop-color:${colors[2] || colors[0]};stop-opacity:1"/>
-      </radialGradient>
-    </defs>
-  `
-
-  // Background circle
-  svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" fill="url(#stereoGradient)" />`
-
-  // Group all content within the circular clip
-  svgContent += `<g clip-path="url(#circleClip)">`
-
-  // Transform and render mathematical points with stereographic projection
-  for (let i = 0; i < transformedPoints.length; i++) {
-    const point = transformedPoints[i]
-
-    // Convert Cartesian coordinates to polar
-    const originalR = Math.sqrt(point.x * point.x + point.y * point.y)
-    const originalTheta = Math.atan2(point.y, point.x)
-
-    // Apply stereographic projection
-    let projectedR: number
-    if (isTunnel) {
-      // Tunnel effect: invert the projection (center becomes edge, edge becomes center)
-      projectedR = originalR > 0 ? (radius * 0.8) / (1 + originalR * 2) : 0
-    } else {
-      // Little planet effect: normal stereographic projection
-      const normalizedR = Math.min(originalR * 2, 3) // Limit to prevent extreme values
-      projectedR = (normalizedR * radius * 0.4) / (1 + normalizedR * normalizedR * 0.5)
-    }
-
-    // Convert back to Cartesian coordinates
-    const projectedX = center + projectedR * Math.cos(originalTheta)
-    const projectedY = center + projectedR * Math.sin(originalTheta)
-
-    // Ensure point is within the circle
-    const distFromCenter = Math.sqrt((projectedX - center) ** 2 + (projectedY - center) ** 2)
-    if (distFromCenter <= radius * 0.95) {
-      // Use color palette for coloring
-      const colorIndex = Math.floor((i / transformedPoints.length) * colors.length) % colors.length
-      const pointColor = colors[colorIndex]
-
-      // Calculate point size based on distance from center and metadata
-      let pointRadius = 1.5
-      let opacity = 0.7
-
-      // Apply scenario-specific styling
-      switch (params.scenario) {
-        case "pure":
-          pointRadius = 1 + (point.metadata.magnitude || 0) * 2
-          opacity = 0.6 + ((point.metadata.magnitude || 0) / 3) * 0.4
-          if (point.metadata.isPrime) {
-            pointRadius *= 1.3
-          }
-          break
-        case "cosmic":
-          pointRadius = 0.8 + (point.metadata.isStar ? 3 : 1)
-          opacity = point.metadata.isStar ? 0.9 : 0.5
-          break
-        case "forest":
-          pointRadius = 1 + (point.metadata.isTree ? 2 : 0.5)
-          opacity = point.metadata.isTree ? 0.8 : 0.4
-          break
-        case "ocean":
-          pointRadius = 1 + (point.metadata.depth || 0) * 0.5
-          opacity = 0.4 + (point.metadata.depth || 0) * 0.4
-          break
-        case "neural":
-          pointRadius = 1 + Math.abs(point.metadata.firingRate || 0) * 0.02
-          opacity = 0.5 + Math.abs(point.metadata.synapticStrength || 0) * 0.4
-          break
-        default:
-          pointRadius = 1 + (point.metadata.intensity || 0) * 1.5
-          opacity = 0.5 + Math.abs(point.metadata.pattern || 0) * 0.3
-      }
-
-      // Adjust size based on distance from center for depth effect
-      const depthFactor = isTunnel
-        ? (1 - distFromCenter / radius) * 0.5 + 0.5
-        : // Tunnel: smaller at edges
-          (distFromCenter / radius) * 0.5 + 0.5 // Planet: smaller at center
-
-      pointRadius *= depthFactor
-
-      svgContent += `<circle cx="${projectedX.toFixed(2)}" cy="${projectedY.toFixed(2)}" r="${pointRadius.toFixed(2)}" fill="${pointColor}" opacity="${opacity.toFixed(2)}"/>`
-    }
-  }
-
-  // Add connecting lines for some scenarios
-  if (params.scenario === "neural" || params.scenario === "pure") {
-    const connectionCount = Math.min(50, Math.floor(transformedPoints.length / 10))
-    for (let i = 0; i < connectionCount; i++) {
-      const point1 = transformedPoints[i]
-      const point2 =
-        transformedPoints[(i + Math.floor(transformedPoints.length / connectionCount)) % transformedPoints.length]
-
-      // Apply stereographic projection to both points
-      const r1 = Math.sqrt(point1.x * point1.x + point1.y * point1.y)
-      const theta1 = Math.atan2(point1.y, point1.x)
-      const r2 = Math.sqrt(point2.x * point2.x + point2.y * point2.y)
-      const theta2 = Math.atan2(point2.y, point2.x)
-
-      let projR1, projR2
-      if (isTunnel) {
-        projR1 = r1 > 0 ? (radius * 0.8) / (1 + r1 * 2) : 0
-        projR2 = r2 > 0 ? (radius * 0.8) / (1 + r2 * 2) : 0
-      } else {
-        const normR1 = Math.min(r1 * 2, 3)
-        const normR2 = Math.min(r2 * 2, 3)
-        projR1 = (normR1 * radius * 0.4) / (1 + normR1 * normR1 * 0.5)
-        projR2 = (normR2 * radius * 0.4) / (1 + normR2 * normR2 * 0.5)
-      }
-
-      const x1 = center + projR1 * Math.cos(theta1)
-      const y1 = center + projR1 * Math.sin(theta1)
-      const x2 = center + projR2 * Math.cos(theta2)
-      const y2 = center + projR2 * Math.sin(theta2)
-
-      // Check if both points are within the circle
-      const dist1 = Math.sqrt((x1 - center) ** 2 + (y1 - center) ** 2)
-      const dist2 = Math.sqrt((x2 - center) ** 2 + (y2 - center) ** 2)
-
-      if (dist1 <= radius * 0.95 && dist2 <= radius * 0.95) {
-        const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-        if (distance < radius * 0.3) {
-          // Only connect nearby points
-          svgContent += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colors[1]}" stroke-width="0.5" opacity="0.3"/>`
-        }
-      }
-    }
-  }
-
-  // Add radial grid lines for reference
-  if (params.scenario === "pure") {
-    for (let i = 0; i < 12; i++) {
-      const angle = (i / 12) * 2 * Math.PI
-      const x1 = center + Math.cos(angle) * radius * 0.1
-      const y1 = center + Math.sin(angle) * radius * 0.1
-      const x2 = center + Math.cos(angle) * radius * 0.9
-      const y2 = center + Math.sin(angle) * radius * 0.9
-
-      svgContent += `<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${colors[colors.length - 1]}" stroke-width="0.3" opacity="0.2"/>`
-    }
-
-    // Add concentric circles
-    for (let i = 1; i <= 4; i++) {
-      const circleRadius = (i / 4) * radius * 0.8
-      svgContent += `<circle cx="${center}" cy="${center}" r="${circleRadius.toFixed(2)}" fill="none" stroke="${colors[colors.length - 1]}" stroke-width="0.3" opacity="0.2"/>`
-    }
-  }
-
-  svgContent += `</g>` // Close clipping group
-
-  // Add border ring
-  svgContent += `<circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="${colors[colors.length - 1]}" stroke-width="3" opacity="0.8" />`
-
-  // Add projection type label
-  const perspectiveLabel = isTunnel ? "TUNNEL VISION" : "LITTLE PLANET"
-  svgContent += `<text x="${size - 10}" y="${size - 10}" text-anchor="end" font-family="monospace" font-size="8" fill="${colors[colors.length - 1]}" opacity="0.7">${perspectiveLabel}</text>`
-
-  // Add mathematical dataset label
-  svgContent += `<text x="10" y="${size - 10}" text-anchor="start" font-family="monospace" font-size="8" fill="${colors[colors.length - 1]}" opacity="0.7">${params.dataset.toUpperCase()} + ${params.scenario.toUpperCase()}</text>`
-
-  svgContent += "</svg>"
-  return svgContent
-}
+          ent

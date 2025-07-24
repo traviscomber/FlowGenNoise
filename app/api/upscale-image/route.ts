@@ -1,38 +1,43 @@
-import { NextResponse } from "next/server"
 import Replicate from "replicate"
+import type { UpscaleParams } from "@/lib/flow-model"
+import { generateHighResFlowField } from "@/lib/flow-model"
 
-// Initialize Replicate client
 const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN,
 })
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const { imageUrl } = await request.json()
+    const params = (await req.json()) as UpscaleParams
 
-    if (!imageUrl) {
-      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
-    }
+    // Generate the high-resolution SVG locally first
+    const svgString = generateHighResFlowField(params)
 
-    // Use a super-resolution model from Replicate
-    // This model is just an example, you might choose a different one.
+    // Convert SVG string to a data URL
+    const svgDataUrl = `data:image/svg+xml;base64,${Buffer.from(svgString).toString("base64")}`
+
+    // Use Replicate to upscale the image (SVG to PNG conversion and upscaling)
+    // Note: Replicate's models typically take image URLs or base64 data.
+    // We'll use a general image upscaling model.
     const output = await replicate.run(
-      "nightmareai/real-esrgan:42fed1c4974146ea495a8156d55570787b7b020e70006b99c817b983b1c0191b",
+      "nightmareai/real-esrgan:42fed1c4974146ea495a897357674777957f1137be936de67a1767e2c732549c",
       {
         input: {
-          image: imageUrl,
-          scale: 4, // Upscale by 4x
+          image: svgDataUrl,
+          scale: params.scaleFactor, // Use the requested scale factor
         },
       },
     )
 
-    if (!output || typeof output !== "string") {
-      throw new Error("Replicate API did not return a valid image URL.")
-    }
-
-    return NextResponse.json({ success: true, upscaledUrl: output })
-  } catch (error: any) {
-    console.error("Error upscaling image with Replicate:", error)
-    return NextResponse.json({ error: "Failed to upscale image", details: error.message }, { status: 500 })
+    return new Response(JSON.stringify({ upscaledImageUrl: output }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    })
+  } catch (error) {
+    console.error("Error upscaling image:", error)
+    return new Response(JSON.stringify({ error: (error as Error).message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    })
   }
 }
