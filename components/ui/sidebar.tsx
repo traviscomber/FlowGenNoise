@@ -5,7 +5,7 @@ import { Slot } from "@radix-ui/react-slot"
 import { type VariantProps, cva } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
-import { Link } from "next-view-transitions"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { buttonVariants } from "@/components/ui/button"
 
@@ -134,7 +134,7 @@ const SidebarProvider = React.forwardRef<
 })
 SidebarProvider.displayName = "SidebarProvider"
 
-const Sidebar = React.forwardRef<
+const SidebarComponent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
     side?: "left" | "right"
@@ -211,7 +211,7 @@ const Sidebar = React.forwardRef<
     )
   },
 )
-Sidebar.displayName = "Sidebar"
+SidebarComponent.displayName = "SidebarComponent"
 
 const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.ComponentProps<typeof Button>>(
   ({ className, onClick, ...props }, ref) => {
@@ -635,8 +635,31 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
   )
 }
 
+interface SidebarLinkProps extends React.ComponentProps<typeof Link> {
+  icon: React.ElementType
+  label: string
+  isCollapsed?: boolean
+  isActive?: boolean
+}
+
+export function SidebarLink({ icon: Icon, label, isCollapsed, isActive, className, ...props }: SidebarLinkProps) {
+  return (
+    <Link
+      className={cn(
+        "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+        isActive && "bg-muted text-primary",
+        className,
+      )}
+      {...props}
+    >
+      <Icon className="h-4 w-4" />
+      {!isCollapsed && label}
+    </Link>
+  )
+}
+
 export {
-  Sidebar,
+  SidebarComponent,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,

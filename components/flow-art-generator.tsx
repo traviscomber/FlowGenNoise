@@ -102,13 +102,14 @@ export default function FlowArtGenerator() {
         body: JSON.stringify({ prompt: promptToUse }),
       })
       if (!aiArtResponse.ok) throw new Error("Failed to generate AI art")
-      const { imageUrl } = await aiArtResponse.json()
-      setGeneratedImageUrl(imageUrl)
+      // FIX: Change imageUrl to image as per the API response
+      const { image } = await aiArtResponse.json()
+      setGeneratedImageUrl(image) // Use 'image' from the response
       toast.success("Art generated successfully!")
 
       // Save to gallery
       const { error } = await supabase.from("gallery_items").insert({
-        image_url: imageUrl,
+        image_url: image, // Use 'image' for saving to Supabase
         prompt: promptToUse,
       })
       if (error) {

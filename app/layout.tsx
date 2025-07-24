@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "FlowSketch Art Generator",
-  description: "Generate abstract mathematical art with AI and explore stereographic projections.",
+  description: "Generate abstract mathematical art with AI and stereographic projections",
     generator: 'v0.dev'
 }
 
