@@ -2,29 +2,30 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-interface PasswordGateProps {
-  password: string
-  children: React.ReactNode
-}
-
-export default function PasswordGate({ password, children }: PasswordGateProps) {
-  const [inputPassword, setInputPassword] = useState("")
+export default function PasswordGate({ children }: { children: React.ReactNode }) {
+  const [password, setPassword] = useState("")
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [error, setError] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (inputPassword === password) {
+  useEffect(() => {
+    const storedAuth = localStorage.getItem("flowsketch_auth")
+    if (storedAuth === "true") {
       setIsAuthenticated(true)
+    }
+  }, [])
+
+  const handleLogin = () => {
+    if (password === process.env.NEXT_PUBLIC_PASSWORD_GATE_PASSWORD) {
+      setIsAuthenticated(true)
+      localStorage.setItem("flowsketch_auth", "true")
       setError("")
     } else {
-      setError("Incorrect password. Please try again.")
+      setError("Incorrect password")
     }
   }
 
@@ -33,29 +34,31 @@ export default function PasswordGate({ password, children }: PasswordGateProps) 
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-950">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl">Access Required</CardTitle>
-          <CardDescription>Please enter the password to access the application.</CardDescription>
+          <CardTitle className="text-2xl">Access FlowSketch</CardTitle>
+          <CardDescription>Enter the password to continue</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={inputPassword}
-                onChange={(e) => setInputPassword(e.target.value)}
-                required
-              />
-            </div>
+          <div className="grid gap-4">
+            <Input
+              id="password"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleLogin()
+                }
+              }}
+            />
             {error && <p className="text-sm text-red-500">{error}</p>}
-            <Button type="submit" className="w-full">
-              Submit
+            <Button className="w-full" onClick={handleLogin}>
+              Enter
             </Button>
-          </form>
+          </div>
         </CardContent>
       </Card>
     </div>

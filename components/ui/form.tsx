@@ -6,7 +6,6 @@ import { Controller, FormProvider, useFormContext, type FieldPath, type FieldVal
 
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 
 const Form = FormProvider
 
@@ -23,7 +22,7 @@ const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >(
-  props: Controller<TFieldValues, TName>,
+  props: React.PropsWithChildren<Controller<TFieldValues, TName>>,
 ) => {
   return (
     <FormFieldContext.Provider value={{ name: props.name }}>
@@ -127,7 +126,6 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
         className={cn("text-[0.8rem] font-medium text-destructive", className)}
         {...props}
       >
-        <ExclamationTriangleIcon className="inline-block h-4 w-4 mr-1" />
         {body}
       </p>
     )

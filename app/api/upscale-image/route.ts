@@ -1,30 +1,48 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getUpscaler } from "@/lib/client-upscaler"
+import Replicate from "replicate"
+
+const replicate = new Replicate({
+  auth: process.env.REPLICATE_API_TOKEN,
+})
 
 /**
  * POST /api/upscale-image
- * Upscales an image using the Upscaler.js library.
+ * Body:
+ * {
+ *   imageUrl: string
+ * }
  *
- * Request JSON:
- *   { imageDataUrl: string }
- *
- * Response JSON:
+ * Response:
  *   { upscaledImageUrl: string }
  */
 export async function POST(request: NextRequest) {
   try {
-    const { imageDataUrl } = await request.json()
+    const { imageUrl }: { imageUrl: string } = await request.json()
 
-    if (!imageDataUrl) {
-      return NextResponse.json({ error: "No image data provided" }, { status: 400 })
+    if (!imageUrl) {
+      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
     }
 
-    const upscaler = await getUpscaler()
-    const upscaledImage = await upscaler.upscale(imageDataUrl, { output: "base64" })
+    // Use a specific upscaling model, e.g., Real-ESRGAN
+    const output = await replicate.run(
+      "nightmareai/real-esrgan:42fed1c4974146ea495a874562553715a3570cc3767952917204935dd25273dc",
+      {
+        input: {
+          image: imageUrl,
+          scale: 2, // Upscale by 2x
+        },
+      },
+    )
 
-    return NextResponse.json({ upscaledImageUrl: `data:image/png;base64,${upscaledImage}` })
-  } catch (error: any) {
-    console.error("Image upscaling error:", error)
-    return NextResponse.json({ error: "Failed to upscale image", details: error.message }, { status: 500 })
+    const upscaledImageUrl = Array.isArray(output) && output.length > 0 ? output[0] : null
+
+    if (!upscaledImageUrl) {
+      throw new Error("Failed to upscale image from Replicate.")
+    }
+
+    return NextResponse.json({ upscaledImageUrl })
+  } catch (err: any) {
+    console.error("[upscale-image] error:", err)
+    return NextResponse.json({ error: "Failed to upscale image", details: err.message }, { status: 500 })
   }
 }

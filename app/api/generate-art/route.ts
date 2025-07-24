@@ -1,44 +1,59 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { generateFlowField } from "@/lib/flow-model"
+import { generateFlowArt } from "@/lib/flow-model" // Assuming this function exists
+import { plotPointsToSVG } from "@/lib/plot-utils" // Assuming this function exists
 
 /**
  * POST /api/generate-art
- * Generates mathematical flow field data based on client parameters.
- * Response → { flowField: FlowFieldPoint[] }
+ * Body:
+ * {
+ *   dataset: string
+ *   scenario: string
+ *   colorScheme: string
+ *   numSamples: number
+ *   noiseScale: number
+ *   enableStereographic: boolean
+ *   stereographicPerspective: "little-planet" | "tunnel"
+ * }
+ *
+ * Response:
+ *   { svg: string }
  */
 export async function POST(request: NextRequest) {
   try {
     const {
-      width,
-      height,
-      depth,
-      numSamples,
-      noiseScale,
       dataset,
       scenario,
       colorScheme,
-      seed,
+      numSamples,
+      noiseScale,
       enableStereographic,
       stereographicPerspective,
+    }: {
+      dataset: string
+      scenario: string
+      colorScheme: string
+      numSamples: number
+      noiseScale: number
+      enableStereographic: boolean
+      stereographicPerspective: "little-planet" | "tunnel"
     } = await request.json()
 
-    const flowField = generateFlowField({
-      width,
-      height,
-      depth,
-      numSamples,
-      noiseScale,
+    // Generate mathematical points based on parameters
+    const { points, connections } = generateFlowArt({
       dataset,
       scenario,
-      colorScheme,
-      seed,
+      numSamples,
+      noiseScale,
       enableStereographic,
       stereographicPerspective,
     })
 
-    return NextResponse.json({ flowField })
-  } catch (error: any) {
-    console.error("Generate art error:", error)
-    return NextResponse.json({ error: "Failed to generate art", details: error.message }, { status: 500 })
+    // Plot points and connections to SVG
+    const svg = plotPointsToSVG(points, connections, colorScheme)
+
+    return NextResponse.json({ svg })
+  } catch (err: any) {
+    console.error("[generate-art] error:", err)
+    return NextResponse.json({ error: "Failed to generate mathematical art", details: err.message }, { status: 500 })
   }
 }
