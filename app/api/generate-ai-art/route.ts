@@ -33,161 +33,131 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Build realistic, achievable prompts
+    // Build the prompt if not using custom prompt
     let finalPrompt = customPrompt
     if (!customPrompt) {
       const datasetDescriptions = {
-        spiral: "elegant spiral patterns with mathematical curves and flowing lines",
-        checkerboard: "geometric checkerboard patterns with clean alternating squares",
-        neural: "network-like patterns with connected nodes and branching pathways",
-        fractal: "detailed fractal patterns with repeating geometric structures",
-        wave: "flowing wave patterns with smooth curves and rhythmic motion",
-        particle: "scattered particle patterns with organic clustering and movement",
-        mandala: "symmetrical mandala designs with radial geometric patterns",
-        crystal: "crystalline structures with angular geometric formations",
-        flow: "fluid flow patterns with curved streamlines and vector fields",
-        noise: "organic texture patterns with natural randomness and variation",
-        cellular: "cellular grid patterns with interconnected geometric cells",
-        attractor: "mathematical curve patterns with elegant flowing trajectories",
+        spiral: "fibonacci spiral patterns with golden ratio mathematics and organic curves",
+        checkerboard: "checkerboard grid patterns with alternating mathematical tessellations",
+        neural: "neural network patterns with interconnected nodes and synaptic connections",
+        fractal: "intricate fractal tree patterns with recursive branching geometry",
+        wave: "wave function patterns with harmonic oscillations and interference",
+        particle: "particle system dynamics with swarm behavior and emergent patterns",
+        mandala: "sacred geometry mandalas with symmetrical mathematical precision",
+        crystal: "crystal lattice structures with geometric mineral formations",
+        flow: "flow field patterns with vector mathematics and fluid dynamics",
+        noise: "perlin noise fields with organic natural textures and gradients",
+        cellular: "cellular automata patterns with emergent complex behaviors",
+        attractor: "strange attractor patterns with chaotic mathematical beauty",
       }
 
       const scenarioDescriptions = {
-        "live-forest": "forest scene with trees, leaves, and natural lighting",
-        heads: "artistic portrait composition with creative styling",
-        underwater: "underwater scene with marine life and coral",
-        space: "space scene with stars, planets, and cosmic elements",
-        cyberpunk: "futuristic cityscape with neon lights and modern architecture",
-        dreamscape: "surreal landscape with floating elements and soft lighting",
-        tribal: "tribal art style with traditional patterns and earth tones",
-        steampunk: "steampunk aesthetic with brass, gears, and vintage machinery",
-        bioluminescent: "glowing elements with natural phosphorescent lighting",
-        crystalline: "crystal cave environment with refracting light",
-        volcanic: "volcanic landscape with lava flows and rocky terrain",
-        arctic: "arctic scene with ice formations and cool lighting",
-        desert: "desert landscape with sand dunes and warm lighting",
-        jungle: "jungle environment with dense vegetation and ancient ruins",
-        pure: "clean mathematical visualization with abstract forms",
+        "live-forest":
+          "enchanted living forest with magical fairies dancing between trees, colorful butterflies with fractal wings, glowing mushrooms, sparkling dewdrops, and mystical woodland creatures",
+        heads:
+          "surreal collection of artistic heads with crazy psychedelic patterns, abstract facial features, geometric mind-bending designs, kaleidoscopic eyes, and trippy neural pathways",
+        underwater:
+          "vibrant underwater world with tropical fish swimming in schools, colorful coral reefs, floating jellyfish, sea anemones, and bioluminescent marine life",
+        space:
+          "cosmic space odyssey with swirling nebulae, distant galaxies, twinkling stars, colorful planets, asteroid fields, and cosmic dust clouds",
+        cyberpunk:
+          "futuristic cyberpunk cityscape with neon lights, holographic displays, digital rain, chrome surfaces, and high-tech urban architecture",
+        dreamscape:
+          "surreal dreamlike landscape with floating objects, impossible architecture, melting clocks, gravity-defying elements, and ethereal atmospheres",
+        tribal:
+          "ancient tribal patterns with sacred symbols, totemic designs, indigenous art motifs, ceremonial masks, and spiritual geometric forms",
+        steampunk:
+          "Victorian steampunk world with brass gears, steam pipes, clockwork mechanisms, copper machinery, and industrial vintage aesthetics",
+        bioluminescent:
+          "glowing bioluminescent environment with phosphorescent organisms, luminous plants, radiant fungi, and naturally glowing life forms",
+        crystalline:
+          "magical crystal caves with prismatic gems, mineral formations, refracting light beams, rainbow reflections, and sparkling geodes",
+        volcanic:
+          "dramatic volcanic landscape with flowing lava streams, molten rock, fire eruptions, glowing embers, and intense heat distortions",
+        arctic:
+          "pristine arctic tundra with ice formations, snow crystals, aurora borealis, frozen landscapes, and crystalline beauty",
+        desert:
+          "mystical desert oasis with sand dunes, cacti silhouettes, mirages, palm trees, and golden sunset lighting",
+        jungle:
+          "ancient jungle temple with overgrown vines, exotic wildlife, mysterious ruins, tropical vegetation, and hidden archaeological treasures",
+        pure: "pure mathematical visualization with abstract geometric forms and clean mathematical beauty",
       }
 
       const colorDescriptions = {
-        plasma: "purple, magenta, and blue color palette",
-        quantum: "blue, white, and silver color scheme",
-        cosmic: "deep purple, blue, and starlight colors",
-        thermal: "red, orange, and yellow heat colors",
-        spectral: "rainbow spectrum with full color range",
-        crystalline: "blue, white, and crystal clear colors",
-        bioluminescent: "blue, green, and teal glowing colors",
-        aurora: "green, blue, and purple aurora colors",
-        metallic: "gold, silver, and bronze metallic tones",
-        prismatic: "rainbow prismatic light colors",
-        monochromatic: "black, white, and gray tones",
-        infrared: "red and warm thermal colors",
-        lava: "orange, red, and yellow molten colors",
-        futuristic: "neon blue, cyan, and electric colors",
-        forest: "green, brown, and natural earth tones",
-        ocean: "blue, teal, and aqua water colors",
-        sunset: "orange, pink, and purple sky colors",
-        arctic: "blue, white, and ice colors",
-        neon: "bright fluorescent colors",
-        vintage: "sepia, brown, and aged colors",
-        toxic: "bright green and yellow warning colors",
-        ember: "orange, red, and glowing colors",
+        plasma: "vibrant plasma colors with electric purples, magentas, and blues",
+        quantum: "quantum energy colors with glowing greens, blues, and whites",
+        cosmic: "cosmic space colors with deep purples, blues, and starlight",
+        thermal: "thermal heat colors with reds, oranges, and yellows",
+        spectral: "full spectrum rainbow colors with prismatic light effects",
+        crystalline: "crystalline ice colors with clear blues, whites, and silver",
+        bioluminescent: "bioluminescent colors with glowing blues, greens, and teals",
+        aurora: "aurora borealis colors with dancing greens, purples, and blues",
+        metallic: "metallic colors with gold, silver, copper, and bronze",
+        prismatic: "prismatic light colors with rainbow refractions",
+        monochromatic: "monochromatic grayscale with black, white, and gray tones",
+        infrared: "infrared heat colors with deep reds and thermal gradients",
+        lava: "molten lava colors with bright oranges, reds, and yellows",
+        futuristic: "futuristic neon colors with electric blues, cyans, and purples",
+        forest: "forest nature colors with deep greens, browns, and earth tones",
+        ocean: "ocean water colors with deep blues, teals, and aqua",
+        sunset: "sunset sky colors with warm oranges, pinks, and purples",
+        arctic: "arctic ice colors with cool blues, whites, and pale tones",
+        neon: "bright neon colors with electric pinks, greens, and blues",
+        vintage: "vintage sepia colors with warm browns, tans, and aged tones",
+        toxic: "toxic chemical colors with bright greens, yellows, and warning colors",
+        ember: "glowing ember colors with deep reds, oranges, and fire tones",
       }
-
-      // Create realistic, balanced descriptions
-      const datasetDesc = datasetDescriptions[dataset as keyof typeof datasetDescriptions] || "geometric patterns"
-      const scenarioDesc = scenarioDescriptions[scenario as keyof typeof scenarioDescriptions] || "artistic scene"
-      const colorDesc = colorDescriptions[colorScheme as keyof typeof colorDescriptions] || "vibrant colors"
 
       // Add projection-specific descriptions
       let projectionText = ""
       if (panoramic360 && panoramaFormat === "stereographic") {
         if (stereographicPerspective === "tunnel") {
-          projectionText = ", fisheye perspective looking upward"
+          projectionText =
+            ", stereographic tunnel projection with fisheye perspective looking upward, sky in center, elements curved around edges"
         } else {
-          projectionText = ", fisheye perspective with tiny planet effect"
+          projectionText =
+            ", stereographic little planet projection with fisheye perspective looking downward, landscape in center forming tiny planet effect"
         }
       } else if (domeProjection) {
-        projectionText = ", dome projection view"
+        projectionText = ", optimized for dome projection with fisheye perspective, immersive 360-degree view"
       }
 
-      // Realistic quality modifiers
-      const qualityTerms = "digital art, high quality, detailed, well-composed, professional lighting, smooth gradients"
-
-      // Construct the balanced prompt
-      finalPrompt = `${datasetDesc} integrated into ${scenarioDesc} with ${colorDesc}${projectionText}, ${qualityTerms}`
+      finalPrompt = `Photorealistic ${datasetDescriptions[dataset as keyof typeof datasetDescriptions] || dataset} integrated into ${scenarioDescriptions[scenario as keyof typeof scenarioDescriptions] || scenario} with ${colorDescriptions[colorScheme as keyof typeof colorDescriptions] || colorScheme}${projectionText}, highly detailed, professional photography, dramatic lighting, ultra-realistic textures, magical atmosphere`
     }
 
-    // Clean and validate the prompt
-    finalPrompt = sanitizePrompt(finalPrompt)
-
-    // Ensure prompt is reasonable length
-    if (finalPrompt.length > 800) {
-      finalPrompt = finalPrompt.substring(0, 797) + "..."
+    // Truncate prompt if too long (DALL-E has limits)
+    if (finalPrompt.length > 1000) {
+      finalPrompt = finalPrompt.substring(0, 997) + "..."
     }
 
-    console.log("Balanced prompt:", finalPrompt)
+    console.log("Final prompt:", finalPrompt)
 
-    // Make request to OpenAI DALL-E API with retry logic
-    let openaiResponse
-    let attempts = 0
-    const maxAttempts = 3
+    // Make request to OpenAI DALL-E API
+    const openaiResponse = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "dall-e-3",
+        prompt: finalPrompt,
+        size: "1024x1024",
+        quality: "hd",
+        style: "vivid",
+        n: 1,
+      }),
+    })
 
-    while (attempts < maxAttempts) {
-      try {
-        attempts++
-        console.log(`Attempt ${attempts} to generate image...`)
+    console.log("OpenAI API response status:", openaiResponse.status)
 
-        openaiResponse = await fetch("https://api.openai.com/v1/images/generations", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: "dall-e-3",
-            prompt: finalPrompt,
-            size: "1024x1024",
-            quality: "standard", // Use standard for more realistic results
-            style: "natural", // Natural style for realistic output
-            n: 1,
-          }),
-        })
-
-        if (openaiResponse.ok) {
-          break // Success, exit retry loop
-        }
-
-        const errorText = await openaiResponse.text()
-        console.error(`Attempt ${attempts} failed:`, errorText)
-
-        // If it's a content policy violation, try with a simpler prompt
-        if (errorText.includes("content policy") || errorText.includes("unable to process")) {
-          console.log("Content policy issue detected, trying simpler prompt...")
-          finalPrompt = createFallbackPrompt(dataset, colorScheme, panoramic360, domeProjection)
-          console.log("Fallback prompt:", finalPrompt)
-        }
-
-        // Wait before retry (except on last attempt)
-        if (attempts < maxAttempts) {
-          await new Promise((resolve) => setTimeout(resolve, 1000))
-        }
-      } catch (fetchError) {
-        console.error(`Network error on attempt ${attempts}:`, fetchError)
-        if (attempts === maxAttempts) {
-          throw fetchError
-        }
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-      }
-    }
-
-    if (!openaiResponse || !openaiResponse.ok) {
-      const errorText = await openaiResponse?.text()
-      console.error("All attempts failed. Final error:", errorText)
+    if (!openaiResponse.ok) {
+      const errorText = await openaiResponse.text()
+      console.error("OpenAI API error:", errorText)
       return NextResponse.json(
         {
           success: false,
-          error: `OpenAI API error after ${maxAttempts} attempts`,
+          error: `OpenAI API error: ${openaiResponse.status}`,
           details: errorText,
         },
         { status: 500 },
@@ -239,91 +209,4 @@ export async function POST(request: NextRequest) {
       { status: 500 },
     )
   }
-}
-
-// Sanitize prompt to remove potentially problematic content
-function sanitizePrompt(prompt: string): string {
-  // Remove potentially problematic words/phrases
-  const problematicTerms = [
-    "violent",
-    "disturbing",
-    "explicit",
-    "inappropriate",
-    "nsfw",
-    "adult",
-    "sexual",
-    "nude",
-    "naked",
-  ]
-
-  let sanitized = prompt
-  problematicTerms.forEach((term) => {
-    const regex = new RegExp(term, "gi")
-    sanitized = sanitized.replace(regex, "artistic")
-  })
-
-  // Clean up multiple spaces and special characters
-  sanitized = sanitized.replace(/\s+/g, " ").trim()
-
-  return sanitized
-}
-
-// Create a simple, realistic fallback prompt
-function createFallbackPrompt(
-  dataset: string,
-  colorScheme: string,
-  panoramic360?: boolean,
-  domeProjection?: boolean,
-): string {
-  const simpleDatasets = {
-    spiral: "spiral patterns",
-    checkerboard: "checkerboard patterns",
-    neural: "network patterns",
-    fractal: "fractal patterns",
-    wave: "wave patterns",
-    particle: "particle patterns",
-    mandala: "mandala patterns",
-    crystal: "crystal patterns",
-    flow: "flow patterns",
-    noise: "organic patterns",
-    cellular: "cellular patterns",
-    attractor: "curved patterns",
-  }
-
-  const simpleColors = {
-    plasma: "purple and pink colors",
-    quantum: "blue and white colors",
-    cosmic: "purple and blue colors",
-    thermal: "red and orange colors",
-    spectral: "rainbow colors",
-    crystalline: "blue and white colors",
-    bioluminescent: "blue and green colors",
-    aurora: "green and blue colors",
-    metallic: "gold and silver colors",
-    prismatic: "rainbow colors",
-    monochromatic: "black and white",
-    infrared: "red colors",
-    lava: "orange and red colors",
-    futuristic: "blue and cyan colors",
-    forest: "green colors",
-    ocean: "blue colors",
-    sunset: "orange and pink colors",
-    arctic: "blue and white colors",
-    neon: "bright colors",
-    vintage: "brown and sepia colors",
-    toxic: "green colors",
-    ember: "orange and red colors",
-  }
-
-  const datasetDesc = simpleDatasets[dataset as keyof typeof simpleDatasets] || "geometric patterns"
-  const colorDesc = simpleColors[colorScheme as keyof typeof simpleColors] || "colorful"
-
-  let projectionText = ""
-  if (panoramic360) {
-    projectionText = ", panoramic view"
-  } else if (domeProjection) {
-    projectionText = ", dome view"
-  }
-
-  return `Abstract ${datasetDesc} with ${colorDesc}${projectionText}, digital art, clean design`
 }
