@@ -1,42 +1,32 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const imageUrl = searchParams.get("url")
+
+  if (!imageUrl) {
+    return NextResponse.json({ error: "URL parameter is required" }, { status: 400 })
+  }
+
   try {
-    const { searchParams } = new URL(request.url)
-    const imageUrl = searchParams.get("url")
-    const filename = searchParams.get("filename") || "flowsketch-art.jpg"
+    const response = await fetch(imageUrl)
 
-    if (!imageUrl) {
-      return NextResponse.json({ error: "No image URL provided" }, { status: 400 })
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status}`)
     }
 
-    console.log("Downloading image from:", imageUrl)
+    const imageBuffer = await response.arrayBuffer()
+    const contentType = response.headers.get("content-type") || "image/png"
 
-    // Fetch the image
-    const imageResponse = await fetch(imageUrl)
-
-    if (!imageResponse.ok) {
-      throw new Error(`Failed to fetch image: ${imageResponse.status}`)
-    }
-
-    const imageBuffer = await imageResponse.arrayBuffer()
-    const contentType = imageResponse.headers.get("content-type") || "image/jpeg"
-
-    // Return the image with appropriate headers for download
     return new NextResponse(imageBuffer, {
       headers: {
         "Content-Type": contentType,
-        "Content-Disposition": `attachment; filename="${filename}"`,
-        "Content-Length": imageBuffer.byteLength.toString(),
+        "Content-Disposition": `attachment; filename="flowsketch-art-${Date.now()}.png"`,
+        "Cache-Control": "public, max-age=31536000",
       },
     })
   } catch (error) {
     console.error("Download proxy error:", error)
-    return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : "Download failed",
-      },
-      { status: 500 },
-    )
+    return NextResponse.json({ error: "Failed to download image" }, { status: 500 })
   }
 }

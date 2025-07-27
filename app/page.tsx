@@ -1,9 +1,15 @@
-import { FlowArtGenerator } from "@/components/flow-art-generator"
+"use client"
 
-export default function HomePage() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <FlowArtGenerator />
-    </main>
-  )
+import { useState } from "react"
+import FlowArtGenerator from "@/components/flow-art-generator"
+import PasswordGate from "@/components/auth/password-gate"
+
+export default function Home() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  if (!isAuthenticated) {
+    return <PasswordGate onAuthenticated={() => setIsAuthenticated(true)} />
+  }
+
+  return <FlowArtGenerator />
 }
