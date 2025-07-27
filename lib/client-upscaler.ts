@@ -1,5 +1,5 @@
 export class ClientUpscaler {
-  static async upscaleImage(imageUrl: string, scaleFactor = 2): Promise<string> {
+  static async upscaleImage(imageUrl: string, scale = 2): Promise<string> {
     return new Promise((resolve, reject) => {
       const img = new Image()
       img.crossOrigin = "anonymous"
@@ -14,22 +14,56 @@ export class ClientUpscaler {
             return
           }
 
-          // Set new dimensions
-          const newWidth = img.width * scaleFactor
-          const newHeight = img.height * scaleFactor
+          // Set canvas size to upscaled dimensions
+          canvas.width = img.width * scale
+          canvas.height = img.height * scale
 
-          canvas.width = newWidth
-          canvas.height = newHeight
-
-          // Use better image scaling
+          // Use image smoothing for better quality
           ctx.imageSmoothingEnabled = true
           ctx.imageSmoothingQuality = "high"
 
           // Draw the upscaled image
-          ctx.drawImage(img, 0, 0, newWidth, newHeight)
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 
-          // Apply some enhancement filters
-          const imageData = ctx.getImageData(0, 0, newWidth, newHeight)
+          // Convert to data URL
+          const dataUrl = canvas.toDataURL("image/png", 1.0)
+          resolve(dataUrl)
+        } catch (error) {
+          reject(error)
+        }
+      }
+
+      img.onerror = () => {
+        reject(new Error("Failed to load image for upscaling"))
+      }
+
+      img.src = imageUrl
+    })
+  }
+
+  static async enhanceImage(imageUrl: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.crossOrigin = "anonymous"
+
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas")
+          const ctx = canvas.getContext("2d")
+
+          if (!ctx) {
+            reject(new Error("Could not get canvas context"))
+            return
+          }
+
+          canvas.width = img.width
+          canvas.height = img.height
+
+          // Draw original image
+          ctx.drawImage(img, 0, 0)
+
+          // Apply enhancement filters
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
           const data = imageData.data
 
           // Simple sharpening filter
@@ -42,8 +76,7 @@ export class ClientUpscaler {
 
           ctx.putImageData(imageData, 0, 0)
 
-          // Convert to data URL
-          const dataUrl = canvas.toDataURL("image/png", 0.95)
+          const dataUrl = canvas.toDataURL("image/png", 1.0)
           resolve(dataUrl)
         } catch (error) {
           reject(error)
@@ -51,7 +84,7 @@ export class ClientUpscaler {
       }
 
       img.onerror = () => {
-        reject(new Error("Failed to load image for upscaling"))
+        reject(new Error("Failed to load image for enhancement"))
       }
 
       img.src = imageUrl

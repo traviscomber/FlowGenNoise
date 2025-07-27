@@ -93,9 +93,9 @@ export function FlowArtGenerator() {
     setCurrentPage(1)
   }, [gallery.length])
 
-  // Generation parameters - restored original creative datasets and scenarios
-  const [dataset, setDataset] = useState("spiral")
-  const [scenario, setScenario] = useState("live-forest")
+  // Generation parameters - separate dataset, scenario, and color palette
+  const [dataset, setDataset] = useState("spirals")
+  const [scenario, setScenario] = useState("urban")
   const [colorScheme, setColorScheme] = useState("futuristic")
   const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
   const [numSamples, setNumSamples] = useState(4000)
@@ -912,8 +912,7 @@ export function FlowArtGenerator() {
           FlowSketch Mathematical Art Generator
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Creative mathematical datasets with immersive scenarios - from live forests with fairies to neural networks
-          with heads
+          Advanced mathematical datasets with photorealistic stereographic projections and immersive environments
         </p>
       </div>
 
@@ -989,8 +988,8 @@ export function FlowArtGenerator() {
                   <Alert>
                     <Calculator className="h-4 w-4" />
                     <AlertDescription>
-                      Creative mathematical datasets: spirals, checkerboards, neural networks, and more combined with
-                      immersive scenarios like live forests with fairies and butterflies!{" "}
+                      Complex mathematical datasets with advanced algorithms: Fibonacci spirals, fractal patterns,
+                      Mandelbrot sets, Lorenz attractors, and more!{" "}
                       {panorama360Enabled && "Optimized for stereographic projections."}
                       {domeEnabled && "Optimized for dome projection."}
                     </AlertDescription>
@@ -1111,7 +1110,7 @@ export function FlowArtGenerator() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="h-5 w-5" />
-                Creative Settings
+                Advanced Settings
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -1123,18 +1122,18 @@ export function FlowArtGenerator() {
                     onChange={(e) => setDataset(e.target.value)}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
-                    <option value="spiral">Spiral Patterns</option>
-                    <option value="checkerboard">Checkerboard Grid</option>
-                    <option value="neural">Neural Networks</option>
-                    <option value="fractal">Fractal Trees</option>
-                    <option value="wave">Wave Functions</option>
-                    <option value="particle">Particle Systems</option>
-                    <option value="mandala">Sacred Geometry</option>
-                    <option value="crystal">Crystal Lattice</option>
-                    <option value="flow">Flow Fields</option>
-                    <option value="noise">Perlin Noise</option>
+                    <option value="spirals">Fibonacci Spirals</option>
+                    <option value="fractal">Fractal Patterns</option>
+                    <option value="hyperbolic">Hyperbolic Geometry</option>
+                    <option value="gaussian">Gaussian Fields</option>
                     <option value="cellular">Cellular Automata</option>
-                    <option value="attractor">Strange Attractors</option>
+                    <option value="voronoi">Voronoi Diagrams</option>
+                    <option value="perlin">Perlin Noise</option>
+                    <option value="mandelbrot">Mandelbrot Sets</option>
+                    <option value="lorenz">Lorenz Attractors</option>
+                    <option value="julia">Julia Sets</option>
+                    <option value="diffusion">Reaction-Diffusion</option>
+                    <option value="wave">Wave Interference</option>
                   </select>
                 </div>
 
@@ -1145,21 +1144,18 @@ export function FlowArtGenerator() {
                     onChange={(e) => setScenario(e.target.value)}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
-                    <option value="live-forest">Live Forest (Fairies, Butterflies, Trees)</option>
-                    <option value="heads">Heads (Crazy Head Patterns)</option>
-                    <option value="underwater">Underwater World (Fish, Coral, Bubbles)</option>
-                    <option value="space">Space Odyssey (Stars, Planets, Nebulae)</option>
-                    <option value="cyberpunk">Cyberpunk City (Neon, Holograms, Tech)</option>
-                    <option value="dreamscape">Dreamscape (Surreal, Floating Objects)</option>
-                    <option value="tribal">Tribal Patterns (Ancient Symbols, Totems)</option>
-                    <option value="steampunk">Steampunk (Gears, Steam, Victorian)</option>
-                    <option value="bioluminescent">Bioluminescent (Glowing Life Forms)</option>
-                    <option value="crystalline">Crystal Caves (Gems, Minerals, Light)</option>
-                    <option value="volcanic">Volcanic (Lava, Fire, Molten Rock)</option>
-                    <option value="arctic">Arctic Tundra (Ice, Snow, Aurora)</option>
-                    <option value="desert">Desert Oasis (Sand, Cacti, Mirages)</option>
-                    <option value="jungle">Jungle Temple (Vines, Ruins, Wildlife)</option>
                     <option value="pure">Pure Mathematics</option>
+                    <option value="landscape">Natural Landscapes</option>
+                    <option value="architectural">Architectural Forms</option>
+                    <option value="geological">Geological Formations</option>
+                    <option value="botanical">Botanical Structures</option>
+                    <option value="atmospheric">Atmospheric Phenomena</option>
+                    <option value="crystalline">Crystalline Structures</option>
+                    <option value="textile">Textile Patterns</option>
+                    <option value="metallic">Metallic Surfaces</option>
+                    <option value="organic">Organic Textures</option>
+                    <option value="urban">Urban Environments</option>
+                    <option value="marine">Marine Ecosystems</option>
                   </select>
                 </div>
 
@@ -1280,7 +1276,7 @@ export function FlowArtGenerator() {
                     {useCustomPrompt && (
                       <div className="space-y-2">
                         <textarea
-                          placeholder="Enter your custom prompt here... (e.g., 'A photorealistic live forest with magical fairies dancing around spiral patterns, butterflies with fractal wings')"
+                          placeholder="Enter your custom prompt here... (e.g., 'A photorealistic stereographic projection of a futuristic city with glass buildings and neon lights')"
                           value={customPrompt}
                           onChange={(e) => setCustomPrompt(e.target.value)}
                           rows={3}
@@ -1482,10 +1478,9 @@ export function FlowArtGenerator() {
                 ) : (
                   <div className="text-center py-12 text-gray-500">
                     <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Generate creative artwork to see it here.</p>
+                    <p>Generate photorealistic artwork to see it here.</p>
                     <p className="text-sm mt-2">
-                      Try "Neural Networks" + "Live Forest" for magical AI-generated forests with neural patterns and
-                      fairies!
+                      Try "Urban Environments" + "Stereographic" for dramatic tunnel or little planet effects!
                     </p>
                   </div>
                 )}

@@ -567,33 +567,10 @@ function generateDataset(params: GenerationParams): Array<{ x: number; y: number
   const rng = new SeededRandom(params.seed)
 
   switch (params.dataset) {
-    case "spiral":
-      return generateSpirals(params, rng)
-    case "checkerboard":
-      return generateCheckerboard(params, rng)
-    case "neural":
-      return generateNeuralNetwork(params, rng)
-    case "fractal":
-      return generateFractal(params, rng)
-    case "wave":
-      return generateWave(params, rng)
-    case "particle":
-      return generateParticleSystem(params, rng)
-    case "mandala":
-      return generateMandala(params, rng)
-    case "crystal":
-      return generateCrystalLattice(params, rng)
-    case "flow":
-      return generateFlowFieldInternal(params, rng)
-    case "noise":
-      return generatePerlin(params, rng)
-    case "cellular":
-      return generateCellular(params, rng)
-    case "attractor":
-      return generateAttractor(params, rng)
-    // Legacy support for old dataset names
     case "spirals":
       return generateSpirals(params, rng)
+    case "fractal":
+      return generateFractal(params, rng)
     case "mandelbrot":
       return generateMandelbrot(params, rng)
     case "lorenz":
@@ -604,282 +581,45 @@ function generateDataset(params: GenerationParams): Array<{ x: number; y: number
       return generateHyperbolic(params, rng)
     case "gaussian":
       return generateGaussian(params, rng)
+    case "cellular":
+      return generateCellular(params, rng)
     case "voronoi":
       return generateVoronoi(params, rng)
+    case "perlin":
+      return generatePerlin(params, rng)
     case "diffusion":
       return generateDiffusion(params, rng)
+    case "wave":
+      return generateWave(params, rng)
     default:
       return generateSpirals(params, rng)
   }
 }
 
-function generateCheckerboard(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string }> {
-  const points: Array<{ x: number; y: number; color: string }> = []
-  const palette = colorPalettes[params.colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-
-  const gridSize = Math.floor(Math.sqrt(params.numSamples / 4))
-  const cellSize = 400 / gridSize
-
-  for (let i = 0; i < gridSize; i++) {
-    for (let j = 0; j < gridSize; j++) {
-      const isBlack = (i + j) % 2 === 0
-      const x = (i - gridSize / 2) * cellSize + rng.range(-cellSize / 4, cellSize / 4) * params.noiseScale
-      const y = (j - gridSize / 2) * cellSize + rng.range(-cellSize / 4, cellSize / 4) * params.noiseScale
-
-      // Add multiple points per cell for density
-      for (let k = 0; k < 4; k++) {
-        const offsetX = rng.range(-cellSize / 2, cellSize / 2)
-        const offsetY = rng.range(-cellSize / 2, cellSize / 2)
-        const colorIndex = isBlack ? 0 : palette.length - 1
-        points.push({
-          x: x + offsetX,
-          y: y + offsetY,
-          color: palette[colorIndex],
-        })
-      }
+// Stereographic projection helpers
+function stereographicProjection(x: number, y: number, perspective: string): { x: number; y: number } {
+  if (perspective === "tunnel") {
+    // Tunnel projection (looking up)
+    const r = Math.sqrt(x * x + y * y)
+    const theta = Math.atan2(y, x)
+    const newR = 200 / (1 + r / 100)
+    return {
+      x: newR * Math.cos(theta),
+      y: newR * Math.sin(theta),
+    }
+  } else {
+    // Little planet projection (looking down)
+    const r = Math.sqrt(x * x + y * y)
+    const theta = Math.atan2(y, x)
+    const newR = r / (1 + r / 200)
+    return {
+      x: newR * Math.cos(theta),
+      y: newR * Math.sin(theta),
     }
   }
-
-  return points
 }
 
-function generateNeuralNetwork(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string }> {
-  const points: Array<{ x: number; y: number; color: string }> = []
-  const palette = colorPalettes[params.colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-
-  // Create neural network layers
-  const layers = 5
-  const nodesPerLayer = 8
-  const layerSpacing = 300 / layers
-  const nodeSpacing = 200 / nodesPerLayer
-
-  // Generate nodes
-  const nodes: Array<{ x: number; y: number; layer: number; index: number }> = []
-
-  for (let layer = 0; layer < layers; layer++) {
-    for (let node = 0; node < nodesPerLayer; node++) {
-      const x = (layer - layers / 2) * layerSpacing + rng.range(-20, 20) * params.noiseScale
-      const y = (node - nodesPerLayer / 2) * nodeSpacing + rng.range(-20, 20) * params.noiseScale
-      nodes.push({ x, y, layer, index: node })
-
-      // Add node points
-      const colorIndex = Math.floor((layer / layers) * (palette.length - 1))
-      points.push({ x, y, color: palette[colorIndex] })
-    }
-  }
-
-  // Generate connections between layers
-  for (let layer = 0; layer < layers - 1; layer++) {
-    const currentLayerNodes = nodes.filter((n) => n.layer === layer)
-    const nextLayerNodes = nodes.filter((n) => n.layer === layer + 1)
-
-    currentLayerNodes.forEach((currentNode) => {
-      nextLayerNodes.forEach((nextNode) => {
-        if (rng.next() > 0.3) {
-          // 70% connection probability
-          // Create connection line with points
-          const steps = 10
-          for (let step = 0; step <= steps; step++) {
-            const t = step / steps
-            const x = currentNode.x + (nextNode.x - currentNode.x) * t
-            const y = currentNode.y + (nextNode.y - currentNode.y) * t
-            const colorIndex = Math.floor(t * (palette.length - 1))
-            points.push({ x, y, color: palette[colorIndex] })
-          }
-        }
-      })
-    })
-  }
-
-  return points
-}
-
-function generateParticleSystem(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string }> {
-  const points: Array<{ x: number; y: number; color: string }> = []
-  const palette = colorPalettes[params.colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-
-  // Create multiple particle emitters
-  const emitters = 3
-
-  for (let e = 0; e < emitters; e++) {
-    const emitterX = rng.range(-150, 150)
-    const emitterY = rng.range(-150, 150)
-    const particlesPerEmitter = Math.floor(params.numSamples / emitters)
-
-    for (let i = 0; i < particlesPerEmitter; i++) {
-      const t = i / particlesPerEmitter
-      const angle = rng.range(0, 2 * Math.PI)
-      const velocity = rng.range(50, 200)
-      const life = rng.range(0.5, 2.0)
-
-      // Simulate particle movement over time
-      const x = emitterX + Math.cos(angle) * velocity * life + rng.range(-30, 30) * params.noiseScale
-      const y = emitterY + Math.sin(angle) * velocity * life + rng.range(-30, 30) * params.noiseScale - 50 * life * life // gravity
-
-      const colorIndex = Math.floor((1 - life) * (palette.length - 1))
-      points.push({ x, y, color: palette[colorIndex] })
-    }
-  }
-
-  return points
-}
-
-function generateMandala(params: GenerationParams, rng: SeededRandom): Array<{ x: number; y: number; color: string }> {
-  const points: Array<{ x: number; y: number; color: string }> = []
-  const palette = colorPalettes[params.colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-
-  const symmetryOrder = 8 // 8-fold symmetry
-  const rings = 6
-  const pointsPerRing = Math.floor(params.numSamples / rings)
-
-  for (let ring = 0; ring < rings; ring++) {
-    const radius = (ring + 1) * 30
-
-    for (let i = 0; i < pointsPerRing; i++) {
-      const baseAngle = (i / pointsPerRing) * 2 * Math.PI
-
-      // Create symmetric copies
-      for (let sym = 0; sym < symmetryOrder; sym++) {
-        const angle = baseAngle + (sym * 2 * Math.PI) / symmetryOrder
-        const r = radius + Math.sin(angle * 5) * 10 + rng.range(-10, 10) * params.noiseScale
-
-        const x = r * Math.cos(angle)
-        const y = r * Math.sin(angle)
-
-        const colorIndex = Math.floor((ring / rings) * (palette.length - 1))
-        points.push({ x, y, color: palette[colorIndex] })
-      }
-    }
-  }
-
-  return points
-}
-
-function generateCrystalLattice(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string }> {
-  const points: Array<{ x: number; y: number; color: string }> = []
-  const palette = colorPalettes[params.colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-
-  // Hexagonal crystal lattice
-  const latticeSpacing = 25
-  const rows = Math.floor(Math.sqrt(params.numSamples / 2))
-  const cols = Math.floor(Math.sqrt(params.numSamples / 2))
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      // Hexagonal offset for every other row
-      const offsetX = (row % 2) * latticeSpacing * 0.5
-      const x = (col - cols / 2) * latticeSpacing + offsetX + rng.range(-5, 5) * params.noiseScale
-      const y = (row - rows / 2) * latticeSpacing * 0.866 + rng.range(-5, 5) * params.noiseScale // 0.866 = sqrt(3)/2
-
-      // Add crystal defects and variations
-      const defectProbability = 0.1
-      if (rng.next() > defectProbability) {
-        const colorIndex = Math.floor((((row + col) % 4) / 4) * (palette.length - 1))
-        points.push({ x, y, color: palette[colorIndex] })
-
-        // Add satellite points for crystal structure
-        for (let i = 0; i < 6; i++) {
-          const angle = (i / 6) * 2 * Math.PI
-          const satelliteR = 8 + rng.range(-2, 2)
-          const sx = x + satelliteR * Math.cos(angle)
-          const sy = y + satelliteR * Math.sin(angle)
-          points.push({ x: sx, y: sy, color: palette[colorIndex] })
-        }
-      }
-    }
-  }
-
-  return points
-}
-
-function generateFlowFieldInternal(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string }> {
-  const points: Array<{ x: number; y: number; color: string }> = []
-  const palette = colorPalettes[params.colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-
-  // Generate flow field vectors
-  const gridSize = 20
-  const stepSize = 2
-  const maxSteps = 50
-
-  for (let i = 0; i < params.numSamples / maxSteps; i++) {
-    let x = rng.range(-200, 200)
-    let y = rng.range(-200, 200)
-
-    for (let step = 0; step < maxSteps; step++) {
-      // Flow field function - creates swirling patterns
-      const angle = Math.sin(x * 0.01) * Math.cos(y * 0.01) * Math.PI * 2 + Math.sin(x * 0.005 + y * 0.005) * Math.PI
-
-      const flowX = Math.cos(angle) * stepSize
-      const flowY = Math.sin(angle) * stepSize
-
-      x += flowX + rng.range(-1, 1) * params.noiseScale
-      y += flowY + rng.range(-1, 1) * params.noiseScale
-
-      const colorIndex = Math.floor((step / maxSteps) * (palette.length - 1))
-      points.push({ x, y, color: palette[colorIndex] })
-    }
-  }
-
-  return points
-}
-
-function generateAttractor(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string }> {
-  const points: Array<{ x: number; y: number; color: string }> = []
-  const palette = colorPalettes[params.colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-
-  // Rössler attractor
-  let x = 1,
-    y = 1,
-    z = 1
-  const a = 0.2,
-    b = 0.2,
-    c = 5.7
-  const dt = 0.01
-
-  for (let i = 0; i < params.numSamples; i++) {
-    const dx = (-y - z) * dt
-    const dy = (x + a * y) * dt
-    const dz = (b + z * (x - c)) * dt
-
-    x += dx + rng.range(-0.1, 0.1) * params.noiseScale
-    y += dy + rng.range(-0.1, 0.1) * params.noiseScale
-    z += dz + rng.range(-0.1, 0.1) * params.noiseScale
-
-    const colorIndex = Math.floor((i / params.numSamples) * (palette.length - 1))
-    points.push({ x: x * 10, y: y * 10, color: palette[colorIndex] })
-  }
-
-  return points
-}
-
-function getBackgroundColor(colorScheme: string): string {
-  const palette = colorPalettes[colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-  return palette[0]
-}
-
-function getStrokeColor(colorScheme: string): string {
-  const palette = colorPalettes[colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-  return palette[palette.length - 1]
-}
-
+// Main generation functions
 export function generateFlowField(params: GenerationParams): string {
   const plotter = new MathPlotter({
     width: 800,
@@ -888,46 +628,40 @@ export function generateFlowField(params: GenerationParams): string {
     strokeColor: getStrokeColor(params.colorScheme),
   })
 
-  // Generate points using the dataset system
-  const datasetPoints = generateDataset(params)
-
   const paths: string[] = []
   const colors: string[] = []
 
-  // Convert dataset points to SVG paths
-  if (datasetPoints.length > 0) {
-    // Group points by color for efficient rendering
-    const colorGroups: { [color: string]: Array<{ x: number; y: number }> } = {}
+  // Generate different mathematical patterns based on dataset
+  switch (params.dataset) {
+    case "spirals":
+      const spiralPoints = plotter.generateFibonacciSpiral(params.numSamples, 10)
+      paths.push(plotter.pointsToPath(spiralPoints))
+      colors.push(getStrokeColor(params.colorScheme))
+      break
 
-    datasetPoints.forEach((point) => {
-      if (!colorGroups[point.color]) {
-        colorGroups[point.color] = []
-      }
-      colorGroups[point.color].push({ x: point.x + 400, y: point.y + 400 }) // Center in 800x800 canvas
-    })
+    case "fractal":
+      const fractalPath = plotter.generateFractalTree(8, 100, -Math.PI / 2)
+      paths.push(fractalPath)
+      colors.push(getStrokeColor(params.colorScheme))
+      break
 
-    // Create paths for each color group
-    Object.entries(colorGroups).forEach(([color, points]) => {
-      if (points.length > 1) {
-        const path = plotter.pointsToPath(points)
-        paths.push(path)
-        colors.push(color)
-      } else if (points.length === 1) {
-        // Single point as small circle
-        const point = points[0]
-        paths.push(
-          `M ${point.x - 1} ${point.y} A 1 1 0 1 1 ${point.x + 1} ${point.y} A 1 1 0 1 1 ${point.x - 1} ${point.y}`,
-        )
-        colors.push(color)
-      }
-    })
-  }
+    case "mandelbrot":
+      const mandelbrotPoints = plotter.generateMandelbrotSet(200, 200, 50)
+      paths.push(plotter.pointsToPath(mandelbrotPoints))
+      colors.push(getStrokeColor(params.colorScheme))
+      break
 
-  // Fallback to original generation if no points
-  if (paths.length === 0) {
-    const spiralPoints = plotter.generateFibonacciSpiral(params.numSamples, 10)
-    paths.push(plotter.pointsToPath(spiralPoints))
-    colors.push(getStrokeColor(params.colorScheme))
+    case "lorenz":
+      const lorenzPoints = plotter.generateLorenzAttractor(params.numSamples, params.timeStep)
+      paths.push(plotter.pointsToPath(lorenzPoints))
+      colors.push(getStrokeColor(params.colorScheme))
+      break
+
+    default:
+      // Default to spiral
+      const defaultPoints = plotter.generateFibonacciSpiral(params.numSamples, 10)
+      paths.push(plotter.pointsToPath(defaultPoints))
+      colors.push(getStrokeColor(params.colorScheme))
   }
 
   return plotter.generateSVG(paths, colors)
@@ -950,10 +684,10 @@ export function generateDomeProjection(params: GenerationParams): string {
  * Perfect for VR environments, skyboxes, and 360° viewers like Blockade Labs
  */
 export function generate360Panorama(params: GenerationParams): string {
-  const datasetPoints = generateDataset(params)
+  const points = generateDataset(params)
 
   // Apply stereographic projection
-  const projectedPoints = datasetPoints.map((point) => {
+  const projectedPoints = points.map((point) => {
     if (params.panoramaFormat === "stereographic" && params.stereographicPerspective) {
       const projected = stereographicProjection(point.x, point.y, params.stereographicPerspective)
       return { ...point, x: projected.x, y: projected.y }
@@ -982,25 +716,1184 @@ export function generate360Panorama(params: GenerationParams): string {
   return svg
 }
 
-// Stereographic projection helpers
-function stereographicProjection(x: number, y: number, perspective: string): { x: number; y: number } {
-  if (perspective === "tunnel") {
-    // Tunnel projection (looking up)
-    const r = Math.sqrt(x * x + y * y)
-    const theta = Math.atan2(y, x)
-    const newR = 200 / (1 + r / 100)
-    return {
-      x: newR * Math.cos(theta),
-      y: newR * Math.sin(theta),
-    }
-  } else {
-    // Little planet projection (looking down)
-    const r = Math.sqrt(x * x + y * y)
-    const theta = Math.atan2(y, x)
-    const newR = r / (1 + r / 200)
-    return {
-      x: newR * Math.cos(theta),
-      y: newR * Math.sin(theta),
+/**
+ * generateStereographicProjection – creates "little planet" or "tunnel" stereographic projections
+ * Perfect for social media and artistic stereographic effects like the reference images
+ */
+export function generateStereographicProjection(params: GenerationParams): string {
+  // Stereographic projection creates the "little planet" or "tunnel" effect
+  const dimensions = getActualDimensions(params.panoramaResolution)
+  const size = Math.min(dimensions.width, dimensions.height)
+  const center = size / 2
+  const radius = size / 2 - 10
+  const colours = colorPalettes[params.colorScheme as keyof typeof colorPalettes] ?? colorPalettes.plasma
+  const random = seededRandom(params.seed)
+  const isTunnel = params.stereographicPerspective === "tunnel"
+
+  // Generate mathematical patterns for stereographic transformation
+  const pathElements: string[] = []
+  const backgroundElements: string[] = []
+
+  // Create realistic ground/landscape base
+  const groundElements: string[] = []
+
+  // Generate ground texture based on scenario and perspective
+  switch (params.scenario) {
+    case "urban":
+    case "architectural":
+      // Urban ground with roads and buildings
+      if (isTunnel) {
+        addUrbanTunnelElements(groundElements, size, center, radius, colours, random)
+      } else {
+        addUrbanStereographicElements(groundElements, size, center, radius, colours, random)
+      }
+      break
+    case "landscape":
+    case "botanical":
+      // Natural landscape with grass and trees
+      if (isTunnel) {
+        addLandscapeTunnelElements(groundElements, size, center, radius, colours, random)
+      } else {
+        addLandscapeStereographicElements(groundElements, size, center, radius, colours, random)
+      }
+      break
+    case "geological":
+      // Rocky/mineral ground
+      if (isTunnel) {
+        addGeologicalTunnelElements(groundElements, size, center, radius, colours, random)
+      } else {
+        addGeologicalStereographicElements(groundElements, size, center, radius, colours, random)
+      }
+      break
+    default:
+      // Default to mixed landscape
+      if (isTunnel) {
+        addUrbanTunnelElements(groundElements, size, center, radius, colours, random)
+      } else {
+        addLandscapeStereographicElements(groundElements, size, center, radius, colours, random)
+      }
+  }
+
+  // Add mathematical flow patterns transformed to stereographic
+  const layers = 4
+  const spiralsPerLayer = 6
+
+  for (let layer = 0; layer < layers; layer++) {
+    for (let spiral = 0; spiral < spiralsPerLayer; spiral++) {
+      const colorIndex = (layer + spiral) % colours.length
+      const color = colours[colorIndex]
+
+      let path = ""
+      const points = Math.floor(params.numSamples / (layers * spiralsPerLayer))
+
+      for (let i = 0; i <= points; i++) {
+        const t = i / points
+
+        // Generate mathematical pattern
+        const angle = t * 4 * Math.PI + (spiral / spiralsPerLayer) * 2 * Math.PI
+        const r = (t * 0.8 + 0.1) * radius
+
+        // Apply stereographic transformation
+        // Map from sphere to plane using stereographic projection
+        const sphereR = r / radius // Normalize to 0-1
+        const sphereTheta = angle
+
+        // Stereographic projection formula
+        const projR = (2 * sphereR) / (1 + sphereR * sphereR)
+        const finalR = projR * radius * 0.9
+
+        // Add mathematical variations
+        const mathVariation = Math.sin(angle * 3 + layer) * Math.cos(angle * 2 + spiral) * 20
+        const noise = Math.sin(angle * 10 + params.seed * 0.01) * params.noiseScale * 15
+
+        const x = center + (finalR + mathVariation + noise) * Math.cos(sphereTheta)
+        const y = center + (finalR + mathVariation + noise) * Math.sin(sphereTheta)
+
+        // Ensure points stay within the circle
+        const distFromCenter = Math.sqrt((x - center) ** 2 + (y - center) ** 2)
+        if (distFromCenter <= radius * 0.95) {
+          if (i === 0) {
+            path = `M ${x.toFixed(2)} ${y.toFixed(2)}`
+          } else {
+            path += ` L ${x.toFixed(2)} ${y.toFixed(2)}`
+          }
+        }
+      }
+
+      if (path) {
+        pathElements.push(
+          `<path d="${path}" fill="none" stroke="${color}" stroke-width="3" stroke-opacity="0.7" stroke-linecap="round"/>`,
+        )
+      }
     }
   }
+
+  // Add atmospheric effects around the edge
+  const atmosphereElements: string[] = []
+  for (let i = 0; i < 20; i++) {
+    const angle = (i / 20) * 2 * Math.PI
+    const r = radius * (0.85 + Math.random() * 0.1)
+    const x = center + r * Math.cos(angle)
+    const y = center + r * Math.sin(angle)
+    const size = Math.random() * 3 + 1
+    const opacity = Math.random() * 0.5 + 0.3
+
+    atmosphereElements.push(
+      `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${size.toFixed(1)}" fill="${colours[colours.length - 1]}" opacity="${opacity.toFixed(2)}"/>`,
+    )
+  }
+
+  const perspectiveLabel = isTunnel ? "TUNNEL" : "LITTLE PLANET"
+
+  return `
+    <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="stereographicGradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" style="stop-color:${isTunnel ? colours[colours.length - 1] : colours[2] || colours[0]};stop-opacity:0.8"/>
+          <stop offset="70%" style="stop-color:${colours[1]};stop-opacity:0.4"/>
+          <stop offset="100%" style="stop-color:${colours[0]};stop-opacity:0.9"/>
+        </radialGradient>
+        <clipPath id="stereographicClip">
+          <circle cx="${center}" cy="${center}" r="${radius}" />
+        </clipPath>
+        <filter id="stereographicGlow">
+          <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+          <feMerge> 
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      
+      <!-- Background -->
+      <rect width="100%" height="100%" fill="${colours[0]}" />
+      <circle cx="${center}" cy="${center}" r="${radius}" fill="url(#stereographicGradient)" />
+      
+      <!-- Main content clipped to circle -->
+      <g clip-path="url(#stereographicClip)" filter="url(#stereographicGlow)">
+        <!-- Ground/landscape elements -->
+        ${groundElements.join("\n        ")}
+        
+        <!-- Mathematical flow patterns -->
+        ${pathElements.join("\n        ")}
+        
+        <!-- Atmospheric effects -->
+        ${atmosphereElements.join("\n        ")}
+      </g>
+      
+      <!-- Border ring -->
+      <circle cx="${center}" cy="${center}" r="${radius}" 
+              fill="none" stroke="${colours[colours.length - 1]}" 
+              stroke-width="2" stroke-opacity="0.8"/>
+      
+      <!-- Center point -->
+      <circle cx="${center}" cy="${center}" r="2" fill="${colours[colours.length - 1]}" opacity="0.9"/>
+      
+      <!-- Label -->
+      <text x="${size - 10}" y="20" text-anchor="end" font-family="monospace" font-size="10" 
+            fill="${colours[colours.length - 1]}" opacity="0.7">
+        ${perspectiveLabel} ${params.panoramaResolution || "1080p"}
+      </text>
+    </svg>
+  `
+}
+
+// All the helper functions for generating different mathematical patterns
+function generateFibonacciSpirals(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const arms = 8
+  const turns = 12
+  const goldenRatio = 1.618033988749
+
+  for (let a = 0; a < arms; a++) {
+    let path = `M ${size / 2} ${size / 2}`
+    for (let t = 0; t <= 1; t += 1 / (params.numSamples || 4000)) {
+      const angle = turns * 2 * Math.PI * t * goldenRatio + (a * 2 * Math.PI) / arms
+      const radius = t * (size / 2) * 0.85 * Math.sqrt(t)
+
+      // Add noise based on scenario
+      const noiseX = Math.sin(t * 50 + a) * params.noiseScale * 20
+      const noiseY = Math.cos(t * 40 + a) * params.noiseScale * 20
+
+      const x = size / 2 + radius * Math.cos(angle) + noiseX
+      const y = size / 2 + radius * Math.sin(angle) + noiseY
+      path += ` L ${x.toFixed(2)} ${y.toFixed(2)}`
+    }
+    pathParts.push(
+      `<path d="${path}" fill="none" stroke="${paletteColor(colours, a)}" stroke-width="3" stroke-opacity="0.8" stroke-linecap="round"/>`,
+    )
+  }
+}
+
+function generateFractalPatterns(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  // Generate a fractal tree or similar pattern
+  const depth = 8
+  const initialLength = size / 4
+
+  function drawFractalBranch(x: number, y: number, angle: number, length: number, currentDepth: number) {
+    if (currentDepth <= 0 || length < 2) return
+
+    const endX = x + Math.cos(angle) * length
+    const endY = y + Math.sin(angle) * length
+
+    const colorIndex = (depth - currentDepth) % colours.length
+    pathParts.push(
+      `<line x1="${x}" y1="${y}" x2="${endX}" y2="${endY}" stroke="${colours[colorIndex]}" stroke-width="${currentDepth * 0.5}" stroke-opacity="0.8"/>`,
+    )
+
+    // Recursive branches
+    const angleOffset = Math.PI / 6 + ((random() - 0.5) * Math.PI) / 12
+    const lengthReduction = 0.7 + random() * 0.2
+
+    drawFractalBranch(endX, endY, angle - angleOffset, length * lengthReduction, currentDepth - 1)
+    drawFractalBranch(endX, endY, angle + angleOffset, length * lengthReduction, currentDepth - 1)
+  }
+
+  // Start from bottom center
+  drawFractalBranch(size / 2, size * 0.9, -Math.PI / 2, initialLength, depth)
+}
+
+function generateHyperbolicGeometry(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const center = size / 2
+  const maxRadius = size * 0.4
+  const numLines = 24
+
+  for (let i = 0; i < numLines; i++) {
+    const angle = (i / numLines) * 2 * Math.PI
+    let path = `M ${center} ${center}`
+
+    for (let t = 0; t <= 1; t += 0.01) {
+      const hyperbolicRadius = maxRadius * Math.tanh(t * 3)
+      const x = center + hyperbolicRadius * Math.cos(angle + t * params.noiseScale * 10)
+      const y = center + hyperbolicRadius * Math.sin(angle + t * params.noiseScale * 10)
+      path += ` L ${x.toFixed(2)} ${y.toFixed(2)}`
+    }
+
+    pathParts.push(
+      `<path d="${path}" fill="none" stroke="${colours[i % colours.length]}" stroke-width="2" stroke-opacity="0.7"/>`,
+    )
+  }
+}
+
+function generateGaussianFields(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 40
+  const step = size / gridSize
+
+  for (let x = 0; x < gridSize; x++) {
+    for (let y = 0; y < gridSize; y++) {
+      const centerX = size / 2
+      const centerY = size / 2
+      const px = x * step
+      const py = y * step
+
+      const distance = Math.sqrt((px - centerX) ** 2 + (py - centerY) ** 2)
+      const gaussian = Math.exp(-(distance * distance) / (2 * (size / 4) ** 2))
+      const intensity = gaussian * (1 + params.noiseScale * (random() - 0.5))
+
+      if (intensity > 0.1) {
+        const radius = intensity * 8
+        const colorIndex = Math.floor(intensity * colours.length)
+
+        pathParts.push(
+          `<circle cx="${px}" cy="${py}" r="${radius}" fill="${colours[colorIndex]}" opacity="${intensity * 0.8}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateCellularAutomata(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 60
+  const cellSize = size / gridSize
+  let grid: boolean[][] = []
+
+  // Initialize grid
+  for (let x = 0; x < gridSize; x++) {
+    grid[x] = []
+    for (let y = 0; y < gridSize; y++) {
+      grid[x][y] = random() > 0.6
+    }
+  }
+
+  // Apply cellular automata rules
+  for (let generation = 0; generation < 5; generation++) {
+    const newGrid: boolean[][] = []
+    for (let x = 0; x < gridSize; x++) {
+      newGrid[x] = []
+      for (let y = 0; y < gridSize; y++) {
+        let neighbors = 0
+        for (let dx = -1; dx <= 1; dx++) {
+          for (let dy = -1; dy <= 1; dy++) {
+            if (dx === 0 && dy === 0) continue
+            const nx = x + dx
+            const ny = y + dy
+            if (nx >= 0 && nx < gridSize && ny >= 0 && ny < gridSize && grid[nx][ny]) {
+              neighbors++
+            }
+          }
+        }
+        newGrid[x][y] = neighbors >= 4 || (grid[x][y] && neighbors >= 2)
+      }
+    }
+    grid = newGrid
+  }
+
+  // Render grid
+  for (let x = 0; x < gridSize; x++) {
+    for (let y = 0; y < gridSize; y++) {
+      if (grid[x][y]) {
+        const px = x * cellSize
+        const py = y * cellSize
+        const colorIndex = (x + y) % colours.length
+
+        pathParts.push(
+          `<rect x="${px}" y="${py}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="0.8"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateVoronoiDiagram(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const numSites = Math.min(50, Math.max(10, Math.floor(params.numSamples / 100)))
+  const sites: Array<{ x: number; y: number; color: string }> = []
+
+  // Generate random sites
+  for (let i = 0; i < numSites; i++) {
+    sites.push({
+      x: random() * size,
+      y: random() * size,
+      color: colours[i % colours.length],
+    })
+  }
+
+  // Create Voronoi cells (simplified)
+  for (let i = 0; i < sites.length; i++) {
+    const site = sites[i]
+    const cellPath = generateVoronoiCell(site, sites, size, random)
+    pathParts.push(
+      `<path d="${cellPath}" fill="${site.color}" fill-opacity="0.3" stroke="${site.color}" stroke-width="1"/>`,
+    )
+  }
+}
+
+function generateVoronoiCell(
+  site: { x: number; y: number },
+  allSites: Array<{ x: number; y: number }>,
+  size: number,
+  random: () => number,
+): string {
+  // Simplified Voronoi cell generation
+  const points: Array<{ x: number; y: number }> = []
+  const numPoints = 8
+
+  for (let i = 0; i < numPoints; i++) {
+    const angle = (i / numPoints) * 2 * Math.PI
+    const radius = 30 + random() * 40
+    points.push({
+      x: site.x + Math.cos(angle) * radius,
+      y: site.y + Math.sin(angle) * radius,
+    })
+  }
+
+  let path = `M ${points[0].x} ${points[0].y}`
+  for (let i = 1; i < points.length; i++) {
+    path += ` L ${points[i].x} ${points[i].y}`
+  }
+  path += " Z"
+  return path
+}
+
+function generatePerlinNoise(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 32
+  const step = size / gridSize
+
+  for (let x = 0; x < gridSize; x++) {
+    for (let y = 0; y < gridSize; y++) {
+      const noiseValue = simplexNoise(x * 0.1, y * 0.1, params.seed)
+      const intensity = (noiseValue + 1) / 2 // Normalize to 0-1
+
+      if (intensity > 0.3) {
+        const px = x * step
+        const py = y * step
+        const radius = intensity * 8
+        const colorIndex = Math.floor(intensity * colours.length)
+
+        pathParts.push(
+          `<circle cx="${px}" cy="${py}" r="${radius}" fill="${colours[colorIndex]}" opacity="${intensity * 0.8}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateMandelbrotSet(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const maxIterations = 100
+  const zoom = 200
+  const centerX = size / 2
+  const centerY = size / 2
+
+  for (let px = 0; px < size; px += 2) {
+    for (let py = 0; py < size; py += 2) {
+      const x0 = (px - centerX) / zoom - 0.5
+      const y0 = (py - centerY) / zoom
+
+      let x = 0
+      let y = 0
+      let iteration = 0
+
+      while (x * x + y * y <= 4 && iteration < maxIterations) {
+        const xtemp = x * x - y * y + x0
+        y = 2 * x * y + y0
+        x = xtemp
+        iteration++
+      }
+
+      if (iteration < maxIterations) {
+        const colorIndex = iteration % colours.length
+        const opacity = 1 - iteration / maxIterations
+        pathParts.push(
+          `<rect x="${px}" y="${py}" width="2" height="2" fill="${colours[colorIndex]}" opacity="${opacity}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateLorenzAttractor(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const sigma = 10
+  const rho = 28
+  const beta = 8 / 3
+  const dt = 0.01
+  const scale = 8
+
+  let x = 1,
+    y = 1,
+    z = 1
+  let path = ""
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const dx = sigma * (y - x) * dt
+    const dy = (x * (rho - z) - y) * dt
+    const dz = (x * y - beta * z) * dt
+
+    x += dx
+    y += dy
+    z += dz
+
+    const px = size / 2 + x * scale
+    const py = size / 2 + y * scale
+
+    if (i === 0) {
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    } else {
+      path += ` L ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+
+    if (i % 1000 === 0 && i > 0) {
+      const colorIndex = Math.floor(i / 1000) % colours.length
+      pathParts.push(
+        `<path d="${path}" fill="none" stroke="${colours[colorIndex]}" stroke-width="0.5" stroke-opacity="0.8"/>`,
+      )
+      path = `M ${px.toFixed(2)} ${py.toFixed(2)}`
+    }
+  }
+}
+
+function generateJuliaSet(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const maxIterations = 100
+  const zoom = 200
+  const centerX = size / 2
+  const centerY = size / 2
+  const cx = -0.7269
+  const cy = 0.1889
+
+  for (let px = 0; px < size; px += 2) {
+    for (let py = 0; py < size; py += 2) {
+      let x = (px - centerX) / zoom
+      let y = (py - centerY) / zoom
+      let iteration = 0
+
+      while (x * x + y * y <= 4 && iteration < maxIterations) {
+        const xtemp = x * x - y * y + cx
+        y = 2 * x * y + cy
+        x = xtemp
+        iteration++
+      }
+
+      if (iteration < maxIterations) {
+        const colorIndex = iteration % colours.length
+        const opacity = 1 - iteration / maxIterations
+        pathParts.push(
+          `<rect x="${px}" y="${py}" width="2" height="2" fill="${colours[colorIndex]}" opacity="${opacity}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateReactionDiffusion(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const gridSize = 64
+  const step = size / gridSize
+
+  // Simplified reaction-diffusion pattern
+  for (let x = 0; x < gridSize; x++) {
+    for (let y = 0; y < gridSize; y++) {
+      const u = Math.sin(x * 0.2) * Math.cos(y * 0.2)
+      const v = Math.cos(x * 0.15) * Math.sin(y * 0.25)
+
+      const concentration = (u + v + 2) / 4 // Normalize
+
+      if (concentration > 0.4) {
+        const px = x * step
+        const py = y * step
+        const radius = concentration * 6
+        const colorIndex = Math.floor(concentration * colours.length)
+
+        pathParts.push(
+          `<circle cx="${px}" cy="${py}" r="${radius}" fill="${colours[colorIndex]}" opacity="${concentration * 0.7}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function generateWaveInterference(
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  const numSources = 4
+  const sources: Array<{ x: number; y: number; frequency: number; amplitude: number }> = []
+
+  // Create wave sources
+  for (let i = 0; i < numSources; i++) {
+    sources.push({
+      x: random() * size,
+      y: random() * size,
+      frequency: 0.02 + random() * 0.03,
+      amplitude: 50 + random() * 50,
+    })
+  }
+
+  // Generate interference pattern
+  for (let x = 0; x < size; x += 4) {
+    for (let y = 0; y < size; y += 4) {
+      let totalAmplitude = 0
+
+      sources.forEach((source) => {
+        const distance = Math.sqrt((x - source.x) ** 2 + (y - source.y) ** 2)
+        const wave = (Math.sin(distance * source.frequency) * source.amplitude) / (1 + distance * 0.01)
+        totalAmplitude += wave
+      })
+
+      const intensity = (totalAmplitude + 200) / 400 // Normalize
+
+      if (intensity > 0.3) {
+        const colorIndex = Math.floor(intensity * colours.length)
+        pathParts.push(
+          `<rect x="${x}" y="${y}" width="4" height="4" fill="${colours[colorIndex]}" opacity="${intensity * 0.8}"/>`,
+        )
+      }
+    }
+  }
+}
+
+function applyScenarioEffects(
+  backgroundElements: string[],
+  pathParts: string[],
+  size: number,
+  colours: readonly string[],
+  params: GenerationParams,
+  random: () => number,
+) {
+  switch (params.scenario) {
+    case "landscape":
+      addLandscapeElements(backgroundElements, size, colours, random)
+      break
+    case "architectural":
+      addArchitecturalElements(backgroundElements, size, colours, random)
+      break
+    case "geological":
+      addGeologicalElements(backgroundElements, size, colours, random)
+      break
+    case "botanical":
+      addBotanicalElements(backgroundElements, size, colours, random)
+      break
+    case "atmospheric":
+      addAtmosphericElements(backgroundElements, size, colours, random)
+      break
+    case "crystalline":
+      addCrystallineElements(backgroundElements, size, colours, random)
+      break
+    case "textile":
+      addTextileElements(backgroundElements, size, colours, random)
+      break
+    case "metallic":
+      addMetallicElements(backgroundElements, size, colours, random)
+      break
+    case "organic":
+      addOrganicElements(backgroundElements, size, colours, random)
+      break
+    case "urban":
+      addUrbanElements(backgroundElements, size, colours, random)
+      break
+    case "marine":
+      addMarineElements(backgroundElements, size, colours, random)
+      break
+  }
+}
+
+function addLandscapeElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add mountain silhouettes
+  let mountainPath = `M 0 ${size * 0.7}`
+  for (let x = 0; x <= size; x += 20) {
+    const height = size * 0.7 - random() * size * 0.3
+    mountainPath += ` L ${x} ${height}`
+  }
+  mountainPath += ` L ${size} ${size} L 0 ${size} Z`
+
+  backgroundElements.push(
+    `<path d="${mountainPath}" fill="${colours[1]}" opacity="0.6"/>`,
+    `<circle cx="${size * 0.8}" cy="${size * 0.2}" r="30" fill="${colours[colours.length - 1]}" opacity="0.8"/>`, // Sun
+  )
+}
+
+function addArchitecturalElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add geometric building shapes
+  for (let i = 0; i < 5; i++) {
+    const x = random() * size * 0.8
+    const y = size * 0.5 + random() * size * 0.3
+    const width = 40 + random() * 60
+    const height = 60 + random() * 100
+
+    backgroundElements.push(
+      `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${colours[i % colours.length]}" opacity="0.4" stroke="${colours[(i + 1) % colours.length]}" stroke-width="2"/>`,
+    )
+  }
+}
+
+function addGeologicalElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add crystal-like formations
+  for (let i = 0; i < 8; i++) {
+    const cx = random() * size
+    const cy = random() * size
+    const numSides = 6 + Math.floor(random() * 3)
+    const radius = 20 + random() * 40
+
+    let crystalPath = ""
+    for (let j = 0; j < numSides; j++) {
+      const angle = (j / numSides) * 2 * Math.PI
+      const x = cx + Math.cos(angle) * radius
+      const y = cy + Math.sin(angle) * radius
+
+      if (j === 0) {
+        crystalPath = `M ${x} ${y}`
+      } else {
+        crystalPath += ` L ${x} ${y}`
+      }
+    }
+    crystalPath += " Z"
+
+    backgroundElements.push(
+      `<path d="${crystalPath}" fill="${colours[i % colours.length]}" opacity="0.5" stroke="${colours[(i + 1) % colours.length]}" stroke-width="1"/>`,
+    )
+  }
+}
+
+function addBotanicalElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add leaf-like shapes
+  for (let i = 0; i < 12; i++) {
+    const x = random() * size
+    const y = random() * size
+    const leafSize = 15 + random() * 25
+
+    backgroundElements.push(
+      `<ellipse cx="${x}" cy="${y}" rx="${leafSize}" ry="${leafSize * 2}" fill="${colours[i % colours.length]}" opacity="0.6" transform="rotate(${random() * 360} ${x} ${y})"/>`,
+    )
+  }
+}
+
+function addAtmosphericElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add cloud-like formations
+  for (let i = 0; i < 6; i++) {
+    const x = random() * size
+    const y = random() * size * 0.5
+    const cloudSize = 40 + random() * 60
+
+    // Create cloud with multiple circles
+    for (let j = 0; j < 4; j++) {
+      const offsetX = (random() - 0.5) * cloudSize
+      const offsetY = (random() - 0.5) * cloudSize * 0.5
+      const radius = cloudSize * (0.3 + random() * 0.4)
+
+      backgroundElements.push(
+        `<circle cx="${x + offsetX}" cy="${y + offsetY}" r="${radius}" fill="${colours[i % colours.length]}" opacity="0.3"/>`,
+      )
+    }
+  }
+}
+
+function addCrystallineElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add geometric crystal patterns
+  for (let i = 0; i < 10; i++) {
+    const x = random() * size
+    const y = random() * size
+    const size1 = 10 + random() * 20
+    const size2 = 10 + random() * 20
+
+    backgroundElements.push(
+      `<rect x="${x - size1 / 2}" y="${y - size2 / 2}" width="${size1}" height="${size2}" fill="${colours[i % colours.length]}" opacity="0.7" transform="rotate(${random() * 45} ${x} ${y})"/>`,
+    )
+  }
+}
+
+function addTextileElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add woven pattern
+  const gridSize = 20
+  for (let x = 0; x < size; x += gridSize) {
+    for (let y = 0; y < size; y += gridSize) {
+      if ((Math.floor(x / gridSize) + Math.floor(y / gridSize)) % 2 === 0) {
+        backgroundElements.push(
+          `<rect x="${x}" y="${y}" width="${gridSize}" height="${gridSize}" fill="${colours[0]}" opacity="0.2"/>`,
+        )
+      }
+    }
+  }
+}
+
+function addMetallicElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add metallic shine effects
+  for (let i = 0; i < 5; i++) {
+    const x1 = random() * size
+    const y1 = random() * size
+    const x2 = x1 + (random() - 0.5) * 100
+    const y2 = y1 + (random() - 0.5) * 100
+
+    backgroundElements.push(
+      `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${colours[colours.length - 1]}" stroke-width="3" opacity="0.6"/>`,
+    )
+  }
+}
+
+function addOrganicElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add organic blob shapes
+  for (let i = 0; i < 8; i++) {
+    const cx = random() * size
+    const cy = random() * size
+    const radius = 20 + random() * 40
+
+    let blobPath = ""
+    const numPoints = 8
+    for (let j = 0; j < numPoints; j++) {
+      const angle = (j / numPoints) * 2 * Math.PI
+      const r = radius * (0.7 + random() * 0.6)
+      const x = cx + Math.cos(angle) * r
+      const y = cy + Math.sin(angle) * r
+
+      if (j === 0) {
+        blobPath = `M ${x} ${y}`
+      } else {
+        blobPath += ` Q ${cx + Math.cos(angle - Math.PI / numPoints) * radius} ${cy + Math.sin(angle - Math.PI / numPoints) * radius} ${x} ${y}`
+      }
+    }
+    blobPath += " Z"
+
+    backgroundElements.push(`<path d="${blobPath}" fill="${colours[i % colours.length]}" opacity="0.4"/>`)
+  }
+}
+
+function addUrbanElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add grid pattern for urban feel
+  const gridSpacing = 40
+  for (let x = 0; x <= size; x += gridSpacing) {
+    backgroundElements.push(
+      `<line x1="${x}" y1="0" x2="${x}" y2="${size}" stroke="${colours[1]}" stroke-width="0.5" opacity="0.3"/>`,
+    )
+  }
+  for (let y = 0; y <= size; y += gridSpacing) {
+    backgroundElements.push(
+      `<line x1="0" y1="${y}" x2="${size}" y2="${y}" stroke="${colours[1]}" stroke-width="0.5" opacity="0.3"/>`,
+    )
+  }
+}
+
+function addMarineElements(
+  backgroundElements: string[],
+  size: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add wave-like patterns
+  for (let i = 0; i < 6; i++) {
+    const y = size * 0.3 + i * size * 0.1
+    let wavePath = `M 0 ${y}`
+
+    for (let x = 0; x <= size; x += 10) {
+      const waveHeight = Math.sin((x / size) * 4 * Math.PI + i) * 20
+      wavePath += ` L ${x} ${y + waveHeight}`
+    }
+
+    backgroundElements.push(
+      `<path d="${wavePath}" fill="none" stroke="${colours[i % colours.length]}" stroke-width="2" opacity="0.6"/>`,
+    )
+  }
+}
+
+function generateScenarioFilters(params: GenerationParams, colours: readonly string[]): string {
+  switch (params.scenario) {
+    case "metallic":
+      return `
+        <filter id="metallic">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1"/>
+          <feColorMatrix values="1.2 0 0 0 0  0 1.2 0 0 0  0 0 1.2 0 0  0 0 0 1 0"/>
+        </filter>
+      `
+    case "atmospheric":
+      return `
+        <filter id="atmospheric">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+          <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1.1 0 0  0 0 0 0.8 0"/>
+        </filter>
+      `
+    default:
+      return ""
+  }
+}
+
+// Simplified noise function
+function simplexNoise(x: number, y: number, seed: number): number {
+  const n = Math.sin(x * 12.9898 + y * 78.233 + seed) * 43758.5453
+  return (n - Math.floor(n)) * 2 - 1
+}
+
+// Helper functions for stereographic projection elements
+function addUrbanStereographicElements(
+  elements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add building-like structures around the perimeter (little planet view)
+  const numBuildings = 12
+  for (let i = 0; i < numBuildings; i++) {
+    const angle = (i / numBuildings) * 2 * Math.PI
+    const buildingR = radius * (0.6 + random() * 0.2)
+    const buildingWidth = 15 + random() * 20
+    const buildingHeight = 20 + random() * 30
+
+    const x = center + buildingR * Math.cos(angle) - buildingWidth / 2
+    const y = center + buildingR * Math.sin(angle) - buildingHeight / 2
+
+    elements.push(
+      `<rect x="${x}" y="${y}" width="${buildingWidth}" height="${buildingHeight}"
+        fill="${colours[i % colours.length]}" opacity="0.6"
+        stroke="${colours[(i + 1) % colours.length]}" stroke-width="1"/>`,
+    )
+  }
+  // Add road/path in centre
+  const roadElements: string[] = []
+  const roadWidth = radius * 0.2
+  roadElements.push(`<circle cx="${center}" cy="${center}" r="${roadWidth}" fill="#444" opacity="0.7"/>`)
+  elements.push(...roadElements)
+}
+
+function addLandscapeStereographicElements(
+  elements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add tree-like structures around the perimeter (little planet view)
+  const numTrees = 24
+  for (let i = 0; i < numTrees; i++) {
+    const angle = (i / numTrees) * 2 * Math.PI
+    const treeR = radius * (0.6 + random() * 0.2)
+    const trunkLen = 10 + random() * 20
+    const x = center + treeR * Math.cos(angle) - trunkLen / 2
+    const y = center + treeR * Math.sin(angle) - trunkLen / 2
+
+    elements.push(
+      `<rect x="${x}" y="${y}" width="${trunkLen}" height="${trunkLen}"
+        fill="${colours[i % colours.length]}" opacity="0.6"
+        stroke="${colours[(i + 1) % colours.length]}" stroke-width="1"/>`,
+    )
+  }
+}
+
+function addGeologicalStereographicElements(
+  elements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Add rock-like structures around the perimeter (little planet view)
+  const numRocks = 20
+  for (let i = 0; i < numRocks; i++) {
+    const angle = (i / numRocks) * 2 * Math.PI
+    const rockR = radius * (0.6 + random() * 0.2)
+    const rockLen = 10 + random() * 20
+    const x = center + rockR * Math.cos(angle) - rockLen / 2
+    const y = center + rockR * Math.sin(angle) - rockLen / 2
+
+    elements.push(
+      `<rect x="${x}" y="${y}" width="${rockLen}" height="${rockLen}"
+        fill="${colours[i % colours.length]}" opacity="0.6"
+        stroke="${colours[(i + 1) % colours.length]}" stroke-width="1"/>`,
+    )
+  }
+}
+
+function addUrbanTunnelElements(
+  elements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Buildings now point *inward* (looking up).  Draw simple blocks fading to centre.
+  const numBuildings = 16
+  for (let i = 0; i < numBuildings; i++) {
+    const angle = (i / numBuildings) * 2 * Math.PI
+    const dist = radius * (0.2 + random() * 0.3)
+    const height = radius * (0.6 + random() * 0.3)
+    const x1 = center + dist * Math.cos(angle)
+    const y1 = center + dist * Math.sin(angle)
+    const x2 = center + (dist + height) * Math.cos(angle)
+    const y2 = center + (dist + height) * Math.sin(angle)
+    elements.push(
+      `<polygon points="${x1},${y1} ${x2},${y2}"
+        fill="${colours[i % colours.length]}" opacity="0.5"/>`,
+    )
+  }
+}
+
+function addLandscapeTunnelElements(
+  elements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Simple tree silhouettes pointing inward
+  const numTrees = 24
+  for (let i = 0; i < numTrees; i++) {
+    const angle = (i / numTrees) * 2 * Math.PI
+    const dist = radius * (0.15 + random() * 0.25)
+    const trunkLen = radius * 0.5
+    const x1 = center + dist * Math.cos(angle)
+    const y1 = center + dist * Math.sin(angle)
+    const x2 = center + (dist + trunkLen) * Math.cos(angle)
+    const y2 = center + (dist + trunkLen) * Math.sin(angle)
+    elements.push(
+      `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+        stroke="${colours[2] || colours[0]}" stroke-width="2" opacity="0.6"/>`,
+    )
+  }
+}
+
+function addGeologicalTunnelElements(
+  elements: string[],
+  size: number,
+  center: number,
+  radius: number,
+  colours: readonly string[],
+  random: () => number,
+) {
+  // Rocky spikes pointing towards centre
+  const numRocks = 20
+  for (let i = 0; i < numRocks; i++) {
+    const angle = (i / numRocks) * 2 * Math.PI
+    const dist = radius * (0.1 + random() * 0.25)
+    const spikeLen = radius * (0.4 + random() * 0.2)
+    const baseX = center + dist * Math.cos(angle)
+    const baseY = center + dist * Math.sin(angle)
+    const tipX = center + (dist + spikeLen) * Math.cos(angle)
+    const tipY = center + (dist + spikeLen) * Math.sin(angle)
+    elements.push(
+      `<line x1="${baseX}" y1="${baseY}" x2="${tipX}" y2="${tipY}"
+        stroke="${colours[i % colours.length]}" stroke-width="3" opacity="0.5"/>`,
+    )
+  }
+}
+
+function getBackgroundColor(colorScheme: string): string {
+  const colorMap: Record<string, string> = {
+    plasma: "#0a0a0a",
+    quantum: "#000020",
+    cosmic: "#000010",
+    thermal: "#200000",
+    spectral: "#000000",
+    crystalline: "#f0f8ff",
+    bioluminescent: "#001122",
+    aurora: "#000011",
+    metallic: "#1a1a1a",
+    prismatic: "#000000",
+    monochromatic: "#ffffff",
+    infrared: "#100000",
+    lava: "#200000",
+    futuristic: "#000033",
+    forest: "#001100",
+    ocean: "#000033",
+    sunset: "#330000",
+    arctic: "#f0f8ff",
+    neon: "#000000",
+    vintage: "#2a1810",
+    toxic: "#001100",
+    ember: "#100000",
+  }
+  return colorMap[colorScheme] || "#000000"
+}
+
+function getStrokeColor(colorScheme: string): string {
+  const colorMap: Record<string, string> = {
+    plasma: "#ff00ff",
+    quantum: "#00ffff",
+    cosmic: "#8a2be2",
+    thermal: "#ff4500",
+    spectral: "#ff0000",
+    crystalline: "#87ceeb",
+    bioluminescent: "#00ff7f",
+    aurora: "#00ff00",
+    metallic: "#c0c0c0",
+    prismatic: "#ff69b4",
+    monochromatic: "#000000",
+    infrared: "#ff0000",
+    lava: "#ff6347",
+    futuristic: "#00ffff",
+    forest: "#228b22",
+    ocean: "#4169e1",
+    sunset: "#ffa500",
+    arctic: "#87ceeb",
+    neon: "#ff1493",
+    vintage: "#daa520",
+    toxic: "#adff2f",
+    ember: "#ff4500",
+  }
+  return colorMap[colorScheme] || "#ffffff"
 }
