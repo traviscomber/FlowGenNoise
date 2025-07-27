@@ -5,10 +5,27 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Sparkles, Settings, ImageIcon, Calculator } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { Separator } from "@/components/ui/separator"
+import { useToast } from "@/hooks/use-toast"
+import {
+  Sparkles,
+  Settings,
+  ImageIcon,
+  Calculator,
+  Download,
+  Zap,
+  Eye,
+  AlertCircle,
+  FileText,
+  CheckCircle,
+  Loader2,
+  Cpu,
+  Palette,
+} from "lucide-react"
 import { generateFlowField, generateDomeProjection as generateDomeSVG, type GenerationParams } from "@/lib/flow-model"
 import { ClientUpscaler } from "@/lib/client-upscaler"
-import { useToast } from "@/hooks/use-toast"
 
 interface GeneratedArt {
   svgContent: string
@@ -20,6 +37,8 @@ interface GeneratedArt {
   mode: "svg" | "ai"
   upscaleMethod?: "cloudinary" | "client" | "mathematical"
   customPrompt?: string
+  originalPrompt?: string
+  promptLength?: number
   timestamp: number
   id: string
   isDomeProjection?: boolean
@@ -33,12 +52,14 @@ interface GeneratedArt {
     resolution: string
     format: string
   }
+  estimatedFileSize?: string
+  is4K?: boolean
+  provider?: string
+  model?: string
 }
 
 // Helper function to generate 360 panorama SVG
 function generate360Panorama(params: GenerationParams): string {
-  // This would generate a stereographic projection SVG
-  // For now, return a basic SVG
   return generateFlowField(params)
 }
 
@@ -50,7 +71,23 @@ export function FlowArtGenerator() {
   const [isGeneratingDome, setIsGeneratingDome] = useState(false)
   const [isGenerating360, setIsGenerating360] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [mode, setMode] = useState<"svg" | "ai">("ai") // Default to AI mode for realistic results
+  const [mode, setMode] = useState<"svg" | "ai">("ai")
+  const [error, setError] = useState<string | null>(null)
+  const [downloadStatus, setDownloadStatus] = useState<string | null>(null)
+
+  // Enhanced generation parameters
+  const [dataset, setDataset] = useState("spirals")
+  const [scenario, setScenario] = useState("landscape")
+  const [colorScheme, setColorScheme] = useState("plasma")
+  const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
+  const [numSamples, setNumSamples] = useState(1000)
+  const [noiseScale, setNoiseScale] = useState(0.05)
+  const [timeStep, setTimeStep] = useState(0.01)
+
+  // AI provider settings
+  const [useReplicate, setUseReplicate] = useState(false)
+  const [replicateModel, setReplicateModel] = useState("stability-ai/sdxl")
+  const [enable4K, setEnable4K] = useState(false)
 
   // Dome projection settings
   const [domeEnabled, setDomeEnabled] = useState(false)
@@ -68,6 +105,12 @@ export function FlowArtGenerator() {
   const [gallery, setGallery] = useState<GeneratedArt[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 6
+
+  // AI Art prompt enhancement
+  const [customPrompt, setCustomPrompt] = useState("")
+  const [useCustomPrompt, setUseCustomPrompt] = useState(false)
+
+  const { toast } = useToast()
 
   // Load gallery from localStorage on mount
   useEffect(() => {
@@ -93,279 +136,17 @@ export function FlowArtGenerator() {
     setCurrentPage(1)
   }, [gallery.length])
 
-  // Generation parameters - separate dataset, scenario, and color palette
-  const [dataset, setDataset] = useState("spirals")
-  const [scenario, setScenario] = useState("urban")
-  const [colorScheme, setColorScheme] = useState("futuristic")
-  const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
-  const [numSamples, setNumSamples] = useState(4000)
-  const [noiseScale, setNoiseScale] = useState(0.05)
-  const [timeStep, setTimeStep] = useState(0.01)
-
-  // AI Art prompt enhancement
-  const [customPrompt, setCustomPrompt] = useState("")
-  const [useCustomPrompt, setUseCustomPrompt] = useState(false)
-
-  const { toast } = useToast()
-
   // Calculate pagination
   const totalPages = Math.ceil(gallery.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const currentItems = gallery.slice(startIndex, endIndex)
 
-  const enhancePrompt = useCallback(async () => {
-    setIsEnhancingPrompt(true)
-
-    try {
-      console.log("Enhancing prompt for:", { dataset, scenario, colorScheme, numSamples, noiseScale })
-
-      const response = await fetch("/api/enhance-prompt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          dataset,
-          scenario,
-          colorScheme,
-          numSamples,
-          noiseScale,
-          currentPrompt: customPrompt,
-          domeProjection: domeEnabled,
-          domeDiameter,
-          domeResolution,
-          panoramic360: panorama360Enabled,
-          panoramaResolution,
-          stereographicPerspective,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to enhance prompt: ${response.status}`)
-      }
-
-      const data = await response.json()
-      console.log("Enhanced prompt received:", data.enhancedPrompt)
-
-      setCustomPrompt(data.enhancedPrompt)
-      setUseCustomPrompt(true)
-
-      toast({
-        title: "Prompt Enhanced! ✨",
-        description: panorama360Enabled
-          ? "Mathematical concepts and stereographic projection details added to your prompt."
-          : domeEnabled
-            ? "Mathematical concepts and dome projection details added to your prompt."
-            : "Mathematical concepts and artistic details added to your prompt.",
-      })
-    } catch (error: any) {
-      console.error("Prompt enhancement error:", error)
-      toast({
-        title: "Enhancement Failed",
-        description: "Could not enhance prompt. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsEnhancingPrompt(false)
-    }
-  }, [
-    dataset,
-    scenario,
-    colorScheme,
-    numSamples,
-    noiseScale,
-    customPrompt,
-    domeEnabled,
-    domeDiameter,
-    domeResolution,
-    panorama360Enabled,
-    panoramaResolution,
-    stereographicPerspective,
-    toast,
-  ])
-
-  const generate360Panorama = useCallback(async () => {
-    if (!generatedArt) return
-
-    setIsGenerating360(true)
-    try {
-      console.log("Generating 360° panorama...")
-
-      const panoramaSpecs = {
-        resolution: panoramaResolution,
-        format: panoramaFormat,
-      }
-
-      // Generate 360° panorama version
-      const panoramaParams = {
-        ...generatedArt.params,
-        panoramic360: true,
-        panoramaResolution,
-        panoramaFormat,
-        stereographicPerspective,
-      }
-
-      let panorama360Url: string
-
-      if (generatedArt.mode === "svg") {
-        // Generate 360° panorama SVG
-        const panoramaSvgContent = generate360Panorama(panoramaParams)
-        const svgBlob = new Blob([panoramaSvgContent], { type: "image/svg+xml" })
-        panorama360Url = URL.createObjectURL(svgBlob)
-      } else {
-        // Generate AI art optimized for 360° panorama
-        const projectionType =
-          panoramaFormat === "stereographic"
-            ? stereographicPerspective === "tunnel"
-              ? "stereographic tunnel projection looking up at buildings"
-              : "stereographic little planet projection looking down"
-            : "360 degree panoramic view, equirectangular projection"
-
-        const response = await fetch("/api/generate-ai-art", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...panoramaParams,
-            customPrompt: useCustomPrompt
-              ? customPrompt + ` ${projectionType}, immersive environment, seamless wraparound`
-              : undefined,
-          }),
-        })
-
-        if (!response.ok) {
-          throw new Error(`360° panorama AI generation failed: ${response.status}`)
-        }
-
-        const data = await response.json()
-        panorama360Url = data.image
-      }
-
-      setGeneratedArt((prev) =>
-        prev
-          ? {
-              ...prev,
-              panorama360Url,
-              is360Panorama: true,
-              panoramaSpecs,
-            }
-          : null,
-      )
-
-      // Update gallery
-      setGallery((prev) =>
-        prev.map((art) =>
-          art.id === generatedArt.id ? { ...art, panorama360Url, is360Panorama: true, panoramaSpecs } : art,
-        ),
-      )
-
-      const formatDescription =
-        panoramaFormat === "stereographic"
-          ? `${stereographicPerspective} stereographic projection`
-          : "equirectangular panorama"
-
-      toast({
-        title: "360° Panorama Generated! 🌐",
-        description: `${panoramaResolution} ${formatDescription} ready for VR and immersive viewing.`,
-      })
-    } catch (error: any) {
-      console.error("360° panorama generation error:", error)
-      toast({
-        title: "360° Panorama Generation Failed",
-        description: error.message || "Failed to generate 360° panorama. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsGenerating360(false)
-    }
-  }, [generatedArt, panoramaResolution, panoramaFormat, stereographicPerspective, customPrompt, useCustomPrompt, toast])
-
-  const generateDomeProjection = useCallback(async () => {
-    if (!generatedArt) return
-
-    setIsGeneratingDome(true)
-    try {
-      console.log("Generating dome projection...")
-
-      const domeSpecs = {
-        diameter: domeDiameter,
-        resolution: domeResolution,
-        projectionType: domeProjectionType,
-      }
-
-      // Generate dome-optimized version
-      const domeParams = {
-        ...generatedArt.params,
-        domeProjection: true,
-        domeDiameter,
-        domeResolution,
-        projectionType: domeProjectionType,
-      }
-
-      let domeImageUrl: string
-
-      if (generatedArt.mode === "svg") {
-        // Generate dome-optimized SVG
-        const domeSvgContent = generateDomeSVG(domeParams)
-        const svgBlob = new Blob([domeSvgContent], { type: "image/svg+xml" })
-        domeImageUrl = URL.createObjectURL(svgBlob)
-      } else {
-        // Generate AI art optimized for dome
-        const response = await fetch("/api/generate-ai-art", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...domeParams,
-            customPrompt: useCustomPrompt
-              ? customPrompt + " optimized for dome projection, fisheye perspective, immersive 360-degree view"
-              : undefined,
-          }),
-        })
-
-        if (!response.ok) {
-          throw new Error(`Dome AI generation failed: ${response.status}`)
-        }
-
-        const data = await response.json()
-        domeImageUrl = data.image
-      }
-
-      setGeneratedArt((prev) =>
-        prev
-          ? {
-              ...prev,
-              domeImageUrl,
-              isDomeProjection: true,
-              domeSpecs,
-            }
-          : null,
-      )
-
-      // Update gallery
-      setGallery((prev) =>
-        prev.map((art) =>
-          art.id === generatedArt.id ? { ...art, domeImageUrl, isDomeProjection: true, domeSpecs } : art,
-        ),
-      )
-
-      toast({
-        title: "Dome Projection Generated! 🌐",
-        description: `${domeDiameter}m dome projection in ${domeResolution} resolution created.`,
-      })
-    } catch (error: any) {
-      console.error("Dome generation error:", error)
-      toast({
-        title: "Dome Generation Failed",
-        description: error.message || "Failed to generate dome projection. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsGeneratingDome(false)
-    }
-  }, [generatedArt, domeDiameter, domeResolution, domeProjectionType, customPrompt, useCustomPrompt, toast])
-
   const generateArt = useCallback(async () => {
     console.log("Generate button clicked! Mode:", mode)
     setIsGenerating(true)
     setProgress(0)
+    setError(null)
 
     try {
       const params: GenerationParams = {
@@ -397,7 +178,6 @@ export function FlowArtGenerator() {
         console.log("SVG generated, length:", svgContent.length)
 
         setProgress(50)
-        // Convert SVG to data URL
         const svgBlob = new Blob([svgContent], { type: "image/svg+xml" })
         const imageUrl = URL.createObjectURL(svgBlob)
         console.log("Blob URL created:", imageUrl)
@@ -450,33 +230,14 @@ export function FlowArtGenerator() {
         setGeneratedArt(newArt)
         setGallery((prev) => [newArt, ...prev])
 
-        const formatText = panorama360Enabled
-          ? panoramaFormat === "stereographic"
-            ? `${stereographicPerspective} stereographic projection in ${panoramaResolution}`
-            : `360° panorama in ${panoramaResolution}`
-          : domeEnabled
-            ? `${domeDiameter}m dome projection`
-            : "standard format"
-
         toast({
-          title: `${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)} Generated! 🎨`,
-          description: `Complex ${dataset} dataset with ${scenario === "pure" ? "advanced mathematical" : scenario} visualization in ${formatText}.`,
+          title: `Mathematical SVG Generated! 🎨`,
+          description: `${dataset} + ${scenario} visualization created with ${numSamples} data points.`,
         })
       } else {
-        // Generate AI art
+        // Generate AI art with enhanced mathematical prompts
         setProgress(20)
         console.log("Calling AI art API...")
-
-        const projectionDescription =
-          panorama360Enabled && panoramaFormat === "stereographic"
-            ? stereographicPerspective === "tunnel"
-              ? " stereographic tunnel projection looking up at buildings, fisheye perspective"
-              : " stereographic little planet projection looking down, tiny planet effect"
-            : panorama360Enabled
-              ? " 360 degree panoramic view, equirectangular projection, immersive skybox environment"
-              : domeEnabled
-                ? " optimized for dome projection, fisheye perspective, immersive 360-degree view"
-                : ""
 
         const requestBody = {
           dataset,
@@ -485,7 +246,7 @@ export function FlowArtGenerator() {
           seed,
           numSamples,
           noise: noiseScale,
-          customPrompt: useCustomPrompt ? customPrompt + projectionDescription : undefined,
+          customPrompt: useCustomPrompt ? customPrompt : undefined,
           domeProjection: domeEnabled,
           domeDiameter: domeEnabled ? domeDiameter : undefined,
           domeResolution: domeEnabled ? domeResolution : undefined,
@@ -495,6 +256,9 @@ export function FlowArtGenerator() {
           panoramaFormat: panorama360Enabled ? panoramaFormat : undefined,
           stereographicPerspective:
             panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
+          enable4K,
+          useReplicate,
+          replicateModel,
         }
 
         console.log("Sending AI request:", requestBody)
@@ -529,6 +293,12 @@ export function FlowArtGenerator() {
           params,
           mode: "ai" as const,
           customPrompt: useCustomPrompt ? customPrompt : undefined,
+          originalPrompt: data.originalPrompt,
+          promptLength: data.promptLength,
+          estimatedFileSize: data.estimatedFileSize,
+          is4K: data.is4K,
+          provider: data.provider,
+          model: data.model,
           timestamp: Date.now(),
           id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           isDomeProjection: domeEnabled,
@@ -551,27 +321,17 @@ export function FlowArtGenerator() {
         setGallery((prev) => [newArt, ...prev])
 
         setProgress(100)
-        const formatText = panorama360Enabled
-          ? panoramaFormat === "stereographic"
-            ? `${stereographicPerspective} stereographic projection in ${panoramaResolution}`
-            : `360° panoramic skybox in ${panoramaResolution}`
-          : domeEnabled
-            ? `${domeDiameter}m dome projection`
-            : `${colorScheme} palette`
+
+        const providerText = data.provider === "replicate" ? `Replicate (${data.model})` : "OpenAI DALL-E 3"
 
         toast({
-          title: "AI Art Generated! 🤖✨",
-          description: panorama360Enabled
-            ? `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} ${formatText} created.`
-            : domeEnabled
-              ? `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork optimized for ${domeDiameter}m dome projection.`
-              : useCustomPrompt
-                ? "Custom enhanced prompt artwork created!"
-                : `AI-enhanced ${dataset} + ${scenario === "pure" ? "pure mathematical" : scenario} artwork in ${colorScheme} palette.`,
+          title: data.is4K ? "4K Mathematical Art Generated! 🤖✨" : "Mathematical Art Generated! 🤖✨",
+          description: `${dataset} + ${scenario} created with ${providerText}${data.is4K ? " in 4K quality" : ""}.`,
         })
       }
     } catch (error: any) {
       console.error("Generation error:", error)
+      setError(error.message || "Failed to generate artwork")
       toast({
         title: "Generation Failed",
         description: error.message || "Failed to generate artwork. Please try again.",
@@ -600,28 +360,130 @@ export function FlowArtGenerator() {
     panoramaResolution,
     panoramaFormat,
     stereographicPerspective,
+    enable4K,
+    useReplicate,
+    replicateModel,
     toast,
   ])
 
+  const downloadImage = useCallback(
+    async (format: "regular" | "dome" | "panorama" = "regular") => {
+      if (!generatedArt) {
+        console.log("No generated art to download")
+        return
+      }
+
+      console.log("Download button clicked!", format)
+      setDownloadStatus("Preparing download...")
+
+      try {
+        let imageUrl: string
+        let fileName: string
+
+        if (format === "dome") {
+          if (!generatedArt.domeImageUrl) {
+            toast({
+              title: "Dome Image Not Available",
+              description: "Please generate the dome projection first.",
+              variant: "destructive",
+            })
+            return
+          }
+          imageUrl = generatedArt.domeImageUrl
+          fileName = `flowsketch-dome-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.seed}.jpg`
+        } else if (format === "panorama") {
+          if (!generatedArt.panorama360Url) {
+            toast({
+              title: "360° Panorama Not Available",
+              description: "Please generate the 360° panorama first.",
+              variant: "destructive",
+            })
+            return
+          }
+          imageUrl = generatedArt.panorama360Url
+          fileName = `flowsketch-360-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.seed}.jpg`
+        } else {
+          imageUrl = generatedArt.upscaledImageUrl || generatedArt.imageUrl
+          const qualityTag = generatedArt.is4K ? "4K" : generatedArt.upscaledImageUrl ? "enhanced" : "HD"
+          fileName = `flowsketch-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.seed}-${qualityTag}.jpg`
+        }
+
+        console.log("Downloading:", fileName, "from:", imageUrl)
+
+        // Check if it's a data URL (base64 image)
+        if (imageUrl.startsWith("data:")) {
+          // Direct download for data URLs
+          const link = document.createElement("a")
+          link.href = imageUrl
+          link.download = fileName
+          link.style.display = "none"
+          document.body.appendChild(link)
+          setDownloadStatus("Starting download...")
+          link.click()
+          document.body.removeChild(link)
+          console.log("Direct download completed")
+        } else if (imageUrl.startsWith("blob:")) {
+          // Direct download for blob URLs
+          const link = document.createElement("a")
+          link.href = imageUrl
+          link.download = fileName
+          link.style.display = "none"
+          document.body.appendChild(link)
+          setDownloadStatus("Starting download...")
+          link.click()
+          document.body.removeChild(link)
+          console.log("Blob download completed")
+        } else {
+          // For external URLs, use proxy download
+          setDownloadStatus("Fetching image...")
+          const proxyUrl = `/api/download-proxy?url=${encodeURIComponent(imageUrl)}&filename=${encodeURIComponent(fileName)}`
+
+          const link = document.createElement("a")
+          link.href = proxyUrl
+          link.download = fileName
+          link.target = "_blank"
+          link.style.display = "none"
+          document.body.appendChild(link)
+          setDownloadStatus("Starting download...")
+          link.click()
+          document.body.removeChild(link)
+          console.log("Proxy download initiated")
+        }
+
+        setDownloadStatus("Download completed!")
+
+        toast({
+          title: "Download Complete! 🎨",
+          description: `${generatedArt.is4K ? "4K" : generatedArt.upscaledImageUrl ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario} downloaded successfully.`,
+        })
+      } catch (error: any) {
+        console.error("Download error:", error)
+        setDownloadStatus("Download failed!")
+        toast({
+          title: "Download Failed",
+          description: "Could not download the image. Please try right-clicking and saving the image.",
+          variant: "destructive",
+        })
+      } finally {
+        setTimeout(() => {
+          setDownloadStatus(null)
+        }, 3000)
+      }
+    },
+    [generatedArt, toast],
+  )
+
   const upscaleImage = useCallback(async () => {
-    if (!generatedArt) {
-      console.log("No generated art to upscale")
-      return
-    }
+    if (!generatedArt) return
 
-    console.log("Upscale button clicked!")
     setIsUpscaling(true)
-
     try {
-      // For SVG mode, use mathematical upscaling to add real detail
       if (generatedArt.mode === "svg") {
-        console.log("Using mathematical upscaling for SVG...")
         toast({
           title: "Mathematical Upscaling",
           description: "Re-rendering visualization with 4x more detail points...",
         })
 
-        // Convert SVG to data URL first
         let imageDataUrl = generatedArt.imageUrl
         if (generatedArt.imageUrl.startsWith("blob:")) {
           const canvas = document.createElement("canvas")
@@ -641,7 +503,6 @@ export function FlowArtGenerator() {
           })
         }
 
-        // Apply mathematical upscaling with generation parameters
         const upscaledDataUrl = await ClientUpscaler.upscaleImage(imageDataUrl, 4)
 
         setGeneratedArt((prev) =>
@@ -659,8 +520,6 @@ export function FlowArtGenerator() {
           description: "Added 16x more data points with enhanced resolution.",
         })
       } else {
-        // For AI art, use client-side upscaling
-        console.log("Using pixel-based upscaling for AI art...")
         toast({
           title: "AI Art Enhancement",
           description: "Applying advanced pixel enhancement to AI artwork...",
@@ -695,139 +554,8 @@ export function FlowArtGenerator() {
     }
   }, [generatedArt, toast])
 
-  const downloadImage = useCallback(
-    async (format: "regular" | "dome" | "panorama" = "regular") => {
-      if (!generatedArt) {
-        console.log("No generated art to download")
-        return
-      }
-
-      console.log("Download button clicked!", format)
-
-      try {
-        let imageUrl: string
-        let fileExtension: string
-        let fileName: string
-
-        if (format === "dome") {
-          // For dome downloads, ensure we have a dome image
-          if (!generatedArt.domeImageUrl) {
-            toast({
-              title: "Dome Image Not Available",
-              description: "Please generate the dome projection first.",
-              variant: "destructive",
-            })
-            return
-          }
-          imageUrl = generatedArt.domeImageUrl
-          fileExtension = "png"
-          const domeSpec = generatedArt.domeSpecs
-            ? `-${generatedArt.domeSpecs.diameter}m-${generatedArt.domeSpecs.resolution}`
-            : ""
-          fileName = `flowsketch-dome-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${domeSpec}.${fileExtension}`
-        } else if (format === "panorama") {
-          // For 360° panorama downloads
-          if (!generatedArt.panorama360Url) {
-            toast({
-              title: "360° Panorama Not Available",
-              description: "Please generate the 360° panorama first.",
-              variant: "destructive",
-            })
-            return
-          }
-          imageUrl = generatedArt.panorama360Url
-          fileExtension = "png"
-          const panoramaSpec = generatedArt.panoramaSpecs
-            ? `-${generatedArt.panoramaSpecs.resolution}-${generatedArt.panoramaSpecs.format}`
-            : ""
-          fileName = `flowsketch-360panorama-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${panoramaSpec}.${fileExtension}`
-        } else {
-          // For regular downloads
-          imageUrl = generatedArt.upscaledImageUrl || generatedArt.imageUrl
-          const isEnhanced = !!generatedArt.upscaledImageUrl
-          fileExtension = generatedArt.mode === "svg" && !isEnhanced ? "svg" : "png"
-          fileName = `flowsketch-${generatedArt.mode}-${generatedArt.params.dataset}-${generatedArt.params.scenario}-${generatedArt.params.colorScheme}-${generatedArt.params.seed}${isEnhanced ? "-enhanced" : ""}.${fileExtension}`
-        }
-
-        console.log("Downloading:", fileName, "from:", imageUrl)
-
-        // Check if it's a data URL (client-side upscaled or SVG blob)
-        if (imageUrl.startsWith("data:") || imageUrl.startsWith("blob:")) {
-          // Direct download for data URLs and blob URLs
-          const link = document.createElement("a")
-          link.href = imageUrl
-          link.download = fileName
-          link.style.display = "none"
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link)
-          console.log("Direct download completed")
-        } else {
-          // For external URLs, create a proxy download to avoid CORS issues
-          try {
-            const proxyResponse = await fetch("/api/download-proxy", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ imageUrl, fileName }),
-            })
-
-            if (proxyResponse.ok) {
-              const blob = await proxyResponse.blob()
-              const blobUrl = URL.createObjectURL(blob)
-
-              const link = document.createElement("a")
-              link.href = blobUrl
-              link.download = fileName
-              link.style.display = "none"
-              document.body.appendChild(link)
-              link.click()
-              document.body.removeChild(link)
-
-              // Clean up the blob URL
-              setTimeout(() => URL.revokeObjectURL(blobUrl), 100)
-              console.log("Proxy download completed")
-            } else {
-              throw new Error("Proxy download failed")
-            }
-          } catch (proxyError) {
-            console.log("Proxy download failed, trying direct method...")
-            // Fallback to direct download
-            const link = document.createElement("a")
-            link.href = imageUrl
-            link.download = fileName
-            link.target = "_blank"
-            link.style.display = "none"
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
-            console.log("Direct link download attempted")
-          }
-        }
-
-        toast({
-          title: "Download Complete! 🎨",
-          description:
-            format === "panorama"
-              ? `360° panoramic skybox in ${generatedArt.panoramaSpecs?.resolution} downloaded.`
-              : format === "dome"
-                ? `Dome projection for ${generatedArt.domeSpecs?.diameter}m dome downloaded.`
-                : `${generatedArt.upscaledImageUrl ? "Enhanced" : "Original"} ${generatedArt.params.dataset} + ${generatedArt.params.scenario === "pure" ? "pure math" : generatedArt.params.scenario} in ${generatedArt.params.colorScheme} colors downloaded.`,
-        })
-      } catch (error: any) {
-        console.error("Download error:", error)
-        toast({
-          title: "Download Failed",
-          description: "Could not download the image. Please try right-clicking and saving the image.",
-          variant: "destructive",
-        })
-      }
-    },
-    [generatedArt, toast],
-  )
-
   const handleRandomSeed = useCallback(() => {
     const newSeed = Math.floor(Math.random() * 10000)
-    console.log("Random seed clicked, new seed:", newSeed)
     setSeed(newSeed)
   }, [])
 
@@ -865,17 +593,6 @@ export function FlowArtGenerator() {
         setCustomPrompt(art.customPrompt)
         setUseCustomPrompt(true)
       }
-      if (art.domeSpecs) {
-        setDomeEnabled(true)
-        setDomeDiameter(art.domeSpecs.diameter)
-        setDomeResolution(art.domeSpecs.resolution)
-        setDomeProjectionType(art.domeSpecs.projectionType)
-      }
-      if (art.panoramaSpecs) {
-        setPanorama360Enabled(true)
-        setPanoramaResolution(art.panoramaSpecs.resolution)
-        setPanoramaFormat(art.panoramaSpecs.format)
-      }
       setMode(art.mode)
       toast({
         title: "Artwork Loaded",
@@ -886,607 +603,570 @@ export function FlowArtGenerator() {
   )
 
   const getButtonText = () => {
-    const scenarioText = scenario === "pure" ? "Pure Math" : scenario.charAt(0).toUpperCase() + scenario.slice(1)
-    const formatText = panorama360Enabled
-      ? panoramaFormat === "stereographic"
-        ? ` ${stereographicPerspective === "tunnel" ? "Tunnel" : "Little Planet"} Projection`
-        : ` 360° Skybox`
-      : domeEnabled
-        ? ` for ${domeDiameter}m Dome`
-        : ""
+    const providerText = useReplicate ? `Replicate ${replicateModel.split("/")[1]}` : "OpenAI DALL-E"
+    const qualityText = enable4K ? " (4K)" : ""
 
     if (mode === "ai") {
       if (useCustomPrompt) {
-        return `Generate Custom AI Art${formatText}`
+        return `Generate Custom ${providerText}${qualityText}`
       }
-      return `Generate AI ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}${formatText}`
+      return `Generate ${dataset} + ${scenario} (${providerText})${qualityText}`
     } else {
-      return `Generate ${dataset.charAt(0).toUpperCase() + dataset.slice(1)} + ${scenarioText}${formatText}`
+      return `Generate Mathematical ${dataset} + ${scenario}`
     }
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-          FlowSketch Mathematical Art Generator
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Advanced mathematical datasets with photorealistic stereographic projections and immersive environments
-        </p>
-      </div>
-
-      {/* Reference Images */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ImageIcon className="h-5 w-5" />
-            Reference Styles - Stereographic Projections
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="text-center">
-              <img
-                src="/reference-little-planet.jpg"
-                alt="Little planet projection showing urban landscape with buildings and park"
-                className="w-full max-w-sm mx-auto rounded-lg shadow-lg"
-              />
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                <strong>Little Planet:</strong> Looking down perspective with landscape in center
-              </p>
-            </div>
-            <div className="text-center">
-              <img
-                src="/reference-tunnel-projection.jpg"
-                alt="Tunnel projection showing buildings curving around sky center"
-                className="w-full max-w-sm mx-auto rounded-lg shadow-lg"
-              />
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                <strong>Tunnel:</strong> Looking up perspective with sky in center, buildings around edge
-              </p>
-            </div>
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-4 text-center">
-            Target styles: Photorealistic stereographic projections with realistic textures, lighting, and dramatic
-            perspectives
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2 flex items-center justify-center gap-3">
+            <Sparkles className="h-8 w-8 text-purple-400" />
+            FlowSketch Mathematical Art Generator
+            <Sparkles className="h-8 w-8 text-purple-400" />
+          </h1>
+          <p className="text-slate-300 text-lg">
+            Create stunning mathematical art with enhanced AI prompts, multiple providers, and professional 4K quality
           </p>
-        </CardContent>
-      </Card>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Controls */}
-        <div className="lg:col-span-1 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Generation Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Tabs value={mode} onValueChange={(value) => setMode(value as "svg" | "ai")}>
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="ai">Photorealistic AI</TabsTrigger>
-                  <TabsTrigger value="svg">Mathematical SVG</TabsTrigger>
-                  <TabsTrigger value="gallery">Gallery ({gallery.length})</TabsTrigger>
-                </TabsList>
+        {/* Error Alert */}
+        {error && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-                <TabsContent value="ai" className="space-y-4">
-                  <Alert>
-                    <Sparkles className="h-4 w-4" />
-                    <AlertDescription>
-                      Create photorealistic AI-generated artwork with realistic textures, lighting, and environments.
-                      Perfect for creating immersive stereographic projections like the reference images above.
-                      {panorama360Enabled && " Automatically optimized for immersive stereographic projections."}
-                      {domeEnabled && " Automatically optimized for immersive dome projection."}
-                    </AlertDescription>
-                  </Alert>
-                </TabsContent>
+        {/* Download Status */}
+        {downloadStatus && (
+          <Alert className="mb-6 border-blue-500 bg-blue-50 dark:bg-blue-950">
+            <CheckCircle className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-800 dark:text-blue-200">{downloadStatus}</AlertDescription>
+          </Alert>
+        )}
 
-                <TabsContent value="svg" className="space-y-4">
-                  <Alert>
-                    <Calculator className="h-4 w-4" />
-                    <AlertDescription>
-                      Complex mathematical datasets with advanced algorithms: Fibonacci spirals, fractal patterns,
-                      Mandelbrot sets, Lorenz attractors, and more!{" "}
-                      {panorama360Enabled && "Optimized for stereographic projections."}
-                      {domeEnabled && "Optimized for dome projection."}
-                    </AlertDescription>
-                  </Alert>
-                </TabsContent>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Controls Panel */}
+          <div className="lg:col-span-1">
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  Generation Controls
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Tabs value={mode} onValueChange={(value) => setMode(value as "svg" | "ai")}>
+                  <TabsList className="grid w-full grid-cols-3 bg-slate-700">
+                    <TabsTrigger value="ai" className="text-xs">
+                      AI Art
+                    </TabsTrigger>
+                    <TabsTrigger value="svg" className="text-xs">
+                      Math SVG
+                    </TabsTrigger>
+                    <TabsTrigger value="gallery" className="text-xs">
+                      Gallery ({gallery.length})
+                    </TabsTrigger>
+                  </TabsList>
 
-                <TabsContent value="gallery" className="space-y-4">
-                  <Alert>
-                    <ImageIcon className="h-4 w-4" />
-                    <AlertDescription>
-                      Your generated artworks are automatically saved here. Click any image to load its settings.
-                    </AlertDescription>
-                  </Alert>
+                  <TabsContent value="ai" className="space-y-4">
+                    <Alert>
+                      <Sparkles className="h-4 w-4" />
+                      <AlertDescription>
+                        Create photorealistic mathematical art with enhanced prompts based on actual mathematical
+                        formulas and patterns.
+                      </AlertDescription>
+                    </Alert>
 
-                  {gallery.length > 0 ? (
+                    {/* AI Provider Selection */}
                     <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <p className="text-sm text-gray-600">
-                          {gallery.length} saved artworks • Page {currentPage} of {totalPages}
-                        </p>
-                        <Button onClick={clearGallery} variant="outline" size="sm">
-                          Clear All
-                        </Button>
+                      <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                        <div className="space-y-0.5">
+                          <label className="text-sm font-medium text-white flex items-center gap-2">
+                            <Cpu className="h-4 w-4" />
+                            Use Replicate Models
+                          </label>
+                          <p className="text-xs text-slate-400">
+                            Access to SDXL, Playground, and other advanced models
+                          </p>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={useReplicate}
+                          onChange={(e) => setUseReplicate(e.target.checked)}
+                          className="h-5 w-5 rounded text-purple-600 focus:ring-purple-500 bg-slate-700 border-slate-600"
+                        />
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3">
-                        {currentItems.map((art) => (
-                          <div
-                            key={art.id}
-                            className="relative group border rounded-lg overflow-hidden bg-white dark:bg-gray-800"
+                      {useReplicate && (
+                        <div>
+                          <label className="block text-sm font-medium text-white mb-2">Replicate Model</label>
+                          <select
+                            value={replicateModel}
+                            onChange={(e) => setReplicateModel(e.target.value)}
+                            className="w-full rounded-md border-slate-600 bg-slate-700 text-white shadow-sm focus:border-purple-500 focus:ring-purple-500"
                           >
-                            <div className="aspect-square relative">
-                              {art.mode === "svg" && !art.upscaledImageUrl ? (
-                                <div
-                                  className="w-full min-h-[600px] flex items-center justify-center bg-gray-50 dark:bg-gray-900"
-                                  dangerouslySetInnerHTML={{ __html: art.svgContent }}
-                                />
-                              ) : (
-                                <img
-                                  src={art.upscaledImageUrl || art.imageUrl}
-                                  alt={`${art.params.dataset} + ${art.params.scenario}`}
-                                  className="w-full h-auto max-h-[800px] object-contain"
-                                  onClick={() => loadFromGallery(art)}
-                                />
-                              )}
+                            <option value="stability-ai/sdxl">Stability AI SDXL (Best Quality)</option>
+                            <option value="playgroundai/playground-v2.5-1024px-aesthetic">
+                              Playground V2.5 (Aesthetic)
+                            </option>
+                            <option value="bytedance/sdxl-lightning-4step">SDXL Lightning (Ultra Fast)</option>
+                          </select>
+                        </div>
+                      )}
 
-                              {/* Hover overlay with Load / Remove buttons */}
-                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-200 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-                                <Button size="sm" variant="secondary" onClick={() => loadFromGallery(art)}>
-                                  Load
-                                </Button>
-                                <Button size="sm" variant="destructive" onClick={() => removeFromGallery(art.id)}>
-                                  Remove
-                                </Button>
-                              </div>
-                            </div>
-
-                            {/* Minimal caption under each thumbnail */}
-                            <div className="p-2 space-y-1">
-                              <p className="text-xs font-medium truncate">
-                                {art.params.dataset} • {art.params.scenario}
-                              </p>
-                              <div className="flex gap-1 flex-wrap">
-                                {art.mode === "ai" && (
-                                  <span className="text-[10px] px-1 rounded bg-green-600/20 text-green-700 dark:text-green-300">
-                                    AI
-                                  </span>
-                                )}
-                                {art.isDomeProjection && (
-                                  <span className="text-[10px] px-1 rounded bg-purple-600/20 text-purple-700 dark:text-purple-300">
-                                    Dome
-                                  </span>
-                                )}
-                                {art.is360Panorama && (
-                                  <span className="text-[10px] px-1 rounded bg-blue-600/20 text-blue-700 dark:text-blue-300">
-                                    360°
-                                  </span>
-                                )}
-                                {art.upscaledImageUrl && (
-                                  <span className="text-[10px] px-1 rounded bg-orange-600/20 text-orange-700 dark:text-orange-300">
-                                    Enhanced
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                      {/* Mathematical Dataset Selection */}
+                      <div>
+                        <label className="block text-sm font-medium text-white mb-2 flex items-center gap-2">
+                          <Calculator className="h-4 w-4" />
+                          Mathematical Dataset
+                        </label>
+                        <select
+                          value={dataset}
+                          onChange={(e) => setDataset(e.target.value)}
+                          className="w-full rounded-md border-slate-600 bg-slate-700 text-white shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                        >
+                          <option value="spirals">🌀 Fibonacci Spirals (φ = 1.618)</option>
+                          <option value="fractal">🌳 Fractal Trees (Z² + C)</option>
+                          <option value="mandelbrot">🎭 Mandelbrot Sets (|Z| &lt; 2)</option>
+                          <option value="julia">💫 Julia Sets (C = -0.7269)</option>
+                          <option value="lorenz">🦋 Lorenz Attractors (Chaos Theory)</option>
+                          <option value="hyperbolic">🌐 Hyperbolic Geometry (K = -1)</option>
+                          <option value="gaussian">📊 Gaussian Fields (σ² variance)</option>
+                          <option value="cellular">🔲 Cellular Automata (Conway's Rules)</option>
+                          <option value="voronoi">🔷 Voronoi Diagrams (Nearest Neighbor)</option>
+                          <option value="perlin">🌊 Perlin Noise (Multi-octave)</option>
+                          <option value="diffusion">🧪 Reaction-Diffusion (Turing Patterns)</option>
+                          <option value="wave">〰️ Wave Interference (Superposition)</option>
+                        </select>
                       </div>
 
-                      <div className="flex justify-between items-center">
-                        <Button
-                          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                          disabled={currentPage === 1}
-                          variant="outline"
-                          size="sm"
+                      <div>
+                        <label className="block text-sm font-medium text-white mb-2 flex items-center gap-2">
+                          <Palette className="h-4 w-4" />
+                          Artistic Scenario
+                        </label>
+                        <select
+                          value={scenario}
+                          onChange={(e) => setScenario(e.target.value)}
+                          className="w-full rounded-md border-slate-600 bg-slate-700 text-white shadow-sm focus:border-purple-500 focus:ring-purple-500"
                         >
-                          Previous
-                        </Button>
-                        <Button
-                          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                          disabled={currentPage === totalPages}
-                          variant="outline"
-                          size="sm"
+                          <option value="pure">🔬 Pure Mathematics</option>
+                          <option value="landscape">🏔️ Natural Landscapes</option>
+                          <option value="architectural">🏗️ Architectural Forms</option>
+                          <option value="geological">⛰️ Geological Formations</option>
+                          <option value="botanical">🌿 Botanical Structures</option>
+                          <option value="atmospheric">☁️ Atmospheric Phenomena</option>
+                          <option value="crystalline">💎 Crystalline Structures</option>
+                          <option value="textile">🧵 Textile Patterns</option>
+                          <option value="metallic">⚙️ Metallic Surfaces</option>
+                          <option value="organic">🧬 Organic Textures</option>
+                          <option value="urban">🏙️ Urban Environments</option>
+                          <option value="marine">🌊 Marine Ecosystems</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-white mb-2">Color Palette</label>
+                        <select
+                          value={colorScheme}
+                          onChange={(e) => setColorScheme(e.target.value)}
+                          className="w-full rounded-md border-slate-600 bg-slate-700 text-white shadow-sm focus:border-purple-500 focus:ring-purple-500"
                         >
-                          Next
+                          <option value="plasma">🔥 Plasma Energy</option>
+                          <option value="quantum">⚛️ Quantum Fields</option>
+                          <option value="cosmic">🌌 Cosmic Space</option>
+                          <option value="thermal">🌡️ Thermal Heat</option>
+                          <option value="spectral">🌈 Full Spectrum</option>
+                          <option value="crystalline">💎 Crystal Ice</option>
+                          <option value="bioluminescent">🦠 Bioluminescent</option>
+                          <option value="aurora">🌌 Aurora Borealis</option>
+                          <option value="metallic">⚙️ Metallic Shine</option>
+                          <option value="prismatic">💎 Prismatic Light</option>
+                          <option value="monochromatic">⚫ Monochrome</option>
+                          <option value="infrared">🔴 Infrared Heat</option>
+                          <option value="lava">🌋 Molten Lava</option>
+                          <option value="futuristic">🚀 Futuristic Neon</option>
+                          <option value="forest">🌲 Forest Nature</option>
+                          <option value="ocean">🌊 Ocean Depths</option>
+                          <option value="sunset">🌅 Sunset Sky</option>
+                          <option value="arctic">❄️ Arctic Ice</option>
+                          <option value="neon">💡 Bright Neon</option>
+                          <option value="vintage">📸 Vintage Sepia</option>
+                          <option value="toxic">☢️ Toxic Chemical</option>
+                          <option value="ember">🔥 Glowing Ember</option>
+                        </select>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-white mb-2">Samples: {numSamples}</label>
+                          <input
+                            type="range"
+                            min="100"
+                            max="5000"
+                            step="100"
+                            value={numSamples}
+                            onChange={(e) => setNumSamples(Number(e.target.value))}
+                            className="w-full"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-white mb-2">Noise: {noiseScale}</label>
+                          <input
+                            type="range"
+                            min="0"
+                            max="0.2"
+                            step="0.01"
+                            value={noiseScale}
+                            onChange={(e) => setNoiseScale(Number(e.target.value))}
+                            className="w-full"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-white mb-2">Seed</label>
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="number"
+                            value={seed}
+                            onChange={(e) => setSeed(Number(e.target.value))}
+                            className="flex-1 rounded-md border-slate-600 bg-slate-700 text-white shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                          />
+                          <Button type="button" onClick={handleRandomSeed} variant="outline" size="sm">
+                            Random
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* 4K Quality Toggle */}
+                      <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                        <div className="space-y-0.5">
+                          <label className="text-sm font-medium text-white">4K Quality</label>
+                          <p className="text-xs text-slate-400">Generate 3840x3840 images under 3.1MB</p>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={enable4K}
+                          onChange={(e) => setEnable4K(e.target.checked)}
+                          className="h-5 w-5 rounded text-purple-600 focus:ring-purple-500 bg-slate-700 border-slate-600"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Custom Prompt Section */}
+                    <div className="space-y-2">
+                      <label className="inline-flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="h-5 w-5 rounded text-purple-600 focus:ring-purple-500 bg-slate-700 border-slate-600"
+                          checked={useCustomPrompt}
+                          onChange={(e) => setUseCustomPrompt(e.target.checked)}
+                        />
+                        <span className="text-white">Use Custom Prompt</span>
+                      </label>
+
+                      {useCustomPrompt && (
+                        <div className="space-y-2">
+                          <textarea
+                            placeholder="Enter your custom mathematical art prompt..."
+                            value={customPrompt}
+                            onChange={(e) => setCustomPrompt(e.target.value)}
+                            rows={3}
+                            className="w-full rounded-md border-slate-600 bg-slate-700 text-white shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="svg" className="space-y-4">
+                    <Alert>
+                      <Calculator className="h-4 w-4" />
+                      <AlertDescription>
+                        Generate pure mathematical visualizations with SVG precision and infinite scalability.
+                      </AlertDescription>
+                    </Alert>
+                  </TabsContent>
+
+                  <TabsContent value="gallery" className="space-y-4">
+                    <Alert>
+                      <ImageIcon className="h-4 w-4" />
+                      <AlertDescription>
+                        Your generated artworks are automatically saved here. Click any image to load its settings.
+                      </AlertDescription>
+                    </Alert>
+
+                    {gallery.length > 0 ? (
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <p className="text-sm text-slate-300">
+                            {gallery.length} saved artworks • Page {currentPage} of {totalPages}
+                          </p>
+                          <Button onClick={clearGallery} variant="outline" size="sm">
+                            Clear All
+                          </Button>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          {currentItems.map((art) => (
+                            <div
+                              key={art.id}
+                              className="relative group border border-slate-600 rounded-lg overflow-hidden bg-slate-800"
+                            >
+                              <div className="aspect-square relative">
+                                {art.mode === "svg" && !art.upscaledImageUrl ? (
+                                  <div
+                                    className="w-full h-full flex items-center justify-center bg-slate-900"
+                                    dangerouslySetInnerHTML={{ __html: art.svgContent }}
+                                  />
+                                ) : (
+                                  <img
+                                    src={art.upscaledImageUrl || art.imageUrl}
+                                    alt={`${art.params.dataset} + ${art.params.scenario}`}
+                                    className="w-full h-full object-cover cursor-pointer"
+                                    onClick={() => loadFromGallery(art)}
+                                  />
+                                )}
+
+                                {/* Hover overlay */}
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-200 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                                  <Button size="sm" variant="secondary" onClick={() => loadFromGallery(art)}>
+                                    Load
+                                  </Button>
+                                  <Button size="sm" variant="destructive" onClick={() => removeFromGallery(art.id)}>
+                                    Remove
+                                  </Button>
+                                </div>
+                              </div>
+
+                              {/* Caption */}
+                              <div className="p-2 space-y-1">
+                                <p className="text-xs font-medium text-white truncate">
+                                  {art.params.dataset} • {art.params.scenario}
+                                </p>
+                                <div className="flex gap-1 flex-wrap">
+                                  {art.provider && (
+                                    <Badge variant="secondary" className="text-[10px] px-1 py-0">
+                                      {art.provider === "replicate" ? "Replicate" : "OpenAI"}
+                                    </Badge>
+                                  )}
+                                  {art.is4K && (
+                                    <Badge
+                                      variant="outline"
+                                      className="text-[10px] px-1 py-0 text-purple-400 border-purple-400"
+                                    >
+                                      4K
+                                    </Badge>
+                                  )}
+                                  {art.upscaledImageUrl && (
+                                    <Badge
+                                      variant="outline"
+                                      className="text-[10px] px-1 py-0 text-orange-400 border-orange-400"
+                                    >
+                                      Enhanced
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {totalPages > 1 && (
+                          <div className="flex justify-between items-center">
+                            <Button
+                              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                              disabled={currentPage === 1}
+                              variant="outline"
+                              size="sm"
+                            >
+                              Previous
+                            </Button>
+                            <Button
+                              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                              disabled={currentPage === totalPages}
+                              variant="outline"
+                              size="sm"
+                            >
+                              Next
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-slate-400">No saved artworks yet.</p>
+                    )}
+                  </TabsContent>
+                </Tabs>
+
+                <Separator className="bg-slate-600 my-6" />
+
+                {/* Generation Button */}
+                <div className="space-y-3">
+                  <Button
+                    onClick={generateArt}
+                    disabled={isGenerating}
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating... {progress}%
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="mr-2 h-4 w-4" />
+                        {getButtonText()}
+                      </>
+                    )}
+                  </Button>
+
+                  {isGenerating && (
+                    <div className="space-y-2">
+                      <Progress value={progress} className="w-full" />
+                      <p className="text-xs text-slate-400 text-center">
+                        {progress < 30
+                          ? "Preparing mathematical formulas..."
+                          : progress < 80
+                            ? "Creating mathematical artwork..."
+                            : "Finalizing..."}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Preview Panel */}
+          <div className="lg:col-span-2">
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Eye className="h-5 w-5" />
+                  Mathematical Art Preview
+                  {generatedArt?.is4K && (
+                    <Badge variant="outline" className="ml-2 text-purple-400 border-purple-400">
+                      4K Quality
+                    </Badge>
+                  )}
+                  {generatedArt?.provider && (
+                    <Badge variant="outline" className="ml-2 text-blue-400 border-blue-400">
+                      {generatedArt.provider === "replicate"
+                        ? `Replicate (${generatedArt.model?.split("/")[1]})`
+                        : "OpenAI DALL-E 3"}
+                    </Badge>
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {generatedArt ? (
+                    <div className="space-y-4">
+                      <div className="relative overflow-hidden rounded-lg border border-slate-600">
+                        {generatedArt.mode === "svg" && !generatedArt.upscaledImageUrl ? (
+                          <div
+                            className="w-full min-h-[600px] flex items-center justify-center bg-slate-900"
+                            dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                          />
+                        ) : (
+                          <img
+                            src={generatedArt.upscaledImageUrl || generatedArt.imageUrl}
+                            alt={`${generatedArt.params.dataset} + ${generatedArt.params.scenario}`}
+                            className="w-full h-auto max-h-[800px] object-contain"
+                          />
+                        )}
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          onClick={upscaleImage}
+                          disabled={isUpscaling || generatedArt.is4K}
+                          variant="outline"
+                          className="border-slate-600 text-slate-300 hover:bg-slate-700 bg-transparent"
+                        >
+                          {isUpscaling ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Enhancing...
+                            </>
+                          ) : generatedArt.is4K ? (
+                            "Already 4K Quality"
+                          ) : (
+                            <>
+                              <Sparkles className="mr-2 h-4 w-4" />
+                              Enhance Details
+                            </>
+                          )}
                         </Button>
+
+                        <Button
+                          onClick={() => downloadImage("regular")}
+                          disabled={!!downloadStatus}
+                          className="bg-green-600 hover:bg-green-700 text-white"
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          {downloadStatus ? "Downloading..." : `Download ${generatedArt.is4K ? "4K " : ""}Image`}
+                        </Button>
+                      </div>
+
+                      <div className="text-sm text-slate-400 space-y-1 p-3 bg-slate-700/30 rounded-lg">
+                        <p>
+                          <strong className="text-slate-300">Mode:</strong>{" "}
+                          {generatedArt.mode === "ai" ? "AI Enhanced" : "Mathematical SVG"}
+                          {generatedArt.is4K && " • 4K Quality"}
+                          {generatedArt.provider &&
+                            ` • ${generatedArt.provider === "replicate" ? "Replicate" : "OpenAI"}`}
+                        </p>
+                        <p>
+                          <strong className="text-slate-300">Dataset:</strong> {generatedArt.params.dataset} •{" "}
+                          <strong className="text-slate-300">Scenario:</strong> {generatedArt.params.scenario}
+                        </p>
+                        <p>
+                          <strong className="text-slate-300">Colors:</strong> {generatedArt.params.colorScheme} •{" "}
+                          <strong className="text-slate-300">Seed:</strong> {generatedArt.params.seed} •{" "}
+                          <strong className="text-slate-300">Samples:</strong> {generatedArt.params.numSamples}
+                        </p>
+                        {generatedArt.estimatedFileSize && (
+                          <p>
+                            <strong className="text-slate-300">File Size:</strong>{" "}
+                            <span className="text-green-400">{generatedArt.estimatedFileSize}</span>
+                          </p>
+                        )}
+                        {generatedArt.originalPrompt && (
+                          <div className="mt-3 p-2 bg-slate-800/50 rounded">
+                            <div className="flex items-center gap-2 mb-1">
+                              <FileText className="h-3 w-3 text-purple-400" />
+                              <p className="text-xs text-purple-400 font-medium">
+                                Mathematical Prompt ({generatedArt.promptLength} characters):
+                              </p>
+                            </div>
+                            <p className="text-xs text-slate-300 leading-relaxed max-h-32 overflow-y-auto">
+                              {generatedArt.originalPrompt}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-500">No saved artworks yet.</p>
+                    <div className="flex flex-col items-center justify-center h-96 text-slate-400">
+                      <ImageIcon className="h-16 w-16 mb-4 opacity-50" />
+                      <p className="text-lg mb-2">No mathematical artwork generated yet</p>
+                      <p className="text-sm text-center">
+                        Configure your mathematical parameters and click "Generate" to create stunning mathematical art
+                        with enhanced AI prompts based on real mathematical formulas
+                      </p>
+                    </div>
                   )}
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Advanced Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Dataset</label>
-                  <select
-                    value={dataset}
-                    onChange={(e) => setDataset(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  >
-                    <option value="spirals">Fibonacci Spirals</option>
-                    <option value="fractal">Fractal Patterns</option>
-                    <option value="hyperbolic">Hyperbolic Geometry</option>
-                    <option value="gaussian">Gaussian Fields</option>
-                    <option value="cellular">Cellular Automata</option>
-                    <option value="voronoi">Voronoi Diagrams</option>
-                    <option value="perlin">Perlin Noise</option>
-                    <option value="mandelbrot">Mandelbrot Sets</option>
-                    <option value="lorenz">Lorenz Attractors</option>
-                    <option value="julia">Julia Sets</option>
-                    <option value="diffusion">Reaction-Diffusion</option>
-                    <option value="wave">Wave Interference</option>
-                  </select>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Scenario</label>
-                  <select
-                    value={scenario}
-                    onChange={(e) => setScenario(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  >
-                    <option value="pure">Pure Mathematics</option>
-                    <option value="landscape">Natural Landscapes</option>
-                    <option value="architectural">Architectural Forms</option>
-                    <option value="geological">Geological Formations</option>
-                    <option value="botanical">Botanical Structures</option>
-                    <option value="atmospheric">Atmospheric Phenomena</option>
-                    <option value="crystalline">Crystalline Structures</option>
-                    <option value="textile">Textile Patterns</option>
-                    <option value="metallic">Metallic Surfaces</option>
-                    <option value="organic">Organic Textures</option>
-                    <option value="urban">Urban Environments</option>
-                    <option value="marine">Marine Ecosystems</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Color Scheme</label>
-                  <select
-                    value={colorScheme}
-                    onChange={(e) => setColorScheme(e.target.value)}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  >
-                    <option value="plasma">Plasma</option>
-                    <option value="quantum">Quantum</option>
-                    <option value="cosmic">Cosmic</option>
-                    <option value="thermal">Thermal</option>
-                    <option value="spectral">Spectral</option>
-                    <option value="crystalline">Crystalline</option>
-                    <option value="bioluminescent">Bioluminescent</option>
-                    <option value="aurora">Aurora</option>
-                    <option value="metallic">Metallic</option>
-                    <option value="prismatic">Prismatic</option>
-                    <option value="monochromatic">Monochromatic</option>
-                    <option value="infrared">Infrared</option>
-                    <option value="lava">Lava</option>
-                    <option value="futuristic">Futuristic</option>
-                    <option value="forest">Forest</option>
-                    <option value="ocean">Ocean</option>
-                    <option value="sunset">Sunset</option>
-                    <option value="arctic">Arctic</option>
-                    <option value="neon">Neon</option>
-                    <option value="vintage">Vintage</option>
-                    <option value="toxic">Toxic</option>
-                    <option value="ember">Ember</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Seed</label>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="number"
-                      value={seed}
-                      onChange={(e) => setSeed(Number.parseInt(e.target.value))}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    />
-                    <Button type="button" onClick={handleRandomSeed} variant="outline" size="sm">
-                      Random
-                    </Button>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Number of Samples
-                  </label>
-                  <input
-                    type="number"
-                    value={numSamples}
-                    onChange={(e) => setNumSamples(Number.parseInt(e.target.value))}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Noise Scale</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={noiseScale}
-                    onChange={(e) => setNoiseScale(Number.parseFloat(e.target.value))}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Time Step</label>
-                  <input
-                    type="number"
-                    step="0.001"
-                    value={timeStep}
-                    onChange={(e) => setTimeStep(Number.parseFloat(e.target.value))}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Generated Art Display */}
-        <div className="lg:col-span-2 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ImageIcon className="h-5 w-5" />
-                Generated Artwork
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center space-x-4">
-                  <Button onClick={generateArt} disabled={isGenerating} className="flex-1">
-                    {isGenerating ? `Generating... ${progress}%` : getButtonText()}
-                  </Button>
-                </div>
-
-                {mode === "ai" && (
-                  <div className="space-y-2">
-                    <label className="inline-flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-gray-800"
-                        checked={useCustomPrompt}
-                        onChange={(e) => setUseCustomPrompt(e.target.checked)}
-                      />
-                      <span className="text-gray-700 dark:text-gray-300">Use Custom Prompt</span>
-                    </label>
-
-                    {useCustomPrompt && (
-                      <div className="space-y-2">
-                        <textarea
-                          placeholder="Enter your custom prompt here... (e.g., 'A photorealistic stereographic projection of a futuristic city with glass buildings and neon lights')"
-                          value={customPrompt}
-                          onChange={(e) => setCustomPrompt(e.target.value)}
-                          rows={3}
-                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        />
-                        <Button onClick={enhancePrompt} disabled={isEnhancingPrompt} variant="secondary" size="sm">
-                          {isEnhancingPrompt ? "Enhancing..." : "✨ Enhance Prompt"}
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="inline-flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-gray-800"
-                        checked={domeEnabled}
-                        onChange={(e) => setDomeEnabled(e.target.checked)}
-                      />
-                      <span className="text-gray-700 dark:text-gray-300">Dome Projection</span>
-                    </label>
-
-                    {domeEnabled && (
-                      <div className="space-y-2 mt-2">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                          Dome Diameter (meters)
-                        </label>
-                        <input
-                          type="number"
-                          value={domeDiameter}
-                          onChange={(e) => setDomeDiameter(Number.parseInt(e.target.value))}
-                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        />
-
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                          Dome Resolution
-                        </label>
-                        <select
-                          value={domeResolution}
-                          onChange={(e) => setDomeResolution(e.target.value)}
-                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        >
-                          <option>1080p</option>
-                          <option>1440p</option>
-                          <option>2160p</option>
-                        </select>
-
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                          Projection Type
-                        </label>
-                        <select
-                          value={domeProjectionType}
-                          onChange={(e) => setDomeProjectionType(e.target.value)}
-                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        >
-                          <option value="fulldome">Full Dome (Fisheye)</option>
-                          <option value="truncated">Truncated Dome</option>
-                          <option value="perspective">Perspective</option>
-                        </select>
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="inline-flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-offset-gray-800"
-                        checked={panorama360Enabled}
-                        onChange={(e) => setPanorama360Enabled(e.target.checked)}
-                      />
-                      <span className="text-gray-700 dark:text-gray-300">Stereographic Projection</span>
-                    </label>
-
-                    {panorama360Enabled && (
-                      <div className="space-y-2 mt-2">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Resolution</label>
-                        <select
-                          value={panoramaResolution}
-                          onChange={(e) => setPanoramaResolution(e.target.value)}
-                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        >
-                          <option>1080p</option>
-                          <option>1440p</option>
-                          <option>2160p</option>
-                        </select>
-
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                          Projection Format
-                        </label>
-                        <select
-                          value={panoramaFormat}
-                          onChange={(e) => setPanoramaFormat(e.target.value)}
-                          className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        >
-                          <option value="stereographic">Stereographic</option>
-                          <option value="equirectangular">Equirectangular</option>
-                        </select>
-
-                        {panoramaFormat === "stereographic" && (
-                          <>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                              Perspective
-                            </label>
-                            <select
-                              value={stereographicPerspective}
-                              onChange={(e) => setStereographicPerspective(e.target.value)}
-                              className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            >
-                              <option value="little-planet">Little Planet (Looking Down)</option>
-                              <option value="tunnel">Tunnel (Looking Up)</option>
-                            </select>
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {generatedArt ? (
-                  <div className="space-y-4">
-                    <div className="relative overflow-hidden rounded-lg border">
-                      {generatedArt.mode === "svg" && !generatedArt.upscaledImageUrl ? (
-                        <div
-                          className="w-full min-h-[600px] flex items-center justify-center bg-gray-50 dark:bg-gray-900"
-                          dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
-                        />
-                      ) : (
-                        <img
-                          src={generatedArt.upscaledImageUrl || generatedArt.imageUrl}
-                          alt={`${generatedArt.params.dataset} + ${generatedArt.params.scenario}`}
-                          className="w-full h-auto max-h-[800px] object-contain"
-                        />
-                      )}
-                    </div>
-
-                    <div className="flex flex-wrap gap-2">
-                      <Button onClick={upscaleImage} disabled={isUpscaling} variant="outline">
-                        {isUpscaling ? "Enhancing..." : "🔍 Enhance Details"}
-                      </Button>
-
-                      <Button onClick={() => downloadImage("regular")}>📥 Download</Button>
-
-                      {generatedArt.isDomeProjection && generatedArt.domeImageUrl && (
-                        <Button onClick={() => downloadImage("dome")} variant="secondary">
-                          🏛️ Download Dome
-                        </Button>
-                      )}
-
-                      {generatedArt.is360Panorama && generatedArt.panorama360Url && (
-                        <Button onClick={() => downloadImage("panorama")} variant="secondary">
-                          🌐 Download Projection
-                        </Button>
-                      )}
-
-                      {generatedArt.isDomeProjection && !generatedArt.domeImageUrl && (
-                        <Button onClick={generateDomeProjection} disabled={isGeneratingDome} variant="outline">
-                          {isGeneratingDome ? "Generating..." : "🏛️ Generate Dome"}
-                        </Button>
-                      )}
-
-                      {generatedArt.is360Panorama && !generatedArt.panorama360Url && (
-                        <Button onClick={generate360Panorama} disabled={isGenerating360} variant="outline">
-                          {isGenerating360 ? "Generating..." : "🌐 Generate Projection"}
-                        </Button>
-                      )}
-                    </div>
-
-                    <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                      <p>
-                        <strong>Mode:</strong> {generatedArt.mode === "ai" ? "Photorealistic AI" : "Mathematical SVG"}
-                      </p>
-                      <p>
-                        <strong>Dataset:</strong> {generatedArt.params.dataset} • <strong>Scenario:</strong>{" "}
-                        {generatedArt.params.scenario}
-                      </p>
-                      <p>
-                        <strong>Color Scheme:</strong> {generatedArt.params.colorScheme} • <strong>Seed:</strong>{" "}
-                        {generatedArt.params.seed}
-                      </p>
-                      {generatedArt.customPrompt && (
-                        <p>
-                          <strong>Custom Prompt:</strong> {generatedArt.customPrompt}
-                        </p>
-                      )}
-                      {generatedArt.panoramaSpecs && generatedArt.panoramaSpecs.format === "stereographic" && (
-                        <p>
-                          <strong>Projection:</strong>{" "}
-                          {stereographicPerspective === "tunnel"
-                            ? "Tunnel (Looking Up)"
-                            : "Little Planet (Looking Down)"}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-12 text-gray-500">
-                    <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Generate photorealistic artwork to see it here.</p>
-                    <p className="text-sm mt-2">
-                      Try "Urban Environments" + "Stereographic" for dramatic tunnel or little planet effects!
-                    </p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
