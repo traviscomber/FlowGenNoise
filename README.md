@@ -1,53 +1,30 @@
-# FlowSketch Art Generator
+# FlowSketch Deployment
 
-A sophisticated mathematical art generator that creates beautiful visualizations using complex mathematical functions and stereographic projections.
+*Automatically synced with your [v0.dev](https://v0.dev) deployments*
 
-## Features
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/travis-projects-c14a785a/v0-flow-sketch-deployment)
+[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/tLz33TUZDhy)
 
-- **Mathematical Art Generation**: Create stunning visualizations from complex mathematical equations
-- **Stereographic Projections**: Transform mathematical plots into immersive dome-ready formats
-- **AI Integration**: Enhanced with DALL-E 3 for artistic interpretation
-- **Multiple Export Formats**: Support for various resolutions and formats
-- **Real-time Preview**: Interactive parameter adjustment with live preview
-- **Professional Quality**: High-resolution output suitable for dome installations
+## Overview
 
-## Getting Started
+This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
+Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
 
-1. Install dependencies:
-\`\`\`bash
-npm install
-\`\`\`
+## Deployment
 
-2. Set up environment variables:
-\`\`\`bash
-OPENAI_API_KEY=your_openai_api_key
-\`\`\`
+Your project is live at:
 
-3. Run the development server:
-\`\`\`bash
-npm run dev
-\`\`\`
+**[https://vercel.com/travis-projects-c14a785a/v0-flow-sketch-deployment](https://vercel.com/travis-projects-c14a785a/v0-flow-sketch-deployment)**
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+## Build your app
 
-## Usage
+Continue building your app on:
 
-1. Select a mathematical dataset or create custom equations
-2. Adjust parameters using the intuitive controls
-3. Preview the mathematical plot in real-time
-4. Apply stereographic projection for dome visualization
-5. Generate AI-enhanced artistic interpretations
-6. Export in your desired format and resolution
+**[https://v0.dev/chat/projects/tLz33TUZDhy](https://v0.dev/chat/projects/tLz33TUZDhy)**
 
-## Technology Stack
+## How It Works
 
-- **Next.js 14**: React framework with App Router
-- **TypeScript**: Type-safe development
-- **Tailwind CSS**: Utility-first styling
-- **shadcn/ui**: Modern UI components
-- **OpenAI API**: AI-powered art generation
-- **Canvas API**: Mathematical plotting and transformations
-
-## License
-
-MIT License - see LICENSE file for details.
+1. Create and modify your project using [v0.dev](https://v0.dev)
+2. Deploy your chats from the v0 interface
+3. Changes are automatically pushed to this repository
+4. Vercel deploys the latest version from this repository

@@ -6,121 +6,173 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Lock, Unlock, Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Lock } from "lucide-react"
 
 interface PasswordGateProps {
-  onAuthenticated: () => void
+  children: React.ReactNode
 }
 
-const CORRECT_PASSWORD = "flowsketch2024"
-
-export default function PasswordGate({ onAuthenticated }: PasswordGateProps) {
+export function PasswordGate({ children }: PasswordGateProps) {
   const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [isChecking, setIsChecking] = useState(true)
 
-  // Check if user is already authenticated
+  // Check if user is already authenticated on mount
   useEffect(() => {
-    const isAuth = localStorage.getItem("flowsketch-authenticated")
-    if (isAuth === "true") {
-      onAuthenticated()
+    const checkAuth = () => {
+      const authStatus = localStorage.getItem("flowsketch_auth")
+      const authTime = localStorage.getItem("flowsketch_auth_time")
+
+      if (authStatus === "authenticated" && authTime) {
+        const authTimestamp = Number.parseInt(authTime)
+        const now = Date.now()
+        const oneDay = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+
+        // Check if authentication is still valid (within 24 hours)
+        if (now - authTimestamp < oneDay) {
+          setIsAuthenticated(true)
+        } else {
+          // Clear expired authentication
+          localStorage.removeItem("flowsketch_auth")
+          localStorage.removeItem("flowsketch_auth_time")
+        }
+      }
+      setIsChecking(false)
     }
-  }, [onAuthenticated])
+
+    checkAuth()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
+    setLoading(true)
     setError("")
 
-    // Simulate a brief loading state
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    try {
+      // Simple password check - you can change this password
+      const correctPassword = "flowsketch2024" // Change this to your desired password
 
-    if (password === CORRECT_PASSWORD) {
-      localStorage.setItem("flowsketch-authenticated", "true")
-      onAuthenticated()
-    } else {
-      setError("Incorrect password. Please try again.")
-      setPassword("")
+      if (password === correctPassword) {
+        // Store authentication in localStorage
+        localStorage.setItem("flowsketch_auth", "authenticated")
+        localStorage.setItem("flowsketch_auth_time", Date.now().toString())
+        setIsAuthenticated(true)
+      } else {
+        setError("Incorrect password. Please try again.")
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.")
+    } finally {
+      setLoading(false)
     }
-
-    setIsLoading(false)
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md border-slate-700 bg-slate-800/50 backdrop-blur">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple-600/20">
-            <Lock className="h-8 w-8 text-purple-400" />
-          </div>
-          <CardTitle className="text-2xl font-bold text-slate-100">FlowSketch Access</CardTitle>
-          <CardDescription className="text-slate-400">
-            Enter the password to access the mathematical art generator
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-200">
-                Password
-              </Label>
+  const handleLogout = () => {
+    localStorage.removeItem("flowsketch_auth")
+    localStorage.removeItem("flowsketch_auth_time")
+    setIsAuthenticated(false)
+    setPassword("")
+  }
+
+  // Show loading while checking authentication
+  if (isChecking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    )
+  }
+
+  // Show password form if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mb-4">
+              <Lock className="h-6 w-6 text-white" />
+            </div>
+            <CardTitle className="text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              FlowSketch Access
+            </CardTitle>
+            <CardDescription>Enter the password to access the art generator</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="relative">
                 <Input
-                  id="password"
                   type={showPassword ? "text" : "password"}
+                  placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password"
-                  className="border-slate-600 bg-slate-700 text-slate-100 placeholder:text-slate-400 pr-10"
+                  className="pr-10"
                   required
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 text-slate-400 hover:text-slate-200"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-gray-400" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-gray-400" />
+                  )}
                 </Button>
               </div>
-            </div>
 
-            {error && (
-              <Alert className="border-red-600 bg-red-600/10">
-                <AlertDescription className="text-red-300">{error}</AlertDescription>
-              </Alert>
-            )}
-
-            <Button
-              type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Verifying...
-                </>
-              ) : (
-                <>
-                  <Unlock className="mr-2 h-4 w-4" />
-                  Access Generator
-                </>
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
               )}
-            </Button>
-          </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-xs text-slate-500">
-              This tool generates mathematical visualizations for dome installations
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                disabled={loading}
+              >
+                {loading ? (
+                  <div className="flex items-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Checking...
+                  </div>
+                ) : (
+                  "Access FlowSketch"
+                )}
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center text-sm text-gray-500">
+              <p>Authentication expires after 24 hours</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // Show the app with logout option if authenticated
+  return (
+    <div>
+      {/* Logout button in top-right corner */}
+      <div className="fixed top-4 right-4 z-50">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleLogout}
+          className="bg-white/80 backdrop-blur-sm hover:bg-white/90"
+        >
+          Logout
+        </Button>
+      </div>
+      {children}
     </div>
   )
 }

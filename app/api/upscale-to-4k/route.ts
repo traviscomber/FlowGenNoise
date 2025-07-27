@@ -1,63 +1,84 @@
 import { type NextRequest, NextResponse } from "next/server"
-import Replicate from "replicate"
-
-const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN,
-})
+import sharp from "sharp"
 
 export async function POST(request: NextRequest) {
   try {
-    const { imageUrl, targetResolution = "2160p" } = await request.json()
+    const { imageUrl } = await request.json()
 
     if (!imageUrl) {
       return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
     }
 
-    console.log("🔍 Starting 4K upscaling process")
-    console.log("📸 Input image:", imageUrl.substring(0, 50) + "...")
-    console.log("🎯 Target resolution:", targetResolution)
+    console.log("Starting 4K upscaling for:", imageUrl)
 
-    // Use Real-ESRGAN for high-quality upscaling
-    const output = await replicate.run(
-      "nightmareai/real-esrgan:42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b",
-      {
-        input: {
-          image: imageUrl,
-          scale: targetResolution === "2160p" ? 4 : 2, // 4x for 4K, 2x for 1440p
-          face_enhance: false, // Keep false for mathematical art
-        },
-      },
-    )
-
-    if (!output) {
-      throw new Error("Upscaling failed - no output received")
+    // Fetch the original image
+    const response = await fetch(imageUrl)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status}`)
     }
 
-    const upscaledImageUrl = Array.isArray(output) ? output[0] : output
+    const imageBuffer = await response.arrayBuffer()
+    const inputBuffer = Buffer.from(imageBuffer)
 
-    console.log("✅ 4K upscaling completed successfully!")
-    console.log("🖼️ Upscaled image:", upscaledImageUrl.substring(0, 50) + "...")
+    console.log(`Original image size: ${inputBuffer.length} bytes`)
 
-    // Calculate dimensions based on target resolution
-    const dimensions = targetResolution === "2160p" ? { width: 2160, height: 2160 } : { width: 1440, height: 1440 }
+    // Get original image metadata
+    const metadata = await sharp(inputBuffer).metadata()
+    console.log("Original image metadata:", {
+      width: metadata.width,
+      height: metadata.height,
+      format: metadata.format,
+      channels: metadata.channels,
+    })
+
+    // Calculate target dimensions (4K = 3840x3840)
+    const targetSize = 3840
+    const originalSize = Math.max(metadata.width || 1024, metadata.height || 1024)
+    const scaleFactor = targetSize / originalSize
+
+    console.log(`Upscaling from ${originalSize}px to ${targetSize}px (${scaleFactor.toFixed(2)}x)`)
+
+    // Upscale using Sharp with high-quality settings
+    const upscaledBuffer = await sharp(inputBuffer)
+      .resize(targetSize, targetSize, {
+        kernel: sharp.kernel.lanczos3, // High-quality resampling
+        fit: "fill", // Ensure exact dimensions
+        background: { r: 0, g: 0, b: 0, alpha: 1 }, // Black background for any padding
+      })
+      .jpeg({
+        quality: 95, // High quality JPEG
+        progressive: true, // Progressive JPEG for better loading
+        mozjpeg: true, // Use mozjpeg encoder for better compression
+      })
+      .toBuffer()
+
+    console.log(`Upscaled image size: ${upscaledBuffer.length} bytes`)
+
+    // Convert to base64 data URL
+    const base64 = upscaledBuffer.toString("base64")
+    const dataUrl = `data:image/jpeg;base64,${base64}`
+
+    // Calculate estimated file size
+    const fileSizeMB = (upscaledBuffer.length / (1024 * 1024)).toFixed(1)
+
+    console.log("4K upscaling completed successfully")
 
     return NextResponse.json({
       success: true,
-      image: upscaledImageUrl,
-      originalImage: imageUrl,
-      dimensions,
-      targetResolution,
-      upscaleRatio: targetResolution === "2160p" ? "4x" : "2x",
-      estimatedFileSize: targetResolution === "2160p" ? "~4.2MB" : "~2.1MB",
-      provider: "Real-ESRGAN",
+      upscaledImageUrl: dataUrl,
+      originalSize: `${metadata.width}x${metadata.height}`,
+      upscaledSize: `${targetSize}x${targetSize}`,
+      scaleFactor: scaleFactor.toFixed(2),
+      estimatedFileSize: `${fileSizeMB}MB`,
+      compressionRatio: (inputBuffer.length / upscaledBuffer.length).toFixed(2),
     })
-  } catch (error: any) {
-    console.error("❌ 4K upscaling error:", error)
-
+  } catch (error) {
+    console.error("4K upscaling error:", error)
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "4K upscaling failed",
+        error: "Failed to upscale image to 4K",
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 },
     )

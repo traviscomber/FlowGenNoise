@@ -4,12 +4,13 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
+import { PasswordGate } from "@/components/auth/password-gate"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "FlowSketch Art Generator",
-  description: "Transform mathematical concepts into stunning stereographic projections for dome installations",
+  title: "FlowSketch - Mathematical Art Generator",
+  description: "Create stunning mathematical art with AI-powered generation and enhancement",
     generator: 'v0.dev'
 }
 
@@ -21,8 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          {children}
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          <PasswordGate>{children}</PasswordGate>
           <Toaster />
         </ThemeProvider>
       </body>
