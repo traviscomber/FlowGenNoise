@@ -263,7 +263,7 @@ export function FlowArtGenerator() {
 
         console.log("Sending AI request:", requestBody)
 
-        const response = await fetch("/api/generate-ai-art", {
+        const response = await fetch("/api/generate-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestBody),
@@ -740,6 +740,7 @@ export function FlowArtGenerator() {
                           <option value="perlin">🌊 Perlin Noise (Multi-octave)</option>
                           <option value="diffusion">🧪 Reaction-Diffusion (Turing Patterns)</option>
                           <option value="wave">〰️ Wave Interference (Superposition)</option>
+                          <option value="moons">🌙 Lunar Orbital Mechanics (N-Body Dynamics)</option>
                         </select>
                       </div>
 
@@ -797,6 +798,8 @@ export function FlowArtGenerator() {
                           <option value="vintage">📸 Vintage Sepia</option>
                           <option value="toxic">☢️ Toxic Chemical</option>
                           <option value="ember">🔥 Glowing Ember</option>
+                          <option value="lunar">🌙 Lunar Silver</option>
+                          <option value="tidal">🌊 Tidal Forces</option>
                         </select>
                       </div>
 

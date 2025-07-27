@@ -204,6 +204,8 @@ const colorPalettes = {
   ],
   toxic: ["#32cd32", "#7fff00", "#adff2f", "#9aff9a", "#00ff7f", "#00fa9a", "#40e0d0", "#00ced1", "#00bfff", "#1e90ff"],
   ember: ["#000000", "#1a0000", "#330000", "#4d0000", "#660000", "#800000", "#990000", "#b30000", "#cc0000", "#ff6600"],
+  lunar: ["#1a1a2e", "#16213e", "#0f3460", "#533483", "#7209b7", "#a663cc", "#c9b037", "#ffd700", "#fff8dc", "#ffffff"],
+  tidal: ["#000080", "#191970", "#4169e1", "#6495ed", "#87ceeb", "#b0e0e6", "#e0ffff", "#f0f8ff", "#ffffff", "#fffacd"],
 } as const
 
 /* ------------------------------------------------------------------ */
@@ -562,6 +564,151 @@ function generateWave(params: GenerationParams, rng: SeededRandom): Array<{ x: n
   return points
 }
 
+// NEW: Moons dataset - Complex lunar orbital mechanics with tidal forces
+function generateMoons(params: GenerationParams, rng: SeededRandom): Array<{ x: number; y: number; color: string }> {
+  const points: Array<{ x: number; y: number; color: string }> = []
+  const palette = colorPalettes[params.colorScheme as keyof typeof colorPalettes] || colorPalettes.lunar
+
+  // Multiple moon system with complex orbital mechanics
+  const numMoons = 3 + Math.floor(rng.next() * 5) // 3-7 moons
+  const moons: Array<{
+    distance: number
+    speed: number
+    phase: number
+    mass: number
+    eccentricity: number
+    inclination: number
+  }> = []
+
+  // Generate moon parameters
+  for (let i = 0; i < numMoons; i++) {
+    moons.push({
+      distance: 50 + i * 40 + rng.range(-20, 20), // Orbital distance
+      speed: 0.1 / (i + 1) + rng.range(-0.02, 0.02), // Orbital speed (Kepler's laws)
+      phase: rng.range(0, 2 * Math.PI), // Initial phase
+      mass: 1 + rng.range(0.5, 3), // Relative mass
+      eccentricity: rng.range(0, 0.3), // Orbital eccentricity
+      inclination: rng.range(-Math.PI / 6, Math.PI / 6), // Orbital inclination
+    })
+  }
+
+  // Generate orbital paths with gravitational perturbations
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = (i / params.numSamples) * 50 * Math.PI // Time parameter
+
+    for (let moonIndex = 0; moonIndex < moons.length; moonIndex++) {
+      const moon = moons[moonIndex]
+
+      // Basic elliptical orbit
+      const meanAnomaly = moon.speed * t + moon.phase
+      const eccentricAnomaly = meanAnomaly + moon.eccentricity * Math.sin(meanAnomaly)
+      const trueAnomaly =
+        2 *
+        Math.atan2(
+          Math.sqrt(1 + moon.eccentricity) * Math.sin(eccentricAnomaly / 2),
+          Math.sqrt(1 - moon.eccentricity) * Math.cos(eccentricAnomaly / 2),
+        )
+
+      // Distance varies with eccentricity
+      const r =
+        (moon.distance * (1 - moon.eccentricity * moon.eccentricity)) / (1 + moon.eccentricity * Math.cos(trueAnomaly))
+
+      // 3D orbital mechanics projected to 2D
+      const x3d = r * Math.cos(trueAnomaly)
+      const y3d = r * Math.sin(trueAnomaly) * Math.cos(moon.inclination)
+      const z3d = r * Math.sin(trueAnomaly) * Math.sin(moon.inclination)
+
+      // Gravitational perturbations from other moons
+      let perturbX = 0,
+        perturbY = 0
+      for (let otherIndex = 0; otherIndex < moons.length; otherIndex++) {
+        if (otherIndex !== moonIndex) {
+          const otherMoon = moons[otherIndex]
+          const otherMeanAnomaly = otherMoon.speed * t + otherMoon.phase
+          const otherR = otherMoon.distance
+          const otherX = otherR * Math.cos(otherMeanAnomaly)
+          const otherY = otherR * Math.sin(otherMeanAnomaly)
+
+          const dx = otherX - x3d
+          const dy = otherY - y3d
+          const distance = Math.sqrt(dx * dx + dy * dy) + 1 // Avoid division by zero
+          const force = otherMoon.mass / (distance * distance * distance)
+
+          perturbX += force * dx * 10
+          perturbY += force * dy * 10
+        }
+      }
+
+      // Tidal forces - create complex wave patterns
+      const tidalForce = Math.sin(t * 0.1 + moonIndex) * moon.mass * 5
+      const tidalX = tidalForce * Math.cos(trueAnomaly + Math.PI / 2)
+      const tidalY = tidalForce * Math.sin(trueAnomaly + Math.PI / 2)
+
+      // Libration effects (small oscillations)
+      const librationAmplitude = 3 * moon.eccentricity
+      const librationX = librationAmplitude * Math.sin(3 * trueAnomaly + moon.phase)
+      const librationY = librationAmplitude * Math.cos(3 * trueAnomaly + moon.phase)
+
+      // Final position with all effects
+      const finalX = x3d + perturbX + tidalX + librationX + rng.range(-5, 5) * params.noiseScale
+      const finalY = y3d + perturbY + tidalY + librationY + rng.range(-5, 5) * params.noiseScale
+
+      // Color based on moon properties and orbital phase
+      const phaseIntensity = (Math.sin(trueAnomaly) + 1) / 2 // Moon phase
+      const distanceIntensity = 1 - (r - moon.distance * 0.7) / (moon.distance * 0.6) // Distance variation
+      const massIntensity = moon.mass / 4 // Mass influence
+
+      const colorIntensity = (phaseIntensity + distanceIntensity + massIntensity) / 3
+      const colorIndex = Math.floor(colorIntensity * (palette.length - 1))
+
+      // Add gravitational lensing effect
+      const lensingFactor = 1 + (moon.mass * 0.1) / Math.max(1, r / 50)
+      const lensedX = finalX * lensingFactor
+      const lensedY = finalY * lensingFactor
+
+      points.push({
+        x: lensedX,
+        y: lensedY,
+        color: palette[Math.max(0, Math.min(palette.length - 1, colorIndex))],
+      })
+
+      // Add trailing particles for each moon (space debris, dust)
+      if (i % 10 === 0) {
+        for (let trail = 1; trail <= 5; trail++) {
+          const trailAnomaly = trueAnomaly - trail * 0.1
+          const trailR = r + rng.range(-10, 10)
+          const trailX = trailR * Math.cos(trailAnomaly) + rng.range(-15, 15) * params.noiseScale
+          const trailY =
+            trailR * Math.sin(trailAnomaly) * Math.cos(moon.inclination) + rng.range(-15, 15) * params.noiseScale
+
+          const trailColorIndex = Math.max(0, colorIndex - trail)
+          points.push({
+            x: trailX,
+            y: trailY,
+            color: palette[Math.max(0, Math.min(palette.length - 1, trailColorIndex))],
+          })
+        }
+      }
+    }
+
+    // Add asteroid belt between certain orbital distances
+    if (rng.next() > 0.7) {
+      const asteroidDistance = 120 + rng.range(-30, 30)
+      const asteroidAngle = rng.range(0, 2 * Math.PI)
+      const asteroidX = asteroidDistance * Math.cos(asteroidAngle) + rng.range(-20, 20) * params.noiseScale
+      const asteroidY = asteroidDistance * Math.sin(asteroidAngle) + rng.range(-20, 20) * params.noiseScale
+
+      points.push({
+        x: asteroidX,
+        y: asteroidY,
+        color: palette[Math.floor(palette.length * 0.3)], // Darker colors for asteroids
+      })
+    }
+  }
+
+  return points
+}
+
 // Dataset selector
 function generateDataset(params: GenerationParams): Array<{ x: number; y: number; color: string }> {
   const rng = new SeededRandom(params.seed)
@@ -591,6 +738,8 @@ function generateDataset(params: GenerationParams): Array<{ x: number; y: number
       return generateDiffusion(params, rng)
     case "wave":
       return generateWave(params, rng)
+    case "moons":
+      return generateMoons(params, rng)
     default:
       return generateSpirals(params, rng)
   }
@@ -654,6 +803,13 @@ export function generateFlowField(params: GenerationParams): string {
     case "lorenz":
       const lorenzPoints = plotter.generateLorenzAttractor(params.numSamples, params.timeStep)
       paths.push(plotter.pointsToPath(lorenzPoints))
+      colors.push(getStrokeColor(params.colorScheme))
+      break
+
+    case "moons":
+      // For moons, generate multiple orbital paths
+      const moonPoints = plotter.generateLorenzAttractor(params.numSamples, params.timeStep)
+      paths.push(plotter.pointsToPath(moonPoints))
       colors.push(getStrokeColor(params.colorScheme))
       break
 
@@ -1076,7 +1232,7 @@ function generateCellularAutomata(
         const colorIndex = (x + y) % colours.length
 
         pathParts.push(
-          `<rect x="${px}" y="${py}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="0.8"/>`,
+          `<rect x="${px}" y="${py}" width="${cellSize}" height="${cellSize}" fill="${colours[colorIndex]}" opacity="${0.8}"/>`,
         )
       }
     }
@@ -1866,6 +2022,8 @@ function getBackgroundColor(colorScheme: string): string {
     vintage: "#2a1810",
     toxic: "#001100",
     ember: "#100000",
+    lunar: "#0a0a1a",
+    tidal: "#000033",
   }
   return colorMap[colorScheme] || "#000000"
 }
@@ -1894,6 +2052,8 @@ function getStrokeColor(colorScheme: string): string {
     vintage: "#daa520",
     toxic: "#adff2f",
     ember: "#ff4500",
+    lunar: "#ffd700",
+    tidal: "#87ceeb",
   }
   return colorMap[colorScheme] || "#ffffff"
 }
