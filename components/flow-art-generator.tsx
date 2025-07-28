@@ -222,6 +222,12 @@ export function FlowArtGenerator() {
         setGeneratedArt(newArt)
         setGallery((prev) => [newArt, ...prev])
 
+        // Clear custom prompt after successful generation
+        if (useCustomPrompt) {
+          setCustomPrompt("")
+          setEnhancedPrompt("")
+        }
+
         toast.success(
           `Mathematical SVG Generated! 🎨 ${dataset} + ${scenario} visualization created with ${numSamples} data points.`,
         )
@@ -307,6 +313,12 @@ export function FlowArtGenerator() {
         }
         setGeneratedArt(newArt)
         setGallery((prev) => [newArt, ...prev])
+
+        // Clear custom prompt after successful generation
+        if (useCustomPrompt) {
+          setCustomPrompt("")
+          setEnhancedPrompt("")
+        }
 
         setProgress(100)
 
@@ -485,6 +497,23 @@ export function FlowArtGenerator() {
     const newSeed = Math.floor(Math.random() * 10000)
     setSeed(newSeed)
     toast.success(`Seed Randomized! 🎲 New seed: ${newSeed}`)
+  }, [])
+
+  const resetAllParameters = useCallback(() => {
+    setDataset("tribes")
+    setScenario("landscape")
+    setColorScheme("sunset")
+    setSeed(1234)
+    setNumSamples(3000)
+    setNoiseScale(0.1)
+    setTimeStep(0.01)
+    setCustomPrompt("")
+    setEnhancedPrompt("")
+    setUseCustomPrompt(false)
+    setDomeEnabled(false)
+    setPanorama360Enabled(true)
+    setError(null)
+    toast.success("Parameters Reset! 🔄 All settings restored to defaults.")
   }, [])
 
   return (
@@ -946,24 +975,35 @@ export function FlowArtGenerator() {
                     </div>
 
                     {/* Generate Button */}
-                    <Button
-                      onClick={generateArt}
-                      disabled={isGenerating || (useCustomPrompt && !customPrompt.trim())}
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3"
-                    >
-                      {isGenerating ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Generating...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="h-4 w-4 mr-2" />
-                          Generate {mode === "svg" ? "Mathematical SVG" : "AI Art"}
-                          {useCustomPrompt && customPrompt.trim() && " (Custom Prompt)"}
-                        </>
-                      )}
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={generateArt}
+                        disabled={isGenerating || (useCustomPrompt && !customPrompt.trim())}
+                        className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3"
+                      >
+                        {isGenerating ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Generating...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="h-4 w-4 mr-2" />
+                            Generate {mode === "svg" ? "Mathematical SVG" : "AI Art"}
+                            {useCustomPrompt && customPrompt.trim() && " (Custom Prompt)"}
+                          </>
+                        )}
+                      </Button>
+
+                      <Button
+                        onClick={resetAllParameters}
+                        variant="outline"
+                        className="border-slate-600 text-slate-300 hover:bg-slate-700 bg-transparent"
+                        disabled={isGenerating}
+                      >
+                        Reset
+                      </Button>
+                    </div>
 
                     {/* Progress Bar */}
                     {isGenerating && progress > 0 && (
