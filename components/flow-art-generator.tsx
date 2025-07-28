@@ -7,7 +7,13 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { useToast } from "@/hooks/use-toast"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { Slider } from "@/components/ui/slider"
+import { toast } from "sonner"
 import {
   Sparkles,
   Settings,
@@ -19,19 +25,19 @@ import {
   AlertCircle,
   CheckCircle,
   Loader2,
-  Cpu,
+  Users,
+  Dice1,
+  Trash2,
 } from "lucide-react"
 import { generateFlowField, generateDomeProjection as generateDomeSVG, type GenerationParams } from "@/lib/flow-model"
 
 interface GeneratedArt {
   svgContent: string
   imageUrl: string
-  upscaledImageUrl?: string
   domeImageUrl?: string
   panorama360Url?: string
   params: GenerationParams
   mode: "svg" | "ai"
-  upscaleMethod?: "cloudinary" | "client" | "mathematical"
   customPrompt?: string
   originalPrompt?: string
   promptLength?: number
@@ -49,51 +55,37 @@ interface GeneratedArt {
     format: string
   }
   estimatedFileSize?: string
-  is4K?: boolean
   provider?: string
   model?: string
-}
-
-// Helper function to generate 360 panorama SVG
-function generate360Panorama(params: GenerationParams): string {
-  return generateFlowField(params)
 }
 
 export function FlowArtGenerator() {
   const [generatedArt, setGeneratedArt] = useState<GeneratedArt | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [isUpscaling, setIsUpscaling] = useState(false)
   const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false)
-  const [isGeneratingDome, setIsGeneratingDome] = useState(false)
-  const [isGenerating360, setIsGenerating360] = useState(false)
   const [progress, setProgress] = useState(0)
   const [mode, setMode] = useState<"svg" | "ai">("ai")
   const [error, setError] = useState<string | null>(null)
   const [downloadStatus, setDownloadStatus] = useState<string | null>(null)
 
-  // Enhanced generation parameters
-  const [dataset, setDataset] = useState("spirals")
+  // Enhanced generation parameters with full mathematical controls
+  const [dataset, setDataset] = useState("tribes")
   const [scenario, setScenario] = useState("landscape")
-  const [colorScheme, setColorScheme] = useState("plasma")
-  const [seed, setSeed] = useState(Math.floor(Math.random() * 10000))
-  const [numSamples, setNumSamples] = useState(1000)
-  const [noiseScale, setNoiseScale] = useState(0.05)
+  const [colorScheme, setColorScheme] = useState("sunset")
+  const [seed, setSeed] = useState(1234)
+  const [numSamples, setNumSamples] = useState(3000)
+  const [noiseScale, setNoiseScale] = useState(0.1)
   const [timeStep, setTimeStep] = useState(0.01)
 
-  // AI provider settings
-  const [useReplicate, setUseReplicate] = useState(false)
-  const [replicateModel, setReplicateModel] = useState("stability-ai/sdxl")
-  const [enable4K, setEnable4K] = useState(false)
-
-  // Dome projection settings
+  // Dome projection settings - fixed to 10 meters
   const [domeEnabled, setDomeEnabled] = useState(false)
-  const [domeDiameter, setDomeDiameter] = useState(30)
-  const [domeResolution, setDomeResolution] = useState("1080p")
-  const [domeProjectionType, setDomeProjectionType] = useState("fulldome")
+  const [domeDiameter] = useState(10) // Fixed to 10 meters
+  const [domeResolution, setDomeResolution] = useState("4K")
+  const [domeProjectionType, setDomeProjectionType] = useState("fisheye")
 
   // 360° panorama settings
   const [panorama360Enabled, setPanorama360Enabled] = useState(true)
-  const [panoramaResolution, setPanoramaResolution] = useState("1080p")
+  const [panoramaResolution, setPanoramaResolution] = useState("8K")
   const [panoramaFormat, setPanoramaFormat] = useState("stereographic")
   const [stereographicPerspective, setStereographicPerspective] = useState("little-planet")
 
@@ -104,9 +96,8 @@ export function FlowArtGenerator() {
 
   // AI Art prompt enhancement
   const [customPrompt, setCustomPrompt] = useState("")
+  const [enhancedPrompt, setEnhancedPrompt] = useState("")
   const [useCustomPrompt, setUseCustomPrompt] = useState(false)
-
-  const { toast } = useToast()
 
   // Load gallery from localStorage on mount
   useEffect(() => {
@@ -184,7 +175,12 @@ export function FlowArtGenerator() {
         if (domeEnabled) {
           setProgress(65)
           console.log("Generating dome projection...")
-          const domeSvgContent = generateDomeSVG(params)
+          const domeSvgContent = generateDomeSVG({
+            width: 1024,
+            height: 1024,
+            fov: 180,
+            tilt: 0,
+          })
           const domeSvgBlob = new Blob([domeSvgContent], { type: "image/svg+xml" })
           domeImageUrl = URL.createObjectURL(domeSvgBlob)
         }
@@ -192,13 +188,13 @@ export function FlowArtGenerator() {
         if (panorama360Enabled) {
           setProgress(80)
           console.log("Generating 360° panorama...")
-          const panoramaSvgContent = generate360Panorama(params)
+          const panoramaSvgContent = generateFlowField(params)
           const panoramaSvgBlob = new Blob([panoramaSvgContent], { type: "image/svg+xml" })
           panorama360Url = URL.createObjectURL(panoramaSvgBlob)
         }
 
         setProgress(100)
-        const newArt = {
+        const newArt: GeneratedArt = {
           svgContent,
           imageUrl,
           domeImageUrl,
@@ -226,10 +222,9 @@ export function FlowArtGenerator() {
         setGeneratedArt(newArt)
         setGallery((prev) => [newArt, ...prev])
 
-        toast({
-          title: `Mathematical SVG Generated! 🎨`,
-          description: `${dataset} + ${scenario} visualization created with ${numSamples} data points.`,
-        })
+        toast.success(
+          `Mathematical SVG Generated! 🎨 ${dataset} + ${scenario} visualization created with ${numSamples} data points.`,
+        )
       } else {
         // Generate AI art with enhanced mathematical prompts
         setProgress(20)
@@ -242,7 +237,8 @@ export function FlowArtGenerator() {
           seed,
           numSamples,
           noise: noiseScale,
-          customPrompt: useCustomPrompt ? customPrompt : undefined,
+          timeStep,
+          customPrompt: useCustomPrompt ? enhancedPrompt || customPrompt : undefined,
           domeProjection: domeEnabled,
           domeDiameter: domeEnabled ? domeDiameter : undefined,
           domeResolution: domeEnabled ? domeResolution : undefined,
@@ -252,9 +248,6 @@ export function FlowArtGenerator() {
           panoramaFormat: panorama360Enabled ? panoramaFormat : undefined,
           stereographicPerspective:
             panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
-          enable4K,
-          useReplicate,
-          replicateModel,
         }
 
         console.log("Sending AI request:", requestBody)
@@ -268,9 +261,9 @@ export function FlowArtGenerator() {
         console.log("AI API Response status:", response.status)
 
         if (!response.ok) {
-          const errorText = await response.text()
-          console.error("AI API error response:", errorText)
-          throw new Error(`AI API failed: ${response.status} - ${errorText}`)
+          const errorData = await response.json()
+          console.error("AI API error response:", errorData)
+          throw new Error(errorData.error || `AI API failed: ${response.status}`)
         }
 
         const data = await response.json()
@@ -281,18 +274,17 @@ export function FlowArtGenerator() {
         }
 
         setProgress(80)
-        const newArt = {
+        const newArt: GeneratedArt = {
           svgContent: "",
           imageUrl: data.image,
           domeImageUrl: data.domeImage,
           panorama360Url: data.panoramaImage || data.image,
           params,
           mode: "ai" as const,
-          customPrompt: useCustomPrompt ? customPrompt : undefined,
+          customPrompt: useCustomPrompt ? enhancedPrompt || customPrompt : undefined,
           originalPrompt: data.originalPrompt,
           promptLength: data.promptLength,
           estimatedFileSize: data.estimatedFileSize,
-          is4K: data.is4K,
           provider: data.provider,
           model: data.model,
           timestamp: Date.now(),
@@ -318,21 +310,12 @@ export function FlowArtGenerator() {
 
         setProgress(100)
 
-        const providerText = data.provider === "replicate" ? `Replicate (${data.model})` : "OpenAI DALL-E 3"
-
-        toast({
-          title: data.is4K ? "4K Mathematical Art Generated! 🤖✨" : "Mathematical Art Generated! 🤖✨",
-          description: `${dataset} + ${scenario} created with ${providerText}${data.is4K ? " in 4K quality" : ""}.`,
-        })
+        toast.success(`Mathematical Art Generated! 🤖✨ ${dataset} + ${scenario} created with OpenAI DALL-E 3.`)
       }
     } catch (error: any) {
       console.error("Generation error:", error)
       setError(error.message || "Failed to generate artwork")
-      toast({
-        title: "Generation Failed",
-        description: error.message || "Failed to generate artwork. Please try again.",
-        variant: "destructive",
-      })
+      toast.error(error.message || "Failed to generate artwork. Please try again.")
     } finally {
       setIsGenerating(false)
       setProgress(0)
@@ -348,6 +331,7 @@ export function FlowArtGenerator() {
     mode,
     useCustomPrompt,
     customPrompt,
+    enhancedPrompt,
     domeEnabled,
     domeDiameter,
     domeResolution,
@@ -356,10 +340,6 @@ export function FlowArtGenerator() {
     panoramaResolution,
     panoramaFormat,
     stereographicPerspective,
-    enable4K,
-    useReplicate,
-    replicateModel,
-    toast,
   ])
 
   const downloadImage = useCallback(
@@ -392,7 +372,7 @@ export function FlowArtGenerator() {
             filename = `flowsketch-360-${generatedArt.params.dataset}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "jpg"}`
             break
           default:
-            imageUrl = generatedArt.upscaledImageUrl || generatedArt.imageUrl
+            imageUrl = generatedArt.imageUrl
             filename = `flowsketch-${generatedArt.params.dataset}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "jpg"}`
         }
 
@@ -421,83 +401,21 @@ export function FlowArtGenerator() {
           setDownloadStatus("Image downloaded successfully!")
         }
 
-        toast({
-          title: "Download Complete! 📥",
-          description: `${filename} has been saved to your device.`,
-        })
+        toast.success(`Download Complete! 📥 ${filename} has been saved to your device.`)
       } catch (error: any) {
         console.error("Download error:", error)
         setDownloadStatus(`Download failed: ${error.message}`)
-        toast({
-          title: "Download Failed",
-          description: error.message || "Failed to download image. Please try again.",
-          variant: "destructive",
-        })
+        toast.error(error.message || "Failed to download image. Please try again.")
       } finally {
         setTimeout(() => setDownloadStatus(null), 3000)
       }
     },
-    [generatedArt, toast],
+    [generatedArt],
   )
-
-  const upscaleImage = useCallback(async () => {
-    if (!generatedArt || generatedArt.mode === "svg") return
-
-    setIsUpscaling(true)
-    try {
-      console.log("Starting upscaling process...")
-
-      const response = await fetch("/api/upscale-to-4k", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl: generatedArt.imageUrl }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`Upscaling failed: ${response.status}`)
-      }
-
-      const data = await response.json()
-      console.log("Upscaling response:", data)
-
-      if (data.success) {
-        const updatedArt = {
-          ...generatedArt,
-          upscaledImageUrl: data.upscaledImageUrl,
-          upscaleMethod: data.method,
-          estimatedFileSize: data.estimatedFileSize,
-        }
-        setGeneratedArt(updatedArt)
-
-        // Update gallery
-        setGallery((prev) => prev.map((item) => (item.id === generatedArt.id ? updatedArt : item)))
-
-        toast({
-          title: "4K Upscaling Complete! 🚀",
-          description: `Image enhanced to 4K resolution using ${data.method}.`,
-        })
-      } else {
-        throw new Error(data.error || "Upscaling failed")
-      }
-    } catch (error: any) {
-      console.error("Upscaling error:", error)
-      toast({
-        title: "Upscaling Failed",
-        description: error.message || "Failed to upscale image. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsUpscaling(false)
-    }
-  }, [generatedArt, toast])
 
   const enhancePrompt = useCallback(async () => {
     if (!customPrompt.trim()) {
-      toast({
-        title: "No Prompt to Enhance",
-        description: "Please enter a custom prompt first.",
-        variant: "destructive",
-      })
+      toast.error("Please enter a custom prompt first.")
       return
     }
 
@@ -507,10 +425,19 @@ export function FlowArtGenerator() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          prompt: customPrompt,
+          currentPrompt: customPrompt,
           dataset,
           scenario,
           colorScheme,
+          numSamples,
+          noiseScale,
+          domeProjection: domeEnabled,
+          domeDiameter: domeEnabled ? domeDiameter : undefined,
+          domeResolution: domeEnabled ? domeResolution : undefined,
+          panoramic360: panorama360Enabled,
+          panoramaResolution: panorama360Enabled ? panoramaResolution : undefined,
+          stereographicPerspective:
+            panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
         }),
       })
 
@@ -521,203 +448,44 @@ export function FlowArtGenerator() {
       const data = await response.json()
 
       if (data.success) {
-        setCustomPrompt(data.enhancedPrompt)
-        toast({
-          title: "Prompt Enhanced! ✨",
-          description: "Your prompt has been enhanced with mathematical and artistic details.",
-        })
+        setEnhancedPrompt(data.enhancedPrompt)
+        toast.success("Prompt Enhanced! ✨ Your prompt has been enhanced with mathematical and artistic details.")
       } else {
         throw new Error(data.error || "Prompt enhancement failed")
       }
     } catch (error: any) {
       console.error("Prompt enhancement error:", error)
-      toast({
-        title: "Enhancement Failed",
-        description: error.message || "Failed to enhance prompt. Please try again.",
-        variant: "destructive",
-      })
+      toast.error(error.message || "Failed to enhance prompt. Please try again.")
     } finally {
       setIsEnhancingPrompt(false)
     }
-  }, [customPrompt, dataset, scenario, colorScheme, toast])
-
-  const generateDomeProjection = useCallback(async () => {
-    if (!generatedArt) return
-
-    setIsGeneratingDome(true)
-    try {
-      console.log("Generating dome projection...")
-
-      if (generatedArt.mode === "svg") {
-        // Generate dome SVG
-        const domeSvgContent = generateDomeSVG(generatedArt.params)
-        const domeSvgBlob = new Blob([domeSvgContent], { type: "image/svg+xml" })
-        const domeImageUrl = URL.createObjectURL(domeSvgBlob)
-
-        const updatedArt = {
-          ...generatedArt,
-          domeImageUrl,
-          isDomeProjection: true,
-          domeSpecs: {
-            diameter: domeDiameter,
-            resolution: domeResolution,
-            projectionType: domeProjectionType,
-          },
-        }
-        setGeneratedArt(updatedArt)
-        setGallery((prev) => prev.map((item) => (item.id === generatedArt.id ? updatedArt : item)))
-
-        toast({
-          title: "Dome Projection Generated! 🏛️",
-          description: `SVG dome projection created for ${domeDiameter}ft dome.`,
-        })
-      } else {
-        // Generate AI dome projection
-        const response = await fetch("/api/generate-art", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...generatedArt.params,
-            domeProjection: true,
-            domeDiameter,
-            domeResolution,
-            projectionType: domeProjectionType,
-            customPrompt: generatedArt.customPrompt,
-          }),
-        })
-
-        if (!response.ok) {
-          throw new Error(`Dome generation failed: ${response.status}`)
-        }
-
-        const data = await response.json()
-
-        const updatedArt = {
-          ...generatedArt,
-          domeImageUrl: data.image,
-          isDomeProjection: true,
-          domeSpecs: {
-            diameter: domeDiameter,
-            resolution: domeResolution,
-            projectionType: domeProjectionType,
-          },
-        }
-        setGeneratedArt(updatedArt)
-        setGallery((prev) => prev.map((item) => (item.id === generatedArt.id ? updatedArt : item)))
-
-        toast({
-          title: "AI Dome Projection Generated! 🤖🏛️",
-          description: `Dome-optimized artwork created for ${domeDiameter}ft planetarium.`,
-        })
-      }
-    } catch (error: any) {
-      console.error("Dome generation error:", error)
-      toast({
-        title: "Dome Generation Failed",
-        description: error.message || "Failed to generate dome projection. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsGeneratingDome(false)
-    }
-  }, [generatedArt, domeDiameter, domeResolution, domeProjectionType, toast])
-
-  const generate360Panorama = useCallback(async () => {
-    if (!generatedArt) return
-
-    setIsGenerating360(true)
-    try {
-      console.log("Generating 360° panorama...")
-
-      if (generatedArt.mode === "svg") {
-        // Generate 360° SVG
-        const panoramaSvgContent = generate360Panorama(generatedArt.params)
-        const panoramaSvgBlob = new Blob([panoramaSvgContent], { type: "image/svg+xml" })
-        const panorama360Url = URL.createObjectURL(panoramaSvgBlob)
-
-        const updatedArt = {
-          ...generatedArt,
-          panorama360Url,
-          is360Panorama: true,
-          panoramaSpecs: {
-            resolution: panoramaResolution,
-            format: panoramaFormat,
-          },
-        }
-        setGeneratedArt(updatedArt)
-        setGallery((prev) => prev.map((item) => (item.id === generatedArt.id ? updatedArt : item)))
-
-        toast({
-          title: "360° Panorama Generated! 🌐",
-          description: `SVG panorama created in ${panoramaFormat} format.`,
-        })
-      } else {
-        // Generate AI 360° panorama
-        const response = await fetch("/api/generate-art", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...generatedArt.params,
-            panoramic360: true,
-            panoramaResolution,
-            panoramaFormat,
-            stereographicPerspective,
-            customPrompt: generatedArt.customPrompt,
-          }),
-        })
-
-        if (!response.ok) {
-          throw new Error(`360° generation failed: ${response.status}`)
-        }
-
-        const data = await response.json()
-
-        const updatedArt = {
-          ...generatedArt,
-          panorama360Url: data.image,
-          is360Panorama: true,
-          panoramaSpecs: {
-            resolution: panoramaResolution,
-            format: panoramaFormat,
-          },
-        }
-        setGeneratedArt(updatedArt)
-        setGallery((prev) => prev.map((item) => (item.id === generatedArt.id ? updatedArt : item)))
-
-        toast({
-          title: "AI 360° Panorama Generated! 🤖🌐",
-          description: `360° artwork created in ${panoramaFormat} format.`,
-        })
-      }
-    } catch (error: any) {
-      console.error("360° generation error:", error)
-      toast({
-        title: "360° Generation Failed",
-        description: error.message || "Failed to generate 360° panorama. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsGenerating360(false)
-    }
-  }, [generatedArt, panoramaResolution, panoramaFormat, stereographicPerspective, toast])
+  }, [
+    customPrompt,
+    dataset,
+    scenario,
+    colorScheme,
+    numSamples,
+    noiseScale,
+    domeEnabled,
+    domeDiameter,
+    domeResolution,
+    panorama360Enabled,
+    panoramaResolution,
+    panoramaFormat,
+    stereographicPerspective,
+  ])
 
   const clearGallery = useCallback(() => {
     setGallery([])
     localStorage.removeItem("flowsketch-gallery")
-    toast({
-      title: "Gallery Cleared",
-      description: "All generated artworks have been removed.",
-    })
-  }, [toast])
+    toast.success("Gallery Cleared - All generated artworks have been removed.")
+  }, [])
 
   const randomizeSeed = useCallback(() => {
     const newSeed = Math.floor(Math.random() * 10000)
     setSeed(newSeed)
-    toast({
-      title: "Seed Randomized! 🎲",
-      description: `New seed: ${newSeed}`,
-    })
-  }, [toast])
+    toast.success(`Seed Randomized! 🎲 New seed: ${newSeed}`)
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
@@ -764,7 +532,7 @@ export function FlowArtGenerator() {
                   <CardContent className="space-y-4">
                     {/* Mode Selection */}
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-300">Generation Mode</label>
+                      <Label className="text-sm font-medium text-slate-300">Generation Mode</Label>
                       <div className="grid grid-cols-2 gap-2">
                         <Button
                           variant={mode === "svg" ? "default" : "outline"}
@@ -787,238 +555,292 @@ export function FlowArtGenerator() {
 
                     {/* Dataset Selection */}
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-300">Mathematical Dataset</label>
-                      <select
-                        value={dataset}
-                        onChange={(e) => setDataset(e.target.value)}
-                        className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-100"
-                      >
-                        <option value="spirals">Fibonacci Spirals</option>
-                        <option value="fractal">Fractal Trees</option>
-                        <option value="mandelbrot">Mandelbrot Set</option>
-                        <option value="julia">Julia Set</option>
-                        <option value="lorenz">Lorenz Attractor</option>
-                        <option value="hyperbolic">Hyperbolic Geometry</option>
-                        <option value="gaussian">Gaussian Fields</option>
-                        <option value="cellular">Cellular Automata</option>
-                        <option value="voronoi">Voronoi Diagrams</option>
-                        <option value="perlin">Perlin Noise</option>
-                        <option value="diffusion">Reaction-Diffusion</option>
-                        <option value="wave">Wave Interference</option>
-                        <option value="moons">Lunar Orbital Mechanics</option>
-                        <option value="tribes">Tribal Network Topology</option>
-                        <option value="heads">Mosaic Head Compositions</option>
-                      </select>
+                      <Label className="text-sm font-medium text-slate-300">Mathematical Dataset</Label>
+                      <Select value={dataset} onValueChange={setDataset}>
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-700 border-slate-600">
+                          <SelectItem value="spirals">Fibonacci Spirals</SelectItem>
+                          <SelectItem value="fractal">Fractal Trees</SelectItem>
+                          <SelectItem value="mandelbrot">Mandelbrot Set</SelectItem>
+                          <SelectItem value="julia">Julia Set</SelectItem>
+                          <SelectItem value="lorenz">Lorenz Attractor</SelectItem>
+                          <SelectItem value="hyperbolic">Hyperbolic Geometry</SelectItem>
+                          <SelectItem value="gaussian">Gaussian Fields</SelectItem>
+                          <SelectItem value="cellular">Cellular Automata</SelectItem>
+                          <SelectItem value="voronoi">Voronoi Diagrams</SelectItem>
+                          <SelectItem value="perlin">Perlin Noise</SelectItem>
+                          <SelectItem value="diffusion">Reaction-Diffusion</SelectItem>
+                          <SelectItem value="wave">Wave Interference</SelectItem>
+                          <SelectItem value="moons">Lunar Orbital Mechanics</SelectItem>
+                          <SelectItem value="tribes">Tribal Network Topology</SelectItem>
+                          <SelectItem value="heads">Mosaic Head Compositions</SelectItem>
+                          <SelectItem value="natives">Ancient Native Tribes</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
+
+                    {/* Special Dataset Notices */}
+                    {dataset === "tribes" && (
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 space-y-2">
+                        <h4 className="text-sm font-medium text-amber-900 flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          Enhanced Tribes Dataset Active
+                        </h4>
+                        <p className="text-xs text-amber-800">
+                          You'll see: Villages with people, ritual ceremonies, chiefs & shamans, seasonal activities,
+                          trading posts, and complex tribal societies with 50-250 people per tribe!
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          <Badge variant="outline" className="text-xs border-amber-300 text-amber-700">
+                            Villages
+                          </Badge>
+                          <Badge variant="outline" className="text-xs border-orange-300 text-orange-700">
+                            People
+                          </Badge>
+                          <Badge variant="outline" className="text-xs border-red-300 text-red-700">
+                            Rituals
+                          </Badge>
+                          <Badge variant="outline" className="text-xs border-green-300 text-green-700">
+                            Seasonal
+                          </Badge>
+                        </div>
+                      </div>
+                    )}
+
+                    {dataset === "natives" && (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 space-y-2">
+                        <h4 className="text-sm font-medium text-green-900 flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          Ancient Native Tribes Dataset Active
+                        </h4>
+                        <p className="text-xs text-green-800">
+                          Experience authentic indigenous civilizations: Longhouses & tipis, ceremonial dance circles,
+                          medicine wheels, sacred groves, hunting grounds, and traditional tribal life!
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          <Badge variant="outline" className="text-xs border-green-300 text-green-700">
+                            Longhouses
+                          </Badge>
+                          <Badge variant="outline" className="text-xs border-blue-300 text-blue-700">
+                            Dance Circles
+                          </Badge>
+                          <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">
+                            Medicine Wheels
+                          </Badge>
+                          <Badge variant="outline" className="text-xs border-yellow-300 text-yellow-700">
+                            Sacred Groves
+                          </Badge>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Scenario Selection */}
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-300">Visual Scenario</label>
-                      <select
-                        value={scenario}
-                        onChange={(e) => setScenario(e.target.value)}
-                        className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-100"
-                      >
-                        <option value="pure">Pure Mathematical</option>
-                        <option value="landscape">Natural Landscape</option>
-                        <option value="architectural">Architectural</option>
-                        <option value="geological">Geological</option>
-                        <option value="botanical">Botanical</option>
-                        <option value="atmospheric">Atmospheric</option>
-                        <option value="crystalline">Crystalline</option>
-                        <option value="textile">Textile</option>
-                        <option value="metallic">Metallic</option>
-                        <option value="organic">Organic</option>
-                        <option value="urban">Urban</option>
-                        <option value="marine">Marine</option>
-                      </select>
+                      <Label className="text-sm font-medium text-slate-300">Visual Scenario</Label>
+                      <Select value={scenario} onValueChange={setScenario}>
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-700 border-slate-600">
+                          <SelectItem value="pure">Pure Mathematical</SelectItem>
+                          <SelectItem value="landscape">Natural Landscape</SelectItem>
+                          <SelectItem value="architectural">Architectural</SelectItem>
+                          <SelectItem value="geological">Geological</SelectItem>
+                          <SelectItem value="botanical">Botanical</SelectItem>
+                          <SelectItem value="atmospheric">Atmospheric</SelectItem>
+                          <SelectItem value="crystalline">Crystalline</SelectItem>
+                          <SelectItem value="textile">Textile</SelectItem>
+                          <SelectItem value="metallic">Metallic</SelectItem>
+                          <SelectItem value="organic">Organic</SelectItem>
+                          <SelectItem value="urban">Urban</SelectItem>
+                          <SelectItem value="marine">Marine</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     {/* Color Scheme */}
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-300">Color Palette</label>
-                      <select
-                        value={colorScheme}
-                        onChange={(e) => setColorScheme(e.target.value)}
-                        className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-100"
-                      >
-                        <option value="plasma">Plasma</option>
-                        <option value="quantum">Quantum</option>
-                        <option value="cosmic">Cosmic</option>
-                        <option value="thermal">Thermal</option>
-                        <option value="spectral">Spectral</option>
-                        <option value="crystalline">Crystalline</option>
-                        <option value="bioluminescent">Bioluminescent</option>
-                        <option value="aurora">Aurora</option>
-                        <option value="metallic">Metallic</option>
-                        <option value="prismatic">Prismatic</option>
-                        <option value="monochromatic">Monochromatic</option>
-                        <option value="infrared">Infrared</option>
-                        <option value="lava">Lava</option>
-                        <option value="futuristic">Futuristic</option>
-                        <option value="forest">Forest</option>
-                        <option value="ocean">Ocean</option>
-                        <option value="sunset">Sunset</option>
-                        <option value="arctic">Arctic</option>
-                        <option value="neon">Neon</option>
-                        <option value="vintage">Vintage</option>
-                        <option value="toxic">Toxic</option>
-                        <option value="ember">Ember</option>
-                        <option value="lunar">Lunar</option>
-                        <option value="tidal">Tidal</option>
-                      </select>
+                      <Label className="text-sm font-medium text-slate-300">Color Palette</Label>
+                      <Select value={colorScheme} onValueChange={setColorScheme}>
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-700 border-slate-600">
+                          <SelectItem value="plasma">Plasma</SelectItem>
+                          <SelectItem value="quantum">Quantum</SelectItem>
+                          <SelectItem value="cosmic">Cosmic</SelectItem>
+                          <SelectItem value="thermal">Thermal</SelectItem>
+                          <SelectItem value="spectral">Spectral</SelectItem>
+                          <SelectItem value="crystalline">Crystalline</SelectItem>
+                          <SelectItem value="bioluminescent">Bioluminescent</SelectItem>
+                          <SelectItem value="aurora">Aurora</SelectItem>
+                          <SelectItem value="metallic">Metallic</SelectItem>
+                          <SelectItem value="prismatic">Prismatic</SelectItem>
+                          <SelectItem value="monochromatic">Monochromatic</SelectItem>
+                          <SelectItem value="infrared">Infrared</SelectItem>
+                          <SelectItem value="lava">Lava</SelectItem>
+                          <SelectItem value="futuristic">Futuristic</SelectItem>
+                          <SelectItem value="forest">Forest</SelectItem>
+                          <SelectItem value="ocean">Ocean</SelectItem>
+                          <SelectItem value="sunset">Sunset</SelectItem>
+                          <SelectItem value="arctic">Arctic</SelectItem>
+                          <SelectItem value="neon">Neon</SelectItem>
+                          <SelectItem value="vintage">Vintage</SelectItem>
+                          <SelectItem value="toxic">Toxic</SelectItem>
+                          <SelectItem value="ember">Ember</SelectItem>
+                          <SelectItem value="lunar">Lunar</SelectItem>
+                          <SelectItem value="tidal">Tidal</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
-                    {/* Advanced Parameters */}
-                    <div className="space-y-3">
+                    {/* Mathematical Parameters */}
+                    <div className="space-y-3 pt-3 border-t border-slate-600">
+                      <h4 className="text-sm font-medium text-slate-300">Mathematical Parameters</h4>
+
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-300 flex items-center justify-between">
-                          Random Seed
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-medium text-slate-300">Random Seed</Label>
                           <Button
                             size="sm"
                             variant="outline"
                             onClick={randomizeSeed}
                             className="h-6 px-2 text-xs border-slate-600 bg-transparent"
                           >
-                            🎲
+                            <Dice1 className="h-3 w-3" />
                           </Button>
-                        </label>
-                        <input
+                        </div>
+                        <Input
                           type="number"
                           value={seed}
                           onChange={(e) => setSeed(Number.parseInt(e.target.value) || 0)}
-                          className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-100"
+                          className="bg-slate-700 border-slate-600 text-slate-100"
                           min="0"
                           max="9999"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-300">
+                        <Label className="text-sm font-medium text-slate-300">
                           Data Points: {numSamples.toLocaleString()}
-                        </label>
-                        <input
-                          type="range"
-                          value={numSamples}
-                          onChange={(e) => setNumSamples(Number.parseInt(e.target.value))}
-                          min="100"
-                          max="10000"
-                          step="100"
+                        </Label>
+                        <Slider
+                          value={[numSamples]}
+                          onValueChange={(value) => setNumSamples(value[0])}
+                          min={100}
+                          max={10000}
+                          step={100}
                           className="w-full"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-300">Noise Scale: {noiseScale}</label>
-                        <input
-                          type="range"
-                          value={noiseScale}
-                          onChange={(e) => setNoiseScale(Number.parseFloat(e.target.value))}
-                          min="0"
-                          max="1"
-                          step="0.01"
+                        <Label className="text-sm font-medium text-slate-300">Noise Scale: {noiseScale}</Label>
+                        <Slider
+                          value={[noiseScale]}
+                          onValueChange={(value) => setNoiseScale(value[0])}
+                          min={0}
+                          max={1}
+                          step={0.01}
                           className="w-full"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-300">Time Step: {timeStep}</label>
-                        <input
-                          type="range"
-                          value={timeStep}
-                          onChange={(e) => setTimeStep(Number.parseFloat(e.target.value))}
-                          min="0.001"
-                          max="0.1"
-                          step="0.001"
+                        <Label className="text-sm font-medium text-slate-300">Time Step: {timeStep}</Label>
+                        <Slider
+                          value={[timeStep]}
+                          onValueChange={(value) => setTimeStep(value[0])}
+                          min={0.001}
+                          max={0.1}
+                          step={0.001}
                           className="w-full"
                         />
                       </div>
                     </div>
 
-                    {/* AI Provider Settings */}
-                    {mode === "ai" && (
-                      <div className="space-y-3 pt-3 border-t border-slate-600">
-                        <h4 className="text-sm font-medium text-slate-300 flex items-center gap-2">
-                          <Cpu className="h-4 w-4" />
-                          AI Provider Settings
-                        </h4>
-
-                        <div className="space-y-2">
-                          <label className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              checked={useReplicate}
-                              onChange={(e) => setUseReplicate(e.target.checked)}
-                              className="rounded border-slate-600"
-                            />
-                            <span className="text-sm text-slate-300">Use Replicate (Alternative to OpenAI)</span>
-                          </label>
-                        </div>
-
-                        {useReplicate && (
-                          <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Replicate Model</label>
-                            <select
-                              value={replicateModel}
-                              onChange={(e) => setReplicateModel(e.target.value)}
-                              className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-100"
-                            >
-                              <option value="stability-ai/sdxl">Stability AI SDXL</option>
-                              <option value="playgroundai/playground-v2.5-1024px-aesthetic">
-                                Playground v2.5 Aesthetic
-                              </option>
-                              <option value="bytedance/sdxl-lightning-4step">SDXL Lightning (Fast)</option>
-                            </select>
-                          </div>
-                        )}
-
-                        <div className="space-y-2">
-                          <label className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              checked={enable4K}
-                              onChange={(e) => setEnable4K(e.target.checked)}
-                              className="rounded border-slate-600"
-                            />
-                            <span className="text-sm text-slate-300">Enable 4K Upscaling</span>
-                          </label>
-                        </div>
-                      </div>
-                    )}
-
                     {/* Custom Prompt for AI */}
                     {mode === "ai" && (
                       <div className="space-y-3 pt-3 border-t border-slate-600">
                         <div className="flex items-center justify-between">
-                          <label className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              checked={useCustomPrompt}
-                              onChange={(e) => setUseCustomPrompt(e.target.checked)}
-                              className="rounded border-slate-600"
-                            />
+                          <Label className="flex items-center space-x-2">
+                            <Switch checked={useCustomPrompt} onCheckedChange={setUseCustomPrompt} />
                             <span className="text-sm font-medium text-slate-300">Custom AI Prompt</span>
-                          </label>
-                          {useCustomPrompt && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={enhancePrompt}
-                              disabled={isEnhancingPrompt || !customPrompt.trim()}
-                              className="h-6 px-2 text-xs border-slate-600 bg-transparent"
-                            >
-                              {isEnhancingPrompt ? <Loader2 className="h-3 w-3 animate-spin" /> : "✨ Enhance"}
-                            </Button>
-                          )}
+                          </Label>
                         </div>
                         {useCustomPrompt && (
-                          <textarea
-                            value={customPrompt}
-                            onChange={(e) => setCustomPrompt(e.target.value)}
-                            placeholder="Describe your vision... (will be enhanced with mathematical details)"
-                            className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-100 text-sm"
-                            rows={3}
-                          />
+                          <div className="space-y-3">
+                            <Textarea
+                              value={customPrompt}
+                              onChange={(e) => setCustomPrompt(e.target.value)}
+                              placeholder="Describe your vision... (will be enhanced with mathematical details)"
+                              className="bg-slate-700 border-slate-600 text-slate-100 text-sm min-h-[100px] resize-vertical"
+                              rows={4}
+                            />
+                            <div className="flex gap-2">
+                              <Button
+                                onClick={enhancePrompt}
+                                disabled={isEnhancingPrompt || !customPrompt.trim()}
+                                variant="outline"
+                                size="sm"
+                                className="border-purple-500 text-purple-400 hover:bg-purple-500/10 bg-transparent"
+                              >
+                                {isEnhancingPrompt ? (
+                                  <>
+                                    <Loader2 className="h-3 w-3 mr-2 animate-spin" />
+                                    Enhancing...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Sparkles className="h-3 w-3 mr-2" />
+                                    Enhance Prompt
+                                  </>
+                                )}
+                              </Button>
+                              <Button
+                                onClick={generateArt}
+                                disabled={isGenerating || !customPrompt.trim()}
+                                size="sm"
+                                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                              >
+                                {isGenerating ? (
+                                  <>
+                                    <Loader2 className="h-3 w-3 mr-2 animate-spin" />
+                                    Generating...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Zap className="h-3 w-3 mr-2" />
+                                    Generate Now
+                                  </>
+                                )}
+                              </Button>
+                            </div>
+                            {customPrompt && (
+                              <div className="bg-slate-900 p-3 rounded-md border border-slate-600">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-xs font-medium text-slate-400">CURRENT PROMPT</span>
+                                  <span className="text-xs text-slate-500">{customPrompt.length} characters</span>
+                                </div>
+                                <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
+                                  {customPrompt}
+                                </p>
+                              </div>
+                            )}
+                            {enhancedPrompt && (
+                              <div className="bg-slate-900 p-3 rounded-md border border-slate-600">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-xs font-medium text-slate-400">ENHANCED PROMPT</span>
+                                  <span className="text-xs text-slate-500">{enhancedPrompt.length} characters</span>
+                                </div>
+                                <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
+                                  {enhancedPrompt}
+                                </p>
+                              </div>
+                            )}
+                          </div>
                         )}
                       </div>
                     )}
@@ -1026,112 +848,98 @@ export function FlowArtGenerator() {
                     {/* 360° Panorama Settings */}
                     <div className="space-y-3 pt-3 border-t border-slate-600">
                       <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          checked={panorama360Enabled}
-                          onChange={(e) => setPanorama360Enabled(e.target.checked)}
-                          className="rounded border-slate-600"
-                        />
-                        <label className="text-sm font-medium text-slate-300">360° Panorama Mode</label>
+                        <Switch checked={panorama360Enabled} onCheckedChange={setPanorama360Enabled} />
+                        <Label className="text-sm font-medium text-slate-300">360° Panorama Mode</Label>
                       </div>
 
                       {panorama360Enabled && (
                         <div className="space-y-3 pl-4 border-l-2 border-purple-500">
                           <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Resolution</label>
-                            <select
-                              value={panoramaResolution}
-                              onChange={(e) => setPanoramaResolution(e.target.value)}
-                              className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-100"
-                            >
-                              <option value="1080p">1080p (1080×1080)</option>
-                              <option value="1440p">1440p (1440×1440)</option>
-                              <option value="2160p">4K (2160×2160)</option>
-                            </select>
+                            <Label className="text-sm font-medium text-slate-300">Resolution</Label>
+                            <Select value={panoramaResolution} onValueChange={setPanoramaResolution}>
+                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-700 border-slate-600">
+                                <SelectItem value="4K">4K (4096×2048)</SelectItem>
+                                <SelectItem value="8K">8K (8192×4096)</SelectItem>
+                                <SelectItem value="16K">16K (16384×8192)</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
 
                           <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Format</label>
-                            <select
-                              value={panoramaFormat}
-                              onChange={(e) => setPanoramaFormat(e.target.value)}
-                              className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-100"
-                            >
-                              <option value="equirectangular">Equirectangular (VR/360°)</option>
-                              <option value="stereographic">Stereographic Projection</option>
-                            </select>
+                            <Label className="text-sm font-medium text-slate-300">Format</Label>
+                            <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
+                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-700 border-slate-600">
+                                <SelectItem value="equirectangular">Equirectangular (VR/360°)</SelectItem>
+                                <SelectItem value="stereographic">Stereographic Projection</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
 
                           {panoramaFormat === "stereographic" && (
                             <div className="space-y-2">
-                              <label className="text-sm font-medium text-slate-300">Perspective</label>
-                              <select
-                                value={stereographicPerspective}
-                                onChange={(e) => setStereographicPerspective(e.target.value)}
-                                className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-100"
-                              >
-                                <option value="little-planet">Little Planet (Looking Down)</option>
-                                <option value="tunnel">Tunnel View (Looking Up)</option>
-                              </select>
+                              <Label className="text-sm font-medium text-slate-300">Perspective</Label>
+                              <Select value={stereographicPerspective} onValueChange={setStereographicPerspective}>
+                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-700 border-slate-600">
+                                  <SelectItem value="little-planet">Little Planet (Looking Down)</SelectItem>
+                                  <SelectItem value="tunnel">Tunnel View (Looking Up)</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
                           )}
                         </div>
                       )}
                     </div>
 
-                    {/* Dome Projection Settings */}
+                    {/* Dome Projection Settings - Fixed to 10 meters */}
                     <div className="space-y-3 pt-3 border-t border-slate-600">
                       <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          checked={domeEnabled}
-                          onChange={(e) => setDomeEnabled(e.target.checked)}
-                          className="rounded border-slate-600"
-                        />
-                        <label className="text-sm font-medium text-slate-300">Dome Projection</label>
+                        <Switch checked={domeEnabled} onCheckedChange={setDomeEnabled} />
+                        <Label className="text-sm font-medium text-slate-300">Dome Projection (10m diameter)</Label>
                       </div>
 
                       {domeEnabled && (
                         <div className="space-y-3 pl-4 border-l-2 border-blue-500">
-                          <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">
-                              Dome Diameter: {domeDiameter}ft
-                            </label>
-                            <input
-                              type="range"
-                              value={domeDiameter}
-                              onChange={(e) => setDomeDiameter(Number.parseInt(e.target.value))}
-                              min="10"
-                              max="100"
-                              step="5"
-                              className="w-full"
-                            />
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                            <p className="text-xs text-blue-800">
+                              🏛️ Dome diameter is fixed at 10 meters for optimal viewing experience
+                            </p>
                           </div>
 
                           <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Resolution</label>
-                            <select
-                              value={domeResolution}
-                              onChange={(e) => setDomeResolution(e.target.value)}
-                              className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-100"
-                            >
-                              <option value="1080p">1080p</option>
-                              <option value="1440p">1440p</option>
-                              <option value="2160p">4K</option>
-                            </select>
+                            <Label className="text-sm font-medium text-slate-300">Resolution</Label>
+                            <Select value={domeResolution} onValueChange={setDomeResolution}>
+                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-700 border-slate-600">
+                                <SelectItem value="2K">2K (2048×2048)</SelectItem>
+                                <SelectItem value="4K">4K (4096×4096)</SelectItem>
+                                <SelectItem value="8K">8K (8192×8192)</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
 
                           <div className="space-y-2">
-                            <label className="text-sm font-medium text-slate-300">Projection Type</label>
-                            <select
-                              value={domeProjectionType}
-                              onChange={(e) => setDomeProjectionType(e.target.value)}
-                              className="w-full p-2 bg-slate-700 border border-slate-600 rounded-md text-slate-100"
-                            >
-                              <option value="fulldome">Full Dome</option>
-                              <option value="fisheye">Fisheye</option>
-                              <option value="angular">Angular Fisheye</option>
-                            </select>
+                            <Label className="text-sm font-medium text-slate-300">Projection Type</Label>
+                            <Select value={domeProjectionType} onValueChange={setDomeProjectionType}>
+                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-700 border-slate-600">
+                                <SelectItem value="fisheye">Fisheye</SelectItem>
+                                <SelectItem value="equirectangular">Equirectangular</SelectItem>
+                                <SelectItem value="stereographic">Stereographic</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
                         </div>
                       )}
@@ -1140,7 +948,7 @@ export function FlowArtGenerator() {
                     {/* Generate Button */}
                     <Button
                       onClick={generateArt}
-                      disabled={isGenerating}
+                      disabled={isGenerating || (useCustomPrompt && !customPrompt.trim())}
                       className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3"
                     >
                       {isGenerating ? (
@@ -1152,6 +960,7 @@ export function FlowArtGenerator() {
                         <>
                           <Sparkles className="h-4 w-4 mr-2" />
                           Generate {mode === "svg" ? "Mathematical SVG" : "AI Art"}
+                          {useCustomPrompt && customPrompt.trim() && " (Custom Prompt)"}
                         </>
                       )}
                     </Button>
@@ -1189,14 +998,9 @@ export function FlowArtGenerator() {
                           <Badge variant="outline" className="border-purple-500 text-purple-400">
                             {generatedArt.mode === "svg" ? "Mathematical SVG" : "AI Generated"}
                           </Badge>
-                          {generatedArt.is4K && (
-                            <Badge variant="outline" className="border-green-500 text-green-400">
-                              4K
-                            </Badge>
-                          )}
                           {generatedArt.isDomeProjection && (
                             <Badge variant="outline" className="border-blue-500 text-blue-400">
-                              Dome
+                              Dome 10m
                             </Badge>
                           )}
                           {generatedArt.is360Panorama && (
@@ -1220,7 +1024,7 @@ export function FlowArtGenerator() {
                             />
                           ) : (
                             <img
-                              src={generatedArt.upscaledImageUrl || generatedArt.imageUrl}
+                              src={generatedArt.imageUrl || "/placeholder.svg"}
                               alt="Generated artwork"
                               className="w-full h-96 object-contain"
                             />
@@ -1236,7 +1040,7 @@ export function FlowArtGenerator() {
                                   🏛️ Dome Projection
                                   {generatedArt.domeSpecs && (
                                     <Badge variant="outline" className="text-xs">
-                                      {generatedArt.domeSpecs.diameter}ft
+                                      {generatedArt.domeSpecs.diameter}m
                                     </Badge>
                                   )}
                                 </h4>
@@ -1314,46 +1118,6 @@ export function FlowArtGenerator() {
                               Download 360°
                             </Button>
                           )}
-
-                          {generatedArt.mode === "ai" && !generatedArt.upscaledImageUrl && (
-                            <Button
-                              onClick={upscaleImage}
-                              disabled={isUpscaling}
-                              variant="outline"
-                              className="border-purple-500 text-purple-400 hover:bg-purple-500/10 bg-transparent"
-                            >
-                              {isUpscaling ? (
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                              ) : (
-                                <Zap className="h-4 w-4 mr-2" />
-                              )}
-                              4K Upscale
-                            </Button>
-                          )}
-
-                          {!generatedArt.domeImageUrl && (
-                            <Button
-                              onClick={generateDomeProjection}
-                              disabled={isGeneratingDome}
-                              variant="outline"
-                              className="border-blue-500 text-blue-400 hover:bg-blue-500/10 bg-transparent"
-                            >
-                              {isGeneratingDome ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : "🏛️"}
-                              Generate Dome
-                            </Button>
-                          )}
-
-                          {!generatedArt.panorama360Url && (
-                            <Button
-                              onClick={generate360Panorama}
-                              disabled={isGenerating360}
-                              variant="outline"
-                              className="border-yellow-500 text-yellow-400 hover:bg-yellow-500/10 bg-transparent"
-                            >
-                              {isGenerating360 ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : "🌐"}
-                              Generate 360°
-                            </Button>
-                          )}
                         </div>
 
                         {/* Download Status */}
@@ -1370,27 +1134,33 @@ export function FlowArtGenerator() {
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                             <div>
                               <span className="text-slate-400">Dataset:</span>
-                              <p className="text-slate-200 capitalize">{generatedArt.params.dataset}</p>
+                              <p className="text-slate-200 capitalize">{generatedArt.params?.dataset || "N/A"}</p>
                             </div>
                             <div>
                               <span className="text-slate-400">Scenario:</span>
-                              <p className="text-slate-200 capitalize">{generatedArt.params.scenario}</p>
+                              <p className="text-slate-200 capitalize">{generatedArt.params?.scenario || "N/A"}</p>
                             </div>
                             <div>
                               <span className="text-slate-400">Color Scheme:</span>
-                              <p className="text-slate-200 capitalize">{generatedArt.params.colorScheme}</p>
+                              <p className="text-slate-200 capitalize">{generatedArt.params?.colorScheme || "N/A"}</p>
                             </div>
                             <div>
                               <span className="text-slate-400">Seed:</span>
-                              <p className="text-slate-200">{generatedArt.params.seed}</p>
+                              <p className="text-slate-200">{generatedArt.params?.seed || "N/A"}</p>
                             </div>
                             <div>
                               <span className="text-slate-400">Data Points:</span>
-                              <p className="text-slate-200">{generatedArt.params.numSamples.toLocaleString()}</p>
+                              <p className="text-slate-200">
+                                {generatedArt.params?.numSamples?.toLocaleString() || "N/A"}
+                              </p>
                             </div>
                             <div>
                               <span className="text-slate-400">Noise Scale:</span>
-                              <p className="text-slate-200">{generatedArt.params.noiseScale}</p>
+                              <p className="text-slate-200">{generatedArt.params?.noiseScale || "N/A"}</p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Time Step:</span>
+                              <p className="text-slate-200">{generatedArt.params?.timeStep || "N/A"}</p>
                             </div>
                             {generatedArt.mode === "ai" && generatedArt.provider && (
                               <div>
@@ -1449,6 +1219,7 @@ export function FlowArtGenerator() {
                     size="sm"
                     className="border-red-500 text-red-400 bg-transparent"
                   >
+                    <Trash2 className="h-4 w-4 mr-2" />
                     Clear Gallery
                   </Button>
                 )}
@@ -1474,7 +1245,7 @@ export function FlowArtGenerator() {
               </Card>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="gallery-grid">
                   {currentItems.map((art) => (
                     <Card key={art.id} className="bg-slate-800 border-slate-700 overflow-hidden">
                       <div className="relative">
@@ -1485,7 +1256,7 @@ export function FlowArtGenerator() {
                           />
                         ) : (
                           <img
-                            src={art.upscaledImageUrl || art.imageUrl}
+                            src={art.imageUrl || "/placeholder.svg"}
                             alt="Generated artwork"
                             className="w-full h-48 object-cover"
                           />
@@ -1497,14 +1268,6 @@ export function FlowArtGenerator() {
                           >
                             {art.mode === "svg" ? "SVG" : "AI"}
                           </Badge>
-                          {art.is4K && (
-                            <Badge
-                              variant="outline"
-                              className="bg-slate-800/80 border-green-500 text-green-400 text-xs"
-                            >
-                              4K
-                            </Badge>
-                          )}
                           {art.isDomeProjection && (
                             <Badge variant="outline" className="bg-slate-800/80 border-blue-500 text-blue-400 text-xs">
                               Dome
@@ -1524,16 +1287,18 @@ export function FlowArtGenerator() {
                         <div className="space-y-3">
                           <div>
                             <h3 className="font-medium text-slate-200 capitalize">
-                              {art.params.dataset} + {art.params.scenario}
+                              {art.params?.dataset || "Unknown"} + {art.params?.scenario || "Unknown"}
                             </h3>
-                            <p className="text-sm text-slate-400 capitalize">{art.params.colorScheme} palette</p>
+                            <p className="text-sm text-slate-400 capitalize">
+                              {art.params?.colorScheme || "Unknown"} palette
+                            </p>
                           </div>
 
                           <div className="grid grid-cols-2 gap-2 text-xs text-slate-400">
-                            <div>Seed: {art.params.seed}</div>
-                            <div>Points: {art.params.numSamples.toLocaleString()}</div>
-                            <div>Noise: {art.params.noiseScale}</div>
-                            <div>{new Date(art.timestamp).toLocaleDateString()}</div>
+                            <div>Seed: {art.params?.seed || "N/A"}</div>
+                            <div>Points: {art.params?.numSamples?.toLocaleString() || "N/A"}</div>
+                            <div>Noise: {art.params?.noiseScale || "N/A"}</div>
+                            <div>Step: {art.params?.timeStep || "N/A"}</div>
                           </div>
 
                           <div className="flex gap-2">
@@ -1555,8 +1320,8 @@ export function FlowArtGenerator() {
                               variant="outline"
                               onClick={() => {
                                 const link = document.createElement("a")
-                                link.href = art.upscaledImageUrl || art.imageUrl
-                                link.download = `flowsketch-${art.params.dataset}-${art.timestamp}.${art.mode === "svg" ? "svg" : "jpg"}`
+                                link.href = art.imageUrl
+                                link.download = `flowsketch-${art.params?.dataset || "art"}-${art.timestamp}.${art.mode === "svg" ? "svg" : "jpg"}`
                                 link.click()
                               }}
                               className="border-slate-600"
