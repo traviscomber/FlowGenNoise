@@ -20,7 +20,6 @@ import {
   ImageIcon,
   Calculator,
   Download,
-  Zap,
   Eye,
   AlertCircle,
   CheckCircle,
@@ -28,6 +27,8 @@ import {
   Users,
   Dice1,
   Trash2,
+  Edit3,
+  FileText,
 } from "lucide-react"
 import { generateFlowField, generateDomeProjection as generateDomeSVG, type GenerationParams } from "@/lib/flow-model"
 
@@ -40,6 +41,7 @@ interface GeneratedArt {
   mode: "svg" | "ai"
   customPrompt?: string
   originalPrompt?: string
+  finalPrompt?: string
   promptLength?: number
   timestamp: number
   id: string
@@ -57,6 +59,11 @@ interface GeneratedArt {
   estimatedFileSize?: string
   provider?: string
   model?: string
+  generationDetails?: {
+    mainImage: string
+    domeImage: string
+    panoramaImage: string
+  }
 }
 
 export function FlowArtGenerator() {
@@ -86,7 +93,7 @@ export function FlowArtGenerator() {
   // 360° panorama settings
   const [panorama360Enabled, setPanorama360Enabled] = useState(true)
   const [panoramaResolution, setPanoramaResolution] = useState("8K")
-  const [panoramaFormat, setPanoramaFormat] = useState("stereographic")
+  const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
   const [stereographicPerspective, setStereographicPerspective] = useState("little-planet")
 
   // Gallery state
@@ -94,10 +101,13 @@ export function FlowArtGenerator() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 6
 
-  // AI Art prompt enhancement
+  // AI Art prompt enhancement and final prompt editing
   const [customPrompt, setCustomPrompt] = useState("")
   const [enhancedPrompt, setEnhancedPrompt] = useState("")
+  const [finalPrompt, setFinalPrompt] = useState("")
   const [useCustomPrompt, setUseCustomPrompt] = useState(false)
+  const [showFinalPrompt, setShowFinalPrompt] = useState(false)
+  const [finalPromptEdited, setFinalPromptEdited] = useState(false)
 
   // Load gallery from localStorage on mount
   useEffect(() => {
@@ -128,6 +138,129 @@ export function FlowArtGenerator() {
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const currentItems = gallery.slice(startIndex, endIndex)
+
+  // Generate final prompt for preview
+  const generateFinalPrompt = useCallback(() => {
+    if (mode === "svg") return ""
+
+    let prompt = ""
+
+    if (useCustomPrompt && (enhancedPrompt || customPrompt)) {
+      prompt = enhancedPrompt || customPrompt
+      prompt += "\n\n"
+    }
+
+    // Build the same prompt structure as the API
+    prompt += `Create an intricate generative art masterpiece inspired by '${dataset}' dataset, employing a '${colorScheme}' color scheme. The artwork should serve as an ideal base for professional 8K upscaling, focusing on clean, sharp edges and well-defined structures.\n\n`
+
+    // Mathematical Precision
+    prompt += `### Mathematical Precision:\n`
+    switch (dataset) {
+      case "spirals":
+        prompt += `Arrange exactly ${numSamples.toLocaleString()} spiral elements organically across the canvas, ensuring each one is unique yet harmoniously integrated with the others. The spirals should vary in size and density, creating dynamic flow throughout the piece with Fibonacci proportions, golden ratio curves, nautilus shell formations, and galaxy arm patterns. Include logarithmic spirals r=ae^(bθ) and Archimedean spirals with mathematical precision. `
+        break
+      case "fractal":
+        prompt += `Generate exactly ${numSamples.toLocaleString()} fractal branching elements with self-similar structures at multiple scales. Each fractal should follow L-system rules F→F[+F]F[-F]F with recursive branching, creating tree-like formations, lightning patterns, fern fronds, and organic growth structures with mathematical precision and infinite detail. `
+        break
+      case "mandelbrot":
+        prompt += `Create exactly ${numSamples.toLocaleString()} Mandelbrot set iteration points with complex plane mathematics z_{n+1} = z_n² + c. Include cardioid main bulbs, circular bulbs, infinite zoom detail with smooth escape-time coloring, fractal boundary precision, and psychedelic swirling patterns. `
+        break
+      case "julia":
+        prompt += `Generate exactly ${numSamples.toLocaleString()} Julia set elements with flowing fractal boundaries, connected and disconnected sets, parameter space exploration, and elegant mathematical beauty with dreamlike surreal patterns. `
+        break
+      case "lorenz":
+        prompt += `Create exactly ${numSamples.toLocaleString()} Lorenz attractor trajectory points forming butterfly-wing patterns with chaotic beauty, strange attractor dynamics, three-dimensional flow, and graceful curves suggesting movement and energy. `
+        break
+      case "tribes":
+        prompt += `Arrange exactly ${numSamples.toLocaleString()} tribal settlement elements including people in traditional clothing, authentic dwellings, ceremonial circles, and cultural activities. Each figure should be unique with tribal details including chiefs, shamans, dancers, craftspeople, children playing, and daily life scenes with rich cultural storytelling. `
+        break
+      case "heads":
+        prompt += `Compose exactly ${numSamples.toLocaleString()} facial feature elements creating portrait mosaics with golden ratio proportions φ=1.618. Each face should have unique expressions, geometric tessellation, anatomical precision, artistic interpretation, and mosaic composition with human beauty. `
+        break
+      case "natives":
+        prompt += `Design exactly ${numSamples.toLocaleString()} native settlement elements with longhouses, tipis, medicine wheels, and ceremonial spaces. Include people in traditional dress, seasonal activities, authentic indigenous architecture, and cultural ceremonies. `
+        break
+      case "voronoi":
+        prompt += `Arrange exactly ${numSamples.toLocaleString()} Voronoi cell seed points creating natural tessellation patterns like cracked earth, giraffe spots, honeycomb structures with organic boundaries and natural cell-like formations. `
+        break
+      case "cellular":
+        prompt += `Generate exactly ${numSamples.toLocaleString()} cellular automata elements showing Conway's Game of Life patterns, gliders, oscillators, emergent complexity from simple rules, and biological structure formations. `
+        break
+      case "gaussian":
+        prompt += `Create exactly ${numSamples.toLocaleString()} Gaussian distribution points forming bell-curve landscapes, statistical visualizations, probability density patterns, and smooth flowing terrain. `
+        break
+      case "diffusion":
+        prompt += `Design exactly ${numSamples.toLocaleString()} reaction-diffusion pattern elements creating Turing patterns like zebra stripes, leopard spots, tiger markings, and natural biological formations with organic flow. `
+        break
+      case "wave":
+        prompt += `Generate exactly ${numSamples.toLocaleString()} wave interference elements showing constructive and destructive patterns, standing waves, fluid dynamics, ocean ripples, and aquatic beauty. `
+        break
+      case "hyperbolic":
+        prompt += `Create exactly ${numSamples.toLocaleString()} hyperbolic geometry elements with Escher-inspired tessellations, mind-bending patterns, infinite regression illusions, and non-Euclidean beauty. `
+        break
+      default:
+        prompt += `Arrange exactly ${numSamples.toLocaleString()} ${dataset} elements with mathematical precision and organic distribution across the canvas, ensuring each element is unique yet harmoniously integrated. `
+    }
+
+    // Color Palette
+    prompt += `\n### Color Palette:\n`
+    switch (colorScheme) {
+      case "plasma":
+        prompt += `Utilize a vibrant and high-contrast plasma color scheme with deep purples (#0d0887), electric blues (#46039f), hot magentas (#7201a8), coral oranges (#bd3786), bright oranges (#ed7953), and golden yellows (#fdca26). Include gradients with smooth transitions and luminous effects, interspersed with dark shadows to create depth and dimension. `
+        break
+      case "sunset":
+        prompt += `Employ warm sunset colors with fiery oranges (#ff6b35), golden yellows (#f7931e), soft pinks (#ffd23f), deep purples (#5d2e5d), and cool blues (#1fb3d3). Create romantic golden hour lighting with natural color harmony and atmospheric warmth. `
+        break
+      case "cosmic":
+        prompt += `Use deep space colors with rich browns (#2c1810), rusty oranges (#8b4513), stellar golds (#ffa500), bright yellows (#ffff00), and pure whites (#ffffff). Include nebula-like beauty with cosmic atmosphere and stellar lighting effects. `
+        break
+      default:
+        prompt += `Utilize a ${colorScheme} color palette with rich, vibrant colors creating emotional impact and visual harmony with professional color theory and smooth gradients. `
+    }
+
+    // Scenario Integration
+    switch (scenario) {
+      case "landscape":
+        if (dataset === "tribes" || dataset === "natives") {
+          prompt += `Set in breathtaking natural landscape with tribal villages nestled in rolling valleys, flowing rivers, and ancient forests. Include people living in harmony with nature, smoke rising from cooking fires, daily activities, cultural ceremonies, and environmental storytelling. `
+        } else {
+          prompt += `Set in majestic natural landscape incorporating ${dataset} patterns in terrain formations, mountain ranges, river systems, atmospheric phenomena, and geological structures with cinematic lighting. `
+        }
+        break
+      case "architectural":
+        prompt += `Set in futuristic architectural environment with ${dataset} patterns integrated into building design, structural engineering, urban planning, and modern materials with geometric precision. `
+        break
+      case "crystalline":
+        prompt += `Set in spectacular crystal formations with ${dataset} patterns in mineral structures, prismatic light effects, rainbow refractions, gem-like beauty, and optical phenomena. `
+        break
+      case "botanical":
+        prompt += `Set in lush botanical environment with ${dataset} patterns in plant growth, flower arrangements, leaf structures, natural organic beauty, and vibrant vegetation. `
+        break
+      default:
+        prompt += `Set in ${scenario} environment showcasing ${dataset} patterns with thematic consistency and visual appeal. `
+    }
+
+    // Additional sections
+    prompt += `\n### Textures and Patterns:\nIntroduce complex textures within the ${dataset} elements, such as fine lines, cross-hatching, stippling, or organic dotting patterns, which will reveal new details upon close inspection. Ensure that these intricate patterns are meticulously crafted to reward viewers and enhance during upscaling. `
+
+    prompt += `\n### Noise Texture:\nApply a subtle noise texture of ${noiseScale} to the entire image, giving it a tactile, almost tactile surface that adds sophistication and visual interest without overwhelming the primary elements. `
+
+    prompt += `\n### Professional Composition:\nDesign the composition with a balance that suits large-format printing. The ${dataset} elements should guide the viewer's eye seamlessly across the canvas, creating a sense of movement and energy with rule of thirds, leading lines, and focal points. `
+
+    prompt += `\n### Gallery-Quality:\nEnsure that the overall artwork exudes a refined, gallery-quality aesthetic suitable for exhibition, with each element contributing to a cohesive and engaging visual narrative. Focus on maintaining sharp, clean edges around each ${dataset} element and between color transitions to ensure clarity and precision are preserved during upscaling. Design with rich detail that enhances beautifully when processed through AI upscaling algorithms, emphasizing the depth and complexity of the piece.\n\n`
+
+    prompt += `By adhering to these guidelines, the resulting image will be an exquisite generative art masterpiece, optimized for professional 8K upscaling and perfect for large-format, gallery-quality display. Ultra-high resolution with 16-bit color depth, advanced rendering, photorealistic detail, cinematic composition, and museum-worthy artistic excellence.`
+
+    return prompt
+  }, [mode, useCustomPrompt, enhancedPrompt, customPrompt, dataset, colorScheme, numSamples, scenario, noiseScale])
+
+  // Update final prompt when parameters change
+  useEffect(() => {
+    if (mode === "ai" && !finalPromptEdited) {
+      const newFinalPrompt = generateFinalPrompt()
+      setFinalPrompt(newFinalPrompt)
+    }
+  }, [generateFinalPrompt, mode, finalPromptEdited])
 
   const generateArt = useCallback(async () => {
     console.log("Generate button clicked! Mode:", mode)
@@ -226,13 +359,15 @@ export function FlowArtGenerator() {
         if (useCustomPrompt) {
           setCustomPrompt("")
           setEnhancedPrompt("")
+          setFinalPrompt("")
+          setFinalPromptEdited(false)
         }
 
         toast.success(
           `Mathematical SVG Generated! 🎨 ${dataset} + ${scenario} visualization created with ${numSamples} data points.`,
         )
       } else {
-        // Generate AI art with enhanced mathematical prompts
+        // Generate AI art with final prompt (user-editable)
         setProgress(20)
         console.log("Calling AI art API...")
 
@@ -244,7 +379,7 @@ export function FlowArtGenerator() {
           numSamples,
           noise: noiseScale,
           timeStep,
-          customPrompt: useCustomPrompt ? enhancedPrompt || customPrompt : undefined,
+          customPrompt: finalPromptEdited ? finalPrompt : useCustomPrompt ? enhancedPrompt || customPrompt : undefined,
           domeProjection: domeEnabled,
           domeDiameter: domeEnabled ? domeDiameter : undefined,
           domeResolution: domeEnabled ? domeResolution : undefined,
@@ -289,6 +424,7 @@ export function FlowArtGenerator() {
           mode: "ai" as const,
           customPrompt: useCustomPrompt ? enhancedPrompt || customPrompt : undefined,
           originalPrompt: data.originalPrompt,
+          finalPrompt: finalPromptEdited ? finalPrompt : data.originalPrompt,
           promptLength: data.promptLength,
           estimatedFileSize: data.estimatedFileSize,
           provider: data.provider,
@@ -310,6 +446,7 @@ export function FlowArtGenerator() {
                 format: panoramaFormat,
               }
             : undefined,
+          generationDetails: data.generationDetails,
         }
         setGeneratedArt(newArt)
         setGallery((prev) => [newArt, ...prev])
@@ -318,6 +455,8 @@ export function FlowArtGenerator() {
         if (useCustomPrompt) {
           setCustomPrompt("")
           setEnhancedPrompt("")
+          setFinalPrompt("")
+          setFinalPromptEdited(false)
         }
 
         setProgress(100)
@@ -344,6 +483,8 @@ export function FlowArtGenerator() {
     useCustomPrompt,
     customPrompt,
     enhancedPrompt,
+    finalPrompt,
+    finalPromptEdited,
     domeEnabled,
     domeDiameter,
     domeResolution,
@@ -461,6 +602,8 @@ export function FlowArtGenerator() {
 
       if (data.success) {
         setEnhancedPrompt(data.enhancedPrompt)
+        setFinalPrompt(data.enhancedPrompt)
+        setFinalPromptEdited(false)
         toast.success("Prompt Enhanced! ✨ Your prompt has been enhanced with mathematical and artistic details.")
       } else {
         throw new Error(data.error || "Prompt enhancement failed")
@@ -509,7 +652,10 @@ export function FlowArtGenerator() {
     setTimeStep(0.01)
     setCustomPrompt("")
     setEnhancedPrompt("")
+    setFinalPrompt("")
+    setFinalPromptEdited(false)
     setUseCustomPrompt(false)
+    setShowFinalPrompt(false)
     setDomeEnabled(false)
     setPanorama360Enabled(true)
     setError(null)
@@ -828,24 +974,6 @@ export function FlowArtGenerator() {
                                   </>
                                 )}
                               </Button>
-                              <Button
-                                onClick={generateArt}
-                                disabled={isGenerating || !customPrompt.trim()}
-                                size="sm"
-                                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                              >
-                                {isGenerating ? (
-                                  <>
-                                    <Loader2 className="h-3 w-3 mr-2 animate-spin" />
-                                    Generating...
-                                  </>
-                                ) : (
-                                  <>
-                                    <Zap className="h-3 w-3 mr-2" />
-                                    Generate Now
-                                  </>
-                                )}
-                              </Button>
                             </div>
                             {customPrompt && (
                               <div className="bg-slate-900 p-3 rounded-md border border-slate-600">
@@ -869,6 +997,62 @@ export function FlowArtGenerator() {
                                 </p>
                               </div>
                             )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Final Prompt Preview & Edit for AI */}
+                    {mode === "ai" && (
+                      <div className="space-y-3 pt-3 border-t border-slate-600">
+                        <div className="flex items-center justify-between">
+                          <Label className="flex items-center space-x-2">
+                            <Switch checked={showFinalPrompt} onCheckedChange={setShowFinalPrompt} />
+                            <span className="text-sm font-medium text-slate-300">Preview & Edit Final Prompt</span>
+                          </Label>
+                          <Badge variant="outline" className="text-xs border-green-500 text-green-400">
+                            {finalPrompt.length} chars
+                          </Badge>
+                        </div>
+                        {showFinalPrompt && (
+                          <div className="space-y-3">
+                            <div className="bg-slate-900 p-3 rounded-md border border-slate-600">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-medium text-slate-400 flex items-center gap-2">
+                                  <FileText className="h-3 w-3" />
+                                  FINAL PROMPT TO BE SENT TO AI
+                                </span>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    const newPrompt = generateFinalPrompt()
+                                    setFinalPrompt(newPrompt)
+                                    setFinalPromptEdited(false)
+                                    toast.success("Final prompt regenerated from current settings!")
+                                  }}
+                                  className="h-6 px-2 text-xs border-slate-600 bg-transparent"
+                                >
+                                  <Sparkles className="h-3 w-3 mr-1" />
+                                  Regenerate
+                                </Button>
+                              </div>
+                              <Textarea
+                                value={finalPrompt}
+                                onChange={(e) => {
+                                  setFinalPrompt(e.target.value)
+                                  setFinalPromptEdited(true)
+                                }}
+                                className="bg-slate-800 border-slate-600 text-slate-100 text-sm min-h-[200px] resize-vertical font-mono"
+                                placeholder="Final prompt will appear here..."
+                              />
+                              {finalPromptEdited && (
+                                <div className="mt-2 flex items-center gap-2 text-xs text-amber-400">
+                                  <Edit3 className="h-3 w-3" />
+                                  Prompt has been manually edited
+                                </div>
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -978,7 +1162,7 @@ export function FlowArtGenerator() {
                     <div className="flex gap-2">
                       <Button
                         onClick={generateArt}
-                        disabled={isGenerating || (useCustomPrompt && !customPrompt.trim())}
+                        disabled={isGenerating || (useCustomPrompt && !customPrompt.trim() && !finalPrompt.trim())}
                         className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3"
                       >
                         {isGenerating ? (
@@ -990,9 +1174,24 @@ export function FlowArtGenerator() {
                           <>
                             <Sparkles className="h-4 w-4 mr-2" />
                             Generate {mode === "svg" ? "Mathematical SVG" : "AI Art"}
-                            {useCustomPrompt && customPrompt.trim() && " (Custom Prompt)"}
+                            {finalPromptEdited && " (Custom Prompt)"}
                           </>
                         )}
+                      </Button>
+
+                      <Button
+                        onClick={() => {
+                          // Auto-randomize seed and generate
+                          const newSeed = Math.floor(Math.random() * 10000)
+                          setSeed(newSeed)
+                          setTimeout(() => generateArt(), 100)
+                        }}
+                        disabled={isGenerating}
+                        variant="outline"
+                        className="border-green-500 text-green-400 hover:bg-green-500/10 bg-transparent"
+                      >
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        Continue
                       </Button>
 
                       <Button
@@ -1010,6 +1209,52 @@ export function FlowArtGenerator() {
                       <div className="space-y-2">
                         <Progress value={progress} className="w-full" />
                         <p className="text-xs text-slate-400 text-center">{progress}% complete</p>
+                      </div>
+                    )}
+
+                    {/* Batch Generation */}
+                    {!isGenerating && (
+                      <div className="space-y-3 pt-3 border-t border-slate-600">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-medium text-slate-300">Batch Generation</Label>
+                          <Badge variant="outline" className="text-xs border-purple-500 text-purple-400">
+                            Auto-Generate Series
+                          </Badge>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button
+                            onClick={async () => {
+                              for (let i = 0; i < 3; i++) {
+                                const newSeed = Math.floor(Math.random() * 10000)
+                                setSeed(newSeed)
+                                await new Promise((resolve) => setTimeout(resolve, 200))
+                                await generateArt()
+                                await new Promise((resolve) => setTimeout(resolve, 1000))
+                              }
+                            }}
+                            variant="outline"
+                            size="sm"
+                            className="border-purple-500 text-purple-400 hover:bg-purple-500/10 bg-transparent"
+                          >
+                            Generate 3x
+                          </Button>
+                          <Button
+                            onClick={async () => {
+                              for (let i = 0; i < 5; i++) {
+                                const newSeed = Math.floor(Math.random() * 10000)
+                                setSeed(newSeed)
+                                await new Promise((resolve) => setTimeout(resolve, 200))
+                                await generateArt()
+                                await new Promise((resolve) => setTimeout(resolve, 1000))
+                              }
+                            }}
+                            variant="outline"
+                            size="sm"
+                            className="border-pink-500 text-pink-400 hover:bg-pink-500/10 bg-transparent"
+                          >
+                            Generate 5x
+                          </Button>
+                        </div>
                       </div>
                     )}
 
@@ -1216,11 +1461,11 @@ export function FlowArtGenerator() {
                             )}
                           </div>
 
-                          {generatedArt.mode === "ai" && generatedArt.originalPrompt && (
+                          {generatedArt.mode === "ai" && generatedArt.finalPrompt && (
                             <div className="space-y-2">
-                              <span className="text-slate-400 text-sm">Generated Prompt:</span>
+                              <span className="text-slate-400 text-sm">Final Prompt Used:</span>
                               <div className="bg-slate-900 p-3 rounded-md">
-                                <p className="text-slate-300 text-sm leading-relaxed">{generatedArt.originalPrompt}</p>
+                                <p className="text-slate-300 text-sm leading-relaxed">{generatedArt.finalPrompt}</p>
                                 {generatedArt.promptLength && (
                                   <p className="text-slate-500 text-xs mt-2">{generatedArt.promptLength} characters</p>
                                 )}
@@ -1228,6 +1473,82 @@ export function FlowArtGenerator() {
                             </div>
                           )}
                         </div>
+                        {generatedArt.mode === "ai" && generatedArt.generationDetails && (
+                          <div className="space-y-2">
+                            <span className="text-slate-400 text-sm">Generation Status:</span>
+                            <div className="bg-slate-900 p-3 rounded-md space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-slate-300 text-sm">Main Image:</span>
+                                <Badge variant="outline" className="text-xs border-green-500 text-green-400">
+                                  {generatedArt.generationDetails.mainImage}
+                                </Badge>
+                              </div>
+                              {generatedArt.isDomeProjection && (
+                                <div className="flex items-center justify-between">
+                                  <span className="text-slate-300 text-sm">Dome Projection:</span>
+                                  <Badge
+                                    variant="outline"
+                                    className={`text-xs ${
+                                      generatedArt.generationDetails.domeImage.includes("successfully")
+                                        ? "border-green-500 text-green-400"
+                                        : generatedArt.generationDetails.domeImage.includes("main image")
+                                          ? "border-yellow-500 text-yellow-400"
+                                          : "border-red-500 text-red-400"
+                                    }`}
+                                  >
+                                    {generatedArt.generationDetails.domeImage.length > 30
+                                      ? generatedArt.generationDetails.domeImage.substring(0, 30) + "..."
+                                      : generatedArt.generationDetails.domeImage}
+                                  </Badge>
+                                </div>
+                              )}
+                              {generatedArt.is360Panorama && (
+                                <div className="flex items-center justify-between">
+                                  <span className="text-slate-300 text-sm">360° Panorama:</span>
+                                  <Badge
+                                    variant="outline"
+                                    className={`text-xs ${
+                                      generatedArt.generationDetails.panoramaImage.includes("successfully")
+                                        ? "border-green-500 text-green-400"
+                                        : generatedArt.generationDetails.panoramaImage.includes("main image")
+                                          ? "border-yellow-500 text-yellow-400"
+                                          : "border-red-500 text-red-400"
+                                    }`}
+                                  >
+                                    {generatedArt.generationDetails.panoramaImage.length > 30
+                                      ? generatedArt.generationDetails.panoramaImage.substring(0, 30) + "..."
+                                      : generatedArt.generationDetails.panoramaImage}
+                                  </Badge>
+                                </div>
+                              )}
+
+                              {/* Detailed status on hover/click */}
+                              {(generatedArt.isDomeProjection || generatedArt.is360Panorama) && (
+                                <div className="mt-3 pt-2 border-t border-slate-700">
+                                  <details className="cursor-pointer">
+                                    <summary className="text-xs text-slate-400 hover:text-slate-300">
+                                      View Detailed Generation Log
+                                    </summary>
+                                    <div className="mt-2 space-y-1 text-xs text-slate-300 font-mono bg-slate-800 p-2 rounded">
+                                      {generatedArt.isDomeProjection && (
+                                        <div>
+                                          <span className="text-blue-400">DOME:</span>{" "}
+                                          {generatedArt.generationDetails.domeImage}
+                                        </div>
+                                      )}
+                                      {generatedArt.is360Panorama && (
+                                        <div>
+                                          <span className="text-yellow-400">360°:</span>{" "}
+                                          {generatedArt.generationDetails.panoramaImage}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </details>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="h-96 flex items-center justify-center text-slate-400">

@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       stereographicPerspective = "little-planet",
     } = body
 
-    // Build comprehensive prompt using professional structure
+    // Build base prompt
     let basePrompt = ""
 
     if (customPrompt) {
@@ -162,6 +162,8 @@ export async function POST(request: NextRequest) {
 
     basePrompt += `By adhering to these guidelines, the resulting image will be an exquisite generative art masterpiece, optimized for professional 8K upscaling and perfect for large-format, gallery-quality display. Ultra-high resolution with 16-bit color depth, advanced rendering, photorealistic detail, cinematic composition, and museum-worthy artistic excellence.`
 
+    console.log("Base prompt length:", basePrompt.length)
+
     // Generate main image
     console.log("Generating main image...")
     const mainImageResponse = await fetch("https://api.openai.com/v1/images/generations", {
@@ -197,12 +199,43 @@ export async function POST(request: NextRequest) {
 
     // Generate dome projection if requested
     let domeImageUrl = undefined
-    if (domeProjection) {
-      console.log("Generating dome projection image...")
+    let domeGenerationStatus = "Not requested"
 
-      const domePrompt =
-        basePrompt +
-        `\n\n### DOME PROJECTION OPTIMIZATION:\nSpecially optimized for ${domeDiameter}m diameter dome projection with ${domeResolution} resolution and ${projectionType} fisheye mapping. The composition is designed for immersive planetarium display with spherical coordinate transformation. All ${dataset} elements are arranged to work beautifully on curved dome surfaces with proper distortion correction. The image uses circular fisheye projection with 180-degree field of view, ensuring seamless immersive viewing experience. Central composition with radial symmetry, avoiding edge distortions, and maintaining visual coherence across the entire dome surface.`
+    if (domeProjection) {
+      console.log(`Generating dome projection image for ${domeDiameter}m dome with ${domeResolution} resolution...`)
+
+      // Create a completely different dome-optimized prompt
+      const domePrompt = `Create a stunning ${dataset} mathematical art visualization specifically designed for ${domeDiameter}-meter diameter dome projection with ${domeResolution} resolution. 
+
+DOME PROJECTION REQUIREMENTS:
+- Perfect circular composition that fills the entire frame edge-to-edge
+- All ${dataset} elements arranged in concentric circles radiating from center
+- ${projectionType} projection mapping with 180-degree field of view
+- No elements near the very edges to avoid distortion
+- Central focal point with strongest visual elements
+- Radial symmetry that works on curved dome surfaces
+- Elements get progressively smaller toward edges
+- Seamless wraparound with no visible seams
+
+MATHEMATICAL ELEMENTS:
+${
+  dataset === "tribes"
+    ? `Tribal villages arranged in perfect circles around a central ceremonial ground. ${numSamples.toLocaleString()} people in traditional dress positioned in concentric rings. Chiefs and shamans at center, families in middle rings, activities toward edges. Smoke from fires creates vertical elements. All figures face inward toward center.`
+    : dataset === "spirals"
+      ? `${numSamples.toLocaleString()} Fibonacci spirals emanating from center point in perfect radial symmetry. Golden ratio proportions with r=ae^(bθ). Each spiral unique but harmoniously integrated. Logarithmic and Archimedean spirals creating galaxy-like formation.`
+      : `${numSamples.toLocaleString()} ${dataset} elements in perfect circular arrangement radiating from center with mathematical precision.`
+}
+
+COLOR SCHEME: ${colorScheme} palette optimized for dome viewing with enhanced contrast and luminosity.
+
+DOME TECHNICAL SPECS:
+- Optimized for ${domeDiameter}m diameter planetarium dome
+- ${domeResolution} resolution (${domeResolution === "2K" ? "2048x2048" : domeResolution === "4K" ? "4096x4096" : "8192x8192"})
+- ${projectionType} projection type
+- Immersive overhead viewing experience
+- Perfect for planetarium and dome theater display
+
+The final image must be a perfect circle that completely fills the square frame, with all mathematical elements arranged to create stunning immersive experience when projected on dome ceiling.`
 
       try {
         const domeResponse = await fetch("https://api.openai.com/v1/images/generations", {
@@ -225,36 +258,51 @@ export async function POST(request: NextRequest) {
           const domeData = await domeResponse.json()
           if (domeData.data && domeData.data[0] && domeData.data[0].url) {
             domeImageUrl = domeData.data[0].url
+            domeGenerationStatus = "Generated successfully with dome optimization"
             console.log("Dome projection image generated successfully")
+          } else {
+            console.log("Dome API returned no image, using main image")
+            domeImageUrl = imageUrl
+            domeGenerationStatus = "API returned no image, using main image"
           }
+        } else {
+          const domeError = await domeResponse.json()
+          console.log("Dome generation failed:", domeError)
+          domeImageUrl = imageUrl
+          domeGenerationStatus = `Generation failed: ${domeError.error?.message || "Unknown error"}, using main image`
         }
       } catch (error) {
-        console.error("Dome projection generation failed:", error)
-        // Fallback to main image
+        console.error("Dome projection generation error:", error)
         domeImageUrl = imageUrl
+        domeGenerationStatus = `Exception occurred: ${error.message}, using main image`
       }
     }
 
     // Generate 360° panorama if requested
     let panoramaImageUrl = undefined
+    let panoramaGenerationStatus = "Not requested"
+
     if (panoramic360) {
-      console.log("Generating 360° panoramic image...")
+      console.log(`Generating 360° panoramic image with ${panoramaResolution} resolution...`)
 
       let panoramaPrompt =
         basePrompt +
         `\n\n### 360° PANORAMIC OPTIMIZATION:\nSpecially designed for 360-degree panoramic viewing with ${panoramaResolution} resolution and ${panoramaFormat} projection format. The composition wraps seamlessly around a full sphere with no visible seams or distortions. All ${dataset} elements are distributed to create continuous visual flow across the entire 360-degree environment.`
 
+      let imageSize = "1024x1024"
+
       if (panoramaFormat === "equirectangular") {
-        panoramaPrompt += ` Uses equirectangular projection mapping with 2:1 aspect ratio, where horizontal represents 360° longitude and vertical represents 180° latitude. The composition accounts for polar distortion with smaller elements near the poles and larger elements near the equator.`
+        panoramaPrompt += ` Uses equirectangular projection mapping with 2:1 aspect ratio, where horizontal represents 360° longitude and vertical represents 180° latitude. The composition accounts for polar distortion with smaller elements near the top and bottom edges and larger elements near the center horizontal band. Elements should flow horizontally across the image to create seamless wraparound when viewed in VR. Perfect for VR headsets and 360° video platforms.`
+        imageSize = "1792x1024" // 2:1 aspect ratio for equirectangular
+      } else if (panoramaFormat === "stereographic") {
+        if (stereographicPerspective === "little-planet") {
+          panoramaPrompt += ` Optimized for little planet stereographic projection with central focal point and radial composition that creates stunning spherical planet effect when transformed. All ${dataset} elements radiate outward from the center in concentric circles, with the most important elements in the center and supporting elements flowing toward the edges. The composition should look like looking down at a small planet from above.`
+        } else if (stereographicPerspective === "tunnel") {
+          panoramaPrompt += ` Designed for tunnel stereographic projection with central void and outward radiating patterns that create immersive tunnel effect. Elements should form concentric rings around a central opening, creating depth and perspective that draws the viewer into the center. Perfect for creating immersive tunnel-like experiences.`
+        }
       }
 
-      if (stereographicPerspective === "little-planet") {
-        panoramaPrompt += ` Optimized for little planet stereographic projection with central focal point and radial composition that creates stunning spherical planet effect when transformed.`
-      } else if (stereographicPerspective === "tunnel") {
-        panoramaPrompt += ` Designed for tunnel stereographic projection with central void and outward radiating patterns that create immersive tunnel effect.`
-      }
-
-      panoramaPrompt += ` Perfect for VR headsets, 360° video platforms, and immersive digital experiences.`
+      panoramaPrompt += ` The final result should be optimized for immersive digital experiences and VR environments.`
 
       try {
         const panoramaResponse = await fetch("https://api.openai.com/v1/images/generations", {
@@ -267,7 +315,7 @@ export async function POST(request: NextRequest) {
             model: "dall-e-3",
             prompt: panoramaPrompt.length > 4000 ? panoramaPrompt.substring(0, 3997) + "..." : panoramaPrompt,
             n: 1,
-            size: panoramaFormat === "equirectangular" ? "1792x1024" : "1024x1024",
+            size: imageSize,
             quality: "hd",
             style: "vivid",
           }),
@@ -277,13 +325,23 @@ export async function POST(request: NextRequest) {
           const panoramaData = await panoramaResponse.json()
           if (panoramaData.data && panoramaData.data[0] && panoramaData.data[0].url) {
             panoramaImageUrl = panoramaData.data[0].url
+            panoramaGenerationStatus = "Generated successfully with 360° optimization"
             console.log("360° panoramic image generated successfully")
+          } else {
+            console.log("Panorama API returned no image, using main image")
+            panoramaImageUrl = imageUrl
+            panoramaGenerationStatus = "API returned no image, using main image"
           }
+        } else {
+          const panoramaError = await panoramaResponse.json()
+          console.log("Panorama generation failed:", panoramaError)
+          panoramaImageUrl = imageUrl
+          panoramaGenerationStatus = `Generation failed: ${panoramaError.error?.message || "Unknown error"}, using main image`
         }
       } catch (error) {
-        console.error("360° panoramic generation failed:", error)
-        // Fallback to main image
+        console.error("360° panoramic generation error:", error)
         panoramaImageUrl = imageUrl
+        panoramaGenerationStatus = `Exception occurred: ${error.message}, using main image`
       }
     }
 
@@ -312,16 +370,8 @@ export async function POST(request: NextRequest) {
       },
       generationDetails: {
         mainImage: "Generated successfully",
-        domeImage: domeProjection
-          ? domeImageUrl !== imageUrl
-            ? "Generated with dome optimization"
-            : "Fallback to main image"
-          : "Not requested",
-        panoramaImage: panoramic360
-          ? panoramaImageUrl !== imageUrl
-            ? "Generated with 360° optimization"
-            : "Fallback to main image"
-          : "Not requested",
+        domeImage: domeGenerationStatus,
+        panoramaImage: panoramaGenerationStatus,
       },
     })
   } catch (error: any) {

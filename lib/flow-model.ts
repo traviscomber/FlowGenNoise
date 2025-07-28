@@ -192,24 +192,66 @@ export function generateFlowField(params: GenerationParams): string {
 export function generateDomeProjection(params: DomeProjectionParams): string {
   const { width, height, fov, tilt } = params
 
-  // Simple dome projection visualization
+  // Enhanced dome projection visualization with circular composition
   const centerX = width / 2
   const centerY = height / 2
   const radius = Math.min(width, height) / 2 - 20
+
+  // Create concentric circles for dome effect
+  const circles = []
+  for (let i = 1; i <= 5; i++) {
+    const r = (radius * i) / 5
+    circles.push(
+      `<circle cx="${centerX}" cy="${centerY}" r="${r}" fill="none" stroke="#4a90e2" stroke-width="1" opacity="${0.3 - i * 0.05}"/>`,
+    )
+  }
+
+  // Add radial lines for dome grid
+  const lines = []
+  for (let angle = 0; angle < 360; angle += 30) {
+    const radian = (angle * Math.PI) / 180
+    const x1 = centerX + Math.cos(radian) * (radius * 0.2)
+    const y1 = centerY + Math.sin(radian) * (radius * 0.2)
+    const x2 = centerX + Math.cos(radian) * radius
+    const y2 = centerY + Math.sin(radian) * radius
+    lines.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#4a90e2" stroke-width="1" opacity="0.2"/>`)
+  }
 
   const svgContent = `
     <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="domeGradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.8" />
-          <stop offset="70%" style="stop-color:#4a90e2;stop-opacity:0.4" />
-          <stop offset="100%" style="stop-color:#000000;stop-opacity:0.1" />
+          <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.9" />
+          <stop offset="30%" style="stop-color:#4a90e2;stop-opacity:0.6" />
+          <stop offset="70%" style="stop-color:#2c5aa0;stop-opacity:0.4" />
+          <stop offset="100%" style="stop-color:#1a365d;stop-opacity:0.2" />
         </radialGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge> 
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
       </defs>
       <rect width="100%" height="100%" fill="#000011"/>
-      <circle cx="${centerX}" cy="${centerY}" r="${radius}" fill="url(#domeGradient)" stroke="#4a90e2" stroke-width="2"/>
-      <text x="${centerX}" y="${centerY + 5}" text-anchor="middle" fill="#ffffff" font-family="Arial" font-size="14">
-        Dome Projection
+      
+      <!-- Dome grid -->
+      ${circles.join("")}
+      ${lines.join("")}
+      
+      <!-- Main dome circle -->
+      <circle cx="${centerX}" cy="${centerY}" r="${radius}" fill="url(#domeGradient)" stroke="#4a90e2" stroke-width="3" filter="url(#glow)"/>
+      
+      <!-- Center point -->
+      <circle cx="${centerX}" cy="${centerY}" r="5" fill="#ffffff" opacity="0.8"/>
+      
+      <!-- Dome info -->
+      <text x="${centerX}" y="${centerY + radius + 30}" text-anchor="middle" fill="#ffffff" font-family="Arial" font-size="16" font-weight="bold">
+        ${fov}° Dome Projection
+      </text>
+      <text x="${centerX}" y="${centerY + radius + 50}" text-anchor="middle" fill="#4a90e2" font-family="Arial" font-size="12">
+        Optimized for Planetarium Display
       </text>
     </svg>
   `
