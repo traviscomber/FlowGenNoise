@@ -1,123 +1,131 @@
-// lib/plot-utils.ts
-import type { FlowArtSettings } from "./flow-model"
-
-// Define a type for the data points
-export type DataPoint = { x: number; y: number; value: number }
-
-// Color scheme definitions (simplified for client-side SVG generation)
-const COLOR_SCHEMES: { [key: string]: (value: number) => string } = {
-  plasma: (value: number) => {
-    // Simple approximation of plasma colormap
-    const r = Math.floor(255 * Math.pow(value, 0.5))
-    const g = Math.floor(255 * Math.pow(value, 1.5))
-    const b = Math.floor(255 * Math.pow(value, 2.5))
-    return `rgb(${r},${g},${b})`
-  },
-  viridis: (value: number) => {
-    // Simple approximation of viridis colormap
-    const r = Math.floor(255 * (0.2 + 0.7 * value))
-    const g = Math.floor(255 * (0.9 - 0.7 * value))
-    const b = Math.floor(255 * (0.4 + 0.5 * value))
-    return `rgb(${r},${g},${b})`
-  },
-  cividis: (value: number) => {
-    // Simple approximation of cividis colormap
-    const r = Math.floor(255 * (0.1 + 0.8 * value))
-    const g = Math.floor(255 * (0.5 + 0.4 * value))
-    const b = Math.floor(255 * (0.8 - 0.7 * value))
-    return `rgb(${r},${g},${b})`
-  },
-  magma: (value: number) => {
-    // Simple approximation of magma colormap
-    const r = Math.floor(255 * Math.pow(value, 0.7))
-    const g = Math.floor(255 * Math.pow(value, 0.3))
-    const b = Math.floor(255 * Math.pow(value, 0.1))
-    return `rgb(${r},${g},${b})`
-  },
-  inferno: (value: number) => {
-    // Simple approximation of inferno colormap
-    const r = Math.floor(255 * Math.pow(value, 0.8))
-    const g = Math.floor(255 * Math.pow(value, 0.4))
-    const b = Math.floor(255 * Math.pow(value, 0.2))
-    return `rgb(${r},${g},${b})`
-  },
-  twilight: (value: number) => {
-    // Simple approximation of twilight colormap (diverging)
-    if (value < 0.5) {
-      const v = value * 2
-      const r = Math.floor(255 * v)
-      const g = 0
-      const b = Math.floor(255 * (1 - v))
-      return `rgb(${r},${g},${b})`
-    } else {
-      const v = (value - 0.5) * 2
-      const r = Math.floor(255 * (1 - v))
-      const g = Math.floor(255 * v)
-      const b = 0
-      return `rgb(${r},${g},${b})`
-    }
-  },
-  hsv: (value: number) => {
-    // Simple HSV approximation (hue changes, saturation/value fixed)
-    const h = value * 360 // Hue from 0 to 360
-    const s = 1 // Full saturation
-    const v = 1 // Full value
-    return `hsl(${h}, ${s * 100}%, ${(v * 100) / 2}%)` // Use HSL for CSS
-  },
-  rainbow: (value: number) => {
-    // Simple rainbow approximation
-    const hue = value * 360
-    return `hsl(${hue}, 100%, 50%)`
-  },
-  grayscale: (value: number) => {
-    const gray = Math.floor(value * 255)
-    return `rgb(${gray},${gray},${gray})`
-  },
+export interface DataPoint {
+  x: number
+  y: number
+  value: number
 }
 
-/**
- * Generates an SVG string for a scatter plot based on provided data points.
- * @param data - Array of data points {x, y, value}.
- * @param settings - FlowArtSettings containing colorScheme.
- * @returns A base64 encoded SVG string.
- */
-export function generateScatterPlotSVG(data: DataPoint[], settings: FlowArtSettings): string {
+export interface PlotSettings {
+  dataset: string
+  colorScheme: string
+  seed: number
+  samples: number
+  noise: number
+}
+
+// Color schemes mapping
+const COLOR_SCHEMES: Record<string, string[]> = {
+  plasma: [
+    "#0d0887",
+    "#46039f",
+    "#7201a8",
+    "#9c179e",
+    "#bd3786",
+    "#d8576b",
+    "#ed7953",
+    "#fb9f3a",
+    "#fdca26",
+    "#f0f921",
+  ],
+  viridis: ["#440154", "#482777", "#3f4a8a", "#31678e", "#26838f", "#1f9d8a", "#6cce5a", "#b6de2b", "#fee825"],
+  cividis: [
+    "#00224e",
+    "#123570",
+    "#3b496c",
+    "#575d6d",
+    "#707173",
+    "#8a8678",
+    "#a59c74",
+    "#c3b369",
+    "#e1cc55",
+    "#fee838",
+  ],
+  magma: ["#000004", "#1c1044", "#4f127b", "#812581", "#b5367a", "#e55964", "#fb8761", "#fec287", "#fcfdbf"],
+  inferno: [
+    "#000004",
+    "#1f0c48",
+    "#550f6d",
+    "#88226a",
+    "#a83655",
+    "#cc4778",
+    "#e66a5c",
+    "#f89441",
+    "#fdc328",
+    "#fcffa4",
+  ],
+  twilight: ["#e2d9e2", "#9ebbc9", "#6785be", "#5e43a5", "#1f0c48", "#550f6d", "#88226a", "#a83655", "#cc4778"],
+  hsv: ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80", "#00ffff", "#0080ff", "#0000ff", "#8000ff"],
+  rainbow: ["#ff0000", "#ff4000", "#ff8000", "#ffbf00", "#ffff00", "#bfff00", "#80ff00", "#40ff00", "#00ff00"],
+  grayscale: [
+    "#000000",
+    "#1a1a1a",
+    "#333333",
+    "#4d4d4d",
+    "#666666",
+    "#808080",
+    "#999999",
+    "#b3b3b3",
+    "#cccccc",
+    "#ffffff",
+  ],
+}
+
+export function generateScatterPlotSVG(data: DataPoint[], settings: PlotSettings): string {
   const width = 800
   const height = 600
-  const padding = 50
+  const margin = 50
 
-  // Find min/max for scaling
-  const minX = Math.min(...data.map((d) => d.x))
-  const maxX = Math.max(...data.map((d) => d.x))
-  const minY = Math.min(...data.map((d) => d.y))
-  const maxY = Math.max(...data.map((d) => d.y))
-  const minValue = Math.min(...data.map((d) => d.value))
-  const maxValue = Math.max(...data.map((d) => d.value))
+  // Find data bounds
+  const xMin = Math.min(...data.map((d) => d.x))
+  const xMax = Math.max(...data.map((d) => d.x))
+  const yMin = Math.min(...data.map((d) => d.y))
+  const yMax = Math.max(...data.map((d) => d.y))
+  const valueMin = Math.min(...data.map((d) => d.value))
+  const valueMax = Math.max(...data.map((d) => d.value))
 
-  // Scaling functions
-  const scaleX = (x: number) => padding + ((x - minX) / (maxX - minX)) * (width - 2 * padding)
-  const scaleY = (y: number) => height - padding - ((y - minY) / (maxY - minY)) * (height - 2 * padding) // Invert Y for SVG
-  const scaleValue = (value: number) => (value - minValue) / (maxValue - minValue) // Normalize to 0-1
+  // Scale functions
+  const scaleX = (x: number) => margin + ((x - xMin) / (xMax - xMin)) * (width - 2 * margin)
+  const scaleY = (y: number) => height - margin - ((y - yMin) / (yMax - yMin)) * (height - 2 * margin)
 
-  const getColor = COLOR_SCHEMES[settings.colorScheme] || COLOR_SCHEMES.plasma
+  // Color mapping
+  const colors = COLOR_SCHEMES[settings.colorScheme] || COLOR_SCHEMES.plasma
+  const getColor = (value: number) => {
+    const normalized = (value - valueMin) / (valueMax - valueMin)
+    const index = Math.floor(normalized * (colors.length - 1))
+    return colors[Math.max(0, Math.min(colors.length - 1, index))]
+  }
 
-  const circles = data
-    .map((d) => {
-      const cx = scaleX(d.x)
-      const cy = scaleY(d.y)
-      const color = getColor(scaleValue(d.value))
-      const radius = 1.5 // Fixed radius for simplicity, could be dynamic
-      return `<circle cx="${cx}" cy="${cy}" r="${radius}" fill="${color}" />`
+  // Generate SVG points
+  const points = data
+    .map((point) => {
+      const x = scaleX(point.x)
+      const y = scaleY(point.y)
+      const color = getColor(point.value)
+      const radius = 1.5 + ((point.value - valueMin) / (valueMax - valueMin)) * 2
+
+      return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${radius.toFixed(1)}" fill="${color}" opacity="0.7"/>`
     })
-    .join("\n")
+    .join("\n  ")
 
-  const svgContent = `
-    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="${width}" height="${height}" fill="#1a1a2e"/> <!-- Dark background for contrast -->
-      ${circles}
-    </svg>
-  `
+  // Create SVG
+  const svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="${width}" height="${height}" fill="white"/>
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#glow)">
+    ${points}
+  </g>
+  <text x="${width / 2}" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#333">
+    ${settings.dataset.charAt(0).toUpperCase() + settings.dataset.slice(1)} - ${settings.colorScheme} (${settings.samples} samples)
+  </text>
+</svg>`
 
-  // Encode to base64
-  return `data:image/svg+xml;base64,${btoa(svgContent)}`
+  // Convert to base64 data URL
+  return `data:image/svg+xml;base64,${btoa(svg)}`
 }
