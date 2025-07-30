@@ -658,13 +658,20 @@ export function FlowArtGenerator() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="spirals">🌀 Complex Spirals (Fibonacci + Logarithmic)</SelectItem>
-                    <SelectItem value="moons">🌙 Hyperbolic Moons (Elliptic Curves)</SelectItem>
-                    <SelectItem value="circles">⭕ Concentric Manifolds (Torus + Möbius)</SelectItem>
-                    <SelectItem value="blobs">🔵 Voronoi Blobs (Lorenz Attractor)</SelectItem>
-                    <SelectItem value="checkerboard">🏁 Fractal Checkerboard (Mandelbrot)</SelectItem>
-                    <SelectItem value="gaussian">📊 Multi-Modal Gaussian (Correlated)</SelectItem>
-                    <SelectItem value="grid">⚏ Non-Linear Grid (Klein Bottle)</SelectItem>
+                    <SelectItem value="spirals">🌀 Spirals</SelectItem>
+                    <SelectItem value="moons">🌙 Moons</SelectItem>
+                    <SelectItem value="circles">⭕ Circles</SelectItem>
+                    <SelectItem value="blobs">🔵 Blobs</SelectItem>
+                    <SelectItem value="checkerboard">🏁 Checkerboard</SelectItem>
+                    <SelectItem value="gaussian">📊 Gaussian</SelectItem>
+                    <SelectItem value="grid">⚏ Grid</SelectItem>
+                    <SelectItem value="fractal">🔺 Fractal</SelectItem>
+                    <SelectItem value="mandelbrot">🌀 Mandelbrot Set</SelectItem>
+                    <SelectItem value="julia">🎭 Julia Set</SelectItem>
+                    <SelectItem value="lorenz">🦋 Lorenz Attractor</SelectItem>
+                    <SelectItem value="tribes">👥 Tribes</SelectItem>
+                    <SelectItem value="heads">👤 Heads</SelectItem>
+                    <SelectItem value="natives">🏕️ Natives</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

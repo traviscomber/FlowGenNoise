@@ -69,81 +69,222 @@ class SeededRandom {
 
 // Generate complex mathematical datasets
 export function generateDataset(name: string, seed: number, n_samples: number, noise: number): number[][] {
-  const prng = createPrng(seed)
   const rng = new SeededRandom(seed)
 
   switch (name) {
     case "spirals":
-      return generateComplexSpirals(rng, n_samples, noise)
-    case "checkerboard":
-      return generateFractalCheckerboard(rng, n_samples, noise)
+      return generateSpirals(rng, n_samples, noise)
     case "moons":
-      return generateHyperbolicMoons(rng, n_samples, noise)
-    case "gaussian":
-      return generateMultiModalGaussian(rng, n_samples, noise)
-    case "grid":
-      return generateNonLinearGrid(rng, n_samples, noise)
+      return generateMoons(rng, n_samples, noise)
     case "circles":
-      return generateConcentricManifolds(rng, n_samples, noise)
+      return generateCircles(rng, n_samples, noise)
     case "blobs":
-      return generateVoronoiBlobs(rng, n_samples, noise)
+      return generateBlobs(rng, n_samples, noise)
+    case "checkerboard":
+      return generateCheckerboard(rng, n_samples, noise)
+    case "gaussian":
+      return generateGaussian(rng, n_samples, noise)
+    case "grid":
+      return generateGrid(rng, n_samples, noise)
+    case "fractal":
+      return generateFractal(rng, n_samples, noise)
+    case "mandelbrot":
+      return generateMandelbrot(rng, n_samples, noise)
+    case "julia":
+      return generateJulia(rng, n_samples, noise)
+    case "lorenz":
+      return generateLorenz(rng, n_samples, noise)
+    case "tribes":
+      return generateTribes(rng, n_samples, noise)
+    case "heads":
+      return generateHeads(rng, n_samples, noise)
+    case "natives":
+      return generateNatives(rng, n_samples, noise)
     default:
-      return generateComplexSpirals(rng, n_samples, noise)
+      return generateSpirals(rng, n_samples, noise)
   }
 }
 
-// Complex mathematical dataset generators
-function generateComplexSpirals(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+// Classic dataset generators
+function generateSpirals(rng: SeededRandom, n_samples: number, noise: number): number[][] {
   const data: number[][] = []
+  const samplesPerSpiral = Math.floor(n_samples / 2)
 
   for (let i = 0; i < n_samples; i++) {
-    const t = (i / n_samples) * 8 * Math.PI
+    const spiral = i < samplesPerSpiral ? 0 : 1
+    const t = ((i % samplesPerSpiral) / samplesPerSpiral) * 4 * Math.PI
 
-    // Multiple interleaved spirals with different frequencies
-    const spiral1 = 0.5 * t * Math.cos(t)
-    const spiral2 = 0.3 * t * Math.sin(1.5 * t)
-    const spiral3 = 0.2 * t * Math.cos(2.5 * t)
+    const r = t * 0.1
+    const x = r * Math.cos(t + spiral * Math.PI)
+    const y = r * Math.sin(t + spiral * Math.PI)
 
-    // Fibonacci spiral component
-    const phi = (1 + Math.sqrt(5)) / 2
-    const fibSpiral = Math.sqrt(t) * Math.cos(t * phi)
-
-    // Logarithmic spiral
-    const logSpiral = Math.exp(0.1 * t) * Math.cos(t)
-
-    const x = spiral1 + spiral2 * 0.5 + fibSpiral * 0.3 + logSpiral * 0.1 + noise * rng.gaussian()
-    const y = spiral1 * Math.sin(t) + spiral3 + fibSpiral * Math.sin(t * phi) * 0.3 + noise * rng.gaussian()
-
-    data.push([x * 0.1, y * 0.1]) // Scale down for visualization
+    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
   }
 
   return data
 }
 
-function generateFractalCheckerboard(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+function generateMoons(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+  const samplesPerMoon = Math.floor(n_samples / 2)
+
+  for (let i = 0; i < n_samples; i++) {
+    const moon = i < samplesPerMoon ? 0 : 1
+    const t = ((i % samplesPerMoon) / samplesPerMoon) * Math.PI
+
+    let x, y
+    if (moon === 0) {
+      x = Math.cos(t)
+      y = Math.sin(t)
+    } else {
+      x = 1 - Math.cos(t)
+      y = 1 - Math.sin(t) - 0.5
+    }
+
+    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
+  }
+
+  return data
+}
+
+function generateCircles(rng: SeededRandom, n_samples: number, noise: number): number[][] {
   const data: number[][] = []
 
   for (let i = 0; i < n_samples; i++) {
-    let x = rng.range(-2, 2)
-    let y = rng.range(-2, 2)
+    const r = rng.next() < 0.5 ? 0.5 : 1.5
+    const t = rng.next() * 2 * Math.PI
 
-    // Apply fractal transformation
-    for (let iter = 0; iter < 3; iter++) {
-      const scale = Math.pow(0.5, iter)
-      const offsetX = Math.sin(x * Math.pow(2, iter)) * scale
-      const offsetY = Math.cos(y * Math.pow(2, iter)) * scale
+    const x = r * Math.cos(t)
+    const y = r * Math.sin(t)
 
-      x += offsetX
-      y += offsetY
+    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
+  }
+
+  return data
+}
+
+function generateBlobs(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+  const centers = [
+    [-1, -1],
+    [1, -1],
+    [-1, 1],
+    [1, 1],
+  ]
+
+  for (let i = 0; i < n_samples; i++) {
+    const center = centers[Math.floor(rng.next() * centers.length)]
+    const r = rng.next() * 0.5
+    const t = rng.next() * 2 * Math.PI
+
+    const x = center[0] + r * Math.cos(t)
+    const y = center[1] + r * Math.sin(t)
+
+    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
+  }
+
+  return data
+}
+
+function generateCheckerboard(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+
+  for (let i = 0; i < n_samples; i++) {
+    const x = rng.range(-2, 2)
+    const y = rng.range(-2, 2)
+
+    const checkX = Math.floor(x + 2)
+    const checkY = Math.floor(y + 2)
+
+    if ((checkX + checkY) % 2 === 0) {
+      data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
+    }
+  }
+
+  // Fill remaining samples if needed
+  while (data.length < n_samples) {
+    const x = rng.range(-2, 2)
+    const y = rng.range(-2, 2)
+    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
+  }
+
+  return data
+}
+
+function generateGaussian(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+
+  for (let i = 0; i < n_samples; i++) {
+    const x = rng.gaussian()
+    const y = rng.gaussian()
+
+    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
+  }
+
+  return data
+}
+
+function generateGrid(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+  const gridSize = Math.ceil(Math.sqrt(n_samples))
+
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize && data.length < n_samples; j++) {
+      const x = (i / (gridSize - 1)) * 4 - 2
+      const y = (j / (gridSize - 1)) * 4 - 2
+
+      data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
+    }
+  }
+
+  return data
+}
+
+function generateFractal(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+
+  for (let i = 0; i < n_samples; i++) {
+    let x = 0,
+      y = 0
+
+    // Sierpinski triangle-like fractal
+    for (let iter = 0; iter < 10; iter++) {
+      const choice = Math.floor(rng.next() * 3)
+      const scale = 0.5
+
+      switch (choice) {
+        case 0:
+          x = x * scale
+          y = y * scale
+          break
+        case 1:
+          x = x * scale + 0.5
+          y = y * scale
+          break
+        case 2:
+          x = x * scale + 0.25
+          y = y * scale + 0.5
+          break
+      }
     }
 
-    // Mandelbrot-like iteration
-    const cx = x,
-      cy = y
+    data.push([(x - 0.25) * 4 + noise * rng.gaussian(), (y - 0.25) * 4 + noise * rng.gaussian()])
+  }
+
+  return data
+}
+
+function generateMandelbrot(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+
+  for (let i = 0; i < n_samples; i++) {
+    const cx = rng.range(-2, 1)
+    const cy = rng.range(-1.5, 1.5)
+
     let zx = 0,
       zy = 0
     let iterations = 0
-    const maxIter = 20
+    const maxIter = 100
 
     while (zx * zx + zy * zy < 4 && iterations < maxIter) {
       const temp = zx * zx - zy * zy + cx
@@ -152,165 +293,126 @@ function generateFractalCheckerboard(rng: SeededRandom, n_samples: number, noise
       iterations++
     }
 
-    // Use iteration count to modify position
-    const factor = iterations / maxIter
-    x += Math.sin(factor * Math.PI) * 0.5
-    y += Math.cos(factor * Math.PI) * 0.5
+    if (iterations < maxIter) {
+      data.push([cx + noise * rng.gaussian(), cy + noise * rng.gaussian()])
+    }
+  }
 
+  // Fill remaining samples if needed
+  while (data.length < n_samples) {
+    const x = rng.range(-2, 2)
+    const y = rng.range(-2, 2)
     data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
   }
 
   return data
 }
 
-function generateHyperbolicMoons(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+function generateJulia(rng: SeededRandom, n_samples: number, noise: number): number[][] {
   const data: number[][] = []
-  const samplesPerMoon = Math.floor(n_samples / 3)
+  const c = { x: -0.7, y: 0.27015 } // Julia set parameter
 
-  // First hyperbolic moon
-  for (let i = 0; i < samplesPerMoon; i++) {
-    const t = (i / samplesPerMoon) * Math.PI
-    const r = 1 + 0.3 * Math.sin(3 * t)
+  for (let i = 0; i < n_samples; i++) {
+    let zx = rng.range(-2, 2)
+    let zy = rng.range(-2, 2)
+    let iterations = 0
+    const maxIter = 100
 
-    // Hyperbolic transformation
-    const x = r * Math.cosh(0.5 * t) * Math.cos(t)
-    const y = r * Math.sinh(0.5 * t) * Math.sin(t)
+    while (zx * zx + zy * zy < 4 && iterations < maxIter) {
+      const temp = zx * zx - zy * zy + c.x
+      zy = 2 * zx * zy + c.y
+      zx = temp
+      iterations++
+    }
 
-    data.push([x * 0.3 + noise * rng.gaussian(), y * 0.3 + noise * rng.gaussian()])
+    if (iterations < maxIter) {
+      data.push([zx * 0.5 + noise * rng.gaussian(), zy * 0.5 + noise * rng.gaussian()])
+    }
   }
 
-  // Second moon with different curvature
-  for (let i = 0; i < samplesPerMoon; i++) {
-    const t = (i / samplesPerMoon) * Math.PI
-    const r = 1 + 0.2 * Math.cos(5 * t)
-
-    const x = 1.5 - r * Math.cos(t + Math.PI)
-    const y = 1 - r * Math.sin(t + Math.PI) + 0.5 * Math.sin(2 * t)
-
+  // Fill remaining samples if needed
+  while (data.length < n_samples) {
+    const x = rng.range(-2, 2)
+    const y = rng.range(-2, 2)
     data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  // Third moon with elliptic curves
-  for (let i = 0; i < n_samples - 2 * samplesPerMoon; i++) {
-    const t = (i / (n_samples - 2 * samplesPerMoon)) * 2 * Math.PI
-
-    // Elliptic curve: y² = x³ + ax + b
-    const a = -1,
-      b = 1
-    const x = 2 * Math.cos(t)
-    const y = Math.sqrt(Math.abs(x * x * x + a * x + b)) * Math.sign(Math.sin(t))
-
-    data.push([x * 0.3 - 0.5 + noise * rng.gaussian(), y * 0.3 + 1.5 + noise * rng.gaussian()])
   }
 
   return data
 }
 
-function generateMultiModalGaussian(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+function generateLorenz(rng: SeededRandom, n_samples: number, noise: number): number[][] {
   const data: number[][] = []
 
-  // Multiple Gaussian centers with different covariances
-  const centers = [
-    { x: -1.5, y: -1.5, sx: 0.3, sy: 0.8, angle: Math.PI / 4 },
-    { x: 1.5, y: -1.5, sx: 0.8, sy: 0.3, angle: -Math.PI / 4 },
-    { x: 0, y: 1.5, sx: 0.5, sy: 0.5, angle: 0 },
-    { x: -0.8, y: 0.3, sx: 0.2, sy: 0.6, angle: Math.PI / 3 },
-    { x: 0.8, y: 0.3, sx: 0.6, sy: 0.2, angle: -Math.PI / 3 },
+  let x = 1,
+    y = 1,
+    z = 1
+  const dt = 0.01
+  const sigma = 10,
+    rho = 28,
+    beta = 8 / 3
+
+  for (let i = 0; i < n_samples; i++) {
+    const dx = sigma * (y - x)
+    const dy = x * (rho - z) - y
+    const dz = x * y - beta * z
+
+    x += dx * dt
+    y += dy * dt
+    z += dz * dt
+
+    data.push([x * 0.05 + noise * rng.gaussian(), y * 0.05 + noise * rng.gaussian()])
+  }
+
+  return data
+}
+
+function generateTribes(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+  const data: number[][] = []
+  const villages = [
+    { x: -1.5, y: -1, size: 0.8 },
+    { x: 1.5, y: -1, size: 0.6 },
+    { x: 0, y: 1.5, size: 1.0 },
+    { x: -0.8, y: 0.3, size: 0.5 },
+    { x: 0.8, y: 0.3, size: 0.7 },
   ]
 
   for (let i = 0; i < n_samples; i++) {
-    const center = centers[Math.floor(rng.next() * centers.length)]
+    const village = villages[Math.floor(rng.next() * villages.length)]
+    const r = rng.next() * village.size
+    const t = rng.next() * 2 * Math.PI
 
-    // Generate correlated Gaussian samples
-    const u1 = rng.gaussian()
-    const u2 = rng.gaussian()
+    const x = village.x + r * Math.cos(t)
+    const y = village.y + r * Math.sin(t)
 
-    // Apply rotation and scaling
-    const cos_a = Math.cos(center.angle)
-    const sin_a = Math.sin(center.angle)
-
-    const x = center.x + (u1 * center.sx * cos_a - u2 * center.sy * sin_a)
-    const y = center.y + (u1 * center.sx * sin_a + u2 * center.sy * cos_a)
-
-    // Add Perlin-like noise
-    const perlinX = Math.sin(x * 5) * Math.cos(y * 3) * 0.1
-    const perlinY = Math.cos(x * 3) * Math.sin(y * 5) * 0.1
-
-    data.push([x + perlinX + noise * rng.gaussian(), y + perlinY + noise * rng.gaussian()])
+    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
   }
 
   return data
 }
 
-function generateNonLinearGrid(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-  const gridSize = Math.ceil(Math.sqrt(n_samples))
-
-  for (let i = 0; i < gridSize; i++) {
-    for (let j = 0; j < gridSize && data.length < n_samples; j++) {
-      let x = (i / (gridSize - 1)) * 4 - 2
-      let y = (j / (gridSize - 1)) * 4 - 2
-
-      // Apply non-linear transformations
-      const r = Math.sqrt(x * x + y * y)
-      const theta = Math.atan2(y, x)
-
-      // Polar distortion
-      const newR = r + 0.3 * Math.sin(3 * theta) + 0.2 * Math.sin(5 * r)
-      const newTheta = theta + 0.2 * Math.sin(2 * r)
-
-      x = newR * Math.cos(newTheta)
-      y = newR * Math.sin(newTheta)
-
-      // Add wave distortion
-      x += 0.3 * Math.sin(y * 2) * Math.cos(x * 1.5)
-      y += 0.3 * Math.cos(x * 2) * Math.sin(y * 1.5)
-
-      // Klein bottle transformation
-      const u = x * 0.5
-      const v = y * 0.5
-      const kleinX = (2 + Math.cos(v)) * Math.cos(u)
-      const kleinY = (2 + Math.cos(v)) * Math.sin(u)
-
-      data.push([x * 0.7 + kleinX * 0.3 + noise * rng.gaussian(), y * 0.7 + kleinY * 0.3 + noise * rng.gaussian()])
-    }
-  }
-
-  return data
-}
-
-function generateConcentricManifolds(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+function generateHeads(rng: SeededRandom, n_samples: number, noise: number): number[][] {
   const data: number[][] = []
 
   for (let i = 0; i < n_samples; i++) {
-    const layer = Math.floor(rng.next() * 5) + 1
-    const t = rng.next() * 2 * Math.PI
+    const t = (i / n_samples) * 2 * Math.PI
+    const r = 1 + 0.3 * Math.sin(5 * t) // Face outline
 
-    // Base radius with harmonic variations
-    const r = layer * 0.4 + 0.2 * Math.sin(layer * t * 3) + 0.1 * Math.sin(layer * t * 7)
+    let x = r * Math.cos(t)
+    let y = r * Math.sin(t)
 
-    // Torus embedding
-    const R = 1.5 // Major radius
-    const minorR = r * 0.3
-    const phi = t
-    const theta = (layer * Math.PI) / 3
-
-    // Torus coordinates
-    const torusX = (R + minorR * Math.cos(theta)) * Math.cos(phi)
-    const torusY = (R + minorR * Math.cos(theta)) * Math.sin(phi)
-    const torusZ = minorR * Math.sin(theta)
-
-    // Project to 2D with perspective
-    const perspective = 3 / (3 + torusZ)
-    let x = torusX * perspective
-    let y = torusY * perspective
-
-    // Add Möbius strip transformation for some layers
-    if (layer % 2 === 0) {
-      const mobiusT = t / 2
-      const mobiusR = 0.5 + 0.3 * Math.cos(mobiusT)
-      x = mobiusR * Math.cos(t) + 0.3 * Math.cos(mobiusT) * Math.cos(t)
-      y = mobiusR * Math.sin(t) + 0.3 * Math.cos(mobiusT) * Math.sin(t)
+    // Add facial features
+    if (rng.next() < 0.1) {
+      // Eyes
+      x = rng.next() < 0.5 ? -0.3 : 0.3
+      y = 0.3
+    } else if (rng.next() < 0.05) {
+      // Nose
+      x = 0
+      y = 0
+    } else if (rng.next() < 0.08) {
+      // Mouth
+      x = (rng.next() - 0.5) * 0.6
+      y = -0.3
     }
 
     data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
@@ -319,56 +421,37 @@ function generateConcentricManifolds(rng: SeededRandom, n_samples: number, noise
   return data
 }
 
-function generateVoronoiBlobs(rng: SeededRandom, n_samples: number, noise: number): number[][] {
+function generateNatives(rng: SeededRandom, n_samples: number, noise: number): number[][] {
   const data: number[][] = []
-
-  // Generate Voronoi seed points
-  const numSeeds = 8
-  const seeds: Array<{ x: number; y: number; weight: number }> = []
-
-  for (let i = 0; i < numSeeds; i++) {
-    seeds.push({
-      x: rng.range(-2, 2),
-      y: rng.range(-2, 2),
-      weight: rng.range(0.5, 2.0),
-    })
-  }
+  const settlements = [
+    { x: -1.2, y: -0.8, type: "longhouse" },
+    { x: 1.2, y: -0.8, type: "tipi" },
+    { x: 0, y: 1.2, type: "pueblo" },
+    { x: -0.6, y: 0.6, type: "hogan" },
+    { x: 0.6, y: 0.6, type: "wigwam" },
+  ]
 
   for (let i = 0; i < n_samples; i++) {
-    let x = rng.range(-2.5, 2.5)
-    let y = rng.range(-2.5, 2.5)
+    const settlement = settlements[Math.floor(rng.next() * settlements.length)]
 
-    // Find closest seed (weighted Voronoi)
-    let minDist = Number.POSITIVE_INFINITY
-    let closestSeed = seeds[0]
-
-    for (const seed of seeds) {
-      const dist = Math.sqrt((x - seed.x) ** 2 + (y - seed.y) ** 2) / seed.weight
-      if (dist < minDist) {
-        minDist = dist
-        closestSeed = seed
-      }
+    let x, y
+    switch (settlement.type) {
+      case "longhouse":
+        x = settlement.x + (rng.next() - 0.5) * 1.5
+        y = settlement.y + (rng.next() - 0.5) * 0.4
+        break
+      case "tipi":
+        const r = rng.next() * 0.6
+        const t = rng.next() * 2 * Math.PI
+        x = settlement.x + r * Math.cos(t)
+        y = settlement.y + r * Math.sin(t)
+        break
+      default:
+        x = settlement.x + (rng.next() - 0.5) * 0.8
+        y = settlement.y + (rng.next() - 0.5) * 0.8
     }
 
-    // Apply attractor dynamics
-    const attractorStrength = 0.3
-    const dx = closestSeed.x - x
-    const dy = closestSeed.y - y
-
-    x += dx * attractorStrength
-    y += dy * attractorStrength
-
-    // Add turbulence based on distance to seed
-    const turbulence = Math.exp(-minDist * 2)
-    const turbX = turbulence * Math.sin(x * 8 + y * 6) * 0.2
-    const turbY = turbulence * Math.cos(x * 6 + y * 8) * 0.2
-
-    // Lorenz attractor influence
-    const lorenzScale = 0.1
-    const lorenzX = 10 * (y - x) * lorenzScale
-    const lorenzY = (x * (28 - y) - y) * lorenzScale
-
-    data.push([x + turbX + lorenzX + noise * rng.gaussian(), y + turbY + lorenzY + noise * rng.gaussian()])
+    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
   }
 
   return data
