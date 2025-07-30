@@ -1,21 +1,56 @@
-import { NextResponse } from "next/server"
-import { generateDataset } from "@/lib/flow-model"
-import { generateScatterPlotSVG } from "@/lib/plot-utils"
+import { type NextRequest, NextResponse } from "next/server"
+import { generateFlowField } from "@/lib/flow-model"
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { dataset, seed, numSamples, noise } = await req.json()
+    const body = await request.json()
+    console.log("Generate art API called with body:", body)
 
-    if (!dataset || typeof seed === "undefined" || typeof numSamples === "undefined" || typeof noise === "undefined") {
-      return NextResponse.json({ error: "Missing dataset, seed, number of samples, or noise" }, { status: 400 })
-    }
+    const {
+      dataset = "spirals",
+      scenario = "landscape",
+      colorScheme = "plasma",
+      seed = 1234,
+      numSamples = 3000,
+      noise = 0.1,
+    } = body
 
-    const data = generateDataset(dataset, seed, numSamples, noise)
-    const imageBase64 = generateScatterPlotSVG(data)
+    // Generate SVG content using the flow model
+    const svgContent = generateFlowField({
+      dataset,
+      scenario,
+      colorScheme,
+      seed,
+      numSamples,
+      noiseScale: noise,
+      timeStep: 0.01,
+    })
 
-    return NextResponse.json({ image: imageBase64 })
-  } catch (error) {
-    console.error("Error generating flow art:", error)
-    return NextResponse.json({ error: "Failed to generate flow art" }, { status: 500 })
+    // Convert SVG to data URL
+    const svgDataUrl = `data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`
+
+    console.log("SVG generated successfully, length:", svgContent.length)
+
+    return NextResponse.json({
+      success: true,
+      image: svgDataUrl,
+      metadata: {
+        dataset,
+        scenario,
+        colorScheme,
+        seed,
+        numSamples,
+        noise,
+      },
+    })
+  } catch (error: any) {
+    console.error("Art generation error:", error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Failed to generate artwork",
+      },
+      { status: 500 },
+    )
   }
 }

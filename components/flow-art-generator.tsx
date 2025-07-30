@@ -79,6 +79,8 @@ export function FlowArtGenerator() {
   const generateArt = async () => {
     setIsGenerating(true)
     try {
+      console.log("Generating art with params:", { dataset, scenario, colorScheme, seed, numSamples, noise })
+
       const response = await fetch("/api/generate-art", {
         method: "POST",
         headers: {
@@ -94,13 +96,18 @@ export function FlowArtGenerator() {
         }),
       })
 
+      console.log("Response status:", response.status)
+
       if (!response.ok) {
-        throw new Error("Failed to generate art")
+        const errorText = await response.text()
+        console.error("API error response:", errorText)
+        throw new Error(`API request failed: ${response.status} - ${errorText}`)
       }
 
       const data = await response.json()
+      console.log("API response data:", data)
 
-      if (data.image) {
+      if (data.success && data.image) {
         setGeneratedImage({
           url: data.image,
           metadata: {
@@ -114,11 +121,11 @@ export function FlowArtGenerator() {
         })
         toast.success("Artwork generated successfully!")
       } else {
-        throw new Error("No image returned")
+        throw new Error(data.error || "No image returned from API")
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating art:", error)
-      toast.error("Failed to generate artwork. Please try again.")
+      toast.error(`Failed to generate artwork: ${error.message}`)
     } finally {
       setIsGenerating(false)
     }
@@ -129,7 +136,7 @@ export function FlowArtGenerator() {
 
     const link = document.createElement("a")
     link.href = generatedImage.url
-    link.download = `flowsketch-${dataset}-${Date.now()}.png`
+    link.download = `flowsketch-${dataset}-${Date.now()}.svg`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -160,7 +167,7 @@ export function FlowArtGenerator() {
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           FlowSketch Art Generator
         </h1>
-        <p className="text-muted-foreground text-lg">Create stunning mathematical art with AI-powered generation</p>
+        <p className="text-muted-foreground text-lg">Create stunning mathematical art with procedural generation</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

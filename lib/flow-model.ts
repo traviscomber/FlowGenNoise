@@ -1,15 +1,3 @@
-/**
- * A simple seeded pseudo-random number generator (PRNG).
- * Not cryptographically secure, but sufficient for reproducible dataset generation.
- */
-function createPrng(seed: number) {
-  let s = seed
-  return () => {
-    s = (s * 9301 + 49297) % 233280
-    return s / 233280
-  }
-}
-
 export interface GenerationParams {
   dataset: string
   scenario: string
@@ -20,32 +8,10 @@ export interface GenerationParams {
   timeStep?: number
 }
 
-export interface UpscaleParams extends GenerationParams {
-  scaleFactor: number
-  highResolution: boolean
-  extraDetail: boolean
-}
-
 export interface DataPoint {
   x: number
   y: number
   label: number
-}
-
-// Pure 4-color palettes for visual themes
-const colorPalettes = {
-  plasma: ["#0D001A", "#7209B7", "#F72585", "#FFBE0B"], // Deep purple to bright pink to yellow
-  lava: ["#1A0000", "#8B0000", "#FF4500", "#FFD700"], // Deep red to orange to gold
-  futuristic: ["#001122", "#00FFFF", "#0080FF", "#FFFFFF"], // Dark blue to cyan to white
-  forest: ["#0F1B0F", "#228B22", "#32CD32", "#90EE90"], // Dark green to light green
-  ocean: ["#000080", "#0066CC", "#00BFFF", "#E0F6FF"], // Deep blue to light blue
-  sunset: ["#2D1B69", "#FF6B35", "#F7931E", "#FFD23F"], // Purple to orange to yellow
-  arctic: ["#1E3A8A", "#60A5FA", "#E0F2FE", "#FFFFFF"], // Deep blue to white
-  neon: ["#000000", "#FF00FF", "#00FF00", "#FFFF00"], // Black to bright neon colors
-  vintage: ["#8B4513", "#CD853F", "#F4A460", "#FFF8DC"], // Brown to cream
-  cosmic: ["#0B0B2F", "#4B0082", "#9370DB", "#FFD700"], // Deep space to gold
-  toxic: ["#1A1A00", "#66FF00", "#CCFF00", "#FFFF99"], // Dark to bright green-yellow
-  ember: ["#2D0A00", "#CC4400", "#FF8800", "#FFCC66"], // Dark brown to bright orange
 }
 
 // Seeded random number generator for consistent results
@@ -184,7 +150,7 @@ function generateSpirals(numSamples: number, rng: SeededRandom): Array<{ x: numb
   const points = []
   for (let i = 0; i < numSamples; i++) {
     const t = (i / numSamples) * 4 * Math.PI
-    const spiral = Math.floor(rng.next() * 2)
+    const spiral = Math.floor(i / (numSamples / 2))
     const r = t * 0.1
     const noise = rng.nextGaussian() * 0.1
 
@@ -208,21 +174,20 @@ function generateSpirals(numSamples: number, rng: SeededRandom): Array<{ x: numb
 function generateMoons(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
   const points = []
   for (let i = 0; i < numSamples; i++) {
-    const label = Math.floor(rng.next() * 2)
-    const angle = rng.next() * Math.PI
-    const radius = rng.next() * 100 + 50
+    const label = Math.floor(i / (numSamples / 2))
+    const t = ((i % (numSamples / 2)) / (numSamples / 2)) * Math.PI
     const noise = rng.nextGaussian() * 10
 
     if (label === 0) {
       points.push({
-        x: Math.cos(angle) * radius + 200 + noise,
-        y: Math.sin(angle) * radius + 256 + noise,
+        x: Math.cos(t) * 100 + 200 + noise,
+        y: Math.sin(t) * 100 + 256 + noise,
         label: 0,
       })
     } else {
       points.push({
-        x: Math.cos(angle + Math.PI) * radius + 312 + noise,
-        y: Math.sin(angle + Math.PI) * radius + 256 + noise,
+        x: (1 - Math.cos(t)) * 100 + 200 + noise,
+        y: (1 - Math.sin(t)) * 100 + 200 + noise,
         label: 1,
       })
     }
@@ -259,7 +224,7 @@ function generateBlobs(numSamples: number, rng: SeededRandom): Array<{ x: number
   for (let i = 0; i < numSamples; i++) {
     const center = centers[Math.floor(rng.next() * centers.length)]
     const angle = rng.next() * 2 * Math.PI
-    const radius = rng.nextGaussian() * 40 + 60
+    const radius = Math.abs(rng.nextGaussian()) * 40 + 60
 
     points.push({
       x: center.x + Math.cos(angle) * radius,
@@ -357,11 +322,13 @@ function generateMandelbrot(numSamples: number, rng: SeededRandom): Array<{ x: n
       iterations++
     }
 
-    points.push({
-      x: (x + 2) * 128, // Scale to 0-512
-      y: (y + 2) * 128,
-      label: iterations < maxIterations ? 0 : 1,
-    })
+    if (iterations < maxIterations) {
+      points.push({
+        x: (x + 2) * 128, // Scale to 0-512
+        y: (y + 2) * 128,
+        label: iterations % 10,
+      })
+    }
   }
   return points
 }
@@ -384,11 +351,13 @@ function generateJuliaSet(numSamples: number, rng: SeededRandom): Array<{ x: num
       iterations++
     }
 
-    points.push({
-      x: (zx + 2) * 128,
-      y: (zy + 2) * 128,
-      label: iterations < maxIterations ? 0 : 1,
-    })
+    if (iterations < maxIterations) {
+      points.push({
+        x: (zx + 2) * 128,
+        y: (zy + 2) * 128,
+        label: iterations % 10,
+      })
+    }
   }
   return points
 }
@@ -433,7 +402,7 @@ function generateTribes(numSamples: number, rng: SeededRandom): Array<{ x: numbe
   for (let i = 0; i < numSamples; i++) {
     const tribe = tribes[Math.floor(rng.next() * tribes.length)]
     const angle = rng.next() * 2 * Math.PI
-    const radius = rng.nextGaussian() * tribe.size * 100 + 50
+    const radius = Math.abs(rng.nextGaussian()) * tribe.size * 100 + 50
 
     points.push({
       x: tribe.x + Math.cos(angle) * radius,
@@ -475,7 +444,7 @@ function generateNatives(numSamples: number, rng: SeededRandom): Array<{ x: numb
   for (let i = 0; i < numSamples; i++) {
     const village = villages[Math.floor(rng.next() * villages.length)]
     const angle = rng.next() * 2 * Math.PI
-    const radius = rng.nextGaussian() * 60 + 80
+    const radius = Math.abs(rng.nextGaussian()) * 60 + 80
 
     points.push({
       x: village.x + Math.cos(angle) * radius,
@@ -543,7 +512,8 @@ export function generateFlowField(params: GenerationParams): string {
 
   // Add points
   points.forEach((point, i) => {
-    const t = point.label / Math.max(1, Math.max(...points.map((p) => p.label)))
+    const maxLabel = Math.max(1, Math.max(...points.map((p) => p.label)))
+    const t = point.label / maxLabel
     const color = getColor(colorScheme, t)
     const noise = rng.nextGaussian() * noiseScale * 10
     const x = Math.max(0, Math.min(512, point.x + noise))
@@ -558,7 +528,7 @@ export function generateFlowField(params: GenerationParams): string {
 }
 
 export function generateDomeProjection(params: { width: number; height: number; fov: number; tilt: number }): string {
-  const { width, height, fov } = params
+  const { width, height } = params
 
   return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
     <defs>
