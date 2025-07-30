@@ -31,45 +31,27 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
 
     if (cloudSyncStatus.isAuthenticated && cloudSyncStatus.isEnabled) {
       try {
-        const cloudImages = await CloudSync.downloadImages()
-        // Merge: prioritize cloud version if ID matches, otherwise add
-        const cloudImageMap = new Map(
-          cloudImages.map((img) => [img.id, { ...img, metadata: { ...img.metadata, cloudStored: true } }]),
-        )
-
-        combinedImages = localImages.map((localImg) => {
-          if (cloudImageMap.has(localImg.id)) {
-            const cloudImg = cloudImageMap.get(localImg.id)!
-            cloudImageMap.delete(localImg.id) // Remove from map as it's handled
-            // Simple merge: prefer cloud version if it exists, or a more complex conflict resolution
-            // For now, if it's in cloud, use the cloud version and mark it.
-            return { ...cloudImg, metadata: { ...cloudImg.metadata, cloudStored: true } }
-          }
-          return { ...localImg, metadata: { ...localImg.metadata, cloudStored: false } }
-        })
-
-        // Add any remaining cloud-only images
-        for (const cloudImg of cloudImageMap.values()) {
-          combinedImages.push({ ...cloudImg, metadata: { ...cloudImg.metadata, cloudStored: true } })
-        }
+        // For now, just use local images since CloudSync.downloadImages() doesn't exist yet
+        // const cloudImages = await CloudSync.downloadImages()
+        // This will be implemented when cloud sync is fully functional
       } catch (error) {
         console.error("Failed to load cloud images:", error)
-        toast({
-          title: "Cloud Sync Error",
-          description: "Could not load images from cloud. Displaying local gallery.",
-          variant: "destructive",
-        })
+        // Don't show toast here to avoid dependency issues
       }
-    } else {
-      combinedImages = localImages.map((img) => ({ ...img, metadata: { ...img.metadata, cloudStored: false } }))
     }
+
+    // Mark all as local for now
+    combinedImages = localImages.map((img) => ({
+      ...img,
+      metadata: { ...img.metadata, cloudStored: false },
+    }))
 
     // Sort by creation date, newest first
     combinedImages.sort((a, b) => (b.metadata.createdAt || 0) - (a.metadata.createdAt || 0))
 
     setImages(combinedImages)
     setGalleryStats(GalleryStorage.getStorageStats(combinedImages))
-  }, [cloudSyncStatus.isAuthenticated, cloudSyncStatus.isEnabled, toast])
+  }, [cloudSyncStatus.isAuthenticated, cloudSyncStatus.isEnabled])
 
   // Load gallery on mount and when cloud sync status changes
   useEffect(() => {
@@ -90,106 +72,67 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
   useEffect(() => {
     function addImage(e: any) {
       const newImageUrl = e.detail as string
-      // Instead of directly adding to state, reload the gallery to get the full image data
-      loadGallery()
+      // Reload gallery when new image is added
+      const gallery = GalleryStorage.getGallery()
+      const combinedImages = gallery.map((img) => ({
+        ...img,
+        metadata: { ...img.metadata, cloudStored: false },
+      }))
+      combinedImages.sort((a, b) => (b.metadata.createdAt || 0) - (a.metadata.createdAt || 0))
+      setImages(combinedImages)
+      setGalleryStats(GalleryStorage.getStorageStats(combinedImages))
     }
     window.addEventListener("new-image", addImage)
     return () => window.removeEventListener("new-image", addImage)
-  }, [loadGallery])
+  }, []) // Remove loadGallery dependency
 
   const handleDeleteImage = useCallback(
     async (id: string) => {
       const imageToDelete = images.find((img) => img.id === id)
       if (!imageToDelete) return
 
-      if (imageToDelete.metadata.cloudStored) {
-        try {
-          await CloudSync.deleteCloudImage(id)
-          toast({
-            title: "Image Deleted",
-            description: "Image removed from cloud and local gallery.",
-            variant: "default",
-          })
-        } catch (error) {
-          console.error("Failed to delete cloud image:", error)
-          toast({
-            title: "Cloud Delete Failed",
-            description: "Could not delete image from cloud. Please try again.",
-            variant: "destructive",
-          })
-          return // Prevent local deletion if cloud deletion fails
-        }
-      }
-
       GalleryStorage.deleteImage(id)
       setSelectedImage(null)
-      loadGallery()
+
+      // Update local state directly instead of calling loadGallery
+      const updatedImages = images.filter((img) => img.id !== id)
+      setImages(updatedImages)
+      setGalleryStats(GalleryStorage.getStorageStats(updatedImages))
+
       toast({
         title: "Image Deleted",
-        description: "Image removed from local gallery.",
+        description: "Image removed from gallery.",
         variant: "default",
       })
     },
-    [images, loadGallery, toast],
+    [images, toast],
   )
 
   const handleClearGallery = useCallback(async () => {
-    if (cloudSyncStatus.isEnabled && cloudSyncStatus.isAuthenticated) {
-      try {
-        await CloudSync.clearCloudGallery()
-        toast({
-          title: "Cloud Gallery Cleared",
-          description: "All images removed from cloud storage.",
-          variant: "default",
-        })
-      } catch (error) {
-        console.error("Failed to clear cloud gallery:", error)
-        toast({
-          title: "Cloud Clear Failed",
-          description: "Could not clear cloud gallery. Please try again.",
-          variant: "destructive",
-        })
-        // Continue to clear local even if cloud fails, but warn user
-      }
-    }
-
     GalleryStorage.clearGallery()
     setSelectedImage(null)
     setIsConfirmingClear(false)
-    loadGallery()
+    setImages([])
+    setGalleryStats(GalleryStorage.getStorageStats([]))
+
     toast({
       title: "Gallery Cleared",
-      description: "All images removed from local gallery.",
+      description: "All images removed from gallery.",
       variant: "default",
     })
-  }, [cloudSyncStatus.isEnabled, cloudSyncStatus.isAuthenticated, loadGallery, toast])
+  }, [toast])
 
   const handleToggleFavorite = useCallback(
     async (id: string) => {
       const updatedImage = GalleryStorage.toggleFavorite(id)
       if (updatedImage) {
-        if (updatedImage.metadata.cloudStored) {
-          // If cloud stored, re-upload to update favorite status
-          try {
-            await CloudSync.uploadImageFullResolution(updatedImage)
-            toast({
-              title: "Favorite Updated",
-              description: "Image favorite status synced to cloud.",
-              variant: "default",
-            })
-          } catch (error) {
-            console.error("Failed to sync favorite status:", error)
-            toast({
-              title: "Sync Failed",
-              description: "Could not sync favorite status to cloud.",
-              variant: "destructive",
-            })
-          }
-        }
-        loadGallery()
+        // Update local state directly
+        const updatedImages = images.map((img) => (img.id === id ? updatedImage : img))
+        setImages(updatedImages)
+        setGalleryStats(GalleryStorage.getStorageStats(updatedImages))
       }
     },
-    [loadGallery, toast],
+    [images],
   )
 
   const handleScoreImage = useCallback(
@@ -208,19 +151,21 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
           throw new Error(errorData.error || "Failed to score image")
         }
 
-        const { aestheticScore } = await response.json()
-        const updatedImage = GalleryStorage.updateImageMetadata(image.id, { aestheticScore })
+        const { score } = await response.json()
+        const updatedImage = GalleryStorage.updateImageMetadata(image.id, { aestheticScore: score })
 
-        if (updatedImage && updatedImage.metadata.cloudStored) {
-          await CloudSync.uploadImageFullResolution(updatedImage)
+        if (updatedImage) {
+          // Update local state directly
+          const updatedImages = images.map((img) => (img.id === image.id ? updatedImage : img))
+          setImages(updatedImages)
+          setGalleryStats(GalleryStorage.getStorageStats(updatedImages))
         }
 
         toast({
           title: "Image Scored!",
-          description: `Aesthetic score: ${aestheticScore.toFixed(2)}`,
+          description: `Aesthetic score: ${score.toFixed(2)}`,
           variant: "default",
         })
-        loadGallery()
       } catch (error: any) {
         console.error("Error scoring image:", error)
         toast({
@@ -233,7 +178,7 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
         setScoreProgress(0)
       }
     },
-    [loadGallery, toast],
+    [images, toast],
   )
 
   const handleBatchScore = useCallback(async () => {
@@ -254,6 +199,8 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
       duration: 5000,
     })
 
+    let updatedImages = [...images]
+
     for (const image of imagesToScore) {
       try {
         const response = await fetch("/api/score-image", {
@@ -267,11 +214,11 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
           throw new Error(errorData.error || `Failed to score image ${image.metadata.filename}`)
         }
 
-        const { aestheticScore } = await response.json()
-        const updatedImage = GalleryStorage.updateImageMetadata(image.id, { aestheticScore })
+        const { score } = await response.json()
+        const updatedImage = GalleryStorage.updateImageMetadata(image.id, { aestheticScore: score })
 
-        if (updatedImage && updatedImage.metadata.cloudStored) {
-          await CloudSync.uploadImageFullResolution(updatedImage)
+        if (updatedImage) {
+          updatedImages = updatedImages.map((img) => (img.id === image.id ? updatedImage : img))
         }
 
         scoredCount++
@@ -286,6 +233,9 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
       }
     }
 
+    setImages(updatedImages)
+    setGalleryStats(GalleryStorage.getStorageStats(updatedImages))
+
     toast({
       title: "Batch Scoring Complete",
       description: `Scored ${scoredCount} out of ${imagesToScore.length} images.`,
@@ -293,8 +243,7 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
     })
     setIsBatchScoring(false)
     setScoreProgress(0)
-    loadGallery()
-  }, [images, loadGallery, toast])
+  }, [images, toast])
 
   if (images.length === 0) return null
 
