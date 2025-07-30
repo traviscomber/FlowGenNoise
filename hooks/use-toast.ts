@@ -137,3 +137,5 @@ export function useToast() {
     dismiss: (id?: string) => dispatch({ type: ACTION.DISMISS, toastId: id }),
   }
 }
+
+// Re-export from the main implementation from "@/components/ui/use-toast"
