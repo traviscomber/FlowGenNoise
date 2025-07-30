@@ -1,65 +1,140 @@
-import { NextResponse } from "next/server"
-import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { type NextRequest, NextResponse } from "next/server"
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { dataset, scenario, colorScheme, numSamples, noiseScale, currentPrompt } = await req.json()
+    const body = await request.json()
+    console.log("Enhance prompt API called with body:", body)
 
-    if (!dataset || !scenario || !colorScheme) {
-      return NextResponse.json({ error: "Missing required parameters" }, { status: 400 })
-    }
+    const {
+      currentPrompt,
+      dataset = "spirals",
+      scenario = "landscape",
+      colorScheme = "plasma",
+      numSamples = 3000,
+      noiseScale = 0.1,
+      domeProjection = false,
+      domeDiameter = 10,
+      domeResolution = "4K",
+      panoramic360 = false,
+      panoramaResolution = "8K",
+      stereographicPerspective = "little-planet",
+    } = body
 
-    console.log("Enhancing prompt for:", { dataset, scenario, colorScheme, numSamples, noiseScale })
-
-    const enhancementPrompt = `You are an expert AI art prompt engineer specializing in mathematical and scientific visualizations. You create prompts that generate breathtaking, gallery-quality mathematical art.
-
-Create an enhanced, detailed prompt for generating AI artwork based on these parameters:
-- Dataset: ${dataset} (mathematical data pattern)
-- Scenario: ${scenario} (artistic theme/environment)
-- Color Scheme: ${colorScheme} (color palette)
-- Data Points: ${numSamples}
-- Noise Level: ${noiseScale}
-
-Current prompt (if any): "${currentPrompt || "None provided"}"
-
-Generate a sophisticated, detailed prompt that:
-1. Describes the mathematical ${dataset} pattern with technical accuracy and artistic flair
-2. Blends it seamlessly with ${scenario} artistic elements and environmental storytelling
-3. Uses ${colorScheme} color palette with rich, evocative color descriptions
-4. Mentions the ${numSamples} data points for appropriate scale and complexity
-5. Incorporates the noise level (${noiseScale}) for organic texture and natural variation
-6. Includes high-quality artistic descriptors (8K resolution, photorealistic, cinematic lighting, award-winning, masterpiece)
-7. Balances mathematical precision with breathtaking artistic beauty
-8. Uses advanced artistic terminology (chiaroscuro, golden ratio, fractal geometry, etc.)
-
-The prompt should be 3-4 sentences, extremely rich in visual detail, and optimized for DALL-E 3 generation. Focus on creating stunning mathematical art that would be featured in prestigious galleries, scientific journals, or digital art exhibitions.
-
-Example style: "A breathtaking visualization of [mathematical concept] rendered as [artistic interpretation] with [color palette], featuring [technical details] and [artistic elements], captured with [quality descriptors]"
-
-Generate only the enhanced prompt, no explanations.`
-
-    const { text } = await generateText({
-      model: openai("gpt-4o"),
-      prompt: enhancementPrompt,
-      temperature: 0.8,
-      maxTokens: 400,
-    })
-
-    console.log("Enhanced prompt generated:", text)
-
-    return NextResponse.json({
-      enhancedPrompt: text.trim(),
-      originalParams: { dataset, scenario, colorScheme, numSamples, noiseScale },
-    })
-  } catch (error: any) {
-    console.error("Error enhancing prompt:", error)
-    if (error.message.includes("api_key")) {
+    if (!currentPrompt || currentPrompt.trim().length === 0) {
       return NextResponse.json(
-        { error: "OpenAI API key is missing or invalid. Please set OPENAI_API_KEY." },
-        { status: 500 },
+        {
+          success: false,
+          error: "No prompt provided to enhance",
+        },
+        { status: 400 },
       )
     }
-    return NextResponse.json({ error: "Failed to enhance prompt: " + error.message }, { status: 500 })
+
+    // Build enhancement context
+    let enhancementContext = `You are an expert AI art prompt engineer specializing in mathematical generative art and professional gallery-quality artwork. Your task is to enhance the user's creative prompt while maintaining their original vision and intent.
+
+CURRENT USER PROMPT: "${currentPrompt}"
+
+MATHEMATICAL CONTEXT:
+- Dataset: ${dataset} (${numSamples.toLocaleString()} data points)
+- Visual Scenario: ${scenario}
+- Color Scheme: ${colorScheme}
+- Noise Scale: ${noiseScale}
+
+TECHNICAL SPECIFICATIONS:`
+
+    if (domeProjection) {
+      enhancementContext += `
+- Dome Projection: ${domeDiameter}m diameter, ${domeResolution} resolution
+- Optimized for planetarium display with fisheye mapping`
+    }
+
+    if (panoramic360) {
+      enhancementContext += `
+- 360° Panoramic: ${panoramaResolution} resolution
+- VR-optimized with ${stereographicPerspective} perspective`
+    }
+
+    enhancementContext += `
+
+ENHANCEMENT GUIDELINES:
+1. Preserve the user's creative vision and artistic intent
+2. Add professional art terminology and technical details
+3. Include mathematical precision and gallery-quality specifications
+4. Enhance with color theory, composition, and lighting details
+5. Add texture, pattern, and visual depth descriptions
+6. Optimize for 8K upscaling and large-format printing
+7. Maintain the emotional tone and artistic style
+8. Keep the enhanced prompt under 3500 characters
+
+Please enhance this prompt to create a professional, detailed description that will generate stunning mathematical art while staying true to the user's original creative vision.`
+
+    console.log("Calling OpenAI Chat Completion for prompt enhancement...")
+
+    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are an expert AI art prompt engineer. Enhance user prompts with professional art terminology while preserving their creative vision. Focus on mathematical precision, color theory, composition, and gallery-quality details.",
+          },
+          {
+            role: "user",
+            content: enhancementContext,
+          },
+        ],
+        max_tokens: 1500,
+        temperature: 0.7,
+      }),
+    })
+
+    if (!openaiResponse.ok) {
+      const errorData = await openaiResponse.json()
+      console.error("OpenAI Chat API error:", errorData)
+      throw new Error(`OpenAI Chat API error: ${errorData.error?.message || "Unknown error"}`)
+    }
+
+    const openaiData = await openaiResponse.json()
+    console.log("OpenAI Chat response received")
+
+    if (!openaiData.choices || !openaiData.choices[0] || !openaiData.choices[0].message) {
+      throw new Error("No enhanced prompt returned from OpenAI")
+    }
+
+    const enhancedPrompt = openaiData.choices[0].message.content.trim()
+
+    console.log("Prompt enhanced successfully, length:", enhancedPrompt.length)
+
+    return NextResponse.json({
+      success: true,
+      enhancedPrompt: enhancedPrompt,
+      originalPrompt: currentPrompt,
+      enhancementContext: {
+        dataset,
+        scenario,
+        colorScheme,
+        numSamples,
+        noiseScale,
+        domeProjection,
+        panoramic360,
+      },
+      promptLength: enhancedPrompt.length,
+    })
+  } catch (error: any) {
+    console.error("Prompt enhancement error:", error)
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Failed to enhance prompt",
+      },
+      { status: 500 },
+    )
   }
 }

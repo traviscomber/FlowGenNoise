@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server"
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { imageUrl, scale = 2 } = body
+    const { imageUrl } = body
 
     if (!imageUrl) {
       return NextResponse.json({ success: false, error: "No image URL provided" }, { status: 400 })
@@ -14,8 +14,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       upscaledUrl: imageUrl,
-      originalSize: "1024x1024",
-      upscaledSize: `${1024 * scale}x${1024 * scale}`,
       message: "Upscaling service not implemented - returning original image",
     })
   } catch (error: any) {
