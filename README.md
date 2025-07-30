@@ -1,43 +1,40 @@
-# FlowSketch Art Generator V2
+# FlowSketch Art Generator - Test Main
 
 *Automatically synced with your [v0.dev](https://v0.dev) deployments*
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/travis-projects-c14a785a/flowsketch-art-generator-v2)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/tLz33TUZDhy)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com)
+[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev)
 
 ## Overview
 
-FlowSketch Art Generator V2 - An advanced AI-powered art generation tool with enhanced features and improved user experience.
+FlowSketch Art Generator - Test Main branch version. This is an AI-powered art generation tool with enhanced features and improved user experience.
 
 This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
 Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
 
 ## Features
 
-- AI-powered art generation
+- AI-powered art generation using Replicate
 - Multiple art styles and techniques
-- Real-time preview
-- High-resolution output
-- User-friendly interface
+- Real-time preview and generation
+- High-resolution output options
+- User-friendly interface with modern design
+- 360° dome planning capabilities
+
+## Branch Information
+
+This deployment is from the `test-main` branch, providing a separate testing environment.
 
 ## Deployment
 
-Your project will be live at:
+When deployed, your project will be available at a unique Vercel URL.
 
-**[https://vercel.com/travis-projects-c14a785a/flowsketch-art-generator-v2](https://vercel.com/travis-projects-c14a785a/flowsketch-art-generator-v2)**
+## Environment Variables Required
 
-## Build your app
-
-Continue building your app on:
-
-**[https://v0.dev/chat/projects/tLz33TUZDhy](https://v0.dev/chat/projects/tLz33TUZDhy)**
-
-## How It Works
-
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+- `REPLICATE_API_TOKEN` - For AI art generation
+- `SUPABASE_URL` - Database connection
+- `SUPABASE_ANON_KEY` - Database authentication
+- `OPENAI_API_KEY` - For AI enhancements
 
 ## Getting Started
 
@@ -46,3 +43,10 @@ Continue building your app on:
 3. Set up your environment variables
 4. Run the development server: `npm run dev`
 5. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## How It Works
+
+1. Create and modify your project using [v0.dev](https://v0.dev)
+2. Deploy your chats from the v0 interface
+3. Changes are automatically pushed to this repository
+4. Vercel deploys the latest version from this repository
