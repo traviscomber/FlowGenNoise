@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 import OpenAI from "openai"
 
 const openai = new OpenAI({
@@ -117,70 +117,40 @@ const DETAILED_SCENARIOS = {
   },
 }
 
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const { dataset, seed, colorScheme, numSamples, noise, scenario } = await req.json()
+    const { prompt, model = "flux-schnell" } = await request.json()
 
-    if (
-      !dataset ||
-      typeof seed === "undefined" ||
-      !colorScheme ||
-      typeof numSamples === "undefined" ||
-      typeof noise === "undefined"
-    ) {
-      return NextResponse.json({ error: "Missing required parameters" }, { status: 400 })
+    if (!prompt) {
+      return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
 
-    // Create scenario-enhanced prompt
-    let scenarioContext = ""
-    if (scenario && scenario !== "none" && DETAILED_SCENARIOS[scenario as keyof typeof DETAILED_SCENARIOS]) {
-      const scenarioConfig = DETAILED_SCENARIOS[scenario as keyof typeof DETAILED_SCENARIOS]
-      const objectTypes = scenarioConfig.objects.map((obj) => `${obj.type} (${obj.shapes.join(", ")})`).join(", ")
-
-      scenarioContext = `
-### Scenario Integration: ${scenarioConfig.name}
-Blend the mathematical ${dataset} patterns with immersive ${scenarioConfig.name.toLowerCase()} elements:
-- **Objects**: Incorporate ${objectTypes} shaped and positioned according to the mathematical data points
-- **Environment**: Use ${scenarioConfig.backgroundColor} as base with ${scenarioConfig.ambientColor} ambient lighting
-- **Density**: Apply ${Math.round(scenarioConfig.density * 100)}% object placement density
-- **Creative Fusion**: Transform data points into scenario objects while maintaining mathematical structure
-- **Atmospheric Details**: Add environmental effects like ${scenario === "enchanted_forest" ? "dappled sunlight, mist, magical sparkles" : scenario === "deep_ocean" ? "water currents, bioluminescence, flowing movements" : scenario === "cosmic_nebula" ? "cosmic dust, stellar radiation, gravitational lensing" : scenario === "cyberpunk_city" ? "neon reflections, holographic effects, digital glitches" : scenario === "ancient_temple" ? "torch shadows, stone textures, mystical auras" : scenario === "crystal_cave" ? "light refractions, crystal echoes, prismatic effects" : scenario === "aurora_borealis" ? "magnetic field visualization, particle interactions, atmospheric glow" : scenario === "volcanic_landscape" ? "heat distortion, volcanic ash, molten textures" : scenario === "neural_connections" ? "synaptic flashes, data flow, subtle organic pulsations" : ""}
-`
-    }
-
-    const prompt =
-      `
-      Generate an abstract artwork inspired by a ${dataset} mathematical pattern,
-      using a ${colorScheme} color scheme.
-      Incorporate elements that evoke a ${scenario} theme.
-      The image should be highly detailed, visually striking, and blend the mathematical precision with the organic or thematic elements of the scenario.
-      Focus on intricate lines, vibrant colors, and a sense of depth.
-      The style should be a fusion of digital art and abstract expressionism.
-      Ensure the composition is balanced and visually engaging.
-      Seed: ${seed}, Samples: ${numSamples}, Noise: ${noise}.
-    ` + scenarioContext
-
-    const response = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: prompt,
-      n: 1,
-      size: "1024x1024", // DALL-E 3 supports 1024x1024, 1024x1792, 1792x1024
-      response_format: "url",
+    const response = await fetch("https://api.replicate.com/v1/predictions", {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        version: process.env.REPLICATE_MODEL_VERSION,
+        input: {
+          prompt,
+          num_outputs: 1,
+          aspect_ratio: "1:1",
+          output_format: "png",
+          output_quality: 80,
+        },
+      }),
     })
 
-    const imageUrl = response.data[0].url
-
-    if (!imageUrl) {
-      throw new Error("Failed to generate image from DALL-E 3.")
+    if (!response.ok) {
+      throw new Error(`Replicate API error: ${response.statusText}`)
     }
 
-    return NextResponse.json({
-      image: imageUrl,
-      filename: `ai-flowsketch-${dataset}-${Date.now()}.png`,
-      settings: { dataset, seed, colorScheme, samples: numSamples, noise, scenario, generationMode: "ai" },
-    })
-  } catch (error: any) {
+    const prediction = await response.json()
+    return NextResponse.json({ predictionId: prediction.id })
+  } catch (error) {
     console.error("Error generating AI art:", error)
-    return NextResponse.json({ error: error.message || "Failed to generate AI art" }, { status: 500 })
+    return NextResponse.json({ error: "Failed to generate AI art" }, { status: 500 })
   }
 }

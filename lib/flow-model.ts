@@ -1,15 +1,53 @@
 // lib/flow-model.ts
 import { generateScatterPlotSVG, type DataPoint } from "./plot-utils"
 
-export type FlowArtSettings = {
+export interface FlowArtSettings {
   dataset: string
   scenario: string
   colorScheme: string
   seed: number
   samples: number
   noise: number
-  generationMode: "svg" | "ai"
   upscale: boolean
+}
+
+export const DATASETS = ["mathematical", "organic", "geometric", "abstract"] as const
+
+export const SCENARIOS = ["spiral", "wave", "fractal", "flow-field", "particle-system"] as const
+
+export const COLOR_SCHEMES = ["warm", "cool", "monochrome", "rainbow", "pastel"] as const
+
+export const DEFAULT_SETTINGS: FlowArtSettings = {
+  dataset: "mathematical",
+  scenario: "spiral",
+  colorScheme: "warm",
+  seed: 42,
+  samples: 100,
+  noise: 0.1,
+  upscale: false,
+}
+
+export class FlowModel {
+  static validateSettings(settings: Partial<FlowArtSettings>): FlowArtSettings {
+    return {
+      dataset: DATASETS.includes(settings.dataset as any) ? settings.dataset! : DEFAULT_SETTINGS.dataset,
+      scenario: SCENARIOS.includes(settings.scenario as any) ? settings.scenario! : DEFAULT_SETTINGS.scenario,
+      colorScheme: COLOR_SCHEMES.includes(settings.colorScheme as any)
+        ? settings.colorScheme!
+        : DEFAULT_SETTINGS.colorScheme,
+      seed: typeof settings.seed === "number" ? Math.max(1, Math.floor(settings.seed)) : DEFAULT_SETTINGS.seed,
+      samples:
+        typeof settings.samples === "number"
+          ? Math.max(10, Math.min(1000, Math.floor(settings.samples)))
+          : DEFAULT_SETTINGS.samples,
+      noise: typeof settings.noise === "number" ? Math.max(0, Math.min(1, settings.noise)) : DEFAULT_SETTINGS.noise,
+      upscale: typeof settings.upscale === "boolean" ? settings.upscale : DEFAULT_SETTINGS.upscale,
+    }
+  }
+
+  static generateSeed(): number {
+    return Math.floor(Math.random() * 10000) + 1
+  }
 }
 
 // Function to generate data points for various mathematical datasets

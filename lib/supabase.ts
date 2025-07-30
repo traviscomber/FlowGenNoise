@@ -13,18 +13,7 @@ export type Database = {
           id: string
           user_id: string
           image_url: string
-          thumbnail_url: string | null
-          metadata: {
-            dataset: string
-            scenario: string
-            colorScheme: string
-            seed: number
-            samples: number
-            noise: number
-            generationMode: "svg" | "ai"
-            createdAt: number
-            filename: string
-          }
+          metadata: any
           is_favorite: boolean
           tags: string[]
           created_at: string
@@ -34,18 +23,7 @@ export type Database = {
           id?: string
           user_id: string
           image_url: string
-          thumbnail_url?: string | null
-          metadata: {
-            dataset: string
-            scenario: string
-            colorScheme: string
-            seed: number
-            samples: number
-            noise: number
-            generationMode: "svg" | "ai"
-            createdAt: number
-            filename: string
-          }
+          metadata: any
           is_favorite?: boolean
           tags?: string[]
           created_at?: string
@@ -55,55 +33,9 @@ export type Database = {
           id?: string
           user_id?: string
           image_url?: string
-          thumbnail_url?: string | null
-          metadata?: {
-            dataset: string
-            scenario: string
-            colorScheme: string
-            seed: number
-            samples: number
-            noise: number
-            generationMode: "svg" | "ai"
-            createdAt: number
-            filename: string
-          }
+          metadata?: any
           is_favorite?: boolean
           tags?: string[]
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      user_profiles: {
-        Row: {
-          id: string
-          email: string
-          display_name: string | null
-          avatar_url: string | null
-          sync_enabled: boolean
-          storage_quota: number
-          storage_used: number
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id: string
-          email: string
-          display_name?: string | null
-          avatar_url?: string | null
-          sync_enabled?: boolean
-          storage_quota?: number
-          storage_used?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          email?: string
-          display_name?: string | null
-          avatar_url?: string | null
-          sync_enabled?: boolean
-          storage_quota?: number
-          storage_used?: number
           created_at?: string
           updated_at?: string
         }

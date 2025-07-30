@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
 /**
  * POST /api/score-image
@@ -7,13 +7,13 @@ import { NextResponse } from "next/server"
  * 1. Attempts to score the image with Replicate's AestheticPredictor.
  * 2. On any failure (missing token, API error, etc.) falls back to a local heuristic.
  */
-export async function POST(req: Request) {
+export async function POST(request: NextRequest) {
   // ────────────────────────────────────────────────────────────
   // Parse body ONCE so we can re-use it for both paths
   // ────────────────────────────────────────────────────────────
   let body: { imageUrl?: string; metadata?: any }
   try {
-    body = await req.json()
+    body = await request.json()
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 })
   }
@@ -52,8 +52,39 @@ export async function POST(req: Request) {
   // ────────────────────────────────────────────────────────────
   // Local fallback
   // ────────────────────────────────────────────────────────────
-  const local = await getLocalAestheticScore({ imageUrl, metadata })
-  return NextResponse.json(local)
+  let aestheticScore = 5 // start neutral
+
+  try {
+    // Fetch once to get size - good signal for detail/complexity
+    const resp = await fetch(imageUrl, { cache: "no-store" })
+    const buffer = await resp.arrayBuffer()
+    const size = buffer.byteLength
+
+    // Size bonus
+    if (size > 500_000) aestheticScore += 0.4
+    if (size > 1_000_000) aestheticScore += 0.4
+
+    // Generation params
+    if (metadata) {
+      if (metadata.samples > 1000) aestheticScore += 0.6
+      if (metadata.noise >= 0.02 && metadata.noise <= 0.08) aestheticScore += 0.4
+      if (metadata.generationMode === "ai") aestheticScore += 0.6
+      if (metadata.scenario && metadata.scenario !== "none") aestheticScore += 0.5
+    }
+
+    // Mild randomness for variety
+    aestheticScore += (Math.random() - 0.5) * 0.6
+  } catch {
+    // ignore fetch failures – keep base score + randomness
+    aestheticScore += (Math.random() - 0.5) * 1
+  }
+
+  aestheticScore = Math.max(1, Math.min(10, aestheticScore))
+  return NextResponse.json({
+    score: Number(aestheticScore.toFixed(1)),
+    rating: getAestheticRating(aestheticScore),
+    method: "local",
+  })
 }
 
 /* ────────────────────────────────────────────────────────── */
@@ -107,51 +138,6 @@ function getAestheticRating(score: number): string {
   if (score >= 5) return "Good"
   if (score >= 4) return "Fair"
   return "Needs Improvement"
-}
-
-/**
- * Lightweight local heuristic when Replicate isn’t available.
- */
-async function getLocalAestheticScore({
-  imageUrl,
-  metadata,
-}: {
-  imageUrl: string
-  metadata?: any
-}): Promise<{ score: number; rating: string; method: string }> {
-  let score = 5 // start neutral
-
-  try {
-    // Fetch once to get size - good signal for detail/complexity
-    const resp = await fetch(imageUrl, { cache: "no-store" })
-    const buffer = await resp.arrayBuffer()
-    const size = buffer.byteLength
-
-    // Size bonus
-    if (size > 500_000) score += 0.4
-    if (size > 1_000_000) score += 0.4
-
-    // Generation params
-    if (metadata) {
-      if (metadata.samples > 1000) score += 0.6
-      if (metadata.noise >= 0.02 && metadata.noise <= 0.08) score += 0.4
-      if (metadata.generationMode === "ai") score += 0.6
-      if (metadata.scenario && metadata.scenario !== "none") score += 0.5
-    }
-
-    // Mild randomness for variety
-    score += (Math.random() - 0.5) * 0.6
-  } catch {
-    // ignore fetch failures – keep base score + randomness
-    score += (Math.random() - 0.5) * 1
-  }
-
-  score = Math.max(1, Math.min(10, score))
-  return {
-    score: Number(score.toFixed(1)),
-    rating: getAestheticRating(score),
-    method: "local",
-  }
 }
 
 async function safeReadText(res: Response) {

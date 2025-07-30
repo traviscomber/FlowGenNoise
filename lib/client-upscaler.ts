@@ -20,46 +20,28 @@ export class ClientUpscaler {
   /**
    * Professional image upscaling with advanced post-processing
    */
-  static async upscaleImage(imageUrl: string, scaleFactor = 4): Promise<string> {
+  static async upscaleImage(imageUrl: string, scale = 2): Promise<string> {
     return new Promise((resolve, reject) => {
       const img = new Image()
       img.crossOrigin = "anonymous"
 
       img.onload = () => {
-        try {
-          const canvas = document.createElement("canvas")
-          const ctx = canvas.getContext("2d")!
+        const canvas = document.createElement("canvas")
+        const ctx = canvas.getContext("2d")
 
-          // Calculate new dimensions
-          const newWidth = img.width * scaleFactor
-          const newHeight = img.height * scaleFactor
-
-          canvas.width = newWidth
-          canvas.height = newHeight
-
-          // Use high-quality scaling
-          ctx.imageSmoothingEnabled = true
-          ctx.imageSmoothingQuality = "high"
-
-          // Draw upscaled image
-          ctx.drawImage(img, 0, 0, newWidth, newHeight)
-
-          // Apply professional enhancement pipeline
-          const imageData = ctx.getImageData(0, 0, newWidth, newHeight)
-          const enhancedData = ClientUpscaler.enhanceForPrint(imageData, {
-            scaleFactor,
-            sharpening: 0.8,
-            contrast: 0.3,
-            vibrance: 0.4,
-            noiseReduction: 0.6,
-            edgePreservation: 0.7,
-          })
-
-          ctx.putImageData(enhancedData, 0, 0)
-          resolve(canvas.toDataURL("image/png", 1.0))
-        } catch (error) {
-          reject(error)
+        if (!ctx) {
+          reject(new Error("Could not get canvas context"))
+          return
         }
+
+        canvas.width = img.width * scale
+        canvas.height = img.height * scale
+
+        // Use nearest neighbor for pixel art style
+        ctx.imageSmoothingEnabled = false
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+        resolve(canvas.toDataURL("image/png"))
       }
 
       img.onerror = () => reject(new Error("Failed to load image"))
@@ -268,8 +250,8 @@ export class ClientUpscaler {
 }
 
 // Named exports for compatibility
-export async function upscaleImageClient(imageUrl: string, scaleFactor = 4): Promise<string> {
-  return ClientUpscaler.upscaleImage(imageUrl, scaleFactor)
+export async function upscaleImageClient(imageUrl: string, scale = 2): Promise<string> {
+  return ClientUpscaler.upscaleImage(imageUrl, scale)
 }
 
 export async function enhanceImageClient(imageUrl: string): Promise<string> {

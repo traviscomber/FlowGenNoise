@@ -1,24 +1,21 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/components/ui/use-toast"
-import { Cloud, Loader2, Mail, Lock, Eye, EyeOff } from "lucide-react"
+import { Cloud, CloudOff, Loader2, User, LogOut } from "lucide-react"
 import { CloudSync, type CloudSyncStatus } from "@/lib/cloud-sync"
 
-export function CloudSyncComponent() {
+export default function CloudSyncComponent() {
   const { toast } = useToast()
   const [status, setStatus] = useState<CloudSyncStatus>(CloudSync.getStatus())
-  const [showPassword, setShowPassword] = useState(false)
-  const [authForm, setAuthForm] = useState({ email: "", password: "", displayName: "" })
-  const [authMode, setAuthMode] = useState<"signIn" | "signUp">("signIn")
-  const [authLoading, setAuthLoading] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const handleStatusChange = (newStatus: CloudSyncStatus) => {
@@ -31,39 +28,33 @@ export function CloudSyncComponent() {
     return () => CloudSync.removeStatusListener(handleStatusChange)
   }, [])
 
-  const handleAuthSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setAuthLoading(true)
-
-    try {
-      let result
-      if (authMode === "signIn") {
-        result = await CloudSync.signInWithEmail(authForm.email, authForm.password)
-      } else {
-        result = await CloudSync.signUpWithEmail(authForm.email, authForm.password, authForm.displayName)
-      }
-
-      if (result.success) {
-        toast({
-          title: `Successfully ${authMode === "signIn" ? "signed in" : "signed up"}!`,
-          description: "Cloud sync is now active.",
-        })
-        setAuthForm({ email: "", password: "", displayName: "" })
-      } else {
-        toast({
-          title: "Authentication Failed",
-          description: result.error || "Please check your credentials.",
-          variant: "destructive",
-        })
-      }
-    } catch (error: any) {
+  const handleSignIn = async () => {
+    if (!email || !password) {
       toast({
-        title: "Authentication Error",
-        description: error.message || "An unexpected error occurred.",
+        title: "Missing Information",
+        description: "Please enter both email and password.",
         variant: "destructive",
       })
-    } finally {
-      setAuthLoading(false)
+      return
+    }
+
+    setIsLoading(true)
+    const result = await CloudSync.signInWithEmail(email, password)
+    setIsLoading(false)
+
+    if (result.success) {
+      toast({
+        title: "Signed In",
+        description: "Successfully signed in to cloud sync.",
+      })
+      setEmail("")
+      setPassword("")
+    } else {
+      toast({
+        title: "Sign In Failed",
+        description: result.error,
+        variant: "destructive",
+      })
     }
   }
 
@@ -71,129 +62,143 @@ export function CloudSyncComponent() {
     await CloudSync.signOut()
     toast({
       title: "Signed Out",
-      description: "Cloud sync has been disabled.",
+      description: "Successfully signed out of cloud sync.",
     })
   }
 
-  const handleToggleSync = async (checked: boolean) => {
-    if (checked) {
+  const handleToggleSync = async (enabled: boolean) => {
+    if (enabled) {
       const result = await CloudSync.enableSync()
       if (result.success) {
         toast({
           title: "Cloud Sync Enabled",
-          description: "Your gallery will now sync with the cloud.",
-        })
-      } else {
-        toast({
-          title: "Failed to Enable Sync",
-          description: result.error || "Please try again.",
-          variant: "destructive",
+          description: "Your images will now sync to the cloud.",
         })
       }
     } else {
       await CloudSync.disableSync()
       toast({
         title: "Cloud Sync Disabled",
-        description: "Your gallery will no longer sync with the cloud.",
+        description: "Images will only be stored locally.",
+      })
+    }
+  }
+
+  const handleFullSync = async () => {
+    setIsLoading(true)
+    const result = await CloudSync.performFullSync()
+    setIsLoading(false)
+
+    if (result.success) {
+      toast({
+        title: "Sync Complete",
+        description: "All images have been synchronized.",
+      })
+    } else {
+      toast({
+        title: "Sync Failed",
+        description: result.error || "Failed to sync images.",
+        variant: "destructive",
       })
     }
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium flex items-center gap-2">
-          <Cloud className="h-4 w-4" /> Cloud Sync
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          {status.isAuthenticated ? (
+            <Cloud className="h-5 w-5 text-blue-500" />
+          ) : (
+            <CloudOff className="h-5 w-5 text-gray-400" />
+          )}
+          Cloud Sync
         </CardTitle>
-        <Switch checked={status.isEnabled} onCheckedChange={handleToggleSync} disabled={!status.isAuthenticated} />
+        <CardDescription>
+          {status.isAuthenticated ? "Sync your gallery across devices" : "Sign in to sync your gallery across devices"}
+        </CardDescription>
       </CardHeader>
-      <CardContent>
-        <p className="text-xs text-muted-foreground mb-4">
-          {status.isAuthenticated
-            ? status.isEnabled
-              ? "Sync enabled. Your gallery is backed up to the cloud."
-              : "Sync disabled. Enable to backup your gallery."
-            : "Sign in to enable cloud sync and backup your gallery."}
-        </p>
-
+      <CardContent className="space-y-4">
         {!status.isAuthenticated ? (
-          <form onSubmit={handleAuthSubmit} className="space-y-4">
+          <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={authForm.email}
-                  onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
-                  required
-                  className="pl-8"
-                />
-              </div>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={authForm.password}
-                  onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
-                  required
-                  className="pl-8 pr-8"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-0 top-1/2 -translate-y-1/2 h-8 w-8"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </Button>
-              </div>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+              />
             </div>
-            {authMode === "signUp" && (
-              <div className="space-y-2">
-                <Label htmlFor="displayName">Display Name (Optional)</Label>
-                <Input
-                  id="displayName"
-                  type="text"
-                  placeholder="Your Name"
-                  value={authForm.displayName}
-                  onChange={(e) => setAuthForm({ ...authForm, displayName: e.target.value })}
-                />
-              </div>
-            )}
-            <Button type="submit" className="w-full" disabled={authLoading}>
-              {authLoading ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : authMode === "signIn" ? (
-                "Sign In"
+            <Button onClick={handleSignIn} disabled={isLoading} className="w-full">
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing In...
+                </>
               ) : (
-                "Sign Up"
+                <>
+                  <User className="mr-2 h-4 w-4" />
+                  Sign In
+                </>
               )}
             </Button>
-            <Button
-              type="button"
-              variant="link"
-              className="w-full"
-              onClick={() => setAuthMode(authMode === "signIn" ? "signUp" : "signIn")}
-            >
-              {authMode === "signIn" ? "Need an account? Sign Up" : "Already have an account? Sign In"}
-            </Button>
-          </form>
+          </div>
         ) : (
           <div className="space-y-4">
-            <Button onClick={handleSignOut} variant="destructive" className="w-full">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="sync-enabled">Enable Sync</Label>
+              <Switch id="sync-enabled" checked={status.isEnabled} onCheckedChange={handleToggleSync} />
+            </div>
+
+            {status.isEnabled && (
+              <div className="space-y-2">
+                <Button
+                  onClick={handleFullSync}
+                  disabled={status.isSyncing}
+                  variant="outline"
+                  className="w-full bg-transparent"
+                >
+                  {status.isSyncing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Syncing...
+                    </>
+                  ) : (
+                    <>
+                      <Cloud className="mr-2 h-4 w-4" />
+                      Sync Now
+                    </>
+                  )}
+                </Button>
+
+                {status.lastSync && (
+                  <p className="text-sm text-muted-foreground text-center">
+                    Last sync: {new Date(status.lastSync).toLocaleString()}
+                  </p>
+                )}
+              </div>
+            )}
+
+            <Button onClick={handleSignOut} variant="outline" className="w-full bg-transparent">
+              <LogOut className="mr-2 h-4 w-4" />
               Sign Out
             </Button>
           </div>
         )}
+
+        {status.error && <p className="text-sm text-destructive">{status.error}</p>}
       </CardContent>
     </Card>
   )
