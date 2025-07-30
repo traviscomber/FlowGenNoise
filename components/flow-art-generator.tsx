@@ -76,7 +76,7 @@ export function FlowArtGenerator() {
   const [downloadStatus, setDownloadStatus] = useState<string | null>(null)
 
   // Enhanced generation parameters with full mathematical controls
-  const [dataset, setDataset] = useState("tribes")
+  const [dataset, setDataset] = useState("spirals")
   const [scenario, setScenario] = useState("landscape")
   const [colorScheme, setColorScheme] = useState("sunset")
   const [seed, setSeed] = useState(1234)
@@ -85,7 +85,7 @@ export function FlowArtGenerator() {
   const [timeStep, setTimeStep] = useState(0.01)
 
   // Dome projection settings - fixed to 10 meters
-  const [domeEnabled, setDomeEnabled] = useState(false)
+  const [domeEnabled, setDomeEnabled] = useState(true)
   const [domeDiameter] = useState(10) // Fixed to 10 meters
   const [domeResolution, setDomeResolution] = useState("4K")
   const [domeProjectionType, setDomeProjectionType] = useState("fisheye")
@@ -402,16 +402,30 @@ export function FlowArtGenerator() {
         console.log("AI API Response status:", response.status)
 
         if (!response.ok) {
-          const errorData = await response.json()
-          console.error("AI API error response:", errorData)
-          throw new Error(errorData.error || `AI API failed: ${response.status}`)
+          const errorText = await response.text()
+          console.error("AI API error response:", errorText)
+
+          let errorMessage = `API request failed with status ${response.status}`
+          try {
+            const errorData = JSON.parse(errorText)
+            errorMessage = errorData.error || errorMessage
+          } catch {
+            // If response is not JSON, use the text directly (truncated)
+            errorMessage = errorText.length > 200 ? errorText.substring(0, 200) + "..." : errorText
+          }
+
+          throw new Error(errorMessage)
         }
 
         const data = await response.json()
         console.log("AI art response received:", data)
 
+        if (!data.success) {
+          throw new Error(data.error || "AI generation failed")
+        }
+
         if (!data.image) {
-          throw new Error("AI API returned no image")
+          throw new Error("No image URL returned from API")
         }
 
         setProgress(80)

@@ -24,6 +24,18 @@ export async function POST(request: NextRequest) {
       stereographicPerspective = "little-planet",
     } = body
 
+    // Validate OpenAI API key
+    if (!process.env.OPENAI_API_KEY) {
+      console.error("OpenAI API key not found")
+      return NextResponse.json(
+        {
+          success: false,
+          error: "OpenAI API key not configured",
+        },
+        { status: 500 },
+      )
+    }
+
     // Build base prompt
     let basePrompt = ""
 
@@ -183,16 +195,37 @@ export async function POST(request: NextRequest) {
     })
 
     if (!mainImageResponse.ok) {
-      const errorData = await mainImageResponse.json()
-      console.error("OpenAI API error:", errorData)
-      throw new Error(`OpenAI API error: ${errorData.error?.message || "Unknown error"}`)
+      const errorText = await mainImageResponse.text()
+      console.error("OpenAI API error:", errorText)
+
+      let errorMessage = "OpenAI API error"
+      try {
+        const errorData = JSON.parse(errorText)
+        errorMessage = errorData.error?.message || errorMessage
+      } catch {
+        errorMessage = `HTTP ${mainImageResponse.status}: ${errorText.substring(0, 200)}`
+      }
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: errorMessage,
+        },
+        { status: 500 },
+      )
     }
 
     const mainImageData = await mainImageResponse.json()
     console.log("Main image generated successfully")
 
     if (!mainImageData.data || !mainImageData.data[0] || !mainImageData.data[0].url) {
-      throw new Error("No image URL returned from OpenAI")
+      return NextResponse.json(
+        {
+          success: false,
+          error: "No image URL returned from OpenAI",
+        },
+        { status: 500 },
+      )
     }
 
     const imageUrl = mainImageData.data[0].url
@@ -266,10 +299,19 @@ The final image must be a perfect circle that completely fills the square frame,
             domeGenerationStatus = "API returned no image, using main image"
           }
         } else {
-          const domeError = await domeResponse.json()
-          console.log("Dome generation failed:", domeError)
+          const domeErrorText = await domeResponse.text()
+          console.log("Dome generation failed:", domeErrorText)
+
+          let domeErrorMessage = "Unknown error"
+          try {
+            const domeErrorData = JSON.parse(domeErrorText)
+            domeErrorMessage = domeErrorData.error?.message || domeErrorMessage
+          } catch {
+            domeErrorMessage = `HTTP ${domeResponse.status}`
+          }
+
           domeImageUrl = imageUrl
-          domeGenerationStatus = `Generation failed: ${domeError.error?.message || "Unknown error"}, using main image`
+          domeGenerationStatus = `Generation failed: ${domeErrorMessage}, using main image`
         }
       } catch (error) {
         console.error("Dome projection generation error:", error)
@@ -333,10 +375,19 @@ The final image must be a perfect circle that completely fills the square frame,
             panoramaGenerationStatus = "API returned no image, using main image"
           }
         } else {
-          const panoramaError = await panoramaResponse.json()
-          console.log("Panorama generation failed:", panoramaError)
+          const panoramaErrorText = await panoramaResponse.text()
+          console.log("Panorama generation failed:", panoramaErrorText)
+
+          let panoramaErrorMessage = "Unknown error"
+          try {
+            const panoramaErrorData = JSON.parse(panoramaErrorText)
+            panoramaErrorMessage = panoramaErrorData.error?.message || panoramaErrorMessage
+          } catch {
+            panoramaErrorMessage = `HTTP ${panoramaResponse.status}`
+          }
+
           panoramaImageUrl = imageUrl
-          panoramaGenerationStatus = `Generation failed: ${panoramaError.error?.message || "Unknown error"}, using main image`
+          panoramaGenerationStatus = `Generation failed: ${panoramaErrorMessage}, using main image`
         }
       } catch (error) {
         console.error("360° panoramic generation error:", error)
