@@ -26,6 +26,11 @@ export interface UpscaleParams extends GenerationParams {
   extraDetail: boolean
 }
 
+export interface DataPoint {
+  x: number
+  y: number
+}
+
 // Pure 4-color palettes for visual themes
 const colorPalettes = {
   plasma: ["#0D001A", "#7209B7", "#F72585", "#FFBE0B"], // Deep purple to bright pink to yellow
@@ -68,405 +73,305 @@ class SeededRandom {
 }
 
 // Generate complex mathematical datasets
-export function generateDataset(name: string, seed: number, n_samples: number, noise: number): number[][] {
-  const rng = new SeededRandom(seed)
+export function generateDataset(dataset: string, seed: number, numSamples: number, noise: number): DataPoint[] {
+  // Simple seeded random number generator
+  let seedValue = seed
+  const random = () => {
+    seedValue = (seedValue * 9301 + 49297) % 233280
+    return seedValue / 233280
+  }
 
-  switch (name) {
+  const points: DataPoint[] = []
+
+  switch (dataset) {
     case "spirals":
-      return generateSpirals(rng, n_samples, noise)
-    case "moons":
-      return generateMoons(rng, n_samples, noise)
-    case "circles":
-      return generateCircles(rng, n_samples, noise)
-    case "blobs":
-      return generateBlobs(rng, n_samples, noise)
-    case "checkerboard":
-      return generateCheckerboard(rng, n_samples, noise)
-    case "gaussian":
-      return generateGaussian(rng, n_samples, noise)
-    case "grid":
-      return generateGrid(rng, n_samples, noise)
-    case "fractal":
-      return generateFractal(rng, n_samples, noise)
-    case "mandelbrot":
-      return generateMandelbrot(rng, n_samples, noise)
-    case "julia":
-      return generateJulia(rng, n_samples, noise)
-    case "lorenz":
-      return generateLorenz(rng, n_samples, noise)
-    case "tribes":
-      return generateTribes(rng, n_samples, noise)
-    case "heads":
-      return generateHeads(rng, n_samples, noise)
-    case "natives":
-      return generateNatives(rng, n_samples, noise)
-    default:
-      return generateSpirals(rng, n_samples, noise)
-  }
-}
-
-// Classic dataset generators
-function generateSpirals(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-  const samplesPerSpiral = Math.floor(n_samples / 2)
-
-  for (let i = 0; i < n_samples; i++) {
-    const spiral = i < samplesPerSpiral ? 0 : 1
-    const t = ((i % samplesPerSpiral) / samplesPerSpiral) * 4 * Math.PI
-
-    const r = t * 0.1
-    const x = r * Math.cos(t + spiral * Math.PI)
-    const y = r * Math.sin(t + spiral * Math.PI)
-
-    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  return data
-}
-
-function generateMoons(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-  const samplesPerMoon = Math.floor(n_samples / 2)
-
-  for (let i = 0; i < n_samples; i++) {
-    const moon = i < samplesPerMoon ? 0 : 1
-    const t = ((i % samplesPerMoon) / samplesPerMoon) * Math.PI
-
-    let x, y
-    if (moon === 0) {
-      x = Math.cos(t)
-      y = Math.sin(t)
-    } else {
-      x = 1 - Math.cos(t)
-      y = 1 - Math.sin(t) - 0.5
-    }
-
-    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  return data
-}
-
-function generateCircles(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-
-  for (let i = 0; i < n_samples; i++) {
-    const r = rng.next() < 0.5 ? 0.5 : 1.5
-    const t = rng.next() * 2 * Math.PI
-
-    const x = r * Math.cos(t)
-    const y = r * Math.sin(t)
-
-    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  return data
-}
-
-function generateBlobs(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-  const centers = [
-    [-1, -1],
-    [1, -1],
-    [-1, 1],
-    [1, 1],
-  ]
-
-  for (let i = 0; i < n_samples; i++) {
-    const center = centers[Math.floor(rng.next() * centers.length)]
-    const r = rng.next() * 0.5
-    const t = rng.next() * 2 * Math.PI
-
-    const x = center[0] + r * Math.cos(t)
-    const y = center[1] + r * Math.sin(t)
-
-    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  return data
-}
-
-function generateCheckerboard(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-
-  for (let i = 0; i < n_samples; i++) {
-    const x = rng.range(-2, 2)
-    const y = rng.range(-2, 2)
-
-    const checkX = Math.floor(x + 2)
-    const checkY = Math.floor(y + 2)
-
-    if ((checkX + checkY) % 2 === 0) {
-      data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-    }
-  }
-
-  // Fill remaining samples if needed
-  while (data.length < n_samples) {
-    const x = rng.range(-2, 2)
-    const y = rng.range(-2, 2)
-    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  return data
-}
-
-function generateGaussian(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-
-  for (let i = 0; i < n_samples; i++) {
-    const x = rng.gaussian()
-    const y = rng.gaussian()
-
-    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  return data
-}
-
-function generateGrid(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-  const gridSize = Math.ceil(Math.sqrt(n_samples))
-
-  for (let i = 0; i < gridSize; i++) {
-    for (let j = 0; j < gridSize && data.length < n_samples; j++) {
-      const x = (i / (gridSize - 1)) * 4 - 2
-      const y = (j / (gridSize - 1)) * 4 - 2
-
-      data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-    }
-  }
-
-  return data
-}
-
-function generateFractal(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-
-  for (let i = 0; i < n_samples; i++) {
-    let x = 0,
-      y = 0
-
-    // Sierpinski triangle-like fractal
-    for (let iter = 0; iter < 10; iter++) {
-      const choice = Math.floor(rng.next() * 3)
-      const scale = 0.5
-
-      switch (choice) {
-        case 0:
-          x = x * scale
-          y = y * scale
-          break
-        case 1:
-          x = x * scale + 0.5
-          y = y * scale
-          break
-        case 2:
-          x = x * scale + 0.25
-          y = y * scale + 0.5
-          break
+      for (let i = 0; i < numSamples; i++) {
+        const t = (i / numSamples) * 4 * Math.PI
+        const spiral = Math.floor(i / (numSamples / 2))
+        const r = t * 0.1
+        const x = r * Math.cos(t + spiral * Math.PI) + (random() - 0.5) * noise
+        const y = r * Math.sin(t + spiral * Math.PI) + (random() - 0.5) * noise
+        points.push({ x, y })
       }
-    }
+      break
 
-    data.push([(x - 0.25) * 4 + noise * rng.gaussian(), (y - 0.25) * 4 + noise * rng.gaussian()])
+    case "moons":
+      for (let i = 0; i < numSamples; i++) {
+        const moon = Math.floor(i / (numSamples / 2))
+        const t = ((i % (numSamples / 2)) / (numSamples / 2)) * Math.PI
+        let x, y
+        if (moon === 0) {
+          x = Math.cos(t)
+          y = Math.sin(t)
+        } else {
+          x = 1 - Math.cos(t)
+          y = 1 - Math.sin(t) - 0.5
+        }
+        x += (random() - 0.5) * noise
+        y += (random() - 0.5) * noise
+        points.push({ x, y })
+      }
+      break
+
+    case "circles":
+      for (let i = 0; i < numSamples; i++) {
+        const circle = Math.floor(i / (numSamples / 3))
+        const t = ((i % (numSamples / 3)) / (numSamples / 3)) * 2 * Math.PI
+        const r = (circle + 1) * 0.3
+        const x = r * Math.cos(t) + (random() - 0.5) * noise
+        const y = r * Math.sin(t) + (random() - 0.5) * noise
+        points.push({ x, y })
+      }
+      break
+
+    case "blobs":
+      const centers = [
+        { x: -1, y: -1 },
+        { x: 1, y: -1 },
+        { x: -1, y: 1 },
+        { x: 1, y: 1 },
+      ]
+      for (let i = 0; i < numSamples; i++) {
+        const center = centers[Math.floor(i / (numSamples / 4))]
+        const r = Math.sqrt(random()) * 0.5
+        const theta = random() * 2 * Math.PI
+        const x = center.x + r * Math.cos(theta) + (random() - 0.5) * noise
+        const y = center.y + r * Math.sin(theta) + (random() - 0.5) * noise
+        points.push({ x, y })
+      }
+      break
+
+    case "checkerboard":
+      for (let i = 0; i < numSamples; i++) {
+        const x = (random() - 0.5) * 4
+        const y = (random() - 0.5) * 4
+        const checkX = Math.floor((x + 2) / 0.5) % 2
+        const checkY = Math.floor((y + 2) / 0.5) % 2
+        if ((checkX + checkY) % 2 === 0) {
+          points.push({
+            x: x + (random() - 0.5) * noise,
+            y: y + (random() - 0.5) * noise,
+          })
+        }
+      }
+      break
+
+    case "gaussian":
+      for (let i = 0; i < numSamples; i++) {
+        // Box-Muller transform for Gaussian distribution
+        const u1 = random()
+        const u2 = random()
+        const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)
+        const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.sin(2 * Math.PI * u2)
+        points.push({
+          x: z0 + (random() - 0.5) * noise,
+          y: z1 + (random() - 0.5) * noise,
+        })
+      }
+      break
+
+    case "grid":
+      const gridSize = Math.ceil(Math.sqrt(numSamples))
+      for (let i = 0; i < numSamples; i++) {
+        const row = Math.floor(i / gridSize)
+        const col = i % gridSize
+        const x = (col / (gridSize - 1) - 0.5) * 2 + (random() - 0.5) * noise
+        const y = (row / (gridSize - 1) - 0.5) * 2 + (random() - 0.5) * noise
+        points.push({ x, y })
+      }
+      break
+
+    case "fractal":
+      // Sierpinski triangle
+      const vertices = [
+        { x: 0, y: 1 },
+        { x: -0.866, y: -0.5 },
+        { x: 0.866, y: -0.5 },
+      ]
+      let currentPoint = { x: 0, y: 0 }
+      for (let i = 0; i < numSamples; i++) {
+        const vertex = vertices[Math.floor(random() * 3)]
+        currentPoint = {
+          x: (currentPoint.x + vertex.x) / 2 + (random() - 0.5) * noise,
+          y: (currentPoint.y + vertex.y) / 2 + (random() - 0.5) * noise,
+        }
+        points.push({ ...currentPoint })
+      }
+      break
+
+    case "mandelbrot":
+      for (let i = 0; i < numSamples; i++) {
+        const x = (random() - 0.5) * 3 - 0.5
+        const y = (random() - 0.5) * 3
+        let zx = 0,
+          zy = 0
+        let iterations = 0
+        const maxIterations = 100
+
+        while (zx * zx + zy * zy < 4 && iterations < maxIterations) {
+          const temp = zx * zx - zy * zy + x
+          zy = 2 * zx * zy + y
+          zx = temp
+          iterations++
+        }
+
+        if (iterations < maxIterations) {
+          points.push({
+            x: x + (random() - 0.5) * noise,
+            y: y + (random() - 0.5) * noise,
+          })
+        }
+      }
+      break
+
+    case "julia":
+      const c = { x: -0.7, y: 0.27015 }
+      for (let i = 0; i < numSamples; i++) {
+        let zx = (random() - 0.5) * 3
+        let zy = (random() - 0.5) * 3
+        let iterations = 0
+        const maxIterations = 100
+
+        while (zx * zx + zy * zy < 4 && iterations < maxIterations) {
+          const temp = zx * zx - zy * zy + c.x
+          zy = 2 * zx * zy + c.y
+          zx = temp
+          iterations++
+        }
+
+        if (iterations < maxIterations) {
+          points.push({
+            x: zx + (random() - 0.5) * noise,
+            y: zy + (random() - 0.5) * noise,
+          })
+        }
+      }
+      break
+
+    case "lorenz":
+      // Lorenz attractor
+      let x = 1,
+        y = 1,
+        z = 1
+      const dt = 0.01
+      const sigma = 10,
+        rho = 28,
+        beta = 8 / 3
+
+      for (let i = 0; i < numSamples; i++) {
+        const dx = sigma * (y - x)
+        const dy = x * (rho - z) - y
+        const dz = x * y - beta * z
+
+        x += dx * dt
+        y += dy * dt
+        z += dz * dt
+
+        points.push({
+          x: x * 0.05 + (random() - 0.5) * noise,
+          y: y * 0.05 + (random() - 0.5) * noise,
+        })
+      }
+      break
+
+    case "tribes":
+      // Generate tribal village patterns
+      const villages = [
+        { x: -1, y: -1 },
+        { x: 1, y: -1 },
+        { x: 0, y: 1 },
+      ]
+      for (let i = 0; i < numSamples; i++) {
+        const village = villages[Math.floor(i / (numSamples / 3))]
+        const angle = random() * 2 * Math.PI
+        const radius = Math.sqrt(random()) * 0.8
+        const x = village.x + radius * Math.cos(angle) + (random() - 0.5) * noise
+        const y = village.y + radius * Math.sin(angle) + (random() - 0.5) * noise
+        points.push({ x, y })
+      }
+      break
+
+    case "heads":
+      // Generate face-like patterns
+      for (let i = 0; i < numSamples; i++) {
+        const feature = Math.floor(random() * 5)
+        let x, y
+
+        switch (feature) {
+          case 0: // Face outline
+            const t = random() * 2 * Math.PI
+            x = 0.8 * Math.cos(t)
+            y = Math.sin(t)
+            break
+          case 1: // Left eye
+            x = -0.3 + (random() - 0.5) * 0.2
+            y = 0.3 + (random() - 0.5) * 0.2
+            break
+          case 2: // Right eye
+            x = 0.3 + (random() - 0.5) * 0.2
+            y = 0.3 + (random() - 0.5) * 0.2
+            break
+          case 3: // Nose
+            x = (random() - 0.5) * 0.1
+            y = (random() - 0.5) * 0.2
+            break
+          case 4: // Mouth
+            x = (random() - 0.5) * 0.4
+            y = -0.3 + (random() - 0.5) * 0.1
+            break
+          default:
+            x = (random() - 0.5) * 2
+            y = (random() - 0.5) * 2
+        }
+
+        points.push({
+          x: x + (random() - 0.5) * noise,
+          y: y + (random() - 0.5) * noise,
+        })
+      }
+      break
+
+    case "natives":
+      // Generate native settlement patterns
+      const settlements = [
+        { x: -1.2, y: 0 },
+        { x: 0, y: -1 },
+        { x: 1.2, y: 0 },
+        { x: 0, y: 1 },
+      ]
+      for (let i = 0; i < numSamples; i++) {
+        const settlement = settlements[Math.floor(i / (numSamples / 4))]
+        const angle = random() * 2 * Math.PI
+        const radius = Math.sqrt(random()) * 0.6
+        const x = settlement.x + radius * Math.cos(angle) + (random() - 0.5) * noise
+        const y = settlement.y + radius * Math.sin(angle) + (random() - 0.5) * noise
+        points.push({ x, y })
+      }
+      break
+
+    default:
+      // Default to random points
+      for (let i = 0; i < numSamples; i++) {
+        points.push({
+          x: (random() - 0.5) * 4 + (random() - 0.5) * noise,
+          y: (random() - 0.5) * 4 + (random() - 0.5) * noise,
+        })
+      }
   }
 
-  return data
-}
-
-function generateMandelbrot(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-
-  for (let i = 0; i < n_samples; i++) {
-    const cx = rng.range(-2, 1)
-    const cy = rng.range(-1.5, 1.5)
-
-    let zx = 0,
-      zy = 0
-    let iterations = 0
-    const maxIter = 100
-
-    while (zx * zx + zy * zy < 4 && iterations < maxIter) {
-      const temp = zx * zx - zy * zy + cx
-      zy = 2 * zx * zy + cy
-      zx = temp
-      iterations++
-    }
-
-    if (iterations < maxIter) {
-      data.push([cx + noise * rng.gaussian(), cy + noise * rng.gaussian()])
-    }
-  }
-
-  // Fill remaining samples if needed
-  while (data.length < n_samples) {
-    const x = rng.range(-2, 2)
-    const y = rng.range(-2, 2)
-    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  return data
-}
-
-function generateJulia(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-  const c = { x: -0.7, y: 0.27015 } // Julia set parameter
-
-  for (let i = 0; i < n_samples; i++) {
-    let zx = rng.range(-2, 2)
-    let zy = rng.range(-2, 2)
-    let iterations = 0
-    const maxIter = 100
-
-    while (zx * zx + zy * zy < 4 && iterations < maxIter) {
-      const temp = zx * zx - zy * zy + c.x
-      zy = 2 * zx * zy + c.y
-      zx = temp
-      iterations++
-    }
-
-    if (iterations < maxIter) {
-      data.push([zx * 0.5 + noise * rng.gaussian(), zy * 0.5 + noise * rng.gaussian()])
-    }
-  }
-
-  // Fill remaining samples if needed
-  while (data.length < n_samples) {
-    const x = rng.range(-2, 2)
-    const y = rng.range(-2, 2)
-    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  return data
-}
-
-function generateLorenz(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-
-  let x = 1,
-    y = 1,
-    z = 1
-  const dt = 0.01
-  const sigma = 10,
-    rho = 28,
-    beta = 8 / 3
-
-  for (let i = 0; i < n_samples; i++) {
-    const dx = sigma * (y - x)
-    const dy = x * (rho - z) - y
-    const dz = x * y - beta * z
-
-    x += dx * dt
-    y += dy * dt
-    z += dz * dt
-
-    data.push([x * 0.05 + noise * rng.gaussian(), y * 0.05 + noise * rng.gaussian()])
-  }
-
-  return data
-}
-
-function generateTribes(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-  const villages = [
-    { x: -1.5, y: -1, size: 0.8 },
-    { x: 1.5, y: -1, size: 0.6 },
-    { x: 0, y: 1.5, size: 1.0 },
-    { x: -0.8, y: 0.3, size: 0.5 },
-    { x: 0.8, y: 0.3, size: 0.7 },
-  ]
-
-  for (let i = 0; i < n_samples; i++) {
-    const village = villages[Math.floor(rng.next() * villages.length)]
-    const r = rng.next() * village.size
-    const t = rng.next() * 2 * Math.PI
-
-    const x = village.x + r * Math.cos(t)
-    const y = village.y + r * Math.sin(t)
-
-    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  return data
-}
-
-function generateHeads(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-
-  for (let i = 0; i < n_samples; i++) {
-    const t = (i / n_samples) * 2 * Math.PI
-    const r = 1 + 0.3 * Math.sin(5 * t) // Face outline
-
-    let x = r * Math.cos(t)
-    let y = r * Math.sin(t)
-
-    // Add facial features
-    if (rng.next() < 0.1) {
-      // Eyes
-      x = rng.next() < 0.5 ? -0.3 : 0.3
-      y = 0.3
-    } else if (rng.next() < 0.05) {
-      // Nose
-      x = 0
-      y = 0
-    } else if (rng.next() < 0.08) {
-      // Mouth
-      x = (rng.next() - 0.5) * 0.6
-      y = -0.3
-    }
-
-    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  return data
-}
-
-function generateNatives(rng: SeededRandom, n_samples: number, noise: number): number[][] {
-  const data: number[][] = []
-  const settlements = [
-    { x: -1.2, y: -0.8, type: "longhouse" },
-    { x: 1.2, y: -0.8, type: "tipi" },
-    { x: 0, y: 1.2, type: "pueblo" },
-    { x: -0.6, y: 0.6, type: "hogan" },
-    { x: 0.6, y: 0.6, type: "wigwam" },
-  ]
-
-  for (let i = 0; i < n_samples; i++) {
-    const settlement = settlements[Math.floor(rng.next() * settlements.length)]
-
-    let x, y
-    switch (settlement.type) {
-      case "longhouse":
-        x = settlement.x + (rng.next() - 0.5) * 1.5
-        y = settlement.y + (rng.next() - 0.5) * 0.4
-        break
-      case "tipi":
-        const r = rng.next() * 0.6
-        const t = rng.next() * 2 * Math.PI
-        x = settlement.x + r * Math.cos(t)
-        y = settlement.y + r * Math.sin(t)
-        break
-      default:
-        x = settlement.x + (rng.next() - 0.5) * 0.8
-        y = settlement.y + (rng.next() - 0.5) * 0.8
-    }
-
-    data.push([x + noise * rng.gaussian(), y + noise * rng.gaussian()])
-  }
-
-  return data
+  return points
 }
 
 // Apply scenario transformations to dataset points
 function applyScenarioTransform(
-  points: number[][],
+  points: DataPoint[],
   scenario: string,
   rng: SeededRandom,
 ): Array<{ x: number; y: number; metadata: any }> {
   const transformedPoints: Array<{ x: number; y: number; metadata: any }> = []
 
   for (let i = 0; i < points.length; i++) {
-    const [baseX, baseY] = points[i]
+    const { x: baseX, y: baseY } = points[i]
     let x = baseX
     let y = baseY
     let metadata: any = {}
