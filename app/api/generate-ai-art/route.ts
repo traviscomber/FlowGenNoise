@@ -34,36 +34,53 @@ export async function POST(req: Request) {
     } else {
       // Generate default prompt based on dataset, scenario, and color scheme
       const colorDescriptions = {
-        pure: "clean mathematical grayscale with precise geometric forms",
-        forest: "rich forest greens with natural earth tones and golden sunlight",
-        cosmic: "deep space blues with stellar whites and nebula purples",
-        ocean: "aquatic blues from deep ocean to seafoam with wave-like gradients",
-        neural: "electric blues and purples with synaptic glowing connections",
-        fire: "warm reds and oranges with flame-like intensity and ember effects",
-        ice: "cool blues and whites with crystalline frost patterns and prismatic light",
-        desert: "warm earth tones with sand dune textures and golden hour lighting",
-        sunset: "gradient warm colors from deep reds to golden yellows with atmospheric effects",
-        monochrome: "sophisticated grayscale with high contrast and minimalist aesthetic",
+        plasma: "vibrant plasma colors transitioning from deep purple through magenta to brilliant yellow",
+        magma: "molten magma palette flowing from obsidian black through crimson red to golden white",
+        sunset: "warm sunset hues with rich oranges, coral pinks, and golden yellows",
+        cosmic: "deep space colors with stellar blues, nebula purples, and cosmic gold",
+        quantum: "electric quantum blues with cyan highlights and ethereal white accents",
+        thermal: "thermal heat map colors from cool black through fiery reds to blazing yellow",
+        spectral: "full rainbow spectrum with seamless color transitions and prismatic effects",
+        crystalline: "crystalline gem tones with sapphire blues, amethyst purples, and diamond whites",
+        bioluminescent: "bioluminescent blues and greens with otherworldly glowing effects",
+        aurora: "aurora borealis colors with dancing greens, ethereal blues, and mystical purples",
+        metallic: "metallic sheen with silver, gold, and platinum highlights",
+        neon: "electric neon colors with vibrant pinks, electric blues, and laser greens",
       }
 
       const scenarioDescriptions = {
-        pure: "pure mathematical visualization with geometric precision",
-        forest: "organic forest growth with fractal tree structures and natural patterns",
-        cosmic: "stellar formations with nebula clouds and cosmic dust effects",
-        ocean: "fluid dynamics with wave patterns and underwater currents",
-        neural: "synaptic neural networks with electric pathways and glowing nodes",
-        fire: "combustion dynamics with flame patterns and ember particles",
-        ice: "crystalline structures with frost formations and light refraction",
-        desert: "sand dune formations with wind patterns and heat shimmer effects",
-        sunset: "atmospheric light scattering with warm gradient transitions",
-        monochrome: "abstract geometric forms with tonal variations",
+        landscape: "sweeping natural landscape with organic terrain formations and atmospheric depth",
+        architectural: "magnificent architectural structures with geometric precision and monumental scale",
+        crystalline: "crystalline formations with light refraction and prismatic beauty",
+        botanical: "lush botanical environment with organic growth patterns and natural harmony",
+        cosmic: "vast cosmic space with stellar formations, nebulae, and celestial phenomena",
+        ocean: "deep ocean environment with fluid dynamics and underwater light effects",
+        forest: "mystical forest setting with organic fractals and natural light filtering",
+        desert: "expansive desert landscape with sand dune formations and heat shimmer effects",
       }
 
-      const datasetDesc = dataset.charAt(0).toUpperCase() + dataset.slice(1)
+      const datasetDescriptions = {
+        spirals: "elegant double spiral formations creating mesmerizing helical patterns",
+        moons: "crescent moon shapes forming celestial dance patterns",
+        circles: "concentric circular formations with perfect geometric harmony",
+        blobs: "organic blob clusters with smooth, flowing boundaries",
+        checkerboard: "precise checkerboard pattern with mathematical regularity",
+        gaussian: "gaussian distribution clouds with statistical beauty",
+        grid: "structured grid formations with architectural precision",
+        fractal: "sierpinski triangle fractals with infinite recursive detail",
+        mandelbrot: "mandelbrot set visualization with infinite complexity at the boundary",
+        julia: "julia set fractals with intricate mathematical beauty",
+        lorenz: "lorenz attractor patterns showing chaotic system dynamics",
+        tribes: "tribal settlement patterns with organic community structures",
+        heads: "facial pattern formations with anthropomorphic elements",
+        natives: "native settlement arrangements with cultural geometric patterns",
+      }
+
+      const datasetDesc = datasetDescriptions[dataset as keyof typeof datasetDescriptions] || dataset
       const colorDesc = colorDescriptions[colorScheme as keyof typeof colorDescriptions] || colorScheme
       const scenarioDesc = scenarioDescriptions[scenario as keyof typeof scenarioDescriptions] || scenario
 
-      finalPrompt = `Create a stunning mathematical art piece featuring ${datasetDesc} dataset patterns with ${numSamples} data points, rendered in ${colorDesc} color palette. The artwork should showcase ${scenarioDesc} with mathematical precision and artistic beauty. Include subtle texture (noise level ${noise}) for organic feel. Professional gallery-quality composition, highly detailed, suitable for high-resolution display. Mathematical beauty meets artistic expression. Digital art, masterpiece quality.`
+      finalPrompt = `A breathtaking 8K masterpiece visualization of ${datasetDesc} rendered in a ${scenarioDesc}, illuminated with ${colorDesc}. The composition features ${numSamples.toLocaleString()} precisely calculated data points with ${noise} organic noise variation, creating a perfect balance between mathematical precision and natural beauty. Cinematic lighting, award-winning digital art, photorealistic rendering with depth of field, gallery-quality composition suitable for scientific art exhibitions. Ultra-detailed, hyperrealistic, with golden ratio composition and professional color grading.`
 
       console.log("Using generated prompt:", finalPrompt)
     }
