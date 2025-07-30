@@ -1,179 +1,318 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { generateFlowField, type GenerationParams } from "@/lib/flow-model"
-import { Sparkles, Users, MapPin, Flame } from "lucide-react"
+import { Loader2, Download, Users, RefreshCw } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import Image from "next/image"
+
+interface TribesParams {
+  dataset: string
+  scenario: string
+  colorScheme: string
+  seed: number
+  numSamples: number
+  noiseScale: number
+  customPrompt: string
+}
 
 export function TribesDemo() {
-  const [tribalArt, setTribalArt] = useState<string>("")
+  const { toast } = useToast()
+  const [params, setParams] = useState<TribesParams>({
+    dataset: "tribes",
+    scenario: "landscape",
+    colorScheme: "sunset",
+    seed: Math.floor(Math.random() * 10000),
+    numSamples: 2000,
+    noiseScale: 0.05,
+    customPrompt: "",
+  })
+
   const [isGenerating, setIsGenerating] = useState(false)
-  const [currentSeed, setCurrentSeed] = useState(1234)
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null)
+  const [generationDetails, setGenerationDetails] = useState<any>(null)
 
-  const generateTribalCivilization = async () => {
+  const updateParam = (key: keyof TribesParams, value: any) => {
+    setParams((prev) => ({ ...prev, [key]: value }))
+  }
+
+  const generateRandomSeed = () => {
+    updateParam("seed", Math.floor(Math.random() * 10000))
+  }
+
+  const generateArt = async () => {
     setIsGenerating(true)
-
-    // Enhanced tribal parameters
-    const params: GenerationParams = {
-      dataset: "tribes",
-      scenario: "landscape",
-      colorScheme: "sunset",
-      seed: currentSeed,
-      numSamples: 3000,
-      noiseScale: 0.1,
-      timeStep: 0.01,
-      panoramic360: true,
-      panoramaResolution: "1080p",
-      panoramaFormat: "stereographic",
-      stereographicPerspective: "little-planet",
-    }
+    setGeneratedImage(null)
+    setGenerationDetails(null)
 
     try {
-      const svgContent = generateFlowField(params)
-      setTribalArt(svgContent)
-    } catch (error) {
-      console.error("Failed to generate tribal art:", error)
+      console.log("🏘️ Starting tribes art generation with params:", params)
+
+      const response = await fetch("/api/generate-art", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      })
+
+      console.log("📡 API response status:", response.status)
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }))
+        console.error("❌ API error:", errorData)
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      const result = await response.json()
+      console.log("✅ Generation successful:", result.success)
+
+      if (result.success && result.image) {
+        setGeneratedImage(result.image)
+        setGenerationDetails(result)
+        toast({
+          title: "Tribal Art Generated Successfully!",
+          description: `Created ${params.dataset} artwork with ${params.numSamples} cultural elements`,
+        })
+      } else {
+        throw new Error(result.error || "Failed to generate image")
+      }
+    } catch (error: any) {
+      console.error("💥 Generation failed:", error)
+      toast({
+        title: "Generation Failed",
+        description: error.message || "An unexpected error occurred",
+        variant: "destructive",
+      })
     } finally {
       setIsGenerating(false)
     }
   }
 
-  const generateNewCivilization = () => {
-    setCurrentSeed(Math.floor(Math.random() * 10000))
-    generateTribalCivilization()
+  const downloadImage = async () => {
+    if (!generatedImage) return
+
+    try {
+      const response = await fetch(generatedImage)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `flowsketch-tribes-${params.seed}.png`
+      a.click()
+      window.URL.revokeObjectURL(url)
+
+      toast({
+        title: "Download Started",
+        description: "Your tribal artwork is being downloaded",
+      })
+    } catch (error) {
+      toast({
+        title: "Download Failed",
+        description: "Could not download the image",
+        variant: "destructive",
+      })
+    }
   }
 
-  useEffect(() => {
-    generateTribalCivilization()
-  }, [currentSeed])
-
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Controls Panel */}
+      <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-3 text-amber-900">
-            <div className="p-2 bg-amber-200 rounded-lg">
-              <Users className="h-6 w-6" />
-            </div>
-            Enhanced Tribes Dataset - Living Civilizations
+          <CardTitle className="flex items-center">
+            <Users className="w-5 h-5 mr-2" />
+            Cultural Themes Generator
           </CardTitle>
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className="border-amber-300 text-amber-700">
-              <MapPin className="h-3 w-3 mr-1" />
-              Villages & Settlements
-            </Badge>
-            <Badge variant="outline" className="border-orange-300 text-orange-700">
-              <Users className="h-3 w-3 mr-1" />
-              People & Population
-            </Badge>
-            <Badge variant="outline" className="border-red-300 text-red-700">
-              <Flame className="h-3 w-3 mr-1" />
-              Rituals & Ceremonies
-            </Badge>
-          </div>
+          <CardDescription>
+            Create artwork featuring tribal settlements, native communities, and cultural elements
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="bg-white rounded-lg p-4 border border-amber-200">
-            <h3 className="font-semibold text-amber-900 mb-3">🏛️ What You'll See:</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-amber-800">
-              <div>
-                <h4 className="font-medium mb-2">🏘️ Villages & Infrastructure:</h4>
-                <ul className="space-y-1 text-xs">
-                  <li>• Multiple villages per tribe (1-4 each)</li>
-                  <li>• Village perimeters with communal centers</li>
-                  <li>• Watchtowers along boundaries</li>
-                  <li>• Trading posts on routes</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium mb-2">👥 People & Society:</h4>
-                <ul className="space-y-1 text-xs">
-                  <li>• 50-250 people per tribe</li>
-                  <li>• Individual people around dwellings</li>
-                  <li>• Chiefs with guards & advisors</li>
-                  <li>• Shamans with mystical patterns</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium mb-2">🔥 Rituals & Ceremonies:</h4>
-                <ul className="space-y-1 text-xs">
-                  <li>• Sacred ritual sites (2-6 per tribe)</li>
-                  <li>• Stone circles for ceremonies</li>
-                  <li>• Active rituals with 5-20 participants</li>
-                  <li>• Sacred fire pits at centers</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium mb-2">🌱 Seasonal Activities:</h4>
-                <ul className="space-y-1 text-xs">
-                  <li>• Spring: Planting (bright colors)</li>
-                  <li>• Summer: Hunting (dark colors)</li>
-                  <li>• Autumn: Harvest (warm colors)</li>
-                  <li>• Winter: Crafting (muted colors)</li>
-                </ul>
-              </div>
+        <CardContent className="space-y-6">
+          {/* Custom Prompt */}
+          <div className="space-y-2">
+            <Label htmlFor="customPrompt">Cultural Description (Optional)</Label>
+            <Textarea
+              id="customPrompt"
+              placeholder="Describe specific cultural elements, ceremonies, or traditions you want to include..."
+              value={params.customPrompt}
+              onChange={(e) => updateParam("customPrompt", e.target.value)}
+              rows={3}
+            />
+          </div>
+
+          {/* Dataset Selection */}
+          <div className="space-y-2">
+            <Label>Cultural Theme</Label>
+            <Select value={params.dataset} onValueChange={(value) => updateParam("dataset", value)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="tribes">Tribal Settlements</SelectItem>
+                <SelectItem value="natives">Native Communities</SelectItem>
+                <SelectItem value="heads">Portrait Mosaics</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Scenario and Color Scheme */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Environment</Label>
+              <Select value={params.scenario} onValueChange={(value) => updateParam("scenario", value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="landscape">Natural Landscape</SelectItem>
+                  <SelectItem value="architectural">Village Architecture</SelectItem>
+                  <SelectItem value="ceremonial">Ceremonial Grounds</SelectItem>
+                  <SelectItem value="seasonal">Seasonal Activities</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Color Palette</Label>
+              <Select value={params.colorScheme} onValueChange={(value) => updateParam("colorScheme", value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sunset">Warm Sunset</SelectItem>
+                  <SelectItem value="earth">Earth Tones</SelectItem>
+                  <SelectItem value="forest">Forest Greens</SelectItem>
+                  <SelectItem value="desert">Desert Sands</SelectItem>
+                  <SelectItem value="ocean">Ocean Blues</SelectItem>
+                  <SelectItem value="fire">Fire & Ember</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          <div className="flex gap-3">
-            <Button
-              onClick={generateNewCivilization}
-              disabled={isGenerating}
-              className="bg-amber-600 hover:bg-amber-700 text-white"
-            >
-              {isGenerating ? (
-                <>
-                  <Sparkles className="h-4 w-4 mr-2 animate-spin" />
-                  Generating Civilization...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Generate New Tribal Civilization
-                </>
-              )}
-            </Button>
-            <Badge variant="outline" className="px-3 py-1 border-amber-300 text-amber-700">
-              Seed: {currentSeed}
-            </Badge>
+          {/* Numerical Parameters */}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Seed: {params.seed}</Label>
+                <Button onClick={generateRandomSeed} variant="outline" size="sm">
+                  <RefreshCw className="w-3 h-3 mr-1" />
+                  Random
+                </Button>
+              </div>
+              <Slider
+                value={[params.seed]}
+                onValueChange={([value]) => updateParam("seed", value)}
+                min={1}
+                max={10000}
+                step={1}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Cultural Elements: {params.numSamples.toLocaleString()}</Label>
+              <Slider
+                value={[params.numSamples]}
+                onValueChange={([value]) => updateParam("numSamples", value)}
+                min={500}
+                max={5000}
+                step={100}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Artistic Variation: {params.noiseScale}</Label>
+              <Slider
+                value={[params.noiseScale]}
+                onValueChange={([value]) => updateParam("noiseScale", value)}
+                min={0}
+                max={0.3}
+                step={0.01}
+              />
+            </div>
           </div>
 
-          {tribalArt && (
-            <div className="bg-slate-900 rounded-lg p-4 border border-amber-200">
-              <div
-                className="w-full h-96 flex items-center justify-center"
-                dangerouslySetInnerHTML={{ __html: tribalArt }}
-              />
+          {/* Generate Button */}
+          <Button onClick={generateArt} disabled={isGenerating} className="w-full" size="lg">
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Creating Cultural Art...
+              </>
+            ) : (
+              <>
+                <Users className="w-4 h-4 mr-2" />
+                Generate Cultural Artwork
+              </>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Results Panel */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Generated Cultural Art</CardTitle>
+          <CardDescription>Your cultural-themed artwork will appear here once generated</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isGenerating && (
+            <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">Creating your cultural masterpiece...</p>
+              </div>
             </div>
           )}
 
-          <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
-            <h4 className="font-medium text-amber-900 mb-2">🎨 Try Different Variations:</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-              <div>
-                <strong>Scenarios:</strong>
-                <br />
-                landscape, botanical, geological, urban
+          {generatedImage && (
+            <div className="space-y-4">
+              <div className="relative">
+                <Image
+                  src={generatedImage || "/placeholder.svg"}
+                  alt="Generated cultural art"
+                  width={512}
+                  height={512}
+                  className="w-full rounded-lg shadow-lg"
+                  unoptimized
+                />
               </div>
-              <div>
-                <strong>Colors:</strong>
-                <br />
-                sunset, forest, earth, tribal
-              </div>
-              <div>
-                <strong>Samples:</strong>
-                <br />
-                1000-5000 for detail
-              </div>
-              <div>
-                <strong>Noise:</strong>
-                <br />
-                0.05-0.2 for variation
+
+              {generationDetails && (
+                <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="secondary">{generationDetails.provider}</Badge>
+                    <Badge variant="secondary">{generationDetails.model}</Badge>
+                    <Badge variant="secondary">{generationDetails.estimatedFileSize}</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Generated with {params.numSamples.toLocaleString()} cultural elements using {params.dataset} theme
+                  </p>
+                </div>
+              )}
+
+              <Button onClick={downloadImage} className="w-full">
+                <Download className="w-4 h-4 mr-2" />
+                Download Cultural Art
+              </Button>
+            </div>
+          )}
+
+          {!isGenerating && !generatedImage && (
+            <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
+              <div className="text-center">
+                <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">Click "Generate Cultural Artwork" to create your art</p>
               </div>
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

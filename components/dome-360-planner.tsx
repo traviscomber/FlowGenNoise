@@ -1,777 +1,556 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Slider } from "@/components/ui/slider"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Separator } from "@/components/ui/separator"
-import {
-  Camera,
-  MapPin,
-  Settings,
-  Calculator,
-  Download,
-  Eye,
-  Lightbulb,
-  Clock,
-  Ruler,
-  Zap,
-  Info,
-  CheckCircle,
-  AlertTriangle,
-} from "lucide-react"
+import { Switch } from "@/components/ui/switch"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Loader2, Download, Globe, Mountain, RefreshCw } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import Image from "next/image"
 
-interface DomeSpecs {
-  diameter: number
-  height: number
+interface DomeParams {
+  dataset: string
+  scenario: string
+  colorScheme: string
+  seed: number
+  numSamples: number
+  noiseScale: number
+  customPrompt: string
+  domeProjection: boolean
+  domeDiameter: number
+  domeResolution: string
   projectionType: string
-  resolution: string
-  viewingDistance: number
-}
-
-interface CameraSetup {
-  cameraType: string
-  lensType: string
-  focalLength: number
-  aperture: string
-  iso: number
-  shutterSpeed: string
-  overlap: number
-}
-
-interface ShootingPlan {
-  totalShots: number
-  rows: number
-  shotsPerRow: number[]
-  elevationAngles: number[]
-  azimuthSteps: number[]
-  estimatedTime: number
+  panoramic360: boolean
+  panoramaResolution: string
+  panoramaFormat: string
+  stereographicPerspective: string
 }
 
 export function Dome360Planner() {
-  const [domeSpecs, setDomeSpecs] = useState<DomeSpecs>({
-    diameter: 30,
-    height: 15,
-    projectionType: "fulldome",
-    resolution: "8K",
-    viewingDistance: 10,
+  const { toast } = useToast()
+  const [params, setParams] = useState<DomeParams>({
+    dataset: "spirals",
+    scenario: "cosmic",
+    colorScheme: "cosmic",
+    seed: Math.floor(Math.random() * 10000),
+    numSamples: 4000,
+    noiseScale: 0.08,
+    customPrompt: "",
+    domeProjection: true,
+    domeDiameter: 15,
+    domeResolution: "4K",
+    projectionType: "fisheye",
+    panoramic360: false,
+    panoramaResolution: "8K",
+    panoramaFormat: "equirectangular",
+    stereographicPerspective: "little-planet",
   })
 
-  const [cameraSetup, setCameraSetup] = useState<CameraSetup>({
-    cameraType: "dslr",
-    lensType: "fisheye",
-    focalLength: 8,
-    aperture: "f/8",
-    iso: 100,
-    shutterSpeed: "1/125",
-    overlap: 30,
-  })
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [generatedImages, setGeneratedImages] = useState<{
+    main?: string
+    dome?: string
+    panorama?: string
+  }>({})
+  const [generationDetails, setGenerationDetails] = useState<any>(null)
 
-  const [shootingPlan, setShootingPlan] = useState<ShootingPlan | null>(null)
-
-  const calculateShootingPlan = useCallback(() => {
-    const { diameter, height } = domeSpecs
-    const { focalLength, overlap } = cameraSetup
-
-    // Calculate field of view based on lens
-    const fov =
-      cameraSetup.lensType === "fisheye"
-        ? 180
-        : cameraSetup.lensType === "ultrawide"
-          ? 120
-          : 2 * Math.atan(36 / (2 * focalLength)) * (180 / Math.PI)
-
-    // Calculate effective FOV with overlap
-    const effectiveFov = fov * (1 - overlap / 100)
-
-    // Calculate number of rows (elevation steps)
-    const rows = Math.ceil(90 / effectiveFov) + 1 // From horizon to zenith
-
-    // Calculate shots per row based on elevation
-    const elevationAngles: number[] = []
-    const shotsPerRow: number[] = []
-    const azimuthSteps: number[] = []
-
-    for (let row = 0; row < rows; row++) {
-      const elevation = (row * 90) / (rows - 1)
-      elevationAngles.push(elevation)
-
-      // At higher elevations, we need fewer shots due to convergence
-      const circumferenceAtElevation = 360 * Math.cos((elevation * Math.PI) / 180)
-      const shotsNeeded = Math.max(1, Math.ceil(circumferenceAtElevation / effectiveFov))
-
-      shotsPerRow.push(shotsNeeded)
-      azimuthSteps.push(360 / shotsNeeded)
-    }
-
-    // Add nadir shot if needed
-    const totalShots = shotsPerRow.reduce((sum, shots) => sum + shots, 0) + 1
-
-    // Estimate shooting time (including setup, adjustments, etc.)
-    const timePerShot = 30 // seconds
-    const estimatedTime = (totalShots * timePerShot) / 60 // minutes
-
-    setShootingPlan({
-      totalShots,
-      rows,
-      shotsPerRow,
-      elevationAngles,
-      azimuthSteps,
-      estimatedTime,
-    })
-  }, [domeSpecs, cameraSetup])
-
-  const getResolutionSpecs = (resolution: string) => {
-    const specs = {
-      "4K": { width: 4096, height: 4096, pixels: "16.8M" },
-      "6K": { width: 6144, height: 6144, pixels: "37.7M" },
-      "8K": { width: 8192, height: 8192, pixels: "67.1M" },
-      "12K": { width: 12288, height: 12288, pixels: "150.9M" },
-    }
-    return specs[resolution as keyof typeof specs] || specs["8K"]
+  const updateParam = (key: keyof DomeParams, value: any) => {
+    setParams((prev) => ({ ...prev, [key]: value }))
   }
 
-  const getCameraRecommendations = () => {
-    const recommendations = {
-      professional: [
-        "Canon EOS R5 + RF 8-15mm f/4L Fisheye",
-        "Nikon Z9 + NIKKOR Z 14-24mm f/2.8 S",
-        "Sony α7R V + FE 12-24mm f/2.8 GM",
-      ],
-      prosumer: [
-        "Canon EOS R6 Mark II + RF 15-35mm f/2.8L",
-        "Nikon Z6 III + Z 14-30mm f/4 S",
-        "Sony α7 IV + FE 16-35mm f/2.8 GM",
-      ],
-      specialized: [
-        "Insta360 Pro 2 (8K 360° camera)",
-        "Kandao Obsidian Pro (12K 360° camera)",
-        "Z CAM V1 Pro (Professional VR camera)",
-      ],
-    }
-    return recommendations
+  const generateRandomSeed = () => {
+    updateParam("seed", Math.floor(Math.random() * 10000))
   }
 
-  const downloadShootingGuide = () => {
-    if (!shootingPlan) return
+  const generateArt = async () => {
+    setIsGenerating(true)
+    setGeneratedImages({})
+    setGenerationDetails(null)
 
-    const guide = `
-DOME 360° PHOTOGRAPHY SHOOTING GUIDE
-===================================
+    try {
+      console.log("🏛️ Starting dome/360° art generation with params:", params)
 
-DOME SPECIFICATIONS:
-- Diameter: ${domeSpecs.diameter}m
-- Height: ${domeSpecs.height}m
-- Projection: ${domeSpecs.projectionType}
-- Target Resolution: ${domeSpecs.resolution}
+      const response = await fetch("/api/generate-art", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      })
 
-CAMERA SETUP:
-- Camera Type: ${cameraSetup.cameraType}
-- Lens: ${cameraSetup.lensType} ${cameraSetup.focalLength}mm
-- Settings: ${cameraSetup.aperture}, ISO ${cameraSetup.iso}, ${cameraSetup.shutterSpeed}
-- Overlap: ${cameraSetup.overlap}%
+      console.log("📡 API response status:", response.status)
 
-SHOOTING PLAN:
-- Total Shots: ${shootingPlan.totalShots}
-- Number of Rows: ${shootingPlan.rows}
-- Estimated Time: ${Math.round(shootingPlan.estimatedTime)} minutes
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }))
+        console.error("❌ API error:", errorData)
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+      }
 
-DETAILED SHOT LIST:
-${shootingPlan.elevationAngles
-  .map(
-    (elevation, index) =>
-      `Row ${index + 1}: Elevation ${elevation.toFixed(1)}° - ${shootingPlan.shotsPerRow[index]} shots every ${shootingPlan.azimuthSteps[index].toFixed(1)}°`,
-  )
-  .join("\n")}
+      const result = await response.json()
+      console.log("✅ Generation successful:", result.success)
 
-EQUIPMENT CHECKLIST:
-□ Camera body with fully charged batteries (bring spares)
-□ Wide-angle/fisheye lens
-□ Sturdy tripod with panoramic head
-□ Remote shutter release or intervalometer
-□ Lens cleaning kit
-□ Memory cards (high-speed, large capacity)
-□ Laptop for immediate backup
-□ Light meter or smartphone light app
-□ Compass for orientation reference
+      if (result.success && result.image) {
+        setGeneratedImages({
+          main: result.image,
+          dome: result.domeImage,
+          panorama: result.panoramaImage,
+        })
+        setGenerationDetails(result)
+        toast({
+          title: "Immersive Art Generated Successfully!",
+          description: `Created ${params.domeProjection ? "dome" : ""}${params.domeProjection && params.panoramic360 ? " and " : ""}${params.panoramic360 ? "360°" : ""} artwork`,
+        })
+      } else {
+        throw new Error(result.error || "Failed to generate image")
+      }
+    } catch (error: any) {
+      console.error("💥 Generation failed:", error)
+      toast({
+        title: "Generation Failed",
+        description: error.message || "An unexpected error occurred",
+        variant: "destructive",
+      })
+    } finally {
+      setIsGenerating(false)
+    }
+  }
 
-SHOOTING TIPS:
-1. Shoot in RAW format for maximum post-processing flexibility
-2. Use manual exposure to maintain consistency across all shots
-3. Focus to hyperfocal distance for maximum sharpness
-4. Take test shots to verify exposure and white balance
-5. Mark tripod position for potential re-shoots
-6. Shoot during golden hour for best lighting (if outdoors)
-7. Consider HDR bracketing for high dynamic range scenes
+  const downloadImage = async (imageUrl: string, suffix: string) => {
+    if (!imageUrl) return
 
-POST-PROCESSING WORKFLOW:
-1. Import and organize all images
-2. Apply lens corrections and chromatic aberration removal
-3. Color correct and match exposures across all shots
-4. Stitch panorama using specialized software (PTGui, Autopano, etc.)
-5. Convert to fulldome format for projection
-6. Test projection on dome before final delivery
+    try {
+      const response = await fetch(imageUrl)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `flowsketch-${suffix}-${params.seed}.png`
+      a.click()
+      window.URL.revokeObjectURL(url)
 
-SOFTWARE RECOMMENDATIONS:
-- PTGui Pro (panorama stitching)
-- Adobe Lightroom (RAW processing)
-- Photoshop (final touch-ups)
-- DomeProjection software for fulldome conversion
-    `
-
-    const blob = new Blob([guide], { type: "text/plain" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `dome-360-shooting-guide-${domeSpecs.diameter}m.txt`
-    a.click()
-    URL.revokeObjectURL(url)
+      toast({
+        title: "Download Started",
+        description: `Your ${suffix} artwork is being downloaded`,
+      })
+    } catch (error) {
+      toast({
+        title: "Download Failed",
+        description: "Could not download the image",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-          Dome 360° Photography Planner
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Professional planning tool for immersive dome photography projects
-        </p>
-      </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Controls Panel */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Globe className="w-5 h-5 mr-2" />
+            Dome & 360° Planner
+          </CardTitle>
+          <CardDescription>
+            Create immersive artwork for planetariums, dome theaters, and VR experiences
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Custom Prompt */}
+          <div className="space-y-2">
+            <Label htmlFor="customPrompt">Immersive Description (Optional)</Label>
+            <Textarea
+              id="customPrompt"
+              placeholder="Describe the immersive experience you want to create..."
+              value={params.customPrompt}
+              onChange={(e) => updateParam("customPrompt", e.target.value)}
+              rows={3}
+            />
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Configuration Panel */}
-        <div className="lg:col-span-1 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Dome Specifications
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Dome Diameter (meters)</Label>
-                <Input
-                  type="number"
-                  value={domeSpecs.diameter}
-                  onChange={(e) => setDomeSpecs((prev) => ({ ...prev, diameter: Number(e.target.value) }))}
-                  min="5"
-                  max="100"
-                />
+          {/* Dataset and Scenario */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Mathematical Pattern</Label>
+              <Select value={params.dataset} onValueChange={(value) => updateParam("dataset", value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="spirals">Cosmic Spirals</SelectItem>
+                  <SelectItem value="fractal">Fractal Trees</SelectItem>
+                  <SelectItem value="mandelbrot">Mandelbrot Zoom</SelectItem>
+                  <SelectItem value="julia">Julia Landscapes</SelectItem>
+                  <SelectItem value="lorenz">Chaos Attractors</SelectItem>
+                  <SelectItem value="voronoi">Crystal Cells</SelectItem>
+                  <SelectItem value="wave">Wave Fields</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Immersive Theme</Label>
+              <Select value={params.scenario} onValueChange={(value) => updateParam("scenario", value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cosmic">Deep Space</SelectItem>
+                  <SelectItem value="underwater">Ocean Depths</SelectItem>
+                  <SelectItem value="crystalline">Crystal Caverns</SelectItem>
+                  <SelectItem value="forest">Enchanted Forest</SelectItem>
+                  <SelectItem value="aurora">Aurora Skies</SelectItem>
+                  <SelectItem value="volcanic">Volcanic Landscape</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Color Scheme */}
+          <div className="space-y-2">
+            <Label>Color Palette</Label>
+            <Select value={params.colorScheme} onValueChange={(value) => updateParam("colorScheme", value)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="cosmic">Cosmic Nebula</SelectItem>
+                <SelectItem value="aurora">Aurora Borealis</SelectItem>
+                <SelectItem value="plasma">Electric Plasma</SelectItem>
+                <SelectItem value="thermal">Thermal Vision</SelectItem>
+                <SelectItem value="spectral">Full Spectrum</SelectItem>
+                <SelectItem value="bioluminescent">Bioluminescent</SelectItem>
+                <SelectItem value="crystalline">Crystal Prisms</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Projection Settings */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="domeProjection"
+                checked={params.domeProjection}
+                onCheckedChange={(checked) => updateParam("domeProjection", checked)}
+              />
+              <Label htmlFor="domeProjection">Enable Dome Projection</Label>
+            </div>
+
+            {params.domeProjection && (
+              <div className="space-y-4 pl-6 border-l-2 border-blue-200">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Dome Diameter: {params.domeDiameter}m</Label>
+                    <Slider
+                      value={[params.domeDiameter]}
+                      onValueChange={([value]) => updateParam("domeDiameter", value)}
+                      min={5}
+                      max={30}
+                      step={1}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Resolution</Label>
+                    <Select
+                      value={params.domeResolution}
+                      onValueChange={(value) => updateParam("domeResolution", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="2K">2K (2048x2048)</SelectItem>
+                        <SelectItem value="4K">4K (4096x4096)</SelectItem>
+                        <SelectItem value="8K">8K (8192x8192)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Projection Type</Label>
+                  <Select value={params.projectionType} onValueChange={(value) => updateParam("projectionType", value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fisheye">Fisheye</SelectItem>
+                      <SelectItem value="equidistant">Equidistant</SelectItem>
+                      <SelectItem value="stereographic">Stereographic</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
+            )}
 
-              <div className="space-y-2">
-                <Label>Dome Height (meters)</Label>
-                <Input
-                  type="number"
-                  value={domeSpecs.height}
-                  onChange={(e) => setDomeSpecs((prev) => ({ ...prev, height: Number(e.target.value) }))}
-                  min="2"
-                  max="50"
-                />
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="panoramic360"
+                checked={params.panoramic360}
+                onCheckedChange={(checked) => updateParam("panoramic360", checked)}
+              />
+              <Label htmlFor="panoramic360">Enable 360° Panorama</Label>
+            </div>
+
+            {params.panoramic360 && (
+              <div className="space-y-4 pl-6 border-l-2 border-green-200">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Resolution</Label>
+                    <Select
+                      value={params.panoramaResolution}
+                      onValueChange={(value) => updateParam("panoramaResolution", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="4K">4K</SelectItem>
+                        <SelectItem value="8K">8K</SelectItem>
+                        <SelectItem value="16K">16K</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Format</Label>
+                    <Select
+                      value={params.panoramaFormat}
+                      onValueChange={(value) => updateParam("panoramaFormat", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="equirectangular">Equirectangular</SelectItem>
+                        <SelectItem value="stereographic">Stereographic</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {params.panoramaFormat === "stereographic" && (
+                  <div className="space-y-2">
+                    <Label>Perspective</Label>
+                    <Select
+                      value={params.stereographicPerspective}
+                      onValueChange={(value) => updateParam("stereographicPerspective", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="little-planet">Little Planet</SelectItem>
+                        <SelectItem value="tunnel">Tunnel View</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
+            )}
+          </div>
 
-              <div className="space-y-2">
-                <Label>Projection Type</Label>
-                <Select
-                  value={domeSpecs.projectionType}
-                  onValueChange={(value) => setDomeSpecs((prev) => ({ ...prev, projectionType: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="fulldome">Fulldome (180°)</SelectItem>
-                    <SelectItem value="planetarium">Planetarium</SelectItem>
-                    <SelectItem value="immersive">Immersive Experience</SelectItem>
-                    <SelectItem value="scientific">Scientific Visualization</SelectItem>
-                  </SelectContent>
-                </Select>
+          {/* Numerical Parameters */}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Seed: {params.seed}</Label>
+                <Button onClick={generateRandomSeed} variant="outline" size="sm">
+                  <RefreshCw className="w-3 h-3 mr-1" />
+                  Random
+                </Button>
               </div>
+              <Slider
+                value={[params.seed]}
+                onValueChange={([value]) => updateParam("seed", value)}
+                min={1}
+                max={10000}
+                step={1}
+              />
+            </div>
 
-              <div className="space-y-2">
-                <Label>Target Resolution</Label>
-                <Select
-                  value={domeSpecs.resolution}
-                  onValueChange={(value) => setDomeSpecs((prev) => ({ ...prev, resolution: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="4K">4K (4096×4096)</SelectItem>
-                    <SelectItem value="6K">6K (6144×6144)</SelectItem>
-                    <SelectItem value="8K">8K (8192×8192)</SelectItem>
-                    <SelectItem value="12K">12K (12288×12288)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label>Data Points: {params.numSamples.toLocaleString()}</Label>
+              <Slider
+                value={[params.numSamples]}
+                onValueChange={([value]) => updateParam("numSamples", value)}
+                min={1000}
+                max={8000}
+                step={100}
+              />
+            </div>
 
-              <div className="space-y-2">
-                <Label>Average Viewing Distance (meters)</Label>
-                <Input
-                  type="number"
-                  value={domeSpecs.viewingDistance}
-                  onChange={(e) => setDomeSpecs((prev) => ({ ...prev, viewingDistance: Number(e.target.value) }))}
-                  min="1"
-                  max="20"
-                />
-              </div>
-            </CardContent>
-          </Card>
+            <div className="space-y-2">
+              <Label>Noise Scale: {params.noiseScale}</Label>
+              <Slider
+                value={[params.noiseScale]}
+                onValueChange={([value]) => updateParam("noiseScale", value)}
+                min={0}
+                max={0.2}
+                step={0.01}
+              />
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Camera className="h-5 w-5" />
-                Camera Setup
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Camera Type</Label>
-                <Select
-                  value={cameraSetup.cameraType}
-                  onValueChange={(value) => setCameraSetup((prev) => ({ ...prev, cameraType: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="dslr">DSLR</SelectItem>
-                    <SelectItem value="mirrorless">Mirrorless</SelectItem>
-                    <SelectItem value="360camera">360° Camera</SelectItem>
-                    <SelectItem value="medium_format">Medium Format</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Lens Type</Label>
-                <Select
-                  value={cameraSetup.lensType}
-                  onValueChange={(value) => setCameraSetup((prev) => ({ ...prev, lensType: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="fisheye">Fisheye (8-16mm)</SelectItem>
-                    <SelectItem value="ultrawide">Ultra-wide (14-24mm)</SelectItem>
-                    <SelectItem value="wide">Wide-angle (16-35mm)</SelectItem>
-                    <SelectItem value="standard">Standard (24-70mm)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Focal Length (mm)</Label>
-                <Input
-                  type="number"
-                  value={cameraSetup.focalLength}
-                  onChange={(e) => setCameraSetup((prev) => ({ ...prev, focalLength: Number(e.target.value) }))}
-                  min="8"
-                  max="200"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Aperture</Label>
-                <Select
-                  value={cameraSetup.aperture}
-                  onValueChange={(value) => setCameraSetup((prev) => ({ ...prev, aperture: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="f/2.8">f/2.8</SelectItem>
-                    <SelectItem value="f/4">f/4</SelectItem>
-                    <SelectItem value="f/5.6">f/5.6</SelectItem>
-                    <SelectItem value="f/8">f/8 (Recommended)</SelectItem>
-                    <SelectItem value="f/11">f/11</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>ISO</Label>
-                <Input
-                  type="number"
-                  value={cameraSetup.iso}
-                  onChange={(e) => setCameraSetup((prev) => ({ ...prev, iso: Number(e.target.value) }))}
-                  min="50"
-                  max="6400"
-                  step="50"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Overlap Percentage</Label>
-                <Input
-                  type="number"
-                  value={cameraSetup.overlap}
-                  onChange={(e) => setCameraSetup((prev) => ({ ...prev, overlap: Number(e.target.value) }))}
-                  min="20"
-                  max="50"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Button onClick={calculateShootingPlan} className="w-full">
-            <Calculator className="h-4 w-4 mr-2" />
-            Calculate Shooting Plan
+          {/* Generate Button */}
+          <Button onClick={generateArt} disabled={isGenerating} className="w-full" size="lg">
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Creating Immersive Art...
+              </>
+            ) : (
+              <>
+                <Globe className="w-4 h-4 mr-2" />
+                Generate Immersive Artwork
+              </>
+            )}
           </Button>
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* Results Panel */}
-        <div className="lg:col-span-2 space-y-4">
-          <Tabs defaultValue="plan" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="plan">Shooting Plan</TabsTrigger>
-              <TabsTrigger value="equipment">Equipment</TabsTrigger>
-              <TabsTrigger value="technical">Technical</TabsTrigger>
-              <TabsTrigger value="workflow">Workflow</TabsTrigger>
-            </TabsList>
+      {/* Results Panel */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Generated Immersive Art</CardTitle>
+          <CardDescription>Your dome and 360° artwork will appear here once generated</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isGenerating && (
+            <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">Creating your immersive experience...</p>
+              </div>
+            </div>
+          )}
 
-            <TabsContent value="plan" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5" />
-                    Shooting Plan Overview
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {shootingPlan ? (
-                    <div className="space-y-6">
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                          <div className="text-2xl font-bold text-blue-600">{shootingPlan.totalShots}</div>
-                          <div className="text-sm text-gray-600">Total Shots</div>
-                        </div>
-                        <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                          <div className="text-2xl font-bold text-green-600">{shootingPlan.rows}</div>
-                          <div className="text-sm text-gray-600">Elevation Rows</div>
-                        </div>
-                        <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                          <div className="text-2xl font-bold text-purple-600">
-                            {Math.round(shootingPlan.estimatedTime)}
-                          </div>
-                          <div className="text-sm text-gray-600">Minutes</div>
-                        </div>
-                        <div className="text-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                          <div className="text-2xl font-bold text-orange-600">
-                            {getResolutionSpecs(domeSpecs.resolution).pixels}
-                          </div>
-                          <div className="text-sm text-gray-600">Final Pixels</div>
-                        </div>
-                      </div>
+          {(generatedImages.main || generatedImages.dome || generatedImages.panorama) && (
+            <Tabs defaultValue="main" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="main">Standard</TabsTrigger>
+                <TabsTrigger value="dome" disabled={!generatedImages.dome}>
+                  Dome
+                </TabsTrigger>
+                <TabsTrigger value="panorama" disabled={!generatedImages.panorama}>
+                  360°
+                </TabsTrigger>
+              </TabsList>
 
-                      <div className="space-y-3">
-                        <h4 className="font-semibold">Detailed Shot Breakdown:</h4>
-                        {shootingPlan.elevationAngles.map((elevation, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
-                          >
-                            <div className="flex items-center gap-3">
-                              <Badge variant="outline">Row {index + 1}</Badge>
-                              <span className="text-sm">Elevation: {elevation.toFixed(1)}°</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <span className="text-sm">{shootingPlan.shotsPerRow[index]} shots</span>
-                              <span className="text-xs text-gray-500">
-                                every {shootingPlan.azimuthSteps[index].toFixed(1)}°
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <Alert>
-                        <Info className="h-4 w-4" />
-                        <AlertDescription>
-                          Plan includes one additional nadir (straight down) shot. Consider bracketing exposures for HDR
-                          processing.
-                        </AlertDescription>
-                      </Alert>
-
-                      <Button onClick={downloadShootingGuide} className="w-full">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download Complete Shooting Guide
-                      </Button>
+              <TabsContent value="main" className="space-y-4">
+                {generatedImages.main && (
+                  <>
+                    <div className="relative">
+                      <Image
+                        src={generatedImages.main || "/placeholder.svg"}
+                        alt="Generated standard art"
+                        width={512}
+                        height={512}
+                        className="w-full rounded-lg shadow-lg"
+                        unoptimized
+                      />
                     </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <Calculator className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>Click "Calculate Shooting Plan" to generate your custom shooting plan</p>
+                    <Button onClick={() => downloadImage(generatedImages.main!, "standard")} className="w-full">
+                      <Download className="w-4 h-4 mr-2" />
+                      Download Standard Version
+                    </Button>
+                  </>
+                )}
+              </TabsContent>
+
+              <TabsContent value="dome" className="space-y-4">
+                {generatedImages.dome && (
+                  <>
+                    <div className="relative">
+                      <Image
+                        src={generatedImages.dome || "/placeholder.svg"}
+                        alt="Generated dome projection art"
+                        width={512}
+                        height={512}
+                        className="w-full rounded-lg shadow-lg"
+                        unoptimized
+                      />
                     </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="equipment" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Camera className="h-5 w-5" />
-                    Recommended Equipment
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {Object.entries(getCameraRecommendations()).map(([category, cameras]) => (
-                    <div key={category} className="space-y-3">
-                      <h4 className="font-semibold capitalize">{category} Cameras</h4>
-                      <div className="space-y-2">
-                        {cameras.map((camera, index) => (
-                          <div key={index} className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                            <div className="flex items-center gap-2">
-                              <CheckCircle className="h-4 w-4 text-green-500" />
-                              <span className="text-sm">{camera}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                    <div className="space-y-2">
+                      <Badge variant="secondary">
+                        <Mountain className="w-3 h-3 mr-1" />
+                        {params.domeDiameter}m Dome • {params.domeResolution}
+                      </Badge>
+                      <p className="text-sm text-muted-foreground">
+                        Optimized for {params.projectionType} projection on {params.domeDiameter}m diameter dome
+                      </p>
                     </div>
-                  ))}
+                    <Button onClick={() => downloadImage(generatedImages.dome!, "dome")} className="w-full">
+                      <Download className="w-4 h-4 mr-2" />
+                      Download Dome Version
+                    </Button>
+                  </>
+                )}
+              </TabsContent>
 
-                  <Separator />
-
-                  <div className="space-y-3">
-                    <h4 className="font-semibold">Essential Accessories</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {[
-                        "Heavy-duty tripod with panoramic head",
-                        "Remote shutter release/intervalometer",
-                        "High-speed memory cards (64GB+)",
-                        "Extra batteries and charger",
-                        "Lens cleaning kit",
-                        "Laptop for immediate backup",
-                        "Light meter or smartphone app",
-                        "Compass for orientation reference",
-                      ].map((item, index) => (
-                        <div key={index} className="flex items-center gap-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
-                          <CheckCircle className="h-4 w-4 text-blue-500" />
-                          <span className="text-sm">{item}</span>
-                        </div>
-                      ))}
+              <TabsContent value="panorama" className="space-y-4">
+                {generatedImages.panorama && (
+                  <>
+                    <div className="relative">
+                      <Image
+                        src={generatedImages.panorama || "/placeholder.svg"}
+                        alt="Generated 360° panorama art"
+                        width={512}
+                        height={params.panoramaFormat === "equirectangular" ? 256 : 512}
+                        className="w-full rounded-lg shadow-lg"
+                        unoptimized
+                      />
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="technical" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Ruler className="h-5 w-5" />
-                    Technical Specifications
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <h4 className="font-semibold">Dome Calculations</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>Surface Area:</span>
-                          <span>{(2 * Math.PI * Math.pow(domeSpecs.diameter / 2, 2)).toFixed(1)} m²</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Volume:</span>
-                          <span>{((2 / 3) * Math.PI * Math.pow(domeSpecs.diameter / 2, 3)).toFixed(1)} m³</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Circumference:</span>
-                          <span>{(Math.PI * domeSpecs.diameter).toFixed(1)} m</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Viewing Angle:</span>
-                          <span>180° (hemisphere)</span>
-                        </div>
-                      </div>
+                    <div className="space-y-2">
+                      <Badge variant="secondary">
+                        <Globe className="w-3 h-3 mr-1" />
+                        360° • {params.panoramaResolution} • {params.panoramaFormat}
+                      </Badge>
+                      <p className="text-sm text-muted-foreground">
+                        {params.panoramaFormat === "equirectangular"
+                          ? "Ready for VR headsets and 360° video platforms"
+                          : `${params.stereographicPerspective} stereographic projection`}
+                      </p>
                     </div>
+                    <Button onClick={() => downloadImage(generatedImages.panorama!, "360")} className="w-full">
+                      <Download className="w-4 h-4 mr-2" />
+                      Download 360° Version
+                    </Button>
+                  </>
+                )}
+              </TabsContent>
+            </Tabs>
+          )}
 
-                    <div className="space-y-4">
-                      <h4 className="font-semibold">Resolution Details</h4>
-                      <div className="space-y-2 text-sm">
-                        {(() => {
-                          const specs = getResolutionSpecs(domeSpecs.resolution)
-                          return (
-                            <>
-                              <div className="flex justify-between">
-                                <span>Final Resolution:</span>
-                                <span>
-                                  {specs.width} × {specs.height}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span>Total Pixels:</span>
-                                <span>{specs.pixels}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span>Pixels per Degree:</span>
-                                <span>{(specs.width / 360).toFixed(1)}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span>File Size (RAW):</span>
-                                <span>~{Math.round((specs.width * specs.height * 3) / 1000000)} MB</span>
-                              </div>
-                            </>
-                          )
-                        })()}
-                      </div>
-                    </div>
-                  </div>
+          {generationDetails && (
+            <div className="mt-4 space-y-2">
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">{generationDetails.provider}</Badge>
+                <Badge variant="secondary">{generationDetails.model}</Badge>
+                <Badge variant="secondary">{generationDetails.estimatedFileSize}</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Generated with {params.numSamples.toLocaleString()} data points for immersive display
+              </p>
+            </div>
+          )}
 
-                  <Separator />
-
-                  <div className="space-y-4">
-                    <h4 className="font-semibold">Camera Settings Recommendations</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Lightbulb className="h-4 w-4 text-green-600" />
-                          <span className="font-medium">Bright Conditions</span>
-                        </div>
-                        <div className="text-sm space-y-1">
-                          <div>ISO: 100-200</div>
-                          <div>Aperture: f/8-f/11</div>
-                          <div>Shutter: 1/125-1/250s</div>
-                        </div>
-                      </div>
-
-                      <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Clock className="h-4 w-4 text-yellow-600" />
-                          <span className="font-medium">Golden Hour</span>
-                        </div>
-                        <div className="text-sm space-y-1">
-                          <div>ISO: 200-400</div>
-                          <div>Aperture: f/5.6-f/8</div>
-                          <div>Shutter: 1/60-1/125s</div>
-                        </div>
-                      </div>
-
-                      <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Eye className="h-4 w-4 text-blue-600" />
-                          <span className="font-medium">Low Light</span>
-                        </div>
-                        <div className="text-sm space-y-1">
-                          <div>ISO: 400-1600</div>
-                          <div>Aperture: f/4-f/5.6</div>
-                          <div>Shutter: 1/30-1/60s</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Alert>
-                    <AlertTriangle className="h-4 w-4" />
-                    <AlertDescription>
-                      For dome projection, maintain consistent exposure across all shots. Use manual mode and avoid
-                      auto-exposure.
-                    </AlertDescription>
-                  </Alert>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="workflow" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Zap className="h-5 w-5" />
-                    Complete Workflow
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="p-4 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20">
-                      <h4 className="font-semibold text-blue-700 dark:text-blue-300">1. Pre-Production</h4>
-                      <ul className="mt-2 text-sm space-y-1 text-blue-600 dark:text-blue-400">
-                        <li>• Scout location and plan shooting positions</li>
-                        <li>• Check weather conditions and lighting</li>
-                        <li>• Prepare and test all equipment</li>
-                        <li>• Create shot list and timing schedule</li>
-                      </ul>
-                    </div>
-
-                    <div className="p-4 border-l-4 border-green-500 bg-green-50 dark:bg-green-900/20">
-                      <h4 className="font-semibold text-green-700 dark:text-green-300">2. Shooting Day</h4>
-                      <ul className="mt-2 text-sm space-y-1 text-green-600 dark:text-green-400">
-                        <li>• Set up tripod at calculated center position</li>
-                        <li>• Configure camera settings (manual mode)</li>
-                        <li>• Take test shots and verify exposure</li>
-                        <li>• Execute shooting plan systematically</li>
-                        <li>• Backup images immediately after each row</li>
-                      </ul>
-                    </div>
-
-                    <div className="p-4 border-l-4 border-purple-500 bg-purple-50 dark:bg-purple-900/20">
-                      <h4 className="font-semibold text-purple-700 dark:text-purple-300">3. Post-Production</h4>
-                      <ul className="mt-2 text-sm space-y-1 text-purple-600 dark:text-purple-400">
-                        <li>• Import and organize all RAW files</li>
-                        <li>• Apply lens corrections and color grading</li>
-                        <li>• Stitch panorama using PTGui or similar</li>
-                        <li>• Convert to fulldome projection format</li>
-                        <li>• Test on dome system before delivery</li>
-                      </ul>
-                    </div>
-
-                    <div className="p-4 border-l-4 border-orange-500 bg-orange-50 dark:bg-orange-900/20">
-                      <h4 className="font-semibold text-orange-700 dark:text-orange-300">4. Delivery & Installation</h4>
-                      <ul className="mt-2 text-sm space-y-1 text-orange-600 dark:text-orange-400">
-                        <li>• Export in required dome format (fisheye, cubic, etc.)</li>
-                        <li>• Provide multiple resolution versions</li>
-                        <li>• Include calibration and alignment guides</li>
-                        <li>• Test projection and make final adjustments</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-3">
-                    <h4 className="font-semibold">Recommended Software</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <h5 className="font-medium">Stitching & Processing</h5>
-                        <div className="space-y-1 text-sm">
-                          <div>• PTGui Pro (panorama stitching)</div>
-                          <div>• Adobe Lightroom (RAW processing)</div>
-                          <div>• Photoshop (final touch-ups)</div>
-                          <div>• Autopano Giga (alternative stitching)</div>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <h5 className="font-medium">Dome Conversion</h5>
-                        <div className="space-y-1 text-sm">
-                          <div>• DomeProjection software</div>
-                          <div>• Fulldome Toolkit</div>
-                          <div>• WorldWide Telescope</div>
-                          <div>• Custom projection scripts</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
+          {!isGenerating && !generatedImages.main && (
+            <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
+              <div className="text-center">
+                <Globe className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">Configure your immersive settings and generate artwork</p>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
