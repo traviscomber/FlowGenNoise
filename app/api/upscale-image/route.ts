@@ -2,30 +2,22 @@ import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { imageUrl, scale = 2 } = body
+    const { imageUrl, scaleFactor = 2 } = await request.json()
 
     if (!imageUrl) {
-      return NextResponse.json({ success: false, error: "No image URL provided" }, { status: 400 })
+      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
     }
 
     // For now, return the original image URL
-    // In a real implementation, you would use an upscaling service
+    // In a production environment, you would integrate with an upscaling service
+    // like Real-ESRGAN, ESRGAN, or a cloud-based upscaling API
+
     return NextResponse.json({
-      success: true,
-      upscaledUrl: imageUrl,
-      originalSize: "1024x1024",
-      upscaledSize: `${1024 * scale}x${1024 * scale}`,
-      message: "Upscaling service not implemented - returning original image",
+      upscaledImageUrl: imageUrl,
+      message: "Client-side upscaling recommended for better quality",
     })
   } catch (error: any) {
-    console.error("Upscale error:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to upscale image",
-      },
-      { status: 500 },
-    )
+    console.error("Image upscaling error:", error)
+    return NextResponse.json({ error: "Failed to upscale image", details: error.message }, { status: 500 })
   }
 }

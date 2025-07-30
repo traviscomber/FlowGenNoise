@@ -1,179 +1,65 @@
-// Mathematical plotting utilities for SVG generation
+export function generateScatterPlotSVG(data: number[][]): string {
+  const width = 600
+  const height = 400
+  const margin = 40 // Margin for padding
 
-export interface Point {
-  x: number
-  y: number
-}
-
-export interface PlotConfig {
-  width: number
-  height: number
-  margin: number
-  backgroundColor: string
-  strokeColor: string
-  strokeWidth: number
-}
-
-export class MathPlotter {
-  private config: PlotConfig
-
-  constructor(config: Partial<PlotConfig> = {}) {
-    this.config = {
-      width: 800,
-      height: 800,
-      margin: 50,
-      backgroundColor: "#000000",
-      strokeColor: "#ffffff",
-      strokeWidth: 1,
-      ...config,
-    }
+  // Find min/max for scaling
+  let minX = Number.POSITIVE_INFINITY,
+    maxX = Number.NEGATIVE_INFINITY,
+    minY = Number.POSITIVE_INFINITY,
+    maxY = Number.NEGATIVE_INFINITY
+  for (const [x, y] of data) {
+    minX = Math.min(minX, x)
+    maxX = Math.max(maxX, x)
+    minY = Math.min(minY, y)
+    maxY = Math.max(maxY, y)
   }
 
-  // Generate Fibonacci spiral points
-  generateFibonacciSpiral(numPoints: number, scale = 1): Point[] {
-    const points: Point[] = []
-    const phi = (1 + Math.sqrt(5)) / 2 // Golden ratio
+  // Add some padding to the data range
+  const paddingFactor = 0.1
+  const rangeX = maxX - minX
+  const rangeY = maxY - minY
+  minX -= rangeX * paddingFactor
+  maxX += rangeX * paddingFactor
+  minY -= rangeY * paddingFactor
+  maxY += rangeY * paddingFactor
 
-    for (let i = 0; i < numPoints; i++) {
-      const angle = (i * 2 * Math.PI) / phi
-      const radius = Math.sqrt(i) * scale
+  // Scaling functions to map data coordinates to SVG pixel coordinates
+  const scaleX = (val: number) => margin + ((val - minX) / (maxX - minX)) * (width - 2 * margin)
+  const scaleY = (val: number) => height - margin - ((val - minY) / (maxY - minY)) * (height - 2 * margin) // Invert Y for SVG
 
-      points.push({
-        x: radius * Math.cos(angle),
-        y: radius * Math.sin(angle),
-      })
-    }
+  // For color mapping (c=np.linalg.norm(X, axis=1), cmap='magma')
+  const norms = data.map(([x, y]) => Math.sqrt(x * x + y * y))
+  const minNorm = Math.min(...norms)
+  const maxNorm = Math.max(...norms)
 
-    return points
+  const getColor = (norm: number) => {
+    // Simple linear interpolation for a 'magma' like effect
+    // Approximating magma colormap with a gradient from purple to yellow
+    const t = (norm - minNorm) / (maxNorm - minNorm)
+    const r = Math.floor(255 * t)
+    const g = Math.floor(255 * t)
+    const b = Math.floor(255 * (1 - t))
+    return `rgb(${r}, ${g}, ${b})`
   }
 
-  // Generate fractal tree points
-  generateFractalTree(depth: number, length: number, angle: number): string {
-    if (depth === 0) return ""
+  let circles = ""
+  const pointRadius = 2 // Radius for SVG points
 
-    const x1 = 0
-    const y1 = 0
-    const x2 = length * Math.cos(angle)
-    const y2 = length * Math.sin(angle)
-
-    let path = `M ${x1} ${y1} L ${x2} ${y2} `
-
-    if (depth > 1) {
-      const newLength = length * 0.7
-      const leftAngle = angle + Math.PI / 6
-      const rightAngle = angle - Math.PI / 6
-
-      path += `M ${x2} ${y2} ` + this.generateFractalTree(depth - 1, newLength, leftAngle)
-      path += `M ${x2} ${y2} ` + this.generateFractalTree(depth - 1, newLength, rightAngle)
-    }
-
-    return path
+  for (let i = 0; i < data.length; i++) {
+    const [x, y] = data[i]
+    const norm = norms[i]
+    const color = getColor(norm)
+    circles += `<circle cx="${scaleX(x)}" cy="${scaleY(y)}" r="${pointRadius}" fill="${color}" fill-opacity="0.8" />`
   }
 
-  // Generate Mandelbrot set points
-  generateMandelbrotSet(width: number, height: number, maxIterations = 100): Point[] {
-    const points: Point[] = []
-    const zoom = 1
-    const moveX = -0.5
-    const moveY = 0
+  const svgContent = `
+        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="${width}" height="${height}" fill="white"/>
+          ${circles}
+        </svg>
+      `
 
-    for (let x = 0; x < width; x++) {
-      for (let y = 0; y < height; y++) {
-        const zx = (x - width / 2) / (0.5 * zoom * width) + moveX
-        const zy = (y - height / 2) / (0.5 * zoom * height) + moveY
-
-        let cx = zx
-        let cy = zy
-        let i = maxIterations
-
-        while (cx * cx + cy * cy < 4 && i > 0) {
-          const tmp = cx * cx - cy * cy + zx
-          cy = 2.0 * cx * cy + zy
-          cx = tmp
-          i--
-        }
-
-        if (i > 0) {
-          points.push({ x, y })
-        }
-      }
-    }
-
-    return points
-  }
-
-  // Generate Lorenz attractor points
-  generateLorenzAttractor(numPoints: number, dt = 0.01): Point[] {
-    const points: Point[] = []
-    const sigma = 10
-    const rho = 28
-    const beta = 8 / 3
-
-    let x = 1
-    let y = 1
-    let z = 1
-
-    for (let i = 0; i < numPoints; i++) {
-      const dx = sigma * (y - x)
-      const dy = x * (rho - z) - y
-      const dz = x * y - beta * z
-
-      x += dx * dt
-      y += dy * dt
-      z += dz * dt
-
-      points.push({ x, y })
-    }
-
-    return points
-  }
-
-  // Convert points to SVG path
-  pointsToPath(points: Point[]): string {
-    if (points.length === 0) return ""
-
-    let path = `M ${points[0].x} ${points[0].y}`
-
-    for (let i = 1; i < points.length; i++) {
-      path += ` L ${points[i].x} ${points[i].y}`
-    }
-
-    return path
-  }
-
-  // Generate complete SVG
-  generateSVG(paths: string[], colors: string[] = []): string {
-    const { width, height, backgroundColor } = this.config
-
-    let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`
-    svg += `<rect width="100%" height="100%" fill="${backgroundColor}"/>`
-
-    paths.forEach((path, index) => {
-      const color = colors[index] || this.config.strokeColor
-      svg += `<path d="${path}" stroke="${color}" stroke-width="${this.config.strokeWidth}" fill="none"/>`
-    })
-
-    svg += "</svg>"
-    return svg
-  }
-}
-
-// Utility functions for mathematical calculations
-export function lerp(a: number, b: number, t: number): number {
-  return a + (b - a) * t
-}
-
-export function map(value: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
-  return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin
-}
-
-export function noise(x: number, y = 0): number {
-  // Simple pseudo-random noise function
-  const n = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453
-  return n - Math.floor(n)
-}
-
-export function smoothstep(edge0: number, edge1: number, x: number): number {
-  const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)))
-  return t * t * (3 - 2 * t)
+  // Encode SVG to base64 data URL
+  return `data:image/svg+xml;base64,${Buffer.from(svgContent).toString("base64")}`
 }
