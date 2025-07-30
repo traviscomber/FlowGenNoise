@@ -1,497 +1,260 @@
-// lib/flow-model.ts
-export type DatasetType =
-  | "lissajous"
-  | "mandelbrot"
-  | "julia"
-  | "sierpinski"
-  | "fern"
-  | "neural_network"
-  | "moon_phases"
-  | "checkerboard"
-  | "spiral_galaxy"
-  | "dna_helix"
-  | "wave_interference"
-  | "crystal_lattice"
-
-export type ColorSchemeType =
-  | "viridis"
-  | "plasma"
-  | "inferno"
-  | "magma"
-  | "cividis"
-  | "rainbow"
-  | "grayscale"
-  | "neon"
-  | "pastel"
-  | "monochrome"
-
-export type ScenarioType =
-  | "none"
-  | "enchanted_forest"
-  | "deep_ocean"
-  | "cosmic_nebula"
-  | "cyberpunk_city"
-  | "ancient_temple"
-  | "crystal_cave"
-  | "aurora_borealis"
-  | "volcanic_landscape"
-  | "neural_connections"
-  | "quantum_realm"
-  | "steampunk_workshop"
-  | "underwater_city"
-  | "space_station"
-  | "mystical_portal"
-
-export interface FlowArtSettings {
-  dataset: DatasetType
-  colorScheme: ColorSchemeType
-  samples: number
-  noise: number
+export interface GenerationParams {
+  dataset: string
+  scenario: string
+  colorScheme: string
   seed: number
-  generationMode: "svg" | "ai"
-  scenario: ScenarioType
-  aiPrompt?: string
-  aiNegativePrompt?: string
-  scenarioThreshold: number
+  numSamples: number
+  noiseScale: number
+  timeStep: number
+  domeProjection?: boolean
+  domeDiameter?: number
+  domeResolution?: string
+  projectionType?: string
+  panoramic360?: boolean
+  panoramaResolution?: string
+  panoramaFormat?: string
+  stereographicPerspective?: string
 }
 
-export interface FlowParameters {
-  dataset: DatasetType
-  samples: number
-  noise: number
-  complexity: number
-  symmetry: number
-  colorVariation: number
-  flowIntensity: number
-  scenario: ScenarioType
-  scenarioThreshold: number
+export interface DomeProjectionParams {
+  width: number
+  height: number
+  fov: number
+  tilt: number
 }
 
-export interface DataPoint {
-  x: number
-  y: number
-}
+export function generateFlowField(params: GenerationParams): string {
+  const { dataset, scenario, colorScheme, seed, numSamples, noiseScale, timeStep } = params
 
-export const defaultFlowArtSettings: FlowArtSettings = {
-  dataset: "lissajous",
-  colorScheme: "viridis",
-  samples: 1000,
-  noise: 0.1,
-  seed: Math.floor(Math.random() * 100000),
-  generationMode: "svg",
-  scenario: "none",
-  scenarioThreshold: 50,
-}
-
-export const datasets = [
-  { value: "lissajous", label: "Lissajous Curves" },
-  { value: "mandelbrot", label: "Mandelbrot Set" },
-  { value: "julia", label: "Julia Set" },
-  { value: "sierpinski", label: "Sierpinski Triangle" },
-  { value: "fern", label: "Barnsley Fern" },
-  { value: "neural_network", label: "Neural Network" },
-  { value: "moon_phases", label: "Moon Phases" },
-  { value: "checkerboard", label: "Checkerboard Pattern" },
-  { value: "spiral_galaxy", label: "Spiral Galaxy" },
-  { value: "dna_helix", label: "DNA Helix" },
-  { value: "wave_interference", label: "Wave Interference" },
-  { value: "crystal_lattice", label: "Crystal Lattice" },
-]
-
-export const colorSchemes = [
-  { value: "viridis", label: "Viridis" },
-  { value: "plasma", label: "Plasma" },
-  { value: "inferno", label: "Inferno" },
-  { value: "magma", label: "Magma" },
-  { value: "cividis", label: "Cividis" },
-  { value: "rainbow", label: "Rainbow" },
-  { value: "grayscale", label: "Grayscale" },
-  { value: "neon", label: "Neon" },
-  { value: "pastel", label: "Pastel" },
-  { value: "monochrome", label: "Monochrome" },
-]
-
-export const scenarios = [
-  { value: "none", label: "None (Pure Mathematical)" },
-  { value: "enchanted_forest", label: "Enchanted Forest" },
-  { value: "deep_ocean", label: "Deep Ocean" },
-  { value: "cosmic_nebula", label: "Cosmic Nebula" },
-  { value: "cyberpunk_city", label: "Cyberpunk City" },
-  { value: "ancient_temple", label: "Ancient Temple" },
-  { value: "crystal_cave", label: "Crystal Cave" },
-  { value: "aurora_borealis", label: "Aurora Borealis" },
-  { value: "volcanic_landscape", label: "Volcanic Landscape" },
-  { value: "neural_connections", label: "Neural Connections" },
-  { value: "quantum_realm", label: "Quantum Realm" },
-  { value: "steampunk_workshop", label: "Steampunk Workshop" },
-  { value: "underwater_city", label: "Underwater City" },
-  { value: "space_station", label: "Space Station" },
-  { value: "mystical_portal", label: "Mystical Portal" },
-]
-
-// Enhanced mathematical dataset generator that uses ALL parameters
-export function generateDataset(
-  datasetType: DatasetType,
-  seed: number,
-  numSamples: number,
-  noise: number,
-  complexity = 2,
-  symmetry = 0.5,
-  flowIntensity = 1.5,
-  scenarioThreshold = 50,
-): Array<{ x: number; y: number }> {
-  // Ensure we always have valid parameters
-  const safeSeed = typeof seed === "number" && !isNaN(seed) ? seed : Math.floor(Math.random() * 100000)
-  const safeSamples =
-    typeof numSamples === "number" && numSamples > 0 ? Math.max(10, Math.min(10000, numSamples)) : 1000
-  const safeNoise = typeof noise === "number" && !isNaN(noise) ? Math.max(0, Math.min(1, noise)) : 0.1
-  const safeComplexity =
-    typeof complexity === "number" && !isNaN(complexity) ? Math.max(0.1, Math.min(10, complexity)) : 2
-  const safeSymmetry = typeof symmetry === "number" && !isNaN(symmetry) ? Math.max(0, Math.min(1, symmetry)) : 0.5
-  const safeFlowIntensity =
-    typeof flowIntensity === "number" && !isNaN(flowIntensity) ? Math.max(0.1, Math.min(5, flowIntensity)) : 1.5
-  const safeScenarioThreshold =
-    typeof scenarioThreshold === "number" && !isNaN(scenarioThreshold)
-      ? Math.max(0, Math.min(100, scenarioThreshold))
-      : 50
-
-  console.log("generateDataset called with:", {
-    datasetType,
-    safeSeed,
-    safeSamples,
-    safeNoise,
-    safeComplexity,
-    safeSymmetry,
-    safeFlowIntensity,
-    safeScenarioThreshold,
-  })
-
-  const data: Array<{ x: number; y: number }> = []
-
-  // Seeded random number generator for reproducible results
-  const seededRandom = (s: number) => {
-    const x = Math.sin(s + safeSeed) * 10000
-    return x - Math.floor(x)
+  // Set up deterministic random based on seed
+  let randomSeed = seed
+  const seededRandom = () => {
+    randomSeed = (randomSeed * 9301 + 49297) % 233280
+    return randomSeed / 233280
   }
 
-  // Initialize variables for iterative patterns
-  let x = 0
-  let y = 0
+  const width = 800
+  const height = 800
+  const centerX = width / 2
+  const centerY = height / 2
 
-  for (let i = 0; i < safeSamples; i++) {
-    const t = (i / safeSamples) * 2 * Math.PI
-    const normalizedI = i / safeSamples
+  const paths: string[] = []
+  const colors: string[] = []
 
-    // Apply complexity to time parameter - this affects frequency and detail
-    const complexTime = t * safeComplexity
+  // Generate color palette based on scheme
+  const getColorPalette = (scheme: string): string[] => {
+    switch (scheme) {
+      case "plasma":
+        return [
+          "#0d0887",
+          "#46039f",
+          "#7201a8",
+          "#9c179e",
+          "#bd3786",
+          "#d8576b",
+          "#ed7953",
+          "#fb9f3a",
+          "#fdca26",
+          "#f0f921",
+        ]
+      case "quantum":
+        return ["#000428", "#004e92", "#009ffd", "#00d2ff", "#ffffff"]
+      case "cosmic":
+        return ["#2c1810", "#8b4513", "#ff6347", "#ffa500", "#ffff00", "#ffffff"]
+      case "thermal":
+        return ["#000000", "#440154", "#31688e", "#35b779", "#fde725"]
+      case "spectral":
+        return [
+          "#9e0142",
+          "#d53e4f",
+          "#f46d43",
+          "#fdae61",
+          "#fee08b",
+          "#e6f598",
+          "#abdda4",
+          "#66c2a5",
+          "#3288bd",
+          "#5e4fa2",
+        ]
+      case "sunset":
+        return ["#ff6b35", "#f7931e", "#ffd23f", "#06ffa5", "#1fb3d3", "#5d2e5d"]
+      default:
+        return ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"]
+    }
+  }
 
-    // Apply seed-based variation
-    const seedVariation = safeSeed * 0.001
-    const tWithSeed = complexTime + seedVariation
+  const palette = getColorPalette(colorScheme)
 
-    // Apply flow intensity as a scaling factor
-    const flowScale = safeFlowIntensity * 0.5
+  // Generate mathematical patterns based on dataset
+  for (let i = 0; i < numSamples; i++) {
+    const t = i / numSamples
+    let x: number, y: number
 
-    switch (datasetType) {
-      case "lissajous":
-        // Complexity affects frequency ratios, Symmetry affects phase relationships
-        const freqA = 2 * safeComplexity + (seededRandom(safeSeed * 0.1) - 0.5) * 0.5
-        const freqB = 3 * safeComplexity + (seededRandom(safeSeed * 0.2) - 0.5) * 0.5
-        const phaseShift = safeSeed * 0.01 + (1 - safeSymmetry) * Math.PI
+    switch (dataset) {
+      case "spirals":
+        const angle = t * Math.PI * 8 + seed * 0.1
+        const radius = t * 200 + seededRandom() * 50
+        x = centerX + Math.cos(angle) * radius
+        y = centerY + Math.sin(angle) * radius
+        break
 
-        x = Math.sin(freqA * tWithSeed + phaseShift) * flowScale + safeNoise * (seededRandom(i * 10 + safeSeed) - 0.5)
-        y =
-          Math.cos(freqB * tWithSeed + phaseShift * safeSymmetry) * flowScale +
-          safeNoise * (seededRandom(i * 20 + safeSeed) - 0.5)
+      case "fractal":
+        const branch = Math.floor(seededRandom() * 4)
+        const depth = Math.floor(t * 6)
+        x = centerX + (seededRandom() - 0.5) * 400 * Math.pow(0.7, depth)
+        y = centerY + (seededRandom() - 0.5) * 400 * Math.pow(0.7, depth)
         break
 
       case "mandelbrot":
-        // Complexity affects iteration depth, Symmetry affects the center point
-        const cx = -0.7 + (seededRandom(safeSeed * 0.3) - 0.5) * 0.5 * (1 - safeSymmetry)
-        const cy = 0.0 + (seededRandom(safeSeed * 0.4) - 0.5) * 0.5 * (1 - safeSymmetry)
-        let zx = (normalizedI - 0.5) * 3 * flowScale
-        let zy = (seededRandom(i + safeSeed) - 0.5) * 3 * flowScale
-
-        // Complexity determines iteration count
-        const iterations = Math.floor(3 + safeComplexity * 2)
-        for (let iter = 0; iter < iterations; iter++) {
-          const tempX = zx * zx - zy * zy + cx
-          zy = 2 * zx * zy + cy
-          zx = tempX
+        const real = (seededRandom() - 0.5) * 4
+        const imag = (seededRandom() - 0.5) * 4
+        let zr = 0,
+          zi = 0
+        let iterations = 0
+        while (zr * zr + zi * zi < 4 && iterations < 100) {
+          const temp = zr * zr - zi * zi + real
+          zi = 2 * zr * zi + imag
+          zr = temp
+          iterations++
         }
-
-        x = zx * 0.3 * flowScale + safeNoise * (seededRandom(i * 30 + safeSeed) - 0.5)
-        y = zy * 0.3 * flowScale + safeNoise * (seededRandom(i * 40 + safeSeed) - 0.5)
+        x = centerX + real * 100
+        y = centerY + imag * 100
         break
 
-      case "julia":
-        // Julia set with complexity-dependent parameters
-        const juliaC = {
-          x: -0.4 + (seededRandom(safeSeed * 0.5) - 0.5) * 0.6 * safeComplexity * 0.2,
-          y: 0.6 + (seededRandom(safeSeed * 0.6) - 0.5) * 0.4 * safeComplexity * 0.2,
-        }
-        let jx = (normalizedI - 0.5) * 2.5 * flowScale
-        let jy = (seededRandom(i + safeSeed * 2) - 0.5) * 2.5 * flowScale
-
-        // Complexity affects iteration depth
-        const juliaIterations = Math.floor(2 + safeComplexity * 1.5)
-        for (let iter = 0; iter < juliaIterations; iter++) {
-          const tempX = jx * jx - jy * jy + juliaC.x
-          jy = 2 * jx * jy + juliaC.y * safeSymmetry
-          jx = tempX
-        }
-
-        x = jx * 0.4 * flowScale + safeNoise * (seededRandom(i * 50 + safeSeed) - 0.5)
-        y = jy * 0.4 * flowScale + safeNoise * (seededRandom(i * 60 + safeSeed) - 0.5)
+      case "tribes":
+        // Tribal settlement patterns
+        const village = Math.floor(seededRandom() * 5)
+        const villageX = centerX + (village - 2) * 120
+        const villageY = centerY + (seededRandom() - 0.5) * 300
+        const houseAngle = seededRandom() * Math.PI * 2
+        const houseRadius = seededRandom() * 60 + 20
+        x = villageX + Math.cos(houseAngle) * houseRadius
+        y = villageY + Math.sin(houseAngle) * houseRadius
         break
 
-      case "sierpinski":
-        // Sierpinski triangle with complexity affecting vertex selection
-        const vertices = [
-          { x: 0, y: 1 * flowScale },
-          { x: -0.866 * flowScale, y: -0.5 * flowScale },
-          { x: 0.866 * flowScale, y: -0.5 * flowScale },
-        ]
-
-        if (i === 0) {
-          x = seededRandom(safeSeed) - 0.5
-          y = seededRandom(safeSeed + 1) - 0.5
-        } else {
-          // Complexity affects chaos game rules
-          const vertexProb = 1 / (1 + safeComplexity * 0.5)
-          const vertexIndex = Math.floor(seededRandom(i + safeSeed) * 3)
-          const vertex = vertices[vertexIndex]
-
-          // Symmetry affects the convergence rate
-          const convergenceRate = 0.5 * (1 + safeSymmetry * 0.3)
-          x = (x + vertex.x) * convergenceRate
-          y = (y + vertex.y) * convergenceRate
-        }
-
-        x += safeNoise * (seededRandom(i * 70 + safeSeed) - 0.5)
-        y += safeNoise * (seededRandom(i * 80 + safeSeed) - 0.5)
-        break
-
-      case "fern":
-        // Barnsley fern with flow intensity affecting growth
-        if (i === 0) {
-          x = 0
-          y = 0
-        } else {
-          const r = seededRandom(i + safeSeed)
-          let nextX, nextY
-
-          // Flow intensity affects the transformation matrices
-          const scale = flowScale * 0.8
-
-          if (r <= 0.01) {
-            nextX = 0
-            nextY = 0.16 * y * scale
-          } else if (r <= 0.86) {
-            nextX = (0.85 * x + 0.04 * y) * scale
-            nextY = (-0.04 * x + 0.85 * y + 1.6) * scale
-          } else if (r <= 0.93) {
-            nextX = (0.2 * x - 0.26 * y) * scale
-            nextY = (0.23 * x + 0.22 * y + 1.6) * scale
-          } else {
-            nextX = (-0.15 * x + 0.28 * y) * scale
-            nextY = (0.26 * x + 0.24 * y + 0.44) * scale
-          }
-
-          // Symmetry affects the branching
-          if (safeSymmetry > 0.7) {
-            nextX *= 1 + (seededRandom(i * 5 + safeSeed) - 0.5) * 0.2
-          }
-
-          x = nextX + safeNoise * (seededRandom(i * 90 + safeSeed) - 0.5)
-          y = nextY + safeNoise * (seededRandom(i * 100 + safeSeed) - 0.5)
-        }
-        break
-
-      case "neural_network":
-        // Neural network with complexity affecting layer count
-        const numLayers = Math.floor(3 + safeComplexity * 2)
-        const layer = Math.floor(normalizedI * numLayers)
-        const nodeInLayer = (normalizedI * numLayers - layer) * (5 + safeComplexity * 5)
-
-        // Flow intensity affects connection spread
-        const connectionSpread = safeFlowIntensity * 0.3
-
-        x =
-          (layer / numLayers) * 4 -
-          2 +
-          connectionSpread * Math.sin(nodeInLayer + seedVariation) +
-          safeNoise * (seededRandom(i * 110 + safeSeed) - 0.5)
-        y =
-          Math.sin(nodeInLayer + seedVariation) * 1.5 * flowScale +
-          (1 - safeSymmetry) * Math.cos(nodeInLayer * 2) +
-          safeNoise * (seededRandom(i * 120 + safeSeed) - 0.5)
-        break
-
-      case "moon_phases":
-        // Moon phases with complexity affecting orbital mechanics
-        const orbitalPeriod = 2 + safeComplexity * 0.5
-        const phase = (tWithSeed * orbitalPeriod) % (2 * Math.PI)
-        const radius = (0.8 + 0.3 * Math.sin(phase * 4 + seedVariation)) * flowScale
-        const eccentricity = 0.1 + (1 - safeSymmetry) * 0.3
-
-        x =
-          radius * (1 + eccentricity * Math.cos(phase)) * Math.cos(tWithSeed) +
-          safeNoise * (seededRandom(i * 130 + safeSeed) - 0.5)
-        y =
-          radius * (1 + eccentricity * Math.cos(phase)) * Math.sin(tWithSeed) +
-          safeNoise * (seededRandom(i * 140 + safeSeed) - 0.5)
-        break
-
-      case "checkerboard":
-        // Dynamic checkerboard with complexity affecting grid resolution
-        const gridSize = Math.floor(4 + safeComplexity * 4)
-        const gridX = Math.floor(normalizedI * gridSize)
-        const gridY = Math.floor(seededRandom(i + safeSeed) * gridSize)
-        const checker = (gridX + gridY) % 2
-
-        // Flow intensity affects displacement
-        const displacement = checker * 0.1 * safeFlowIntensity
-
-        x = (gridX / gridSize) * 2 - 1 + displacement + safeNoise * (seededRandom(i * 150 + safeSeed) - 0.5)
-        y =
-          (gridY / gridSize) * 2 -
-          1 +
-          displacement * safeSymmetry +
-          safeNoise * (seededRandom(i * 160 + safeSeed) - 0.5)
-        break
-
-      case "spiral_galaxy":
-        // Spiral galaxy with complexity affecting arm count and tightness
-        const numArms = Math.floor(2 + safeComplexity)
-        const armIndex = Math.floor(seededRandom(i + safeSeed * 2) * numArms)
-        const armAngle = (armIndex / numArms) * 2 * Math.PI
-
-        const spiralRadius = normalizedI * 2 * flowScale
-        const spiralTightness = 3 + safeComplexity
-        const spiralAngle = tWithSeed * spiralTightness + armAngle + spiralRadius * 0.5
-
-        // Symmetry affects arm uniformity
-        const armVariation = (1 - safeSymmetry) * (seededRandom(i * 3 + safeSeed) - 0.5) * 0.5
-
-        x = spiralRadius * Math.cos(spiralAngle + armVariation) + safeNoise * (seededRandom(i * 170 + safeSeed) - 0.5)
-        y = spiralRadius * Math.sin(spiralAngle + armVariation) + safeNoise * (seededRandom(i * 180 + safeSeed) - 0.5)
-        break
-
-      case "dna_helix":
-        // DNA double helix with complexity affecting pitch and radius
-        const helixRadius = (0.5 + safeComplexity * 0.1) * flowScale
-        const helixPitch = 4 + safeComplexity
-        const strand = Math.floor(seededRandom(i + safeSeed * 3) * 2)
-        const strandOffset = strand * Math.PI * safeSymmetry
-
-        x =
-          helixRadius * Math.cos(tWithSeed * helixPitch + strandOffset) +
-          safeNoise * (seededRandom(i * 190 + safeSeed) - 0.5)
-        y = normalizedI * 3 - 1.5 + safeNoise * (seededRandom(i * 200 + safeSeed) - 0.5)
-
-        // Add base pair connections based on complexity
-        if (i % Math.floor(20 / safeComplexity) === 0) {
-          x += helixRadius * 0.5 * Math.cos(tWithSeed * helixPitch + Math.PI / 2) * safeFlowIntensity
-        }
-        break
-
-      case "wave_interference":
-        // Multiple wave interference with complexity affecting wave count
-        const numWaves = Math.floor(2 + safeComplexity * 2)
-        let waveSum = 0
-
-        for (let w = 0; w < numWaves; w++) {
-          const frequency = (w + 1) * safeComplexity * 0.5 + seededRandom(safeSeed * (1.6 + w * 0.1)) * 2
-          const amplitude = (1 / (w + 1)) * flowScale
-          const phaseShift = seededRandom(safeSeed * (1.7 + w * 0.1)) * 2 * Math.PI * safeSymmetry
-          waveSum += amplitude * Math.sin(frequency * tWithSeed + phaseShift)
-        }
-
-        x = normalizedI * 4 - 2 + safeNoise * (seededRandom(i * 210 + safeSeed) - 0.5)
-        y = waveSum * 0.8 + safeNoise * (seededRandom(i * 220 + safeSeed) - 0.5)
-        break
-
-      case "crystal_lattice":
-        // 3D crystal lattice with complexity affecting lattice size
-        const latticeSize = Math.floor(3 + safeComplexity * 2)
-        const latticeX = Math.floor(normalizedI * latticeSize)
-        const latticeY = Math.floor(seededRandom(i + safeSeed * 4) * latticeSize)
-        const latticeZ = Math.floor(seededRandom(i + safeSeed * 5) * latticeSize)
-
-        // Flow intensity affects perspective projection
-        const perspective = 0.5 + safeFlowIntensity * 0.2
-
-        x =
-          (latticeX / latticeSize) * 2 -
-          1 +
-          (latticeZ / latticeSize) * perspective * flowScale +
-          safeNoise * (seededRandom(i * 230 + safeSeed) - 0.5)
-        y =
-          (latticeY / latticeSize) * 2 -
-          1 +
-          (latticeZ / latticeSize) * perspective * 0.5 * flowScale * safeSymmetry +
-          safeNoise * (seededRandom(i * 240 + safeSeed) - 0.5)
+      case "heads":
+        // Mosaic head composition
+        const faceAngle = t * Math.PI * 2
+        const faceRadius = 150 + seededRandom() * 50
+        const feature = Math.floor(seededRandom() * 3)
+        x = centerX + Math.cos(faceAngle) * faceRadius * (1 + feature * 0.2)
+        y = centerY + Math.sin(faceAngle) * faceRadius * (1 + feature * 0.1)
         break
 
       default:
-        // Fallback with all parameters affecting the pattern
-        x = (seededRandom(i + safeSeed) - 0.5) * 2 * flowScale * safeComplexity
-        y = (seededRandom(i * 2 + safeSeed) - 0.5) * 2 * flowScale * safeSymmetry
-        break
+        x = centerX + (seededRandom() - 0.5) * 600
+        y = centerY + (seededRandom() - 0.5) * 600
     }
 
-    // Apply scenario threshold as a distortion factor
-    if (safeScenarioThreshold > 0) {
-      const distortionFactor = safeScenarioThreshold / 100
-      const distortionX = Math.sin(normalizedI * Math.PI * 4 + safeSeed * 0.01) * distortionFactor * 0.2
-      const distortionY = Math.cos(normalizedI * Math.PI * 6 + safeSeed * 0.02) * distortionFactor * 0.2
+    // Apply noise
+    x += (seededRandom() - 0.5) * noiseScale * 100
+    y += (seededRandom() - 0.5) * noiseScale * 100
 
-      x += distortionX
-      y += distortionY
+    // Create path
+    if (i === 0) {
+      paths.push(`M ${x} ${y}`)
+    } else {
+      paths.push(`L ${x} ${y}`)
     }
 
-    // Ensure x and y are valid numbers
-    if (typeof x !== "number" || isNaN(x)) x = 0
-    if (typeof y !== "number" || isNaN(y)) y = 0
-
-    data.push({ x, y })
+    // Assign color
+    const colorIndex = Math.floor(seededRandom() * palette.length)
+    colors.push(palette[colorIndex])
   }
 
-  // Safety: must never return an empty array
-  if (data.length === 0) {
-    data.push({ x: 0, y: 0 })
-  }
+  // Generate SVG
+  const pathString = paths.join(" ")
+  const svgContent = `
+    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          ${palette.map((color, i) => `<stop offset="${(i / (palette.length - 1)) * 100}%" style="stop-color:${color};stop-opacity:1" />`).join("")}
+        </linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="#000000"/>
+      <path d="${pathString}" stroke="url(#flowGradient)" stroke-width="2" fill="none" opacity="0.8"/>
+      ${paths
+        .map((_, i) => {
+          if (i % 10 === 0) {
+            const x = centerX + (seededRandom() - 0.5) * 600
+            const y = centerY + (seededRandom() - 0.5) * 600
+            return `<circle cx="${x}" cy="${y}" r="${2 + seededRandom() * 3}" fill="${colors[i % colors.length]}" opacity="0.6"/>`
+          }
+          return ""
+        })
+        .join("")}
+    </svg>
+  `
 
-  console.log("Generated data points:", data.length, "first few:", data.slice(0, 3))
-  return data
+  return svgContent
 }
 
-export function generateFlowField(width: number, height: number, params: FlowParameters): DataPoint[] {
-  try {
-    const validWidth = Math.max(100, Number(width) || 400)
-    const validHeight = Math.max(100, Number(height) || 400)
+export function generateDomeProjection(params: DomeProjectionParams): string {
+  const { width, height, fov, tilt } = params
 
-    const gridSize = 20
-    const field: DataPoint[] = []
+  // Enhanced dome projection visualization with circular composition
+  const centerX = width / 2
+  const centerY = height / 2
+  const radius = Math.min(width, height) / 2 - 20
 
-    for (let x = 0; x < validWidth; x += gridSize) {
-      for (let y = 0; y < validHeight; y += gridSize) {
-        const angle = Math.atan2(y - validHeight / 2, x - validWidth / 2) * params.complexity
-        const magnitude = params.flowIntensity * 10
-
-        const flowX = x + Math.cos(angle) * magnitude
-        const flowY = y + Math.sin(angle) * magnitude
-
-        if (isFinite(flowX) && isFinite(flowY)) {
-          field.push({ x: flowX, y: flowY })
-        }
-      }
-    }
-
-    return field.length > 0 ? field : [{ x: 200, y: 200 }]
-  } catch (error) {
-    console.error("Error in generateFlowField:", error)
-    return [{ x: 200, y: 200 }]
+  // Create concentric circles for dome effect
+  const circles = []
+  for (let i = 1; i <= 5; i++) {
+    const r = (radius * i) / 5
+    circles.push(
+      `<circle cx="${centerX}" cy="${centerY}" r="${r}" fill="none" stroke="#4a90e2" stroke-width="1" opacity="${0.3 - i * 0.05}"/>`,
+    )
   }
+
+  // Add radial lines for dome grid
+  const lines = []
+  for (let angle = 0; angle < 360; angle += 30) {
+    const radian = (angle * Math.PI) / 180
+    const x1 = centerX + Math.cos(radian) * (radius * 0.2)
+    const y1 = centerY + Math.sin(radian) * (radius * 0.2)
+    const x2 = centerX + Math.cos(radian) * radius
+    const y2 = centerY + Math.sin(radian) * radius
+    lines.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#4a90e2" stroke-width="1" opacity="0.2"/>`)
+  }
+
+  const svgContent = `
+    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="domeGradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.9" />
+          <stop offset="30%" style="stop-color:#4a90e2;stop-opacity:0.6" />
+          <stop offset="70%" style="stop-color:#2c5aa0;stop-opacity:0.4" />
+          <stop offset="100%" style="stop-color:#1a365d;stop-opacity:0.2" />
+        </radialGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge> 
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <rect width="100%" height="100%" fill="#000011"/>
+      
+      <!-- Dome grid -->
+      ${circles.join("")}
+      ${lines.join("")}
+      
+      <!-- Main dome circle -->
+      <circle cx="${centerX}" cy="${centerY}" r="${radius}" fill="url(#domeGradient)" stroke="#4a90e2" stroke-width="3" filter="url(#glow)"/>
+      
+      <!-- Center point -->
+      <circle cx="${centerX}" cy="${centerY}" r="5" fill="#ffffff" opacity="0.8"/>
+      
+      <!-- Dome info -->
+      <text x="${centerX}" y="${centerY + radius + 30}" text-anchor="middle" fill="#ffffff" font-family="Arial" font-size="16" font-weight="bold">
+        ${fov}° Dome Projection
+      </text>
+      <text x="${centerX}" y="${centerY + radius + 50}" text-anchor="middle" fill="#4a90e2" font-family="Arial" font-size="12">
+        Optimized for Planetarium Display
+      </text>
+    </svg>
+  `
+
+  return svgContent
 }

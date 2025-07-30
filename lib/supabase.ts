@@ -1,166 +1,43 @@
 import { createClient } from "@supabase/supabase-js"
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn("Supabase environment variables are not set. Supabase client will not be initialized.")
-}
-
-export const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supabaseAnonKey) : null
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export type Database = {
   public: {
     Tables: {
-      gallery_images: {
+      artworks: {
         Row: {
           id: string
-          user_id: string
-          image_url: string
-          thumbnail_url: string | null
-          metadata: {
-            dataset: string
-            scenario: string
-            colorScheme: string
-            seed: number
-            samples: number
-            noise: number
-            generationMode: "svg" | "ai"
-            createdAt: number
-            filename: string
-            fileSize: number
-            cloudStored: boolean
-            aiPrompt?: string
-            aiDescription?: string
-            scenarioThreshold?: number
-            aestheticScore?: {
-              score: number
-              rating: string
-              method: string
-            }
-            uploadedAt?: number
-            originalSize?: number
-          }
-          aesthetic_score: {
-            score: number
-            rating: string
-            method: string
-          } | null
-          is_favorite: boolean
-          tags: string[]
           created_at: string
-          updated_at: string
+          user_id: string
+          title: string
+          description: string
+          image_url: string
+          parameters: any
+          mode: string
         }
         Insert: {
           id?: string
-          user_id: string
-          image_url: string
-          thumbnail_url?: string | null
-          metadata: {
-            dataset: string
-            scenario: string
-            colorScheme: string
-            seed: number
-            samples: number
-            noise: number
-            generationMode: "svg" | "ai"
-            createdAt: number
-            filename: string
-            fileSize: number
-            cloudStored: boolean
-            aiPrompt?: string
-            aiDescription?: string
-            scenarioThreshold?: number
-            aestheticScore?: {
-              score: number
-              rating: string
-              method: string
-            }
-            uploadedAt?: number
-            originalSize?: number
-          }
-          aesthetic_score?: {
-            score: number
-            rating: string
-            method: string
-          } | null
-          is_favorite?: boolean
-          tags?: string[]
           created_at?: string
-          updated_at?: string
+          user_id: string
+          title: string
+          description?: string
+          image_url: string
+          parameters: any
+          mode: string
         }
         Update: {
           id?: string
+          created_at?: string
           user_id?: string
+          title?: string
+          description?: string
           image_url?: string
-          thumbnail_url?: string | null
-          metadata?: {
-            dataset: string
-            scenario: string
-            colorScheme: string
-            seed: number
-            samples: number
-            noise: number
-            generationMode: "svg" | "ai"
-            createdAt: number
-            filename: string
-            fileSize: number
-            cloudStored: boolean
-            aiPrompt?: string
-            aiDescription?: string
-            scenarioThreshold?: number
-            aestheticScore?: {
-              score: number
-              rating: string
-              method: string
-            }
-            uploadedAt?: number
-            originalSize?: number
-          }
-          aesthetic_score?: {
-            score: number
-            rating: string
-            method: string
-          } | null
-          is_favorite?: boolean
-          tags?: string[]
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      user_profiles: {
-        Row: {
-          id: string
-          email: string
-          display_name: string | null
-          avatar_url: string | null
-          sync_enabled: boolean
-          storage_quota: number
-          storage_used: number
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id: string
-          email: string
-          display_name?: string | null
-          avatar_url?: string | null
-          sync_enabled?: boolean
-          storage_quota?: number
-          storage_used?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          email?: string
-          display_name?: string | null
-          avatar_url?: string | null
-          sync_enabled?: boolean
-          storage_quota?: number
-          storage_used?: number
-          created_at?: string
-          updated_at?: string
+          parameters?: any
+          mode?: string
         }
       }
     }

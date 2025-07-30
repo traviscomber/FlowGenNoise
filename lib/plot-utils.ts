@@ -1,268 +1,179 @@
-import type { DataPoint } from "./flow-model"
+// Mathematical plotting utilities for SVG generation
+
+export interface Point {
+  x: number
+  y: number
+}
 
 export interface PlotConfig {
   width: number
   height: number
-  strokeWidth: number
-  strokeColor: string
-  fillColor: string
+  margin: number
   backgroundColor: string
-  showPoints?: boolean
-  pointSize?: number
-  showConnections?: boolean
-  complexity?: number
-  symmetry?: number
-  flowIntensity?: number
-  scenarioThreshold?: number
+  strokeColor: string
+  strokeWidth: number
 }
 
-export class PlotUtils {
-  static generateSVG(data: DataPoint[], config: PlotConfig): string {
-    try {
-      console.log("PlotUtils.generateSVG called with:", {
-        dataPoints: data?.length || 0,
-        config: {
-          width: config.width,
-          height: config.height,
-          complexity: config.complexity,
-          symmetry: config.symmetry,
-          flowIntensity: config.flowIntensity,
-          scenarioThreshold: config.scenarioThreshold,
-        },
+export class MathPlotter {
+  private config: PlotConfig
+
+  constructor(config: Partial<PlotConfig> = {}) {
+    this.config = {
+      width: 800,
+      height: 800,
+      margin: 50,
+      backgroundColor: "#000000",
+      strokeColor: "#ffffff",
+      strokeWidth: 1,
+      ...config,
+    }
+  }
+
+  // Generate Fibonacci spiral points
+  generateFibonacciSpiral(numPoints: number, scale = 1): Point[] {
+    const points: Point[] = []
+    const phi = (1 + Math.sqrt(5)) / 2 // Golden ratio
+
+    for (let i = 0; i < numPoints; i++) {
+      const angle = (i * 2 * Math.PI) / phi
+      const radius = Math.sqrt(i) * scale
+
+      points.push({
+        x: radius * Math.cos(angle),
+        y: radius * Math.sin(angle),
       })
+    }
 
-      if (!Array.isArray(data) || data.length === 0) {
-        console.warn("No data provided to generateSVG")
-        return this.createErrorSVG(config.width, config.height, "No data")
-      }
+    return points
+  }
 
-      // Validate and clean data points
-      const validData = data.filter(
-        (point) =>
-          point && typeof point.x === "number" && typeof point.y === "number" && isFinite(point.x) && isFinite(point.y),
-      )
+  // Generate fractal tree points
+  generateFractalTree(depth: number, length: number, angle: number): string {
+    if (depth === 0) return ""
 
-      if (validData.length === 0) {
-        console.warn("No valid data points")
-        return this.createErrorSVG(config.width, config.height, "Invalid data")
-      }
+    const x1 = 0
+    const y1 = 0
+    const x2 = length * Math.cos(angle)
+    const y2 = length * Math.sin(angle)
 
-      // Find data bounds
-      const xValues = validData.map((d) => d.x)
-      const yValues = validData.map((d) => d.y)
-      const xMin = Math.min(...xValues)
-      const xMax = Math.max(...xValues)
-      const yMin = Math.min(...yValues)
-      const yMax = Math.max(...yValues)
+    let path = `M ${x1} ${y1} L ${x2} ${y2} `
 
-      // Prevent division by zero
-      const xRange = xMax - xMin || 1
-      const yRange = yMax - yMin || 1
+    if (depth > 1) {
+      const newLength = length * 0.7
+      const leftAngle = angle + Math.PI / 6
+      const rightAngle = angle - Math.PI / 6
 
-      // Apply complexity and flow intensity to margins and scaling
-      const baseMargin = 50
-      const complexityFactor = (config.complexity || 2) / 2
-      const flowFactor = (config.flowIntensity || 1.5) / 1.5
-      const margin = baseMargin * (1 + complexityFactor * 0.2)
+      path += `M ${x2} ${y2} ` + this.generateFractalTree(depth - 1, newLength, leftAngle)
+      path += `M ${x2} ${y2} ` + this.generateFractalTree(depth - 1, newLength, rightAngle)
+    }
 
-      const plotWidth = config.width - 2 * margin
-      const plotHeight = config.height - 2 * margin
+    return path
+  }
 
-      // Scale data to fit SVG viewport with flow intensity affecting zoom
-      const scaleX = (x: number) => margin + ((x - xMin) / xRange) * plotWidth * flowFactor
-      const scaleY = (y: number) => margin + ((yMax - y) / yRange) * plotHeight * flowFactor
+  // Generate Mandelbrot set points
+  generateMandelbrotSet(width: number, height: number, maxIterations = 100): Point[] {
+    const points: Point[] = []
+    const zoom = 1
+    const moveX = -0.5
+    const moveY = 0
 
-      // Generate visual elements based on parameters
-      const svgElements = []
+    for (let x = 0; x < width; x++) {
+      for (let y = 0; y < height; y++) {
+        const zx = (x - width / 2) / (0.5 * zoom * width) + moveX
+        const zy = (y - height / 2) / (0.5 * zoom * height) + moveY
 
-      // Background
-      svgElements.push(`<rect width="100%" height="100%" fill="${config.backgroundColor}"/>`)
+        let cx = zx
+        let cy = zy
+        let i = maxIterations
 
-      // Apply scenario threshold as background effects
-      if (config.scenarioThreshold && config.scenarioThreshold > 0) {
-        const threshold = config.scenarioThreshold / 100
-        const gradientId = `scenarioGradient${Math.floor(Math.random() * 1000)}`
-
-        svgElements.push(`
-          <defs>
-            <radialGradient id="${gradientId}" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" style="stop-color:${config.strokeColor};stop-opacity:${threshold * 0.1}"/>
-              <stop offset="100%" style="stop-color:${config.backgroundColor};stop-opacity:0"/>
-            </radialGradient>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#${gradientId})"/>
-        `)
-      }
-
-      // Generate paths and points based on complexity
-      const complexity = config.complexity || 2
-      const symmetry = config.symmetry || 0.5
-      const showPoints = config.showPoints !== false
-      const showConnections = config.showConnections !== false
-      const pointSize = (config.pointSize || 2) * (1 + complexity * 0.2)
-
-      // Create path connections if enabled
-      if (showConnections && validData.length > 1) {
-        const pathData = validData
-          .map((point, index) => {
-            const x = scaleX(point.x)
-            const y = scaleY(point.y)
-
-            // Apply symmetry to path generation
-            if (symmetry > 0.7 && index > 0) {
-              // High symmetry: smooth curves
-              return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`
-            } else if (symmetry < 0.3) {
-              // Low symmetry: more chaotic connections
-              const prevPoint = validData[index - 1]
-              if (prevPoint && index > 0) {
-                const prevX = scaleX(prevPoint.x)
-                const prevY = scaleY(prevPoint.y)
-                const controlX = (x + prevX) / 2 + (Math.random() - 0.5) * 20 * complexity
-                const controlY = (y + prevY) / 2 + (Math.random() - 0.5) * 20 * complexity
-                return `Q ${controlX} ${controlY} ${x} ${y}`
-              }
-              return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`
-            } else {
-              // Medium symmetry: regular lines
-              return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`
-            }
-          })
-          .join(" ")
-
-        // Apply flow intensity to stroke properties
-        const strokeWidth = config.strokeWidth * (0.5 + flowFactor * 0.5)
-        const strokeOpacity = Math.max(0.1, Math.min(1, 0.7 * flowFactor))
-
-        svgElements.push(`
-          <path 
-            d="${pathData}" 
-            stroke="${config.strokeColor}" 
-            stroke-width="${strokeWidth}"
-            stroke-opacity="${strokeOpacity}"
-            fill="none" 
-            stroke-linecap="round" 
-            stroke-linejoin="round"
-          />
-        `)
-      }
-
-      // Create individual points
-      if (showPoints) {
-        validData.forEach((point, index) => {
-          const x = scaleX(point.x)
-          const y = scaleY(point.y)
-
-          // Vary point size based on complexity and position
-          const variableSize = pointSize * (0.8 + (index / validData.length) * 0.4 * complexity)
-
-          // Apply flow intensity to point opacity and color variation
-          const opacity = Math.max(0.3, Math.min(1, 0.8 * flowFactor))
-
-          // Color variation based on position and parameters
-          let pointColor = config.strokeColor
-          if (complexity > 3) {
-            const hue = ((index / validData.length) * 360 * (config.scenarioThreshold || 50)) / 100
-            pointColor = `hsl(${hue}, 70%, 50%)`
-          }
-
-          svgElements.push(`
-            <circle 
-              cx="${x}" 
-              cy="${y}" 
-              r="${variableSize}" 
-              fill="${pointColor}" 
-              opacity="${opacity}"
-            />
-          `)
-        })
-      }
-
-      // Add complexity-based decorative elements
-      if (complexity > 3.5) {
-        // High complexity: add grid or pattern overlay
-        const gridSpacing = 50
-        for (let x = margin; x < config.width - margin; x += gridSpacing) {
-          svgElements.push(`
-            <line 
-              x1="${x}" y1="${margin}" 
-              x2="${x}" y2="${config.height - margin}" 
-              stroke="${config.strokeColor}" 
-              stroke-width="0.5" 
-              opacity="0.1"
-            />
-          `)
+        while (cx * cx + cy * cy < 4 && i > 0) {
+          const tmp = cx * cx - cy * cy + zx
+          cy = 2.0 * cx * cy + zy
+          cx = tmp
+          i--
         }
-        for (let y = margin; y < config.height - margin; y += gridSpacing) {
-          svgElements.push(`
-            <line 
-              x1="${margin}" y1="${y}" 
-              x2="${config.width - margin}" y2="${y}" 
-              stroke="${config.strokeColor}" 
-              stroke-width="0.5" 
-              opacity="0.1"
-            />
-          `)
+
+        if (i > 0) {
+          points.push({ x, y })
         }
       }
-
-      const finalSVG = `
-        <svg width="${config.width}" height="${config.height}" xmlns="http://www.w3.org/2000/svg">
-          ${svgElements.join("\n")}
-        </svg>
-      `
-
-      console.log(
-        "Generated SVG with",
-        validData.length,
-        "points, complexity:",
-        complexity,
-        "symmetry:",
-        symmetry,
-        "flow:",
-        flowFactor,
-      )
-      return finalSVG
-    } catch (error) {
-      console.error("Error in PlotUtils.generateSVG:", error)
-      return this.createErrorSVG(config.width, config.height, "Generation error")
     }
+
+    return points
   }
 
-  private static createErrorSVG(width: number, height: number, message: string): string {
-    return `
-      <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100%" height="100%" fill="#f3f4f6"/>
-        <text x="${width / 2}" y="${height / 2}" text-anchor="middle" fill="#ef4444" font-size="16">
-          ${message}
-        </text>
-      </svg>
-    `
-  }
+  // Generate Lorenz attractor points
+  generateLorenzAttractor(numPoints: number, dt = 0.01): Point[] {
+    const points: Point[] = []
+    const sigma = 10
+    const rho = 28
+    const beta = 8 / 3
 
-  static downloadSVG(svgContent: string, filename: string): void {
-    try {
-      const blob = new Blob([svgContent], { type: "image/svg+xml" })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = filename
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    } catch (error) {
-      console.error("Error downloading SVG:", error)
+    let x = 1
+    let y = 1
+    let z = 1
+
+    for (let i = 0; i < numPoints; i++) {
+      const dx = sigma * (y - x)
+      const dy = x * (rho - z) - y
+      const dz = x * y - beta * z
+
+      x += dx * dt
+      y += dy * dt
+      z += dz * dt
+
+      points.push({ x, y })
     }
+
+    return points
   }
 
-  static svgToDataURL(svgContent: string): string {
-    try {
-      const base64 = btoa(unescape(encodeURIComponent(svgContent)))
-      return `data:image/svg+xml;base64,${base64}`
-    } catch (error) {
-      console.error("Error converting SVG to data URL:", error)
-      return ""
+  // Convert points to SVG path
+  pointsToPath(points: Point[]): string {
+    if (points.length === 0) return ""
+
+    let path = `M ${points[0].x} ${points[0].y}`
+
+    for (let i = 1; i < points.length; i++) {
+      path += ` L ${points[i].x} ${points[i].y}`
     }
+
+    return path
   }
+
+  // Generate complete SVG
+  generateSVG(paths: string[], colors: string[] = []): string {
+    const { width, height, backgroundColor } = this.config
+
+    let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`
+    svg += `<rect width="100%" height="100%" fill="${backgroundColor}"/>`
+
+    paths.forEach((path, index) => {
+      const color = colors[index] || this.config.strokeColor
+      svg += `<path d="${path}" stroke="${color}" stroke-width="${this.config.strokeWidth}" fill="none"/>`
+    })
+
+    svg += "</svg>"
+    return svg
+  }
+}
+
+// Utility functions for mathematical calculations
+export function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t
+}
+
+export function map(value: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
+  return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin
+}
+
+export function noise(x: number, y = 0): number {
+  // Simple pseudo-random noise function
+  const n = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453
+  return n - Math.floor(n)
+}
+
+export function smoothstep(edge0: number, edge1: number, x: number): number {
+  const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)))
+  return t * t * (3 - 2 * t)
 }
