@@ -17,7 +17,7 @@ export interface GenerationParams {
   seed: number
   numSamples: number
   noiseScale: number
-  timeStep: number
+  timeStep?: number
 }
 
 export interface UpscaleParams extends GenerationParams {
@@ -29,6 +29,7 @@ export interface UpscaleParams extends GenerationParams {
 export interface DataPoint {
   x: number
   y: number
+  label: number
 }
 
 // Pure 4-color palettes for visual themes
@@ -60,897 +61,513 @@ class SeededRandom {
     return this.seed / 233280
   }
 
-  range(min: number, max: number): number {
-    return min + this.next() * (max - min)
-  }
-
-  gaussian(): number {
-    // Box-Muller transform for Gaussian distribution
-    const u1 = this.next()
-    const u2 = this.next()
-    return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)
+  nextGaussian(): number {
+    const u = this.next()
+    const v = this.next()
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v)
   }
 }
 
-// Generate complex mathematical datasets
-export function generateDataset(dataset: string, seed: number, numSamples: number, noise: number): DataPoint[] {
-  // Simple seeded random number generator
-  let seedValue = seed
-  const random = () => {
-    seedValue = (seedValue * 9301 + 49297) % 233280
-    return seedValue / 233280
+// Color schemes
+const colorSchemes = {
+  plasma: [
+    "#0d0887",
+    "#46039f",
+    "#7201a8",
+    "#9c179e",
+    "#bd3786",
+    "#d8576b",
+    "#ed7953",
+    "#fb9f3a",
+    "#fdca26",
+    "#f0f921",
+  ],
+  magma: ["#000004", "#1c1044", "#4f127b", "#812581", "#b5367a", "#e55964", "#fb8761", "#fec287", "#fcfdbf"],
+  sunset: ["#ff6b35", "#f7931e", "#ffd23f", "#06ffa5", "#1fb3d3", "#5d2e5d"],
+  cosmic: ["#2c1810", "#8b4513", "#ffa500", "#ffff00", "#ffffff"],
+  quantum: ["#001122", "#003366", "#0066cc", "#3399ff", "#66ccff", "#99ddff"],
+  thermal: [
+    "#000000",
+    "#330000",
+    "#660000",
+    "#990000",
+    "#cc0000",
+    "#ff0000",
+    "#ff3300",
+    "#ff6600",
+    "#ff9900",
+    "#ffcc00",
+    "#ffff00",
+  ],
+  spectral: [
+    "#9e0142",
+    "#d53e4f",
+    "#f46d43",
+    "#fdae61",
+    "#fee08b",
+    "#e6f598",
+    "#abdda4",
+    "#66c2a5",
+    "#3288bd",
+    "#5e4fa2",
+  ],
+  crystalline: [
+    "#e8f4f8",
+    "#b8e6f0",
+    "#88d8e8",
+    "#58cae0",
+    "#28bcd8",
+    "#1e90ff",
+    "#4169e1",
+    "#6a5acd",
+    "#9370db",
+    "#ba55d3",
+  ],
+  bioluminescent: ["#001122", "#003344", "#005566", "#007788", "#0099aa", "#00bbcc", "#00ddee", "#33eeff", "#66ffff"],
+  aurora: [
+    "#001100",
+    "#003300",
+    "#005500",
+    "#007700",
+    "#009900",
+    "#00bb00",
+    "#00dd00",
+    "#00ff00",
+    "#33ff33",
+    "#66ff66",
+  ],
+  metallic: [
+    "#2c2c2c",
+    "#4a4a4a",
+    "#686868",
+    "#868686",
+    "#a4a4a4",
+    "#c2c2c2",
+    "#e0e0e0",
+    "#ffd700",
+    "#ffed4e",
+    "#fff8dc",
+  ],
+  neon: ["#ff0080", "#ff0040", "#ff4000", "#ff8000", "#ffff00", "#80ff00", "#40ff00", "#00ff40", "#00ff80", "#00ffff"],
+}
+
+function getColor(scheme: string, t: number): string {
+  const colors = colorSchemes[scheme as keyof typeof colorSchemes] || colorSchemes.plasma
+  const index = Math.floor(t * (colors.length - 1))
+  const nextIndex = Math.min(index + 1, colors.length - 1)
+  const localT = t * (colors.length - 1) - index
+
+  // Simple linear interpolation between colors
+  const color1 = colors[index]
+  const color2 = colors[nextIndex]
+
+  if (localT === 0) return color1
+
+  // Parse hex colors
+  const r1 = Number.parseInt(color1.slice(1, 3), 16)
+  const g1 = Number.parseInt(color1.slice(3, 5), 16)
+  const b1 = Number.parseInt(color1.slice(5, 7), 16)
+
+  const r2 = Number.parseInt(color2.slice(1, 3), 16)
+  const g2 = Number.parseInt(color2.slice(3, 5), 16)
+  const b2 = Number.parseInt(color2.slice(5, 7), 16)
+
+  const r = Math.round(r1 + (r2 - r1) * localT)
+  const g = Math.round(g1 + (g2 - g1) * localT)
+  const b = Math.round(b1 + (b2 - b1) * localT)
+
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`
+}
+
+// Dataset generators
+function generateSpirals(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  for (let i = 0; i < numSamples; i++) {
+    const t = (i / numSamples) * 4 * Math.PI
+    const spiral = Math.floor(rng.next() * 2)
+    const r = t * 0.1
+    const noise = rng.nextGaussian() * 0.1
+
+    if (spiral === 0) {
+      points.push({
+        x: (r * Math.cos(t) + noise) * 50 + 256,
+        y: (r * Math.sin(t) + noise) * 50 + 256,
+        label: 0,
+      })
+    } else {
+      points.push({
+        x: (r * Math.cos(t + Math.PI) + noise) * 50 + 256,
+        y: (r * Math.sin(t + Math.PI) + noise) * 50 + 256,
+        label: 1,
+      })
+    }
   }
-
-  const points: DataPoint[] = []
-
-  switch (dataset) {
-    case "spirals":
-      for (let i = 0; i < numSamples; i++) {
-        const t = (i / numSamples) * 4 * Math.PI
-        const spiral = Math.floor(i / (numSamples / 2))
-        const r = t * 0.1
-        const x = r * Math.cos(t + spiral * Math.PI) + (random() - 0.5) * noise
-        const y = r * Math.sin(t + spiral * Math.PI) + (random() - 0.5) * noise
-        points.push({ x, y })
-      }
-      break
-
-    case "moons":
-      for (let i = 0; i < numSamples; i++) {
-        const moon = Math.floor(i / (numSamples / 2))
-        const t = ((i % (numSamples / 2)) / (numSamples / 2)) * Math.PI
-        let x, y
-        if (moon === 0) {
-          x = Math.cos(t)
-          y = Math.sin(t)
-        } else {
-          x = 1 - Math.cos(t)
-          y = 1 - Math.sin(t) - 0.5
-        }
-        x += (random() - 0.5) * noise
-        y += (random() - 0.5) * noise
-        points.push({ x, y })
-      }
-      break
-
-    case "circles":
-      for (let i = 0; i < numSamples; i++) {
-        const circle = Math.floor(i / (numSamples / 3))
-        const t = ((i % (numSamples / 3)) / (numSamples / 3)) * 2 * Math.PI
-        const r = (circle + 1) * 0.3
-        const x = r * Math.cos(t) + (random() - 0.5) * noise
-        const y = r * Math.sin(t) + (random() - 0.5) * noise
-        points.push({ x, y })
-      }
-      break
-
-    case "blobs":
-      const centers = [
-        { x: -1, y: -1 },
-        { x: 1, y: -1 },
-        { x: -1, y: 1 },
-        { x: 1, y: 1 },
-      ]
-      for (let i = 0; i < numSamples; i++) {
-        const center = centers[Math.floor(i / (numSamples / 4))]
-        const r = Math.sqrt(random()) * 0.5
-        const theta = random() * 2 * Math.PI
-        const x = center.x + r * Math.cos(theta) + (random() - 0.5) * noise
-        const y = center.y + r * Math.sin(theta) + (random() - 0.5) * noise
-        points.push({ x, y })
-      }
-      break
-
-    case "checkerboard":
-      for (let i = 0; i < numSamples; i++) {
-        const x = (random() - 0.5) * 4
-        const y = (random() - 0.5) * 4
-        const checkX = Math.floor((x + 2) / 0.5) % 2
-        const checkY = Math.floor((y + 2) / 0.5) % 2
-        if ((checkX + checkY) % 2 === 0) {
-          points.push({
-            x: x + (random() - 0.5) * noise,
-            y: y + (random() - 0.5) * noise,
-          })
-        }
-      }
-      break
-
-    case "gaussian":
-      for (let i = 0; i < numSamples; i++) {
-        // Box-Muller transform for Gaussian distribution
-        const u1 = random()
-        const u2 = random()
-        const z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)
-        const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.sin(2 * Math.PI * u2)
-        points.push({
-          x: z0 + (random() - 0.5) * noise,
-          y: z1 + (random() - 0.5) * noise,
-        })
-      }
-      break
-
-    case "grid":
-      const gridSize = Math.ceil(Math.sqrt(numSamples))
-      for (let i = 0; i < numSamples; i++) {
-        const row = Math.floor(i / gridSize)
-        const col = i % gridSize
-        const x = (col / (gridSize - 1) - 0.5) * 2 + (random() - 0.5) * noise
-        const y = (row / (gridSize - 1) - 0.5) * 2 + (random() - 0.5) * noise
-        points.push({ x, y })
-      }
-      break
-
-    case "fractal":
-      // Sierpinski triangle
-      const vertices = [
-        { x: 0, y: 1 },
-        { x: -0.866, y: -0.5 },
-        { x: 0.866, y: -0.5 },
-      ]
-      let currentPoint = { x: 0, y: 0 }
-      for (let i = 0; i < numSamples; i++) {
-        const vertex = vertices[Math.floor(random() * 3)]
-        currentPoint = {
-          x: (currentPoint.x + vertex.x) / 2 + (random() - 0.5) * noise,
-          y: (currentPoint.y + vertex.y) / 2 + (random() - 0.5) * noise,
-        }
-        points.push({ ...currentPoint })
-      }
-      break
-
-    case "mandelbrot":
-      for (let i = 0; i < numSamples; i++) {
-        const x = (random() - 0.5) * 3 - 0.5
-        const y = (random() - 0.5) * 3
-        let zx = 0,
-          zy = 0
-        let iterations = 0
-        const maxIterations = 100
-
-        while (zx * zx + zy * zy < 4 && iterations < maxIterations) {
-          const temp = zx * zx - zy * zy + x
-          zy = 2 * zx * zy + y
-          zx = temp
-          iterations++
-        }
-
-        if (iterations < maxIterations) {
-          points.push({
-            x: x + (random() - 0.5) * noise,
-            y: y + (random() - 0.5) * noise,
-          })
-        }
-      }
-      break
-
-    case "julia":
-      const c = { x: -0.7, y: 0.27015 }
-      for (let i = 0; i < numSamples; i++) {
-        let zx = (random() - 0.5) * 3
-        let zy = (random() - 0.5) * 3
-        let iterations = 0
-        const maxIterations = 100
-
-        while (zx * zx + zy * zy < 4 && iterations < maxIterations) {
-          const temp = zx * zx - zy * zy + c.x
-          zy = 2 * zx * zy + c.y
-          zx = temp
-          iterations++
-        }
-
-        if (iterations < maxIterations) {
-          points.push({
-            x: zx + (random() - 0.5) * noise,
-            y: zy + (random() - 0.5) * noise,
-          })
-        }
-      }
-      break
-
-    case "lorenz":
-      // Lorenz attractor
-      let x = 1,
-        y = 1,
-        z = 1
-      const dt = 0.01
-      const sigma = 10,
-        rho = 28,
-        beta = 8 / 3
-
-      for (let i = 0; i < numSamples; i++) {
-        const dx = sigma * (y - x)
-        const dy = x * (rho - z) - y
-        const dz = x * y - beta * z
-
-        x += dx * dt
-        y += dy * dt
-        z += dz * dt
-
-        points.push({
-          x: x * 0.05 + (random() - 0.5) * noise,
-          y: y * 0.05 + (random() - 0.5) * noise,
-        })
-      }
-      break
-
-    case "tribes":
-      // Generate tribal village patterns
-      const villages = [
-        { x: -1, y: -1 },
-        { x: 1, y: -1 },
-        { x: 0, y: 1 },
-      ]
-      for (let i = 0; i < numSamples; i++) {
-        const village = villages[Math.floor(i / (numSamples / 3))]
-        const angle = random() * 2 * Math.PI
-        const radius = Math.sqrt(random()) * 0.8
-        const x = village.x + radius * Math.cos(angle) + (random() - 0.5) * noise
-        const y = village.y + radius * Math.sin(angle) + (random() - 0.5) * noise
-        points.push({ x, y })
-      }
-      break
-
-    case "heads":
-      // Generate face-like patterns
-      for (let i = 0; i < numSamples; i++) {
-        const feature = Math.floor(random() * 5)
-        let x, y
-
-        switch (feature) {
-          case 0: // Face outline
-            const t = random() * 2 * Math.PI
-            x = 0.8 * Math.cos(t)
-            y = Math.sin(t)
-            break
-          case 1: // Left eye
-            x = -0.3 + (random() - 0.5) * 0.2
-            y = 0.3 + (random() - 0.5) * 0.2
-            break
-          case 2: // Right eye
-            x = 0.3 + (random() - 0.5) * 0.2
-            y = 0.3 + (random() - 0.5) * 0.2
-            break
-          case 3: // Nose
-            x = (random() - 0.5) * 0.1
-            y = (random() - 0.5) * 0.2
-            break
-          case 4: // Mouth
-            x = (random() - 0.5) * 0.4
-            y = -0.3 + (random() - 0.5) * 0.1
-            break
-          default:
-            x = (random() - 0.5) * 2
-            y = (random() - 0.5) * 2
-        }
-
-        points.push({
-          x: x + (random() - 0.5) * noise,
-          y: y + (random() - 0.5) * noise,
-        })
-      }
-      break
-
-    case "natives":
-      // Generate native settlement patterns
-      const settlements = [
-        { x: -1.2, y: 0 },
-        { x: 0, y: -1 },
-        { x: 1.2, y: 0 },
-        { x: 0, y: 1 },
-      ]
-      for (let i = 0; i < numSamples; i++) {
-        const settlement = settlements[Math.floor(i / (numSamples / 4))]
-        const angle = random() * 2 * Math.PI
-        const radius = Math.sqrt(random()) * 0.6
-        const x = settlement.x + radius * Math.cos(angle) + (random() - 0.5) * noise
-        const y = settlement.y + radius * Math.sin(angle) + (random() - 0.5) * noise
-        points.push({ x, y })
-      }
-      break
-
-    default:
-      // Default to random points
-      for (let i = 0; i < numSamples; i++) {
-        points.push({
-          x: (random() - 0.5) * 4 + (random() - 0.5) * noise,
-          y: (random() - 0.5) * 4 + (random() - 0.5) * noise,
-        })
-      }
-  }
-
   return points
 }
 
-// Apply scenario transformations to dataset points
-function applyScenarioTransform(
-  points: DataPoint[],
-  scenario: string,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; metadata: any }> {
-  const transformedPoints: Array<{ x: number; y: number; metadata: any }> = []
+function generateMoons(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  for (let i = 0; i < numSamples; i++) {
+    const label = Math.floor(rng.next() * 2)
+    const angle = rng.next() * Math.PI
+    const radius = rng.next() * 100 + 50
+    const noise = rng.nextGaussian() * 10
 
-  for (let i = 0; i < points.length; i++) {
-    const { x: baseX, y: baseY } = points[i]
-    let x = baseX
-    let y = baseY
-    let metadata: any = {}
+    if (label === 0) {
+      points.push({
+        x: Math.cos(angle) * radius + 200 + noise,
+        y: Math.sin(angle) * radius + 256 + noise,
+        label: 0,
+      })
+    } else {
+      points.push({
+        x: Math.cos(angle + Math.PI) * radius + 312 + noise,
+        y: Math.sin(angle + Math.PI) * radius + 256 + noise,
+        label: 1,
+      })
+    }
+  }
+  return points
+}
 
-    switch (scenario) {
-      case "pure":
-        // Pure mathematical - no transformation, just preserve the mathematical structure
-        metadata = {
-          magnitude: Math.sqrt(baseX * baseX + baseY * baseY),
-          angle: Math.atan2(baseY, baseX),
-          quadrant: baseX >= 0 ? (baseY >= 0 ? 1 : 4) : baseY >= 0 ? 2 : 3,
-          isPrime: isPrime(Math.floor(Math.abs(baseX * 100) + Math.abs(baseY * 100))),
-          harmonicSeries:
-            Math.sin(baseX * Math.PI) + Math.sin(baseY * Math.PI * 2) / 2 + Math.sin(baseX * Math.PI * 3) / 3,
-          fibonacci: fibonacciSpiral(baseX, baseY),
-        }
-        break
+function generateCircles(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  for (let i = 0; i < numSamples; i++) {
+    const angle = rng.next() * 2 * Math.PI
+    const radius = rng.next() * 150 + 50
+    const label = radius > 100 ? 1 : 0
+    const noise = rng.nextGaussian() * 5
 
-      case "forest":
-        // Add complex tree-like growth patterns with L-systems
-        const treeHeight = Math.abs(baseY) * 0.5 + rng.range(0, 0.3)
-        const branchAngle = Math.atan2(baseY, baseX) + rng.range(-0.3, 0.3)
-        const branchFactor = Math.sin(baseX * 3) * Math.cos(baseY * 2) * 0.2
+    points.push({
+      x: Math.cos(angle) * radius + 256 + noise,
+      y: Math.sin(angle) * radius + 256 + noise,
+      label,
+    })
+  }
+  return points
+}
 
-        // Fractal branching
-        let fractalX = 0,
-          fractalY = 0
-        for (let level = 0; level < 4; level++) {
-          const scale = Math.pow(0.6, level)
-          fractalX += Math.cos(branchAngle + level * 0.5) * scale * 0.1
-          fractalY += Math.sin(branchAngle + level * 0.5) * scale * 0.1
-        }
+function generateBlobs(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  const centers = [
+    { x: 150, y: 150, label: 0 },
+    { x: 362, y: 150, label: 1 },
+    { x: 150, y: 362, label: 2 },
+    { x: 362, y: 362, label: 3 },
+  ]
 
-        x = baseX + branchFactor + fractalX
-        y = baseY + treeHeight + fractalY
+  for (let i = 0; i < numSamples; i++) {
+    const center = centers[Math.floor(rng.next() * centers.length)]
+    const angle = rng.next() * 2 * Math.PI
+    const radius = rng.nextGaussian() * 40 + 60
 
-        metadata = {
-          isTree: rng.next() < 0.15,
-          treeHeight: treeHeight * 20,
-          leafDensity: Math.abs(Math.sin(baseX * baseY)) * 0.8 + 0.2,
-          branchComplexity: Math.abs(fractalX + fractalY) * 10,
-          seasonalFactor: Math.sin(baseX + baseY + Math.PI / 4),
-        }
-        break
+    points.push({
+      x: center.x + Math.cos(angle) * radius,
+      y: center.y + Math.sin(angle) * radius,
+      label: center.label,
+    })
+  }
+  return points
+}
 
-      case "cosmic":
-        // Add stellar and nebula effects with gravitational lensing
-        const distance = Math.sqrt(baseX * baseX + baseY * baseY)
-        const angle = Math.atan2(baseY, baseX)
+function generateCheckerboard(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  for (let i = 0; i < numSamples; i++) {
+    const x = rng.next() * 512
+    const y = rng.next() * 512
+    const gridX = Math.floor(x / 64)
+    const gridY = Math.floor(y / 64)
+    const label = (gridX + gridY) % 2
 
-        // Galaxy spiral arms
-        const spiralArm = angle + distance * 0.5 + Math.sin(distance * 3) * 0.2
+    points.push({ x, y, label })
+  }
+  return points
+}
 
-        // Gravitational lensing effect
-        const lensStrength = 1 / (1 + distance * distance)
-        const lensX = Math.cos(spiralArm) * lensStrength * 0.1
-        const lensY = Math.sin(spiralArm) * lensStrength * 0.1
+function generateGaussian(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  for (let i = 0; i < numSamples; i++) {
+    const x = rng.nextGaussian() * 80 + 256
+    const y = rng.nextGaussian() * 80 + 256
+    const label = Math.floor(rng.next() * 2)
 
-        // Dark matter influence
-        const darkMatterX = Math.sin(baseX * 0.5) * Math.cos(baseY * 0.3) * 0.05
-        const darkMatterY = Math.cos(baseX * 0.3) * Math.sin(baseY * 0.5) * 0.05
+    points.push({ x, y, label })
+  }
+  return points
+}
 
-        x = baseX + lensX + darkMatterX
-        y = baseY + lensY + darkMatterY
+function generateGrid(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  const gridSize = Math.ceil(Math.sqrt(numSamples))
 
-        metadata = {
-          isStar: rng.next() < 0.08,
-          isBlackHole: rng.next() < 0.01,
-          brightness: Math.max(0, 1 - distance * 0.5) * (1 + Math.sin(distance * 10) * 0.3),
-          nebulaDensity: Math.abs(Math.sin(spiralArm)) * 0.6 + 0.4,
-          redshift: distance * 0.1,
-          stellarClass: Math.floor(rng.next() * 7), // O, B, A, F, G, K, M
-        }
-        break
+  for (let i = 0; i < numSamples; i++) {
+    const row = Math.floor(i / gridSize)
+    const col = i % gridSize
+    const x = (col / gridSize) * 512 + rng.nextGaussian() * 10
+    const y = (row / gridSize) * 512 + rng.nextGaussian() * 10
+    const label = (row + col) % 2
 
-      case "ocean":
-        // Add complex wave and current effects with fluid dynamics
-        const waveX = Math.sin(baseX * 2 + baseY * 0.5) * 0.2
-        const waveY = Math.cos(baseY * 1.5 + baseX * 0.3) * 0.15
+    points.push({ x, y, label })
+  }
+  return points
+}
 
-        // Turbulence and vortices
-        const vortexStrength = Math.exp(-((baseX - 0.5) ** 2 + (baseY + 0.3) ** 2) * 2)
-        const vortexAngle = Math.atan2(baseY + 0.3, baseX - 0.5)
-        const vortexX = -Math.sin(vortexAngle) * vortexStrength * 0.3
-        const vortexY = Math.cos(vortexAngle) * vortexStrength * 0.3
+function generateFractal(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  const vertices = [
+    { x: 256, y: 50 }, // Top
+    { x: 50, y: 400 }, // Bottom left
+    { x: 462, y: 400 }, // Bottom right
+  ]
 
-        // Tidal effects
-        const tidalForce = Math.sin(baseX * 0.5) * Math.cos(baseY * 0.3) * 0.1
+  let currentPoint = { x: 256, y: 256 }
 
-        x = baseX + waveX + vortexX
-        y = baseY + waveY + vortexY + tidalForce
-
-        metadata = {
-          waveHeight: Math.abs(waveY) * 10,
-          currentStrength: Math.sqrt((waveX + vortexX) ** 2 + (waveY + vortexY) ** 2),
-          depth: Math.max(0, 1 - Math.abs(baseY) * 0.5),
-          temperature: 15 + 10 * Math.sin(baseX * 0.2) + 5 * Math.cos(baseY * 0.3),
-          salinity: 35 + 3 * Math.sin(baseX + baseY),
-          isWhirlpool: vortexStrength > 0.5,
-        }
-        break
-
-      case "neural":
-        // Add complex neural network connections with synaptic dynamics
-        const activation = Math.tanh(baseX * 0.8 + baseY * 0.6)
-        const weight = Math.sin(baseX * 1.2) * Math.cos(baseY * 1.2)
-
-        // Synaptic plasticity
-        const plasticity = Math.exp(-Math.abs(activation) * 2) * 0.1
-        const learningRate = 0.1 * (1 + Math.sin(baseX + baseY))
-
-        // Dendritic branching
-        const dendriticX = Math.sin(baseX * 5) * Math.cos(baseY * 3) * plasticity
-        const dendriticY = Math.cos(baseX * 3) * Math.sin(baseY * 5) * plasticity
-
-        x = baseX + activation * weight * 0.1 + dendriticX
-        y = baseY + Math.sin(activation * Math.PI) * 0.1 + dendriticY
-
-        metadata = {
-          activation: activation,
-          isNeuron: Math.abs(activation) > 0.3,
-          connectionStrength: Math.abs(weight),
-          layerDepth: Math.floor((baseX + 2) * 2.5),
-          neurotransmitter: Math.floor(rng.next() * 4), // Different types
-          firingRate: Math.max(0, activation * 50 + rng.gaussian() * 10),
-          synapticDelay: Math.abs(weight) * 5 + 1,
-        }
-        break
-
-      case "desert":
-        // Add complex sand dune effects with wind patterns
-        const duneHeight = Math.sin(baseX * 1.5) * Math.cos(baseY * 0.8) * 0.3
-        const windDirection = Math.atan2(baseY, baseX) + Math.PI / 4
-        const windStrength = 0.5 + 0.3 * Math.sin(baseX * 0.5 + baseY * 0.3)
-
-        // Sand particle dynamics
-        const sandShift = Math.sin(windDirection) * windStrength * 0.1
-        const erosion = Math.cos(windDirection) * windStrength * 0.05
-
-        // Oasis effect
-        const oasisDistance = Math.sqrt((baseX - 0.8) ** 2 + (baseY + 0.5) ** 2)
-        const oasisEffect = Math.exp(-oasisDistance * 3) * 0.2
-
-        x = baseX + sandShift - erosion
-        y = baseY + duneHeight + oasisEffect
-
-        metadata = {
-          duneHeight: duneHeight * 15,
-          sandDensity: rng.next() * 0.5 + 0.5,
-          windEffect: windStrength * 10,
-          temperature: 35 + 15 * Math.sin(baseX * 0.3) + 10 * Math.cos(baseY * 0.2),
-          isOasis: oasisDistance < 0.3,
-          sandstormIntensity: Math.max(0, windStrength - 0.7) * 10,
-        }
-        break
-
-      case "fire":
-        // Add complex flame and ember effects with combustion dynamics
-        const flameHeight = Math.abs(baseY) * 0.4 + rng.range(0, 0.2)
-        const turbulence = Math.sin(baseX * 8 + baseY * 6) * 0.1
-        const flicker = Math.sin(baseX * 5 + rng.range(0, Math.PI)) * 0.1
-
-        // Heat convection
-        const convectionX = Math.sin(baseY * 3) * Math.exp(-Math.abs(baseX) * 2) * 0.1
-        const convectionY = Math.abs(baseX) * 0.2 + turbulence
-
-        // Plasma dynamics
-        const plasmaIntensity = Math.exp(-((baseX ** 2 + baseY ** 2) * 2)) * 0.3
-
-        x = baseX + flicker + convectionX + turbulence
-        y = baseY + flameHeight + convectionY
-
-        metadata = {
-          isEmber: rng.next() < 0.12,
-          flameIntensity: flameHeight * 5 + plasmaIntensity * 10,
-          heat: Math.max(0, 1 - Math.abs(baseY) * 0.3) * 1000 + 300,
-          oxygenLevel: Math.max(0, 1 - plasmaIntensity) * 21,
-          combustionRate: plasmaIntensity * 100,
-          smokeParticle: rng.next() < 0.2,
-        }
-        break
-
-      case "ice":
-        // Add complex crystalline and frost effects with phase transitions
-        const crystalGrowth = Math.abs(Math.sin(baseX * 3) * Math.cos(baseY * 3)) * 0.2
-        const frostPattern = (Math.sin(baseX * 8) + Math.cos(baseY * 8)) * 0.05
-
-        // Hexagonal crystal structure
-        const hexAngle = Math.atan2(baseY, baseX)
-        const hexRadius = Math.sqrt(baseX ** 2 + baseY ** 2)
-        const hexSymmetry = Math.sin(hexAngle * 6) * Math.exp(-hexRadius * 2) * 0.1
-
-        // Sublimation effects
-        const sublimation = Math.sin(baseX * 2 + baseY * 2) * 0.02
-
-        x = baseX + frostPattern + hexSymmetry
-        y = baseY + crystalGrowth + sublimation
-
-        metadata = {
-          isCrystal: rng.next() < 0.1,
-          crystallineStructure: crystalGrowth * 8,
-          frostLevel: Math.abs(frostPattern) * 10,
-          temperature: -20 + 10 * Math.sin(baseX * 0.2) - Math.abs(baseY) * 5,
-          iceThickness: Math.max(0, 1 - hexRadius) * 10,
-          phaseTransition: Math.abs(sublimation) > 0.01,
-        }
-        break
-
-      case "sunset":
-        // Add atmospheric light scattering with Rayleigh and Mie effects
-        const altitude = baseY + 1
-        const atmosphericDensity = Math.exp(-altitude * 2)
-
-        // Rayleigh scattering (blue light)
-        const rayleighScatter = atmosphericDensity * Math.pow(0.4, -4) * 0.1
-
-        // Mie scattering (red/orange light)
-        const mieScatter = atmosphericDensity * 0.05
-
-        // Cloud formations
-        const cloudDensity = Math.max(0, Math.sin(baseX * 2) * Math.cos(baseY * 1.5) + 0.3) * 0.2
-
-        x = baseX + rayleighScatter * Math.sin(altitude * 5)
-        y = baseY + mieScatter + cloudDensity
-
-        metadata = {
-          lightIntensity: Math.max(0, 1 - altitude * 0.5),
-          colorTemperature: 2000 + 3000 * Math.exp(-altitude),
-          atmosphericPressure: 1013 * atmosphericDensity,
-          humidity: 60 + 30 * Math.sin(baseX + baseY),
-          cloudCover: cloudDensity * 100,
-          sunAngle: (Math.atan2(altitude, baseX) * 180) / Math.PI,
-        }
-        break
-
-      case "monochrome":
-        // Add complex grayscale patterns with mathematical beauty
-        const intensity = Math.sqrt(baseX * baseX + baseY * baseY)
-        const pattern = Math.sin(baseX + baseY) + Math.sin(baseX * 2) / 2 + Math.sin(baseY * 3) / 3
-
-        // Interference patterns
-        const wave1 = Math.sin(baseX * 5) * Math.cos(baseY * 3)
-        const wave2 = Math.cos(baseX * 3) * Math.sin(baseY * 5)
-        const interference = (wave1 + wave2) * 0.1
-
-        x = baseX + interference
-        y = baseY + pattern * 0.05
-
-        metadata = {
-          intensity: intensity,
-          pattern: pattern,
-          contrast: Math.abs(interference) * 10,
-          frequency: Math.sqrt(baseX ** 2 * 25 + baseY ** 2 * 9),
-          amplitude: Math.abs(wave1 + wave2),
-          phase: Math.atan2(wave2, wave1),
-        }
-        break
-
-      default:
-        // Default case with basic transformations
-        metadata = {
-          intensity: Math.sqrt(baseX * baseX + baseY * baseY),
-          pattern: Math.sin(baseX + baseY),
-        }
+  for (let i = 0; i < numSamples; i++) {
+    const targetVertex = vertices[Math.floor(rng.next() * 3)]
+    currentPoint = {
+      x: (currentPoint.x + targetVertex.x) / 2,
+      y: (currentPoint.y + targetVertex.y) / 2,
     }
 
-    transformedPoints.push({ x, y, metadata })
+    points.push({
+      x: currentPoint.x + rng.nextGaussian() * 2,
+      y: currentPoint.y + rng.nextGaussian() * 2,
+      label: Math.floor(rng.next() * 3),
+    })
   }
-
-  return transformedPoints
+  return points
 }
 
-// Helper functions
-function isPrime(n: number): boolean {
-  if (n < 2) return false
-  if (n === 2) return true
-  if (n % 2 === 0) return false
-  for (let i = 3; i <= Math.sqrt(n); i += 2) {
-    if (n % i === 0) return false
+function generateMandelbrot(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+
+  for (let i = 0; i < numSamples; i++) {
+    const x = rng.next() * 4 - 2 // Real part: -2 to 2
+    const y = rng.next() * 4 - 2 // Imaginary part: -2 to 2
+
+    let zx = 0,
+      zy = 0
+    let iterations = 0
+    const maxIterations = 100
+
+    while (zx * zx + zy * zy < 4 && iterations < maxIterations) {
+      const temp = zx * zx - zy * zy + x
+      zy = 2 * zx * zy + y
+      zx = temp
+      iterations++
+    }
+
+    points.push({
+      x: (x + 2) * 128, // Scale to 0-512
+      y: (y + 2) * 128,
+      label: iterations < maxIterations ? 0 : 1,
+    })
   }
-  return true
+  return points
 }
 
-function fibonacciSpiral(x: number, y: number): number {
-  const phi = (1 + Math.sqrt(5)) / 2
-  const r = Math.sqrt(x * x + y * y)
-  const theta = Math.atan2(y, x)
-  return Math.sin(theta * phi + r * phi) * Math.exp(-r * 0.5)
+function generateJuliaSet(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  const cx = -0.7269 // Julia set constant
+  const cy = 0.1889
+
+  for (let i = 0; i < numSamples; i++) {
+    let zx = rng.next() * 4 - 2
+    let zy = rng.next() * 4 - 2
+    let iterations = 0
+    const maxIterations = 100
+
+    while (zx * zx + zy * zy < 4 && iterations < maxIterations) {
+      const temp = zx * zx - zy * zy + cx
+      zy = 2 * zx * zy + cy
+      zx = temp
+      iterations++
+    }
+
+    points.push({
+      x: (zx + 2) * 128,
+      y: (zy + 2) * 128,
+      label: iterations < maxIterations ? 0 : 1,
+    })
+  }
+  return points
+}
+
+function generateLorenz(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  let x = 1,
+    y = 1,
+    z = 1
+  const dt = 0.01
+  const sigma = 10,
+    rho = 28,
+    beta = 8 / 3
+
+  for (let i = 0; i < numSamples; i++) {
+    const dx = sigma * (y - x)
+    const dy = x * (rho - z) - y
+    const dz = x * y - beta * z
+
+    x += dx * dt
+    y += dy * dt
+    z += dz * dt
+
+    points.push({
+      x: x * 8 + 256,
+      y: y * 8 + 256,
+      label: z > 25 ? 1 : 0,
+    })
+  }
+  return points
+}
+
+function generateTribes(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  const tribes = [
+    { x: 128, y: 128, size: 0.3 },
+    { x: 384, y: 128, size: 0.25 },
+    { x: 128, y: 384, size: 0.2 },
+    { x: 384, y: 384, size: 0.25 },
+  ]
+
+  for (let i = 0; i < numSamples; i++) {
+    const tribe = tribes[Math.floor(rng.next() * tribes.length)]
+    const angle = rng.next() * 2 * Math.PI
+    const radius = rng.nextGaussian() * tribe.size * 100 + 50
+
+    points.push({
+      x: tribe.x + Math.cos(angle) * radius,
+      y: tribe.y + Math.sin(angle) * radius,
+      label: tribes.indexOf(tribe),
+    })
+  }
+  return points
+}
+
+function generateHeads(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+
+  for (let i = 0; i < numSamples; i++) {
+    const angle = rng.next() * 2 * Math.PI
+    const radius = 80 + rng.nextGaussian() * 20
+    const x = 256 + Math.cos(angle) * radius
+    const y = 256 + Math.sin(angle) * radius
+
+    // Add facial features
+    let label = 0
+    if (Math.abs(x - 256) < 20 && y > 240 && y < 280) label = 1 // Eyes area
+    if (Math.abs(x - 256) < 10 && y > 280 && y < 300) label = 2 // Nose area
+    if (Math.abs(x - 256) < 25 && y > 300 && y < 320) label = 3 // Mouth area
+
+    points.push({ x, y, label })
+  }
+  return points
+}
+
+function generateNatives(numSamples: number, rng: SeededRandom): Array<{ x: number; y: number; label: number }> {
+  const points = []
+  const villages = [
+    { x: 150, y: 150, type: "longhouse" },
+    { x: 362, y: 150, type: "tipi" },
+    { x: 256, y: 300, type: "pueblo" },
+  ]
+
+  for (let i = 0; i < numSamples; i++) {
+    const village = villages[Math.floor(rng.next() * villages.length)]
+    const angle = rng.next() * 2 * Math.PI
+    const radius = rng.nextGaussian() * 60 + 80
+
+    points.push({
+      x: village.x + Math.cos(angle) * radius,
+      y: village.y + Math.sin(angle) * radius,
+      label: villages.indexOf(village),
+    })
+  }
+  return points
+}
+
+function generateDataset(dataset: string, numSamples: number, rng: SeededRandom) {
+  switch (dataset) {
+    case "spirals":
+      return generateSpirals(numSamples, rng)
+    case "moons":
+      return generateMoons(numSamples, rng)
+    case "circles":
+      return generateCircles(numSamples, rng)
+    case "blobs":
+      return generateBlobs(numSamples, rng)
+    case "checkerboard":
+      return generateCheckerboard(numSamples, rng)
+    case "gaussian":
+      return generateGaussian(numSamples, rng)
+    case "grid":
+      return generateGrid(numSamples, rng)
+    case "fractal":
+      return generateFractal(numSamples, rng)
+    case "mandelbrot":
+      return generateMandelbrot(numSamples, rng)
+    case "julia":
+      return generateJuliaSet(numSamples, rng)
+    case "lorenz":
+      return generateLorenz(numSamples, rng)
+    case "tribes":
+      return generateTribes(numSamples, rng)
+    case "heads":
+      return generateHeads(numSamples, rng)
+    case "natives":
+      return generateNatives(numSamples, rng)
+    default:
+      return generateSpirals(numSamples, rng)
+  }
 }
 
 export function generateFlowField(params: GenerationParams): string {
-  return generateHighResFlowField({ ...params, scaleFactor: 1, highResolution: false, extraDetail: false })
+  const { dataset, colorScheme, seed, numSamples, noiseScale } = params
+  const rng = new SeededRandom(seed)
+
+  // Generate the dataset points
+  const points = generateDataset(dataset, numSamples, rng)
+
+  // Create SVG
+  let svg = `<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+    <rect width="512" height="512" fill="#000011"/>
+    <defs>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+        <feMerge> 
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>`
+
+  // Add points
+  points.forEach((point, i) => {
+    const t = point.label / Math.max(1, Math.max(...points.map((p) => p.label)))
+    const color = getColor(colorScheme, t)
+    const noise = rng.nextGaussian() * noiseScale * 10
+    const x = Math.max(0, Math.min(512, point.x + noise))
+    const y = Math.max(0, Math.min(512, point.y + noise))
+    const radius = 1 + rng.next() * 2
+
+    svg += `<circle cx="${x}" cy="${y}" r="${radius}" fill="${color}" opacity="0.8" filter="url(#glow)"/>`
+  })
+
+  svg += "</svg>"
+  return svg
 }
 
-export function generateHighResFlowField(params: UpscaleParams): string {
-  const {
-    dataset,
-    scenario,
-    colorScheme,
-    seed,
-    numSamples,
-    noiseScale,
-    timeStep,
-    scaleFactor,
-    highResolution,
-    extraDetail,
-  } = params
+export function generateDomeProjection(params: { width: number; height: number; fov: number; tilt: number }): string {
+  const { width, height, fov } = params
 
-  // Calculate enhanced parameters for upscaling
-  const baseSize = 512
-  const size = baseSize * scaleFactor
-  const enhancedSamples = highResolution ? numSamples * scaleFactor * scaleFactor : numSamples
-
-  const rng = new SeededRandom(seed)
-  const colors = colorPalettes[colorScheme as keyof typeof colorPalettes] || colorPalettes.plasma
-
-  // Generate base dataset
-  const basePoints = generateDataset(dataset, seed, enhancedSamples, noiseScale)
-
-  // Apply scenario transformation
-  const transformedPoints = applyScenarioTransform(basePoints, scenario, rng)
-
-  let svgContent = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`
-
-  // Add background gradient based on color palette
-  svgContent += `
+  return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <radialGradient id="bg-${seed}" cx="50%" cy="50%" r="70%">
-        <stop offset="0%" style="stop-color:${colors[0]};stop-opacity:0.9"/>
-        <stop offset="100%" style="stop-color:${colors[1]};stop-opacity:1"/>
+      <radialGradient id="domeGradient" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#000000;stop-opacity:0" />
       </radialGradient>
     </defs>
-    <rect width="${size}" height="${size}" fill="url(#bg-${seed})"/>
-  `
-
-  const centerX = size / 2
-  const centerY = size / 2
-  const scale = size / 8
-
-  // Render points with scenario-specific styling but color palette colors
-  for (let i = 0; i < transformedPoints.length; i++) {
-    const point = transformedPoints[i]
-    const screenX = centerX + point.x * scale
-    const screenY = centerY + point.y * scale
-
-    if (screenX >= 0 && screenX <= size && screenY >= 0 && screenY <= size) {
-      // Use color palette for coloring (cycle through the 4 colors)
-      const colorIndex = Math.floor((i / transformedPoints.length) * 4) % 4
-      let pointColor = colors[colorIndex]
-
-      let radius = 1
-      let opacity = 0.6
-      let strokeWidth = 0
-      let stroke = "none"
-
-      // Apply scenario-specific sizing and effects (but not colors)
-      switch (scenario) {
-        case "pure":
-          // Pure mathematical visualization with enhanced complexity
-          radius = 0.8 + point.metadata.magnitude * 0.5 + Math.abs(point.metadata.harmonicSeries) * 0.3
-          opacity = 0.7 + (point.metadata.magnitude / 3) * 0.3
-
-          // Special highlighting for prime numbers and Fibonacci points
-          if (point.metadata.isPrime) {
-            radius *= 1.5
-            stroke = colors[3]
-            strokeWidth = 0.5
-          }
-          if (Math.abs(point.metadata.fibonacci) > 0.5) {
-            stroke = colors[2]
-            strokeWidth = 0.3
-          }
-          break
-
-        case "forest":
-          radius = 0.5 + point.metadata.leafDensity * 2 + point.metadata.branchComplexity * 0.1
-          opacity = 0.4 + point.metadata.leafDensity * 0.4 + Math.abs(point.metadata.seasonalFactor) * 0.2
-          if (point.metadata.isTree) {
-            // Draw complex tree structure
-            const branchHeight = point.metadata.treeHeight
-            const branchComplexity = point.metadata.branchComplexity
-
-            for (let branch = 0; branch < Math.min(branchComplexity, 5); branch++) {
-              const branchAngle = ((branch / branchComplexity) * Math.PI) / 3 - Math.PI / 6
-              const branchLength = branchHeight * (1 - branch * 0.2)
-              const endX = screenX + Math.sin(branchAngle) * branchLength
-              const endY = screenY + branchLength
-
-              svgContent += `<line x1="${screenX}" y1="${screenY}" x2="${endX}" y2="${endY}" stroke="${colors[2]}" stroke-width="${2 - branch * 0.3}" opacity="0.7"/>`
-            }
-            radius = 3 + rng.range(0, 4)
-            opacity = 0.8
-          }
-          break
-
-        case "cosmic":
-          radius = 0.3 + point.metadata.brightness * 3
-          opacity = 0.2 + point.metadata.brightness * 0.8
-
-          if (point.metadata.isStar) {
-            radius = 2 + rng.range(0, 3) + point.metadata.stellarClass * 0.5
-            opacity = 0.9
-            stroke = colors[3]
-            strokeWidth = 0.5
-
-            // Add stellar corona
-            svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 2}" fill="none" stroke="${colors[3]}" stroke-width="0.2" opacity="0.3"/>`
-          }
-
-          if (point.metadata.isBlackHole) {
-            // Draw event horizon
-            svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 3}" fill="${colors[0]}" opacity="0.8"/>`
-            svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 4}" fill="none" stroke="${colors[1]}" stroke-width="1" opacity="0.5"/>`
-          }
-          break
-
-        case "ocean":
-          radius = 0.4 + point.metadata.depth * 2
-          opacity = 0.3 + point.metadata.depth * 0.5
-
-          if (point.metadata.isWhirlpool) {
-            // Draw whirlpool spiral
-            for (let spiral = 0; spiral < 3; spiral++) {
-              const spiralRadius = radius * (3 - spiral)
-              const spiralOpacity = opacity * (0.8 - spiral * 0.2)
-              svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${spiralRadius}" fill="none" stroke="${colors[1]}" stroke-width="0.5" opacity="${spiralOpacity}"/>`
-            }
-          }
-          break
-
-        case "neural":
-          radius = 0.5 + Math.abs(point.metadata.activation) * 2 + point.metadata.firingRate * 0.02
-          opacity = 0.3 + Math.abs(point.metadata.activation) * 0.6
-
-          if (point.metadata.isNeuron) {
-            stroke = colors[3]
-            strokeWidth = 0.5 + point.metadata.connectionStrength * 0.5
-
-            // Add synaptic connections with delay visualization
-            if (point.metadata.synapticDelay > 3) {
-              svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius * 1.5}" fill="none" stroke="${colors[2]}" stroke-width="0.3" opacity="0.4"/>`
-            }
-          }
-          break
-
-        case "fire":
-          radius = 0.4 + point.metadata.heat * 0.001 + point.metadata.combustionRate * 0.01
-          opacity = 0.4 + (point.metadata.heat - 300) * 0.0005
-
-          if (point.metadata.isEmber) {
-            radius = 1 + rng.range(0, 2)
-            opacity = 0.9
-            stroke = colors[3]
-            strokeWidth = 0.3
-          }
-
-          if (point.metadata.smokeParticle) {
-            opacity *= 0.5
-            radius *= 1.5
-          }
-          break
-
-        case "ice":
-          radius = 0.3 + point.metadata.crystallineStructure * 0.3 + point.metadata.iceThickness * 0.1
-          opacity = 0.5 + point.metadata.frostLevel * 0.04
-
-          if (point.metadata.isCrystal) {
-            stroke = colors[3]
-            strokeWidth = 0.3
-
-            // Draw hexagonal crystal structure
-            const hexSize = radius * 0.8
-            let hexPath = `M ${screenX + hexSize} ${screenY}`
-            for (let i = 1; i < 6; i++) {
-              const angle = (i * Math.PI) / 3
-              const hexX = screenX + hexSize * Math.cos(angle)
-              const hexY = screenY + hexSize * Math.sin(angle)
-              hexPath += ` L ${hexX} ${hexY}`
-            }
-            hexPath += " Z"
-            svgContent += `<path d="${hexPath}" fill="none" stroke="${colors[2]}" stroke-width="0.2" opacity="0.6"/>`
-          }
-          break
-
-        case "sunset":
-          radius = 0.4 + point.metadata.lightIntensity * 1.5
-          opacity = 0.3 + point.metadata.lightIntensity * 0.5
-
-          // Color temperature affects the color choice
-          const tempFactor = (point.metadata.colorTemperature - 2000) / 3000
-          const tempColorIndex = Math.floor(tempFactor * 3) % 4
-          pointColor = colors[tempColorIndex]
-
-          if (point.metadata.cloudCover > 50) {
-            opacity *= 0.7
-            radius *= 1.3
-          }
-          break
-
-        case "desert":
-          radius = 0.4 + point.metadata.sandDensity * 1.5 + point.metadata.duneHeight * 0.1
-          opacity = 0.3 + point.metadata.sandDensity * 0.4
-
-          if (point.metadata.isOasis) {
-            stroke = colors[2]
-            strokeWidth = 0.5
-            radius *= 1.5
-          }
-
-          if (point.metadata.sandstormIntensity > 5) {
-            opacity *= 0.6
-            radius *= 0.8
-          }
-          break
-
-        case "monochrome":
-          radius = 0.5 + point.metadata.intensity * 0.5 + point.metadata.amplitude * 0.3
-          opacity = 0.4 + Math.abs(point.metadata.pattern) * 0.4 + point.metadata.contrast * 0.05
-          break
-
-        default:
-          radius = 0.5 + point.metadata.intensity * 0.5
-          opacity = 0.4 + Math.abs(point.metadata.pattern) * 0.4
-      }
-
-      svgContent += `<circle cx="${screenX}" cy="${screenY}" r="${radius}" fill="${pointColor}" opacity="${opacity}" stroke="${stroke}" stroke-width="${strokeWidth}"/>`
-    }
-  }
-
-  // Add scenario-specific overlays with enhanced complexity
-  if (scenario === "neural") {
-    // Add complex neural connections with synaptic delays
-    for (let i = 0; i < Math.min(transformedPoints.length, 300); i++) {
-      const point1 = transformedPoints[i]
-      const point2 = transformedPoints[(i + 1) % transformedPoints.length]
-
-      if (point1.metadata.isNeuron && point2.metadata.isNeuron) {
-        const x1 = centerX + point1.x * scale
-        const y1 = centerY + point1.y * scale
-        const x2 = centerX + point2.x * scale
-        const y2 = centerY + point2.y * scale
-
-        const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-        if (distance < scale * 0.6) {
-          const connectionOpacity = 0.1 + point1.metadata.connectionStrength * point2.metadata.connectionStrength * 0.3
-          const synapticDelay = (point1.metadata.synapticDelay + point2.metadata.synapticDelay) / 2
-          const strokeWidth = 0.5 + synapticDelay * 0.1
-
-          svgContent += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${colors[2]}" stroke-width="${strokeWidth}" opacity="${connectionOpacity}"/>`
-        }
-      }
-    }
-  } else if (scenario === "pure") {
-    // Add enhanced mathematical grid lines and golden ratio spirals
-    const gridSpacing = size / 12
-    for (let i = 0; i <= 12; i++) {
-      const pos = i * gridSpacing
-      svgContent += `<line x1="${pos}" y1="0" x2="${pos}" y2="${size}" stroke="${colors[1]}" stroke-width="0.3" opacity="0.15"/>`
-      svgContent += `<line x1="0" y1="${pos}" x2="${size}" y2="${pos}" stroke="${colors[1]}" stroke-width="0.3" opacity="0.15"/>`
-    }
-
-    // Add axes with enhanced styling
-    svgContent += `<line x1="${centerX}" y1="0" x2="${centerX}" y2="${size}" stroke="${colors[2]}" stroke-width="1.5" opacity="0.4"/>`
-    svgContent += `<line x1="0" y1="${centerY}" x2="${size}" y2="${centerY}" stroke="${colors[2]}" stroke-width="1.5" opacity="0.4"/>`
-
-    // Add golden ratio spiral
-    const phi = (1 + Math.sqrt(5)) / 2
-    let spiralPath = `M ${centerX} ${centerY}`
-    for (let t = 0; t < 4 * Math.PI; t += 0.1) {
-      const r = Math.exp(t / phi) * 5
-      const x = centerX + r * Math.cos(t)
-      const y = centerY + r * Math.sin(t)
-      if (x >= 0 && x <= size && y >= 0 && y <= size) {
-        spiralPath += ` L ${x} ${y}`
-      }
-    }
-    svgContent += `<path d="${spiralPath}" fill="none" stroke="${colors[3]}" stroke-width="0.8" opacity="0.3"/>`
-  }
-
-  svgContent += "</svg>"
-  return svgContent
+    <circle cx="${width / 2}" cy="${height / 2}" r="${Math.min(width, height) / 2}" fill="url(#domeGradient)" />
+    <text x="${width / 2}" y="${height / 2}" text-anchor="middle" fill="white" font-size="24">Dome Projection</text>
+  </svg>`
 }

@@ -23,7 +23,7 @@ interface GeneratedImage {
   }
 }
 
-export default function FlowArtGenerator() {
+export function FlowArtGenerator() {
   const [dataset, setDataset] = useState("spirals")
   const [scenario, setScenario] = useState("landscape")
   const [colorScheme, setColorScheme] = useState("plasma")
