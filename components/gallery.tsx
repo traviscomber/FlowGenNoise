@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { useToast } from "@/components/ui/use-toast"
 import { Trash2, Star, StarOff, Cloud, Download, Loader2, Sparkles, Palette } from "lucide-react"
 import { GalleryStorage, type GalleryImage, type GalleryStats } from "@/lib/gallery-storage"
-import { CloudSyncService, type CloudSyncStatus } from "@/lib/cloud-sync"
+import { CloudSync, type CloudSyncStatus } from "@/lib/cloud-sync"
 
 interface GalleryProps {
   onImageSelect: (image: GalleryImage) => void
@@ -20,18 +20,10 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
   const [isConfirmingClear, setIsConfirmingClear] = useState(false)
   const [galleryStats, setGalleryStats] = useState<GalleryStats>(GalleryStorage.getStorageStats([]))
-  const [cloudSyncStatus, setCloudSyncStatus] = useState<CloudSyncStatus>(CloudSyncService.getStatus())
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<CloudSyncStatus>(CloudSync.getStatus())
   const [isScoring, setIsScoring] = useState(false)
   const [scoreProgress, setScoreProgress] = useState(0)
   const [isBatchScoring, setIsBatchScoring] = useState(false)
-
-  useEffect(() => {
-    function addImage(e: any) {
-      setImages((prev) => [{ imageUrl: e.detail as string }, ...prev])
-    }
-    window.addEventListener("new-image", addImage)
-    return () => window.removeEventListener("new-image", addImage)
-  }, [])
 
   const loadGallery = useCallback(async () => {
     const localImages = GalleryStorage.getGallery()
@@ -39,7 +31,7 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
 
     if (cloudSyncStatus.isAuthenticated && cloudSyncStatus.isEnabled) {
       try {
-        const cloudImages = await CloudSyncService.downloadImages()
+        const cloudImages = await CloudSync.downloadImages()
         // Merge: prioritize cloud version if ID matches, otherwise add
         const cloudImageMap = new Map(
           cloudImages.map((img) => [img.id, { ...img, metadata: { ...img.metadata, cloudStored: true } }]),
@@ -79,14 +71,30 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
     setGalleryStats(GalleryStorage.getStorageStats(combinedImages))
   }, [cloudSyncStatus.isAuthenticated, cloudSyncStatus.isEnabled, toast])
 
+  // Load gallery on mount and when cloud sync status changes
   useEffect(() => {
     loadGallery()
-    const listener = (status: CloudSyncStatus) => {
+  }, [loadGallery])
+
+  // Listen to cloud sync status changes
+  useEffect(() => {
+    const handleStatusChange = (status: CloudSyncStatus) => {
       setCloudSyncStatus(status)
-      loadGallery() // Reload gallery when sync status changes
     }
-    CloudSyncService.addStatusListener(listener)
-    return () => CloudSyncService.removeStatusListener(listener)
+
+    CloudSync.addStatusListener(handleStatusChange)
+    return () => CloudSync.removeStatusListener(handleStatusChange)
+  }, [])
+
+  // Listen for new images from the generator
+  useEffect(() => {
+    function addImage(e: any) {
+      const newImageUrl = e.detail as string
+      // Instead of directly adding to state, reload the gallery to get the full image data
+      loadGallery()
+    }
+    window.addEventListener("new-image", addImage)
+    return () => window.removeEventListener("new-image", addImage)
   }, [loadGallery])
 
   const handleDeleteImage = useCallback(
@@ -96,11 +104,11 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
 
       if (imageToDelete.metadata.cloudStored) {
         try {
-          await CloudSyncService.deleteCloudImage(id)
+          await CloudSync.deleteCloudImage(id)
           toast({
             title: "Image Deleted",
             description: "Image removed from cloud and local gallery.",
-            variant: "success",
+            variant: "default",
           })
         } catch (error) {
           console.error("Failed to delete cloud image:", error)
@@ -119,7 +127,7 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
       toast({
         title: "Image Deleted",
         description: "Image removed from local gallery.",
-        variant: "success",
+        variant: "default",
       })
     },
     [images, loadGallery, toast],
@@ -128,11 +136,11 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
   const handleClearGallery = useCallback(async () => {
     if (cloudSyncStatus.isEnabled && cloudSyncStatus.isAuthenticated) {
       try {
-        await CloudSyncService.clearCloudGallery()
+        await CloudSync.clearCloudGallery()
         toast({
           title: "Cloud Gallery Cleared",
           description: "All images removed from cloud storage.",
-          variant: "success",
+          variant: "default",
         })
       } catch (error) {
         console.error("Failed to clear cloud gallery:", error)
@@ -152,7 +160,7 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
     toast({
       title: "Gallery Cleared",
       description: "All images removed from local gallery.",
-      variant: "success",
+      variant: "default",
     })
   }, [cloudSyncStatus.isEnabled, cloudSyncStatus.isAuthenticated, loadGallery, toast])
 
@@ -163,11 +171,11 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
         if (updatedImage.metadata.cloudStored) {
           // If cloud stored, re-upload to update favorite status
           try {
-            await CloudSyncService.uploadImageFullResolution(updatedImage)
+            await CloudSync.uploadImageFullResolution(updatedImage)
             toast({
               title: "Favorite Updated",
               description: "Image favorite status synced to cloud.",
-              variant: "success",
+              variant: "default",
             })
           } catch (error) {
             console.error("Failed to sync favorite status:", error)
@@ -204,13 +212,13 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
         const updatedImage = GalleryStorage.updateImageMetadata(image.id, { aestheticScore })
 
         if (updatedImage && updatedImage.metadata.cloudStored) {
-          await CloudSyncService.uploadImageFullResolution(updatedImage)
+          await CloudSync.uploadImageFullResolution(updatedImage)
         }
 
         toast({
           title: "Image Scored!",
           description: `Aesthetic score: ${aestheticScore.toFixed(2)}`,
-          variant: "success",
+          variant: "default",
         })
         loadGallery()
       } catch (error: any) {
@@ -263,7 +271,7 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
         const updatedImage = GalleryStorage.updateImageMetadata(image.id, { aestheticScore })
 
         if (updatedImage && updatedImage.metadata.cloudStored) {
-          await CloudSyncService.uploadImageFullResolution(updatedImage)
+          await CloudSync.uploadImageFullResolution(updatedImage)
         }
 
         scoredCount++
@@ -281,7 +289,7 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
     toast({
       title: "Batch Scoring Complete",
       description: `Scored ${scoredCount} out of ${imagesToScore.length} images.`,
-      variant: "success",
+      variant: "default",
     })
     setIsBatchScoring(false)
     setScoreProgress(0)
@@ -292,22 +300,56 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
 
   return (
     <section className="w-full">
-      <h2 className="mb-4 text-xl font-semibold">Recent&nbsp;Images</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-semibold">Recent Images</h2>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleBatchScore}
+            disabled={isBatchScoring || images.filter((img) => img.metadata.aestheticScore === undefined).length === 0}
+          >
+            {isBatchScoring ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Scoring... {scoreProgress}%
+              </>
+            ) : (
+              <>
+                <Sparkles className="mr-2 h-4 w-4" />
+                Batch Score
+              </>
+            )}
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setIsConfirmingClear(true)}>
+            <Trash2 className="h-4 w-4 mr-2" />
+            Clear All
+          </Button>
+        </div>
+      </div>
+
       <ScrollArea className="h-[400px] w-full rounded-md border">
         <div className="grid grid-cols-2 gap-4 p-4 md:grid-cols-3">
-          {images.map((image, i) => (
+          {images.map((image) => (
             <div
               key={image.id}
               className="relative group cursor-pointer rounded-lg overflow-hidden border hover:border-primary transition-colors"
               onClick={() => setSelectedImage(image)}
             >
               <img
-                src={image.imageUrl || "/placeholder.png"}
+                src={image.imageUrl || "/placeholder.svg?height=128&width=128"}
                 alt={image.metadata.filename || "Generated Art"}
                 className="w-full h-32 object-cover"
               />
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button variant="secondary" size="sm" onClick={() => onImageSelect(image)}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onImageSelect(image)
+                  }}
+                >
                   Select
                 </Button>
               </div>
@@ -329,6 +371,27 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
         </div>
       </ScrollArea>
 
+      {/* Clear confirmation dialog */}
+      <Dialog open={isConfirmingClear} onOpenChange={setIsConfirmingClear}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Clear Gallery</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to clear all images? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsConfirmingClear(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleClearGallery}>
+              Clear All
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Image detail dialog */}
       {selectedImage && (
         <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
           <DialogContent className="sm:max-w-[800px]">
@@ -341,7 +404,7 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
             <div className="grid md:grid-cols-2 gap-4">
               <div className="relative">
                 <img
-                  src={selectedImage.imageUrl || "/placeholder.png"}
+                  src={selectedImage.imageUrl || "/placeholder.svg?height=400&width=400"}
                   alt={selectedImage.metadata.filename || "Generated Art"}
                   className="w-full h-auto object-contain rounded-md"
                 />
@@ -449,7 +512,7 @@ export default function Gallery({ onImageSelect }: GalleryProps) {
   )
 }
 
-// Helper function for downloading images (duplicated for convenience, consider centralizing)
+// Helper function for downloading images
 function handleDownloadImage(imageUrl: string, type: "svg" | "png") {
   const link = document.createElement("a")
   link.href = imageUrl
