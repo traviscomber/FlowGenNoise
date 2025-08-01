@@ -8,7 +8,6 @@ import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2, Download, Globe, Mountain, RefreshCw } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
@@ -46,7 +45,7 @@ export function Dome360Planner() {
     domeDiameter: 15,
     domeResolution: "4K",
     projectionType: "fisheye",
-    panoramic360: false,
+    panoramic360: true,
     panoramaResolution: "8K",
     panoramaFormat: "equirectangular",
     stereographicPerspective: "little-planet",
@@ -76,7 +75,7 @@ export function Dome360Planner() {
     try {
       console.log("🏛️ Starting dome/360° art generation with params:", params)
 
-      const response = await fetch("/api/generate-art", {
+      const response = await fetch("/api/generate-ai-art", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,13 +97,20 @@ export function Dome360Planner() {
       if (result.success && result.image) {
         setGeneratedImages({
           main: result.image,
-          dome: result.domeImage,
-          panorama: result.panoramaImage,
+          dome: result.domeImage || result.image, // Fallback to main if dome missing
+          panorama: result.panoramaImage || result.image, // Fallback to main if panorama missing
         })
         setGenerationDetails(result)
+
+        // Count how many unique versions we got
+        const versions = []
+        if (result.image) versions.push("original")
+        if (result.domeImage && result.domeImage !== result.image) versions.push("dome tunnel")
+        if (result.panoramaImage && result.panoramaImage !== result.image) versions.push("360° VR")
+
         toast({
           title: "Immersive Art Generated Successfully!",
-          description: `Created ${params.domeProjection ? "dome" : ""}${params.domeProjection && params.panoramic360 ? " and " : ""}${params.panoramic360 ? "360°" : ""} artwork`,
+          description: `Created ${versions.length} version${versions.length > 1 ? "s" : ""}: ${versions.join(", ")}`,
         })
       } else {
         throw new Error(result.error || "Failed to generate image")
@@ -157,7 +163,8 @@ export function Dome360Planner() {
             Dome & 360° Planner
           </CardTitle>
           <CardDescription>
-            Create immersive artwork for planetariums, dome theaters, and VR experiences
+            Create immersive artwork for planetariums, dome theaters, and VR experiences. Generates all 3 versions:
+            Original, Dome Tunnel, and 360° VR.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -230,130 +237,88 @@ export function Dome360Planner() {
             </Select>
           </div>
 
-          {/* Projection Settings */}
+          {/* Dome Settings */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="domeProjection"
-                checked={params.domeProjection}
-                onCheckedChange={(checked) => updateParam("domeProjection", checked)}
-              />
-              <Label htmlFor="domeProjection">Enable Dome Projection</Label>
-            </div>
-
-            {params.domeProjection && (
-              <div className="space-y-4 pl-6 border-l-2 border-blue-200">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Dome Diameter: {params.domeDiameter}m</Label>
-                    <Slider
-                      value={[params.domeDiameter]}
-                      onValueChange={([value]) => updateParam("domeDiameter", value)}
-                      min={5}
-                      max={30}
-                      step={1}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Resolution</Label>
-                    <Select
-                      value={params.domeResolution}
-                      onValueChange={(value) => updateParam("domeResolution", value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="2K">2K (2048x2048)</SelectItem>
-                        <SelectItem value="4K">4K (4096x4096)</SelectItem>
-                        <SelectItem value="8K">8K (8192x8192)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h4 className="font-medium text-blue-900 mb-2">Dome Projection Settings</h4>
+              <p className="text-sm text-blue-700 mb-3">Configure dome tunnel effect for planetarium projection</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Dome Diameter: {params.domeDiameter}m</Label>
+                  <Slider
+                    value={[params.domeDiameter]}
+                    onValueChange={([value]) => updateParam("domeDiameter", value)}
+                    min={5}
+                    max={30}
+                    step={1}
+                  />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Projection Type</Label>
-                  <Select value={params.projectionType} onValueChange={(value) => updateParam("projectionType", value)}>
+                  <Label>Resolution</Label>
+                  <Select value={params.domeResolution} onValueChange={(value) => updateParam("domeResolution", value)}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="fisheye">Fisheye</SelectItem>
-                      <SelectItem value="equidistant">Equidistant</SelectItem>
+                      <SelectItem value="2K">2K (2048x2048)</SelectItem>
+                      <SelectItem value="4K">4K (4096x4096)</SelectItem>
+                      <SelectItem value="8K">8K (8192x8192)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2 mt-4">
+                <Label>Projection Type</Label>
+                <Select value={params.projectionType} onValueChange={(value) => updateParam("projectionType", value)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fisheye">Fisheye Tunnel</SelectItem>
+                    <SelectItem value="equidistant">Equidistant Tunnel</SelectItem>
+                    <SelectItem value="stereographic">Little Planet Effect</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+              <h4 className="font-medium text-green-900 mb-2">360° VR Settings</h4>
+              <p className="text-sm text-green-700 mb-3">Configure panoramic settings for VR and immersive viewing</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Resolution</Label>
+                  <Select
+                    value={params.panoramaResolution}
+                    onValueChange={(value) => updateParam("panoramaResolution", value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="4K">4K</SelectItem>
+                      <SelectItem value="8K">8K</SelectItem>
+                      <SelectItem value="16K">16K</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Format</Label>
+                  <Select value={params.panoramaFormat} onValueChange={(value) => updateParam("panoramaFormat", value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="equirectangular">Equirectangular</SelectItem>
                       <SelectItem value="stereographic">Stereographic</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
-            )}
-
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="panoramic360"
-                checked={params.panoramic360}
-                onCheckedChange={(checked) => updateParam("panoramic360", checked)}
-              />
-              <Label htmlFor="panoramic360">Enable 360° Panorama</Label>
             </div>
-
-            {params.panoramic360 && (
-              <div className="space-y-4 pl-6 border-l-2 border-green-200">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Resolution</Label>
-                    <Select
-                      value={params.panoramaResolution}
-                      onValueChange={(value) => updateParam("panoramaResolution", value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="4K">4K</SelectItem>
-                        <SelectItem value="8K">8K</SelectItem>
-                        <SelectItem value="16K">16K</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Format</Label>
-                    <Select
-                      value={params.panoramaFormat}
-                      onValueChange={(value) => updateParam("panoramaFormat", value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="equirectangular">Equirectangular</SelectItem>
-                        <SelectItem value="stereographic">Stereographic</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {params.panoramaFormat === "stereographic" && (
-                  <div className="space-y-2">
-                    <Label>Perspective</Label>
-                    <Select
-                      value={params.stereographicPerspective}
-                      onValueChange={(value) => updateParam("stereographicPerspective", value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="little-planet">Little Planet</SelectItem>
-                        <SelectItem value="tunnel">Tunnel View</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
 
           {/* Numerical Parameters */}
@@ -403,15 +368,18 @@ export function Dome360Planner() {
             {isGenerating ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Creating Immersive Art...
+                Creating All 3 Versions...
               </>
             ) : (
               <>
                 <Globe className="w-4 h-4 mr-2" />
-                Generate Immersive Artwork
+                Generate All 3 Versions
               </>
             )}
           </Button>
+          <p className="text-xs text-muted-foreground text-center">
+            Generates Original + Dome Tunnel + 360° VR versions
+          </p>
         </CardContent>
       </Card>
 
@@ -419,14 +387,15 @@ export function Dome360Planner() {
       <Card>
         <CardHeader>
           <CardTitle>Generated Immersive Art</CardTitle>
-          <CardDescription>Your dome and 360° artwork will appear here once generated</CardDescription>
+          <CardDescription>All 3 versions: Original, Dome Tunnel, and 360° VR</CardDescription>
         </CardHeader>
         <CardContent>
           {isGenerating && (
             <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
               <div className="text-center">
                 <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">Creating your immersive experience...</p>
+                <p className="text-sm text-muted-foreground">Creating all 3 immersive versions...</p>
+                <p className="text-xs text-muted-foreground mt-1">Original → Dome Tunnel → 360° VR</p>
               </div>
             </div>
           )}
@@ -434,13 +403,9 @@ export function Dome360Planner() {
           {(generatedImages.main || generatedImages.dome || generatedImages.panorama) && (
             <Tabs defaultValue="main" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="main">Standard</TabsTrigger>
-                <TabsTrigger value="dome" disabled={!generatedImages.dome}>
-                  Dome
-                </TabsTrigger>
-                <TabsTrigger value="panorama" disabled={!generatedImages.panorama}>
-                  360°
-                </TabsTrigger>
+                <TabsTrigger value="main">Original</TabsTrigger>
+                <TabsTrigger value="dome">Dome Tunnel</TabsTrigger>
+                <TabsTrigger value="panorama">360° VR</TabsTrigger>
               </TabsList>
 
               <TabsContent value="main" className="space-y-4">
@@ -449,16 +414,22 @@ export function Dome360Planner() {
                     <div className="relative">
                       <Image
                         src={generatedImages.main || "/placeholder.svg"}
-                        alt="Generated standard art"
+                        alt="Generated standard mathematical art"
                         width={512}
                         height={512}
                         className="w-full rounded-lg shadow-lg"
                         unoptimized
                       />
                     </div>
-                    <Button onClick={() => downloadImage(generatedImages.main!, "standard")} className="w-full">
+                    <div className="space-y-2">
+                      <Badge variant="secondary">Original Mathematical Art</Badge>
+                      <p className="text-sm text-muted-foreground">
+                        Standard mathematical artwork with algorithmic beauty and geometric precision
+                      </p>
+                    </div>
+                    <Button onClick={() => downloadImage(generatedImages.main!, "original")} className="w-full">
                       <Download className="w-4 h-4 mr-2" />
-                      Download Standard Version
+                      Download Original Version
                     </Button>
                   </>
                 )}
@@ -470,7 +441,7 @@ export function Dome360Planner() {
                     <div className="relative">
                       <Image
                         src={generatedImages.dome || "/placeholder.svg"}
-                        alt="Generated dome projection art"
+                        alt="Generated dome tunnel projection art"
                         width={512}
                         height={512}
                         className="w-full rounded-lg shadow-lg"
@@ -480,15 +451,16 @@ export function Dome360Planner() {
                     <div className="space-y-2">
                       <Badge variant="secondary">
                         <Mountain className="w-3 h-3 mr-1" />
-                        {params.domeDiameter}m Dome • {params.domeResolution}
+                        {params.domeDiameter}m Dome Tunnel • {params.domeResolution}
                       </Badge>
                       <p className="text-sm text-muted-foreground">
-                        Optimized for {params.projectionType} projection on {params.domeDiameter}m diameter dome
+                        Fisheye tunnel effect optimized for {params.domeDiameter}m diameter planetarium dome with
+                        dramatic depth illusion
                       </p>
                     </div>
-                    <Button onClick={() => downloadImage(generatedImages.dome!, "dome")} className="w-full">
+                    <Button onClick={() => downloadImage(generatedImages.dome!, "dome-tunnel")} className="w-full">
                       <Download className="w-4 h-4 mr-2" />
-                      Download Dome Version
+                      Download Dome Tunnel Version
                     </Button>
                   </>
                 )}
@@ -500,7 +472,7 @@ export function Dome360Planner() {
                     <div className="relative">
                       <Image
                         src={generatedImages.panorama || "/placeholder.svg"}
-                        alt="Generated 360° panorama art"
+                        alt="Generated 360° panorama mathematical art"
                         width={512}
                         height={params.panoramaFormat === "equirectangular" ? 256 : 512}
                         className="w-full rounded-lg shadow-lg"
@@ -510,17 +482,17 @@ export function Dome360Planner() {
                     <div className="space-y-2">
                       <Badge variant="secondary">
                         <Globe className="w-3 h-3 mr-1" />
-                        360° • {params.panoramaResolution} • {params.panoramaFormat}
+                        360° VR • {params.panoramaResolution} • {params.panoramaFormat}
                       </Badge>
                       <p className="text-sm text-muted-foreground">
                         {params.panoramaFormat === "equirectangular"
-                          ? "Ready for VR headsets and 360° video platforms"
-                          : `${params.stereographicPerspective} stereographic projection`}
+                          ? "Seamless 360° mathematical art ready for VR headsets and immersive viewing"
+                          : `${params.stereographicPerspective} stereographic mathematical projection`}
                       </p>
                     </div>
-                    <Button onClick={() => downloadImage(generatedImages.panorama!, "360")} className="w-full">
+                    <Button onClick={() => downloadImage(generatedImages.panorama!, "360-vr")} className="w-full">
                       <Download className="w-4 h-4 mr-2" />
-                      Download 360° Version
+                      Download 360° VR Version
                     </Button>
                   </>
                 )}
@@ -538,6 +510,20 @@ export function Dome360Planner() {
               <p className="text-sm text-muted-foreground">
                 Generated with {params.numSamples.toLocaleString()} data points for immersive display
               </p>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="text-center p-2 bg-blue-50 rounded">
+                  <div className="font-medium">Original</div>
+                  <div className="text-muted-foreground">{generationDetails.mainImage}</div>
+                </div>
+                <div className="text-center p-2 bg-purple-50 rounded">
+                  <div className="font-medium">Dome</div>
+                  <div className="text-muted-foreground">{generationDetails.domeImage}</div>
+                </div>
+                <div className="text-center p-2 bg-green-50 rounded">
+                  <div className="font-medium">360° VR</div>
+                  <div className="text-muted-foreground">{generationDetails.panoramaImage}</div>
+                </div>
+              </div>
             </div>
           )}
 
@@ -545,7 +531,8 @@ export function Dome360Planner() {
             <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
               <div className="text-center">
                 <Globe className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">Configure your immersive settings and generate artwork</p>
+                <p className="text-sm text-muted-foreground">Configure your settings and generate all 3 versions</p>
+                <p className="text-xs text-muted-foreground mt-1">Original + Dome Tunnel + 360° VR</p>
               </div>
             </div>
           )}

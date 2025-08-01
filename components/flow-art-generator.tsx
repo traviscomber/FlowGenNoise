@@ -29,6 +29,9 @@ import {
   Trash2,
   Play,
   Wand2,
+  Globe,
+  Mountain,
+  Camera,
 } from "lucide-react"
 import { generateFlowField, generateDomeProjection as generateDomeSVG, type GenerationParams } from "@/lib/flow-model"
 
@@ -75,7 +78,7 @@ export function FlowArtGenerator() {
   const [error, setError] = useState<string | null>(null)
   const [downloadStatus, setDownloadStatus] = useState<string | null>(null)
 
-  // Enhanced generation parameters with Nuanu as default
+  // Enhanced generation parameters with Indonesian as default
   const [dataset, setDataset] = useState("indonesian")
   const [scenario, setScenario] = useState("garuda")
   const [colorScheme, setColorScheme] = useState("metallic")
@@ -84,14 +87,14 @@ export function FlowArtGenerator() {
   const [noiseScale, setNoiseScale] = useState(0.1)
   const [timeStep, setTimeStep] = useState(0.01)
 
-  // Dome projection settings - fixed to 10 meters
-  const [domeEnabled, setDomeEnabled] = useState(false)
-  const [domeDiameter] = useState(10) // Fixed to 10 meters
+  // Dome projection settings - configurable diameter
+  const [domeEnabled, setDomeEnabled] = useState(true) // Enable by default to show all 3 versions
+  const [domeDiameter, setDomeDiameter] = useState(20) // Default to 20 meters, configurable
   const [domeResolution, setDomeResolution] = useState("4K")
   const [domeProjectionType, setDomeProjectionType] = useState("fisheye")
 
   // 360° panorama settings
-  const [panorama360Enabled, setPanorama360Enabled] = useState(false)
+  const [panorama360Enabled, setPanorama360Enabled] = useState(true) // Enable by default to show all 3 versions
   const [panoramaResolution, setPanoramaResolution] = useState("8K")
   const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
   const [stereographicPerspective, setStereographicPerspective] = useState("little-planet")
@@ -145,7 +148,7 @@ export function FlowArtGenerator() {
       nuanu: "Nuanu Creative City",
       bali: "Balinese Cultural Heritage",
       thailand: "Thai Cultural Heritage",
-      indonesian: "Indonesian Mythology",
+      indonesian: "Indonesian Mythology & Tribal Heritage",
       horror: "Indonesian Horror Creatures",
       spirals: "Mathematical Spirals",
       fractal: "Fractal Patterns",
@@ -183,7 +186,12 @@ export function FlowArtGenerator() {
       bali: [
         { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
         { value: "temples", label: "Hindu Temples", description: "Sacred Pura architecture" },
-        { value: "rice-terraces", label: "Rice Terraces", description: "Jatiluwih terraced landscapes" },
+        {
+          value: "rice-terraces",
+          label: "Terraced Fields",
+          description:
+            "Mathematical stepped field patterns with geometric precision, cascading mathematical functions creating organic terraced compositions, golden ratio spiral arrangements in agricultural geometry, fractal field boundaries with natural mathematical harmony, algorithmic landscape design principles",
+        },
         { value: "ceremonies", label: "Hindu Ceremonies", description: "Galungan and Kuningan festivals" },
         { value: "dancers", label: "Traditional Dancers", description: "Legong and Kecak performances" },
         { value: "beaches", label: "Tropical Beaches", description: "Volcanic sand and coral reefs" },
@@ -271,14 +279,134 @@ export function FlowArtGenerator() {
         { value: "animals", label: "Animal Totems", description: "Wildlife in stone and bronze" },
       ],
       indonesian: [
-        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
-        { value: "garuda", label: "Garuda Wisnu", description: "Mythical bird creature" },
-        { value: "wayang", label: "Wayang Kulit", description: "Shadow puppet theatre" },
-        { value: "batik", label: "Batik Patterns", description: "Traditional wax-resist dyeing" },
-        { value: "borobudur", label: "Borobudur Temple", description: "Ancient Buddhist monument" },
-        { value: "komodo", label: "Komodo Dragons", description: "Largest living lizards" },
-        { value: "dance", label: "Traditional Dance", description: "Cultural performances" },
-        { value: "mountains", label: "Volcanic Mountains", description: "Lush landscapes" },
+        {
+          value: "pure",
+          label: "Pure Mathematical Indonesian",
+          description:
+            "Raw mathematical beauty infused with Indonesian sacred geometry, batik patterns, and archipelago fractals",
+        },
+        {
+          value: "garuda",
+          label: "🦅 Garuda Wisnu Kencana Divine Eagle",
+          description:
+            "GODLEVEL PROMPT: Majestic Garuda Wisnu Kencana soaring through celestial realms, massive divine eagle with wingspan stretching across golden sunset skies, intricate feather details shimmering with ethereal light, powerful talons gripping sacred lotus blossoms radiating divine energy, noble eagle head crowned with jeweled diadem of ancient Javanese kings, eyes blazing with cosmic wisdom and protective fury, Lord Vishnu mounted majestically upon Garuda's back in full divine regalia with four arms holding sacred conch shell, discus wheel of time, lotus of creation, and mace of justice, flowing silk garments in royal blues and golds dancing in celestial winds, Mount Meru rising in background with cascading waterfalls of liquid starlight, temple spires piercing through clouds of incense and prayers, Indonesian archipelago spread below like scattered emeralds in sapphire seas, Ring of Fire volcanoes glowing with sacred flames, traditional gamelan music visualized as golden sound waves rippling through dimensions, ancient Sanskrit mantras floating as luminous script in the air, Ramayana epic scenes carved into floating stone tablets, divine aura radiating rainbow light spectrum, cosmic mandala patterns swirling in the heavens, 17,508 islands of Indonesia visible as points of light below, Borobudur and Prambanan temples glowing with spiritual energy, traditional Indonesian textiles patterns woven into the very fabric of reality, hyperrealistic 8K cinematic masterpiece with volumetric lighting and particle effects",
+        },
+        {
+          value: "wayang",
+          label: "🎭 Wayang Kulit Shadow Theatre Epic",
+          description:
+            "GODLEVEL PROMPT: Mystical Wayang Kulit shadow puppet performance bringing ancient Ramayana and Mahabharata epics to life, master dalang puppeteer silhouetted behind glowing white screen with hundreds of intricately carved leather puppets, each puppet a masterwork of perforated artistry with gold leaf details catching flickering oil lamp light, dramatic shadows dancing and morphing into living characters, Prince Rama with perfect noble features and ornate crown battling ten-headed demon king Ravana whose multiple faces show rage, cunning, and supernatural power, beautiful Princess Sita with flowing hair and delicate jewelry radiating purity and grace, mighty Hanuman the white monkey warrior leaping through air with mountain in his grasp, gamelan orchestra of bronze instruments creating visible sound waves in metallic gold and silver, traditional Indonesian musicians in batik clothing playing gender, saron, and kendang drums, audience of villagers sitting cross-legged on woven mats mesmerized by the eternal stories, coconut oil lamps casting warm amber light creating multiple layers of shadows, ancient Javanese script floating in the air telling the story, tropical night sky filled with stars and flying spirits, traditional Javanese architecture with carved wooden pillars and clay tile roofs, incense smoke curling upward carrying prayers to ancestors, banana leaves and frangipani flowers as offerings, cultural heritage spanning over 1000 years visualized as golden threads connecting past to present, UNESCO World Heritage artistic tradition, hyperrealistic cinematic lighting with deep shadows and warm highlights, 8K resolution with intricate puppet details and atmospheric effects",
+        },
+        {
+          value: "batik",
+          label: "🎨 Sacred Batik Cosmic Patterns",
+          description:
+            "GODLEVEL PROMPT: Infinite cosmic tapestry of sacred Indonesian batik patterns coming alive with supernatural energy, master batik artisan's hands applying hot wax with traditional canting tool creating flowing lines that transform into living rivers of light, parang rusak diagonal patterns representing flowing water and eternal life force undulating like ocean waves, kawung geometric circles symbolizing cosmic order expanding into mandala formations that pulse with universal rhythm, mega mendung cloud motifs in deep indigo blues swirling with actual storm clouds and lightning, ceplok star formations bursting into real constellations in the night sky, sido mukti prosperity symbols manifesting as golden coins and rice grains falling like blessed rain, royal court designs with protective meanings creating shields of light around ancient Javanese palaces, intricate hand-drawn patterns using traditional canting tools guided by ancestral spirits, natural dyes from indigo plants, turmeric roots, and mahogany bark creating earth tones that shift and change like living skin, cultural identity woven into fabric of reality itself, UNESCO heritage craft mastery passed down through generations of royal court artisans, each pattern telling stories of creation myths and heroic legends, textile becoming portal to spiritual realm where ancestors dance in eternal celebration, traditional Javanese philosophy of harmony between human, nature, and divine visualized as interconnected geometric patterns, workshop filled with clay pots of dye, bamboo tools, and cotton fabric stretched on wooden frames, tropical sunlight filtering through palm leaves creating natural batik shadows on the ground, master craftswomen in traditional kebaya clothing working with meditative focus, the very air shimmering with creative energy and cultural pride, hyperrealistic 8K detail showing every wax crack and dye gradient, volumetric lighting and particle effects bringing ancient art form to supernatural life",
+        },
+        {
+          value: "borobudur",
+          label: "🏛️ Borobudur Buddhist Cosmic Mandala",
+          description:
+            "GODLEVEL PROMPT: Magnificent Borobudur temple rising from misty Javanese plains like a massive stone mandala connecting earth to heaven, world's largest Buddhist monument glowing with golden sunrise light, 2,672 relief panels carved into volcanic stone coming alive with animated scenes of Buddha's teachings and Jataka tales, 504 Buddha statues in perfect meditation poses each radiating serene enlightenment energy, bell-shaped stupas containing hidden Buddha figures emerging from stone like lotus flowers blooming, three circular platforms representing Buddhist cosmology - Kamadhatu (world of desire), Rupadhatu (world of forms), and Arupadhatu (formless world) - each level glowing with different colored auras, pilgrims in white robes walking clockwise path to enlightenment leaving trails of golden light, ancient stones weathered by centuries telling stories of devotion and spiritual seeking, sunrise illuminating the monument with divine radiance while Mount Merapi volcano smokes majestically in background, largest Buddhist temple complex in the world surrounded by lush tropical jungle and rice paddies, architectural marvel embodying spiritual journey from earthly desires to nirvana visualized as ascending spirals of light, Sailendra dynasty builders' vision manifested in perfect sacred geometry, each stone block precisely placed according to cosmic principles, relief carvings depicting Prince Siddhartha's path to becoming Buddha animated with supernatural life, celestial beings and bodhisattvas floating around the temple in meditation, traditional Javanese gamelan music resonating from the stones themselves, incense smoke from countless offerings creating mystical atmosphere, UNESCO World Heritage site protected by guardian spirits, morning mist revealing and concealing the temple like a divine revelation, pilgrims from around the world climbing the sacred steps in spiritual pilgrimage, ancient wisdom carved in stone speaking across centuries, hyperrealistic 8K cinematic masterpiece with volumetric lighting, atmospheric effects, and spiritual energy visualization",
+        },
+        {
+          value: "komodo",
+          label: "🐉 Komodo Dragons Ancient Guardians",
+          description:
+            "GODLEVEL PROMPT: Prehistoric Komodo dragons prowling volcanic islands of Flores and Rinca like living dinosaurs from ancient times, largest living lizards on Earth with massive muscular bodies reaching 10 feet in length, powerful jaws capable of delivering venomous bite that can fell water buffalo, ancient survivors from age of dinosaurs when giants ruled the earth, scaly armor-like skin glistening in tropical Indonesian sun with patterns resembling ancient dragon mythology, forked tongues flicking out to taste air for prey scents carried on ocean winds, muscular tails thick as tree trunks and razor-sharp claws that can tear through flesh and bone, endemic to Indonesian archipelago representing untamed wilderness and primal power, living legends of Flores and Rinca islands where local villagers call them 'ora' and tell stories of dragon spirits, conservation symbols representing battle between modern world and ancient nature, mystical connection to dragon mythology of Asian cultures, volcanic landscape of Komodo National Park with rugged hills and savanna grasslands, pink sand beaches where dragons hunt for carrion washed ashore, deer and wild boar fleeing in terror from apex predators, traditional Indonesian fishing boats anchored in crystal blue waters, park rangers in khaki uniforms observing from safe distance, tourists on guided tours witnessing living prehistory, UNESCO World Heritage marine park protecting both dragons and coral reefs, Ring of Fire volcanic activity creating dramatic landscape, traditional Indonesian villages where locals have coexisted with dragons for centuries, ancient folklore and legends about dragon kings and serpent deities, scientific research revealing secrets of dragon evolution and survival, hyperrealistic 8K wildlife cinematography with dramatic lighting, showing every scale detail and predatory movement, atmospheric volcanic landscape with mist and dramatic skies",
+        },
+        {
+          value: "dance",
+          label: "💃 Traditional Sacred Dance Ceremonies",
+          description:
+            "GODLEVEL PROMPT: Graceful Balinese Legong dancers in elaborate golden costumes performing ancient court dance with supernatural elegance, intricate headdresses adorned with fresh frangipani flowers and golden ornaments catching temple lamplight, precise mudra hand gestures telling stories of gods and demons through sacred choreography passed down through centuries, gamelan orchestra creating hypnotic metallic rhythms that seem to control the dancers' movements like divine puppetry, Javanese court dances with refined elegance performed in royal palaces with dancers moving like living sculptures, Saman dance from Aceh with dozens of male dancers in perfect synchronization creating human mandala patterns, colorful silk fabrics flowing with each gesture like liquid rainbows, spiritual devotion expressed through movement connecting earthly realm to divine consciousness, cultural storytelling through choreographed artistry where every gesture has deep meaning, temple ceremonies coming alive with dancers embodying Hindu deities and mythological characters, traditional Indonesian music visualized as golden sound waves guiding the performers, elaborate makeup and costumes transforming dancers into living gods and goddesses, incense smoke swirling around performers creating mystical atmosphere, tropical temple courtyards with carved stone pillars and lotus ponds reflecting the dance, audiences of devotees and tourists mesmerized by ancient artistry, UNESCO Intangible Cultural Heritage performances preserving thousand-year-old traditions, master dance teachers passing knowledge to young students in sacred guru-disciple relationships, traditional Indonesian philosophy of harmony between body, mind, and spirit expressed through movement, hyperrealistic 8K cinematography capturing every graceful gesture and costume detail, volumetric lighting creating dramatic shadows and highlights, cultural pride and spiritual energy radiating from every performance",
+        },
+        {
+          value: "volcanoes",
+          label: "🌋 Sacred Volcanic Ring of Fire",
+          description:
+            "GODLEVEL PROMPT: Majestic Mount Merapi smoking against dawn sky like sleeping dragon breathing fire, most active volcano in Indonesia with glowing lava flows creating rivers of molten rock, terraced rice fields cascading down volcanic slopes in perfect geometric patterns reflecting golden sunrise, Mount Bromo crater lake reflecting morning light like mirror of the gods surrounded by sea of sand and ancient caldera walls, sacred Mount Agung towering over Balinese temples as spiritual axis of the island where gods reside, volcanic ash creating fertile soil that feeds millions of Indonesians across the archipelago, traditional offerings of flowers and rice placed at crater edges by local villagers seeking protection from volcanic spirits, spiritual beliefs connecting mountains to divine realm where ancestors watch over their descendants, Ring of Fire geological power with 130 active volcanoes forming backbone of Indonesian islands, lush tropical vegetation thriving on mineral-rich volcanic slopes creating emerald green landscapes, cultural reverence for volcanic forces as both destroyer and creator of life, traditional Indonesian villages built on volcanic slopes where people have learned to live with constant geological activity, Mount Krakatoa's legendary 1883 eruption that was heard around the world, sulfur miners working in dangerous conditions at Kawah Ijen volcano with blue flames of burning sulfur creating otherworldly scenes, volcanic hot springs and geysers creating natural spas where locals bathe in healing mineral waters, traditional ceremonies to appease volcano spirits with elaborate rituals and offerings, scientific monitoring stations tracking seismic activity and gas emissions, dramatic volcanic sunsets with ash clouds creating spectacular colors across Indonesian skies, hyperrealistic 8K landscape photography with dramatic lighting, showing raw geological power and human adaptation, atmospheric effects with volcanic smoke and ash, cultural integration of volcanic forces into daily Indonesian life",
+        },
+        {
+          value: "temples",
+          label: "🛕 Hindu-Buddhist Temple Complexes",
+          description:
+            "GODLEVEL PROMPT: Ornate Pura Besakih mother temple complex on Mount Agung slopes rising like stairway to heaven, multi-tiered meru towers reaching toward heavens with each level representing different spiritual realm, intricate stone carvings depicting mythological scenes from Ramayana and Mahabharata coming alive with supernatural energy, ceremonial gates adorned with guardian statues of fierce demons and protective deities, lotus ponds reflecting temple spires creating perfect mirror images, incense smoke rising from prayer altars carrying devotees' prayers to divine realm, devotees in white ceremonial dress performing daily rituals and offerings, tropical flowers as offerings - frangipani, hibiscus, and marigolds creating colorful carpets, ancient architecture blending harmoniously with natural landscape of volcanic mountains and rice terraces, spiritual sanctuary of profound beauty where Hindu-Dharma religion thrives, Prambanan temple complex with towering spires dedicated to Hindu trinity of Brahma, Vishnu, and Shiva, elaborate relief carvings telling epic stories animated by flickering temple flames, traditional Balinese architecture with red brick and volcanic stone construction, temple festivals with thousands of devotees in colorful traditional dress, gamelan orchestras playing sacred music that resonates through temple courtyards, holy water ceremonies where priests bless devotees with tirta from sacred springs, temple dancers performing in temple courtyards bringing Hindu mythology to life, traditional offerings of rice, flowers, and incense arranged in beautiful geometric patterns, UNESCO World Heritage sites preserving thousand-year-old architectural masterpieces, spiritual energy radiating from ancient stones blessed by centuries of prayer and devotion, hyperrealistic 8K architectural photography with dramatic lighting, showing intricate stone carving details and atmospheric temple ceremonies, volumetric lighting through incense smoke creating mystical ambiance",
+        },
+        // Enhanced Major Indigenous Groups with GODLEVEL prompts
+        {
+          value: "javanese",
+          label: "👑 Javanese Royal Court Culture",
+          description:
+            "GODLEVEL PROMPT: Magnificent Javanese royal court of Yogyakarta Sultan's palace with refined traditions spanning centuries, elaborate batik patterns with philosophical meanings covering silk garments of court nobles, gamelan orchestras creating meditative soundscapes with bronze instruments that seem to channel ancestral spirits, traditional Javanese architecture with joglo roofs and carved wooden pillars telling stories of ancient kingdoms, shadow puppet wayang performances in royal courtyards where dalang masters weave epic tales of gods and heroes, ancient Hindu-Buddhist influences merged seamlessly with Islamic culture creating unique Javanese synthesis, terraced rice cultivation creating geometric patterns across volcanic landscapes, traditional ceremonies and rituals connecting living descendants to royal ancestors, sophisticated artistic heritage spanning centuries with court painters, musicians, and craftsmen, Sultan's palace (Kraton) with its sacred layout representing cosmic order, traditional Javanese philosophy of harmony and balance expressed in daily life, court dancers in elaborate costumes performing sacred dances, royal gamelan sets made of bronze and gold creating music for the gods, traditional Javanese script and literature preserving ancient wisdom, ceremonial keris daggers with mystical powers passed down through generations, traditional medicine and healing practices using herbs and spiritual energy, hyperrealistic 8K cultural documentation with rich details of court life and artistic traditions",
+        },
+        {
+          value: "sundanese",
+          label: "🎋 Sundanese Highland Heritage",
+          description:
+            "GODLEVEL PROMPT: West Java's indigenous Sundanese people with distinct cultural identity thriving in mountainous terrain, traditional bamboo architecture with elevated houses on stilts protecting from floods and wild animals, angklung bamboo musical instruments creating harmonious melodies that echo through mountain valleys, traditional Sundanese dance performances with graceful movements inspired by nature, rice cultivation in mountainous terrain creating spectacular terraced landscapes, unique culinary traditions with fresh vegetables and fish from mountain streams, traditional clothing and textiles with intricate patterns and natural dyes, ancient animistic beliefs blended seamlessly with Islam creating unique spiritual practices, community cooperation gotong royong traditions where entire villages work together, highland agricultural practices adapted to volcanic soil and mountain climate, traditional houses with steep roofs and bamboo walls designed for mountain weather, Sundanese language with its own script and literature, traditional crafts including bamboo weaving and wood carving, mountain festivals celebrating harvest and seasonal changes, traditional healing practices using mountain herbs and spiritual rituals, hyperrealistic 8K documentation of highland culture with dramatic mountain landscapes and traditional architecture",
+        },
+        {
+          value: "batak",
+          label: "🏔️ Batak Tribal Lake Toba Culture",
+          description:
+            "GODLEVEL PROMPT: North Sumatra highland Batak people with distinctive architecture around magnificent Lake Toba, traditional Batak houses with dramatic curved roofs resembling buffalo horns reaching toward sky, intricate wood carvings and decorative elements telling clan histories and spiritual beliefs, traditional ulos textiles with sacred meanings woven by master craftswomen, patrilineal clan system and ancestral worship connecting living descendants to powerful spirits, Lake Toba cultural landscape with world's largest volcanic lake surrounded by traditional villages, traditional music with gondang instruments creating rhythms that summon ancestral spirits, stone megalithic monuments erected by ancient Batak kings, ancient Batak script and literature preserving oral traditions, ceremonial feasts and rituals celebrating life passages and clan unity, warrior traditions and oral histories of battles and heroic deeds, traditional Batak architecture with houses built without nails using ancient joinery techniques, clan totems and symbols carved into house facades, traditional ceremonies for naming, marriage, and death with elaborate rituals, Batak Christian churches blending traditional architecture with Christian symbolism, hyperrealistic 8K cultural photography showing traditional architecture and Lake Toba landscape with dramatic lighting and atmospheric effects",
+        },
+        {
+          value: "dayak",
+          label: "🌳 Dayak Borneo Longhouse Tribes",
+          description:
+            "GODLEVEL PROMPT: Indigenous Dayak peoples of Kalimantan Borneo with diverse sub-groups living in harmony with rainforest, traditional longhouses accommodating extended families with communal living spaces stretching hundreds of feet, intricate beadwork and traditional costumes with patterns representing clan identity and spiritual protection, headhunting historical traditions with trophy skulls displayed in longhouse rafters, river-based transportation and settlements with traditional boats navigating jungle waterways, traditional tattoos with spiritual significance covering warriors' bodies with protective symbols, hornbill bird cultural symbolism with sacred feathers used in ceremonies, forest-based lifestyle and hunting practices using blowguns and traditional traps, shamanic traditions and spiritual beliefs connecting human world to forest spirits, traditional crafts and woodcarving creating masks and totems, oral traditions and folklore passed down through generations, traditional medicine using rainforest plants and spiritual healing, longhouse architecture built on stilts with communal verandas, traditional ceremonies for rice planting and harvest, warrior culture with elaborate shields and weapons, hyperrealistic 8K rainforest photography showing traditional longhouses and Dayak cultural practices with atmospheric jungle lighting",
+        },
+        {
+          value: "acehnese",
+          label: "🕌 Acehnese Islamic Sultanate Culture",
+          description:
+            "GODLEVEL PROMPT: Northernmost Sumatra Acehnese province with strong Islamic identity and proud independence tradition, traditional Acehnese architecture with Islamic influences showing Middle Eastern and local fusion, distinctive cultural practices and ceremonies blending Islamic faith with local customs, traditional Saman dance performances with dozens of dancers in perfect synchronization, coffee cultivation and trade traditions making Aceh famous for premium coffee beans, tsunami resilience and community strength shown in 2004 disaster recovery, traditional clothing and textiles with Islamic geometric patterns, Islamic educational institutions (dayah) preserving religious knowledge, maritime trading heritage with traditional boats and fishing techniques, unique Acehnese dialect and language distinct from other Indonesian languages, traditional crafts and metalwork creating Islamic calligraphy and decorative arts, Grand Mosque of Baiturrahman with black domes and minarets, traditional Acehnese houses with steep roofs and Islamic architectural elements, Islamic law (Sharia) implementation in daily life, traditional ceremonies for Islamic holidays and life passages, hyperrealistic 8K cultural documentation showing Islamic architecture and Acehnese traditions with dramatic lighting and cultural authenticity",
+        },
+        {
+          value: "minangkabau",
+          label: "🏠 Minangkabau Matrilineal Society",
+          description:
+            "GODLEVEL PROMPT: West Sumatra Minangkabau people with unique matrilineal social structure where women hold property and family lineage, distinctive rumah gadang houses with dramatic horn-shaped roofs resembling buffalo horns reaching toward sky, traditional Minang cuisine and culinary heritage famous throughout Indonesia and Malaysia, matriarchal inheritance and family systems where mothers pass property to daughters, traditional ceremonies and adat customs governing social behavior and community harmony, skilled traders and merchants throughout Southeast Asia spreading Minang culture, traditional textiles and songket weaving with gold threads creating royal garments, Islamic scholarship and education with famous religious schools, traditional music and dance celebrating Minang cultural identity, philosophical wisdom and proverbs (pepatah-petitih) guiding daily life, traditional architecture with carved wooden facades and steep roofs, clan system (suku) organizing social relationships and marriage rules, traditional markets with Minang women as successful traders, ceremonial costumes with elaborate headdresses and jewelry, hyperrealistic 8K cultural photography showing traditional rumah gadang architecture and Minang cultural practices with rich detail and atmospheric lighting",
+        },
+        {
+          value: "balinese-tribe",
+          label: "🌺 Balinese Hindu-Dharma Culture",
+          description:
+            "GODLEVEL PROMPT: Bali island people with distinct Hindu-Dharma religion creating paradise of temples and ceremonies, elaborate temple ceremonies and festivals with thousands of devotees in colorful traditional dress, traditional Balinese architecture and sculpture with intricate stone carvings, intricate wood and stone carvings depicting Hindu mythology and local legends, traditional dance and music performances bringing Hindu epics to life, rice terrace agriculture and subak irrigation system creating spectacular landscapes, traditional clothing and ceremonial dress with gold ornaments and silk fabrics, artistic traditions in painting and crafts passed down through generations, community temple obligations and ceremonies connecting villages to divine realm, unique Balinese calendar system with religious festivals throughout the year, traditional healing practices using herbs and spiritual energy, temple festivals with elaborate decorations and offerings, gamelan orchestras playing sacred music for temple ceremonies, traditional crafts including wood carving, stone sculpture, and silver jewelry, Hindu philosophy integrated with local animistic beliefs, hyperrealistic 8K cultural documentation showing Balinese temple ceremonies and traditional arts with dramatic lighting and spiritual atmosphere",
+        },
+        {
+          value: "papuans",
+          label: "🪶 Papuan Indigenous Diversity",
+          description:
+            "GODLEVEL PROMPT: New Guinea indigenous peoples with incredible cultural diversity representing hundreds of distinct tribes, traditional houses on stilts and tree houses built high above ground for protection, elaborate feathered headdresses and body decorations using bird of paradise plumes, hundreds of distinct languages and dialects making Papua most linguistically diverse region on Earth, traditional hunting and gathering practices using bows, arrows, and traditional traps, bird of paradise cultural significance with sacred feathers used in ceremonies, traditional music with drums and flutes creating rhythms that connect to ancestral spirits, body painting and scarification traditions marking tribal identity and spiritual protection, sago palm cultivation and processing providing staple food, tribal warfare and peace-making ceremonies with elaborate rituals, oral traditions and storytelling preserving tribal history and mythology, traditional tools and weapons made from stone, bone, and wood, highland tribes with different customs from coastal peoples, traditional ceremonies for initiation and life passages, hyperrealistic 8K ethnographic photography showing Papuan cultural diversity with authentic tribal practices and dramatic New Guinea landscapes",
+        },
+        // Enhanced Unique Indigenous Communities
+        {
+          value: "baduy",
+          label: "🌿 Baduy Traditional Isolationist Community",
+          description:
+            "GODLEVEL PROMPT: Banten Java Baduy tribe maintaining strict traditional lifestyle in complete rejection of modern world, traditional white and black clothing distinctions marking inner (Baduy Dalam) and outer (Baduy Luar) communities, sustainable agriculture without chemicals or modern tools preserving ancient farming methods, traditional houses without electricity, running water, or modern conveniences, oral tradition and customary law (pikukuh) governing every aspect of daily life, forest conservation and environmental protection as sacred duty, traditional crafts and weaving using only natural materials and ancient techniques, spiritual connection to ancestral lands considered sacred and protected, isolation from mainstream Indonesian society by choice and tradition, traditional leadership and governance systems based on ancestral wisdom, forbidden to use modern transportation, electronics, or synthetic materials, traditional medicine using forest plants and spiritual healing, sacred forests protected by traditional law and spiritual beliefs, traditional ceremonies marking seasonal changes and life passages, hyperrealistic 8K documentary photography showing authentic traditional lifestyle with natural lighting and environmental context",
+        },
+        {
+          value: "orang-rimba",
+          label: "🌲 Orang Rimba Forest Nomads",
+          description:
+            "GODLEVEL PROMPT: Sumatra nomadic hunter-gatherers known as Kubu people living deep in rainforest, traditional forest shelters built from natural materials and abandoned when moving to new areas, hunting and gathering traditional practices using blowguns and forest knowledge, shamanic spiritual beliefs and forest spirits guiding daily life, traditional medicine using forest plants and spiritual healing practices, oral traditions and forest knowledge passed down through generations, resistance to sedentarization and modernization to preserve traditional lifestyle, traditional tools and hunting weapons made from forest materials, forest conservation and sustainable practices as way of life, unique language and cultural expressions distinct from settled populations, adaptation to rainforest environment with intimate knowledge of forest ecology, traditional social organization based on kinship and forest territories, threatened by deforestation and palm oil plantations, traditional ceremonies connecting human world to forest spirits, hyperrealistic 8K rainforest photography showing authentic nomadic lifestyle with atmospheric jungle lighting and environmental authenticity",
+        },
+        {
+          value: "hongana-manyawa",
+          label: "🏹 Hongana Manyawa Last Isolated Tribe",
+          description:
+            "GODLEVEL PROMPT: One of Indonesia's last nomadic hunter-gatherer tribes living in remote rainforest areas of Halmahera island, traditional forest shelters and nomadic lifestyle moving seasonally through ancestral territories, hunting with traditional weapons and tools made from forest materials, gathering forest foods and medicines using ancient knowledge, shamanic spiritual practices connecting human world to forest spirits, oral traditions and forest knowledge threatened by outside contact, threatened by deforestation and mining destroying ancestral lands, traditional social organization based on kinship and forest territories, unique language and cultural practices distinct from outside world, adaptation to tropical rainforest with intimate ecological knowledge, resistance to outside contact to preserve traditional way of life, traditional ceremonies and rituals marking seasonal changes, forest spirits and ancestral beliefs guiding daily decisions, hyperrealistic 8K ethnographic photography showing last remnants of stone age lifestyle with authentic forest environment and dramatic lighting",
+        },
+        {
+          value: "asmat",
+          label: "🎨 Asmat Master Woodcarvers",
+          description:
+            "GODLEVEL PROMPT: New Guinea indigenous Asmat people renowned worldwide for intricate wood carvings, traditional bis poles and ancestor sculptures reaching toward sky like prayers to ancestral spirits, elaborate ceremonial masks and shields with supernatural power, headhunting historical traditions with trophy skulls displayed in men's houses, sago palm cultivation and processing providing staple food in swampy environment, traditional houses on stilts built over tidal swamps, spiritual beliefs connecting ancestors and nature in continuous cycle, traditional music and dance ceremonies summoning ancestral spirits, river-based transportation and settlements with traditional canoes, oral traditions and mythology explaining creation and tribal history, artistic heritage recognized worldwide with museums collecting Asmat art, traditional tools and carving techniques passed down through master-apprentice relationships, ceremonial feasts celebrating successful hunts and tribal victories, traditional initiation ceremonies for young warriors, hyperrealistic 8K art documentation showing master woodcarvers at work with intricate detail of traditional sculptures and atmospheric swamp environment",
+        },
       ],
       horror: [
         { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
@@ -326,7 +454,7 @@ export function FlowArtGenerator() {
         projectionType: domeEnabled ? domeProjectionType : undefined,
         panoramic360: panorama360Enabled,
         panoramaResolution: panorama360Enabled ? panoramaResolution : undefined,
-        panoramaFormat: panorama360Enabled ? panoramaFormat : undefined,
+        panoramaFormat: panoramaFormat,
         stereographicPerspective:
           panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
       }
@@ -432,7 +560,7 @@ export function FlowArtGenerator() {
         console.log("Sending AI request:", requestBody)
         console.log("Custom prompt being sent:", promptToSend ? promptToSend.substring(0, 100) + "..." : "None")
 
-        const response = await fetch("/api/generate-art", {
+        const response = await fetch("/api/generate-ai-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestBody),
@@ -474,11 +602,11 @@ export function FlowArtGenerator() {
         const newArt: GeneratedArt = {
           svgContent: "",
           imageUrl: data.image,
-          domeImageUrl: data.domeImage,
-          panorama360Url: data.panoramaImage || data.image,
+          domeImageUrl: data.domeImage || data.image, // Always set dome image
+          panorama360Url: data.panoramaImage || data.image, // Always set panorama image
           params,
           mode: "ai" as const,
-          customPrompt: promptToSend, // Store the custom prompt that was used
+          customPrompt: promptToSend,
           originalPrompt: data.originalPrompt,
           finalPrompt: data.originalPrompt,
           promptLength: data.promptLength,
@@ -487,21 +615,17 @@ export function FlowArtGenerator() {
           model: data.model,
           timestamp: Date.now(),
           id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          isDomeProjection: domeEnabled,
-          is360Panorama: panorama360Enabled,
-          domeSpecs: domeEnabled
-            ? {
-                diameter: domeDiameter,
-                resolution: domeResolution,
-                projectionType: domeProjectionType,
-              }
-            : undefined,
-          panoramaSpecs: panorama360Enabled
-            ? {
-                resolution: panoramaResolution,
-                format: panoramaFormat,
-              }
-            : undefined,
+          isDomeProjection: true, // Always true since we generate all versions
+          is360Panorama: true, // Always true since we generate all versions
+          domeSpecs: {
+            diameter: domeDiameter,
+            resolution: domeResolution,
+            projectionType: domeProjectionType,
+          },
+          panoramaSpecs: {
+            resolution: panoramaResolution,
+            format: panoramaFormat,
+          },
           generationDetails: data.generationDetails,
         }
         setGeneratedArt(newArt)
@@ -516,7 +640,7 @@ export function FlowArtGenerator() {
           )
         } else {
           toast.success(
-            `${getDatasetDisplayName(dataset)} Art Generated! ✨ ${dataset} + ${scenario} created with OpenAI DALL-E 3.`,
+            `${getDatasetDisplayName(dataset)} Complete Set Generated! ✨ Created original + dome + 360° versions using OpenAI DALL-E 3.`,
           )
         }
 
@@ -615,9 +739,9 @@ export function FlowArtGenerator() {
           noiseScale,
           domeProjection: domeEnabled,
           domeDiameter: domeEnabled ? domeDiameter : undefined,
-          domeResolution: domeEnabled ? domeResolution : undefined,
+          domeResolution: domeResolution ? domeResolution : undefined,
           panoramic360: panorama360Enabled,
-          panoramaResolution: panorama360Enabled ? panoramaResolution : undefined,
+          panoramaResolution: panoramaResolution ? panoramaResolution : undefined,
           stereographicPerspective:
             panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
         }),
@@ -678,18 +802,18 @@ export function FlowArtGenerator() {
               throw new Error("No dome projection available")
             }
             imageUrl = generatedArt.domeImageUrl
-            filename = `flowsketch-dome-${generatedArt.params.dataset}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "jpg"}`
+            filename = `flowsketch-dome-${generatedArt.params?.dataset || "unknown"}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "jpg"}`
             break
           case "panorama":
             if (!generatedArt.panorama360Url) {
               throw new Error("No 360° panorama available")
             }
             imageUrl = generatedArt.panorama360Url
-            filename = `flowsketch-360-${generatedArt.params.dataset}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "jpg"}`
+            filename = `flowsketch-360-${generatedArt.params?.dataset || "unknown"}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "jpg"}`
             break
           default:
             imageUrl = generatedArt.imageUrl
-            filename = `flowsketch-${generatedArt.params.dataset}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "jpg"}`
+            filename = `flowsketch-${generatedArt.params?.dataset || "unknown"}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "jpg"}`
         }
 
         console.log("Downloading from URL:", imageUrl)
@@ -742,9 +866,9 @@ export function FlowArtGenerator() {
   }, [])
 
   const resetAllParameters = useCallback(() => {
-    setDataset("nuanu")
-    setScenario("landscape")
-    setColorScheme("sunset")
+    setDataset("indonesian")
+    setScenario("garuda")
+    setColorScheme("metallic")
     setSeed(1234)
     setNumSamples(3000)
     setNoiseScale(0.1)
@@ -752,8 +876,8 @@ export function FlowArtGenerator() {
     setCustomPrompt("")
     setEnhancedPrompt("")
     setUseCustomPrompt(false)
-    setDomeEnabled(false)
-    setPanorama360Enabled(false)
+    setDomeEnabled(true)
+    setPanorama360Enabled(true)
     setError(null)
     toast.success("Parameters Reset! 🔄 All settings restored to defaults.")
   }, [])
@@ -773,7 +897,7 @@ export function FlowArtGenerator() {
           </div>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto">
             Generate stunning mathematical visualizations and AI-powered artwork with advanced projection support for
-            domes and 360° environments. Now featuring comprehensive dataset showcases!
+            domes and 360° environments. Now featuring GODLEVEL Indonesian tribal heritage prompts! 🇮🇩✨
           </p>
         </div>
 
@@ -787,7 +911,7 @@ export function FlowArtGenerator() {
                 </h3>
                 <p className="text-purple-200 text-sm">
                   Experience the full potential of {getDatasetDisplayName(dataset)} with{" "}
-                  {getDatasetScenarios(dataset).length} unique scenarios automatically generated
+                  {getDatasetScenarios(dataset).length} unique GODLEVEL scenarios automatically generated
                 </p>
               </div>
               <Button
@@ -813,7 +937,7 @@ export function FlowArtGenerator() {
                 <Progress value={autoGenProgress} className="w-full" />
                 <p className="text-xs text-purple-300 text-center">
                   {autoGenProgress.toFixed(0)}% complete - Creating {getDatasetScenarios(dataset).length} unique
-                  artworks
+                  GODLEVEL artworks
                 </p>
               </div>
             )}
@@ -875,10 +999,10 @@ export function FlowArtGenerator() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-600">
+                          <SelectItem value="indonesian">🇮🇩 Indonesian Tribal Heritage (GODLEVEL)</SelectItem>
                           <SelectItem value="nuanu">🏗️ Nuanu Creative City</SelectItem>
                           <SelectItem value="bali">🏝️ Balinese Cultural Heritage</SelectItem>
                           <SelectItem value="thailand">🇹🇭 Thai Cultural Heritage</SelectItem>
-                          <SelectItem value="indonesian">🐉 Indonesian Mythology</SelectItem>
                           <SelectItem value="horror">👻 Indonesian Horror Creatures</SelectItem>
                           <SelectItem value="spirals">🌀 Fibonacci Spirals</SelectItem>
                           <SelectItem value="fractal">🌿 Fractal Trees</SelectItem>
@@ -908,8 +1032,8 @@ export function FlowArtGenerator() {
                         {getDatasetDisplayName(dataset)} Active
                       </h4>
                       <p className="text-xs text-slate-400">
-                        This dataset includes {getDatasetScenarios(dataset).length} unique scenarios for comprehensive
-                        artistic exploration.
+                        This dataset includes {getDatasetScenarios(dataset).length} unique GODLEVEL scenarios for
+                        comprehensive artistic exploration with hyperrealistic detail.
                       </p>
                       <div className="flex flex-wrap gap-1 mt-2">
                         {getDatasetScenarios(dataset)
@@ -1059,7 +1183,7 @@ export function FlowArtGenerator() {
                             <Textarea
                               value={customPrompt}
                               onChange={(e) => setCustomPrompt(e.target.value)}
-                              placeholder="Describe your vision... (will be enhanced with mathematical precision)"
+                              placeholder="Describe your vision... (will be enhanced with GODLEVEL Indonesian details)"
                               className="bg-slate-700 border-slate-600 text-slate-100 text-sm min-h-[100px] resize-vertical"
                               rows={4}
                             />
@@ -1095,8 +1219,8 @@ export function FlowArtGenerator() {
                                 </p>
                                 <div className="mt-2 pt-2 border-t border-slate-700">
                                   <p className="text-xs text-slate-500">
-                                    This custom prompt will be integrated with {getDatasetDisplayName(dataset)} elements
-                                    and mathematical precision based on your selected parameters.
+                                    This custom prompt will be integrated with {getDatasetDisplayName(dataset)} GODLEVEL
+                                    elements and mathematical precision based on your selected parameters.
                                   </p>
                                 </div>
                               </div>
@@ -1115,11 +1239,31 @@ export function FlowArtGenerator() {
                         <div className="flex items-center justify-between">
                           <Label className="flex items-center space-x-2">
                             <Switch checked={domeEnabled} onCheckedChange={setDomeEnabled} />
-                            <span className="text-sm font-medium text-slate-300">Dome Projection (10m)</span>
+                            <span className="text-sm font-medium text-slate-300">
+                              Dome Projection ({domeDiameter}m)
+                            </span>
                           </Label>
                         </div>
                         {domeEnabled && (
                           <div className="space-y-2 pl-6">
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-400">Dome Diameter (meters)</Label>
+                              <Select
+                                value={domeDiameter.toString()}
+                                onValueChange={(value) => setDomeDiameter(Number(value))}
+                              >
+                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-700 border-slate-600">
+                                  <SelectItem value="10">10m (Small Dome)</SelectItem>
+                                  <SelectItem value="15">15m (Medium Dome)</SelectItem>
+                                  <SelectItem value="20">20m (Large Dome)</SelectItem>
+                                  <SelectItem value="25">25m (Extra Large Dome)</SelectItem>
+                                  <SelectItem value="30">30m (Giant Dome)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
                             <div className="space-y-1">
                               <Label className="text-xs text-slate-400">Resolution</Label>
                               <Select value={domeResolution} onValueChange={setDomeResolution}>
@@ -1216,14 +1360,14 @@ export function FlowArtGenerator() {
                         {isGenerating ? (
                           <>
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            Generating...
+                            Generating GODLEVEL Art (3 Versions)...
                           </>
                         ) : (
                           <>
                             <Sparkles className="h-4 w-4 mr-2" />
                             {useCustomPrompt && customPrompt.trim()
-                              ? "Generate Custom Art"
-                              : `Generate ${getDatasetDisplayName(dataset)}`}
+                              ? "Generate Custom GODLEVEL Art (3 Versions)"
+                              : `Generate ${getDatasetDisplayName(dataset)} GODLEVEL (3 Versions)`}
                           </>
                         )}
                       </Button>
@@ -1233,7 +1377,9 @@ export function FlowArtGenerator() {
                     {isGenerating && progress > 0 && (
                       <div className="space-y-2">
                         <Progress value={progress} className="w-full" />
-                        <p className="text-xs text-slate-400 text-center">{progress}% complete</p>
+                        <p className="text-xs text-slate-400 text-center">
+                          {progress}% complete - Creating GODLEVEL Original + Dome + 360° versions
+                        </p>
                       </div>
                     )}
 
@@ -1248,82 +1394,189 @@ export function FlowArtGenerator() {
                 </Card>
               </div>
 
-              {/* Preview */}
+              {/* Preview - Enhanced to show all 3 versions clearly */}
               <div className="lg:col-span-2">
                 <Card className="bg-slate-800 border-slate-700">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between text-slate-100">
                       <div className="flex items-center gap-2">
                         <Eye className="h-5 w-5" />
-                        Generated {getDatasetDisplayName(dataset)} Artwork
+                        Generated {getDatasetDisplayName(dataset)} GODLEVEL Artwork
                       </div>
                       {generatedArt && (
                         <div className="flex items-center gap-2">
                           <Badge variant="outline" className="border-purple-500 text-purple-400">
                             ✨ {getDatasetDisplayName(dataset)}
                           </Badge>
-                          {generatedArt.isDomeProjection && (
-                            <Badge variant="outline" className="border-blue-500 text-blue-400">
-                              Dome 10m
-                            </Badge>
-                          )}
-                          {generatedArt.is360Panorama && (
-                            <Badge variant="outline" className="border-yellow-500 text-yellow-400">
-                              360°
-                            </Badge>
-                          )}
+                          <Badge variant="outline" className="border-green-500 text-green-400">
+                            3 GODLEVEL Versions
+                          </Badge>
                         </div>
                       )}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     {generatedArt ? (
-                      <div className="space-y-4">
-                        {/* Main Image */}
-                        <div className="relative bg-slate-900 rounded-lg overflow-hidden">
-                          {generatedArt.mode === "svg" ? (
-                            <div
-                              className="w-full h-96 flex items-center justify-center"
-                              dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
-                            />
-                          ) : (
-                            <img
-                              src={generatedArt.imageUrl || "/placeholder.svg"}
-                              alt={`Generated ${getDatasetDisplayName(dataset)} artwork`}
-                              className="w-full h-96 object-contain"
-                            />
-                          )}
-                        </div>
+                      <div className="space-y-6">
+                        {/* Three Version Display */}
+                        <Tabs defaultValue="original" className="w-full">
+                          <TabsList className="grid w-full grid-cols-3 bg-slate-700">
+                            <TabsTrigger value="original" className="data-[state=active]:bg-blue-600">
+                              <Camera className="h-4 w-4 mr-2" />
+                              Original
+                            </TabsTrigger>
+                            <TabsTrigger value="dome" className="data-[state=active]:bg-purple-600">
+                              <Mountain className="h-4 w-4 mr-2" />
+                              Dome {domeDiameter}m
+                            </TabsTrigger>
+                            <TabsTrigger value="panorama" className="data-[state=active]:bg-green-600">
+                              <Globe className="h-4 w-4 mr-2" />
+                              360° VR
+                            </TabsTrigger>
+                          </TabsList>
 
-                        {/* Action Buttons */}
-                        <div className="flex flex-wrap gap-2">
-                          <Button onClick={() => downloadImage("regular")} className="bg-green-600 hover:bg-green-700">
-                            <Download className="h-4 w-4 mr-2" />
-                            Download Art
-                          </Button>
+                          <TabsContent value="original" className="space-y-4">
+                            <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-blue-500/30">
+                              {generatedArt.mode === "svg" ? (
+                                <div
+                                  className="w-full h-96 flex items-center justify-center"
+                                  dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                                />
+                              ) : (
+                                <img
+                                  src={generatedArt.imageUrl || "/placeholder.svg"}
+                                  alt={`Generated ${getDatasetDisplayName(dataset)} artwork - Original`}
+                                  className="w-full h-96 object-cover"
+                                />
+                              )}
+                              <div className="absolute top-2 left-2">
+                                <Badge className="bg-blue-600 text-white">
+                                  <Camera className="h-3 w-3 mr-1" />
+                                  Original GODLEVEL
+                                </Badge>
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <h4 className="text-sm font-medium text-slate-300">Standard GODLEVEL Mathematical Art</h4>
+                              <p className="text-xs text-slate-400">
+                                Traditional format perfect for prints, displays, and standard viewing with
+                                hyperrealistic detail
+                              </p>
+                              <Button
+                                onClick={() => downloadImage("regular")}
+                                className="w-full bg-blue-600 hover:bg-blue-700"
+                              >
+                                <Download className="h-4 w-4 mr-2" />
+                                Download Original GODLEVEL Version
+                              </Button>
+                            </div>
+                          </TabsContent>
 
-                          {generatedArt.domeImageUrl && (
-                            <Button
-                              onClick={() => downloadImage("dome")}
-                              variant="outline"
-                              className="border-blue-500 text-blue-400 hover:bg-blue-500/10"
-                            >
-                              <Download className="h-4 w-4 mr-2" />
-                              Download Dome
-                            </Button>
-                          )}
+                          <TabsContent value="dome" className="space-y-4">
+                            <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-purple-500/30">
+                              {generatedArt.mode === "svg" ? (
+                                <div
+                                  className="w-full h-96 flex items-center justify-center"
+                                  dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                                />
+                              ) : (
+                                <img
+                                  src={generatedArt.domeImageUrl || generatedArt.imageUrl || "/placeholder.svg"}
+                                  alt={`Generated ${getDatasetDisplayName(dataset)} artwork - Dome Projection`}
+                                  className="w-full h-96 object-cover"
+                                />
+                              )}
+                              <div className="absolute top-2 left-2">
+                                <Badge className="bg-purple-600 text-white">
+                                  <Mountain className="h-3 w-3 mr-1" />
+                                  Dome {domeDiameter}m GODLEVEL
+                                </Badge>
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <h4 className="text-sm font-medium text-slate-300">
+                                GODLEVEL Planetarium Dome Projection ({domeDiameter}m)
+                              </h4>
+                              <p className="text-xs text-slate-400">
+                                {domeProjectionType} projection optimized for {domeDiameter}m diameter planetarium dome
+                                with immersive tunnel effect and hyperrealistic Indonesian cultural details
+                              </p>
+                              <div className="flex gap-2 text-xs">
+                                <Badge variant="outline" className="border-purple-500 text-purple-400">
+                                  {domeResolution}
+                                </Badge>
+                                <Badge variant="outline" className="border-purple-500 text-purple-400">
+                                  {domeProjectionType}
+                                </Badge>
+                                <Badge variant="outline" className="border-purple-500 text-purple-400">
+                                  GODLEVEL
+                                </Badge>
+                              </div>
+                              <Button
+                                onClick={() => downloadImage("dome")}
+                                className="w-full bg-purple-600 hover:bg-purple-700"
+                              >
+                                <Download className="h-4 w-4 mr-2" />
+                                Download Dome GODLEVEL Version
+                              </Button>
+                            </div>
+                          </TabsContent>
 
-                          {generatedArt.panorama360Url && (
-                            <Button
-                              onClick={() => downloadImage("panorama")}
-                              variant="outline"
-                              className="border-yellow-500 text-yellow-400 hover:bg-yellow-500/10"
-                            >
-                              <Download className="h-4 w-4 mr-2" />
-                              Download 360°
-                            </Button>
-                          )}
-                        </div>
+                          <TabsContent value="panorama" className="space-y-4">
+                            <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-green-500/30">
+                              {generatedArt.mode === "svg" ? (
+                                <div
+                                  className="w-full h-96 flex items-center justify-center"
+                                  dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                                />
+                              ) : (
+                                <img
+                                  src={generatedArt.panorama360Url || generatedArt.imageUrl || "/placeholder.svg"}
+                                  alt={`Generated ${getDatasetDisplayName(dataset)} artwork - 360° Panorama`}
+                                  className="w-full h-96 object-cover"
+                                />
+                              )}
+                              <div className="absolute top-2 left-2">
+                                <Badge className="bg-green-600 text-white">
+                                  <Globe className="h-3 w-3 mr-1" />
+                                  360° VR GODLEVEL
+                                </Badge>
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <h4 className="text-sm font-medium text-slate-300">
+                                GODLEVEL 360° Virtual Reality Panorama
+                              </h4>
+                              <p className="text-xs text-slate-400">
+                                {panoramaFormat} format at {panoramaResolution} resolution, perfect for VR headsets and
+                                immersive viewing with hyperrealistic Indonesian cultural immersion
+                              </p>
+                              <div className="flex gap-2 text-xs">
+                                <Badge variant="outline" className="border-green-500 text-green-400">
+                                  {panoramaResolution}
+                                </Badge>
+                                <Badge variant="outline" className="border-green-500 text-green-400">
+                                  {panoramaFormat}
+                                </Badge>
+                                <Badge variant="outline" className="border-green-500 text-green-400">
+                                  GODLEVEL
+                                </Badge>
+                                {panoramaFormat === "stereographic" && (
+                                  <Badge variant="outline" className="border-green-500 text-green-400">
+                                    {stereographicPerspective}
+                                  </Badge>
+                                )}
+                              </div>
+                              <Button
+                                onClick={() => downloadImage("panorama")}
+                                className="w-full bg-green-600 hover:bg-green-700"
+                              >
+                                <Download className="h-4 w-4 mr-2" />
+                                Download 360° GODLEVEL Version
+                              </Button>
+                            </div>
+                          </TabsContent>
+                        </Tabs>
 
                         {/* Download Status */}
                         {downloadStatus && (
@@ -1333,9 +1586,65 @@ export function FlowArtGenerator() {
                           </Alert>
                         )}
 
+                        {/* Generation Status Summary */}
+                        {generatedArt.mode === "ai" && generatedArt.generationDetails && (
+                          <div className="bg-slate-900 p-4 rounded-lg border border-slate-600">
+                            <h4 className="text-sm font-medium text-slate-300 mb-3">
+                              GODLEVEL Generation Status Summary
+                            </h4>
+                            <div className="grid grid-cols-3 gap-4">
+                              <div className="text-center">
+                                <div className="flex items-center justify-center mb-2">
+                                  <Camera className="h-5 w-5 text-blue-400" />
+                                </div>
+                                <p className="text-xs font-medium text-slate-300">Original</p>
+                                <Badge variant="outline" className="text-xs mt-1 border-green-500 text-green-400">
+                                  {generatedArt.generationDetails.mainImage}
+                                </Badge>
+                              </div>
+                              <div className="text-center">
+                                <div className="flex items-center justify-center mb-2">
+                                  <Mountain className="h-5 w-5 text-purple-400" />
+                                </div>
+                                <p className="text-xs font-medium text-slate-300">Dome</p>
+                                <Badge
+                                  variant="outline"
+                                  className={`text-xs mt-1 ${
+                                    generatedArt.generationDetails.domeImage.includes("successfully")
+                                      ? "border-green-500 text-green-400"
+                                      : "border-yellow-500 text-yellow-400"
+                                  }`}
+                                >
+                                  {generatedArt.generationDetails.domeImage.includes("successfully")
+                                    ? "✓ GODLEVEL Generated"
+                                    : "⚠ Fallback"}
+                                </Badge>
+                              </div>
+                              <div className="text-center">
+                                <div className="flex items-center justify-center mb-2">
+                                  <Globe className="h-5 w-5 text-green-400" />
+                                </div>
+                                <p className="text-xs font-medium text-slate-300">360° VR</p>
+                                <Badge
+                                  variant="outline"
+                                  className={`text-xs mt-1 ${
+                                    generatedArt.generationDetails.panoramaImage.includes("successfully")
+                                      ? "border-green-500 text-green-400"
+                                      : "border-yellow-500 text-yellow-400"
+                                  }`}
+                                >
+                                  {generatedArt.generationDetails.panoramaImage.includes("successfully")
+                                    ? "✓ GODLEVEL Generated"
+                                    : "⚠ Fallback"}
+                                </Badge>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
                         {/* Artwork Details */}
                         <div className="space-y-3 pt-4 border-t border-slate-600">
-                          <h4 className="text-sm font-medium text-slate-300">Artwork Details</h4>
+                          <h4 className="text-sm font-medium text-slate-300">GODLEVEL Artwork Details</h4>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                             <div>
                               <span className="text-slate-400">Dataset:</span>
@@ -1373,18 +1682,12 @@ export function FlowArtGenerator() {
                                 <p className="text-slate-200 capitalize">{generatedArt.provider}</p>
                               </div>
                             )}
-                            {generatedArt.estimatedFileSize && (
-                              <div>
-                                <span className="text-slate-400">File Size:</span>
-                                <p className="text-slate-200">{generatedArt.estimatedFileSize}</p>
-                              </div>
-                            )}
                           </div>
 
                           {/* Custom Prompt Display */}
                           {generatedArt.mode === "ai" && generatedArt.customPrompt && (
                             <div className="space-y-2">
-                              <span className="text-slate-400 text-sm">Custom Prompt Used:</span>
+                              <span className="text-slate-400 text-sm">Custom GODLEVEL Prompt Used:</span>
                               <div className="bg-slate-900 p-3 rounded-md max-h-32 overflow-y-auto">
                                 <p className="text-slate-300 text-sm leading-relaxed">{generatedArt.customPrompt}</p>
                               </div>
@@ -1393,7 +1696,7 @@ export function FlowArtGenerator() {
 
                           {generatedArt.mode === "ai" && generatedArt.finalPrompt && (
                             <div className="space-y-2">
-                              <span className="text-slate-400 text-sm">Final Enhanced Prompt:</span>
+                              <span className="text-slate-400 text-sm">Final Enhanced GODLEVEL Prompt:</span>
                               <div className="bg-slate-900 p-3 rounded-md max-h-32 overflow-y-auto">
                                 <p className="text-slate-300 text-sm leading-relaxed">
                                   {generatedArt.finalPrompt.substring(0, 500)}
@@ -1406,58 +1709,6 @@ export function FlowArtGenerator() {
                             </div>
                           )}
                         </div>
-
-                        {generatedArt.mode === "ai" && generatedArt.generationDetails && (
-                          <div className="space-y-2">
-                            <span className="text-slate-400 text-sm">Generation Status:</span>
-                            <div className="bg-slate-900 p-3 rounded-md space-y-2">
-                              <div className="flex items-center justify-between">
-                                <span className="text-slate-300 text-sm">Main Image:</span>
-                                <Badge variant="outline" className="text-xs border-green-500 text-green-400">
-                                  {generatedArt.generationDetails.mainImage}
-                                </Badge>
-                              </div>
-                              {generatedArt.isDomeProjection && (
-                                <div className="flex items-center justify-between">
-                                  <span className="text-slate-300 text-sm">Dome Projection:</span>
-                                  <Badge
-                                    variant="outline"
-                                    className={`text-xs ${
-                                      generatedArt.generationDetails.domeImage.includes("successfully")
-                                        ? "border-green-500 text-green-400"
-                                        : generatedArt.generationDetails.domeImage.includes("main image")
-                                          ? "border-yellow-500 text-yellow-400"
-                                          : "border-red-500 text-red-400"
-                                    }`}
-                                  >
-                                    {generatedArt.generationDetails.domeImage.length > 30
-                                      ? generatedArt.generationDetails.domeImage.substring(0, 30) + "..."
-                                      : generatedArt.generationDetails.domeImage}
-                                  </Badge>
-                                </div>
-                              )}
-                              {generatedArt.is360Panorama && (
-                                <div className="flex items-center justify-between">
-                                  <span className="text-slate-300 text-sm">360° Panorama:</span>
-                                  <Badge
-                                    variant="outline"
-                                    className={`text-xs ${
-                                      generatedArt.generationDetails.panoramaImage.includes("successfully")
-                                        ? "border-green-500 text-green-400"
-                                        : generatedArt.generationDetails.panoramaImage.includes("main image")
-                                          ? "border-yellow-500 text-yellow-400"
-                                          : "border-red-500 text-red-400"
-                                    }`}
-                                  >
-                                    {generatedArt.generationDetails.panoramaImage.length > 30
-                                      ? generatedArt.generationDetails.panoramaImage.substring(0, 30) + "..."
-                                      : generatedArt.generationDetails.panoramaImage}
-                                  </Badge>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
                       </div>
                     ) : (
                       <div className="h-96 flex items-center justify-center text-slate-400">
@@ -1467,13 +1718,27 @@ export function FlowArtGenerator() {
                           </div>
                           <div>
                             <p className="text-lg font-medium">
-                              Ready to Generate {getDatasetDisplayName(dataset)} Art
+                              Ready to Generate {getDatasetDisplayName(dataset)} GODLEVEL Art
                             </p>
                             <p className="text-sm">
                               {useCustomPrompt && customPrompt.trim()
-                                ? "Your custom prompt will be enhanced with mathematical elements"
-                                : `Click "Generate ${getDatasetDisplayName(dataset)}" to create stunning artwork`}
+                                ? "Your custom prompt will be enhanced with GODLEVEL Indonesian elements"
+                                : `Click "Generate ${getDatasetDisplayName(dataset)} GODLEVEL" to create all 3 hyperrealistic versions`}
                             </p>
+                            <div className="flex justify-center gap-4 mt-4">
+                              <div className="flex items-center gap-2 text-xs text-slate-500">
+                                <Camera className="h-4 w-4" />
+                                Original
+                              </div>
+                              <div className="flex items-center gap-2 text-xs text-slate-500">
+                                <Mountain className="h-4 w-4" />
+                                Dome
+                              </div>
+                              <div className="flex items-center gap-2 text-xs text-slate-500">
+                                <Globe className="h-4 w-4" />
+                                360° VR
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1486,7 +1751,7 @@ export function FlowArtGenerator() {
 
           <TabsContent value="gallery" className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-slate-100">Art Gallery</h2>
+              <h2 className="text-2xl font-bold text-slate-100">GODLEVEL Art Gallery</h2>
               <div className="flex items-center gap-2">
                 {gallery.length > 0 && (
                   <Button
@@ -1500,7 +1765,7 @@ export function FlowArtGenerator() {
                   </Button>
                 )}
                 <Badge variant="outline" className="border-slate-600">
-                  {gallery.length} artworks
+                  {gallery.length} GODLEVEL artworks
                 </Badge>
               </div>
             </div>
@@ -1513,8 +1778,8 @@ export function FlowArtGenerator() {
                       <ImageIcon className="h-8 w-8 text-slate-400" />
                     </div>
                     <div>
-                      <p className="text-lg font-medium text-slate-300">No artworks in gallery</p>
-                      <p className="text-sm text-slate-400">Generate some art to see it here</p>
+                      <p className="text-lg font-medium text-slate-300">No GODLEVEL artworks in gallery</p>
+                      <p className="text-sm text-slate-400">Generate some GODLEVEL Indonesian art to see it here</p>
                     </div>
                   </div>
                 </CardContent>
@@ -1533,7 +1798,7 @@ export function FlowArtGenerator() {
                         ) : (
                           <img
                             src={art.imageUrl || "/placeholder.svg"}
-                            alt="Generated artwork"
+                            alt="Generated GODLEVEL artwork"
                             className="w-full h-48 object-cover"
                           />
                         )}
@@ -1542,7 +1807,7 @@ export function FlowArtGenerator() {
                             variant="outline"
                             className="bg-slate-800/80 border-purple-500 text-purple-400 text-xs"
                           >
-                            ✨ {art.mode === "svg" ? "SVG" : "AI"}
+                            ✨ {art.mode === "svg" ? "SVG" : "AI"} GODLEVEL
                           </Badge>
                           {art.customPrompt && (
                             <Badge
@@ -1568,82 +1833,34 @@ export function FlowArtGenerator() {
                         </div>
                       </div>
                       <CardContent className="p-4">
-                        <div className="space-y-3">
-                          <div>
-                            <h3 className="font-medium text-slate-200 capitalize">
-                              {getDatasetDisplayName(art.params?.dataset || "Unknown")} +{" "}
-                              {art.params?.scenario || "Unknown"}
-                            </h3>
-                            <p className="text-sm text-slate-400 capitalize">
-                              {art.params?.colorScheme || "Unknown"} palette
-                            </p>
-                            {art.customPrompt && (
-                              <p className="text-xs text-purple-400 mt-1">
-                                Custom: {art.customPrompt.substring(0, 50)}
-                                {art.customPrompt.length > 50 && "..."}
-                              </p>
-                            )}
-                          </div>
-
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              onClick={() => {
-                                setGeneratedArt(art)
-                                // Switch to generate tab to view
-                                const generateTab = document.querySelector('[value="generate"]') as HTMLElement
-                                generateTab?.click()
-                              }}
-                              className="flex-1 bg-purple-600 hover:bg-purple-700"
-                            >
-                              <Eye className="h-3 w-3 mr-1" />
-                              View
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => downloadImage("regular")}
-                              className="border-slate-600"
-                            >
-                              <Download className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </div>
+                        <h3 className="text-lg font-medium text-slate-200 truncate">
+                          {art.mode === "svg" ? "Mathematical GODLEVEL Visualization" : "AI Generated GODLEVEL Art"}
+                        </h3>
+                        <p className="text-sm text-slate-400">
+                          {new Date(art.timestamp).toLocaleDateString()} - {art.params?.dataset || "Unknown"} GODLEVEL
+                        </p>
                       </CardContent>
                     </Card>
                   ))}
                 </div>
 
-                {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center justify-between">
                     <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                       disabled={currentPage === 1}
+                      variant="outline"
                       className="border-slate-600"
                     >
                       Previous
                     </Button>
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                        <Button
-                          key={page}
-                          variant={currentPage === page ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setCurrentPage(page)}
-                          className={currentPage === page ? "bg-purple-600 hover:bg-purple-700" : "border-slate-600"}
-                        >
-                          {page}
-                        </Button>
-                      ))}
-                    </div>
+                    <span className="text-sm text-slate-400">
+                      Page {currentPage} of {totalPages}
+                    </span>
                     <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                       disabled={currentPage === totalPages}
+                      variant="outline"
                       className="border-slate-600"
                     >
                       Next
@@ -1654,6 +1871,44 @@ export function FlowArtGenerator() {
             )}
           </TabsContent>
         </Tabs>
+
+        {/* Reset Button */}
+        <div className="text-center">
+          <Button
+            onClick={resetAllParameters}
+            variant="secondary"
+            className="bg-slate-700 hover:bg-slate-600 text-slate-300"
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Reset All Parameters
+          </Button>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center text-slate-500 text-sm">
+          <p>
+            Created with ❤️ by{" "}
+            <a
+              href="https://twitter.com/steveagoni"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-purple-400 underline"
+            >
+              @steveagoni
+            </a>{" "}
+            - Powered by GODLEVEL mathematical creativity and AI. 🇮🇩✨
+          </p>
+          <p>
+            <a
+              href="https://github.com/steveagoni/flowsketch"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-purple-400 underline"
+            >
+              View Source Code on GitHub
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   )

@@ -23,496 +23,107 @@ const DATASET_INFO = {
           "mathematical harmony",
         ],
       },
-      "thk-tower": {
-        name: "THK Tower",
-        description:
-          "The iconic architectural centerpiece of Nuanu Creative City, representing innovation and sustainable design with futuristic elements",
+      cosmic: {
+        name: "Deep Space",
+        description: "Cosmic mathematical patterns with stellar formations and celestial structures",
         keywords: [
-          "modern architecture",
-          "sustainable design",
-          "iconic tower",
-          "innovative structure",
-          "green building",
-          "futuristic design",
-          "glass facades",
-          "steel frameworks",
-          "eco-friendly materials",
-          "architectural marvel",
-          "urban landmark",
-          "contemporary aesthetics",
+          "cosmic patterns",
+          "stellar formations",
+          "celestial structures",
+          "space geometry",
+          "astronomical beauty",
+          "cosmic harmony",
+          "stellar mathematics",
+          "galactic patterns",
+          "nebula formations",
+          "cosmic fractals",
         ],
       },
-      "popper-sentinels": {
-        name: "Popper Sentinels",
-        description:
-          "Guardian statue installations that watch over the creative community with mysterious presence and artistic grandeur",
+      underwater: {
+        name: "Ocean Depths",
+        description: "Fluid mathematical dynamics with oceanic patterns and marine geometries",
         keywords: [
-          "guardian statues",
-          "sentinel figures",
-          "protective installations",
-          "mysterious guardians",
-          "artistic sculptures",
-          "monumental art",
-          "stone carvings",
-          "bronze sculptures",
-          "watchful protectors",
-          "artistic monuments",
-          "sculptural guardians",
+          "fluid dynamics",
+          "oceanic patterns",
+          "marine geometries",
+          "wave mathematics",
+          "aquatic structures",
+          "tidal patterns",
+          "underwater fractals",
+          "marine algorithms",
+          "oceanic flows",
+          "aquatic harmony",
         ],
       },
-      "luna-beach": {
-        name: "Luna Beach Club",
-        description:
-          "Sophisticated coastal creative space where ocean meets innovation in perfect harmony with tropical luxury",
+      crystalline: {
+        name: "Crystal Caverns",
+        description: "Crystalline mathematical structures with geometric precision and mineral patterns",
         keywords: [
-          "beach club",
-          "coastal architecture",
-          "ocean views",
-          "luxury design",
-          "tropical modernism",
-          "waterfront",
-          "seaside elegance",
-          "palm trees",
-          "infinity pools",
-          "sunset terraces",
-          "beachfront paradise",
-          "coastal sophistication",
+          "crystalline structures",
+          "geometric precision",
+          "mineral patterns",
+          "crystal mathematics",
+          "lattice formations",
+          "prismatic geometry",
+          "crystal fractals",
+          "mineral algorithms",
+          "crystalline harmony",
+          "geometric crystals",
         ],
       },
-      "labyrinth-dome": {
-        name: "Labyrinth Dome",
-        description:
-          "Immersive geodesic dome experience featuring interactive digital installations and sacred geometry with mystical ambiance",
+      forest: {
+        name: "Enchanted Forest",
+        description: "Organic mathematical patterns with natural geometries and botanical structures",
         keywords: [
-          "geodesic dome",
-          "immersive experience",
-          "digital installations",
-          "interactive art",
-          "sacred geometry",
-          "dome architecture",
-          "mystical ambiance",
-          "light projections",
-          "holographic displays",
-          "spiritual journey",
-          "technological art",
-        ],
-      },
-      "creative-studios": {
-        name: "Creative Studios",
-        description:
-          "Artist workshops and collaborative spaces fostering innovation and cultural exchange with inspiring environments",
-        keywords: [
-          "artist studios",
-          "creative workshops",
-          "collaborative spaces",
-          "innovation hubs",
-          "cultural exchange",
-          "maker spaces",
-          "artistic creation",
-          "inspiring environments",
-          "creative energy",
-          "artistic community",
-          "workshop atmosphere",
-        ],
-      },
-      "community-plaza": {
-        name: "Community Plaza",
-        description:
-          "Central gathering space where culture, nature, and innovation converge in harmonious living with vibrant social energy",
-        keywords: [
-          "community gathering",
-          "central plaza",
-          "cultural convergence",
-          "harmonious living",
-          "social spaces",
-          "public art",
-          "vibrant atmosphere",
-          "cultural celebration",
-          "community spirit",
-          "social harmony",
-          "gathering place",
-        ],
-      },
-      "digital-gardens": {
-        name: "Digital Gardens",
-        description:
-          "Tech-nature integration showcasing the future of sustainable living and digital harmony with bio-technological wonders",
-        keywords: [
-          "digital nature",
-          "tech integration",
-          "sustainable living",
-          "smart gardens",
-          "bio-technology",
-          "future ecology",
-          "digital flora",
-          "technological nature",
-          "smart ecosystems",
-          "bio-digital fusion",
-          "futuristic gardens",
-        ],
-      },
-    },
-  },
-  bali: {
-    name: "Balinese Cultural Heritage",
-    description:
-      "Rich cultural traditions of Bali including Hindu temples, rice terraces, traditional ceremonies, and sacred arts with spiritual depth",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description: "Raw mathematical beauty and geometric precision with sacred geometry patterns",
-        keywords: [
-          "mathematical precision",
-          "geometric patterns",
-          "algorithmic beauty",
-          "pure mathematics",
-          "sacred geometry",
-          "golden ratio",
-          "fibonacci sequences",
-          "fractal structures",
-          "symmetrical designs",
-          "mathematical harmony",
-        ],
-      },
-      temples: {
-        name: "Hindu Temples",
-        description:
-          "Sacred Pura architecture with intricate stone carvings and spiritual significance, featuring ornate details and divine atmosphere",
-        keywords: [
-          "Hindu temples",
-          "Pura architecture",
-          "stone carvings",
-          "spiritual sanctuaries",
-          "Balinese temples",
-          "sacred architecture",
-          "ornate details",
-          "divine atmosphere",
-          "temple spires",
-          "religious art",
-          "spiritual energy",
-          "ancient wisdom",
-          "ceremonial spaces",
-          "holy grounds",
-        ],
-      },
-      "rice-terraces": {
-        name: "Rice Terraces",
-        description:
-          "Jatiluwih terraced landscapes showcasing ancient agricultural wisdom with emerald green fields cascading down mountainsides",
-        keywords: [
-          "rice terraces",
-          "Jatiluwih",
-          "agricultural landscapes",
-          "terraced fields",
-          "ancient farming",
-          "green terraces",
-          "emerald fields",
-          "mountain agriculture",
-          "cascading terraces",
-          "rural beauty",
-          "farming heritage",
-          "landscape art",
-          "natural geometry",
-        ],
-      },
-      ceremonies: {
-        name: "Hindu Ceremonies",
-        description:
-          "Galungan and Kuningan festivals with colorful processions and offerings, featuring vibrant celebrations and spiritual devotion",
-        keywords: [
-          "Hindu ceremonies",
-          "Galungan festival",
-          "Kuningan celebration",
-          "religious processions",
-          "temple offerings",
-          "Balinese rituals",
-          "colorful celebrations",
-          "spiritual devotion",
-          "festival atmosphere",
-          "cultural traditions",
-          "ceremonial beauty",
-          "religious art",
-        ],
-      },
-      dancers: {
-        name: "Traditional Dancers",
-        description:
-          "Legong and Kecak performances with elaborate costumes and graceful movements, showcasing cultural artistry and storytelling",
-        keywords: [
-          "Balinese dance",
-          "Legong dancers",
-          "Kecak performance",
-          "traditional costumes",
-          "cultural dance",
-          "graceful movements",
-          "elaborate costumes",
-          "artistic performance",
-          "cultural storytelling",
-          "dance artistry",
-          "traditional theater",
-          "expressive movement",
-        ],
-      },
-      beaches: {
-        name: "Tropical Beaches",
-        description:
-          "Volcanic sand beaches with coral reefs and traditional fishing boats, featuring pristine coastlines and ocean beauty",
-        keywords: [
-          "tropical beaches",
-          "volcanic sand",
-          "coral reefs",
-          "fishing boats",
-          "coastal temples",
-          "ocean views",
-          "pristine coastlines",
-          "turquoise waters",
-          "beach paradise",
-          "coastal beauty",
-          "marine life",
-          "seaside serenity",
-        ],
-      },
-      artisans: {
-        name: "Balinese Artisans",
-        description:
-          "Master craftsmen creating wood carvings, silver jewelry, and traditional arts with exceptional skill and cultural heritage",
-        keywords: [
-          "Balinese artisans",
-          "wood carving",
-          "silver jewelry",
-          "traditional crafts",
-          "master craftsmen",
-          "cultural arts",
-          "handmade creations",
-          "artistic heritage",
-          "skilled craftsmanship",
-          "cultural preservation",
-          "artistic tradition",
-          "creative mastery",
-        ],
-      },
-      volcanoes: {
-        name: "Sacred Volcanoes",
-        description:
-          "Mount Batur and Mount Agung, sacred peaks central to Balinese spirituality with majestic volcanic landscapes",
-        keywords: [
-          "Mount Batur",
-          "Mount Agung",
-          "sacred volcanoes",
-          "volcanic peaks",
-          "spiritual mountains",
-          "sunrise views",
-          "majestic landscapes",
-          "volcanic beauty",
-          "mountain spirituality",
-          "natural grandeur",
-          "sacred peaks",
-          "volcanic majesty",
-        ],
-      },
-    },
-  },
-  tribes: {
-    name: "Cultural Communities",
-    description:
-      "Artistic patterns inspired by traditional community structures and cultural heritage with rich storytelling traditions",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description: "Raw mathematical beauty and geometric precision with sacred geometry patterns",
-        keywords: [
-          "mathematical precision",
-          "geometric patterns",
-          "algorithmic beauty",
-          "pure mathematics",
-          "sacred geometry",
-          "golden ratio",
-          "fibonacci sequences",
-          "fractal structures",
-          "symmetrical designs",
-          "mathematical harmony",
-        ],
-      },
-      landscape: {
-        name: "Natural Landscape",
-        description:
-          "Community settlements in natural environments with traditional architecture harmoniously integrated with nature",
-        keywords: [
-          "community settlements",
-          "natural landscape",
-          "traditional architecture",
-          "cultural villages",
-          "harmonious design",
-          "natural integration",
-          "environmental harmony",
-          "sustainable living",
-          "landscape architecture",
-          "cultural landscapes",
-          "traditional settlements",
-          "community design",
-        ],
-      },
-      architectural: {
-        name: "Village Architecture",
-        description:
-          "Traditional building patterns and community design principles showcasing cultural wisdom and architectural heritage",
-        keywords: [
-          "village architecture",
-          "traditional buildings",
-          "community design",
-          "cultural structures",
-          "heritage architecture",
-          "architectural wisdom",
-          "building traditions",
-          "structural heritage",
-          "community planning",
-          "cultural buildings",
-          "traditional construction",
-          "architectural legacy",
-        ],
-      },
-      ceremonial: {
-        name: "Ceremonial Grounds",
-        description:
-          "Sacred spaces for cultural celebrations and community gatherings with spiritual significance and festive atmosphere",
-        keywords: [
-          "ceremonial grounds",
-          "cultural celebrations",
-          "community gatherings",
-          "festival spaces",
-          "traditional ceremonies",
-          "sacred spaces",
-          "spiritual gatherings",
-          "cultural festivals",
-          "celebration grounds",
-          "community rituals",
-          "festive atmosphere",
-          "cultural heritage",
-        ],
-      },
-      seasonal: {
-        name: "Seasonal Activities",
-        description:
-          "Seasonal patterns and traditional cultural activities showcasing the rhythm of community life and natural cycles",
-        keywords: [
-          "seasonal activities",
-          "cultural practices",
-          "traditional festivals",
-          "community traditions",
-          "seasonal celebrations",
-          "cultural rhythms",
-          "natural cycles",
-          "community life",
-          "traditional practices",
-          "seasonal rituals",
-          "cultural seasons",
-          "community activities",
-        ],
-      },
-    },
-  },
-  natives: {
-    name: "Indigenous Heritage",
-    description:
-      "Artistic interpretations of indigenous cultural patterns and traditional designs with deep spiritual connections",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description: "Raw mathematical beauty and geometric precision with sacred geometry patterns",
-        keywords: [
-          "mathematical precision",
-          "geometric patterns",
-          "algorithmic beauty",
-          "pure mathematics",
-          "sacred geometry",
-          "golden ratio",
-          "fibonacci sequences",
-          "fractal structures",
-          "symmetrical designs",
-          "mathematical harmony",
-        ],
-      },
-      landscape: {
-        name: "Natural Landscape",
-        description:
-          "Indigenous communities in harmony with natural environments showcasing environmental stewardship and cultural landscapes",
-        keywords: [
-          "indigenous communities",
+          "organic patterns",
+          "natural geometries",
+          "botanical structures",
+          "forest mathematics",
+          "tree algorithms",
+          "leaf patterns",
+          "organic fractals",
           "natural harmony",
-          "cultural landscapes",
-          "traditional territories",
-          "environmental stewardship",
-          "natural wisdom",
-          "ecological balance",
-          "landscape heritage",
-          "environmental culture",
-          "natural preservation",
-          "cultural ecology",
-          "traditional knowledge",
+          "botanical geometry",
+          "forest dynamics",
         ],
       },
-      architectural: {
-        name: "Traditional Architecture",
-        description:
-          "Indigenous building styles and architectural heritage featuring sustainable design and cultural significance",
+      aurora: {
+        name: "Aurora Skies",
+        description: "Atmospheric mathematical phenomena with dancing patterns and celestial displays",
         keywords: [
-          "traditional architecture",
-          "indigenous buildings",
-          "cultural structures",
-          "heritage design",
-          "sustainable architecture",
-          "building heritage",
-          "architectural traditions",
-          "cultural construction",
-          "traditional design",
-          "indigenous craftsmanship",
-          "architectural wisdom",
-          "structural heritage",
+          "atmospheric phenomena",
+          "dancing patterns",
+          "celestial displays",
+          "aurora mathematics",
+          "sky algorithms",
+          "atmospheric fractals",
+          "celestial harmony",
+          "sky patterns",
+          "aurora dynamics",
+          "atmospheric beauty",
         ],
       },
-      ceremonial: {
-        name: "Sacred Ceremonies",
-        description: "Spiritual and cultural ceremonial practices with deep meaning and traditional significance",
+      volcanic: {
+        name: "Volcanic Landscape",
+        description: "Volcanic mathematical patterns with molten flows and geological structures",
         keywords: [
-          "sacred ceremonies",
-          "cultural rituals",
-          "spiritual practices",
-          "traditional celebrations",
-          "ceremonial art",
-          "spiritual traditions",
-          "cultural spirituality",
-          "sacred practices",
-          "ritual ceremonies",
-          "spiritual heritage",
-          "ceremonial traditions",
-          "cultural ceremonies",
-        ],
-      },
-      seasonal: {
-        name: "Seasonal Life",
-        description:
-          "Seasonal activities and natural cycles in indigenous culture showcasing harmony with nature's rhythms",
-        keywords: [
-          "seasonal life",
-          "natural cycles",
-          "traditional activities",
-          "cultural seasons",
-          "environmental harmony",
-          "seasonal wisdom",
-          "natural rhythms",
-          "cultural cycles",
-          "seasonal traditions",
-          "natural harmony",
-          "environmental culture",
-          "seasonal practices",
+          "volcanic patterns",
+          "molten flows",
+          "geological structures",
+          "volcanic mathematics",
+          "lava algorithms",
+          "geological fractals",
+          "volcanic harmony",
+          "molten geometry",
+          "geological patterns",
+          "volcanic dynamics",
         ],
       },
     },
   },
-  heads: {
-    name: "Portrait Compositions",
-    description:
-      "Artistic compositions featuring human portraits and facial expressions in mosaic arrangements with emotional depth",
+  spirals: {
+    name: "Cosmic Spirals",
+    description: "Mathematical spiral patterns inspired by galaxies, nautilus shells, and golden ratio formations",
     scenarios: {
       pure: {
         name: "Pure Mathematical",
@@ -530,88 +141,27 @@ const DATASET_INFO = {
           "mathematical harmony",
         ],
       },
-      landscape: {
-        name: "Portrait Landscape",
-        description:
-          "Artistic portraits arranged in landscape compositions showcasing human diversity and emotional expression",
+      cosmic: {
+        name: "Deep Space",
+        description: "Spiral galaxies and cosmic formations with stellar mathematical patterns",
         keywords: [
-          "portrait landscape",
-          "artistic faces",
-          "human expressions",
-          "portrait arrangements",
-          "facial art",
-          "human diversity",
-          "emotional portraits",
-          "expressive faces",
-          "portrait gallery",
-          "facial compositions",
-          "human artistry",
-          "portrait mosaic",
-        ],
-      },
-      architectural: {
-        name: "Structured Portraits",
-        description:
-          "Geometric arrangements of portrait compositions featuring systematic organization and artistic structure",
-        keywords: [
-          "structured portraits",
-          "geometric faces",
-          "architectural portraits",
-          "organized compositions",
-          "systematic arrangements",
-          "portrait geometry",
-          "structured art",
-          "geometric organization",
-          "architectural faces",
-          "systematic portraits",
-          "organized artistry",
-          "geometric composition",
-        ],
-      },
-      ceremonial: {
-        name: "Expressive Portraits",
-        description:
-          "Portraits with diverse expressions and cultural themes showcasing human emotion and cultural diversity",
-        keywords: [
-          "expressive portraits",
-          "diverse expressions",
-          "cultural faces",
-          "artistic portraits",
-          "human diversity",
-          "emotional expressions",
-          "cultural portraits",
-          "diverse faces",
-          "expressive art",
-          "human emotions",
-          "portrait diversity",
-          "cultural expressions",
-        ],
-      },
-      seasonal: {
-        name: "Emotional Variations",
-        description:
-          "Diverse emotional expressions and portrait variations showcasing the full spectrum of human emotion",
-        keywords: [
-          "emotional variations",
-          "diverse emotions",
-          "expressive faces",
-          "human emotions",
-          "portrait diversity",
-          "emotional spectrum",
-          "facial expressions",
-          "human feelings",
-          "emotional art",
-          "expressive diversity",
-          "emotional portraits",
-          "human expression",
+          "spiral galaxies",
+          "cosmic formations",
+          "stellar patterns",
+          "galactic spirals",
+          "cosmic mathematics",
+          "astronomical spirals",
+          "stellar geometry",
+          "galactic harmony",
+          "cosmic fractals",
+          "space spirals",
         ],
       },
     },
   },
-  indonesian: {
-    name: "Indonesian Mythology",
-    description:
-      "Rich mythological traditions of Indonesia featuring legendary creatures, spirits, and supernatural beings from Javanese, Balinese, Sundanese, and other regional folklore",
+  fractal: {
+    name: "Fractal Trees",
+    description: "Self-similar mathematical structures with recursive patterns and infinite complexity",
     scenarios: {
       pure: {
         name: "Pure Mathematical",
@@ -629,288 +179,20 @@ const DATASET_INFO = {
           "mathematical harmony",
         ],
       },
-      garuda: {
-        name: "Garuda",
-        description:
-          "The magnificent divine bird creature, mount of Vishnu, symbol of Indonesia with golden feathers and majestic wings",
+      cosmic: {
+        name: "Deep Space",
+        description: "Fractal cosmic structures with recursive stellar formations",
         keywords: [
-          "divine bird",
-          "golden feathers",
-          "majestic wings",
-          "mythical creature",
-          "Indonesian symbol",
-          "divine mount",
-          "celestial being",
-          "powerful wings",
-          "sacred bird",
-          "legendary creature",
-          "mythological guardian",
-          "spiritual protector",
-        ],
-      },
-      barong: {
-        name: "Barong",
-        description:
-          "The benevolent lion-like creature from Balinese mythology, protector against evil spirits with ornate decorations",
-        keywords: [
-          "benevolent guardian",
-          "lion creature",
-          "ornate decorations",
-          "protective spirit",
-          "Balinese mythology",
-          "spiritual guardian",
-          "ceremonial mask",
-          "cultural protector",
-          "traditional art",
-          "mythical guardian",
-          "sacred creature",
-          "divine protector",
-        ],
-      },
-      rangda: {
-        name: "Rangda",
-        description: "The powerful witch queen from Balinese folklore with wild hair, fangs, and mystical powers",
-        keywords: [
-          "witch queen",
-          "mystical powers",
-          "supernatural being",
-          "Balinese folklore",
-          "magical creature",
-          "ancient wisdom",
-          "spiritual entity",
-          "mythological figure",
-          "powerful sorceress",
-          "legendary witch",
-          "mystical guardian",
-          "supernatural protector",
-        ],
-      },
-      naga: {
-        name: "Naga Serpent",
-        description: "The divine serpent beings with human torsos and snake tails, guardians of water and wisdom",
-        keywords: [
-          "divine serpent",
-          "serpent guardian",
-          "water protector",
-          "wisdom keeper",
-          "mythical serpent",
-          "aquatic guardian",
-          "spiritual serpent",
-          "legendary creature",
-          "mystical being",
-          "ancient guardian",
-          "serpent deity",
-          "water spirit",
-        ],
-      },
-      hanuman: {
-        name: "Hanuman",
-        description:
-          "The devoted monkey deity with incredible strength, wisdom, and loyalty from Hindu-Javanese tradition",
-        keywords: [
-          "monkey deity",
-          "divine strength",
-          "spiritual wisdom",
-          "loyal guardian",
-          "Hindu tradition",
-          "mythical hero",
-          "spiritual warrior",
-          "divine messenger",
-          "legendary protector",
-          "sacred monkey",
-          "spiritual guide",
-          "mythological hero",
-        ],
-      },
-      dewi: {
-        name: "Dewi Sri",
-        description:
-          "The beautiful rice goddess bringing prosperity and abundance, patron of agriculture and fertility",
-        keywords: [
-          "rice goddess",
-          "prosperity bringer",
-          "agricultural deity",
-          "fertility goddess",
-          "abundant harvest",
-          "divine beauty",
-          "spiritual nurturer",
-          "cultural goddess",
-          "traditional deity",
-          "sacred feminine",
-          "harvest protector",
-          "agricultural guardian",
-        ],
-      },
-      wayang: {
-        name: "Wayang Characters",
-        description:
-          "Traditional shadow puppet characters representing heroes, gods, and mythical beings from Indonesian epics",
-        keywords: [
-          "shadow puppets",
-          "traditional theater",
-          "mythical heroes",
-          "cultural characters",
-          "epic stories",
-          "artistic tradition",
-          "storytelling art",
-          "cultural heritage",
-          "traditional performance",
-          "mythological theater",
-          "shadow art",
-          "cultural storytelling",
-        ],
-      },
-    },
-  },
-  horror: {
-    name: "Indonesian Horror Creatures",
-    description:
-      "Terrifying supernatural beings and horror creatures from Indonesian folklore, urban legends, and traditional ghost stories",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description: "Raw mathematical beauty and geometric precision with sacred geometry patterns",
-        keywords: [
-          "mathematical precision",
-          "geometric patterns",
-          "algorithmic beauty",
-          "pure mathematics",
-          "sacred geometry",
-          "golden ratio",
-          "fibonacci sequences",
           "fractal structures",
-          "symmetrical designs",
-          "mathematical harmony",
-        ],
-      },
-      pontianak: {
-        name: "Pontianak",
-        description:
-          "The vampiric spirit of a woman who died in childbirth, appearing as a beautiful woman to lure victims",
-        keywords: [
-          "vampiric spirit",
-          "supernatural entity",
-          "ghostly apparition",
-          "mysterious figure",
-          "folkloric creature",
-          "spiritual being",
-          "traditional ghost",
-          "cultural legend",
-          "supernatural guardian",
-          "mystical presence",
-          "ethereal being",
-          "legendary spirit",
-        ],
-      },
-      kuntilanak: {
-        name: "Kuntilanak",
-        description: "The vengeful female spirit with long black hair and white dress, seeking justice from beyond",
-        keywords: [
-          "vengeful spirit",
-          "ghostly figure",
-          "supernatural presence",
-          "ethereal being",
-          "spiritual entity",
-          "mysterious apparition",
-          "folkloric ghost",
-          "cultural spirit",
-          "traditional legend",
-          "mystical guardian",
-          "supernatural protector",
-          "legendary presence",
-        ],
-      },
-      penanggalan: {
-        name: "Penanggalan",
-        description:
-          "The floating head spirit with trailing organs, a supernatural entity from Malay-Indonesian folklore",
-        keywords: [
-          "floating spirit",
-          "supernatural entity",
-          "mystical being",
-          "folkloric creature",
-          "spiritual presence",
-          "ethereal guardian",
-          "traditional spirit",
-          "cultural legend",
-          "mysterious entity",
-          "supernatural guardian",
-          "mystical protector",
-          "legendary being",
-        ],
-      },
-      pocong: {
-        name: "Pocong",
-        description:
-          "The hopping ghost wrapped in burial shroud, a restless spirit seeking peace in Indonesian folklore",
-        keywords: [
-          "hopping ghost",
-          "restless spirit",
-          "burial shroud",
-          "supernatural being",
-          "folkloric ghost",
-          "spiritual entity",
-          "traditional spirit",
-          "cultural legend",
-          "mysterious presence",
-          "ethereal being",
-          "ghostly figure",
-          "legendary spirit",
-        ],
-      },
-      leak: {
-        name: "Leak",
-        description: "The shape-shifting witch from Balinese folklore with supernatural powers and mystical abilities",
-        keywords: [
-          "shape-shifting witch",
-          "supernatural powers",
-          "mystical abilities",
-          "Balinese folklore",
-          "magical entity",
-          "spiritual being",
-          "folkloric creature",
-          "traditional witch",
-          "cultural legend",
-          "mystical guardian",
-          "supernatural protector",
-          "legendary sorceress",
-        ],
-      },
-      wewe: {
-        name: "Wewe Gombel",
-        description: "The protective spirit of children who appears as an elderly woman, guardian of lost souls",
-        keywords: [
-          "protective spirit",
-          "child guardian",
-          "benevolent ghost",
-          "spiritual protector",
-          "folkloric guardian",
-          "cultural spirit",
-          "traditional protector",
-          "mystical guardian",
-          "supernatural caretaker",
-          "legendary protector",
-          "spiritual guide",
-          "ethereal guardian",
-        ],
-      },
-      sundel: {
-        name: "Sundel Bolong",
-        description:
-          "The beautiful ghostly woman with a hole in her back, a tragic spirit from Indonesian urban legends",
-        keywords: [
-          "ghostly woman",
-          "tragic spirit",
-          "urban legend",
-          "supernatural beauty",
-          "folkloric ghost",
-          "cultural legend",
-          "mysterious entity",
-          "spiritual being",
-          "traditional ghost",
-          "ethereal presence",
-          "legendary spirit",
-          "mystical figure",
+          "recursive patterns",
+          "stellar formations",
+          "cosmic fractals",
+          "mathematical trees",
+          "recursive geometry",
+          "fractal harmony",
+          "cosmic recursion",
+          "stellar fractals",
+          "space trees",
         ],
       },
     },
@@ -928,102 +210,127 @@ function generateComprehensiveAIPrompt(
   const scenarioInfo = datasetInfo?.scenarios[scenario as keyof typeof datasetInfo.scenarios]
 
   if (!datasetInfo || !scenarioInfo) {
-    return `Create a magnificent abstract digital artwork with ${colorScheme} colors featuring intricate geometric patterns, mathematical precision, and stunning visual complexity. Style: ultra-detailed, masterpiece quality, professional digital art, perfect composition, harmonious design, breathtaking beauty.`
+    return `Create a magnificent ABSTRACT MATHEMATICAL DIGITAL ARTWORK with ${colorScheme} colors featuring intricate geometric patterns, mathematical precision, algorithmic beauty, fractal structures, flowing mathematical curves, parametric equations visualized, computational art aesthetics, and stunning mathematical complexity. Style: ultra-detailed mathematical art, abstract digital masterpiece, computational visualization, algorithmic beauty, geometric precision, mathematical harmony, breathtaking mathematical patterns.`
   }
 
   let basePrompt = ""
 
-  // If custom prompt is provided, integrate it with rich context
+  // FORCE MATHEMATICAL/ABSTRACT ART STYLE - NO REALISTIC CONTENT
+  const mathematicalPrefix = "Create a stunning ABSTRACT MATHEMATICAL DIGITAL ARTWORK inspired by"
+
+  // If custom prompt is provided, integrate it with mathematical context
   if (customPrompt && customPrompt.trim()) {
     const sanitizedCustom = sanitizePrompt(customPrompt.trim())
-    basePrompt = `${sanitizedCustom}, enhanced with ${datasetInfo.name}: ${scenarioInfo.description}. Create a breathtaking masterpiece celebrating ${scenarioInfo.name}.`
+    basePrompt = `${mathematicalPrefix} ${sanitizedCustom}, transformed into pure mathematical art celebrating ${scenarioInfo.name}. This should be an ABSTRACT COMPUTATIONAL VISUALIZATION with geometric patterns, mathematical curves, and algorithmic beauty - NOT realistic imagery.`
   } else {
-    // Generate comprehensive prompt based on dataset and scenario
-    basePrompt = `Create a stunning ${datasetInfo.name} masterpiece featuring ${scenarioInfo.name}: ${scenarioInfo.description}. This extraordinary artwork should capture the essence and beauty of this theme with exceptional artistic quality.`
+    // Generate comprehensive mathematical art prompt
+    basePrompt = `${mathematicalPrefix} ${datasetInfo.name} and ${scenarioInfo.name}: ${scenarioInfo.description}. Transform this concept into PURE MATHEMATICAL ART with abstract geometric patterns, computational aesthetics, and algorithmic beauty - NO realistic elements, only mathematical visualization.`
   }
 
-  // Add comprehensive color scheme context (shortened)
+  // Add comprehensive mathematical art specifications
   const colorContext = {
     plasma:
-      "vibrant plasma colors with electric blues, purples, and magentas, dynamic energy flows and spectacular light effects",
+      "vibrant plasma mathematical gradients with electric blues, purples, and magentas creating flowing mathematical curves and algorithmic patterns",
     quantum:
-      "quantum field colors with deep blues to bright whites and golds, particle interactions and cosmic phenomena",
+      "quantum field mathematical visualization with deep blues to bright whites, particle interaction patterns and wave function mathematics",
     cosmic:
-      "cosmic colors with deep space blacks, stellar blues, and nebula purples, starfields and celestial formations",
+      "cosmic mathematical patterns with deep space geometries, stellar mathematical formations and celestial algorithmic structures",
     thermal:
-      "thermal spectrum from cool blacks through warm reds to bright yellows, heat visualizations and energy distributions",
-    spectral: "full spectral rainbow with smooth transitions, prismatic effects, and light dispersions",
+      "thermal mathematical spectrum visualization with heat equation patterns, gradient mathematics and energy distribution algorithms",
+    spectral:
+      "full spectral mathematical rainbow with smooth algorithmic transitions, prismatic mathematical effects and light dispersion mathematics",
     crystalline:
-      "crystalline colors with clear blues, purples, and prismatic effects, gem-like clarity and refractive patterns",
-    bioluminescent: "bioluminescent colors with glowing blues, greens, and ethereal lights, organic luminescence",
+      "crystalline mathematical structures with geometric precision, mathematical lattices and algorithmic crystal formations",
+    bioluminescent:
+      "bioluminescent mathematical patterns with glowing algorithmic structures and organic mathematical geometries",
     aurora:
-      "aurora borealis colors with dancing greens, blues, and purples, atmospheric phenomena and celestial displays",
+      "aurora mathematical visualization with dancing algorithmic patterns, atmospheric mathematical phenomena and celestial computational art",
     metallic:
-      "metallic colors with silver, gold, copper, and bronze tones, lustrous surfaces and precious metal aesthetics",
-    prismatic: "prismatic colors with rainbow refractions and light dispersions, optical phenomena and crystal optics",
+      "metallic mathematical surfaces with algorithmic reflections, geometric precision and mathematical material properties",
+    prismatic:
+      "prismatic mathematical patterns with rainbow algorithmic refractions and optical mathematical phenomena",
     monochromatic:
-      "monochromatic grayscale with subtle tonal variations, dramatic contrasts and sophisticated elegance",
+      "monochromatic mathematical gradients with sophisticated algorithmic tonal variations and geometric mathematical contrasts",
     infrared:
-      "infrared heat colors from deep reds to bright yellows, thermal imaging aesthetics and energy visualizations",
-    lava: "molten lava colors with deep reds, oranges, and glowing yellows, volcanic energy and molten flows",
+      "infrared mathematical heat visualization with thermal algorithmic patterns and energy mathematical distributions",
+    lava: "molten mathematical patterns with flowing algorithmic structures and volcanic mathematical geometries",
     futuristic:
-      "futuristic colors with neon blues, purples, and electric accents, cyberpunk aesthetics and sci-fi themes",
-    forest: "forest colors with deep greens, earth browns, and natural tones, woodland atmospheres and organic beauty",
-    ocean: "ocean colors with deep blues, aqua greens, and foam whites, marine environments and aquatic beauty",
-    sunset: "sunset colors with warm oranges, pinks, and golden yellows, romantic atmospheres and golden hour lighting",
-    arctic: "arctic colors with ice blues, snow whites, and crystal clears, frozen landscapes and winter beauty",
-    neon: "neon colors with electric pinks, greens, and glowing accents, vibrant nightlife aesthetics and urban energy",
-    vintage:
-      "vintage colors with sepia browns, aged golds, and muted tones, nostalgic atmospheres and timeless elegance",
-    toxic: "toxic colors with acid greens, warning yellows, and danger reds, industrial aesthetics and intense impact",
-    ember: "ember colors with glowing reds, orange sparks, and ash grays, fire aesthetics and warm glowing atmospheres",
-    lunar:
-      "lunar colors with silver grays, crater blacks, and moonlight whites, celestial themes and otherworldly beauty",
-    tidal: "tidal colors with wave blues, foam whites, and deep ocean teals, oceanic movements and marine energy",
+      "futuristic mathematical aesthetics with cyberpunk algorithmic patterns and sci-fi mathematical geometries",
+    forest: "forest mathematical patterns with organic algorithmic structures and natural mathematical geometries",
+    ocean: "ocean mathematical wave patterns with fluid algorithmic dynamics and marine mathematical structures",
+    sunset: "sunset mathematical gradients with warm algorithmic transitions and golden mathematical harmonies",
+    arctic:
+      "arctic mathematical crystalline patterns with ice algorithmic structures and frozen mathematical geometries",
+    neon: "neon mathematical patterns with electric algorithmic glows and vibrant mathematical energy fields",
+    vintage: "vintage mathematical aesthetics with nostalgic algorithmic patterns and timeless mathematical elegance",
+    toxic: "toxic mathematical patterns with acid algorithmic structures and intense mathematical energy fields",
+    ember: "ember mathematical patterns with glowing algorithmic structures and fire mathematical dynamics",
+    lunar: "lunar mathematical patterns with celestial algorithmic structures and otherworldly mathematical beauty",
+    tidal: "tidal mathematical wave patterns with oceanic algorithmic movements and marine mathematical energy",
   }
 
   const colorDescription =
     colorContext[colorScheme as keyof typeof colorContext] ||
-    `magnificent ${colorScheme} color palette with rich tonal variations and harmonious relationships`
+    `magnificent ${colorScheme} mathematical color palette with algorithmic variations and computational harmony`
 
-  // Combine elements with optimized length
+  // Combine elements with STRONG mathematical focus
   let fullPrompt = `${basePrompt}
 
-VISUAL STYLE: Rendered in ${colorDescription}. Museum-quality presentation with exceptional artistic quality, masterful color theory, perfect balance, and sophisticated visual hierarchy.
+MATHEMATICAL ART SPECIFICATIONS: This must be PURE ABSTRACT MATHEMATICAL ART rendered in ${colorDescription}. NO realistic imagery, NO photographic elements, NO literal representations - ONLY mathematical visualization, geometric patterns, algorithmic beauty, and computational art aesthetics.
 
-ARTISTIC ELEMENTS:`
+VISUAL STYLE: Abstract mathematical digital art with computational precision, algorithmic beauty, geometric harmony, mathematical curves, parametric equations, fractal structures, flowing mathematical patterns, and sophisticated mathematical visualization techniques.
 
-  // Add scenario-specific keywords for enhanced detail
+MATHEMATICAL ELEMENTS:`
+
+  // Add scenario-specific mathematical keywords
   if (scenarioInfo.keywords && scenarioInfo.keywords.length > 0) {
-    const safeKeywords = scenarioInfo.keywords.filter((keyword) => !containsProblematicContent(keyword))
-    if (safeKeywords.length > 0) {
-      fullPrompt += ` ${safeKeywords.slice(0, 8).join(", ")}.`
+    const mathematicalKeywords = scenarioInfo.keywords
+      .filter((keyword) => !containsProblematicContent(keyword))
+      .map((keyword) => `mathematical interpretation of ${keyword}`)
+      .slice(0, 6)
+
+    if (mathematicalKeywords.length > 0) {
+      fullPrompt += ` ${mathematicalKeywords.join(", ")} - all transformed into abstract mathematical patterns and geometric visualizations.`
     }
   }
 
-  // Add technical specifications (shortened)
+  // Add STRONG mathematical art specifications
   fullPrompt += `
 
-TECHNICAL EXCELLENCE:
-- Ultra-high resolution with stunning detail and perfect clarity
-- Professional digital art techniques with masterful execution  
-- Perfect lighting design with dramatic shadows and highlights
-- Exceptional color harmony and sophisticated palette usage
-- Intricate textures and surface details
-- Masterful composition with perfect balance and visual flow
-- Museum-quality artistic presentation
-- Breathtaking visual impact and emotional resonance
-- Technical precision combined with artistic vision
-- Innovative techniques pushing digital art boundaries
+COMPUTATIONAL ART REQUIREMENTS:
+- ABSTRACT MATHEMATICAL VISUALIZATION ONLY - no realistic imagery
+- Geometric patterns with mathematical precision and algorithmic beauty
+- Flowing mathematical curves, parametric equations, and computational aesthetics
+- Fractal structures, recursive patterns, and mathematical self-similarity
+- Algorithmic color distributions with mathematical harmony
+- Computational art techniques with digital mathematical precision
+- Abstract geometric compositions with mathematical relationships
+- Mathematical pattern generation with algorithmic complexity
+- Pure mathematical beauty without realistic elements
+- Computational visualization of mathematical concepts
+- Algorithmic art generation with mathematical foundations
+- Abstract mathematical interpretation of cultural concepts
 
-FINAL VISION: A breathtaking masterpiece that captures the essence of ${datasetInfo.name} with the highest levels of artistic achievement, technical excellence, and cultural authenticity.`
+ARTISTIC EXECUTION:
+- Museum-quality abstract mathematical art with computational precision
+- Sophisticated mathematical visualization techniques
+- Perfect algorithmic balance and mathematical composition
+- Advanced computational art methods with mathematical foundations
+- Mathematical color theory with algorithmic precision
+- Abstract geometric harmony with mathematical relationships
+- Computational creativity with mathematical beauty
+- Digital mathematical art with algorithmic sophistication
+- Pure mathematical aesthetics without realistic elements
+- Advanced mathematical visualization with computational excellence
+
+FINAL MATHEMATICAL VISION: A breathtaking ABSTRACT MATHEMATICAL DIGITAL ARTWORK that captures the mathematical essence of ${datasetInfo.name} through pure computational art, geometric patterns, algorithmic beauty, and mathematical visualization - completely abstract with NO realistic elements, only mathematical art perfection.`
 
   return sanitizePrompt(fullPrompt)
 }
 
 // Sanitize prompt to avoid content policy violations while preserving richness
 function sanitizePrompt(prompt: string): string {
-  // Remove potentially problematic words/phrases but keep the rich descriptions
+  // Remove potentially problematic words/phrases but keep mathematical descriptions
   const problematicTerms = [
     "tribal warfare",
     "warrior",
@@ -1045,24 +352,52 @@ function sanitizePrompt(prompt: string): string {
     "savage",
     "primitive",
     "barbaric",
+    "terrifying",
+    "scary",
+    "frightening",
+    "evil",
+    "demon",
+    "devil",
+    "haunted",
+    "cursed",
+    "dark magic",
+    "witch",
+    "sorcery",
+    "black magic",
   ]
 
   let sanitized = prompt
 
   problematicTerms.forEach((term) => {
     const regex = new RegExp(term, "gi")
-    sanitized = sanitized.replace(regex, "peaceful")
+    sanitized = sanitized.replace(regex, "mathematical pattern")
   })
 
-  // Replace with safer alternatives while maintaining descriptive richness
+  // Replace with mathematical alternatives while maintaining descriptive richness
   sanitized = sanitized
-    .replace(/warrior/gi, "guardian protector")
-    .replace(/battle/gi, "grand celebration")
-    .replace(/warfare/gi, "community gathering")
-    .replace(/tribal/gi, "cultural")
-    .replace(/primitive/gi, "traditional and authentic")
-    .replace(/savage/gi, "natural and wild")
-    .replace(/barbaric/gi, "authentic and powerful")
+    .replace(/horror/gi, "mathematical complexity")
+    .replace(/terrifying/gi, "mathematically awe-inspiring")
+    .replace(/scary/gi, "mathematically mysterious")
+    .replace(/frightening/gi, "mathematically captivating")
+    .replace(/evil/gi, "mathematically complex")
+    .replace(/demon/gi, "mathematical entity")
+    .replace(/devil/gi, "mathematical structure")
+    .replace(/ghost/gi, "mathematical pattern")
+    .replace(/spirit/gi, "mathematical essence")
+    .replace(/supernatural/gi, "mathematically transcendent")
+    .replace(/haunted/gi, "mathematically enchanted")
+    .replace(/cursed/gi, "mathematically blessed")
+    .replace(/dark magic/gi, "mathematical algorithms")
+    .replace(/witch/gi, "mathematical practitioner")
+    .replace(/sorcery/gi, "mathematical computation")
+    .replace(/black magic/gi, "advanced mathematics")
+    .replace(/warrior/gi, "mathematical guardian")
+    .replace(/battle/gi, "mathematical interaction")
+    .replace(/warfare/gi, "mathematical dynamics")
+    .replace(/tribal/gi, "mathematical community")
+    .replace(/primitive/gi, "fundamentally mathematical")
+    .replace(/savage/gi, "mathematically wild")
+    .replace(/barbaric/gi, "mathematically powerful")
 
   return sanitized
 }
@@ -1083,61 +418,82 @@ function containsProblematicContent(text: string): boolean {
     "savage",
     "primitive",
     "barbaric",
+    "horror",
+    "terrifying",
+    "scary",
+    "evil",
+    "demon",
+    "ghost",
   ]
 
   return problematicTerms.some((term) => text.toLowerCase().includes(term.toLowerCase()))
 }
 
-// Generate dome-specific prompt with rich details
+// Generate dome-specific prompt with rich mathematical details for planetarium dome
 function generateDomePrompt(basePrompt: string, additionalParams: any): string {
-  const { domeDiameter, domeResolution, projectionType } = additionalParams
+  const { domeDiameter = 20, domeResolution, projectionType } = additionalParams
 
-  return `IMMERSIVE PLANETARIUM DOME PROJECTION MASTERPIECE: Transform this extraordinary artwork for breathtaking ${domeDiameter}m diameter planetarium dome display at stunning ${domeResolution} resolution using advanced ${projectionType} projection mapping technology.
+  return `IMMERSIVE PLANETARIUM DOME MATHEMATICAL ART WITH DRAMATIC TUNNEL EFFECT: Transform this extraordinary ABSTRACT MATHEMATICAL ARTWORK for breathtaking ${domeDiameter}m diameter planetarium dome display with stunning fisheye tunnel projection effect.
 
-DOME-SPECIFIC TECHNICAL REQUIREMENTS:
-- Sophisticated fisheye distortion optimization specifically calibrated for dome projection systems
-- Powerful central focal point designed for optimal overhead viewing from dome center position
-- Masterful radial composition that works flawlessly on curved dome surface geometry
-- Strategic visual element distribution optimized for complete 180° field of view coverage
-- Enhanced contrast and brightness calibration specifically for dome projection environments
-- Seamless edge blending technology integration for perfect dome environment immersion
-- Immersive perspective design that completely surrounds viewers in artistic beauty
-- Advanced projection mapping compatibility with professional planetarium systems
+DOME TUNNEL EFFECT SPECIFICATIONS FOR ${domeDiameter}M DOME:
+- DRAMATIC FISHEYE TUNNEL EFFECT with mathematical precision optimized for ${domeDiameter}-meter dome projection
+- POWERFUL CENTRAL FOCAL POINT creating tunnel illusion that draws viewers into mathematical depths
+- RADIAL MATHEMATICAL PATTERNS flowing outward from center in perfect circular symmetry
+- TUNNEL PERSPECTIVE DISTORTION with algorithmic precision creating immersive depth experience
+- CIRCULAR FISHEYE COMPOSITION optimized for overhead dome viewing from center position
+- SEAMLESS EDGE BLENDING with mathematical precision for perfect ${domeDiameter}m dome wraparound
+- DRAMATIC DEPTH ILLUSION using mathematical perspective and algorithmic distortion
+- TUNNEL VORTEX EFFECT with mathematical curves spiraling toward central vanishing point
+- FISHEYE PROJECTION MAPPING with computational precision for professional planetarium systems
+- LITTLE PLANET EFFECT option with stereographic mathematical projection creating curved world illusion
+- OVERHEAD VIEWING OPTIMIZATION ensuring perfect visual experience when looking up at ${domeDiameter}m dome ceiling
 
-ARTISTIC VISION FOR DOME EXPERIENCE:
+MATHEMATICAL TUNNEL ARTISTIC VISION:
 ${basePrompt}
 
-DOME TRANSFORMATION SPECIFICATIONS:
-Transform this magnificent concept specifically for planetarium dome projection, ensuring all visual elements are positioned and scaled with mathematical precision for optimal dome display. The composition should feature a powerful central focus with artistic elements radiating outward in perfect harmony, creating an absolutely breathtaking overhead viewing experience when projected on the dome ceiling. Every aspect should be optimized for the unique immersive environment of planetarium presentation, creating a transcendent artistic experience that surrounds viewers in beauty and wonder.`
+DOME TUNNEL TRANSFORMATION REQUIREMENTS:
+Transform this magnificent mathematical concept into a dramatic TUNNEL EFFECT specifically for ${domeDiameter}-meter planetarium dome projection. The composition must feature a powerful central mathematical focal point with all algorithmic elements radiating outward in perfect radial symmetry, creating an absolutely breathtaking tunnel illusion when projected overhead on the ${domeDiameter}m dome ceiling. 
+
+TUNNEL EFFECT SPECIFICATIONS:
+- Central vanishing point with mathematical precision drawing viewers into algorithmic depths
+- Radial mathematical flow patterns creating tunnel perspective illusion
+- Fisheye distortion with computational accuracy for seamless dome projection
+- Circular composition boundary perfectly fitted for dome projection systems
+- Mathematical tunnel vortex with algorithmic spiral patterns
+- Dramatic perspective depth using mathematical curves and geometric progression
+- Seamless circular edge blending for perfect dome environment immersion
+
+FINAL DOME TUNNEL VISION: Create a breathtaking ABSTRACT MATHEMATICAL TUNNEL ARTWORK that completely transforms the ${domeDiameter}m dome into an immersive mathematical vortex, with dramatic fisheye tunnel effects, radial mathematical patterns, and algorithmic depth illusion - all rendered as PURE ABSTRACT MATHEMATICAL ART with tunnel projection optimization.`
 }
 
-// Generate 360° panorama-specific prompt with rich details
+// Generate 360° panorama-specific prompt with rich mathematical details
 function generatePanoramaPrompt(basePrompt: string, additionalParams: any): string {
   const { panoramaResolution, panoramaFormat, stereographicPerspective } = additionalParams
 
-  let panoramaPrompt = `IMMERSIVE 360° PANORAMIC MASTERPIECE: Transform this extraordinary artwork for breathtaking ${panoramaResolution} resolution 360° viewing experience in professional ${panoramaFormat} format.
+  let panoramaPrompt = `IMMERSIVE 360° PANORAMIC MATHEMATICAL ARTWORK: Transform this extraordinary ABSTRACT MATHEMATICAL ART for breathtaking ${panoramaResolution} resolution 360° mathematical viewing experience in professional ${panoramaFormat} format.
 
-360° PANORAMIC TECHNICAL REQUIREMENTS:
-- Seamless wraparound composition with absolutely no visible seams or discontinuities
-- Optimal horizontal aspect ratio specifically designed for 360° viewing experiences
-- Strategic visual element distribution across the complete 360° viewing sphere
-- Perfect horizon placement optimized for VR and 360° environment compatibility
-- Flawless smooth transitions at wraparound edges with mathematical precision
-- Enhanced detail density optimized for immersive viewing experiences
-- Natural composition flow that works beautifully around the full circular view
-- Professional VR compatibility with industry-standard 360° formats
+360° PANORAMIC MATHEMATICAL ART REQUIREMENTS:
+- PURE ABSTRACT MATHEMATICAL VISUALIZATION with seamless wraparound mathematical composition
+- Seamless mathematical wraparound with absolutely no visible seams in algorithmic patterns
+- Optimal horizontal mathematical aspect ratio specifically designed for 360° mathematical viewing
+- Strategic mathematical pattern distribution across the complete 360° algorithmic viewing sphere
+- Perfect mathematical horizon placement optimized for VR and 360° mathematical environment compatibility
+- Flawless smooth mathematical transitions at wraparound edges with computational precision
+- Enhanced mathematical detail density optimized for immersive algorithmic viewing experiences
+- Natural mathematical composition flow that works beautifully around the full circular mathematical view
+- Professional VR mathematical compatibility with industry-standard 360° algorithmic formats
 
-ARTISTIC VISION FOR 360° EXPERIENCE:
+MATHEMATICAL ARTISTIC VISION FOR 360° EXPERIENCE:
 ${basePrompt}
 
-360° TRANSFORMATION SPECIFICATIONS:
-Transform this magnificent concept specifically for 360° panoramic viewing, ensuring the composition flows naturally and beautifully around the full circular view, creating an absolutely immersive experience when viewed in VR or 360° environments. Every element should be positioned with precision to create a seamless, breathtaking panoramic experience that surrounds viewers in artistic beauty.`
+360° MATHEMATICAL TRANSFORMATION SPECIFICATIONS:
+Transform this magnificent mathematical concept specifically for 360° panoramic viewing, ensuring the mathematical composition flows naturally and beautifully around the full circular view, creating an absolutely immersive mathematical experience when viewed in VR or 360° environments. Every mathematical element should be positioned with algorithmic precision to create a seamless, breathtaking panoramic mathematical experience that surrounds viewers in computational artistic beauty - all rendered as PURE ABSTRACT MATHEMATICAL ART.`
 
   if (panoramaFormat === "stereographic" && stereographicPerspective) {
     panoramaPrompt += `
 
-ADVANCED STEREOGRAPHIC PROJECTION:
-Apply sophisticated ${stereographicPerspective} stereographic projection for unique and captivating visual perspective. This creates a distinctive curved world effect that transforms the flat artwork into an immersive spherical experience with dramatic perspective distortion, mathematical precision, and artistic beauty that showcases the power of advanced projection mathematics.`
+ADVANCED STEREOGRAPHIC MATHEMATICAL PROJECTION:
+Apply sophisticated ${stereographicPerspective} stereographic mathematical projection for unique and captivating mathematical visual perspective. This creates a distinctive curved mathematical world effect that transforms the flat mathematical artwork into an immersive spherical mathematical experience with dramatic algorithmic perspective distortion, computational precision, and mathematical beauty that showcases the power of advanced mathematical projection techniques - all as PURE ABSTRACT MATHEMATICAL ART.`
   }
 
   return sanitizePrompt(panoramaPrompt)
@@ -1252,7 +608,7 @@ export async function POST(request: NextRequest) {
       timeStep,
       customPrompt,
       domeProjection,
-      domeDiameter,
+      domeDiameter = 20, // Default to 20 meters
       domeResolution,
       projectionType,
       panoramic360,
@@ -1267,6 +623,7 @@ export async function POST(request: NextRequest) {
       colorScheme,
       customPrompt: customPrompt ? customPrompt.substring(0, 100) + "..." : "None",
       domeProjection,
+      domeDiameter,
       panoramic360,
     })
 
@@ -1275,66 +632,88 @@ export async function POST(request: NextRequest) {
     console.log("Generated comprehensive main prompt:", mainPrompt.substring(0, 200) + "...")
     console.log(`Full prompt length: ${mainPrompt.length} characters`)
 
+    // ALWAYS generate all three versions for complete immersive experience
+    const generationDetails: any = {
+      mainImage: "Generating...",
+      domeImage: "Generating...",
+      panoramaImage: "Generating...",
+    }
+
     // Generate main image
     console.log("🎨 Generating main artwork...")
     const mainImageUrl = await callOpenAI(mainPrompt)
+    generationDetails.mainImage = "Generated successfully"
     console.log("✅ Main artwork generated successfully")
 
-    let domeImageUrl: string | undefined
-    let panoramaImageUrl: string | undefined
-    const generationDetails: any = {
-      mainImage: "Generated successfully",
-      domeImage: "Not requested",
-      panoramaImage: "Not requested",
-    }
+    // ALWAYS generate dome projection for complete set
+    console.log(`🏛️ Generating ${domeDiameter}m dome projection with tunnel effect...`)
+    let domeImageUrl: string
+    try {
+      const domePrompt = generateDomePrompt(mainPrompt, {
+        domeDiameter,
+        domeResolution,
+        projectionType,
+      })
 
-    // Generate dome projection if requested
-    if (domeProjection) {
+      console.log("Generated dome prompt:", domePrompt.substring(0, 200) + "...")
+      console.log(`Dome prompt length: ${domePrompt.length} characters`)
+      domeImageUrl = await callOpenAI(domePrompt)
+      generationDetails.domeImage = "Generated successfully"
+      console.log(`✅ ${domeDiameter}m dome projection generated successfully`)
+    } catch (error: any) {
+      console.error(`❌ ${domeDiameter}m dome projection generation failed:`, error)
+
+      // Try generating a simpler dome version as fallback
       try {
-        console.log("🏛️ Generating dome projection...")
-        generationDetails.domeImage = "Generating..."
+        console.log("🔄 Attempting simplified dome generation...")
+        const simpleDomePrompt = `Create a stunning ABSTRACT MATHEMATICAL DIGITAL ARTWORK optimized for planetarium dome projection with dramatic fisheye tunnel effect. Features: central focal point, radial mathematical patterns flowing outward, tunnel perspective distortion, seamless circular composition perfect for overhead dome viewing, dramatic depth illusion with mathematical precision. Style: abstract computational art, geometric patterns, algorithmic beauty, mathematical visualization, fisheye projection mapping, tunnel effect optimization.`
 
-        const domePrompt = generateDomePrompt(mainPrompt, {
-          domeDiameter,
-          domeResolution,
-          projectionType,
-        })
-
-        console.log("Generated dome prompt:", domePrompt.substring(0, 200) + "...")
-        console.log(`Dome prompt length: ${domePrompt.length} characters`)
-        domeImageUrl = await callOpenAI(domePrompt)
-        generationDetails.domeImage = "Generated successfully"
-        console.log("✅ Dome projection generated successfully")
-      } catch (error: any) {
-        console.error("❌ Dome projection generation failed:", error)
-        generationDetails.domeImage = `Generation failed: ${error.message}`
+        domeImageUrl = await callOpenAI(simpleDomePrompt)
+        generationDetails.domeImage = "Generated with simplified prompt"
+        console.log("✅ Simplified dome version generated successfully")
+      } catch (fallbackError: any) {
+        console.error("❌ Simplified dome generation also failed:", fallbackError)
+        domeImageUrl = mainImageUrl
+        generationDetails.domeImage = "Using main image as final fallback"
+        console.log("🔄 Using main image as dome fallback")
       }
     }
 
-    // Generate 360° panorama if requested
-    if (panoramic360) {
+    // ALWAYS generate 360° panorama for complete set
+    console.log("🌐 Generating 360° panorama...")
+    let panoramaImageUrl: string
+    try {
+      const panoramaPrompt = generatePanoramaPrompt(mainPrompt, {
+        panoramaResolution,
+        panoramaFormat,
+        stereographicPerspective,
+      })
+
+      console.log("Generated panorama prompt:", panoramaPrompt.substring(0, 200) + "...")
+      console.log(`Panorama prompt length: ${panoramaPrompt.length} characters`)
+      panoramaImageUrl = await callOpenAI(panoramaPrompt)
+      generationDetails.panoramaImage = "Generated successfully"
+      console.log("✅ 360° panorama generated successfully")
+    } catch (error: any) {
+      console.error("❌ 360° panorama generation failed:", error)
+
+      // Try generating a simpler 360° version as fallback
       try {
-        console.log("🌐 Generating 360° panorama...")
-        generationDetails.panoramaImage = "Generating..."
+        console.log("🔄 Attempting simplified 360° generation...")
+        const simple360Prompt = `Create a stunning ABSTRACT MATHEMATICAL DIGITAL ARTWORK optimized for 360° panoramic viewing. Features: seamless wraparound mathematical composition, horizontal flow perfect for VR viewing, continuous mathematical patterns with no visible seams, equirectangular format optimization. Style: abstract computational art, geometric patterns, algorithmic beauty, mathematical visualization, 360° panoramic composition, seamless wraparound design.`
 
-        const panoramaPrompt = generatePanoramaPrompt(mainPrompt, {
-          panoramaResolution,
-          panoramaFormat,
-          stereographicPerspective,
-        })
-
-        console.log("Generated panorama prompt:", panoramaPrompt.substring(0, 200) + "...")
-        console.log(`Panorama prompt length: ${panoramaPrompt.length} characters`)
-        panoramaImageUrl = await callOpenAI(panoramaPrompt)
-        generationDetails.panoramaImage = "Generated successfully"
-        console.log("✅ 360° panorama generated successfully")
-      } catch (error: any) {
-        console.error("❌ 360° panorama generation failed:", error)
-        generationDetails.panoramaImage = `Generation failed: ${error.message}`
+        panoramaImageUrl = await callOpenAI(simple360Prompt)
+        generationDetails.panoramaImage = "Generated with simplified prompt"
+        console.log("✅ Simplified 360° version generated successfully")
+      } catch (fallbackError: any) {
+        console.error("❌ Simplified 360° generation also failed:", fallbackError)
+        panoramaImageUrl = mainImageUrl
+        generationDetails.panoramaImage = "Using main image as final fallback"
+        console.log("🔄 Using main image as 360° fallback")
       }
     }
 
-    // Prepare response
+    // Prepare response with ALL THREE versions
     const response = {
       success: true,
       image: mainImageUrl,
@@ -1354,11 +733,11 @@ export async function POST(request: NextRequest) {
         numSamples,
         noiseScale: noise,
         timeStep,
-        domeProjection,
+        domeProjection: true, // Always true since we generate all versions
         domeDiameter,
         domeResolution,
         projectionType,
-        panoramic360,
+        panoramic360: true, // Always true since we generate all versions
         panoramaResolution,
         panoramaFormat,
         stereographicPerspective,
@@ -1372,6 +751,7 @@ export async function POST(request: NextRequest) {
     console.log("- Panorama image:", !!response.panoramaImage)
     console.log("- Generation details:", response.generationDetails)
     console.log(`- Main prompt length: ${response.promptLength} characters`)
+    console.log(`- Dome diameter: ${domeDiameter}m`)
 
     return NextResponse.json(response)
   } catch (error: any) {
