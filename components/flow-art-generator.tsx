@@ -7,8 +7,12 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
+import { Slider } from "@/components/ui/slider"
 import { toast } from "sonner"
 import {
   Sparkles,
@@ -21,8 +25,10 @@ import {
   CheckCircle,
   Loader2,
   Users,
+  Dice1,
   Trash2,
   Play,
+  Wand2,
 } from "lucide-react"
 import { generateFlowField, generateDomeProjection as generateDomeSVG, type GenerationParams } from "@/lib/flow-model"
 
@@ -69,8 +75,8 @@ export function FlowArtGenerator() {
   const [error, setError] = useState<string | null>(null)
   const [downloadStatus, setDownloadStatus] = useState<string | null>(null)
 
-  // Enhanced generation parameters with Thailand as default
-  const [dataset, setDataset] = useState("thailand")
+  // Enhanced generation parameters with Nuanu as default
+  const [dataset, setDataset] = useState("nuanu")
   const [scenario, setScenario] = useState("landscape")
   const [colorScheme, setColorScheme] = useState("sunset")
   const [seed, setSeed] = useState(1234)
@@ -79,13 +85,13 @@ export function FlowArtGenerator() {
   const [timeStep, setTimeStep] = useState(0.01)
 
   // Dome projection settings - fixed to 10 meters
-  const [domeEnabled, setDomeEnabled] = useState(true)
+  const [domeEnabled, setDomeEnabled] = useState(false)
   const [domeDiameter] = useState(10) // Fixed to 10 meters
   const [domeResolution, setDomeResolution] = useState("4K")
   const [domeProjectionType, setDomeProjectionType] = useState("fisheye")
 
   // 360° panorama settings
-  const [panorama360Enabled, setPanorama360Enabled] = useState(true)
+  const [panorama360Enabled, setPanorama360Enabled] = useState(false)
   const [panoramaResolution, setPanoramaResolution] = useState("8K")
   const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
   const [stereographicPerspective, setStereographicPerspective] = useState("little-planet")
@@ -98,10 +104,7 @@ export function FlowArtGenerator() {
   // AI Art prompt enhancement and final prompt editing
   const [customPrompt, setCustomPrompt] = useState("")
   const [enhancedPrompt, setEnhancedPrompt] = useState("")
-  const [finalPrompt, setFinalPrompt] = useState("")
   const [useCustomPrompt, setUseCustomPrompt] = useState(false)
-  const [showFinalPrompt, setShowFinalPrompt] = useState(false)
-  const [finalPromptEdited, setFinalPromptEdited] = useState(false)
 
   // Auto-generation state
   const [isAutoGenerating, setIsAutoGenerating] = useState(false)
@@ -137,181 +140,148 @@ export function FlowArtGenerator() {
   const endIndex = startIndex + itemsPerPage
   const currentItems = gallery.slice(startIndex, endIndex)
 
-  // Generate final prompt for preview
-  const generateFinalPrompt = useCallback(() => {
-    if (mode === "svg") return ""
-
-    let prompt = ""
-
-    if (useCustomPrompt && (enhancedPrompt || customPrompt)) {
-      prompt = enhancedPrompt || customPrompt
-      prompt += "\n\n"
+  const getDatasetDisplayName = (dataset: string): string => {
+    const names: Record<string, string> = {
+      nuanu: "Nuanu Creative City",
+      bali: "Balinese Cultural Heritage",
+      thailand: "Thai Cultural Heritage",
+      spirals: "Mathematical Spirals",
+      fractal: "Fractal Patterns",
+      mandelbrot: "Mandelbrot Set",
+      julia: "Julia Set",
+      lorenz: "Lorenz Attractor",
+      hyperbolic: "Hyperbolic Geometry",
+      gaussian: "Gaussian Fields",
+      cellular: "Cellular Automata",
+      voronoi: "Voronoi Diagrams",
+      perlin: "Perlin Noise",
+      diffusion: "Reaction-Diffusion",
+      wave: "Wave Interference",
+      moons: "Lunar Orbital Mechanics",
+      tribes: "Tribal Network Topology",
+      heads: "Mosaic Head Compositions",
+      natives: "Ancient Native Tribes",
+      statues: "Sacred & Sculptural Statues",
     }
+    return names[dataset] || dataset
+  }
 
-    // Build the same prompt structure as the API
-    prompt += `Create an intricate generative art masterpiece inspired by '${dataset}' dataset, employing a '${colorScheme}' color scheme. The artwork should serve as an ideal base for professional 8K upscaling, focusing on clean, sharp edges and well-defined structures.\n\n`
-
-    // Mathematical Precision
-    prompt += `### Mathematical Precision:\n`
-    switch (dataset) {
-      case "thailand":
-        prompt += `Arrange exactly ${numSamples.toLocaleString()} Thai cultural heritage elements organically across the canvas, creating an authentic representation of Thailand's rich cultural tapestry. Include golden Buddhist temples (Wat) with intricate spires and traditional Thai architecture featuring multi-tiered roofs, ornate decorations, and golden accents. Show traditional Thai classical dancers in elaborate silk costumes with intricate headdresses, graceful hand gestures (mudras), and flowing movements. Depict bustling floating markets with colorful longtail boats, vendors selling tropical fruits, flowers, and traditional crafts along scenic waterways. Include iconic tuk-tuks navigating busy streets filled with street food vendors, traditional shophouses, and vibrant urban life. Feature Buddhist monks in saffron robes walking in procession, meditating in temple courtyards, and participating in daily alms rounds. Show magnificent royal palaces with traditional Thai architecture, golden stupas, guardian statues, and ornate gardens. Include Thai festivals like Songkran (water festival) with people celebrating, Loy Krathong with floating lanterns and lotus offerings, and traditional ceremonies with dancers, musicians, and cultural performances. Add traditional Thai houses on stilts, spirit houses (san phra phum), lotus ponds, tropical vegetation, and authentic Thai cultural symbols throughout the composition. Each element should be mathematically distributed using cultural clustering algorithms that reflect authentic Thai settlement patterns and cultural organization. `
-        break
-      case "spirals":
-        prompt += `Arrange exactly ${numSamples.toLocaleString()} spiral elements organically across the canvas, ensuring each one is unique yet harmoniously integrated with the others. The spirals should vary in size and density, creating dynamic flow throughout the piece with Fibonacci proportions, golden ratio curves, nautilus shell formations, and galaxy arm patterns. Include logarithmic spirals r=ae^(bθ) and Archimedean spirals with mathematical precision. `
-        break
-      case "fractal":
-        prompt += `Generate exactly ${numSamples.toLocaleString()} fractal branching elements with self-similar structures at multiple scales. Each fractal should follow L-system rules F→F[+F]F[-F]F with recursive branching, creating tree-like formations, lightning patterns, fern fronds, and organic growth structures with mathematical precision and infinite detail. `
-        break
-      case "mandelbrot":
-        prompt += `Create exactly ${numSamples.toLocaleString()} Mandelbrot set iteration points with complex plane mathematics z_{n+1} = z_n² + c. Include cardioid main bulbs, circular bulbs, infinite zoom detail with smooth escape-time coloring, fractal boundary precision, and psychedelic swirling patterns. `
-        break
-      case "julia":
-        prompt += `Generate exactly ${numSamples.toLocaleString()} Julia set elements with flowing fractal boundaries, connected and disconnected sets, parameter space exploration, and elegant mathematical beauty with dreamlike surreal patterns. `
-        break
-      case "lorenz":
-        prompt += `Create exactly ${numSamples.toLocaleString()} Lorenz attractor trajectory points forming butterfly-wing patterns with chaotic beauty, strange attractor dynamics, three-dimensional flow, and graceful curves suggesting movement and energy. `
-        break
-      case "tribes":
-        prompt += `Arrange exactly ${numSamples.toLocaleString()} tribal settlement elements including people in traditional clothing, authentic dwellings, ceremonial circles, and cultural activities. Each figure should be unique with tribal details including chiefs, shamans, dancers, craftspeople, children playing, and daily life scenes with rich cultural storytelling. `
-        break
-      case "heads":
-        prompt += `Compose exactly ${numSamples.toLocaleString()} facial feature elements creating portrait mosaics with golden ratio proportions φ=1.618. Each face should have unique expressions, geometric tessellation, anatomical precision, artistic interpretation, and mosaic composition with human beauty. `
-        break
-      case "natives":
-        prompt += `Design exactly ${numSamples.toLocaleString()} native settlement elements with longhouses, tipis, medicine wheels, and ceremonial spaces. Include people in traditional dress, seasonal activities, authentic indigenous architecture, and cultural ceremonies. `
-        break
-      case "voronoi":
-        prompt += `Arrange exactly ${numSamples.toLocaleString()} Voronoi cell seed points creating natural tessellation patterns like cracked earth, giraffe spots, honeycomb structures with organic boundaries and natural cell-like formations. `
-        break
-      case "cellular":
-        prompt += `Generate exactly ${numSamples.toLocaleString()} cellular automata elements showing Conway's Game of Life patterns, gliders, oscillators, emergent complexity from simple rules, and biological structure formations. `
-        break
-      case "gaussian":
-        prompt += `Create exactly ${numSamples.toLocaleString()} Gaussian distribution points forming bell-curve landscapes, statistical visualizations, probability density patterns, and smooth flowing terrain. `
-        break
-      case "diffusion":
-        prompt += `Design exactly ${numSamples.toLocaleString()} reaction-diffusion pattern elements creating Turing patterns like zebra stripes, leopard spots, tiger markings, and natural biological formations with organic flow. `
-        break
-      case "wave":
-        prompt += `Generate exactly ${numSamples.toLocaleString()} wave interference elements showing constructive and destructive patterns, standing waves, fluid dynamics, ocean ripples, and aquatic beauty. `
-        break
-      case "hyperbolic":
-        prompt += `Create exactly ${numSamples.toLocaleString()} hyperbolic geometry elements with Escher-inspired tessellations, mind-bending patterns, infinite regression illusions, and non-Euclidean beauty. `
-        break
-      default:
-        prompt += `Arrange exactly ${numSamples.toLocaleString()} ${dataset} elements with mathematical precision and organic distribution across the canvas, ensuring each element is unique yet harmoniously integrated. `
+  const getDatasetScenarios = (dataset: string): Array<{ value: string; label: string; description: string }> => {
+    const scenarios: Record<string, Array<{ value: string; label: string; description: string }>> = {
+      nuanu: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "thk-tower", label: "THK Tower", description: "Iconic architectural centerpiece" },
+        { value: "popper-sentinels", label: "Popper Sentinels", description: "Guardian statue installations" },
+        { value: "luna-beach", label: "Luna Beach Club", description: "Coastal creative space" },
+        { value: "labyrinth-dome", label: "Labyrinth Dome", description: "Immersive dome experience" },
+        { value: "creative-studios", label: "Creative Studios", description: "Artist workshops and spaces" },
+        { value: "community-plaza", label: "Community Plaza", description: "Central gathering space" },
+        { value: "digital-gardens", label: "Digital Gardens", description: "Tech-nature integration" },
+      ],
+      bali: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "temples", label: "Hindu Temples", description: "Sacred Pura architecture" },
+        { value: "rice-terraces", label: "Rice Terraces", description: "Jatiluwih terraced landscapes" },
+        { value: "ceremonies", label: "Hindu Ceremonies", description: "Galungan and Kuningan festivals" },
+        { value: "dancers", label: "Traditional Dancers", description: "Legong and Kecak performances" },
+        { value: "beaches", label: "Tropical Beaches", description: "Volcanic sand and coral reefs" },
+        { value: "artisans", label: "Balinese Artisans", description: "Wood carving and silver work" },
+        { value: "volcanoes", label: "Sacred Volcanoes", description: "Mount Batur and Agung" },
+      ],
+      thailand: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "landscape", label: "Natural Landscape", description: "Temples in tropical settings" },
+        { value: "architectural", label: "Temple Architecture", description: "Traditional Thai buildings" },
+        { value: "ceremonial", label: "Cultural Ceremonies", description: "Festivals and traditions" },
+        { value: "urban", label: "Modern Thailand", description: "Bangkok street life" },
+        { value: "botanical", label: "Thai Gardens", description: "Lotus ponds and tropical flora" },
+        { value: "floating", label: "Floating Markets", description: "Traditional water markets" },
+        { value: "monks", label: "Buddhist Monks", description: "Saffron robes and meditation" },
+      ],
+      spirals: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "fibonacci", label: "Fibonacci Spirals", description: "Golden ratio mathematics" },
+        { value: "galaxy", label: "Galactic Arms", description: "Cosmic spiral formations" },
+        { value: "nautilus", label: "Nautilus Shells", description: "Natural spiral patterns" },
+        { value: "vortex", label: "Energy Vortex", description: "Dynamic spiral flows" },
+        { value: "logarithmic", label: "Logarithmic", description: "Mathematical precision" },
+        { value: "hurricane", label: "Hurricane Patterns", description: "Weather spiral systems" },
+        { value: "dna", label: "DNA Helixes", description: "Biological double spirals" },
+      ],
+      fractal: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "tree", label: "Tree Fractals", description: "Branching organic structures" },
+        { value: "lightning", label: "Lightning Patterns", description: "Electric fractal forms" },
+        { value: "fern", label: "Fern Fronds", description: "Delicate recursive patterns" },
+        { value: "dragon", label: "Dragon Curves", description: "Complex mathematical curves" },
+        { value: "julia", label: "Julia Sets", description: "Complex plane fractals" },
+        { value: "snowflake", label: "Koch Snowflakes", description: "Geometric fractal boundaries" },
+        { value: "coral", label: "Coral Reefs", description: "Natural fractal growth" },
+      ],
+      mandelbrot: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "classic", label: "Classic Set", description: "Traditional Mandelbrot" },
+        { value: "zoom", label: "Infinite Zoom", description: "Deep fractal exploration" },
+        { value: "bulbs", label: "Cardioid Bulbs", description: "Main set structures" },
+        { value: "seahorse", label: "Seahorse Valley", description: "Detailed fractal regions" },
+        { value: "psychedelic", label: "Psychedelic", description: "Vibrant color escapes" },
+        { value: "tendrils", label: "Fractal Tendrils", description: "Delicate spiral extensions" },
+        { value: "burning", label: "Burning Ship", description: "Alternative fractal formula" },
+      ],
+      tribes: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "village", label: "Tribal Villages", description: "Settlement patterns" },
+        { value: "ceremony", label: "Sacred Ceremonies", description: "Ritual gatherings" },
+        { value: "hunting", label: "Hunting Scenes", description: "Traditional activities" },
+        { value: "crafts", label: "Traditional Crafts", description: "Artisan work" },
+        { value: "storytelling", label: "Storytelling", description: "Cultural narratives" },
+        { value: "migration", label: "Seasonal Migration", description: "Nomadic movements" },
+        { value: "warfare", label: "Tribal Warfare", description: "Historical conflicts" },
+      ],
+      heads: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "portraits", label: "Portrait Gallery", description: "Individual faces" },
+        { value: "mosaic", label: "Face Mosaics", description: "Tessellated compositions" },
+        { value: "expressions", label: "Expressions", description: "Emotional diversity" },
+        { value: "profiles", label: "Profile Views", description: "Side perspectives" },
+        { value: "abstract", label: "Abstract Faces", description: "Geometric interpretation" },
+        { value: "elderly", label: "Wisdom Lines", description: "Aged character studies" },
+        { value: "children", label: "Youthful Joy", description: "Innocent expressions" },
+      ],
+      natives: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "longhouse", label: "Longhouses", description: "Traditional architecture" },
+        { value: "tipis", label: "Tipi Circles", description: "Sacred arrangements" },
+        { value: "totems", label: "Totem Poles", description: "Spiritual symbols" },
+        { value: "powwow", label: "Powwow Gathering", description: "Cultural celebrations" },
+        { value: "seasons", label: "Seasonal Life", description: "Natural cycles" },
+        { value: "canoes", label: "River Canoes", description: "Water transportation" },
+        { value: "dreamcatcher", label: "Dreamcatchers", description: "Protective talismans" },
+      ],
+      statues: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "buddha", label: "Buddha Statues", description: "Serene meditation poses" },
+        { value: "cats", label: "Cat Sculptures", description: "Feline grace and mystery" },
+        { value: "greek", label: "Greek Classics", description: "Ancient marble perfection" },
+        { value: "modern", label: "Modern Art", description: "Contemporary sculptural forms" },
+        { value: "angels", label: "Angelic Figures", description: "Divine winged guardians" },
+        { value: "warriors", label: "Warrior Statues", description: "Heroic battle poses" },
+        { value: "animals", label: "Animal Totems", description: "Wildlife in stone and bronze" },
+      ],
     }
-
-    // Color Palette
-    prompt += `\n### Color Palette:\n`
-    if (dataset === "thailand") {
-      switch (colorScheme) {
-        case "sunset":
-          prompt += `Employ authentic Thai sunset colors with golden temple hues (#FFD700), saffron monk robes (#FF8C00), royal purple (#800080), traditional red (#DC143C), and warm oranges (#FF6347). Include the golden glow of temple spires, the warm light of floating lanterns, and the rich colors of traditional Thai silk with natural harmony and cultural authenticity. `
-          break
-        case "cosmic":
-          prompt += `Use Thai royal colors with deep golden yellows (#FFD700), royal blues (#0047AB), traditional reds (#DC143C), and pure whites (#FFFFFF). Include the cosmic beauty of Thai temple architecture reaching toward the heavens with stellar lighting effects and spiritual atmosphere. `
-          break
-        case "plasma":
-          prompt += `Utilize vibrant Thai festival colors with electric blues of traditional ceramics (#0066CC), hot magentas of silk fabrics (#FF1493), golden temple accents (#FFD700), and bright festival oranges (#FF8C00). Create the energy and vibrancy of Thai celebrations with luminous effects and cultural depth. `
-          break
-        default:
-          prompt += `Utilize authentic Thai ${colorScheme} palette with rich, culturally significant colors including temple gold, saffron orange, royal purple, traditional red, and ceremonial white, creating emotional impact and cultural authenticity with professional color harmony. `
-      }
-    } else {
-      switch (colorScheme) {
-        case "plasma":
-          prompt += `Utilize a vibrant and high-contrast plasma color scheme with deep purples (#0d0887), electric blues (#46039f), hot magentas (#7201a8), coral oranges (#bd3786), bright oranges (#ed7953), and golden yellows (#fdca26). Include gradients with smooth transitions and luminous effects, interspersed with dark shadows to create depth and dimension. `
-          break
-        case "sunset":
-          prompt += `Employ warm sunset colors with fiery oranges (#ff6b35), golden yellows (#f7931e), soft pinks (#ffd23f), deep purples (#5d2e5d), and cool blues (#1fb3d3). Create romantic golden hour lighting with natural color harmony and atmospheric warmth. `
-          break
-        case "cosmic":
-          prompt += `Use deep space colors with rich browns (#2c1810), rusty oranges (#8b4513), stellar golds (#ffa500), bright yellows (#ffff00), and pure whites (#ffffff). Include nebula-like beauty with cosmic atmosphere and stellar lighting effects. `
-          break
-        default:
-          prompt += `Utilize a ${colorScheme} color palette with rich, vibrant colors creating emotional impact and visual harmony with professional color theory and smooth gradients. `
-      }
-    }
-
-    // Scenario Integration - RESTORED "pure" option
-    switch (scenario) {
-      case "pure":
-        prompt += `Present the mathematical patterns in their purest form with minimal artistic interpretation. Focus on the raw mathematical beauty with clean geometric forms, precise mathematical relationships, and abstract mathematical visualization. Display mathematical formulas, equations, and numerical relationships as visual elements. Include mathematical notation like ∑, ∫, ∂, π, φ, e, and complex mathematical expressions rendered as artistic typography. Show mathematical graphs, coordinate systems, function plots, and geometric proofs as decorative elements. `
-        break
-      case "landscape":
-        if (dataset === "thailand") {
-          prompt += `Set in breathtaking Thai natural landscape with golden temples nestled among lush tropical hills, winding rivers with floating markets, ancient forests with hidden shrines, and scenic rice terraces. Include traditional Thai villages with wooden houses on stilts, coconut palms, lotus ponds, and the serene beauty of Thai countryside. Show people living in harmony with nature, monks walking forest paths, fishermen on traditional boats, and the peaceful integration of Thai culture with the natural environment. Add misty mountains, tropical waterfalls, and the golden light of Thai sunsets illuminating the cultural landscape. `
-        } else if (dataset === "tribes" || dataset === "natives") {
-          prompt += `Set in breathtaking natural landscape with tribal villages nestled in rolling valleys, flowing rivers, and ancient forests. Include people living in harmony with nature, smoke rising from cooking fires, daily activities, cultural ceremonies, and environmental storytelling. `
-        } else {
-          prompt += `Set in majestic natural landscape incorporating ${dataset} patterns in terrain formations, mountain ranges, river systems, atmospheric phenomena, and geological structures with cinematic lighting. `
-        }
-        break
-      case "architectural":
-        if (dataset === "thailand") {
-          prompt += `Set in magnificent Thai architectural environment showcasing traditional temple architecture with multi-tiered roofs, golden spires, intricate wood carvings, and ornate decorations. Include royal palaces with traditional Thai design elements, modern Bangkok skyline with traditional influences, ancient ruins of Ayutthaya, and the harmonious blend of traditional and contemporary Thai architecture. Show detailed craftsmanship, geometric patterns, and the mathematical precision of Thai architectural design. `
-        } else {
-          prompt += `Set in futuristic architectural environment with ${dataset} patterns integrated into building design, structural engineering, urban planning, and modern materials with geometric precision. `
-        }
-        break
-      case "crystalline":
-        prompt += `Set in spectacular crystal formations with ${dataset} patterns in mineral structures, prismatic light effects, rainbow refractions, gem-like beauty, and optical phenomena. `
-        break
-      case "botanical":
-        if (dataset === "thailand") {
-          prompt += `Set in lush Thai botanical environment with tropical flowers like orchids, lotus blossoms, and frangipani, traditional herb gardens, sacred Bodhi trees, bamboo groves, and tropical fruit trees. Include traditional Thai garden design with geometric patterns, water features, and the integration of cultural elements with natural beauty. Show the rich biodiversity of Thailand with vibrant vegetation and traditional landscape architecture. `
-        } else {
-          prompt += `Set in lush botanical environment with ${dataset} patterns in plant growth, flower arrangements, leaf structures, natural organic beauty, and vibrant vegetation. `
-        }
-        break
-      case "urban":
-        if (dataset === "thailand") {
-          prompt += `Set in vibrant Thai urban environment with bustling Bangkok streets, traditional markets, modern shopping centers, street food vendors, tuk-tuks navigating traffic, traditional shophouses mixed with modern buildings, and the dynamic energy of Thai city life. Include neon signs with Thai script, traditional architecture integrated into urban planning, and the unique character of Thai metropolitan areas. `
-        } else {
-          prompt += `Set in dynamic urban environment showcasing ${dataset} patterns with metropolitan energy and architectural diversity. `
-        }
-        break
-      default:
-        if (dataset === "thailand") {
-          prompt += `Set in authentic Thai ${scenario} environment showcasing traditional cultural elements with thematic consistency and cultural accuracy, highlighting the beauty and richness of Thai heritage. `
-        } else {
-          prompt += `Set in ${scenario} environment showcasing ${dataset} patterns with thematic consistency and visual appeal. `
-        }
-    }
-
-    // Additional sections
-    prompt += `\n### Textures and Patterns:\nIntroduce complex textures within the ${dataset} elements, such as fine lines, cross-hatching, stippling, or organic dotting patterns, which will reveal new details upon close inspection. `
-
-    if (dataset === "thailand") {
-      prompt += `Include traditional Thai patterns like flame motifs, lotus designs, geometric temple decorations, silk textile patterns, and intricate wood carving details. `
-    }
-
-    prompt += `Ensure that these intricate patterns are meticulously crafted to reward viewers and enhance during upscaling. `
-
-    prompt += `\n### Noise Texture:\nApply a subtle noise texture of ${noiseScale} to the entire image, giving it a tactile, almost tactile surface that adds sophistication and visual interest without overwhelming the primary elements. `
-
-    prompt += `\n### Professional Composition:\nDesign the composition with a balance that suits large-format printing. The ${dataset} elements should guide the viewer's eye seamlessly across the canvas, creating a sense of movement and energy with rule of thirds, leading lines, and focal points. `
-
-    if (dataset === "thailand") {
-      prompt += `Use traditional Thai compositional principles with central focal points (like temple spires), balanced symmetry, and harmonious integration of cultural elements. `
-    }
-
-    prompt += `\n### Gallery-Quality:\nEnsure that the overall artwork exudes a refined, gallery-quality aesthetic suitable for exhibition, with each element contributing to a cohesive and engaging visual narrative. Focus on maintaining sharp, clean edges around each ${dataset} element and between color transitions to ensure clarity and precision are preserved during upscaling. Design with rich detail that enhances beautifully when processed through AI upscaling algorithms, emphasizing the depth and complexity of the piece.\n\n`
-
-    prompt += `By adhering to these guidelines, the resulting image will be an exquisite generative art masterpiece, optimized for professional 8K upscaling and perfect for large-format, gallery-quality display. Ultra-high resolution with 16-bit color depth, advanced rendering, photorealistic detail, cinematic composition, and museum-worthy artistic excellence.`
-
-    return prompt
-  }, [mode, useCustomPrompt, enhancedPrompt, customPrompt, dataset, colorScheme, numSamples, scenario, noiseScale])
-
-  // Update final prompt when parameters change
-  useEffect(() => {
-    if (mode === "ai" && !finalPromptEdited) {
-      const newFinalPrompt = generateFinalPrompt()
-      setFinalPrompt(newFinalPrompt)
-    }
-  }, [generateFinalPrompt, mode, finalPromptEdited])
+    return (
+      scenarios[dataset] || [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "landscape", label: "Landscape", description: "Natural environment" },
+        { value: "abstract", label: "Abstract", description: "Pure mathematical form" },
+        { value: "geometric", label: "Geometric", description: "Structured patterns" },
+        { value: "organic", label: "Organic", description: "Natural forms" },
+        { value: "crystalline", label: "Crystalline", description: "Crystal structures" },
+        { value: "fluid", label: "Fluid Dynamics", description: "Flow patterns" },
+        { value: "quantum", label: "Quantum Fields", description: "Subatomic visualization" },
+      ]
+    )
+  }
 
   const generateArt = useCallback(async () => {
     console.log("Generate button clicked! Mode:", mode)
@@ -406,21 +376,16 @@ export function FlowArtGenerator() {
         setGeneratedArt(newArt)
         setGallery((prev) => [newArt, ...prev])
 
-        // Clear custom prompt after successful generation
-        if (useCustomPrompt) {
-          setCustomPrompt("")
-          setEnhancedPrompt("")
-          setFinalPrompt("")
-          setFinalPromptEdited(false)
-        }
-
         toast.success(
           `Mathematical SVG Generated! 🎨 ${dataset} + ${scenario} visualization created with ${numSamples} data points.`,
         )
       } else {
-        // Generate AI art with final prompt (user-editable)
+        // Generate AI art
         setProgress(20)
         console.log("Calling AI art API...")
+
+        // Prepare the custom prompt to send
+        const promptToSend = useCustomPrompt && customPrompt.trim() ? customPrompt.trim() : undefined
 
         const requestBody = {
           dataset,
@@ -430,7 +395,7 @@ export function FlowArtGenerator() {
           numSamples,
           noise: noiseScale,
           timeStep,
-          customPrompt: finalPromptEdited ? finalPrompt : useCustomPrompt ? enhancedPrompt || customPrompt : undefined,
+          customPrompt: promptToSend, // Send the actual custom prompt
           domeProjection: domeEnabled,
           domeDiameter: domeEnabled ? domeDiameter : undefined,
           domeResolution: domeEnabled ? domeResolution : undefined,
@@ -443,6 +408,7 @@ export function FlowArtGenerator() {
         }
 
         console.log("Sending AI request:", requestBody)
+        console.log("Custom prompt being sent:", promptToSend ? promptToSend.substring(0, 100) + "..." : "None")
 
         const response = await fetch("/api/generate-art", {
           method: "POST",
@@ -460,6 +426,9 @@ export function FlowArtGenerator() {
           try {
             const errorData = JSON.parse(errorText)
             errorMessage = errorData.error || errorMessage
+            if (errorData.details) {
+              console.error("Error details:", errorData.details)
+            }
           } catch {
             // If response is not JSON, use the text directly (truncated)
             errorMessage = errorText.length > 200 ? errorText.substring(0, 200) + "..." : errorText
@@ -487,9 +456,9 @@ export function FlowArtGenerator() {
           panorama360Url: data.panoramaImage || data.image,
           params,
           mode: "ai" as const,
-          customPrompt: useCustomPrompt ? enhancedPrompt || customPrompt : undefined,
+          customPrompt: promptToSend, // Store the custom prompt that was used
           originalPrompt: data.originalPrompt,
-          finalPrompt: finalPromptEdited ? finalPrompt : data.originalPrompt,
+          finalPrompt: data.originalPrompt,
           promptLength: data.promptLength,
           estimatedFileSize: data.estimatedFileSize,
           provider: data.provider,
@@ -517,16 +486,19 @@ export function FlowArtGenerator() {
         setGallery((prev) => [newArt, ...prev])
 
         // Clear custom prompt after successful generation
-        if (useCustomPrompt) {
+        if (useCustomPrompt && customPrompt.trim()) {
           setCustomPrompt("")
           setEnhancedPrompt("")
-          setFinalPrompt("")
-          setFinalPromptEdited(false)
+          toast.success(
+            `Custom ${getDatasetDisplayName(dataset)} Art Generated! ✨ Your custom prompt was integrated with ${dataset} + ${scenario} using OpenAI DALL-E 3.`,
+          )
+        } else {
+          toast.success(
+            `${getDatasetDisplayName(dataset)} Art Generated! ✨ ${dataset} + ${scenario} created with OpenAI DALL-E 3.`,
+          )
         }
 
         setProgress(100)
-
-        toast.success(`Thai Cultural Art Generated! 🇹🇭✨ ${dataset} + ${scenario} created with OpenAI DALL-E 3.`)
       }
     } catch (error: any) {
       console.error("Generation error:", error)
@@ -547,9 +519,6 @@ export function FlowArtGenerator() {
     mode,
     useCustomPrompt,
     customPrompt,
-    enhancedPrompt,
-    finalPrompt,
-    finalPromptEdited,
     domeEnabled,
     domeDiameter,
     domeResolution,
@@ -560,31 +529,26 @@ export function FlowArtGenerator() {
     stereographicPerspective,
   ])
 
-  // Auto-generate Thai cultural artwork with different scenarios
-  const generateThaiShowcase = useCallback(async () => {
+  // Auto-generate showcase with all scenarios
+  const generateShowcase = useCallback(async () => {
     setIsAutoGenerating(true)
     setAutoGenProgress(0)
 
-    const thaiScenarios = [
-      { scenario: "landscape", colorScheme: "sunset", description: "Thai temples in natural landscape" },
-      { scenario: "architectural", colorScheme: "cosmic", description: "Traditional Thai architecture" },
-      { scenario: "botanical", colorScheme: "plasma", description: "Thai botanical gardens" },
-      { scenario: "urban", colorScheme: "neon", description: "Modern Thai city life" },
-      { scenario: "pure", colorScheme: "thermal", description: "Pure Thai cultural patterns" },
-    ]
+    const allScenarios = getDatasetScenarios(dataset)
+    const showcaseScenarios = allScenarios // Use all scenarios
 
     try {
-      for (let i = 0; i < thaiScenarios.length; i++) {
-        const { scenario: newScenario, colorScheme: newColorScheme, description } = thaiScenarios[i]
+      for (let i = 0; i < showcaseScenarios.length; i++) {
+        const { scenario: newScenario, colorScheme: newColorScheme, description } = showcaseScenarios[i]
 
         // Update settings
         setScenario(newScenario)
         setColorScheme(newColorScheme)
         setSeed(Math.floor(Math.random() * 10000))
 
-        setAutoGenProgress(((i + 1) / thaiScenarios.length) * 100)
+        setAutoGenProgress(((i + 1) / showcaseScenarios.length) * 100)
 
-        toast.success(`🇹🇭 Generating: ${description}`)
+        toast.success(`🎨 Generating ${i + 1}/${showcaseScenarios.length}: ${description}`)
 
         // Wait for state to update
         await new Promise((resolve) => setTimeout(resolve, 500))
@@ -593,19 +557,84 @@ export function FlowArtGenerator() {
         await generateArt()
 
         // Wait between generations
-        if (i < thaiScenarios.length - 1) {
-          await new Promise((resolve) => setTimeout(resolve, 2000))
+        if (i < showcaseScenarios.length - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 3000))
         }
       }
 
-      toast.success("🎉 Thai Cultural Showcase Complete! Generated 5 unique artworks.")
+      toast.success(
+        `🎉 ${getDatasetDisplayName(dataset)} Showcase Complete! Generated ${showcaseScenarios.length} unique artworks.`,
+      )
     } catch (error) {
-      toast.error("Thai showcase generation failed. Please try again.")
+      toast.error("Showcase generation failed. Please try again.")
     } finally {
       setIsAutoGenerating(false)
       setAutoGenProgress(0)
     }
-  }, [generateArt])
+  }, [generateArt, dataset])
+
+  const enhancePrompt = useCallback(async () => {
+    if (!customPrompt.trim()) {
+      toast.error("Please enter a custom prompt first.")
+      return
+    }
+
+    setIsEnhancingPrompt(true)
+    try {
+      const response = await fetch("/api/enhance-prompt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPrompt: customPrompt,
+          dataset,
+          scenario,
+          colorScheme,
+          numSamples,
+          noiseScale,
+          domeProjection: domeEnabled,
+          domeDiameter: domeEnabled ? domeDiameter : undefined,
+          domeResolution: domeEnabled ? domeResolution : undefined,
+          panoramic360: panorama360Enabled,
+          panoramaResolution: panorama360Enabled ? panoramaResolution : undefined,
+          stereographicPerspective:
+            panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Prompt enhancement failed: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      if (data.success) {
+        setEnhancedPrompt(data.enhancedPrompt)
+        setCustomPrompt(data.enhancedPrompt) // Update the custom prompt with enhanced version
+        toast.success("Prompt Enhanced! ✨ Your prompt has been enhanced with mathematical and artistic details.")
+      } else {
+        throw new Error(data.error || "Prompt enhancement failed")
+      }
+    } catch (error: any) {
+      console.error("Prompt enhancement error:", error)
+      toast.error(error.message || "Failed to enhance prompt. Please try again.")
+    } finally {
+      setIsEnhancingPrompt(false)
+    }
+  }, [
+    customPrompt,
+    dataset,
+    scenario,
+    colorScheme,
+    numSamples,
+    noiseScale,
+    domeEnabled,
+    domeDiameter,
+    domeResolution,
+    panorama360Enabled,
+    panoramaResolution,
+    panoramaFormat,
+    stereographicPerspective,
+  ])
 
   const downloadImage = useCallback(
     async (format: "regular" | "dome" | "panorama" = "regular") => {
@@ -678,70 +707,6 @@ export function FlowArtGenerator() {
     [generatedArt],
   )
 
-  const enhancePrompt = useCallback(async () => {
-    if (!customPrompt.trim()) {
-      toast.error("Please enter a custom prompt first.")
-      return
-    }
-
-    setIsEnhancingPrompt(true)
-    try {
-      const response = await fetch("/api/enhance-prompt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          currentPrompt: customPrompt,
-          dataset,
-          scenario,
-          colorScheme,
-          numSamples,
-          noiseScale,
-          domeProjection: domeEnabled,
-          domeDiameter: domeEnabled ? domeDiameter : undefined,
-          domeResolution: domeEnabled ? domeResolution : undefined,
-          panoramic360: panorama360Enabled,
-          panoramaResolution: panorama360Enabled ? panoramaResolution : undefined,
-          stereographicPerspective:
-            panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`Prompt enhancement failed: ${response.status}`)
-      }
-
-      const data = await response.json()
-
-      if (data.success) {
-        setEnhancedPrompt(data.enhancedPrompt)
-        setFinalPrompt(data.enhancedPrompt)
-        setFinalPromptEdited(false)
-        toast.success("Prompt Enhanced! ✨ Your prompt has been enhanced with mathematical and artistic details.")
-      } else {
-        throw new Error(data.error || "Prompt enhancement failed")
-      }
-    } catch (error: any) {
-      console.error("Prompt enhancement error:", error)
-      toast.error(error.message || "Failed to enhance prompt. Please try again.")
-    } finally {
-      setIsEnhancingPrompt(false)
-    }
-  }, [
-    customPrompt,
-    dataset,
-    scenario,
-    colorScheme,
-    numSamples,
-    noiseScale,
-    domeEnabled,
-    domeDiameter,
-    domeResolution,
-    panorama360Enabled,
-    panoramaResolution,
-    panoramaFormat,
-    stereographicPerspective,
-  ])
-
   const clearGallery = useCallback(() => {
     setGallery([])
     localStorage.removeItem("flowsketch-gallery")
@@ -755,7 +720,7 @@ export function FlowArtGenerator() {
   }, [])
 
   const resetAllParameters = useCallback(() => {
-    setDataset("thailand")
+    setDataset("nuanu")
     setScenario("landscape")
     setColorScheme("sunset")
     setSeed(1234)
@@ -764,14 +729,11 @@ export function FlowArtGenerator() {
     setTimeStep(0.01)
     setCustomPrompt("")
     setEnhancedPrompt("")
-    setFinalPrompt("")
-    setFinalPromptEdited(false)
     setUseCustomPrompt(false)
-    setShowFinalPrompt(false)
     setDomeEnabled(false)
-    setPanorama360Enabled(true)
+    setPanorama360Enabled(false)
     setError(null)
-    toast.success("Parameters Reset! 🔄 All settings restored to Thai defaults.")
+    toast.success("Parameters Reset! 🔄 All settings restored to defaults.")
   }, [])
 
   return (
@@ -789,51 +751,52 @@ export function FlowArtGenerator() {
           </div>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto">
             Generate stunning mathematical visualizations and AI-powered artwork with advanced projection support for
-            domes and 360° environments. Now featuring Thai Cultural Heritage!
+            domes and 360° environments. Now featuring comprehensive dataset showcases!
           </p>
         </div>
 
-        {/* Thai Showcase Banner */}
-        {dataset === "thailand" && (
-          <Card className="bg-gradient-to-r from-orange-900/50 to-yellow-900/50 border-orange-500/50">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <h3 className="text-xl font-bold text-orange-100 flex items-center gap-2">
-                    🇹🇭 Thai Cultural Heritage Showcase
-                  </h3>
-                  <p className="text-orange-200 text-sm">
-                    Experience authentic Thai culture through AI-generated art featuring temples, dancers, markets, and
-                    festivals
-                  </p>
-                </div>
-                <Button
-                  onClick={generateThaiShowcase}
-                  disabled={isAutoGenerating || isGenerating}
-                  className="bg-orange-600 hover:bg-orange-700 text-white"
-                >
-                  {isAutoGenerating ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Generating Showcase...
-                    </>
-                  ) : (
-                    <>
-                      <Play className="h-4 w-4 mr-2" />
-                      Generate Thai Showcase
-                    </>
-                  )}
-                </Button>
+        {/* Dataset Showcase Banner */}
+        <Card className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-purple-500/50">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold text-purple-100 flex items-center gap-2">
+                  ✨ {getDatasetDisplayName(dataset)} Showcase
+                </h3>
+                <p className="text-purple-200 text-sm">
+                  Experience the full potential of {getDatasetDisplayName(dataset)} with{" "}
+                  {getDatasetScenarios(dataset).length} unique scenarios automatically generated
+                </p>
               </div>
-              {isAutoGenerating && (
-                <div className="mt-4 space-y-2">
-                  <Progress value={autoGenProgress} className="w-full" />
-                  <p className="text-xs text-orange-300 text-center">{autoGenProgress.toFixed(0)}% complete</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
+              <Button
+                onClick={generateShowcase}
+                disabled={isAutoGenerating || isGenerating}
+                className="bg-purple-600 hover:bg-purple-700 text-white"
+              >
+                {isAutoGenerating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Generating Showcase...
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-4 w-4 mr-2" />
+                    Generate {getDatasetScenarios(dataset).length}-Piece Showcase
+                  </>
+                )}
+              </Button>
+            </div>
+            {isAutoGenerating && (
+              <div className="mt-4 space-y-2">
+                <Progress value={autoGenProgress} className="w-full" />
+                <p className="text-xs text-purple-300 text-center">
+                  {autoGenProgress.toFixed(0)}% complete - Creating {getDatasetScenarios(dataset).length} unique
+                  artworks
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         <Tabs defaultValue="generate" className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-slate-800 border-slate-700">
@@ -890,115 +853,334 @@ export function FlowArtGenerator() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-600">
-                          <SelectItem value="spirals">Fibonacci Spirals</SelectItem>
-                          <SelectItem value="fractal">Fractal Trees</SelectItem>
-                          <SelectItem value="mandelbrot">Mandelbrot Set</SelectItem>
-                          <SelectItem value="julia">Julia Set</SelectItem>
-                          <SelectItem value="lorenz">Lorenz Attractor</SelectItem>
-                          <SelectItem value="hyperbolic">Hyperbolic Geometry</SelectItem>
-                          <SelectItem value="gaussian">Gaussian Fields</SelectItem>
-                          <SelectItem value="cellular">Cellular Automata</SelectItem>
-                          <SelectItem value="voronoi">Voronoi Diagrams</SelectItem>
-                          <SelectItem value="perlin">Perlin Noise</SelectItem>
-                          <SelectItem value="diffusion">Reaction-Diffusion</SelectItem>
-                          <SelectItem value="wave">Wave Interference</SelectItem>
-                          <SelectItem value="moons">Lunar Orbital Mechanics</SelectItem>
-                          <SelectItem value="tribes">Tribal Network Topology</SelectItem>
-                          <SelectItem value="heads">Mosaic Head Compositions</SelectItem>
-                          <SelectItem value="natives">Ancient Native Tribes</SelectItem>
-                          <SelectItem value="thailand">Thai Cultural Heritage</SelectItem>
+                          <SelectItem value="nuanu">🏗️ Nuanu Creative City</SelectItem>
+                          <SelectItem value="bali">🏝️ Balinese Cultural Heritage</SelectItem>
+                          <SelectItem value="thailand">🇹🇭 Thai Cultural Heritage</SelectItem>
+                          <SelectItem value="spirals">🌀 Fibonacci Spirals</SelectItem>
+                          <SelectItem value="fractal">🌿 Fractal Trees</SelectItem>
+                          <SelectItem value="mandelbrot">🎭 Mandelbrot Set</SelectItem>
+                          <SelectItem value="julia">🔮 Julia Set</SelectItem>
+                          <SelectItem value="lorenz">🌪️ Lorenz Attractor</SelectItem>
+                          <SelectItem value="hyperbolic">📐 Hyperbolic Geometry</SelectItem>
+                          <SelectItem value="gaussian">📊 Gaussian Fields</SelectItem>
+                          <SelectItem value="cellular">🔲 Cellular Automata</SelectItem>
+                          <SelectItem value="voronoi">🕸️ Voronoi Diagrams</SelectItem>
+                          <SelectItem value="perlin">🌊 Perlin Noise</SelectItem>
+                          <SelectItem value="diffusion">⚗️ Reaction-Diffusion</SelectItem>
+                          <SelectItem value="wave">〰️ Wave Interference</SelectItem>
+                          <SelectItem value="moons">🌙 Lunar Orbital Mechanics</SelectItem>
+                          <SelectItem value="tribes">🏘️ Tribal Network Topology</SelectItem>
+                          <SelectItem value="heads">👥 Mosaic Head Compositions</SelectItem>
+                          <SelectItem value="natives">🏕️ Ancient Native Tribes</SelectItem>
+                          <SelectItem value="statues">🗿 Sacred & Sculptural Statues</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
-                    {/* Special Dataset Notices */}
-                    {dataset === "tribes" && (
-                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 space-y-2">
-                        <h4 className="text-sm font-medium text-amber-900 flex items-center gap-2">
-                          <Users className="h-4 w-4" />
-                          Enhanced Tribes Dataset Active
-                        </h4>
-                        <p className="text-xs text-amber-800">
-                          You'll see: Villages with people, ritual ceremonies, chiefs & shamans, seasonal activities,
-                          trading posts, and complex tribal societies with 50-250 people per tribe!
-                        </p>
-                        <div className="flex flex-wrap gap-1">
-                          <Badge variant="outline" className="text-xs border-amber-300 text-amber-700">
-                            Villages
+                    {/* Dataset Info */}
+                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-600">
+                      <h4 className="text-sm font-medium text-slate-300 flex items-center gap-2 mb-2">
+                        <Users className="h-4 w-4" />
+                        {getDatasetDisplayName(dataset)} Active
+                      </h4>
+                      <p className="text-xs text-slate-400">
+                        This dataset includes {getDatasetScenarios(dataset).length} unique scenarios for comprehensive
+                        artistic exploration.
+                      </p>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {getDatasetScenarios(dataset)
+                          .slice(0, 4)
+                          .map((scenario, index) => (
+                            <Badge key={index} variant="outline" className="text-xs border-slate-500 text-slate-400">
+                              {scenario.label}
+                            </Badge>
+                          ))}
+                        {getDatasetScenarios(dataset).length > 4 && (
+                          <Badge variant="outline" className="text-xs border-slate-500 text-slate-400">
+                            +{getDatasetScenarios(dataset).length - 4} more
                           </Badge>
-                          <Badge variant="outline" className="text-xs border-orange-300 text-orange-700">
-                            People
-                          </Badge>
-                          <Badge variant="outline" className="text-xs border-red-300 text-red-700">
-                            Rituals
-                          </Badge>
-                          <Badge variant="outline" className="text-xs border-green-300 text-green-700">
-                            Seasonal
-                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Scenario Selection */}
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-slate-300">Visual Scenario</Label>
+                      <Select value={scenario} onValueChange={setScenario}>
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-700 border-slate-600">
+                          {getDatasetScenarios(dataset).map((scenarioOption) => (
+                            <SelectItem key={scenarioOption.value} value={scenarioOption.value}>
+                              {scenarioOption.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Color Scheme */}
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-slate-300">Color Palette</Label>
+                      <Select value={colorScheme} onValueChange={setColorScheme}>
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-700 border-slate-600">
+                          <SelectItem value="plasma">🔥 Plasma</SelectItem>
+                          <SelectItem value="quantum">⚛️ Quantum</SelectItem>
+                          <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
+                          <SelectItem value="thermal">🌡️ Thermal</SelectItem>
+                          <SelectItem value="spectral">🌈 Spectral</SelectItem>
+                          <SelectItem value="crystalline">💎 Crystalline</SelectItem>
+                          <SelectItem value="bioluminescent">🦠 Bioluminescent</SelectItem>
+                          <SelectItem value="aurora">🌌 Aurora</SelectItem>
+                          <SelectItem value="metallic">⚙️ Metallic</SelectItem>
+                          <SelectItem value="prismatic">🔮 Prismatic</SelectItem>
+                          <SelectItem value="monochromatic">⚫ Monochromatic</SelectItem>
+                          <SelectItem value="infrared">🔴 Infrared</SelectItem>
+                          <SelectItem value="lava">🌋 Lava</SelectItem>
+                          <SelectItem value="futuristic">🚀 Futuristic</SelectItem>
+                          <SelectItem value="forest">🌲 Forest</SelectItem>
+                          <SelectItem value="ocean">🌊 Ocean</SelectItem>
+                          <SelectItem value="sunset">🌅 Sunset</SelectItem>
+                          <SelectItem value="arctic">❄️ Arctic</SelectItem>
+                          <SelectItem value="neon">💡 Neon</SelectItem>
+                          <SelectItem value="vintage">📻 Vintage</SelectItem>
+                          <SelectItem value="toxic">☢️ Toxic</SelectItem>
+                          <SelectItem value="ember">🔥 Ember</SelectItem>
+                          <SelectItem value="lunar">🌙 Lunar</SelectItem>
+                          <SelectItem value="tidal">🌊 Tidal</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Mathematical Parameters */}
+                    <div className="space-y-3 pt-3 border-t border-slate-600">
+                      <h4 className="text-sm font-medium text-slate-300">Mathematical Parameters</h4>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-medium text-slate-300">Random Seed</Label>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={randomizeSeed}
+                            className="h-6 px-2 text-xs border-slate-600 bg-transparent"
+                          >
+                            <Dice1 className="h-3 w-3" />
+                          </Button>
                         </div>
+                        <Input
+                          type="number"
+                          value={seed}
+                          onChange={(e) => setSeed(Number.parseInt(e.target.value) || 0)}
+                          className="bg-slate-700 border-slate-600 text-slate-100"
+                          min="0"
+                          max="9999"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-300">
+                          Data Points: {numSamples.toLocaleString()}
+                        </Label>
+                        <Slider
+                          value={[numSamples]}
+                          onValueChange={(value) => setNumSamples(value[0])}
+                          min={100}
+                          max={10000}
+                          step={100}
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-300">Noise Scale: {noiseScale}</Label>
+                        <Slider
+                          value={[noiseScale]}
+                          onValueChange={(value) => setNoiseScale(value[0])}
+                          min={0}
+                          max={1}
+                          step={0.01}
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-300">Time Step: {timeStep}</Label>
+                        <Slider
+                          value={[timeStep]}
+                          onValueChange={(value) => setTimeStep(value[0])}
+                          min={0.001}
+                          max={0.1}
+                          step={0.001}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Custom Prompt for AI */}
+                    {mode === "ai" && (
+                      <div className="space-y-3 pt-3 border-t border-slate-600">
+                        <div className="flex items-center justify-between">
+                          <Label className="flex items-center space-x-2">
+                            <Switch checked={useCustomPrompt} onCheckedChange={setUseCustomPrompt} />
+                            <span className="text-sm font-medium text-slate-300">Custom AI Prompt</span>
+                          </Label>
+                        </div>
+                        {useCustomPrompt && (
+                          <div className="space-y-3">
+                            <Textarea
+                              value={customPrompt}
+                              onChange={(e) => setCustomPrompt(e.target.value)}
+                              placeholder="Describe your vision... (will be enhanced with mathematical precision)"
+                              className="bg-slate-700 border-slate-600 text-slate-100 text-sm min-h-[100px] resize-vertical"
+                              rows={4}
+                            />
+                            <div className="flex gap-2">
+                              <Button
+                                onClick={enhancePrompt}
+                                disabled={isEnhancingPrompt || !customPrompt.trim()}
+                                size="sm"
+                                variant="outline"
+                                className="border-purple-500 text-purple-400 hover:bg-purple-500/10 bg-transparent"
+                              >
+                                {isEnhancingPrompt ? (
+                                  <>
+                                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                                    Enhancing...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Wand2 className="h-3 w-3 mr-1" />
+                                    Enhance Prompt
+                                  </>
+                                )}
+                              </Button>
+                            </div>
+                            {customPrompt && (
+                              <div className="bg-slate-900 p-3 rounded-md border border-slate-600">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-xs font-medium text-slate-400">CURRENT CUSTOM PROMPT</span>
+                                  <span className="text-xs text-slate-500">{customPrompt.length} characters</span>
+                                </div>
+                                <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
+                                  {customPrompt}
+                                </p>
+                                <div className="mt-2 pt-2 border-t border-slate-700">
+                                  <p className="text-xs text-slate-500">
+                                    This custom prompt will be integrated with {getDatasetDisplayName(dataset)} elements
+                                    and mathematical precision based on your selected parameters.
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     )}
 
-                    {dataset === "natives" && (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 space-y-2">
-                        <h4 className="text-sm font-medium text-green-900 flex items-center gap-2">
-                          <Users className="h-4 w-4" />
-                          Ancient Native Tribes Dataset Active
-                        </h4>
-                        <p className="text-xs text-green-800">
-                          Experience authentic indigenous civilizations: Longhouses & tipis, ceremonial dance circles,
-                          medicine wheels, sacred groves, hunting grounds, and traditional tribal life!
-                        </p>
-                        <div className="flex flex-wrap gap-1">
-                          <Badge variant="outline" className="text-xs border-green-300 text-green-700">
-                            Longhouses
-                          </Badge>
-                          <Badge variant="outline" className="text-xs border-blue-300 text-blue-700">
-                            Dance Circles
-                          </Badge>
-                          <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">
-                            Medicine Wheels
-                          </Badge>
-                          <Badge variant="outline" className="text-xs border-yellow-300 text-yellow-700">
-                            Sacred Groves
-                          </Badge>
-                        </div>
-                      </div>
-                    )}
+                    {/* Projection Settings */}
+                    <div className="space-y-3 pt-3 border-t border-slate-600">
+                      <h4 className="text-sm font-medium text-slate-300">Projection Settings</h4>
 
-                    {dataset === "thailand" && (
-                      <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 space-y-2">
-                        <h4 className="text-sm font-medium text-orange-900 flex items-center gap-2">
-                          <Users className="h-4 w-4" />
-                          Thai Cultural Heritage Dataset Active
-                        </h4>
-                        <p className="text-xs text-orange-800">
-                          Experience authentic Thai culture: Golden temples (Wat), traditional Thai dancers, floating
-                          markets, tuk-tuks, monks in saffron robes, royal palaces, Thai festivals, traditional
-                          architecture, and vibrant street life!
-                        </p>
-                        <div className="flex flex-wrap gap-1">
-                          <Badge variant="outline" className="text-xs border-orange-300 text-orange-700">
-                            Temples
-                          </Badge>
-                          <Badge variant="outline" className="text-xs border-yellow-300 text-yellow-700">
-                            Dancers
-                          </Badge>
-                          <Badge variant="outline" className="text-xs border-red-300 text-red-700">
-                            Markets
-                          </Badge>
-                          <Badge variant="outline" className="text-xs border-blue-300 text-blue-700">
-                            Festivals
-                          </Badge>
-                          <Badge variant="outline" className="text-xs border-green-300 text-green-700">
-                            Architecture
-                          </Badge>
-                          <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">
-                            Monks
-                          </Badge>
+                      {/* Dome Projection */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label className="flex items-center space-x-2">
+                            <Switch checked={domeEnabled} onCheckedChange={setDomeEnabled} />
+                            <span className="text-sm font-medium text-slate-300">Dome Projection (10m)</span>
+                          </Label>
                         </div>
+                        {domeEnabled && (
+                          <div className="space-y-2 pl-6">
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-400">Resolution</Label>
+                              <Select value={domeResolution} onValueChange={setDomeResolution}>
+                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-700 border-slate-600">
+                                  <SelectItem value="2K">2K (2048x2048)</SelectItem>
+                                  <SelectItem value="4K">4K (4096x4096)</SelectItem>
+                                  <SelectItem value="8K">8K (8192x8192)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-400">Projection Type</Label>
+                              <Select value={domeProjectionType} onValueChange={setDomeProjectionType}>
+                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-700 border-slate-600">
+                                  <SelectItem value="fisheye">Fisheye</SelectItem>
+                                  <SelectItem value="equidistant">Equidistant</SelectItem>
+                                  <SelectItem value="stereographic">Stereographic</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
+
+                      {/* 360° Panorama */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label className="flex items-center space-x-2">
+                            <Switch checked={panorama360Enabled} onCheckedChange={setPanorama360Enabled} />
+                            <span className="text-sm font-medium text-slate-300">360° Panorama</span>
+                          </Label>
+                        </div>
+                        {panorama360Enabled && (
+                          <div className="space-y-2 pl-6">
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-400">Resolution</Label>
+                              <Select value={panoramaResolution} onValueChange={setPanoramaResolution}>
+                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-700 border-slate-600">
+                                  <SelectItem value="4K">4K (4096x2048)</SelectItem>
+                                  <SelectItem value="8K">8K (8192x4096)</SelectItem>
+                                  <SelectItem value="16K">16K (16384x8192)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-400">Format</Label>
+                              <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
+                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-700 border-slate-600">
+                                  <SelectItem value="equirectangular">Equirectangular</SelectItem>
+                                  <SelectItem value="stereographic">Stereographic</SelectItem>
+                                  <SelectItem value="cylindrical">Cylindrical</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            {panoramaFormat === "stereographic" && (
+                              <div className="space-y-1">
+                                <Label className="text-xs text-slate-400">Perspective</Label>
+                                <Select value={stereographicPerspective} onValueChange={setStereographicPerspective}>
+                                  <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent className="bg-slate-700 border-slate-600">
+                                    <SelectItem value="little-planet">Little Planet</SelectItem>
+                                    <SelectItem value="tunnel">Tunnel</SelectItem>
+                                    <SelectItem value="mirror-ball">Mirror Ball</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
 
                     {/* Generate Button */}
                     <div className="flex gap-2">
@@ -1015,7 +1197,9 @@ export function FlowArtGenerator() {
                         ) : (
                           <>
                             <Sparkles className="h-4 w-4 mr-2" />
-                            Generate Thai Cultural Art
+                            {useCustomPrompt && customPrompt.trim()
+                              ? "Generate Custom Art"
+                              : `Generate ${getDatasetDisplayName(dataset)}`}
                           </>
                         )}
                       </Button>
@@ -1047,12 +1231,12 @@ export function FlowArtGenerator() {
                     <CardTitle className="flex items-center justify-between text-slate-100">
                       <div className="flex items-center gap-2">
                         <Eye className="h-5 w-5" />
-                        Generated Thai Cultural Artwork
+                        Generated {getDatasetDisplayName(dataset)} Artwork
                       </div>
                       {generatedArt && (
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="border-orange-500 text-orange-400">
-                            🇹🇭 Thai Heritage
+                          <Badge variant="outline" className="border-purple-500 text-purple-400">
+                            ✨ {getDatasetDisplayName(dataset)}
                           </Badge>
                           {generatedArt.isDomeProjection && (
                             <Badge variant="outline" className="border-blue-500 text-blue-400">
@@ -1081,7 +1265,7 @@ export function FlowArtGenerator() {
                           ) : (
                             <img
                               src={generatedArt.imageUrl || "/placeholder.svg"}
-                              alt="Generated Thai cultural artwork"
+                              alt={`Generated ${getDatasetDisplayName(dataset)} artwork`}
                               className="w-full h-96 object-contain"
                             />
                           )}
@@ -1091,7 +1275,7 @@ export function FlowArtGenerator() {
                         <div className="flex flex-wrap gap-2">
                           <Button onClick={() => downloadImage("regular")} className="bg-green-600 hover:bg-green-700">
                             <Download className="h-4 w-4 mr-2" />
-                            Download Thai Art
+                            Download Art
                           </Button>
 
                           {generatedArt.domeImageUrl && (
@@ -1124,6 +1308,132 @@ export function FlowArtGenerator() {
                             <AlertDescription className="text-green-400">{downloadStatus}</AlertDescription>
                           </Alert>
                         )}
+
+                        {/* Artwork Details */}
+                        <div className="space-y-3 pt-4 border-t border-slate-600">
+                          <h4 className="text-sm font-medium text-slate-300">Artwork Details</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div>
+                              <span className="text-slate-400">Dataset:</span>
+                              <p className="text-slate-200 capitalize">{generatedArt.params?.dataset || "N/A"}</p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Scenario:</span>
+                              <p className="text-slate-200 capitalize">{generatedArt.params?.scenario || "N/A"}</p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Color Scheme:</span>
+                              <p className="text-slate-200 capitalize">{generatedArt.params?.colorScheme || "N/A"}</p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Seed:</span>
+                              <p className="text-slate-200">{generatedArt.params?.seed || "N/A"}</p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Data Points:</span>
+                              <p className="text-slate-200">
+                                {generatedArt.params?.numSamples?.toLocaleString() || "N/A"}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Noise Scale:</span>
+                              <p className="text-slate-200">{generatedArt.params?.noiseScale || "N/A"}</p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Time Step:</span>
+                              <p className="text-slate-200">{generatedArt.params?.timeStep || "N/A"}</p>
+                            </div>
+                            {generatedArt.mode === "ai" && generatedArt.provider && (
+                              <div>
+                                <span className="text-slate-400">Provider:</span>
+                                <p className="text-slate-200 capitalize">{generatedArt.provider}</p>
+                              </div>
+                            )}
+                            {generatedArt.estimatedFileSize && (
+                              <div>
+                                <span className="text-slate-400">File Size:</span>
+                                <p className="text-slate-200">{generatedArt.estimatedFileSize}</p>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Custom Prompt Display */}
+                          {generatedArt.mode === "ai" && generatedArt.customPrompt && (
+                            <div className="space-y-2">
+                              <span className="text-slate-400 text-sm">Custom Prompt Used:</span>
+                              <div className="bg-slate-900 p-3 rounded-md max-h-32 overflow-y-auto">
+                                <p className="text-slate-300 text-sm leading-relaxed">{generatedArt.customPrompt}</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {generatedArt.mode === "ai" && generatedArt.finalPrompt && (
+                            <div className="space-y-2">
+                              <span className="text-slate-400 text-sm">Final Enhanced Prompt:</span>
+                              <div className="bg-slate-900 p-3 rounded-md max-h-32 overflow-y-auto">
+                                <p className="text-slate-300 text-sm leading-relaxed">
+                                  {generatedArt.finalPrompt.substring(0, 500)}
+                                  {generatedArt.finalPrompt.length > 500 && "..."}
+                                </p>
+                                {generatedArt.promptLength && (
+                                  <p className="text-slate-500 text-xs mt-2">{generatedArt.promptLength} characters</p>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {generatedArt.mode === "ai" && generatedArt.generationDetails && (
+                          <div className="space-y-2">
+                            <span className="text-slate-400 text-sm">Generation Status:</span>
+                            <div className="bg-slate-900 p-3 rounded-md space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-slate-300 text-sm">Main Image:</span>
+                                <Badge variant="outline" className="text-xs border-green-500 text-green-400">
+                                  {generatedArt.generationDetails.mainImage}
+                                </Badge>
+                              </div>
+                              {generatedArt.isDomeProjection && (
+                                <div className="flex items-center justify-between">
+                                  <span className="text-slate-300 text-sm">Dome Projection:</span>
+                                  <Badge
+                                    variant="outline"
+                                    className={`text-xs ${
+                                      generatedArt.generationDetails.domeImage.includes("successfully")
+                                        ? "border-green-500 text-green-400"
+                                        : generatedArt.generationDetails.domeImage.includes("main image")
+                                          ? "border-yellow-500 text-yellow-400"
+                                          : "border-red-500 text-red-400"
+                                    }`}
+                                  >
+                                    {generatedArt.generationDetails.domeImage.length > 30
+                                      ? generatedArt.generationDetails.domeImage.substring(0, 30) + "..."
+                                      : generatedArt.generationDetails.domeImage}
+                                  </Badge>
+                                </div>
+                              )}
+                              {generatedArt.is360Panorama && (
+                                <div className="flex items-center justify-between">
+                                  <span className="text-slate-300 text-sm">360° Panorama:</span>
+                                  <Badge
+                                    variant="outline"
+                                    className={`text-xs ${
+                                      generatedArt.generationDetails.panoramaImage.includes("successfully")
+                                        ? "border-green-500 text-green-400"
+                                        : generatedArt.generationDetails.panoramaImage.includes("main image")
+                                          ? "border-yellow-500 text-yellow-400"
+                                          : "border-red-500 text-red-400"
+                                    }`}
+                                  >
+                                    {generatedArt.generationDetails.panoramaImage.length > 30
+                                      ? generatedArt.generationDetails.panoramaImage.substring(0, 30) + "..."
+                                      : generatedArt.generationDetails.panoramaImage}
+                                  </Badge>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="h-96 flex items-center justify-center text-slate-400">
@@ -1132,8 +1442,14 @@ export function FlowArtGenerator() {
                             <ImageIcon className="h-8 w-8" />
                           </div>
                           <div>
-                            <p className="text-lg font-medium">Ready to Generate Thai Cultural Art</p>
-                            <p className="text-sm">Click "Generate Thai Cultural Art" to create stunning artwork</p>
+                            <p className="text-lg font-medium">
+                              Ready to Generate {getDatasetDisplayName(dataset)} Art
+                            </p>
+                            <p className="text-sm">
+                              {useCustomPrompt && customPrompt.trim()
+                                ? "Your custom prompt will be enhanced with mathematical elements"
+                                : `Click "Generate ${getDatasetDisplayName(dataset)}" to create stunning artwork`}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -1146,7 +1462,7 @@ export function FlowArtGenerator() {
 
           <TabsContent value="gallery" className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-slate-100">Thai Cultural Gallery</h2>
+              <h2 className="text-2xl font-bold text-slate-100">Art Gallery</h2>
               <div className="flex items-center gap-2">
                 {gallery.length > 0 && (
                   <Button
@@ -1173,87 +1489,144 @@ export function FlowArtGenerator() {
                       <ImageIcon className="h-8 w-8 text-slate-400" />
                     </div>
                     <div>
-                      <p className="text-lg font-medium text-slate-300">No Thai artworks in gallery</p>
-                      <p className="text-sm text-slate-400">Generate some Thai cultural art to see it here</p>
+                      <p className="text-lg font-medium text-slate-300">No artworks in gallery</p>
+                      <p className="text-sm text-slate-400">Generate some art to see it here</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {currentItems.map((art) => (
-                  <Card key={art.id} className="bg-slate-800 border-slate-700 overflow-hidden">
-                    <div className="relative">
-                      {art.mode === "svg" ? (
-                        <div
-                          className="w-full h-48 bg-slate-900 flex items-center justify-center"
-                          dangerouslySetInnerHTML={{ __html: art.svgContent }}
-                        />
-                      ) : (
-                        <img
-                          src={art.imageUrl || "/placeholder.svg"}
-                          alt="Generated artwork"
-                          className="w-full h-48 object-cover"
-                        />
-                      )}
-                      <div className="absolute top-2 right-2 flex gap-1">
-                        <Badge variant="outline" className="bg-slate-800/80 border-orange-500 text-orange-400 text-xs">
-                          🇹🇭 {art.mode === "svg" ? "SVG" : "AI"}
-                        </Badge>
-                        {art.isDomeProjection && (
-                          <Badge variant="outline" className="bg-slate-800/80 border-blue-500 text-blue-400 text-xs">
-                            Dome
-                          </Badge>
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {currentItems.map((art) => (
+                    <Card key={art.id} className="bg-slate-800 border-slate-700 overflow-hidden">
+                      <div className="relative">
+                        {art.mode === "svg" ? (
+                          <div
+                            className="w-full h-48 bg-slate-900 flex items-center justify-center"
+                            dangerouslySetInnerHTML={{ __html: art.svgContent }}
+                          />
+                        ) : (
+                          <img
+                            src={art.imageUrl || "/placeholder.svg"}
+                            alt="Generated artwork"
+                            className="w-full h-48 object-cover"
+                          />
                         )}
-                        {art.is360Panorama && (
+                        <div className="absolute top-2 right-2 flex gap-1">
                           <Badge
                             variant="outline"
-                            className="bg-slate-800/80 border-yellow-500 text-yellow-400 text-xs"
+                            className="bg-slate-800/80 border-purple-500 text-purple-400 text-xs"
                           >
-                            360°
+                            ✨ {art.mode === "svg" ? "SVG" : "AI"}
                           </Badge>
-                        )}
-                      </div>
-                    </div>
-                    <CardContent className="p-4">
-                      <div className="space-y-3">
-                        <div>
-                          <h3 className="font-medium text-slate-200 capitalize">
-                            {art.params?.dataset || "Unknown"} + {art.params?.scenario || "Unknown"}
-                          </h3>
-                          <p className="text-sm text-slate-400 capitalize">
-                            {art.params?.colorScheme || "Unknown"} palette
-                          </p>
+                          {art.customPrompt && (
+                            <Badge
+                              variant="outline"
+                              className="bg-slate-800/80 border-purple-500 text-purple-400 text-xs"
+                            >
+                              Custom
+                            </Badge>
+                          )}
+                          {art.isDomeProjection && (
+                            <Badge variant="outline" className="bg-slate-800/80 border-blue-500 text-blue-400 text-xs">
+                              Dome
+                            </Badge>
+                          )}
+                          {art.is360Panorama && (
+                            <Badge
+                              variant="outline"
+                              className="bg-slate-800/80 border-yellow-500 text-yellow-400 text-xs"
+                            >
+                              360°
+                            </Badge>
+                          )}
                         </div>
+                      </div>
+                      <CardContent className="p-4">
+                        <div className="space-y-3">
+                          <div>
+                            <h3 className="font-medium text-slate-200 capitalize">
+                              {getDatasetDisplayName(art.params?.dataset || "Unknown")} +{" "}
+                              {art.params?.scenario || "Unknown"}
+                            </h3>
+                            <p className="text-sm text-slate-400 capitalize">
+                              {art.params?.colorScheme || "Unknown"} palette
+                            </p>
+                            {art.customPrompt && (
+                              <p className="text-xs text-purple-400 mt-1">
+                                Custom: {art.customPrompt.substring(0, 50)}
+                                {art.customPrompt.length > 50 && "..."}
+                              </p>
+                            )}
+                          </div>
 
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              setGeneratedArt(art)
-                              // Switch to generate tab to view
-                              const generateTab = document.querySelector('[value="generate"]') as HTMLElement
-                              generateTab?.click()
-                            }}
-                            className="flex-1 bg-orange-600 hover:bg-orange-700"
-                          >
-                            <Eye className="h-3 w-3 mr-1" />
-                            View
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => downloadImage("regular")}
-                            className="border-slate-600"
-                          >
-                            <Download className="h-3 w-3" />
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                setGeneratedArt(art)
+                                // Switch to generate tab to view
+                                const generateTab = document.querySelector('[value="generate"]') as HTMLElement
+                                generateTab?.click()
+                              }}
+                              className="flex-1 bg-purple-600 hover:bg-purple-700"
+                            >
+                              <Eye className="h-3 w-3 mr-1" />
+                              View
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => downloadImage("regular")}
+                              className="border-slate-600"
+                            >
+                              <Download className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      className="border-slate-600"
+                    >
+                      Previous
+                    </Button>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <Button
+                          key={page}
+                          variant={currentPage === page ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(page)}
+                          className={currentPage === page ? "bg-purple-600 hover:bg-purple-700" : "border-slate-600"}
+                        >
+                          {page}
+                        </Button>
+                      ))}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                      className="border-slate-600"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </TabsContent>
         </Tabs>

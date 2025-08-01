@@ -23,297 +23,857 @@ export interface DomeProjectionParams {
   tilt: number
 }
 
-export function generateFlowField(params: GenerationParams): string {
-  const { dataset, scenario, colorScheme, seed, numSamples, noiseScale, timeStep } = params
+// Seeded random number generator
+class SeededRandom {
+  private seed: number
 
-  // Set up deterministic random based on seed
-  let randomSeed = seed
-  const seededRandom = () => {
-    randomSeed = (randomSeed * 9301 + 49297) % 233280
-    return randomSeed / 233280
+  constructor(seed: number) {
+    this.seed = seed
   }
 
-  const width = 800
-  const height = 800
-  const centerX = width / 2
-  const centerY = height / 2
-
-  const paths: string[] = []
-  const colors: string[] = []
-
-  // Generate color palette based on scheme
-  const getColorPalette = (scheme: string): string[] => {
-    switch (scheme) {
-      case "plasma":
-        return [
-          "#0d0887",
-          "#46039f",
-          "#7201a8",
-          "#9c179e",
-          "#bd3786",
-          "#d8576b",
-          "#ed7953",
-          "#fb9f3a",
-          "#fdca26",
-          "#f0f921",
-        ]
-      case "quantum":
-        return ["#000428", "#004e92", "#009ffd", "#00d2ff", "#ffffff"]
-      case "cosmic":
-        return ["#2c1810", "#8b4513", "#ff6347", "#ffa500", "#ffff00", "#ffffff"]
-      case "thermal":
-        return ["#000000", "#440154", "#31688e", "#35b779", "#fde725"]
-      case "spectral":
-        return [
-          "#9e0142",
-          "#d53e4f",
-          "#f46d43",
-          "#fdae61",
-          "#fee08b",
-          "#e6f598",
-          "#abdda4",
-          "#66c2a5",
-          "#3288bd",
-          "#5e4fa2",
-        ]
-      case "sunset":
-        return ["#ff6b35", "#f7931e", "#ffd23f", "#06ffa5", "#1fb3d3", "#5d2e5d"]
-      default:
-        return ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"]
-    }
+  next(): number {
+    this.seed = (this.seed * 9301 + 49297) % 233280
+    return this.seed / 233280
   }
+}
 
-  const palette = getColorPalette(colorScheme)
+// Color palette definitions
+const colorPalettes: Record<string, string[]> = {
+  plasma: ["#0d0887", "#46039f", "#7201a8", "#bd3786", "#ed7953", "#fdca26"],
+  quantum: ["#000428", "#004e92", "#009ffd", "#00d2ff", "#ffffff", "#ffd700"],
+  cosmic: ["#2c1810", "#8b4513", "#ffa500", "#ffff00", "#ffffff", "#87ceeb"],
+  thermal: ["#000000", "#8b0000", "#ff4500", "#ffa500", "#ffff00", "#ffffff"],
+  spectral: ["#9e0142", "#d53e4f", "#f46d43", "#fdae61", "#fee08b", "#e6f598"],
+  crystalline: ["#1a1a2e", "#16213e", "#0f3460", "#533483", "#7209b7", "#a663cc"],
+  bioluminescent: ["#0c0c0c", "#1a4c96", "#0066cc", "#00ccff", "#66ffcc", "#ccffcc"],
+  aurora: ["#0d1b2a", "#415a77", "#778da9", "#e0e1dd", "#a8dadc", "#457b9d"],
+  metallic: ["#2c2c2c", "#4a4a4a", "#696969", "#a9a9a9", "#c0c0c0", "#f5f5f5"],
+  prismatic: ["#ff0080", "#ff8000", "#ffff00", "#80ff00", "#00ff80", "#0080ff"],
+  monochromatic: ["#000000", "#333333", "#666666", "#999999", "#cccccc", "#ffffff"],
+  infrared: ["#000000", "#8b0000", "#ff0000", "#ff6347", "#ffa500", "#ffff00"],
+  lava: ["#1a0000", "#660000", "#cc0000", "#ff3300", "#ff6600", "#ffcc00"],
+  futuristic: ["#0a0a0a", "#1a1a2e", "#16213e", "#0f3460", "#533483", "#7209b7"],
+  forest: ["#0b2818", "#1e5128", "#4e9f3d", "#8bc34a", "#cddc39", "#ffeb3b"],
+  ocean: ["#001f3f", "#0074d9", "#39cccc", "#2ecc40", "#01ff70", "#ffffff"],
+  sunset: ["#ff6b35", "#f7931e", "#ffd23f", "#5d2e5d", "#1fb3d3", "#ffffff"],
+  arctic: ["#e6f3ff", "#b3d9ff", "#80bfff", "#4da6ff", "#1a8cff", "#0066cc"],
+  neon: ["#ff00ff", "#00ffff", "#ffff00", "#ff0080", "#8000ff", "#00ff80"],
+  vintage: ["#8b4513", "#daa520", "#cd853f", "#f4a460", "#ffefd5", "#fff8dc"],
+  toxic: ["#32cd32", "#7fff00", "#adff2f", "#9acd32", "#6b8e23", "#556b2f"],
+  ember: ["#2c0703", "#8b1538", "#dc143c", "#ff6347", "#ffa500", "#ffd700"],
+  lunar: ["#1c1c1c", "#4a4a4a", "#808080", "#c0c0c0", "#e6e6e6", "#ffffff"],
+  tidal: ["#003366", "#0066cc", "#3399ff", "#66ccff", "#99e6ff", "#ccf5ff"],
+}
 
-  // Generate mathematical patterns based on dataset
-  for (let i = 0; i < numSamples; i++) {
-    const t = i / numSamples
-    let x: number, y: number
+// Mathematical functions for different datasets
+function generateNuanuPattern(
+  params: GenerationParams,
+  rng: SeededRandom,
+): Array<{ x: number; y: number; color: string; size: number; type: string }> {
+  const points: Array<{ x: number; y: number; color: string; size: number; type: string }> = []
+  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
 
-    switch (dataset) {
-      case "spirals":
-        const angle = t * Math.PI * 8 + seed * 0.1
-        const radius = t * 200 + seededRandom() * 50
+  // Generate Nuanu Creative City elements
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = i / params.numSamples
+
+    // Create different types of creative elements based on scenario
+    let elementType = "creative-space"
+    let x: number, y: number, size: number
+
+    switch (params.scenario) {
+      case "thk-tower":
+        // Central tower with radiating creative elements
+        if (i < params.numSamples * 0.1) {
+          elementType = "tower"
+          x = 400 + Math.cos(t * Math.PI * 2) * 50 * rng.next()
+          y = 300 + Math.sin(t * Math.PI * 2) * 50 * rng.next()
+          size = 8 + rng.next() * 12
+        } else {
+          elementType = "creative-space"
+          const angle = t * Math.PI * 2 + rng.next() * 0.5
+          const radius = 100 + rng.next() * 200
+          x = 400 + Math.cos(angle) * radius
+          y = 300 + Math.sin(angle) * radius
+          size = 3 + rng.next() * 6
+        }
+        break
+
+      case "popper-sentinels":
+        // Guardian statues positioned strategically
+        if (i < params.numSamples * 0.05) {
+          elementType = "sentinel"
+          x = 100 + (i % 6) * 120 + rng.next() * 40
+          y = 100 + Math.floor(i / 6) * 120 + rng.next() * 40
+          size = 10 + rng.next() * 8
+        } else {
+          elementType = "creative-space"
+          x = rng.next() * 800
+          y = rng.next() * 600
+          size = 2 + rng.next() * 4
+        }
+        break
+
+      case "luna-beach":
+        // Coastal creative spaces
+        elementType = i < params.numSamples * 0.3 ? "beach-pavilion" : "creative-space"
+        x = rng.next() * 800
+        y = 400 + Math.sin(x * 0.01) * 100 + rng.next() * 100 // Coastal curve
+        size = elementType === "beach-pavilion" ? 6 + rng.next() * 8 : 2 + rng.next() * 4
+        break
+
+      case "labyrinth-dome":
+        // Geodesic dome with internal patterns
+        const centerX = 400,
+          centerY = 300
+        const domeRadius = 150
+        const angle = t * Math.PI * 2 * 5 // Multiple spirals
+        const radius = rng.next() * domeRadius * Math.sqrt(rng.next()) // Even distribution
         x = centerX + Math.cos(angle) * radius
         y = centerY + Math.sin(angle) * radius
+        elementType = radius < domeRadius * 0.3 ? "dome-core" : "dome-element"
+        size = elementType === "dome-core" ? 8 + rng.next() * 6 : 3 + rng.next() * 5
         break
 
-      case "fractal":
-        const branch = Math.floor(seededRandom() * 4)
-        const depth = Math.floor(t * 6)
-        x = centerX + (seededRandom() - 0.5) * 400 * Math.pow(0.7, depth)
-        y = centerY + (seededRandom() - 0.5) * 400 * Math.pow(0.7, depth)
+      case "creative-studios":
+        // Clustered studio spaces
+        const clusterX = (Math.floor(i / 50) % 4) * 200 + 100
+        const clusterY = Math.floor(i / 200) * 150 + 100
+        x = clusterX + (rng.next() - 0.5) * 80
+        y = clusterY + (rng.next() - 0.5) * 80
+        elementType = "studio"
+        size = 4 + rng.next() * 6
         break
 
-      case "mandelbrot":
-        const real = (seededRandom() - 0.5) * 4
-        const imag = (seededRandom() - 0.5) * 4
-        let zr = 0,
-          zi = 0
-        let iterations = 0
-        while (zr * zr + zi * zi < 4 && iterations < 100) {
-          const temp = zr * zr - zi * zi + real
-          zi = 2 * zr * zi + imag
-          zr = temp
-          iterations++
+      case "community-plaza":
+        // Central plaza with radiating community spaces
+        const plazaRadius = 120
+        const communityAngle = t * Math.PI * 2
+        const communityRadius = rng.next() * plazaRadius + 50
+        x = 400 + Math.cos(communityAngle) * communityRadius
+        y = 300 + Math.sin(communityAngle) * communityRadius
+        elementType = communityRadius < 80 ? "plaza-center" : "community-space"
+        size = elementType === "plaza-center" ? 6 + rng.next() * 8 : 3 + rng.next() * 5
+        break
+
+      case "digital-gardens":
+        // Tech-nature integration patterns
+        x = rng.next() * 800
+        y = rng.next() * 600
+        const techNature = Math.sin(x * 0.02) * Math.cos(y * 0.02)
+        elementType = techNature > 0 ? "digital-element" : "garden-element"
+        size = 3 + rng.next() * 6 + Math.abs(techNature) * 4
+        break
+
+      default: // landscape and pure
+        // Overall Nuanu landscape
+        x = rng.next() * 800
+        y = rng.next() * 600
+        elementType = "creative-space"
+        size = 2 + rng.next() * 6
+    }
+
+    // Apply noise and time evolution
+    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
+    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
+
+    const colorIndex = Math.floor((t + rng.next() * 0.3) * palette.length) % palette.length
+    const color = palette[colorIndex]
+
+    points.push({ x, y, color, size, type: elementType })
+  }
+
+  return points
+}
+
+function generateBalinesePattern(
+  params: GenerationParams,
+  rng: SeededRandom,
+): Array<{ x: number; y: number; color: string; size: number; type: string }> {
+  const points: Array<{ x: number; y: number; color: string; size: number; type: string }> = []
+  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
+
+  // Generate Balinese cultural elements
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = i / params.numSamples
+
+    // Create different types of cultural elements based on scenario
+    let elementType = "cultural-element"
+    let x: number, y: number, size: number
+
+    switch (params.scenario) {
+      case "temples":
+        // Temple complexes with sacred geometry
+        if (i < params.numSamples * 0.1) {
+          elementType = "temple"
+          x = 200 + (i % 3) * 200 + rng.next() * 50
+          y = 150 + Math.floor(i / 3) * 150 + rng.next() * 50
+          size = 12 + rng.next() * 8
+        } else {
+          elementType = "temple-element"
+          const templeX = 200 + (Math.floor(i / 100) % 3) * 200
+          const templeY = 150 + Math.floor(i / 300) * 150
+          x = templeX + (rng.next() - 0.5) * 100
+          y = templeY + (rng.next() - 0.5) * 100
+          size = 3 + rng.next() * 6
         }
-        x = centerX + real * 100
-        y = centerY + imag * 100
         break
 
-      case "tribes":
-        // Tribal settlement patterns
-        const village = Math.floor(seededRandom() * 5)
-        const villageX = centerX + (village - 2) * 120
-        const villageY = centerY + (seededRandom() - 0.5) * 300
-        const houseAngle = seededRandom() * Math.PI * 2
-        const houseRadius = seededRandom() * 60 + 20
-        x = villageX + Math.cos(houseAngle) * houseRadius
-        y = villageY + Math.sin(houseAngle) * houseRadius
+      case "rice-terraces":
+        // Terraced landscape patterns
+        const terraceLevel = Math.floor(y / 60)
+        x = rng.next() * 800
+        y = terraceLevel * 60 + rng.next() * 50
+        elementType = "rice-terrace"
+        size = 2 + rng.next() * 4
         break
 
-      case "heads":
-        // Mosaic head composition
-        const faceAngle = t * Math.PI * 2
-        const faceRadius = 150 + seededRandom() * 50
-        const feature = Math.floor(seededRandom() * 3)
-        x = centerX + Math.cos(faceAngle) * faceRadius * (1 + feature * 0.2)
-        y = centerY + Math.sin(faceAngle) * faceRadius * (1 + feature * 0.1)
+      case "ceremonies":
+        // Ceremonial gathering patterns
+        const ceremonyX = 400,
+          ceremonyY = 300
+        const ceremonyRadius = 80 + rng.next() * 120
+        const ceremonyAngle = t * Math.PI * 2 + rng.next() * 0.5
+        x = ceremonyX + Math.cos(ceremonyAngle) * ceremonyRadius
+        y = ceremonyY + Math.sin(ceremonyAngle) * ceremonyRadius
+        elementType = ceremonyRadius < 100 ? "ceremony-center" : "ceremony-participant"
+        size = elementType === "ceremony-center" ? 8 + rng.next() * 6 : 3 + rng.next() * 5
         break
 
-      case "thailand":
-        // Thai cultural heritage patterns
-        const culturalElement = Math.floor(seededRandom() * 8)
-        let thaiX: number, thaiY: number
+      case "dancers":
+        // Dance formation patterns
+        const danceFormation = Math.floor(i / 20)
+        const danceAngle = (i % 20) * ((Math.PI * 2) / 20)
+        const danceRadius = 60 + (danceFormation % 3) * 40
+        x = 400 + Math.cos(danceAngle) * danceRadius
+        y = 300 + Math.sin(danceAngle) * danceRadius
+        elementType = "dancer"
+        size = 4 + rng.next() * 6
+        break
 
-        switch (culturalElement) {
-          case 0: // Golden temples (Wat)
-            const templeAngle = t * Math.PI * 4 + seed * 0.2
-            const templeRadius = 100 + seededRandom() * 80
-            thaiX = centerX + Math.cos(templeAngle) * templeRadius
-            thaiY = centerY + Math.sin(templeAngle) * templeRadius * 0.8 // Slightly flattened for temple architecture
-            break
-          case 1: // Traditional Thai dancers
-            const danceAngle = t * Math.PI * 6 + seededRandom() * Math.PI
-            const danceRadius = 80 + seededRandom() * 60
-            thaiX = centerX + Math.cos(danceAngle) * danceRadius * (1 + Math.sin(t * Math.PI * 8) * 0.3) // Flowing dance movements
-            thaiY = centerY + Math.sin(danceAngle) * danceRadius * (1 + Math.cos(t * Math.PI * 6) * 0.2)
-            break
-          case 2: // Floating markets
-            const marketFlow = t * Math.PI * 2
-            const boatOffset = seededRandom() * 40 - 20
-            thaiX = centerX + Math.sin(marketFlow) * 150 + boatOffset
-            thaiY = centerY + Math.cos(marketFlow) * 100 + seededRandom() * 30 - 15 // River-like flow
-            break
-          case 3: // Tuk-tuks and street life
-            const streetGrid = Math.floor(seededRandom() * 5)
-            const streetOffset = Math.floor(seededRandom() * 3)
-            thaiX = centerX + (streetGrid - 2) * 80 + (seededRandom() - 0.5) * 40
-            thaiY = centerY + (streetOffset - 1) * 100 + (seededRandom() - 0.5) * 60
-            break
-          case 4: // Monks in saffron robes
-            const monasteryAngle = seededRandom() * Math.PI * 2
-            const monasteryRadius = 60 + seededRandom() * 40
-            thaiX = centerX + Math.cos(monasteryAngle) * monasteryRadius
-            thaiY = centerY + Math.sin(monasteryAngle) * monasteryRadius
-            break
-          case 5: // Royal palaces
-            const palaceSymmetry = (Math.floor(seededRandom() * 4) * Math.PI) / 2
-            const palaceRadius = 120 + seededRandom() * 50
-            thaiX = centerX + Math.cos(palaceSymmetry) * palaceRadius
-            thaiY = centerY + Math.sin(palaceSymmetry) * palaceRadius
-            break
-          case 6: // Thai festivals (Songkran, Loy Krathong)
-            const festivalSpiral = t * Math.PI * 3 + seededRandom() * Math.PI
-            const festivalRadius = 90 + seededRandom() * 70
-            thaiX = centerX + Math.cos(festivalSpiral) * festivalRadius * (1 + Math.sin(t * Math.PI * 12) * 0.4) // Celebratory movement
-            thaiY = centerY + Math.sin(festivalSpiral) * festivalRadius * (1 + Math.cos(t * Math.PI * 10) * 0.3)
-            break
-          default: // Traditional architecture
-            const archAngle = t * Math.PI * 2 + seededRandom() * Math.PI
-            const archRadius = 100 + seededRandom() * 60
-            thaiX = centerX + Math.cos(archAngle) * archRadius
-            thaiY = centerY + Math.sin(archAngle) * archRadius * 0.9 // Architectural proportions
+      case "beaches":
+        // Coastal temple and beach patterns
+        x = rng.next() * 800
+        y = 450 + Math.sin(x * 0.01) * 50 + rng.next() * 100
+        elementType = y > 500 ? "beach-element" : "coastal-temple"
+        size = elementType === "coastal-temple" ? 6 + rng.next() * 8 : 2 + rng.next() * 4
+        break
+
+      case "artisans":
+        // Artisan workshop clusters
+        const workshopX = (Math.floor(i / 40) % 5) * 160 + 80
+        const workshopY = Math.floor(i / 200) * 120 + 100
+        x = workshopX + (rng.next() - 0.5) * 60
+        y = workshopY + (rng.next() - 0.5) * 60
+        elementType = "artisan"
+        size = 3 + rng.next() * 5
+        break
+
+      case "volcanoes":
+        // Sacred mountain patterns
+        const volcanoX = 400,
+          volcanoY = 200
+        const volcanoRadius = Math.sqrt(rng.next()) * 200
+        const volcanoAngle = rng.next() * Math.PI * 2
+        x = volcanoX + Math.cos(volcanoAngle) * volcanoRadius
+        y = volcanoY + Math.sin(volcanoAngle) * volcanoRadius + volcanoRadius * 0.5
+        elementType = volcanoRadius < 50 ? "volcano-peak" : "volcano-slope"
+        size = elementType === "volcano-peak" ? 10 + rng.next() * 8 : 2 + rng.next() * 6
+        break
+
+      default: // landscape and pure
+        // General Balinese landscape
+        x = rng.next() * 800
+        y = rng.next() * 600
+        elementType = "cultural-element"
+        size = 2 + rng.next() * 6
+    }
+
+    // Apply noise and time evolution
+    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
+    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
+
+    const colorIndex = Math.floor((t + rng.next() * 0.3) * palette.length) % palette.length
+    const color = palette[colorIndex]
+
+    points.push({ x, y, color, size, type: elementType })
+  }
+
+  return points
+}
+
+function generateThaiPattern(
+  params: GenerationParams,
+  rng: SeededRandom,
+): Array<{ x: number; y: number; color: string; size: number; type: string }> {
+  const points: Array<{ x: number; y: number; color: string; size: number; type: string }> = []
+  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = i / params.numSamples
+
+    let elementType = "cultural-element"
+    let x: number, y: number, size: number
+
+    switch (params.scenario) {
+      case "landscape":
+        // Thai temple landscape
+        if (i < params.numSamples * 0.15) {
+          elementType = "temple"
+          x = 150 + (i % 4) * 150 + rng.next() * 50
+          y = 100 + Math.floor(i / 4) * 120 + rng.next() * 50
+          size = 10 + rng.next() * 8
+        } else {
+          x = rng.next() * 800
+          y = rng.next() * 600
+          size = 2 + rng.next() * 5
         }
+        break
 
-        x = thaiX
-        y = thaiY
+      case "architectural":
+        // Temple architecture focus
+        const templeCount = 6
+        const templeIndex = Math.floor(i / (params.numSamples / templeCount))
+        const templeX = (templeIndex % 3) * 250 + 125
+        const templeY = Math.floor(templeIndex / 3) * 200 + 150
+        x = templeX + (rng.next() - 0.5) * 80
+        y = templeY + (rng.next() - 0.5) * 80
+        elementType = "temple-detail"
+        size = 3 + rng.next() * 7
+        break
+
+      case "ceremonial":
+        // Buddhist ceremony patterns
+        const centerX = 400,
+          centerY = 300
+        const ceremonyRadius = 60 + rng.next() * 100
+        const angle = t * Math.PI * 2 * 3
+        x = centerX + Math.cos(angle) * ceremonyRadius
+        y = centerY + Math.sin(angle) * ceremonyRadius
+        elementType = "ceremony"
+        size = 4 + rng.next() * 6
+        break
+
+      case "urban":
+        // Bangkok street life
+        x = rng.next() * 800
+        y = rng.next() * 600
+        elementType = "urban-element"
+        size = 2 + rng.next() * 4
+        break
+
+      case "botanical":
+        // Thai gardens with lotus ponds
+        const gardenClusters = 4
+        const clusterIndex = Math.floor(i / (params.numSamples / gardenClusters))
+        const clusterX = (clusterIndex % 2) * 400 + 200
+        const clusterY = Math.floor(clusterIndex / 2) * 300 + 150
+        x = clusterX + (rng.next() - 0.5) * 150
+        y = clusterY + (rng.next() - 0.5) * 150
+        elementType = "botanical"
+        size = 3 + rng.next() * 6
+        break
+
+      case "floating":
+        // Floating market patterns
+        x = rng.next() * 800
+        y = 250 + Math.sin(x * 0.02) * 100 + rng.next() * 100
+        elementType = "floating-market"
+        size = 3 + rng.next() * 5
+        break
+
+      case "monks":
+        // Monk procession patterns
+        const processionPath = t * 800
+        x = processionPath % 800
+        y = 300 + Math.sin(processionPath * 0.01) * 50 + rng.next() * 40
+        elementType = "monk"
+        size = 4 + rng.next() * 4
         break
 
       default:
-        x = centerX + (seededRandom() - 0.5) * 600
-        y = centerY + (seededRandom() - 0.5) * 600
+        x = rng.next() * 800
+        y = rng.next() * 600
+        size = 2 + rng.next() * 6
+    }
+
+    // Apply noise and time evolution
+    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
+    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
+
+    const colorIndex = Math.floor((t + rng.next() * 0.3) * palette.length) % palette.length
+    const color = palette[colorIndex]
+
+    points.push({ x, y, color, size, type: elementType })
+  }
+
+  return points
+}
+
+function generateStatuePattern(
+  params: GenerationParams,
+  rng: SeededRandom,
+): Array<{ x: number; y: number; color: string; size: number; type: string }> {
+  const points: Array<{ x: number; y: number; color: string; size: number; type: string }> = []
+  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = i / params.numSamples
+
+    let elementType = "statue"
+    let x: number, y: number, size: number
+
+    switch (params.scenario) {
+      case "buddha":
+        // Buddha statue arrangements
+        if (i < params.numSamples * 0.2) {
+          elementType = "buddha-statue"
+          x = 200 + (i % 3) * 200 + rng.next() * 80
+          y = 150 + Math.floor(i / 3) * 150 + rng.next() * 80
+          size = 12 + rng.next() * 8
+        } else {
+          elementType = "meditation-element"
+          x = rng.next() * 800
+          y = rng.next() * 600
+          size = 2 + rng.next() * 4
+        }
+        break
+
+      case "cats":
+        // Cat sculpture arrangements
+        const catPositions = [
+          { x: 150, y: 150 },
+          { x: 400, y: 100 },
+          { x: 650, y: 200 },
+          { x: 200, y: 350 },
+          { x: 500, y: 300 },
+          { x: 700, y: 400 },
+          { x: 100, y: 500 },
+          { x: 350, y: 450 },
+          { x: 600, y: 500 },
+        ]
+        if (i < catPositions.length * 20) {
+          const catIndex = Math.floor(i / 20)
+          const cat = catPositions[catIndex]
+          x = cat.x + (rng.next() - 0.5) * 60
+          y = cat.y + (rng.next() - 0.5) * 60
+          elementType = i % 20 === 0 ? "cat-statue" : "cat-detail"
+          size = elementType === "cat-statue" ? 8 + rng.next() * 6 : 2 + rng.next() * 4
+        } else {
+          x = rng.next() * 800
+          y = rng.next() * 600
+          elementType = "environment"
+          size = 1 + rng.next() * 3
+        }
+        break
+
+      case "greek":
+        // Classical Greek arrangement
+        const greekColumns = 5
+        const columnSpacing = 800 / (greekColumns + 1)
+        if (i < params.numSamples * 0.3) {
+          const columnIndex = i % greekColumns
+          x = columnSpacing * (columnIndex + 1) + (rng.next() - 0.5) * 40
+          y = 200 + rng.next() * 200
+          elementType = "greek-statue"
+          size = 10 + rng.next() * 8
+        } else {
+          x = rng.next() * 800
+          y = rng.next() * 600
+          elementType = "classical-element"
+          size = 2 + rng.next() * 5
+        }
+        break
+
+      case "modern":
+        // Modern sculpture arrangement
+        const modernClusters = 4
+        const clusterIndex = Math.floor(i / (params.numSamples / modernClusters))
+        const clusterX = (clusterIndex % 2) * 400 + 200
+        const clusterY = Math.floor(clusterIndex / 2) * 300 + 150
+        x = clusterX + (rng.next() - 0.5) * 120
+        y = clusterY + (rng.next() - 0.5) * 120
+        elementType = "modern-sculpture"
+        size = 4 + rng.next() * 8
+        break
+
+      case "angels":
+        // Angelic figure arrangements
+        const angelFormation = Math.floor(i / 30)
+        const angelAngle = (i % 30) * ((Math.PI * 2) / 30)
+        const angelRadius = 80 + (angelFormation % 3) * 50
+        x = 400 + Math.cos(angelAngle) * angelRadius
+        y = 300 + Math.sin(angelAngle) * angelRadius
+        elementType = "angel-statue"
+        size = 6 + rng.next() * 8
+        break
+
+      case "warriors":
+        // Warrior statue formations
+        const battleLines = 3
+        const lineIndex = Math.floor(i / (params.numSamples / battleLines))
+        x = (i % (params.numSamples / battleLines)) * (800 / (params.numSamples / battleLines)) + rng.next() * 40
+        y = 150 + lineIndex * 150 + rng.next() * 80
+        elementType = "warrior-statue"
+        size = 8 + rng.next() * 6
+        break
+
+      case "animals":
+        // Animal totem arrangements
+        const animalTypes = 6
+        const animalIndex = i % animalTypes
+        const animalX = (animalIndex % 3) * 250 + 125
+        const animalY = Math.floor(animalIndex / 3) * 250 + 125
+        x = animalX + (rng.next() - 0.5) * 100
+        y = animalY + (rng.next() - 0.5) * 100
+        elementType = "animal-totem"
+        size = 6 + rng.next() * 8
+        break
+
+      default: // landscape and pure
+        x = rng.next() * 800
+        y = rng.next() * 600
+        elementType = "statue"
+        size = 4 + rng.next() * 8
+    }
+
+    // Apply noise and time evolution
+    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 15
+    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 15
+
+    const colorIndex = Math.floor((t + rng.next() * 0.3) * palette.length) % palette.length
+    const color = palette[colorIndex]
+
+    points.push({ x, y, color, size, type: elementType })
+  }
+
+  return points
+}
+
+function generateSpiralPattern(
+  params: GenerationParams,
+  rng: SeededRandom,
+): Array<{ x: number; y: number; color: string; size: number }> {
+  const points: Array<{ x: number; y: number; color: string; size: number }> = []
+  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = i / params.numSamples
+
+    // Different spiral types based on scenario
+    let x: number, y: number
+
+    switch (params.scenario) {
+      case "fibonacci":
+        // Fibonacci spiral with golden ratio
+        const phi = (1 + Math.sqrt(5)) / 2
+        const angle = (i * 2 * Math.PI) / phi
+        const radius = Math.sqrt(i) * 3
+        x = 400 + radius * Math.cos(angle)
+        y = 300 + radius * Math.sin(angle)
+        break
+
+      case "galaxy":
+        // Galactic spiral arms
+        const armAngle = t * Math.PI * 8 + params.seed
+        const armRadius = t * 200 + rng.next() * 20
+        x = 400 + armRadius * Math.cos(armAngle)
+        y = 300 + armRadius * Math.sin(armAngle)
+        break
+
+      case "nautilus":
+        // Nautilus shell spiral
+        const nautilusAngle = t * Math.PI * 6
+        const nautilusRadius = Math.exp(nautilusAngle * 0.1) * 2
+        x = 400 + nautilusRadius * Math.cos(nautilusAngle)
+        y = 300 + nautilusRadius * Math.sin(nautilusAngle)
+        break
+
+      case "vortex":
+        // Energy vortex
+        const vortexAngle = t * Math.PI * 12 + Math.sin(t * Math.PI * 4) * 0.5
+        const vortexRadius = (1 - t) * 150 + Math.sin(t * Math.PI * 8) * 20
+        x = 400 + vortexRadius * Math.cos(vortexAngle)
+        y = 300 + vortexRadius * Math.sin(vortexAngle)
+        break
+
+      case "logarithmic":
+        // Logarithmic spiral
+        const logAngle = t * Math.PI * 10
+        const logRadius = Math.exp(logAngle * 0.05) * 5
+        x = 400 + logRadius * Math.cos(logAngle)
+        y = 300 + logRadius * Math.sin(logAngle)
+        break
+
+      default:
+        // Basic spiral
+        const basicAngle = t * Math.PI * 6
+        const basicRadius = t * 150
+        x = 400 + basicRadius * Math.cos(basicAngle)
+        y = 300 + basicRadius * Math.sin(basicAngle)
+    }
+
+    // Apply noise and time evolution
+    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
+    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
+
+    const colorIndex = Math.floor(t * palette.length) % palette.length
+    const color = palette[colorIndex]
+    const size = 2 + Math.sin(t * Math.PI * 4) * 3
+
+    points.push({ x, y, color, size })
+  }
+
+  return points
+}
+
+// Additional pattern generators for other datasets...
+function generateFractalPattern(
+  params: GenerationParams,
+  rng: SeededRandom,
+): Array<{ x: number; y: number; color: string; size: number }> {
+  const points: Array<{ x: number; y: number; color: string; size: number }> = []
+  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
+
+  // L-system fractal generation
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = i / params.numSamples
+
+    // Fractal tree branching
+    const depth = Math.floor(t * 8)
+    const branchAngle = (t * Math.PI * 2 * Math.pow(2, depth)) % (Math.PI * 2)
+    const branchLength = 100 / Math.pow(1.5, depth)
+
+    let x = 400
+    let y = 500
+
+    // Build fractal path
+    for (let d = 0; d <= depth; d++) {
+      const angle = branchAngle + ((d * Math.PI) / 4) * (rng.next() - 0.5)
+      const length = branchLength * Math.pow(0.7, d)
+      x += Math.cos(angle) * length
+      y -= Math.sin(angle) * length
     }
 
     // Apply noise
-    x += (seededRandom() - 0.5) * noiseScale * 100
-    y += (seededRandom() - 0.5) * noiseScale * 100
+    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 10
+    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 10
 
-    // Create path
-    if (i === 0) {
-      paths.push(`M ${x} ${y}`)
-    } else {
-      paths.push(`L ${x} ${y}`)
-    }
+    const colorIndex = Math.floor(t * palette.length) % palette.length
+    const color = palette[colorIndex]
+    const size = 1 + (8 - depth) * 0.5
 
-    // Assign color
-    const colorIndex = Math.floor(seededRandom() * palette.length)
-    colors.push(palette[colorIndex])
+    points.push({ x, y, color, size })
   }
 
-  // Generate SVG
-  const pathString = paths.join(" ")
-  const svgContent = `
-    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          ${palette.map((color, i) => `<stop offset="${(i / (palette.length - 1)) * 100}%" style="stop-color:${color};stop-opacity:1" />`).join("")}
-        </linearGradient>
-      </defs>
-      <rect width="100%" height="100%" fill="#000000"/>
-      <path d="${pathString}" stroke="url(#flowGradient)" stroke-width="2" fill="none" opacity="0.8"/>
-      ${paths
-        .map((_, i) => {
-          if (i % 10 === 0) {
-            const x = centerX + (seededRandom() - 0.5) * 600
-            const y = centerY + (seededRandom() - 0.5) * 600
-            return `<circle cx="${x}" cy="${y}" r="${2 + seededRandom() * 3}" fill="${colors[i % colors.length]}" opacity="0.6"/>`
-          }
-          return ""
-        })
-        .join("")}
-    </svg>
-  `
-
-  return svgContent
+  return points
 }
 
-export function generateDomeProjection(params: DomeProjectionParams): string {
-  const { width, height, fov, tilt } = params
+function generateMandelbrotPattern(
+  params: GenerationParams,
+  rng: SeededRandom,
+): Array<{ x: number; y: number; color: string; size: number }> {
+  const points: Array<{ x: number; y: number; color: string; size: number }> = []
+  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
 
-  // Enhanced dome projection visualization with circular composition
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = i / params.numSamples
+
+    // Map to complex plane
+    const cx = -2 + t * 3
+    const cy = -1.5 + (i % 100) * 0.03
+
+    // Mandelbrot iteration
+    let zx = 0,
+      zy = 0
+    let iterations = 0
+    const maxIterations = 50
+
+    while (zx * zx + zy * zy < 4 && iterations < maxIterations) {
+      const xtemp = zx * zx - zy * zy + cx
+      zy = 2 * zx * zy + cy
+      zx = xtemp
+      iterations++
+    }
+
+    // Map back to screen coordinates
+    const x = 200 + (cx + 2) * 100
+    const y = 200 + (cy + 1.5) * 100
+
+    const colorIndex = Math.floor((iterations / maxIterations) * palette.length) % palette.length
+    const color = palette[colorIndex]
+    const size = iterations < maxIterations ? 2 + iterations * 0.1 : 1
+
+    points.push({ x, y, color, size })
+  }
+
+  return points
+}
+
+// Generic pattern generator for other datasets
+function generateGenericPattern(
+  params: GenerationParams,
+  rng: SeededRandom,
+): Array<{ x: number; y: number; color: string; size: number }> {
+  const points: Array<{ x: number; y: number; color: string; size: number }> = []
+  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = i / params.numSamples
+
+    // Generate based on dataset type
+    let x: number, y: number, size: number
+
+    switch (params.dataset) {
+      case "julia":
+        // Julia set
+        const angle = t * Math.PI * 2
+        const radius = Math.sqrt(rng.next()) * 200
+        x = 400 + radius * Math.cos(angle)
+        y = 300 + radius * Math.sin(angle)
+        size = 2 + Math.sin(angle * 4) * 2
+        break
+
+      case "lorenz":
+        // Lorenz attractor
+        const lorenzT = t * 100
+        x = 400 + Math.sin(lorenzT * 0.1) * 150
+        y = 300 + Math.cos(lorenzT * 0.07) * 100
+        size = 1 + Math.abs(Math.sin(lorenzT * 0.05)) * 3
+        break
+
+      case "voronoi":
+        // Voronoi diagram
+        x = rng.next() * 800
+        y = rng.next() * 600
+        size = 2 + rng.next() * 4
+        break
+
+      case "tribes":
+      case "heads":
+      case "natives":
+        // Organic clustering
+        const clusterX = (Math.floor(i / 50) % 4) * 200 + 100
+        const clusterY = Math.floor(i / 200) * 150 + 100
+        x = clusterX + (rng.next() - 0.5) * 80
+        y = clusterY + (rng.next() - 0.5) * 80
+        size = 3 + rng.next() * 5
+        break
+
+      default:
+        // Default pattern
+        x = rng.next() * 800
+        y = rng.next() * 600
+        size = 2 + rng.next() * 4
+    }
+
+    // Apply noise and time evolution
+    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
+    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
+
+    const colorIndex = Math.floor(t * palette.length) % palette.length
+    const color = palette[colorIndex]
+
+    points.push({ x, y, color, size })
+  }
+
+  return points
+}
+
+export function generateFlowField(params: GenerationParams): string {
+  const rng = new SeededRandom(params.seed)
+  let points: Array<{ x: number; y: number; color: string; size: number; type?: string }>
+
+  // Generate points based on dataset
+  switch (params.dataset) {
+    case "nuanu":
+      points = generateNuanuPattern(params, rng)
+      break
+    case "bali":
+      points = generateBalinesePattern(params, rng)
+      break
+    case "thailand":
+      points = generateThaiPattern(params, rng)
+      break
+    case "statues":
+      points = generateStatuePattern(params, rng)
+      break
+    case "spirals":
+      points = generateSpiralPattern(params, rng)
+      break
+    case "fractal":
+      points = generateFractalPattern(params, rng)
+      break
+    case "mandelbrot":
+      points = generateMandelbrotPattern(params, rng)
+      break
+    default:
+      points = generateGenericPattern(params, rng)
+  }
+
+  // Create SVG
+  let svg = `<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="pointGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-opacity:1" />
+      <stop offset="100%" style="stop-opacity:0.3" />
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="#000011"/>
+`
+
+  // Add points
+  points.forEach((point, index) => {
+    const opacity = 0.6 + Math.sin(index * 0.1) * 0.3
+    svg += `  <circle cx="${point.x}" cy="${point.y}" r="${point.size}" fill="${point.color}" opacity="${opacity}" />
+`
+  })
+
+  svg += `</svg>`
+
+  return svg
+}
+
+// Dome projection utility
+export function generateDomeProjection(options: {
+  width: number
+  height: number
+  fov: number
+  tilt: number
+}): string {
+  const { width, height, fov, tilt } = options
+
+  // Generate fisheye projection for dome
+  let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="domeGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#4444ff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#000044;stop-opacity:0.6" />
+    </radialGradient>
+  </defs>
+  <rect width="${width}" height="${height}" fill="#000011"/>
+  <circle cx="${width / 2}" cy="${height / 2}" r="${Math.min(width, height) / 2 - 10}" fill="url(#domeGradient)" />
+`
+
+  // Add dome-specific patterns
   const centerX = width / 2
   const centerY = height / 2
-  const radius = Math.min(width, height) / 2 - 20
+  const maxRadius = Math.min(width, height) / 2 - 20
 
-  // Create concentric circles for dome effect
-  const circles = []
-  for (let i = 1; i <= 5; i++) {
-    const r = (radius * i) / 5
-    circles.push(
-      `<circle cx="${centerX}" cy="${centerY}" r="${r}" fill="none" stroke="#4a90e2" stroke-width="1" opacity="${0.3 - i * 0.05}"/>`,
-    )
+  for (let i = 0; i < 500; i++) {
+    const angle = (i / 500) * Math.PI * 2 * 8
+    const radius = Math.sqrt(i / 500) * maxRadius
+    const x = centerX + radius * Math.cos(angle)
+    const y = centerY + radius * Math.sin(angle)
+    const size = 2 + (1 - radius / maxRadius) * 4
+    const opacity = 0.3 + (1 - radius / maxRadius) * 0.5
+
+    svg += `  <circle cx="${x}" cy="${y}" r="${size}" fill="#ffffff" opacity="${opacity}" />
+`
   }
 
-  // Add radial lines for dome grid
-  const lines = []
-  for (let angle = 0; angle < 360; angle += 30) {
-    const radian = (angle * Math.PI) / 180
-    const x1 = centerX + Math.cos(radian) * (radius * 0.2)
-    const y1 = centerY + Math.sin(radian) * (radius * 0.2)
-    const x2 = centerX + Math.cos(radian) * radius
-    const y2 = centerY + Math.sin(radian) * radius
-    lines.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#4a90e2" stroke-width="1" opacity="0.2"/>`)
-  }
+  svg += `</svg>`
 
-  const svgContent = `
-    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="domeGradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.9" />
-          <stop offset="30%" style="stop-color:#4a90e2;stop-opacity:0.6" />
-          <stop offset="70%" style="stop-color:#2c5aa0;stop-opacity:0.4" />
-          <stop offset="100%" style="stop-color:#1a365d;stop-opacity:0.2" />
-        </radialGradient>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-          <feMerge> 
-            <feMergeNode in="coloredBlur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-      </defs>
-      <rect width="100%" height="100%" fill="#000011"/>
-      
-      <!-- Dome grid -->
-      ${circles.join("")}
-      ${lines.join("")}
-      
-      <!-- Main dome circle -->
-      <circle cx="${centerX}" cy="${centerY}" r="${radius}" fill="url(#domeGradient)" stroke="#4a90e2" stroke-width="3" filter="url(#glow)"/>
-      
-      <!-- Center point -->
-      <circle cx="${centerX}" cy="${centerY}" r="5" fill="#ffffff" opacity="0.8"/>
-      
-      <!-- Dome info -->
-      <text x="${centerX}" y="${centerY + radius + 30}" text-anchor="middle" fill="#ffffff" font-family="Arial" font-size="16" font-weight="bold">
-        ${fov}° Dome Projection
-      </text>
-      <text x="${centerX}" y="${centerY + radius + 50}" text-anchor="middle" fill="#4a90e2" font-family="Arial" font-size="12">
-        Optimized for Planetarium Display
-      </text>
-    </svg>
-  `
-
-  return svgContent
+  return svg
 }
