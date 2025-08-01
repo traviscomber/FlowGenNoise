@@ -141,6 +141,65 @@ export function generateFlowField(params: GenerationParams): string {
         y = centerY + Math.sin(faceAngle) * faceRadius * (1 + feature * 0.1)
         break
 
+      case "thailand":
+        // Thai cultural heritage patterns
+        const culturalElement = Math.floor(seededRandom() * 8)
+        let thaiX: number, thaiY: number
+
+        switch (culturalElement) {
+          case 0: // Golden temples (Wat)
+            const templeAngle = t * Math.PI * 4 + seed * 0.2
+            const templeRadius = 100 + seededRandom() * 80
+            thaiX = centerX + Math.cos(templeAngle) * templeRadius
+            thaiY = centerY + Math.sin(templeAngle) * templeRadius * 0.8 // Slightly flattened for temple architecture
+            break
+          case 1: // Traditional Thai dancers
+            const danceAngle = t * Math.PI * 6 + seededRandom() * Math.PI
+            const danceRadius = 80 + seededRandom() * 60
+            thaiX = centerX + Math.cos(danceAngle) * danceRadius * (1 + Math.sin(t * Math.PI * 8) * 0.3) // Flowing dance movements
+            thaiY = centerY + Math.sin(danceAngle) * danceRadius * (1 + Math.cos(t * Math.PI * 6) * 0.2)
+            break
+          case 2: // Floating markets
+            const marketFlow = t * Math.PI * 2
+            const boatOffset = seededRandom() * 40 - 20
+            thaiX = centerX + Math.sin(marketFlow) * 150 + boatOffset
+            thaiY = centerY + Math.cos(marketFlow) * 100 + seededRandom() * 30 - 15 // River-like flow
+            break
+          case 3: // Tuk-tuks and street life
+            const streetGrid = Math.floor(seededRandom() * 5)
+            const streetOffset = Math.floor(seededRandom() * 3)
+            thaiX = centerX + (streetGrid - 2) * 80 + (seededRandom() - 0.5) * 40
+            thaiY = centerY + (streetOffset - 1) * 100 + (seededRandom() - 0.5) * 60
+            break
+          case 4: // Monks in saffron robes
+            const monasteryAngle = seededRandom() * Math.PI * 2
+            const monasteryRadius = 60 + seededRandom() * 40
+            thaiX = centerX + Math.cos(monasteryAngle) * monasteryRadius
+            thaiY = centerY + Math.sin(monasteryAngle) * monasteryRadius
+            break
+          case 5: // Royal palaces
+            const palaceSymmetry = (Math.floor(seededRandom() * 4) * Math.PI) / 2
+            const palaceRadius = 120 + seededRandom() * 50
+            thaiX = centerX + Math.cos(palaceSymmetry) * palaceRadius
+            thaiY = centerY + Math.sin(palaceSymmetry) * palaceRadius
+            break
+          case 6: // Thai festivals (Songkran, Loy Krathong)
+            const festivalSpiral = t * Math.PI * 3 + seededRandom() * Math.PI
+            const festivalRadius = 90 + seededRandom() * 70
+            thaiX = centerX + Math.cos(festivalSpiral) * festivalRadius * (1 + Math.sin(t * Math.PI * 12) * 0.4) // Celebratory movement
+            thaiY = centerY + Math.sin(festivalSpiral) * festivalRadius * (1 + Math.cos(t * Math.PI * 10) * 0.3)
+            break
+          default: // Traditional architecture
+            const archAngle = t * Math.PI * 2 + seededRandom() * Math.PI
+            const archRadius = 100 + seededRandom() * 60
+            thaiX = centerX + Math.cos(archAngle) * archRadius
+            thaiY = centerY + Math.sin(archAngle) * archRadius * 0.9 // Architectural proportions
+        }
+
+        x = thaiX
+        y = thaiY
+        break
+
       default:
         x = centerX + (seededRandom() - 0.5) * 600
         y = centerY + (seededRandom() - 0.5) * 600
