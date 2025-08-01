@@ -76,9 +76,9 @@ export function FlowArtGenerator() {
   const [downloadStatus, setDownloadStatus] = useState<string | null>(null)
 
   // Enhanced generation parameters with Nuanu as default
-  const [dataset, setDataset] = useState("nuanu")
-  const [scenario, setScenario] = useState("landscape")
-  const [colorScheme, setColorScheme] = useState("sunset")
+  const [dataset, setDataset] = useState("indonesian")
+  const [scenario, setScenario] = useState("garuda")
+  const [colorScheme, setColorScheme] = useState("metallic")
   const [seed, setSeed] = useState(1234)
   const [numSamples, setNumSamples] = useState(3000)
   const [noiseScale, setNoiseScale] = useState(0.1)
@@ -145,6 +145,8 @@ export function FlowArtGenerator() {
       nuanu: "Nuanu Creative City",
       bali: "Balinese Cultural Heritage",
       thailand: "Thai Cultural Heritage",
+      indonesian: "Indonesian Mythology",
+      horror: "Indonesian Horror Creatures",
       spirals: "Mathematical Spirals",
       fractal: "Fractal Patterns",
       mandelbrot: "Mandelbrot Set",
@@ -267,6 +269,26 @@ export function FlowArtGenerator() {
         { value: "angels", label: "Angelic Figures", description: "Divine winged guardians" },
         { value: "warriors", label: "Warrior Statues", description: "Heroic battle poses" },
         { value: "animals", label: "Animal Totems", description: "Wildlife in stone and bronze" },
+      ],
+      indonesian: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "garuda", label: "Garuda Wisnu", description: "Mythical bird creature" },
+        { value: "wayang", label: "Wayang Kulit", description: "Shadow puppet theatre" },
+        { value: "batik", label: "Batik Patterns", description: "Traditional wax-resist dyeing" },
+        { value: "borobudur", label: "Borobudur Temple", description: "Ancient Buddhist monument" },
+        { value: "komodo", label: "Komodo Dragons", description: "Largest living lizards" },
+        { value: "dance", label: "Traditional Dance", description: "Cultural performances" },
+        { value: "mountains", label: "Volcanic Mountains", description: "Lush landscapes" },
+      ],
+      horror: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty" },
+        { value: "kuntilanak", label: "Kuntilanak", description: "Female ghost in white" },
+        { value: "pocong", label: "Pocong", description: "Wrapped corpse ghost" },
+        { value: "genderuwo", label: "Genderuwo", description: "Hairy ape-like demon" },
+        { value: "tuyul", label: "Tuyul", description: "Child spirit thief" },
+        { value: "sundelbolong", label: "Sundel Bolong", description: "Back-holed ghost" },
+        { value: "leak", label: "Leak", description: "Flying head with organs" },
+        { value: "banaspati", label: "Banaspati", description: "Fire spirit" },
       ],
     }
     return (
@@ -402,7 +424,7 @@ export function FlowArtGenerator() {
           projectionType: domeEnabled ? domeProjectionType : undefined,
           panoramic360: panorama360Enabled,
           panoramaResolution: panorama360Enabled ? panoramaResolution : undefined,
-          panoramaFormat: panorama360Enabled ? panoramaFormat : undefined,
+          panoramaFormat: panoramaFormat,
           stereographicPerspective:
             panorama360Enabled && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
         }
@@ -856,6 +878,8 @@ export function FlowArtGenerator() {
                           <SelectItem value="nuanu">🏗️ Nuanu Creative City</SelectItem>
                           <SelectItem value="bali">🏝️ Balinese Cultural Heritage</SelectItem>
                           <SelectItem value="thailand">🇹🇭 Thai Cultural Heritage</SelectItem>
+                          <SelectItem value="indonesian">🐉 Indonesian Mythology</SelectItem>
+                          <SelectItem value="horror">👻 Indonesian Horror Creatures</SelectItem>
                           <SelectItem value="spirals">🌀 Fibonacci Spirals</SelectItem>
                           <SelectItem value="fractal">🌿 Fractal Trees</SelectItem>
                           <SelectItem value="mandelbrot">🎭 Mandelbrot Set</SelectItem>
