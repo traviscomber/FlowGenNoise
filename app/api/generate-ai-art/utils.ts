@@ -124,30 +124,20 @@ export async function callOpenAI(prompt: string, timeoutMs = 15000): Promise<str
   throw lastError || new Error("All retry attempts failed")
 }
 
-// Enhanced prompt cleaning for beautiful, modern art generation
+// Clean prompt to avoid text/numbers in generated images
 export function cleanPromptForImageGeneration(prompt: string): string {
   let cleanPrompt = prompt
 
-  // Add modern art enhancement instructions
-  const modernArtInstructions =
-    ", ultra-modern digital art style, hyperrealistic 8K quality, cinematic lighting, volumetric effects, particle systems, advanced rendering, photorealistic textures, dramatic composition, award-winning photography, masterpiece quality, cutting-edge visual effects, stunning detail, breathtaking beauty, NO TEXT, NO NUMBERS, NO FONTS, NO LETTERS, NO WORDS, NO CAPTIONS, NO LABELS, pure visual imagery only, no written elements, no typography, no numerical displays, no textual overlays"
+  const noTextInstructions =
+    ", NO TEXT, NO NUMBERS, NO FONTS, NO LETTERS, NO WORDS, NO CAPTIONS, NO LABELS, pure visual imagery only, no written elements, no typography, no numerical displays, no textual overlays"
 
-  // Remove any potential text-generating phrases
   cleanPrompt = cleanPrompt.replace(
-    /\b(text|font|number|letter|word|caption|label|title|heading|writing|written)\b/gi,
+    /\b(text|font|number|letter|word|caption|label|title|heading)\b/gi,
     "visual element",
   )
-  cleanPrompt = cleanPrompt.replace(/\b(write|display|show|label)\b/gi, "visualize")
+  cleanPrompt = cleanPrompt.replace(/\b(write|written|writing|display|show|label)\b/gi, "visualize")
 
-  // Remove old/dated references and replace with modern equivalents
-  cleanPrompt = cleanPrompt.replace(/\b(old|ancient|vintage|retro|classic)\b/gi, "timeless")
-  cleanPrompt = cleanPrompt.replace(/\b(simple|basic|plain)\b/gi, "elegant")
-
-  // Enhance with modern visual terms
-  cleanPrompt = cleanPrompt.replace(/\b(art|artwork|image)\b/gi, "stunning masterpiece")
-  cleanPrompt = cleanPrompt.replace(/\b(beautiful|pretty|nice)\b/gi, "breathtakingly gorgeous")
-
-  return cleanPrompt + modernArtInstructions
+  return cleanPrompt + noTextInstructions
 }
 
 // Generate mathematical data for dome projection
@@ -260,10 +250,10 @@ export function generateMathematicalPanoramaData(
   return { coordinates }
 }
 
-// Create dome image from mathematical data and source image with enhanced fisheye transformation
+// Create dome image from mathematical data and source image
 export async function createDomeFromMathematicalData(imageUrl: string): Promise<string> {
   try {
-    console.log("🏛️ Creating enhanced dome projection from mathematical data...")
+    console.log("🏛️ Creating dome projection from mathematical data...")
 
     // Fetch the source image
     const response = await fetch(imageUrl)
@@ -282,77 +272,71 @@ export async function createDomeFromMathematicalData(imageUrl: string): Promise<
     const imageBlob = new Blob([imageBuffer])
     const imageBitmap = await createImageBitmap(imageBlob)
 
+    // Generate mathematical dome data
+    const domeData = generateMathematicalDomeData(1024, 1024)
+
     // Fill with black background
     ctx.fillStyle = "black"
     ctx.fillRect(0, 0, 1024, 1024)
 
-    const centerX = 512
-    const centerY = 512
-    const maxRadius = 400
+    // Create ImageData for pixel manipulation
+    const imageData = ctx.createImageData(1024, 1024)
+    const data = imageData.data
 
-    // Enhanced fisheye transformation with proper mathematical distortion
-    for (let y = 0; y < 1024; y++) {
-      for (let x = 0; x < 1024; x++) {
-        const dx = x - centerX
-        const dy = y - centerY
-        const distance = Math.sqrt(dx * dx + dy * dy)
+    // Draw source image to temporary canvas to get pixel data
+    const tempCanvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height)
+    const tempCtx = tempCanvas.getContext("2d")
+    if (!tempCtx) throw new Error("Could not get temp canvas context")
 
-        if (distance <= maxRadius) {
-          // Enhanced fisheye mathematical transformation
-          const angle = Math.atan2(dy, dx)
-          const normalizedR = distance / maxRadius
+    tempCtx.drawImage(imageBitmap, 0, 0)
+    const sourceImageData = tempCtx.getImageData(0, 0, imageBitmap.width, imageBitmap.height)
+    const sourceData = sourceImageData.data
 
-          // Apply stronger fisheye distortion: r' = 2 * sin(r * π/4)
-          const fisheyeR = 2 * Math.sin((normalizedR * Math.PI) / 4)
+    // Apply mathematical transformation pixel by pixel
+    for (const coord of domeData.coordinates) {
+      const targetIndex = (coord.y * 1024 + coord.x) * 4
 
-          // Map to source image with enhanced distortion
-          const sourceR = fisheyeR * maxRadius * 0.8 // Scale factor for better coverage
-          const sourceX = centerX + sourceR * Math.cos(angle)
-          const sourceY = centerY + sourceR * Math.sin(angle)
+      if (coord.valid) {
+        // Map to source image coordinates
+        const sourceX = Math.floor(coord.u * imageBitmap.width)
+        const sourceY = Math.floor(coord.v * imageBitmap.height)
+        const sourceIndex = (sourceY * imageBitmap.width + sourceX) * 4
 
-          // Convert to source image coordinates
-          const origX = (sourceX / 1024) * imageBitmap.width
-          const origY = (sourceY / 1024) * imageBitmap.height
-
-          if (origX >= 0 && origX < imageBitmap.width && origY >= 0 && origY < imageBitmap.height) {
-            // Sample with bilinear interpolation for smoother result
-            const x1 = Math.floor(origX)
-            const y1 = Math.floor(origY)
-            const x2 = Math.min(x1 + 1, imageBitmap.width - 1)
-            const y2 = Math.min(y1 + 1, imageBitmap.height - 1)
-
-            // Create temporary canvas to sample pixels
-            const tempCanvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height)
-            const tempCtx = tempCanvas.getContext("2d")
-            if (tempCtx) {
-              tempCtx.drawImage(imageBitmap, 0, 0)
-              const imageData = tempCtx.getImageData(x1, y1, x2 - x1 + 1, y2 - y1 + 1)
-
-              // Set pixel with enhanced color
-              ctx.fillStyle = `rgb(${imageData.data[0]}, ${imageData.data[1]}, ${imageData.data[2]})`
-              ctx.fillRect(x, y, 1, 1)
-            }
-          }
+        if (sourceIndex >= 0 && sourceIndex < sourceData.length - 3) {
+          // Copy pixel data with mathematical transformation
+          data[targetIndex] = sourceData[sourceIndex] // R
+          data[targetIndex + 1] = sourceData[sourceIndex + 1] // G
+          data[targetIndex + 2] = sourceData[sourceIndex + 2] // B
+          data[targetIndex + 3] = 255 // A
         }
+      } else {
+        // Black pixel outside dome
+        data[targetIndex] = 0 // R
+        data[targetIndex + 1] = 0 // G
+        data[targetIndex + 2] = 0 // B
+        data[targetIndex + 3] = 255 // A
       }
     }
 
+    // Put the transformed image data back to canvas
+    ctx.putImageData(imageData, 0, 0)
+
     // Convert to blob and return URL
-    const blob = await canvas.convertToBlob({ type: "image/jpeg", quality: 0.95 })
+    const blob = await canvas.convertToBlob({ type: "image/jpeg", quality: 0.9 })
     const domeUrl = URL.createObjectURL(blob)
 
-    console.log("✅ Enhanced dome projection created with mathematical fisheye distortion")
+    console.log("✅ Dome projection created from mathematical data")
     return domeUrl
   } catch (error) {
-    console.error("❌ Enhanced dome creation failed:", error)
+    console.error("❌ Mathematical dome creation failed:", error)
     throw error
   }
 }
 
-// Create panorama image from mathematical data with enhanced equirectangular transformation
+// Create panorama image from mathematical data and source image
 export async function createPanoramaFromMathematicalData(imageUrl: string): Promise<string> {
   try {
-    console.log("🌐 Creating enhanced panorama projection from mathematical data...")
+    console.log("🌐 Creating panorama projection from mathematical data...")
 
     // Fetch the source image
     const response = await fetch(imageUrl)
@@ -371,106 +355,74 @@ export async function createPanoramaFromMathematicalData(imageUrl: string): Prom
     const imageBlob = new Blob([imageBuffer])
     const imageBitmap = await createImageBitmap(imageBlob)
 
-    // Enhanced equirectangular transformation
-    for (let y = 0; y < 1024; y++) {
-      for (let x = 0; x < 2048; x++) {
-        // Convert to spherical coordinates with enhanced mapping
-        const longitude = (x / 2048) * 2 * Math.PI - Math.PI // -π to π
-        const latitude = (y / 1024) * Math.PI - Math.PI / 2 // -π/2 to π/2
+    // Generate mathematical panorama data
+    const panoramaData = generateMathematicalPanoramaData(2048, 1024)
 
-        // Enhanced spherical to Cartesian conversion
-        const cosLat = Math.cos(latitude)
-        const cartX = cosLat * Math.cos(longitude)
-        const cartY = cosLat * Math.sin(longitude)
-        const cartZ = Math.sin(latitude)
+    // Create ImageData for pixel manipulation
+    const imageData = ctx.createImageData(2048, 1024)
+    const data = imageData.data
 
-        // Enhanced perspective projection with wider field of view
-        const projX = Math.atan2(cartY, cartX)
-        const projY = Math.atan2(cartZ, Math.sqrt(cartX * cartX + cartY * cartY))
+    // Draw source image to temporary canvas to get pixel data
+    const tempCanvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height)
+    const tempCtx = tempCanvas.getContext("2d")
+    if (!tempCtx) throw new Error("Could not get temp canvas context")
 
-        // Map to source image with enhanced coverage
-        const u = (projX + Math.PI) / (2 * Math.PI)
-        const v = (projY + Math.PI / 2) / Math.PI
+    tempCtx.drawImage(imageBitmap, 0, 0)
+    const sourceImageData = tempCtx.getImageData(0, 0, imageBitmap.width, imageBitmap.height)
+    const sourceData = sourceImageData.data
 
-        // Enhanced sampling with better coverage
-        const sourceX = u * imageBitmap.width * 1.5 // Wider coverage
-        const sourceY = v * imageBitmap.height * 1.2 // Taller coverage
+    // Apply mathematical transformation pixel by pixel
+    for (const coord of panoramaData.coordinates) {
+      const targetIndex = (coord.y * 2048 + coord.x) * 4
 
-        if (sourceX >= 0 && sourceX < imageBitmap.width && sourceY >= 0 && sourceY < imageBitmap.height) {
-          // Create temporary canvas to sample pixels
-          const tempCanvas = new OffscreenCanvas(imageBitmap.width, imageBitmap.height)
-          const tempCtx = tempCanvas.getContext("2d")
-          if (tempCtx) {
-            tempCtx.drawImage(imageBitmap, 0, 0)
-            const imageData = tempCtx.getImageData(Math.floor(sourceX), Math.floor(sourceY), 1, 1)
+      // Map to source image coordinates using mathematical transformation
+      const sourceX = Math.floor(coord.u * imageBitmap.width)
+      const sourceY = Math.floor(coord.v * imageBitmap.height)
+      const sourceIndex = (sourceY * imageBitmap.width + sourceX) * 4
 
-            // Set pixel with enhanced color
-            ctx.fillStyle = `rgb(${imageData.data[0]}, ${imageData.data[1]}, ${imageData.data[2]})`
-            ctx.fillRect(x, y, 1, 1)
-          }
-        } else {
-          // Fill unmapped areas with gradient based on position
-          const gradientR = Math.floor((x / 2048) * 50)
-          const gradientG = Math.floor((y / 1024) * 50)
-          const gradientB = Math.floor(((x + y) / 3072) * 50)
-          ctx.fillStyle = `rgb(${gradientR}, ${gradientG}, ${gradientB})`
-          ctx.fillRect(x, y, 1, 1)
-        }
+      if (sourceIndex >= 0 && sourceIndex < sourceData.length - 3) {
+        // Copy pixel data with mathematical transformation
+        data[targetIndex] = sourceData[sourceIndex] // R
+        data[targetIndex + 1] = sourceData[sourceIndex + 1] // G
+        data[targetIndex + 2] = sourceData[sourceIndex + 2] // B
+        data[targetIndex + 3] = 255 // A
+      } else {
+        // Default color for unmapped areas
+        data[targetIndex] = 0 // R
+        data[targetIndex + 1] = 0 // G
+        data[targetIndex + 2] = 0 // B
+        data[targetIndex + 3] = 255 // A
       }
     }
 
+    // Put the transformed image data back to canvas
+    ctx.putImageData(imageData, 0, 0)
+
     // Convert to blob and return URL
-    const blob = await canvas.convertToBlob({ type: "image/jpeg", quality: 0.95 })
+    const blob = await canvas.convertToBlob({ type: "image/jpeg", quality: 0.9 })
     const panoramaUrl = URL.createObjectURL(blob)
 
-    console.log("✅ Enhanced panorama projection created with mathematical equirectangular transformation")
+    console.log("✅ Panorama projection created from mathematical data")
     return panoramaUrl
   } catch (error) {
-    console.error("❌ Enhanced panorama creation failed:", error)
+    console.error("❌ Mathematical panorama creation failed:", error)
     throw error
   }
 }
 
-export function generateEnhancedModernPrompt(basePrompt: string): string {
+export function generateUltraSimplePrompt(basePrompt: string): string {
   if (basePrompt.includes("GODLEVEL PROMPT:")) {
     console.log(`📏 GODLEVEL prompt detected: ${basePrompt.length} characters`)
-    const cleanPrompt = basePrompt.length > 3500 ? basePrompt.substring(0, 3500) + "..." : basePrompt
-    return cleanPromptForImageGeneration(
-      cleanPrompt +
-        ", hyperrealistic masterpiece, cutting-edge digital art, cinematic quality, award-winning composition",
-    )
+    const cleanPrompt = basePrompt.length > 4000 ? basePrompt.substring(0, 4000) + "..." : basePrompt
+    return cleanPromptForImageGeneration(cleanPrompt)
   }
 
-  // Extract meaningful keywords and enhance them
   const words = basePrompt.split(/[,\s]+/).filter((word) => word.length > 3)
-  const keyWords = words.slice(0, 15) // Reduced for focus
+  const keyWords = words.slice(0, 20)
+  const ultraSimple = keyWords.join(" ")
 
-  // Enhance keywords with modern art terms
-  const enhancedWords = keyWords.map((word) => {
-    const enhancements: Record<string, string> = {
-      spiral: "dynamic spiral vortex",
-      fractal: "intricate fractal geometry",
-      pattern: "mesmerizing pattern",
-      color: "vibrant color palette",
-      light: "ethereal lighting",
-      cosmic: "cosmic phenomena",
-      water: "liquid dynamics",
-      fire: "plasma energy",
-      nature: "organic beauty",
-      temple: "sacred architecture",
-      dance: "graceful movement",
-      culture: "cultural richness",
-    }
-    return enhancements[word.toLowerCase()] || word
-  })
-
-  const modernPrompt = enhancedWords.join(", ")
-
-  console.log(`📏 Enhanced modern prompt: ${modernPrompt.length} characters`)
-  return cleanPromptForImageGeneration(
-    modernPrompt +
-      ", hyperrealistic 8K digital art, cinematic masterpiece, award-winning composition, stunning visual effects",
-  )
+  console.log(`📏 Ultra-simplified prompt: ${ultraSimple.length} characters`)
+  return cleanPromptForImageGeneration(ultraSimple + ", highly detailed, 8K")
 }
 
 export async function generateSingleImageOnly(prompt: string): Promise<{
@@ -480,21 +432,19 @@ export async function generateSingleImageOnly(prompt: string): Promise<{
   method: string
   errors: string[]
 }> {
-  console.log("🚀 Single image generation with enhanced mathematical transformations")
+  console.log("🚀 Single image generation with mathematical transformations")
 
   try {
     const isGodLevel = prompt.includes("GODLEVEL PROMPT:")
-    const timeout = isGodLevel ? 30000 : 15000 // Increased timeout for better quality
+    const timeout = isGodLevel ? 25000 : 12000
 
-    console.log(`⏱️ Using ${timeout / 1000}s timeout for ${isGodLevel ? "GODLEVEL" : "enhanced"} prompt`)
+    console.log(`⏱️ Using ${timeout / 1000}s timeout for ${isGodLevel ? "GODLEVEL" : "simple"} prompt`)
 
-    const processedPrompt = isGodLevel ? cleanPromptForImageGeneration(prompt) : generateEnhancedModernPrompt(prompt)
-    console.log("🎨 Enhanced prompt preview:", processedPrompt.substring(0, 300) + "...")
-
+    const processedPrompt = isGodLevel ? cleanPromptForImageGeneration(prompt) : generateUltraSimplePrompt(prompt)
     const mainImage = await callOpenAI(processedPrompt, timeout)
 
-    // Apply enhanced mathematical transformations to create truly different dome and panorama versions
-    console.log("🔄 Applying enhanced mathematical transformations...")
+    // Apply mathematical transformations to create dome and panorama versions
+    console.log("🔄 Applying mathematical transformations...")
     const [domeImage, panoramaImage] = await Promise.all([
       createDomeFromMathematicalData(mainImage),
       createPanoramaFromMathematicalData(mainImage),
@@ -504,12 +454,12 @@ export async function generateSingleImageOnly(prompt: string): Promise<{
       mainImage,
       domeImage,
       panoramaImage,
-      method: isGodLevel ? "single_godlevel_enhanced_mathematical" : "single_enhanced_mathematical",
+      method: isGodLevel ? "single_godlevel_mathematical" : "single_mathematical",
       errors: [],
     }
   } catch (error: any) {
-    console.error("❌ Enhanced single image generation failed:", error.message)
-    throw new Error(`Enhanced single image generation failed: ${error.message}`)
+    console.error("❌ Single image generation with mathematical transforms failed:", error.message)
+    throw new Error(`Single image generation failed: ${error.message}`)
   }
 }
 
@@ -522,7 +472,7 @@ export function generateDomePrompt(basePrompt: string): string {
     )
   }
 
-  const simple = generateEnhancedModernPrompt(basePrompt)
+  const simple = generateUltraSimplePrompt(basePrompt)
   return cleanPromptForImageGeneration(
     `OVERHEAD VIEW: ${simple}, viewed from above, top-down perspective, zenith angle`,
   )
@@ -537,7 +487,7 @@ export function generatePanoramaPrompt(basePrompt: string): string {
     )
   }
 
-  const simple = generateEnhancedModernPrompt(basePrompt)
+  const simple = generateUltraSimplePrompt(basePrompt)
   return cleanPromptForImageGeneration(
     `PANORAMIC VIEW: ${simple}, ultra-wide horizontal perspective, 360-degree view, panoramic landscape`,
   )
