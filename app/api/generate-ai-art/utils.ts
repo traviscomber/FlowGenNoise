@@ -3,12 +3,6 @@ export async function callOpenAI(prompt: string, timeoutMs = 15000): Promise<str
   console.log(`📝 Prompt length: ${prompt.length} characters`)
   console.log(`⏱️ Timeout: ${timeoutMs}ms`)
 
-  // Extra safety check for prompt length
-  if (prompt.length > 4000) {
-    console.log(`⚠️ Prompt too long (${prompt.length}), truncating...`)
-    prompt = prompt.substring(0, 3997) + "..."
-  }
-
   const maxRetries = 2
   let lastError: any
 
@@ -26,10 +20,6 @@ export async function callOpenAI(prompt: string, timeoutMs = 15000): Promise<str
       // Clean prompt to avoid text/numbers in images
       const cleanPrompt = cleanPromptForImageGeneration(prompt)
 
-      // Final length check after cleaning
-      const finalPrompt = cleanPrompt.length > 4000 ? cleanPrompt.substring(0, 3997) + "..." : cleanPrompt
-      console.log(`📏 Final prompt length: ${finalPrompt.length} characters`)
-
       const response = await fetch("https://api.openai.com/v1/images/generations", {
         method: "POST",
         headers: {
@@ -38,7 +28,7 @@ export async function callOpenAI(prompt: string, timeoutMs = 15000): Promise<str
         },
         body: JSON.stringify({
           model: "dall-e-3",
-          prompt: finalPrompt,
+          prompt: cleanPrompt.length > 4000 ? cleanPrompt.substring(0, 4000) + "..." : cleanPrompt,
           n: 1,
           size: "1024x1024",
           quality: "standard",
@@ -138,9 +128,9 @@ export async function callOpenAI(prompt: string, timeoutMs = 15000): Promise<str
 export function cleanPromptForImageGeneration(prompt: string): string {
   let cleanPrompt = prompt
 
-  // Add modern art enhancement instructions (shorter version)
+  // Add modern art enhancement instructions
   const modernArtInstructions =
-    ", ultra-modern 8K art, cinematic lighting, volumetric effects, photorealistic, award-winning, masterpiece quality, NO TEXT, NO NUMBERS, NO FONTS, NO LETTERS, NO WORDS, pure visual imagery only"
+    ", ultra-modern digital art style, hyperrealistic 8K quality, cinematic lighting, volumetric effects, particle systems, advanced rendering, photorealistic textures, dramatic composition, award-winning photography, masterpiece quality, cutting-edge visual effects, stunning detail, breathtaking beauty, NO TEXT, NO NUMBERS, NO FONTS, NO LETTERS, NO WORDS, NO CAPTIONS, NO LABELS, pure visual imagery only, no written elements, no typography, no numerical displays, no textual overlays"
 
   // Remove any potential text-generating phrases
   cleanPrompt = cleanPrompt.replace(
@@ -154,29 +144,10 @@ export function cleanPromptForImageGeneration(prompt: string): string {
   cleanPrompt = cleanPrompt.replace(/\b(simple|basic|plain)\b/gi, "elegant")
 
   // Enhance with modern visual terms
-  cleanPrompt = cleanPrompt.replace(/\b(art|artwork|image)\b/gi, "masterpiece")
-  cleanPrompt = cleanPrompt.replace(/\b(beautiful|pretty|nice)\b/gi, "gorgeous")
+  cleanPrompt = cleanPrompt.replace(/\b(art|artwork|image)\b/gi, "stunning masterpiece")
+  cleanPrompt = cleanPrompt.replace(/\b(beautiful|pretty|nice)\b/gi, "breathtakingly gorgeous")
 
-  // Calculate available space for enhancements
-  const maxLength = 4000
-  const availableSpace = maxLength - cleanPrompt.length - 50 // 50 char buffer
-
-  let finalInstructions = modernArtInstructions
-  if (availableSpace < modernArtInstructions.length) {
-    // Use shorter version if space is limited
-    finalInstructions = ", 8K art, cinematic, photorealistic, masterpiece, NO TEXT, NO NUMBERS, pure visual only"
-  }
-
-  const result = cleanPrompt + finalInstructions
-
-  // Final safety check - truncate if still too long
-  if (result.length > maxLength) {
-    const truncated = result.substring(0, maxLength - 3) + "..."
-    console.log(`⚠️ Prompt truncated from ${result.length} to ${truncated.length} characters`)
-    return truncated
-  }
-
-  return result
+  return cleanPrompt + modernArtInstructions
 }
 
 // Generate mathematical data for dome projection
@@ -463,41 +434,43 @@ export async function createPanoramaFromMathematicalData(imageUrl: string): Prom
 export function generateEnhancedModernPrompt(basePrompt: string): string {
   if (basePrompt.includes("GODLEVEL PROMPT:")) {
     console.log(`📏 GODLEVEL prompt detected: ${basePrompt.length} characters`)
-    // For GODLEVEL, truncate more aggressively to leave room for enhancements
-    const maxGodlevelLength = 3800
-    let cleanPrompt = basePrompt
-    if (basePrompt.length > maxGodlevelLength) {
-      cleanPrompt = basePrompt.substring(0, maxGodlevelLength) + "..."
-      console.log(`📏 GODLEVEL prompt truncated to ${cleanPrompt.length} characters`)
-    }
-    return cleanPromptForImageGeneration(cleanPrompt + ", hyperrealistic masterpiece, cinematic quality")
+    const cleanPrompt = basePrompt.length > 3500 ? basePrompt.substring(0, 3500) + "..." : basePrompt
+    return cleanPromptForImageGeneration(
+      cleanPrompt +
+        ", hyperrealistic masterpiece, cutting-edge digital art, cinematic quality, award-winning composition",
+    )
   }
 
   // Extract meaningful keywords and enhance them
   const words = basePrompt.split(/[,\s]+/).filter((word) => word.length > 3)
-  const keyWords = words.slice(0, 12) // Reduced for better length control
+  const keyWords = words.slice(0, 15) // Reduced for focus
 
-  // Enhance keywords with modern art terms (more concise)
-  const enhancements: Record<string, string> = {
-    spiral: "dynamic spiral vortex",
-    fractal: "intricate fractal geometry",
-    pattern: "mesmerizing pattern",
-    color: "vibrant colors",
-    light: "ethereal lighting",
-    cosmic: "cosmic phenomena",
-    water: "liquid dynamics",
-    fire: "plasma energy",
-    nature: "organic beauty",
-    temple: "sacred architecture",
-    dance: "graceful movement",
-    culture: "cultural richness",
-  }
+  // Enhance keywords with modern art terms
+  const enhancedWords = keyWords.map((word) => {
+    const enhancements: Record<string, string> = {
+      spiral: "dynamic spiral vortex",
+      fractal: "intricate fractal geometry",
+      pattern: "mesmerizing pattern",
+      color: "vibrant color palette",
+      light: "ethereal lighting",
+      cosmic: "cosmic phenomena",
+      water: "liquid dynamics",
+      fire: "plasma energy",
+      nature: "organic beauty",
+      temple: "sacred architecture",
+      dance: "graceful movement",
+      culture: "cultural richness",
+    }
+    return enhancements[word.toLowerCase()] || word
+  })
 
-  const enhancedWords = keyWords.map((word) => enhancements[word.toLowerCase()] || word)
   const modernPrompt = enhancedWords.join(", ")
 
   console.log(`📏 Enhanced modern prompt: ${modernPrompt.length} characters`)
-  return cleanPromptForImageGeneration(modernPrompt + ", hyperrealistic 8K digital art, cinematic masterpiece")
+  return cleanPromptForImageGeneration(
+    modernPrompt +
+      ", hyperrealistic 8K digital art, cinematic masterpiece, award-winning composition, stunning visual effects",
+  )
 }
 
 export async function generateSingleImageOnly(prompt: string): Promise<{
