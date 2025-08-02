@@ -1,12 +1,14 @@
-export async function callOpenAI(prompt: string, timeoutMs = 30000): Promise<string> {
-  const maxRetries = 1 // Reduced to 1 retry to prevent timeout
-  const baseDelay = 500 // Reduced delay
+export async function callOpenAI(prompt: string, timeoutMs = 15000): Promise<string> {
+  console.log(`🤖 OpenAI API call starting`)
+  console.log(`📝 Prompt length: ${prompt.length} characters`)
+  console.log(`⏱️ Timeout: ${timeoutMs}ms`)
+
+  const maxRetries = 2
+  let lastError: any
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      console.log(`🤖 OpenAI API attempt ${attempt}/${maxRetries}`)
-      console.log(`📝 Prompt length: ${prompt.length} characters`)
-      console.log(`⏱️ Timeout set to: ${timeoutMs}ms`)
+      console.log(`🔄 Attempt ${attempt}/${maxRetries}`)
 
       // Create abort controller for manual timeout control
       const controller = new AbortController()
@@ -23,7 +25,7 @@ export async function callOpenAI(prompt: string, timeoutMs = 30000): Promise<str
         },
         body: JSON.stringify({
           model: "dall-e-3",
-          prompt: prompt.length > 4000 ? prompt.substring(0, 4000) + "..." : prompt, // Truncate long prompts
+          prompt: prompt.length > 4000 ? prompt.substring(0, 4000) + "..." : prompt,
           n: 1,
           size: "1024x1024",
           quality: "standard",
@@ -34,237 +36,173 @@ export async function callOpenAI(prompt: string, timeoutMs = 30000): Promise<str
 
       clearTimeout(timeoutId)
       console.log(`📡 OpenAI API response status: ${response.status}`)
-
-      // Get response text first to handle non-JSON responses
-      const responseText = await response.text()
-      console.log(`📄 Response text preview: ${responseText.substring(0, 200)}...`)
-
-      // Handle timeout and deployment errors specifically
-      if (
-        responseText.includes("FUNCTION_INVOCATION_TIMEOUT") ||
-        responseText.includes("An error occurred with your deployment") ||
-        responseText.includes("timeout") ||
-        responseText.includes("exceeded time limit")
-      ) {
-        throw new Error("DEPLOYMENT_TIMEOUT")
-      }
-
-      // Check if response is JSON
-      let responseData
-      try {
-        if (responseText.trim().startsWith("{") || responseText.trim().startsWith("[")) {
-          responseData = JSON.parse(responseText)
-        } else {
-          throw new Error(`Non-JSON response received: ${responseText.substring(0, 200)}...`)
-        }
-      } catch (parseError: any) {
-        console.error(`❌ JSON parsing failed:`, parseError.message)
-        throw new Error(`Invalid JSON response: ${responseText.substring(0, 200)}...`)
-      }
+      console.log(`📡 Response headers:`, Object.fromEntries(response.headers.entries()))
 
       if (!response.ok) {
-        const errorMessage = responseData?.error?.message || `HTTP ${response.status}: ${response.statusText}`
-        console.error(`❌ OpenAI API error response:`, responseData)
+        const contentType = response.headers.get("content-type") || ""
+        let errorMessage = `HTTP ${response.status}`
 
-        // Don't retry on client errors or deployment timeouts
-        if (response.status < 500 && response.status !== 429) {
-          throw new Error(`OpenAI API error: ${response.status} - ${errorMessage}`)
+        try {
+          if (contentType.includes("application/json")) {
+            const errorData = await response.json()
+            errorMessage = errorData.error?.message || errorData.message || errorMessage
+          } else {
+            // Handle HTML error pages
+            const errorText = await response.text()
+            console.log(`📄 Error response (first 200 chars):`, errorText.substring(0, 200))
+
+            if (errorText.includes("503") || errorText.includes("Service Unavailable")) {
+              errorMessage = "OpenAI service temporarily unavailable (503)"
+            } else if (errorText.includes("502") || errorText.includes("Bad Gateway")) {
+              errorMessage = "OpenAI gateway error (502)"
+            } else if (errorText.includes("504") || errorText.includes("Gateway Timeout")) {
+              errorMessage = "OpenAI gateway timeout (504)"
+            } else if (errorText.includes("429") || errorText.includes("Too Many Requests")) {
+              errorMessage = "OpenAI rate limit exceeded (429)"
+            } else {
+              errorMessage = `OpenAI API error: ${response.status}`
+            }
+          }
+        } catch (parseError) {
+          console.error(`❌ Failed to parse error response:`, parseError)
+          errorMessage = `OpenAI API error: ${response.status} (unparseable response)`
         }
 
-        // Only retry on server errors and rate limits
-        if (attempt < maxRetries) {
-          const delay = response.status === 429 ? baseDelay * 2 : baseDelay
-          console.log(`⏳ Retrying in ${delay}ms due to ${response.status} error...`)
-          await new Promise((resolve) => setTimeout(resolve, delay))
-          continue
+        console.error(`❌ OpenAI API error:`, errorMessage)
+
+        // Retry on server errors (5xx) and rate limits (429)
+        if (response.status >= 500 || response.status === 429) {
+          if (attempt < maxRetries) {
+            const delay = Math.pow(2, attempt) * 1000 // Exponential backoff: 2s, 4s
+            console.log(`⏳ Retrying in ${delay}ms...`)
+            await new Promise((resolve) => setTimeout(resolve, delay))
+            continue
+          }
         }
 
-        throw new Error(`OpenAI API error: ${response.status} - ${errorMessage}`)
+        throw new Error(errorMessage)
       }
 
-      // Validate response structure
+      // Parse response
+      let responseData
+      try {
+        const responseText = await response.text()
+        console.log(`📄 Response text (first 200 chars):`, responseText.substring(0, 200))
+        responseData = JSON.parse(responseText)
+      } catch (parseError) {
+        console.error(`❌ Failed to parse JSON response:`, parseError)
+        throw new Error("Invalid JSON response from OpenAI API")
+      }
+
       if (!responseData?.data?.[0]?.url) {
         console.error(`❌ Invalid response structure:`, responseData)
-        throw new Error("Invalid response structure: missing image URL")
+        throw new Error("Invalid response structure from OpenAI API")
       }
 
       const imageUrl = responseData.data[0].url
-      console.log(`✅ OpenAI API success: ${imageUrl.substring(0, 50)}...`)
+      console.log(`✅ OpenAI API success on attempt ${attempt}`)
       return imageUrl
     } catch (error: any) {
+      lastError = error
       console.error(`❌ OpenAI API attempt ${attempt} failed:`, error.message)
 
-      // Handle specific timeout errors
-      if (error.name === "AbortError" || error.message.includes("DEPLOYMENT_TIMEOUT")) {
+      if (error.name === "AbortError") {
         throw new Error("DEPLOYMENT_TIMEOUT")
       }
 
-      // Don't retry on certain errors
-      if (
-        error.message.includes("Invalid JSON") ||
-        error.message.includes("400") ||
-        error.message.includes("401") ||
-        error.message.includes("403") ||
-        error.message.includes("DEPLOYMENT_TIMEOUT")
-      ) {
+      // Don't retry on client errors (4xx) except 429
+      if (error.message.includes("400") || error.message.includes("401") || error.message.includes("403")) {
         throw error
       }
 
-      // If this was the last attempt, throw the error
-      if (attempt === maxRetries) {
-        throw new Error(`OpenAI API call failed after ${maxRetries} attempts: ${error.message}`)
+      // Retry on network errors and server errors
+      if (attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 1000 // Exponential backoff
+        console.log(`⏳ Retrying in ${delay}ms...`)
+        await new Promise((resolve) => setTimeout(resolve, delay))
+        continue
       }
-
-      // Wait before retrying
-      const delay = baseDelay
-      console.log(`⏳ Waiting ${delay}ms before retry...`)
-      await new Promise((resolve) => setTimeout(resolve, delay))
     }
   }
 
-  throw new Error("OpenAI API call failed: Maximum retries exceeded")
+  // All retries failed
+  throw lastError || new Error("All retry attempts failed")
 }
 
-export function generateOptimizedPrompt(basePrompt: string, maxLength = 3500): string {
-  // Optimize prompt length while preserving key elements
-  if (basePrompt.length <= maxLength) {
-    return basePrompt
+export function generateUltraSimplePrompt(basePrompt: string): string {
+  // For very long GODLEVEL prompts, use them as-is but with length limit
+  if (basePrompt.includes("GODLEVEL PROMPT:")) {
+    console.log(`📏 GODLEVEL prompt detected: ${basePrompt.length} characters`)
+    return basePrompt.length > 4000 ? basePrompt.substring(0, 4000) + "..." : basePrompt
   }
 
-  console.log(`📏 Optimizing prompt from ${basePrompt.length} to ~${maxLength} characters`)
+  // Extract only the most essential keywords for simple prompts
+  const words = basePrompt.split(/[,\s]+/).filter((word) => word.length > 3)
+  const keyWords = words.slice(0, 20) // Only first 20 meaningful words
+  const ultraSimple = keyWords.join(" ")
 
-  // Extract key elements
-  const godLevelMatch = basePrompt.match(/GODLEVEL PROMPT: ([^,]+)/i)
-  const colorMatch = basePrompt.match(
-    /(vibrant|plasma|quantum|cosmic|thermal|spectral|crystalline|bioluminescent|aurora|metallic|prismatic|monochromatic|infrared|lava|futuristic|forest|ocean|sunset|arctic|neon|vintage|toxic|ember|lunar|tidal) [^,]+/i,
-  )
-  const qualityMatch = basePrompt.match(
-    /(highly detailed|artistic masterpiece|professional photography|8K resolution|stunning visual composition)/i,
-  )
-
-  // Build optimized prompt
-  let optimized = ""
-
-  if (godLevelMatch) {
-    optimized += godLevelMatch[1].substring(0, maxLength * 0.7) + ", "
-  } else {
-    optimized += basePrompt.substring(0, maxLength * 0.7) + ", "
-  }
-
-  if (colorMatch) {
-    optimized += colorMatch[0] + ", "
-  }
-
-  if (qualityMatch) {
-    optimized += qualityMatch[0]
-  }
-
-  // Ensure we don't exceed max length
-  if (optimized.length > maxLength) {
-    optimized = optimized.substring(0, maxLength - 3) + "..."
-  }
-
-  console.log(`✅ Optimized prompt length: ${optimized.length} characters`)
-  return optimized
+  console.log(`📏 Ultra-simplified prompt: ${ultraSimple.length} characters`)
+  return ultraSimple + ", highly detailed, 8K"
 }
 
-export function generateDomePrompt(
-  basePrompt: string,
-  diameter = 20,
-  resolution = "4K",
-  projectionType = "fisheye",
-): string {
-  const optimizedBase = generateOptimizedPrompt(basePrompt, 2500)
-
-  return `DOME PROJECTION: ${optimizedBase}
-
-DOME SPECS: ${diameter}m planetarium dome, ${resolution} resolution, ${projectionType} projection, TUNNEL UP perspective, fisheye distortion, spherical mapping, radial symmetry, dome ceiling display, immersive overhead viewing, dramatic upward perspective, concentric patterns from center, enhanced peripheral detail, planetarium-grade quality`
-}
-
-export function generatePanoramaPrompt(
-  basePrompt: string,
-  resolution = "8K",
-  format = "equirectangular",
-  perspective?: string,
-): string {
-  const optimizedBase = generateOptimizedPrompt(basePrompt, 2500)
-  const perspectiveText = perspective ? `, ${perspective} perspective` : ""
-
-  return `360 PANORAMA: ${optimizedBase}
-
-PANORAMA SPECS: Complete 360-degree panoramic composition, ${format} projection, ${resolution} resolution, seamless horizontal wrapping, spherical coverage, VR-ready format, immersive environmental mapping, wraparound experience${perspectiveText}, optimized for VR headsets, continuous viewing, enhanced peripheral vision`
-}
-
-export async function generateSingleImage(prompt: string): Promise<string> {
-  console.log("🖼️ Single image mode - generating main image only")
-  return await callOpenAI(prompt, 25000) // Shorter timeout for single image
-}
-
-export async function generateImagesWithQueue(
-  mainPrompt: string,
-  domePrompt: string,
-  panoramaPrompt: string,
-): Promise<{
-  mainImage?: string
-  domeImage?: string
-  panoramaImage?: string
-  errors: string[]
+export async function generateSingleImageOnly(prompt: string): Promise<{
+  mainImage: string
+  domeImage: string
+  panoramaImage: string
   method: string
+  errors: string[]
 }> {
-  console.log("🔄 Queue-based generation starting...")
-  const results = {
-    mainImage: undefined as string | undefined,
-    domeImage: undefined as string | undefined,
-    panoramaImage: undefined as string | undefined,
-    errors: [] as string[],
-    method: "queue",
-  }
+  console.log("🚀 Single image only generation - maximum speed mode")
 
-  // Queue with priority: main -> dome -> panorama
-  const queue = [
-    { type: "main", prompt: mainPrompt, timeout: 25000 },
-    { type: "dome", prompt: domePrompt, timeout: 20000 },
-    { type: "panorama", prompt: panoramaPrompt, timeout: 20000 },
-  ]
+  try {
+    // For GODLEVEL prompts, use longer timeout
+    const isGodLevel = prompt.includes("GODLEVEL PROMPT:")
+    const timeout = isGodLevel ? 25000 : 12000 // 25s for GODLEVEL, 12s for simple
 
-  for (const item of queue) {
-    try {
-      console.log(`🎯 Generating ${item.type} image...`)
-      const image = await callOpenAI(item.prompt, item.timeout)
+    console.log(`⏱️ Using ${timeout / 1000}s timeout for ${isGodLevel ? "GODLEVEL" : "simple"} prompt`)
 
-      if (item.type === "main") {
-        results.mainImage = image
-        console.log(`✅ Main image generated successfully`)
-      } else if (item.type === "dome") {
-        results.domeImage = image
-        console.log(`✅ Dome image generated successfully`)
-      } else if (item.type === "panorama") {
-        results.panoramaImage = image
-        console.log(`✅ Panorama image generated successfully`)
-      }
-    } catch (error: any) {
-      console.error(`❌ ${item.type} image failed:`, error.message)
-      results.errors.push(`${item.type}: ${error.message}`)
+    const processedPrompt = isGodLevel ? prompt : generateUltraSimplePrompt(prompt)
+    const image = await callOpenAI(processedPrompt, timeout)
 
-      // If main image fails, stop the queue
-      if (item.type === "main") {
-        throw new Error(`Main image generation failed: ${error.message}`)
-      }
-
-      // For dome/panorama failures, use main image as fallback if available
-      if (results.mainImage) {
-        if (item.type === "dome") {
-          results.domeImage = results.mainImage
-          console.log(`🔄 Using main image as dome fallback`)
-        } else if (item.type === "panorama") {
-          results.panoramaImage = results.mainImage
-          console.log(`🔄 Using main image as panorama fallback`)
-        }
-      }
+    return {
+      mainImage: image,
+      domeImage: image, // Use same image for all formats in single mode
+      panoramaImage: image,
+      method: isGodLevel ? "single_godlevel" : "single_ultra_fast",
+      errors: [],
     }
+  } catch (error: any) {
+    console.error("❌ Single image generation failed:", error.message)
+    throw new Error(`Single image generation failed: ${error.message}`)
+  }
+}
+
+export function generateDomePrompt(basePrompt: string): string {
+  // For GODLEVEL prompts, create proper dome-formatted version
+  if (basePrompt.includes("GODLEVEL PROMPT:")) {
+    // Extract the core content after "GODLEVEL PROMPT: "
+    const coreContent = basePrompt.replace("GODLEVEL PROMPT: ", "")
+
+    // Create dome-specific version with proper formatting instructions
+    return `PLANETARIUM DOME FISHEYE PROJECTION: ${coreContent.substring(0, 3500)}, CRITICAL FORMATTING: extreme fisheye lens distortion with 180-degree field of view, circular frame with black borders, center point represents zenith directly overhead, edges curve dramatically toward horizon, spherical mapping for dome ceiling projection, immersive overhead viewing experience optimized for planetarium dome display, curved perspective with radial distortion from center outward, celestial dome atmosphere with zenith focus point`
   }
 
-  return results
+  const simple = generateUltraSimplePrompt(basePrompt)
+  return `PLANETARIUM DOME FISHEYE: ${simple}, extreme fisheye lens distortion, 180-degree circular view, center zenith overhead, curved dome projection, black circular border`
+}
+
+export function generatePanoramaPrompt(basePrompt: string): string {
+  // For GODLEVEL prompts, create proper panorama-formatted version
+  if (basePrompt.includes("GODLEVEL PROMPT:")) {
+    // Extract the core content after "GODLEVEL PROMPT: "
+    const coreContent = basePrompt.replace("GODLEVEL PROMPT: ", "")
+
+    // Create panorama-specific version with proper formatting instructions
+    return `360-DEGREE EQUIRECTANGULAR PANORAMA: ${coreContent.substring(0, 3500)}, CRITICAL FORMATTING: complete 360-degree horizontal view in equirectangular projection format, rectangular aspect ratio 2:1 width to height, seamless left-right wrapping edges, distorted perspective with stretched poles, optimized for VR headset viewing, spherical environment mapping, immersive surround experience with full horizontal rotation, equirectangular coordinate system for virtual reality display`
+  }
+
+  const simple = generateUltraSimplePrompt(basePrompt)
+  return `360-DEGREE EQUIRECTANGULAR PANORAMA: ${simple}, complete 360-degree horizontal view, rectangular 2:1 aspect ratio, seamless wrapping edges, VR headset format, equirectangular projection`
 }
 
 export async function generateImagesInParallel(
@@ -277,12 +215,29 @@ export async function generateImagesInParallel(
   panoramaImage?: string
   errors: string[]
 }> {
-  console.log("⚡ Parallel generation with reduced timeouts...")
+  console.log("⚡ Attempting parallel generation with format-specific prompts...")
+
+  const isGodLevel = mainPrompt.includes("GODLEVEL PROMPT:")
+  const isAsmat = mainPrompt.includes("Asmat people")
+
+  // Extended timeouts for GODLEVEL prompts
+  const mainTimeout = isGodLevel ? (isAsmat ? 20000 : 18000) : 12000 // 20s for Asmat, 18s for other GODLEVEL, 12s for simple
+  const domeTimeout = isGodLevel ? (isAsmat ? 22000 : 20000) : 14000 // 22s for Asmat dome, 20s for other GODLEVEL dome, 14s for simple
+  const panoramaTimeout = isGodLevel ? (isAsmat ? 22000 : 20000) : 14000 // 22s for Asmat panorama, 20s for other GODLEVEL panorama, 14s for simple
+
+  console.log(
+    `⏱️ Using timeouts: Main=${mainTimeout / 1000}s, Dome=${domeTimeout / 1000}s, Panorama=${panoramaTimeout / 1000}s`,
+  )
+
+  // Log the specific prompts being used
+  console.log("🎯 Main prompt:", mainPrompt.substring(0, 150) + "...")
+  console.log("🏛️ Dome prompt:", domePrompt.substring(0, 150) + "...")
+  console.log("🌐 Panorama prompt:", panoramaPrompt.substring(0, 150) + "...")
 
   const results = await Promise.allSettled([
-    callOpenAI(mainPrompt, 20000), // 20 second timeout
-    callOpenAI(domePrompt, 15000), // 15 second timeout
-    callOpenAI(panoramaPrompt, 15000), // 15 second timeout
+    callOpenAI(mainPrompt, mainTimeout),
+    callOpenAI(domePrompt, domeTimeout),
+    callOpenAI(panoramaPrompt, panoramaTimeout),
   ])
 
   const response = {
@@ -295,25 +250,25 @@ export async function generateImagesInParallel(
   // Process results
   if (results[0].status === "fulfilled") {
     response.mainImage = results[0].value
-    console.log("✅ Main image generated successfully")
+    console.log("✅ Main image generated")
   } else {
-    response.errors.push(`Main image: ${results[0].reason.message}`)
+    response.errors.push(`Main: ${results[0].reason.message}`)
     console.error("❌ Main image failed:", results[0].reason.message)
   }
 
   if (results[1].status === "fulfilled") {
     response.domeImage = results[1].value
-    console.log("✅ Dome image generated successfully")
+    console.log("✅ Dome image generated with fisheye formatting")
   } else {
-    response.errors.push(`Dome image: ${results[1].reason.message}`)
+    response.errors.push(`Dome: ${results[1].reason.message}`)
     console.error("❌ Dome image failed:", results[1].reason.message)
   }
 
   if (results[2].status === "fulfilled") {
     response.panoramaImage = results[2].value
-    console.log("✅ Panorama image generated successfully")
+    console.log("✅ Panorama image generated with equirectangular formatting")
   } else {
-    response.errors.push(`Panorama image: ${results[2].reason.message}`)
+    response.errors.push(`Panorama: ${results[2].reason.message}`)
     console.error("❌ Panorama image failed:", results[2].reason.message)
   }
 

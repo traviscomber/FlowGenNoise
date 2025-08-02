@@ -1,89 +1,44 @@
 import { type NextRequest, NextResponse } from "next/server"
-import {
-  generateDomePrompt,
-  generatePanoramaPrompt,
-  generateImagesInParallel,
-  generateImagesWithQueue,
-  generateSingleImage,
-  generateOptimizedPrompt,
-} from "./utils"
+import { generateDomePrompt, generatePanoramaPrompt, generateImagesInParallel, generateSingleImageOnly } from "./utils"
 
-function buildPrompt(dataset: string, scenario: string, colorScheme: string, customPrompt?: string): string {
+function buildUltraSimplePrompt(dataset: string, scenario: string, colorScheme: string, customPrompt?: string): string {
   // Use custom prompt if provided
   if (customPrompt && customPrompt.trim()) {
-    let prompt = customPrompt.trim()
-
-    // Add color scheme to custom prompt
-    const colorPrompts: Record<string, string> = {
-      plasma: "vibrant plasma colors, electric blues and magentas",
-      quantum: "quantum field colors, deep blues and ethereal whites",
-      cosmic: "cosmic colors, deep space purples and stellar golds",
-      thermal: "thermal imaging colors, heat signature reds and oranges",
-      spectral: "full spectrum rainbow colors, prismatic light effects",
-      crystalline: "crystalline colors, clear gems and mineral tones",
-      bioluminescent: "bioluminescent colors, glowing organic blues and greens",
-      aurora: "aurora borealis colors, dancing green and purple lights",
-      metallic: "metallic tones, silver and bronze accents",
-      prismatic: "prismatic light effects, rainbow refractions",
-      monochromatic: "monochromatic grayscale, black and white tones",
-      infrared: "infrared heat colors, thermal reds and oranges",
-      lava: "molten lava colors, glowing reds and oranges",
-      futuristic: "futuristic neon colors, cyberpunk aesthetics",
-      forest: "forest greens and earth tones",
-      ocean: "ocean blues and aqua tones",
-      sunset: "warm sunset colors, oranges and deep reds",
-      arctic: "arctic colors, ice blues and pristine whites",
-      neon: "bright neon colors, electric pinks and greens",
-      vintage: "vintage sepia tones, aged photograph aesthetics",
-      toxic: "toxic waste colors, radioactive greens and yellows",
-      ember: "glowing ember colors, warm orange and red coals",
-      lunar: "lunar surface colors, silver grays and crater shadows",
-      tidal: "tidal pool colors, ocean blues and sandy browns",
-    }
-
-    prompt += `, ${colorPrompts[colorScheme] || "vibrant colors"}`
-    prompt +=
-      ", highly detailed, artistic masterpiece, professional photography quality, 8K resolution, stunning visual composition"
-
-    return prompt
+    return `${customPrompt.trim()}, ${colorScheme} colors, detailed`
   }
 
-  // Build dataset-specific prompt
-  let prompt = ""
-
-  // Dataset-specific base prompts
-  const datasetPrompts: Record<string, string> = {
-    nuanu:
-      "Nuanu Creative City architectural elements, modern creative spaces, innovative design, futuristic urban planning",
-    bali: "Balinese Hindu temples, traditional architecture, tropical paradise, sacred geometry, rice terraces",
-    thailand: "Thai Buddhist temples, golden spires, traditional architecture, serene landscapes, lotus flowers",
-    indonesian: "Indonesian cultural heritage, traditional patterns, mystical elements, archipelago beauty",
-    horror: "Indonesian mystical creatures, supernatural folklore elements, traditional legends",
-    spirals: "Mathematical spiral patterns, Fibonacci sequences, golden ratio, geometric precision",
-    fractal: "Fractal patterns, recursive geometry, infinite detail, mathematical beauty",
-    mandelbrot: "Mandelbrot set visualization, complex mathematical patterns, infinite zoom",
-    julia: "Julia set fractals, complex plane mathematics, iterative patterns",
-    lorenz: "Lorenz attractor, chaos theory visualization, butterfly effect patterns",
-    hyperbolic: "Hyperbolic geometry, non-Euclidean space, curved mathematical surfaces",
-    gaussian: "Gaussian field visualization, statistical distributions, probability landscapes",
-    cellular: "Cellular automata patterns, Conway's Game of Life, emergent complexity",
-    voronoi: "Voronoi diagrams, spatial partitioning, natural tessellation patterns",
-    perlin: "Perlin noise landscapes, procedural generation, organic randomness",
-    diffusion: "Reaction-diffusion patterns, chemical wave propagation, Turing patterns",
-    wave: "Wave interference patterns, harmonic oscillations, frequency visualizations",
-    moons: "Lunar orbital mechanics, celestial body movements, gravitational dance",
-    tribes: "Tribal network topology, social connections, community structures",
-    heads: "Mosaic head compositions, portrait arrangements, facial geometry",
-    natives: "Ancient native tribes, traditional cultures, indigenous wisdom",
-    statues: "Sacred sculptural statues, carved monuments, artistic figures",
+  // Ultra-simple dataset prompts
+  const simpleDatasets: Record<string, string> = {
+    nuanu: "Nuanu creative architecture",
+    bali: "Balinese temples",
+    thailand: "Thai temples",
+    indonesian: "Indonesian culture",
+    horror: "Indonesian mystical",
+    spirals: "spiral patterns",
+    fractal: "fractal art",
+    mandelbrot: "Mandelbrot set",
+    julia: "Julia fractals",
+    lorenz: "Lorenz attractor",
+    hyperbolic: "hyperbolic geometry",
+    gaussian: "Gaussian fields",
+    cellular: "cellular automata",
+    voronoi: "Voronoi patterns",
+    perlin: "Perlin noise",
+    diffusion: "diffusion patterns",
+    wave: "wave patterns",
+    moons: "lunar mechanics",
+    tribes: "tribal networks",
+    heads: "mosaic heads",
+    natives: "native tribes",
+    statues: "sacred statues",
   }
 
-  prompt = datasetPrompts[dataset] || "Abstract mathematical art"
+  let prompt = simpleDatasets[dataset] || "abstract art"
 
-  // Add scenario-specific details for Indonesian dataset
+  // Restore GODLEVEL Indonesian scenarios - keep rich prompts for key scenarios
   if (dataset === "indonesian") {
     const scenarioPrompts: Record<string, string> = {
-      pure: "pure mathematical beauty with Indonesian geometric patterns",
+      pure: "geometric patterns",
       garuda:
         "Majestic Garuda Wisnu Kencana soaring through celestial realms, massive divine eagle with wingspan across golden sunset skies, intricate feather details with ethereal light, powerful talons gripping sacred lotus blossoms, noble eagle head crowned with jeweled diadem, eyes blazing with cosmic wisdom, Lord Vishnu mounted upon Garuda's back in divine regalia with four arms holding sacred conch shell, discus wheel of time, lotus of creation, ceremonial staff, flowing silk garments in royal blues and golds, Mount Meru rising with cascading waterfalls of liquid starlight, temple spires through clouds of incense, Indonesian archipelago spread below like scattered emeralds in sapphire seas, Ring of Fire volcanoes glowing with sacred flames, traditional gamelan music as golden sound waves, ancient Sanskrit mantras as luminous script, Ramayana epic scenes in floating stone tablets, divine aura radiating rainbow light spectrum, cosmic mandala patterns swirling in heavens, 17,508 islands visible as points of light, Borobudur and Prambanan temples glowing with spiritual energy, traditional Indonesian textiles woven into reality fabric",
       wayang:
@@ -123,55 +78,49 @@ function buildPrompt(dataset: string, scenario: string, colorScheme: string, cus
       "hongana-manyawa":
         "One of Indonesia's last nomadic forest-dwelling tribes living in remote rainforest areas of Halmahera island, traditional forest shelters and nomadic lifestyle moving seasonally through ancestral territories, traditional practices using tools made from forest materials, gathering forest foods and medicines using ancient knowledge, shamanic spiritual practices connecting human world to forest spirits, oral traditions and forest knowledge preserved through generations, traditional social organization based on kinship and forest territories, unique language and cultural practices distinct from outside world, adaptation to tropical rainforest with intimate ecological knowledge",
       asmat:
-        "New Guinea indigenous Asmat people renowned worldwide for intricate wood carvings, traditional bis poles and ancestor sculptures reaching toward sky like prayers to ancestral spirits, elaborate ceremonial masks and shields with spiritual power, traditional cultural practices and ceremonial displays, sago palm cultivation and processing providing staple food in swampy environment, traditional houses on stilts built over tidal areas, spiritual beliefs connecting ancestors and nature in continuous cycle",
+        "GODLEVEL PROMPT: New Guinea indigenous Asmat people renowned worldwide for intricate wood carvings, traditional bis poles and ancestor sculptures reaching toward sky like prayers to ancestral spirits, elaborate ceremonial masks and shields with supernatural power, traditional cultural practices and ceremonial displays, sago palm cultivation and processing providing staple food in swampy environment, traditional houses on stilts built over tidal areas, spiritual beliefs connecting ancestors and nature in continuous cycle, traditional music and dance ceremonies honoring ancestral spirits, river-based transportation and settlements with traditional canoes, oral traditions and mythology explaining creation and tribal history, artistic heritage recognized worldwide with museums collecting Asmat art, traditional tools and carving techniques passed down through master-apprentice relationships, ceremonial feasts celebrating cultural achievements, traditional initiation ceremonies for young people, hyperrealistic 8K art documentation showing master woodcarvers at work with intricate detail of traditional sculptures and atmospheric swamp environment, master craftsmen carving sacred bis poles from ironwood trees, intricate ancestral figures emerging from raw timber through skilled hands, ceremonial shields decorated with protective spirits and clan totems, traditional carving tools made from cassowary bones and wild boar tusks, swampy mangrove environment with traditional stilt houses reflecting in dark waters, spiritual connection between carver and ancestral spirits guiding every cut, UNESCO recognized artistic tradition preserving ancient Papuan culture, museum-quality sculptures representing thousands of years of artistic evolution, sacred men's houses displaying trophy skulls and ceremonial artifacts, traditional sago processing by women while men focus on sacred carving work, river ceremonies where finished sculptures are blessed by tribal elders, artistic mastery passed down through generations of master woodcarvers, each carving telling stories of creation myths and heroic ancestors",
     }
 
     if (scenarioPrompts[scenario]) {
-      prompt += ", " + scenarioPrompts[scenario]
+      prompt = scenarioPrompts[scenario]
     }
   }
 
-  // Add color scheme
-  const colorPrompts: Record<string, string> = {
-    plasma: "vibrant plasma colors, electric blues and magentas",
-    quantum: "quantum field colors, deep blues and ethereal whites",
-    cosmic: "cosmic colors, deep space purples and stellar golds",
-    thermal: "thermal imaging colors, heat signature reds and oranges",
-    spectral: "full spectrum rainbow colors, prismatic light effects",
-    crystalline: "crystalline colors, clear gems and mineral tones",
-    bioluminescent: "bioluminescent colors, glowing organic blues and greens",
-    aurora: "aurora borealis colors, dancing green and purple lights",
-    metallic: "metallic tones, silver and bronze accents",
-    prismatic: "prismatic light effects, rainbow refractions",
-    monochromatic: "monochromatic grayscale, black and white tones",
-    infrared: "infrared heat colors, thermal reds and oranges",
-    lava: "molten lava colors, glowing reds and oranges",
-    futuristic: "futuristic neon colors, cyberpunk aesthetics",
-    forest: "forest greens and earth tones",
-    ocean: "ocean blues and aqua tones",
-    sunset: "warm sunset colors, oranges and deep reds",
-    arctic: "arctic colors, ice blues and pristine whites",
-    neon: "bright neon colors, electric pinks and greens",
-    vintage: "vintage sepia tones, aged photograph aesthetics",
-    toxic: "toxic waste colors, radioactive greens and yellows",
-    ember: "glowing ember colors, warm orange and red coals",
-    lunar: "lunar surface colors, silver grays and crater shadows",
-    tidal: "tidal pool colors, ocean blues and sandy browns",
+  // Simple colors
+  const simpleColors: Record<string, string> = {
+    plasma: "plasma colors",
+    quantum: "quantum blue",
+    cosmic: "cosmic purple",
+    thermal: "thermal red",
+    spectral: "rainbow",
+    crystalline: "crystal clear",
+    bioluminescent: "glowing blue",
+    aurora: "aurora green",
+    metallic: "metallic",
+    prismatic: "prismatic",
+    monochromatic: "grayscale",
+    infrared: "infrared",
+    lava: "lava red",
+    futuristic: "neon",
+    forest: "forest green",
+    ocean: "ocean blue",
+    sunset: "sunset orange",
+    arctic: "arctic blue",
+    neon: "neon bright",
+    vintage: "vintage sepia",
+    toxic: "toxic green",
+    ember: "ember orange",
+    lunar: "lunar gray",
+    tidal: "tidal blue",
   }
 
-  prompt += `, ${colorPrompts[colorScheme] || "vibrant colors"}`
-
-  // Add artistic quality descriptors
-  prompt +=
-    ", highly detailed, artistic masterpiece, professional photography quality, 8K resolution, stunning visual composition"
-
-  return prompt
+  return `${prompt}, ${simpleColors[colorScheme] || "vibrant"}, detailed, 8K`
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    console.log("🎨 AI Art API called with body:", JSON.stringify(body, null, 2))
+    console.log("🎨 AI Art API called - Format-Specific Dome & Panorama Generation")
 
     const {
       dataset,
@@ -188,41 +137,143 @@ export async function POST(request: NextRequest) {
       panoramaResolution = "8K",
       panoramaFormat = "equirectangular",
       stereographicPerspective,
-      singleImageMode = false, // New parameter for single image mode
-      generationMode = "auto", // auto, parallel, queue, single
+      singleImageMode = false,
+      generationMode = "auto",
     } = body
 
-    // Build the main prompt
-    const mainPrompt = buildPrompt(dataset, scenario, colorScheme, customPrompt)
-    console.log("📝 Generated main prompt:", mainPrompt.substring(0, 200) + "...")
-    console.log("📏 Main prompt length:", mainPrompt.length, "characters")
+    // Build prompt with GODLEVEL scenarios restored
+    const mainPrompt = buildUltraSimplePrompt(dataset, scenario, colorScheme, customPrompt)
+    console.log("📝 Prompt:", mainPrompt.substring(0, 200) + "...")
+    console.log("📏 Prompt length:", mainPrompt.length, "characters")
 
-    // Optimize main prompt to prevent timeouts
-    const optimizedMainPrompt = generateOptimizedPrompt(mainPrompt, 3500)
+    const isGodLevel = mainPrompt.includes("GODLEVEL PROMPT:")
+    const isAsmat = scenario === "asmat"
 
-    // Single image mode - fastest option
-    if (singleImageMode || generationMode === "single") {
-      console.log("🖼️ Single image mode activated")
+    // Only use single image mode if explicitly requested or for extremely long prompts
+    const shouldUseSingleMode = singleImageMode || generationMode === "single" || mainPrompt.length > 3000
+
+    if (shouldUseSingleMode) {
+      console.log("🖼️ Single image mode - explicitly requested or extremely long prompt")
       try {
-        const singleImage = await generateSingleImage(optimizedMainPrompt)
+        const result = await generateSingleImageOnly(mainPrompt)
 
         return NextResponse.json({
           success: true,
-          image: singleImage,
-          domeImage: singleImage, // Use same image for all formats
-          panoramaImage: singleImage,
+          image: result.mainImage,
+          domeImage: result.domeImage,
+          panoramaImage: result.panoramaImage,
           originalPrompt: mainPrompt,
-          optimizedPrompt: optimizedMainPrompt,
-          promptLength: optimizedMainPrompt.length,
+          promptLength: mainPrompt.length,
           provider: "OpenAI",
           model: "DALL-E 3",
           estimatedFileSize: "~2-4MB",
-          generationMethod: "single",
+          generationMethod: result.method,
           generationDetails: {
             mainImage: "Generated successfully",
-            domeImage: "Using main image",
-            panoramaImage: "Using main image",
-            optimizations: "Prompt optimized for speed",
+            domeImage: "Using main image for speed",
+            panoramaImage: "Using main image for speed",
+            note: "Single image mode - explicitly requested",
+          },
+          parameters: {
+            dataset,
+            scenario,
+            colorScheme,
+            singleImageMode: true,
+            explicitSingleMode: true,
+          },
+        })
+      } catch (error: any) {
+        console.error("❌ Single image generation failed:", error.message)
+
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Image generation failed",
+            details: error.message,
+            generationMethod: "single_failed",
+            suggestion: "OpenAI API may be experiencing issues. Please try again.",
+            troubleshooting: {
+              issue: "API Error",
+              cause: error.message.includes("503")
+                ? "OpenAI service temporarily unavailable"
+                : error.message.includes("429")
+                  ? "Rate limit exceeded"
+                  : error.message.includes("DEPLOYMENT_TIMEOUT")
+                    ? "Deployment timeout"
+                    : "API error",
+              solutions: [
+                "Try again in a few moments",
+                "OpenAI may be experiencing high load",
+                "Contact support if issue persists",
+              ],
+            },
+          },
+          { status: error.message.includes("DEPLOYMENT_TIMEOUT") ? 408 : 503 },
+        )
+      }
+    }
+
+    // Try format-specific parallel generation with extended timeouts
+    console.log(`⚡ Attempting ${isGodLevel ? "GODLEVEL" : "standard"} parallel generation with proper formatting...`)
+    try {
+      const domePrompt = generateDomePrompt(mainPrompt)
+      const panoramaPrompt = generatePanoramaPrompt(mainPrompt)
+
+      console.log("🏛️ Dome prompt format check:", domePrompt.includes("FISHEYE") ? "✅ FISHEYE" : "❌ Missing FISHEYE")
+      console.log(
+        "🌐 Panorama prompt format check:",
+        panoramaPrompt.includes("EQUIRECTANGULAR") ? "✅ EQUIRECTANGULAR" : "❌ Missing EQUIRECTANGULAR",
+      )
+
+      // Extended timeout for GODLEVEL prompts, especially Asmat
+      const totalTimeout = isGodLevel ? (isAsmat ? 40000 : 35000) : 25000 // 40s for Asmat, 35s for other GODLEVEL, 25s for simple
+
+      const parallelResults = (await Promise.race([
+        generateImagesInParallel(mainPrompt, domePrompt, panoramaPrompt),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("Parallel timeout")), totalTimeout)),
+      ])) as Awaited<ReturnType<typeof generateImagesInParallel>>
+
+      // Check if we got at least the main image
+      if (parallelResults.mainImage) {
+        console.log("✅ Parallel generation successful!")
+
+        // Count successful generations
+        const successCount = [
+          parallelResults.mainImage,
+          parallelResults.domeImage,
+          parallelResults.panoramaImage,
+        ].filter(Boolean).length
+
+        return NextResponse.json({
+          success: true,
+          image: parallelResults.mainImage,
+          domeImage: parallelResults.domeImage || parallelResults.mainImage,
+          panoramaImage: parallelResults.panoramaImage || parallelResults.mainImage,
+          originalPrompt: mainPrompt,
+          promptLength: mainPrompt.length,
+          provider: "OpenAI",
+          model: "DALL-E 3",
+          estimatedFileSize: "~2-4MB",
+          generationMethod: isGodLevel ? "godlevel_parallel_formatted" : "standard_parallel_formatted",
+          generationDetails: {
+            mainImage: "Generated successfully",
+            domeImage: parallelResults.domeImage ? "Generated with fisheye formatting" : "Using main image fallback",
+            panoramaImage: parallelResults.panoramaImage
+              ? "Generated with equirectangular formatting"
+              : "Using main image fallback",
+            errors: parallelResults.errors,
+            successCount: `${successCount}/3 images generated`,
+            note: isGodLevel
+              ? "GODLEVEL parallel generation with format-specific dome and panorama prompts"
+              : "Standard parallel generation with proper formatting",
+            formatChecks: {
+              domeFormatting: domePrompt.includes("FISHEYE")
+                ? "✅ Fisheye formatting applied"
+                : "❌ Missing fisheye formatting",
+              panoramaFormatting: panoramaPrompt.includes("EQUIRECTANGULAR")
+                ? "✅ Equirectangular formatting applied"
+                : "❌ Missing equirectangular formatting",
+            },
           },
           parameters: {
             dataset,
@@ -232,235 +283,96 @@ export async function POST(request: NextRequest) {
             numSamples,
             noiseScale: noise,
             timeStep,
-            domeProjection: false,
+            domeProjection: !!parallelResults.domeImage,
             domeDiameter,
             domeResolution,
-            projectionType,
-            panoramic360: false,
+            projectionType: "fisheye",
+            panoramic360: !!parallelResults.panoramaImage,
             panoramaResolution,
-            panoramaFormat,
+            panoramaFormat: "equirectangular",
             stereographicPerspective,
-            singleImageMode: true,
+            godlevelMode: isGodLevel,
+            asmatMode: isAsmat,
+            extendedTimeout: totalTimeout,
+            formatSpecific: true,
           },
         })
-      } catch (error: any) {
-        console.error("❌ Single image generation failed:", error.message)
+      } else {
+        throw new Error("No main image generated")
+      }
+    } catch (error: any) {
+      console.log("⚠️ Parallel generation failed, falling back to single image:", error.message)
+
+      // Final fallback - single image only
+      try {
+        const result = await generateSingleImageOnly(mainPrompt)
+
+        return NextResponse.json({
+          success: true,
+          image: result.mainImage,
+          domeImage: result.domeImage,
+          panoramaImage: result.panoramaImage,
+          originalPrompt: mainPrompt,
+          promptLength: mainPrompt.length,
+          provider: "OpenAI",
+          model: "DALL-E 3",
+          estimatedFileSize: "~2-4MB",
+          generationMethod: "emergency_single",
+          generationDetails: {
+            mainImage: "Generated successfully",
+            domeImage: "Using main image (emergency fallback)",
+            panoramaImage: "Using main image (emergency fallback)",
+            errors: [`Parallel failed: ${error.message}`],
+            note: "Emergency single image mode due to parallel failure",
+          },
+          parameters: {
+            dataset,
+            scenario,
+            colorScheme,
+            emergencyMode: true,
+          },
+        })
+      } catch (finalError: any) {
+        console.error("❌ All generation methods failed:", finalError.message)
+
         return NextResponse.json(
           {
             success: false,
-            error: "Single image generation failed: " + error.message,
-            promptLength: optimizedMainPrompt.length,
-            generationMethod: "single_failed",
+            error: "All generation methods failed",
+            details: finalError.message,
+            timestamp: new Date().toISOString(),
+            generationMethod: "all_failed",
+            troubleshooting: {
+              issue: "Complete API Failure",
+              cause: finalError.message.includes("503")
+                ? "OpenAI service unavailable"
+                : finalError.message.includes("429")
+                  ? "Rate limit exceeded"
+                  : finalError.message.includes("DEPLOYMENT_TIMEOUT")
+                    ? "Deployment timeout"
+                    : "Unknown API error",
+              solutions: [
+                "OpenAI API is experiencing issues",
+                "Try again in a few minutes",
+                "Check OpenAI status page",
+                "Contact support if issue persists",
+              ],
+            },
           },
-          { status: 500 },
+          { status: finalError.message.includes("DEPLOYMENT_TIMEOUT") ? 408 : 503 },
         )
       }
     }
-
-    // Generate dome and panorama prompts
-    const domePrompt = generateDomePrompt(optimizedMainPrompt, domeDiameter, domeResolution, projectionType)
-    const panoramaPrompt = generatePanoramaPrompt(
-      optimizedMainPrompt,
-      panoramaResolution,
-      panoramaFormat,
-      stereographicPerspective,
-    )
-
-    console.log("📏 Optimized main prompt length:", optimizedMainPrompt.length, "characters")
-    console.log("📏 Dome prompt length:", domePrompt.length, "characters")
-    console.log("📏 Panorama prompt length:", panoramaPrompt.length, "characters")
-
-    // Determine generation strategy
-    let results: any
-    let generationMethod = "unknown"
-
-    if (generationMode === "queue") {
-      // Queue mode - most reliable
-      console.log("🔄 Queue generation mode activated")
-      try {
-        results = await generateImagesWithQueue(optimizedMainPrompt, domePrompt, panoramaPrompt)
-        generationMethod = "queue"
-      } catch (error: any) {
-        console.error("❌ Queue generation failed:", error.message)
-        throw error
-      }
-    } else if (generationMode === "parallel") {
-      // Parallel mode - fastest but risky
-      console.log("⚡ Parallel generation mode activated")
-      try {
-        const parallelResults = (await Promise.race([
-          generateImagesInParallel(optimizedMainPrompt, domePrompt, panoramaPrompt),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("Parallel timeout")), 25000)),
-        ])) as Awaited<ReturnType<typeof generateImagesInParallel>>
-
-        if (parallelResults.mainImage) {
-          results = {
-            mainImage: parallelResults.mainImage,
-            domeImage: parallelResults.domeImage || parallelResults.mainImage,
-            panoramaImage: parallelResults.panoramaImage || parallelResults.mainImage,
-            errors: parallelResults.errors,
-            method: "parallel",
-          }
-          generationMethod = "parallel"
-        } else {
-          throw new Error("Parallel generation failed - no main image")
-        }
-      } catch (error: any) {
-        console.log("⚠️ Parallel generation failed, falling back to queue:", error.message)
-        results = await generateImagesWithQueue(optimizedMainPrompt, domePrompt, panoramaPrompt)
-        generationMethod = "queue_fallback"
-      }
-    } else {
-      // Auto mode - try parallel first, then queue
-      console.log("🤖 Auto generation mode - trying parallel first...")
-      try {
-        const parallelResults = (await Promise.race([
-          generateImagesInParallel(optimizedMainPrompt, domePrompt, panoramaPrompt),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("Parallel timeout")), 20000)),
-        ])) as Awaited<ReturnType<typeof generateImagesInParallel>>
-
-        if (parallelResults.mainImage) {
-          results = {
-            mainImage: parallelResults.mainImage,
-            domeImage: parallelResults.domeImage || parallelResults.mainImage,
-            panoramaImage: parallelResults.panoramaImage || parallelResults.mainImage,
-            errors: parallelResults.errors,
-            method: "parallel",
-          }
-          generationMethod = "parallel"
-          console.log("✅ Parallel generation successful!")
-        } else {
-          throw new Error("Parallel generation failed - no main image")
-        }
-      } catch (error: any) {
-        console.log("⚠️ Parallel generation failed, falling back to queue:", error.message)
-        try {
-          results = await generateImagesWithQueue(optimizedMainPrompt, domePrompt, panoramaPrompt)
-          generationMethod = "queue_fallback"
-        } catch (queueError: any) {
-          console.error("❌ Queue generation also failed:", queueError.message)
-
-          // Final fallback - single image only
-          console.log("🆘 Final fallback - generating single image only")
-          const singleImage = await generateSingleImage(optimizedMainPrompt)
-
-          return NextResponse.json({
-            success: true,
-            image: singleImage,
-            domeImage: singleImage,
-            panoramaImage: singleImage,
-            originalPrompt: mainPrompt,
-            optimizedPrompt: optimizedMainPrompt,
-            promptLength: optimizedMainPrompt.length,
-            provider: "OpenAI",
-            model: "DALL-E 3",
-            estimatedFileSize: "~2-4MB",
-            generationMethod: "emergency_single",
-            generationDetails: {
-              mainImage: "Generated successfully",
-              domeImage: "Using main image (fallback)",
-              panoramaImage: "Using main image (fallback)",
-              errors: [`Queue failed: ${queueError.message}`],
-              note: "Emergency single image mode due to timeout issues",
-            },
-            parameters: {
-              dataset,
-              scenario,
-              colorScheme,
-              seed,
-              numSamples,
-              noiseScale: noise,
-              timeStep,
-              domeProjection: false,
-              domeDiameter,
-              domeResolution,
-              projectionType,
-              panoramic360: false,
-              panoramaResolution,
-              panoramaFormat,
-              stereographicPerspective,
-            },
-          })
-        }
-      }
-    }
-
-    // Return successful response
-    const response = {
-      success: true,
-      image: results.mainImage,
-      domeImage: results.domeImage,
-      panoramaImage: results.panoramaImage,
-      originalPrompt: mainPrompt,
-      optimizedPrompt: optimizedMainPrompt,
-      promptLength: optimizedMainPrompt.length,
-      provider: "OpenAI",
-      model: "DALL-E 3",
-      estimatedFileSize: "~2-4MB",
-      generationMethod,
-      generationDetails: {
-        mainImage: results.mainImage ? "Generated successfully" : "Failed",
-        domeImage: results.domeImage
-          ? results.domeImage === results.mainImage
-            ? "Using main image as fallback"
-            : `Generated successfully with ${domeDiameter}m TUNNEL UP effect`
-          : "Failed",
-        panoramaImage: results.panoramaImage
-          ? results.panoramaImage === results.mainImage
-            ? "Using main image as fallback"
-            : `Generated successfully at ${panoramaResolution} resolution`
-          : "Failed",
-        errors: results.errors || [],
-        optimizations: "Prompt optimized to prevent timeouts",
-      },
-      parameters: {
-        dataset,
-        scenario,
-        colorScheme,
-        seed,
-        numSamples,
-        noiseScale: noise,
-        timeStep,
-        domeProjection: results.domeImage !== results.mainImage,
-        domeDiameter,
-        domeResolution,
-        projectionType,
-        panoramic360: results.panoramaImage !== results.mainImage,
-        panoramaResolution,
-        panoramaFormat,
-        stereographicPerspective,
-        generationMode,
-      },
-    }
-
-    console.log(`✅ Returning successful response via ${generationMethod}`)
-    return NextResponse.json(response)
   } catch (error: any) {
-    console.error("❌ AI Art generation error:", error)
-
-    // Handle deployment timeout specifically
-    if (error.message.includes("DEPLOYMENT_TIMEOUT")) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Generation timed out due to deployment limits. Try single image mode or reduce complexity.",
-          details:
-            "The function execution exceeded the deployment time limit. Consider using single image mode for faster generation.",
-          timestamp: new Date().toISOString(),
-          generationMethod: "timeout_failed",
-          suggestion: "Use single image mode or reduce prompt complexity",
-        },
-        { status: 408 }, // Request Timeout
-      )
-    }
+    console.error("❌ Route handler error:", error)
 
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Failed to generate AI art",
-        details: error.stack,
+        error: "Request processing failed",
+        details: error.message,
         timestamp: new Date().toISOString(),
-        generationMethod: "failed",
+        generationMethod: "request_failed",
       },
       { status: 500 },
     )
