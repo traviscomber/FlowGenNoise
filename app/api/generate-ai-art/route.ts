@@ -1,167 +1,172 @@
 import { type NextRequest, NextResponse } from "next/server"
-import {
-  generateDomePrompt,
-  generatePanoramaPrompt,
-  generateImagesInParallel,
-  generateSingleImageOnly,
-  cleanPromptForImageGeneration,
-} from "./utils"
+import { callOpenAI, generateDomePrompt, generatePanoramaPrompt } from "./utils"
 
-function buildUltraSimplePrompt(dataset: string, scenario: string, colorScheme: string, customPrompt?: string): string {
+function buildPrompt(dataset: string, scenario: string, colorScheme: string, customPrompt?: string): string {
   // Use custom prompt if provided
   if (customPrompt && customPrompt.trim()) {
-    return cleanPromptForImageGeneration(`${customPrompt.trim()}, ${colorScheme} colors, detailed`)
+    let prompt = customPrompt.trim()
+
+    // Add color scheme to custom prompt
+    const colorPrompts: Record<string, string> = {
+      plasma: "vibrant plasma colors, electric blues and magentas",
+      quantum: "quantum field colors, deep blues and ethereal whites",
+      cosmic: "cosmic colors, deep space purples and stellar golds",
+      thermal: "thermal imaging colors, heat signature reds and oranges",
+      spectral: "full spectrum rainbow colors, prismatic light effects",
+      crystalline: "crystalline colors, clear gems and mineral tones",
+      bioluminescent: "bioluminescent colors, glowing organic blues and greens",
+      aurora: "aurora borealis colors, dancing green and purple lights",
+      metallic: "metallic tones, silver and bronze accents",
+      prismatic: "prismatic light effects, rainbow refractions",
+      monochromatic: "monochromatic grayscale, black and white tones",
+      infrared: "infrared heat colors, thermal reds and oranges",
+      lava: "molten lava colors, glowing reds and oranges",
+      futuristic: "futuristic neon colors, cyberpunk aesthetics",
+      forest: "forest greens and earth tones",
+      ocean: "ocean blues and aqua tones",
+      sunset: "warm sunset colors, oranges and deep reds",
+      arctic: "arctic colors, ice blues and pristine whites",
+      neon: "bright neon colors, electric pinks and greens",
+      vintage: "vintage sepia tones, aged photograph aesthetics",
+      toxic: "toxic waste colors, radioactive greens and yellows",
+      ember: "glowing ember colors, warm orange and red coals",
+      lunar: "lunar surface colors, silver grays and crater shadows",
+      tidal: "tidal pool colors, ocean blues and sandy browns",
+    }
+
+    prompt += `, ${colorPrompts[colorScheme] || "vibrant colors"}`
+    prompt +=
+      ", highly detailed, artistic masterpiece, professional photography quality, 8K resolution, stunning visual composition"
+
+    return prompt
   }
 
-  // Ultra-simple dataset prompts
-  const simpleDatasets: Record<string, string> = {
-    nuanu: "Nuanu creative architecture",
-    bali: "Balinese temples",
-    thailand: "Thai temples",
-    indonesian: "Indonesian culture",
-    horror: "Indonesian mystical",
-    spirals: "spiral patterns",
-    fractal: "fractal art",
-    mandelbrot: "Mandelbrot set",
-    julia: "Julia fractals",
-    lorenz: "Lorenz attractor",
-    hyperbolic: "hyperbolic geometry",
-    gaussian: "Gaussian fields",
-    cellular: "cellular automata",
-    voronoi: "Voronoi patterns",
-    perlin: "Perlin noise",
-    diffusion: "diffusion patterns",
-    wave: "wave patterns",
-    moons: "lunar mechanics",
-    tribes: "tribal networks",
-    heads: "mosaic heads",
-    natives: "native tribes",
-    statues: "sacred statues",
+  // Build dataset-specific prompt
+  let prompt = ""
+
+  // Dataset-specific base prompts
+  const datasetPrompts: Record<string, string> = {
+    nuanu:
+      "Nuanu Creative City architectural elements, modern creative spaces, innovative design, futuristic urban planning",
+    bali: "Balinese Hindu temples, traditional architecture, tropical paradise, sacred geometry, rice terraces",
+    thailand: "Thai Buddhist temples, golden spires, traditional architecture, serene landscapes, lotus flowers",
+    indonesian: "Indonesian cultural heritage, traditional patterns, mystical elements, archipelago beauty",
+    horror: "Indonesian mystical creatures, supernatural folklore elements, traditional legends",
+    spirals: "Mathematical spiral patterns, Fibonacci sequences, golden ratio, geometric precision",
+    fractal: "Fractal patterns, recursive geometry, infinite detail, mathematical beauty",
+    mandelbrot: "Mandelbrot set visualization, complex mathematical patterns, infinite zoom",
+    julia: "Julia set fractals, complex plane mathematics, iterative patterns",
+    lorenz: "Lorenz attractor, chaos theory visualization, butterfly effect patterns",
+    hyperbolic: "Hyperbolic geometry, non-Euclidean space, curved mathematical surfaces",
+    gaussian: "Gaussian field visualization, statistical distributions, probability landscapes",
+    cellular: "Cellular automata patterns, Conway's Game of Life, emergent complexity",
+    voronoi: "Voronoi diagrams, spatial partitioning, natural tessellation patterns",
+    perlin: "Perlin noise landscapes, procedural generation, organic randomness",
+    diffusion: "Reaction-diffusion patterns, chemical wave propagation, Turing patterns",
+    wave: "Wave interference patterns, harmonic oscillations, frequency visualizations",
+    moons: "Lunar orbital mechanics, celestial body movements, gravitational dance",
+    tribes: "Tribal network topology, social connections, community structures",
+    heads: "Mosaic head compositions, portrait arrangements, facial geometry",
+    natives: "Ancient native tribes, traditional cultures, indigenous wisdom",
+    statues: "Sacred sculptural statues, carved monuments, artistic figures",
   }
 
-  let prompt = simpleDatasets[dataset] || "abstract art"
+  prompt = datasetPrompts[dataset] || "Abstract mathematical art"
 
-  // Enhanced Indonesian Genesis Creation Story - Four Fundamental Elements
+  // Add scenario-specific details for Indonesian dataset
   if (dataset === "indonesian") {
     const scenarioPrompts: Record<string, string> = {
-      pure: "geometric patterns",
-
-      // WEEK 1: COSMOS - The Divine Beginning
-      cosmos:
-        "GODLEVEL PROMPT: Indonesian Genesis Cosmos Creation - The Divine Beginning of the Universe, Sang Hyang Widhi Wasa the Supreme Creator manifesting as brilliant cosmic consciousness expanding through infinite void, primordial cosmic egg Brahmanda splitting open releasing torrents of divine light and stardust, celestial realm Kahyangan emerging from cosmic waters with floating palaces of gold and crystal, Batara Guru Shiva dancing the cosmic dance of creation while wielding trident of universal power, cosmic serpent Ananta Sesha coiled around Mount Meru supporting the three worlds, divine cosmic wheel Chakra spinning with sacred geometries representing future Indonesian islands, cosmic tree Kalpataru growing from center of universe with branches reaching all dimensions, primordial cosmic sound OM AUM resonating through space-time creating vibrational frequencies that birth matter, cosmic mandala patterns expanding outward in perfect mathematical harmony with Sanskrit mantras written in starlight, celestial beings Dewata floating through cosmic realms playing divine gamelan orchestras that tune the fundamental frequencies of reality, cosmic lotus Padma blooming in the void with each petal containing entire galaxies and solar systems, divine cosmic breath Prana flowing as solar winds carrying life essence to future worlds, cosmic fire Agni burning in the heart of newborn stars forging the elements that will become Indonesian soil, primordial cosmic waters Apah swirling in spiral galaxies preparing to descend as sacred rivers and seas, cosmic time Kala beginning its eternal cycle with past present and future existing simultaneously, divine cosmic consciousness Atman awakening in every particle of matter preparing for the manifestation of Indonesian archipelago, hyperrealistic cosmic visualization with volumetric lighting and particle effects showing the birth of Indonesian universe",
-
-      // WEEK 2: WATER - The Sacred Flowing Life Force
-      water:
-        "GODLEVEL PROMPT: Indonesian Genesis Water Creation - Sacred Flowing Life Force of the Archipelago, Dewi Sri goddess of water and fertility emerging from cosmic lotus with flowing hair that becomes rivers and streams, sacred Mount Meru releasing celestial waterfalls that cascade down through seven heavens creating the primordial oceans, Baruna ocean god riding massive sea turtle Kurma through endless blue depths while commanding tidal forces with conch shell trumpet, sacred springs Tirta emerging from earth blessed by Hindu priests with holy water ceremonies, traditional Indonesian water temples Pura Tirta with elaborate stone carvings and lotus ponds reflecting temple spires, ancient Subak irrigation system creating geometric rice terrace patterns across volcanic slopes like liquid staircases to heaven, sacred Ganges river Ganga flowing through Indonesian spiritual landscape carrying prayers and offerings downstream, water spirits Nyi Roro Kidul ruling southern seas with underwater palaces of coral and pearl, traditional Indonesian fishing boats with colorful sails navigating between islands while fishermen offer prayers to sea deities, monsoon rains blessed by Indra god of storms bringing life-giving water to tropical forests and agricultural lands, sacred water buffalo Kerbau wallowing in muddy rice paddies while farmers plant rice seedlings in flooded fields, traditional Indonesian water festivals with elaborate processions carrying sacred water vessels, holy water Tirta Amrita with healing properties blessed by Balinese priests during temple ceremonies, underwater kingdoms with sea serpent Naga guardians protecting ancient treasures and wisdom, traditional Indonesian wells and water sources considered sacred portals to underworld, water meditation practices with devotees sitting beside flowing streams while chanting mantras, sacred water lilies and lotus flowers blooming in temple ponds with each bloom representing spiritual enlightenment, traditional Indonesian water music with bamboo instruments creating sounds that mimic flowing rivers and ocean waves, hyperrealistic water visualization with fluid dynamics and reflection effects showing the sacred essence of Indonesian waters",
-
-      // WEEK 3: PLANTS & ANIMALS - The Living Ecosystem Symphony
-      "plants-animals":
-        "GODLEVEL PROMPT: Indonesian Genesis Flora Fauna Creation - Living Ecosystem Symphony of Biodiversity, Dewi Sri goddess of rice and fertility dancing through emerald rice fields while golden grains multiply with each graceful movement, sacred Banyan tree Beringin with massive trunk and aerial roots serving as dwelling place for ancestral spirits and forest deities, Garuda the divine eagle soaring above tropical rainforest canopy with wingspan casting protective shadows over endangered species below, traditional Indonesian spice gardens with nutmeg cinnamon cloves and black pepper plants growing in volcanic soil enriched by centuries of ash, sacred Rafflesia flower blooming once per year in deep jungle with massive petals that emit mystical fragrance attracting forest spirits, Indonesian orangutan families swinging through Borneo rainforest canopy while mother teaches young ones ancient forest wisdom, traditional Indonesian medicinal plants Jamu with healing properties known to village shamans and traditional healers, sacred lotus Padma blooming in temple ponds with each petal representing different aspect of enlightenment and spiritual growth, Indonesian Komodo dragons as living remnants of prehistoric era when dragons ruled the earth alongside ancient Indonesian kingdoms, traditional Indonesian butterfly gardens with thousands of colorful species including rare birdwing butterflies with wings like stained glass windows, sacred rice goddess ceremonies with farmers offering first harvest to Dewi Sri while gamelan orchestras play agricultural celebration music, Indonesian coral reefs with incredible biodiversity including rare fish species found nowhere else on earth, traditional Indonesian forest spirits Bunian living in harmony with animals while protecting ancient trees from destruction, sacred Indonesian elephants decorated with ceremonial cloth and gold ornaments during temple festivals and royal processions, traditional Indonesian bird markets with exotic species including birds of paradise with elaborate plumage used in ceremonial headdresses, Indonesian tiger spirits roaming through jungle temples while protecting sacred groves from human interference, traditional Indonesian herbal medicine gardens with plants that cure diseases and promote longevity according to ancient Javanese texts, sacred Indonesian mangrove forests serving as nurseries for marine life while protecting coastlines from tsunamis and storms, traditional Indonesian animal totems with each tribe having sacred animal spirits that guide and protect community members, hyperrealistic nature visualization with detailed flora and fauna showing the incredible biodiversity of Indonesian ecosystem",
-
-      // WEEK 4: VOLCANOES - The Sacred Fire Mountains
-      volcanoes:
-        "GODLEVEL PROMPT: Indonesian Genesis Volcanic Creation - Sacred Fire Mountains Forging the Archipelago, Batara Agni fire god emerging from molten earth core with crown of volcanic flames and robes woven from liquid lava threads, Mount Merapi the most sacred volcano breathing divine fire while Javanese sultans perform ancient ceremonies to appease volcanic spirits, Ring of Fire geological formation with active volcanoes creating the backbone of Indonesian islands through millions of years of eruptions, sacred volcanic ash Lahar flowing down mountain slopes creating the most fertile agricultural soil on earth where rice and spices grow abundantly, traditional Indonesian volcano worship ceremonies with offerings of flowers rice and incense placed at crater edges to honor fire deities, Krakatoa legendary volcanic explosion that was heard around the world while creating spectacular sunsets for years afterward, volcanic hot springs Pemandian Air Panas with healing mineral waters where locals bathe while believing in therapeutic properties, traditional Indonesian sulfur miners working in dangerous conditions at Kawah Ijen volcano where blue flames of burning sulfur create otherworldly scenes, sacred Mount Agung towering over Balinese temples as spiritual axis of the island where Hindu gods reside in volcanic peaks, volcanic glass Obsidian formed from rapid cooling of lava flows used by ancient Indonesian craftsmen to create ceremonial knives and tools, traditional Indonesian volcanic sand beaches with black sand created from volcanic activity providing unique coastal landscapes, volcanic crater lakes Danau Kawah with turquoise waters heated by underground thermal activity creating mystical atmospheric effects, sacred volcanic stones used in traditional Indonesian architecture including temples and royal palaces built to withstand earthquakes, traditional Indonesian fire walking ceremonies where devotees walk across hot volcanic coals while in spiritual trance states, volcanic lightning phenomena during major eruptions creating spectacular electrical displays that ancient Indonesians interpreted as battles between gods, traditional Indonesian volcanic observatories where scientists monitor seismic activity while respecting local spiritual beliefs about volcano spirits, sacred volcanic caves formed by lava tubes serving as meditation retreats for Hindu and Buddhist monks, traditional Indonesian volcanic agriculture with farmers growing crops on steep volcanic slopes using ancient terracing techniques, volcanic thermal energy harnessed by modern Indonesia while maintaining respect for traditional beliefs about fire mountain spirits, hyperrealistic volcanic visualization with molten lava flows and dramatic lighting showing the raw geological power that created Indonesian islands",
-
-      // Traditional Cultural Scenarios
+      pure: "pure mathematical beauty with Indonesian geometric patterns",
       garuda:
-        "GODLEVEL PROMPT: Majestic Garuda Wisnu Kencana soaring through celestial realms, massive divine eagle with wingspan across golden sunset skies, intricate feather details with ethereal light, powerful talons gripping sacred lotus blossoms, noble eagle head crowned with jeweled diadem, eyes blazing with cosmic wisdom, Lord Vishnu mounted upon Garuda's back in divine regalia with four arms holding sacred conch shell, discus wheel of time, lotus of creation, ceremonial staff, flowing silk garments in royal blues and golds, Mount Meru rising with cascading waterfalls of liquid starlight, temple spires through clouds of incense, Indonesian archipelago spread below like scattered emeralds in sapphire seas, Ring of Fire volcanoes glowing with sacred flames, traditional gamelan music as golden sound waves, ancient Sanskrit mantras as luminous script, Ramayana epic scenes in floating stone tablets, divine aura radiating rainbow light spectrum, cosmic mandala patterns swirling in heavens, islands visible as points of light, Borobudur and Prambanan temples glowing with spiritual energy, traditional Indonesian textiles woven into reality fabric",
-
+        "GODLEVEL PROMPT: Majestic Garuda Wisnu Kencana soaring through celestial realms, massive divine eagle with wingspan stretching across golden sunset skies, intricate feather details shimmering with ethereal light, powerful talons gripping sacred lotus blossoms radiating divine energy, noble eagle head crowned with jeweled diadem of ancient Javanese kings, eyes blazing with cosmic wisdom and protective spirit, Lord Vishnu mounted majestically upon Garuda's back in full divine regalia with four arms holding sacred conch shell, discus wheel of time, lotus of creation, and ceremonial staff, flowing silk garments in royal blues and golds dancing in celestial winds, Mount Meru rising in background with cascading waterfalls of liquid starlight, temple spires piercing through clouds of incense and prayers, Indonesian archipelago spread below like scattered emeralds in sapphire seas, Ring of Fire volcanoes glowing with sacred flames, traditional gamelan music visualized as golden sound waves rippling through dimensions, ancient Sanskrit mantras floating as luminous script in the air, Ramayana epic scenes carved into floating stone tablets, divine aura radiating rainbow light spectrum, cosmic mandala patterns swirling in the heavens, 17,508 islands of Indonesia visible as points of light below, Borobudur and Prambanan temples glowing with spiritual energy, traditional Indonesian textiles patterns woven into the very fabric of reality, hyperrealistic 8K cinematic masterpiece with volumetric lighting and particle effects",
       wayang:
-        "GODLEVEL PROMPT: Mystical Wayang Kulit shadow puppet performance bringing ancient Ramayana and Mahabharata epics to life, master dalang puppeteer silhouetted behind glowing white screen with intricately carved leather puppets, masterwork perforated artistry with gold leaf details catching flickering oil lamp light, dramatic shadows dancing into living characters, Prince Rama with noble features and ornate crown alongside Princess Sita with flowing hair and delicate jewelry, mighty Hanuman the white monkey hero leaping through air with mountain in grasp, gamelan orchestra creating visible sound waves in metallic gold and silver, traditional Indonesian musicians in batik clothing playing gender, saron, kendang drums, audience sitting cross-legged on woven mats mesmerized by eternal stories, coconut oil lamps casting warm amber light creating multiple shadow layers, ancient Javanese script floating in air telling story, tropical night sky with stars and flying spirits, traditional Javanese architecture with carved wooden pillars and clay tile roofs, incense smoke curling upward carrying prayers to ancestors, banana leaves and frangipani flowers as offerings, cultural heritage spanning over centuries as golden threads connecting past to present",
-
+        "GODLEVEL PROMPT: Mystical Wayang Kulit shadow puppet performance bringing ancient Ramayana and Mahabharata epics to life, master dalang puppeteer silhouetted behind glowing white screen with hundreds of intricately carved leather puppets, each puppet a masterwork of perforated artistry with gold leaf details catching flickering oil lamp light, dramatic shadows dancing and morphing into living characters, Prince Rama with perfect noble features and ornate crown alongside beautiful Princess Sita with flowing hair and delicate jewelry radiating purity and grace, mighty Hanuman the white monkey hero leaping through air with mountain in his grasp, gamelan orchestra of bronze instruments creating visible sound waves in metallic gold and silver, traditional Indonesian musicians in batik clothing playing gender, saron, and kendang drums, audience of villagers sitting cross-legged on woven mats mesmerized by the eternal stories, coconut oil lamps casting warm amber light creating multiple layers of shadows, ancient Javanese script floating in the air telling the story, tropical night sky filled with stars and flying spirits, traditional Javanese architecture with carved wooden pillars and clay tile roofs, incense smoke curling upward carrying prayers to ancestors, banana leaves and frangipani flowers as offerings, cultural heritage spanning over 1000 years visualized as golden threads connecting past to present, UNESCO World Heritage artistic tradition, hyperrealistic cinematic lighting with deep shadows and warm highlights, 8K resolution with intricate puppet details and atmospheric effects",
       batik:
-        "GODLEVEL PROMPT: Infinite cosmic tapestry of sacred Indonesian batik patterns coming alive with supernatural energy, master batik artisan applying hot wax with traditional canting tool creating flowing lines transforming into living rivers of light, parang rusak diagonal patterns representing flowing water and eternal life force undulating like ocean waves, kawung geometric circles symbolizing cosmic order expanding into mandala formations pulsing with universal rhythm, mega mendung cloud motifs in deep indigo blues swirling with actual storm clouds and lightning, ceplok star formations bursting into real constellations, sido mukti prosperity symbols manifesting as golden coins and rice grains falling like blessed rain, royal court designs with protective meanings creating shields of light around ancient Javanese palaces, intricate hand-drawn patterns using traditional canting tools guided by ancestral spirits, natural dyes from indigo plants, turmeric roots, mahogany bark creating earth tones shifting like living skin, cultural identity woven into fabric of reality itself, UNESCO heritage craft mastery passed down through generations, each pattern telling stories of creation myths and heroic legends, textile becoming portal to spiritual realm where ancestors dance in eternal celebration",
-
+        "GODLEVEL PROMPT: Infinite cosmic tapestry of sacred Indonesian batik patterns coming alive with supernatural energy, master batik artisan's hands applying hot wax with traditional canting tool creating flowing lines that transform into living rivers of light, parang rusak diagonal patterns representing flowing water and eternal life force undulating like ocean waves, kawung geometric circles symbolizing cosmic order expanding into mandala formations that pulse with universal rhythm, mega mendung cloud motifs in deep indigo blues swirling with actual storm clouds and lightning, ceplok star formations bursting into real constellations in the night sky, sido mukti prosperity symbols manifesting as golden coins and rice grains falling like blessed rain, royal court designs with protective meanings creating shields of light around ancient Javanese palaces, intricate hand-drawn patterns using traditional canting tools guided by ancestral spirits, natural dyes from indigo plants, turmeric roots, and mahogany bark creating earth tones that shift and change like living skin, cultural identity woven into fabric of reality itself, UNESCO heritage craft mastery passed down through generations of royal court artisans, each pattern telling stories of creation myths and heroic legends, textile becoming portal to spiritual realm where ancestors dance in eternal celebration, traditional Javanese philosophy of harmony between human, nature, and divine visualized as interconnected geometric patterns, workshop filled with clay pots of dye, bamboo tools, and cotton fabric stretched on wooden frames, tropical sunlight filtering through palm leaves creating natural batik shadows on the ground, master craftswomen in traditional kebaya clothing working with meditative focus, the very air shimmering with creative energy and cultural pride, hyperrealistic 8K detail showing every wax crack and dye gradient, volumetric lighting and particle effects bringing ancient art form to supernatural life",
       borobudur:
-        "GODLEVEL PROMPT: Magnificent Borobudur temple rising from misty Javanese plains like massive stone mandala connecting earth to heaven, world's largest Buddhist monument glowing with golden sunrise light, relief panels carved into volcanic stone coming alive with animated scenes of Buddha's teachings and Jataka tales, Buddha statues in perfect meditation poses each radiating serene enlightenment energy, bell-shaped stupas containing hidden Buddha figures emerging from stone like lotus flowers blooming, three circular platforms representing Buddhist cosmology - Kamadhatu world of desire, Rupadhatu world of forms, and Arupadhatu formless world - each level glowing with different colored auras, pilgrims in white robes walking clockwise path to enlightenment leaving trails of golden light, ancient stones weathered by centuries telling stories of devotion and spiritual seeking, sunrise illuminating the monument with divine radiance while Mount Merapi volcano smokes majestically in background, largest Buddhist temple complex in the world surrounded by lush tropical jungle and rice paddies, architectural marvel embodying spiritual journey from earthly desires to nirvana visualized as ascending spirals of light, Sailendra dynasty builders' vision manifested in perfect sacred geometry, each stone block precisely placed according to cosmic principles, relief carvings depicting Prince Siddhartha's path to becoming Buddha animated with supernatural life, celestial beings and bodhisattvas floating around the temple in meditation, traditional Javanese gamelan music resonating from the stones themselves, incense smoke from countless offerings creating mystical atmosphere, UNESCO World Heritage site protected by guardian spirits, morning mist revealing and concealing the temple like a divine revelation, pilgrims from around the world climbing the sacred steps in spiritual pilgrimage, ancient wisdom carved in stone speaking across centuries, hyperrealistic cinematic masterpiece with volumetric lighting, atmospheric effects, and spiritual energy visualization",
-
+        "GODLEVEL PROMPT: Abstract mathematical mandala compositions with infinite geometric recursion, concentric circular patterns expanding outward in perfect mathematical harmony, three-dimensional geometric forms creating ascending spiral mathematics, bell-shaped mathematical curves and meditation circle equations integrated into cosmic algorithmic patterns, thousands of interconnected geometric panels showing mathematical sequences and numerical progressions rendered in abstract computational art style, serene mathematical equilibrium and golden ratio proportions becoming living geometric algorithms, multi-layered mandala mathematics with circular platforms representing different dimensional spaces, ancient geometric principles manifested in pure mathematical visualization, abstract mathematical textures with algorithmic complexity and fractal iterations, sacred geometry equations manifested in computational art forms, mathematical cosmology visualized through geometric algorithmic arrangements, classical mathematical sculpture aesthetics rendered in pure abstract form, algorithmic art style with deep mathematical shadows and dimensional complexity, ancient mathematical techniques creating intricate numerical patterns, spiritual mathematical symbolism expressed through geometric algorithms, meditation and mathematical enlightenment themes expressed through pure geometric art, classical geometric mathematical harmony, sacred mathematical mandala principles in algorithmic construction, ancient mathematical artistic traditions rendered as computational geometry, geometric mathematical mastery with intricate algorithmic detail work, spiritual mathematical journey visualized through ascending geometric mathematical forms, hyperrealistic 8K mathematical texture detail with dramatic algorithmic lighting, atmospheric effects showing pure mathematical craftsmanship and geometric artistry",
       komodo:
-        "GODLEVEL PROMPT: Prehistoric Komodo dragons prowling volcanic islands of Flores and Rinca like living dinosaurs from ancient times, largest living lizards on Earth with massive muscular bodies reaching lengths, powerful jaws capable of delivering venomous bite that can fell water buffalo, ancient survivors from age of dinosaurs when giants ruled the earth, scaly armor-like skin glistening in tropical Indonesian sun with patterns resembling ancient dragon mythology, forked tongues flicking out to taste air for prey scents carried on ocean winds, muscular tails thick as tree trunks and razor-sharp claws that can tear through flesh and bone, endemic to Indonesian archipelago representing untamed wilderness and primal power, living legends of Flores and Rinca islands where local villagers call them ora and tell stories of dragon spirits, conservation symbols representing battle between modern world and ancient nature, mystical connection to dragon mythology of Asian cultures, volcanic landscape of Komodo National Park with rugged hills and savanna grasslands, pink sand beaches where dragons hunt for carrion washed ashore, deer and wild boar fleeing in terror from apex predators, traditional Indonesian fishing boats anchored in crystal blue waters, park rangers in khaki uniforms observing from safe distance, tourists on guided tours witnessing living prehistory, UNESCO World Heritage marine park protecting both dragons and coral reefs, Ring of Fire volcanic activity creating dramatic landscape, traditional Indonesian villages where locals have coexisted with dragons for centuries, ancient folklore and legends about dragon kings and serpent deities, scientific research revealing secrets of dragon evolution and survival, hyperrealistic wildlife cinematography with dramatic lighting, showing every scale detail and predatory movement, atmospheric volcanic landscape with mist and dramatic skies",
-
+        "GODLEVEL PROMPT: Mystical dragon-inspired artistic tapestry with ancient Indonesian mythological elements, legendary dragon spirits manifesting as flowing artistic forms with serpentine grace and ethereal beauty, ornate dragon scale patterns transformed into decorative art motifs with intricate golden filigree and jeweled textures, mythical dragon essence captured in traditional Indonesian artistic style with batik-inspired flowing patterns, ancient dragon legends visualized through artistic interpretation with ceremonial masks and totemic sculptures, dragon-inspired textile designs with elaborate patterns reminiscent of royal court artistry, mystical dragon energy flowing through artistic compositions like liquid gold and precious gems, traditional Indonesian dragon mythology brought to life through artistic mastery, ornate dragon motifs integrated into temple art and ceremonial decorations, artistic dragon forms dancing through compositions with supernatural elegance, dragon-inspired artistic elements with traditional Indonesian craftsmanship techniques, ceremonial dragon art with spiritual significance and cultural heritage, artistic interpretation of dragon legends through traditional Indonesian artistic mediums, dragon-themed decorative arts with intricate patterns and symbolic meanings, mystical dragon artistry with flowing organic forms and ethereal lighting effects, traditional dragon-inspired art forms with cultural authenticity and artistic excellence, ornate dragon artistic compositions with ceremonial significance and spiritual power, dragon-inspired artistic heritage with traditional Indonesian aesthetic principles, artistic dragon elements integrated into cultural celebrations and ceremonial displays, hyperrealistic 8K artistic detail with dramatic lighting showing traditional Indonesian dragon-inspired artistry and cultural craftsmanship",
       dance:
-        "GODLEVEL PROMPT: Graceful Balinese Legong dancers in elaborate golden costumes performing ancient court dance with supernatural elegance, intricate headdresses adorned with fresh frangipani flowers and golden ornaments catching temple lamplight, precise mudra hand gestures telling stories of gods and demons through sacred choreography passed down through centuries, gamelan orchestra creating hypnotic metallic rhythms that seem to control the dancers' movements like divine puppetry, Javanese court dances with refined elegance performed in royal palaces with dancers moving like living sculptures, Saman dance from Aceh with dozens of male dancers in perfect synchronization creating human mandala patterns, colorful silk fabrics flowing with each gesture like liquid rainbows, spiritual devotion expressed through movement connecting earthly realm to divine consciousness, cultural storytelling through choreographed artistry where every gesture has deep meaning, temple ceremonies coming alive with dancers embodying Hindu deities and mythological characters, traditional Indonesian music visualized as golden sound waves guiding the performers, elaborate makeup and costumes transforming dancers into living gods and goddesses, incense smoke swirling around performers creating mystical atmosphere, tropical temple courtyards with carved stone pillars and lotus ponds reflecting the dance, audiences of devotees and tourists mesmerized by ancient artistry, UNESCO Intangible Cultural Heritage performances preserving ancient traditions, master dance teachers passing knowledge to young students in sacred guru-disciple relationships, traditional Indonesian philosophy of harmony between body, mind, and spirit expressed through movement, hyperrealistic cinematography capturing every graceful gesture and costume detail, volumetric lighting creating dramatic shadows and highlights, cultural pride and spiritual energy radiating from every performance",
-
+        "GODLEVEL PROMPT: Abstract mathematical choreography patterns with infinite algorithmic recursion, parametric equations describing graceful movement trajectories through three-dimensional space, mathematical visualization of rhythmic patterns and temporal sequences rendered in pure computational art style, algorithmic interpretation of synchronized movement creating geometric mandala formations, mathematical modeling of dance formations using coordinate geometry and spatial transformations, abstract computational art inspired by choreographic mathematics and movement algorithms, geometric visualization of musical rhythm patterns through mathematical wave functions and harmonic analysis, algorithmic dance patterns with fractal recursion and mathematical precision, mathematical interpretation of synchronized movement through matrix transformations and vector calculations, abstract geometric art inspired by dance choreography rendered through computational algorithms, mathematical visualization of movement flow using fluid dynamics equations and particle systems, algorithmic art style with dance-inspired mathematical complexity and geometric beauty, mathematical modeling of group choreography through network topology and graph theory, abstract computational visualization of rhythmic mathematics and temporal pattern analysis, geometric interpretation of dance movements using mathematical curves and surface modeling, algorithmic choreography patterns with infinite mathematical detail and recursive complexity, mathematical art inspired by movement dynamics and spatial geometry, computational visualization of dance mathematics through algorithmic pattern generation, abstract mathematical interpretation of synchronized movement and rhythmic sequences, geometric dance mathematics with algorithmic precision and mathematical beauty, mathematical choreography algorithms creating infinite pattern variations, computational art inspired by movement mathematics and geometric transformations, hyperrealistic 8K mathematical texture detail with dramatic algorithmic lighting showing pure computational dance mathematics and geometric artistry",
+      volcanoes:
+        "GODLEVEL PROMPT: Mystical volcanic artistry with supernatural Indonesian fire spirits manifesting as ethereal beings of molten light and crystalline flame, ancient volcanic deities emerging from sacred crater temples with crowns of liquid gold and robes woven from volcanic glass threads, intricate lava flow patterns transformed into ornate decorative art motifs with filigree details in molten copper and bronze, volcanic energy visualized as flowing rivers of liquid starlight cascading down mountain slopes like celestial waterfalls, Ring of Fire archipelago rendered as cosmic mandala with each volcano a glowing jewel in divine geometric arrangement, sacred volcanic ash creating mystical atmospheric effects with particles of gold dust and silver mist swirling through dimensional portals, traditional Indonesian volcanic mythology brought to life through artistic interpretation with fire spirits dancing in ceremonial formations, volcanic landscapes transformed into surreal artistic compositions with crystalline lava formations and ethereal steam clouds, mystical volcanic temples carved from obsidian and volcanic glass with intricate relief sculptures telling stories of creation, volcanic fire spirits with flowing forms of molten energy and crowns of crystalline flame dancing through compositions, ancient Indonesian fire ceremonies visualized as artistic spectacles with offerings of gold and precious gems dissolving into volcanic energy, volcanic crater lakes transformed into mirrors of liquid mercury reflecting cosmic constellations and aurora-like phenomena, traditional volcanic art forms with elaborate patterns inspired by lava flow dynamics and crystalline mineral formations, mystical volcanic energy flowing through artistic landscapes like rivers of liquid light and ethereal fire, volcanic mountain spirits manifesting as towering figures of molten rock and crystalline flame with ornate decorative elements, sacred volcanic rituals transformed into artistic ceremonies with fire spirits and elemental beings, volcanic landscapes rendered as fantastical artistic realms with floating islands of volcanic glass and cascading waterfalls of liquid light, traditional Indonesian volcanic craftsmanship with intricate metalwork inspired by volcanic minerals and crystalline formations, hyperrealistic 8K artistic detail with dramatic volcanic lighting effects, volumetric atmospheric rendering showing mystical volcanic artistry and supernatural fire spirit manifestations",
       temples:
-        "GODLEVEL PROMPT: Ornate Pura Besakih mother temple complex on Mount Agung slopes rising like stairway to heaven, multi-tiered meru towers reaching toward heavens with each level representing different spiritual realm, intricate stone carvings depicting mythological scenes from Ramayana and Mahabharata coming alive with supernatural energy, ceremonial gates adorned with guardian statues of fierce demons and protective deities, lotus ponds reflecting temple spires creating perfect mirror images, incense smoke rising from prayer altars carrying devotees' prayers to divine realm, devotees in white ceremonial dress performing daily rituals and offerings, tropical flowers as offerings - frangipani, hibiscus, and marigolds creating colorful carpets, ancient architecture blending harmoniously with natural landscape of volcanic mountains and rice terraces, spiritual sanctuary of profound beauty where Hindu-Dharma religion thrives, Prambanan temple complex with towering spires dedicated to Hindu trinity of Brahma, Vishnu, and Shiva, elaborate relief carvings telling epic stories animated by flickering temple flames, traditional Balinese architecture with red brick and volcanic stone construction, temple festivals with thousands of devotees in colorful traditional dress, gamelan orchestras playing sacred music that resonates through temple courtyards, holy water ceremonies where priests bless devotees with tirta from sacred springs, temple dancers performing in temple courtyards bringing Hindu mythology to life, traditional offerings of rice, flowers, and incense arranged in beautiful geometric patterns, UNESCO World Heritage sites preserving ancient architectural masterpieces, spiritual energy radiating from ancient stones blessed by centuries of prayer and devotion, hyperrealistic architectural photography with dramatic lighting, showing intricate stone carving details and atmospheric temple ceremonies, volumetric lighting through incense smoke creating mystical ambiance",
-
-      // Major Indigenous Groups
+        "GODLEVEL PROMPT: Abstract mathematical temple architecture with infinite geometric recursion and sacred algorithmic patterns, multi-tiered mathematical structures ascending through dimensional space using golden ratio proportions and Fibonacci spiral staircases, intricate geometric relief carvings depicting mathematical equations and algorithmic sequences rendered in pure computational art style, ceremonial mathematical gates adorned with fractal guardian patterns and geometric protective algorithms, lotus pond reflections creating perfect mathematical mirror symmetries and infinite recursive reflections, algorithmic incense patterns rising as mathematical smoke functions carrying computational prayers through dimensional portals, devotional mathematical ceremonies with geometric participants performing algorithmic rituals and mathematical offerings, tropical mathematical flowers arranged in geometric patterns following mathematical sequences and algorithmic arrangements, ancient mathematical architecture blending harmoniously with natural algorithmic landscapes of computational mountains and fractal terraces, spiritual mathematical sanctuary of profound geometric beauty where algorithmic dharma principles thrive, mathematical temple complex with towering algorithmic spires dedicated to geometric trinity of mathematical constants, elaborate mathematical relief carvings telling algorithmic stories animated by computational temple flames, traditional mathematical architecture with geometric brick and algorithmic stone construction following sacred mathematical proportions, temple mathematical festivals with thousands of geometric devotees in algorithmic traditional patterns, gamelan mathematical orchestras playing sacred algorithmic music that resonates through computational temple courtyards, holy mathematical water ceremonies where algorithmic priests bless geometric devotees with computational sacred springs, temple mathematical dancers performing in algorithmic courtyards bringing geometric mythology to computational life, traditional mathematical offerings of geometric rice, algorithmic flowers, and computational incense arranged in beautiful mathematical patterns, UNESCO mathematical heritage sites preserving thousand-year-old algorithmic architectural masterpieces, spiritual mathematical energy radiating from ancient geometric stones blessed by centuries of algorithmic prayer and computational devotion, hyperrealistic 8K mathematical architectural visualization with dramatic algorithmic lighting, showing intricate geometric carving details and atmospheric computational temple ceremonies, volumetric algorithmic lighting through mathematical incense smoke creating mystical computational ambiance",
+      // Enhanced Major Indigenous Groups with GODLEVEL prompts - cleaned for safety
       javanese:
-        "GODLEVEL PROMPT: Magnificent Javanese royal court of Yogyakarta Sultan's palace with refined traditions spanning centuries, elaborate batik patterns with philosophical meanings covering silk garments of court nobles, gamelan orchestras creating meditative soundscapes with bronze instruments channeling ancestral spirits, traditional Javanese architecture with joglo roofs and carved wooden pillars telling stories of ancient kingdoms, shadow puppet wayang performances in royal courtyards where dalang masters weave epic tales of gods and heroes, ancient Hindu-Buddhist influences merged with Islamic culture creating unique Javanese synthesis, terraced rice cultivation creating geometric patterns across volcanic landscapes, traditional ceremonies and rituals connecting living descendants to royal ancestors, sophisticated artistic heritage spanning centuries with court painters, musicians, and craftsmen, Sultan's palace Kraton with its sacred layout representing cosmic order, traditional Javanese philosophy of harmony and balance expressed in daily life, court dancers in elaborate costumes performing sacred dances, royal gamelan sets made of bronze and gold creating music for the gods, traditional Javanese script and literature preserving ancient wisdom, ceremonial keris daggers with mystical powers passed down through generations, traditional medicine and healing practices using herbs and spiritual energy, hyperrealistic cultural documentation with rich details of court life and artistic traditions",
-
+        "GODLEVEL PROMPT: Magnificent Javanese royal court of Yogyakarta Sultan's palace with refined traditions spanning centuries, elaborate batik patterns with philosophical meanings covering silk garments of court nobles, gamelan orchestras creating meditative soundscapes with bronze instruments that seem to channel ancestral spirits, traditional Javanese architecture with joglo roofs and carved wooden pillars telling stories of ancient kingdoms, shadow puppet wayang performances in royal courtyards where dalang masters weave epic tales of gods and heroes, ancient Hindu-Buddhist influences merged seamlessly with Islamic culture creating unique Javanese synthesis, terraced rice cultivation creating geometric patterns across volcanic landscapes, traditional ceremonies and rituals connecting living descendants to royal ancestors, sophisticated artistic heritage spanning centuries with court painters, musicians, and craftsmen, Sultan's palace (Kraton) with its sacred layout representing cosmic order, traditional Javanese philosophy of harmony and balance expressed in daily life, court dancers in elaborate costumes performing sacred dances, royal gamelan sets made of bronze and gold creating music for the gods, traditional Javanese script and literature preserving ancient wisdom, ceremonial keris daggers with mystical powers passed down through generations, traditional medicine and healing practices using herbs and spiritual energy, hyperrealistic 8K cultural documentation with rich details of court life and artistic traditions",
       sundanese:
-        "GODLEVEL PROMPT: West Java's indigenous Sundanese people with distinct cultural identity thriving in mountainous terrain, traditional bamboo architecture with elevated houses on stilts protecting from floods and wild animals, angklung bamboo musical instruments creating harmonious melodies that echo through mountain valleys, traditional Sundanese dance performances with graceful movements inspired by nature, rice cultivation in mountainous terrain creating spectacular terraced landscapes, unique culinary traditions with fresh vegetables and fish from mountain streams, traditional clothing and textiles with intricate patterns and natural dyes, ancient animistic beliefs blended seamlessly with Islam creating unique spiritual practices, community cooperation gotong royong traditions where entire villages work together, highland agricultural practices adapted to volcanic soil and mountain climate, traditional houses with steep roofs and bamboo walls designed for mountain weather, Sundanese language with its own script and literature, traditional crafts including bamboo weaving and wood carving, mountain festivals celebrating harvest and seasonal changes, traditional healing practices using mountain herbs and spiritual rituals, hyperrealistic documentation of highland culture with dramatic mountain landscapes and traditional architecture",
-
+        "GODLEVEL PROMPT: West Java's indigenous Sundanese people with distinct cultural identity thriving in mountainous terrain, traditional bamboo architecture with elevated houses on stilts protecting from floods and providing ventilation, angklung bamboo musical instruments creating harmonious melodies that echo through mountain valleys, traditional Sundanese dance performances with graceful movements inspired by nature, rice cultivation in mountainous terrain creating spectacular terraced landscapes, unique culinary traditions with fresh vegetables and fish from mountain streams, traditional clothing and textiles with intricate patterns and natural dyes, ancient animistic beliefs blended seamlessly with Islam creating unique spiritual practices, community cooperation gotong royong traditions where entire villages work together, highland agricultural practices adapted to volcanic soil and mountain climate, traditional houses with steep roofs and bamboo walls designed for mountain weather, Sundanese language with its own script and literature, traditional crafts including bamboo weaving and wood carving, mountain festivals celebrating harvest and seasonal changes, traditional healing practices using mountain herbs and spiritual rituals, hyperrealistic 8K documentation of highland culture with dramatic mountain landscapes and traditional architecture",
       batak:
-        "GODLEVEL PROMPT: North Sumatra highland Batak people with distinctive architecture around magnificent Lake Toba, traditional Batak houses with dramatic curved roofs resembling buffalo horns reaching toward sky, intricate wood carvings and decorative elements telling clan histories and spiritual beliefs, traditional ulos textiles with sacred meanings woven by master craftswomen, patrilineal clan system and ancestral worship connecting living descendants to powerful spirits, Lake Toba cultural landscape with world's largest volcanic lake surrounded by traditional villages, traditional music with gondang instruments creating rhythms that summon ancestral spirits, stone megalithic monuments erected by ancient Batak kings, ancient Batak script and literature preserving oral traditions, ceremonial feasts and rituals celebrating life passages and clan unity, warrior traditions and oral histories of battles and heroic deeds, traditional Batak architecture with houses built without nails using ancient joinery techniques, clan totems and symbols carved into house facades, traditional ceremonies for naming, marriage, and death with elaborate rituals, Batak Christian churches blending traditional architecture with Christian symbolism, hyperrealistic cultural photography showing traditional architecture and Lake Toba landscape with dramatic lighting and atmospheric effects",
-
+        "GODLEVEL PROMPT: North Sumatra highland Batak people with distinctive architecture around magnificent Lake Toba, traditional Batak houses with dramatic curved roofs resembling buffalo horns reaching toward sky, intricate wood carvings and decorative elements telling clan histories and spiritual beliefs, traditional ulos textiles with sacred meanings woven by master craftswomen, patrilineal clan system and ancestral worship connecting living descendants to powerful spirits, Lake Toba cultural landscape with world's largest volcanic lake surrounded by traditional villages, traditional music with gondang instruments creating rhythms that summon ancestral spirits, stone megalithic monuments erected by ancient Batak kings, ancient Batak script and literature preserving oral traditions, ceremonial feasts and rituals celebrating life passages and clan unity, traditional oral histories of heroic deeds and cultural achievements, traditional Batak architecture with houses built without nails using ancient joinery techniques, clan totems and symbols carved into house facades, traditional ceremonies for naming, marriage, and celebration with elaborate rituals, Batak Christian churches blending traditional architecture with Christian symbolism, hyperrealistic 8K cultural photography showing traditional architecture and Lake Toba landscape with dramatic lighting and atmospheric effects",
       dayak:
-        "GODLEVEL PROMPT: Indigenous Dayak peoples of Kalimantan Borneo with diverse sub-groups living in harmony with rainforest, traditional longhouses accommodating extended families with communal living spaces stretching hundreds of feet, intricate beadwork and traditional costumes with patterns representing clan identity and spiritual protection, headhunting historical traditions with trophy skulls displayed in longhouse rafters, river-based transportation and settlements with traditional boats navigating jungle waterways, traditional tattoos with spiritual significance covering warriors' bodies with protective symbols, hornbill bird cultural symbolism with sacred feathers used in ceremonies, forest-based lifestyle and hunting practices using blowguns and traditional traps, shamanic traditions and spiritual beliefs connecting human world to forest spirits, traditional crafts and woodcarving creating masks and totems, oral traditions and folklore passed down through generations, traditional medicine using rainforest plants and spiritual healing, longhouse architecture built on stilts with communal verandas, traditional ceremonies for rice planting and harvest, warrior culture with elaborate shields and weapons, hyperrealistic rainforest photography showing traditional longhouses and Dayak cultural practices with atmospheric jungle lighting",
-
+        "GODLEVEL PROMPT: Indigenous Dayak peoples of Kalimantan Borneo with diverse sub-groups living in harmony with rainforest, traditional longhouses accommodating extended families with communal living spaces stretching hundreds of feet, intricate beadwork and traditional costumes with patterns representing clan identity and spiritual protection, traditional cultural practices and ceremonial displays, river-based transportation and settlements with traditional boats navigating jungle waterways, traditional tattoos with spiritual significance covering bodies with protective symbols, hornbill bird cultural symbolism with sacred feathers used in ceremonies, forest-based lifestyle and sustainable practices using traditional knowledge, shamanic traditions and spiritual beliefs connecting human world to forest spirits, traditional crafts and woodcarving creating masks and totems, oral traditions and folklore passed down through generations, traditional medicine using rainforest plants and spiritual healing, longhouse architecture built on stilts with communal verandas, traditional ceremonies for rice planting and harvest, cultural heritage with elaborate shields and ceremonial items, hyperrealistic 8K rainforest photography showing traditional longhouses and Dayak cultural practices with atmospheric jungle lighting",
       acehnese:
-        "GODLEVEL PROMPT: Northernmost Sumatra Acehnese province with strong Islamic identity and proud independence tradition, traditional Acehnese architecture with Islamic influences showing Middle Eastern and local fusion, distinctive cultural practices and ceremonies blending Islamic faith with local customs, traditional Saman dance performances with dozens of dancers in perfect synchronization, coffee cultivation and trade traditions making Aceh famous for premium coffee beans, tsunami resilience and community strength shown in disaster recovery, traditional clothing and textiles with Islamic geometric patterns, Islamic educational institutions dayah preserving religious knowledge, maritime trading heritage with traditional boats and fishing techniques, unique Acehnese dialect and language distinct from other Indonesian languages, traditional crafts and metalwork creating Islamic calligraphy and decorative arts, Grand Mosque of Baiturrahman with black domes and minarets, traditional Acehnese houses with steep roofs and Islamic architectural elements, Islamic law Sharia implementation in daily life, traditional ceremonies for Islamic holidays and life passages, hyperrealistic cultural documentation showing Islamic architecture and Acehnese traditions with dramatic lighting and cultural authenticity",
-
+        "GODLEVEL PROMPT: Northernmost Sumatra Acehnese province with strong Islamic identity and proud cultural tradition, traditional Acehnese architecture with Islamic influences showing Middle Eastern and local fusion, distinctive cultural practices and ceremonies blending Islamic faith with local customs, traditional Saman dance performances with dozens of dancers in perfect synchronization, coffee cultivation and trade traditions making Aceh famous for premium coffee beans, community resilience and strength shown through cultural preservation, traditional clothing and textiles with Islamic geometric patterns, Islamic educational institutions (dayah) preserving religious knowledge, maritime trading heritage with traditional boats and fishing techniques, unique Acehnese dialect and language distinct from other Indonesian languages, traditional crafts and metalwork creating Islamic calligraphy and decorative arts, Grand Mosque of Baiturrahman with black domes and minarets, traditional Acehnese houses with steep roofs and Islamic architectural elements, Islamic law (Sharia) implementation in daily life, traditional ceremonies for Islamic holidays and life passages, hyperrealistic 8K cultural documentation showing Islamic architecture and Acehnese traditions with dramatic lighting and cultural authenticity",
       minangkabau:
-        "GODLEVEL PROMPT: West Sumatra Minangkabau people with unique matrilineal social structure where women hold property and family lineage, distinctive rumah gadang houses with dramatic horn-shaped roofs resembling buffalo horns reaching toward sky, traditional Minang cuisine and culinary heritage famous throughout Indonesia and Malaysia, matriarchal inheritance and family systems where mothers pass property to daughters, traditional ceremonies and adat customs governing social behavior and community harmony, skilled traders and merchants throughout Southeast Asia spreading Minang culture, traditional textiles and songket weaving with gold threads creating royal garments, Islamic scholarship and education with famous religious schools, traditional music and dance celebrating Minang cultural identity, philosophical wisdom and proverbs pepatah-petitih guiding daily life, traditional architecture with carved wooden facades and steep roofs, clan system suku organizing social relationships and marriage rules, traditional markets with Minang women as successful traders, ceremonial costumes with elaborate headdresses and jewelry, hyperrealistic cultural photography showing traditional rumah gadang architecture and Minang cultural practices with rich detail and atmospheric lighting",
-
+        "GODLEVEL PROMPT: West Sumatra Minangkabau people with unique matrilineal social structure where women hold property and family lineage, distinctive rumah gadang houses with dramatic horn-shaped roofs resembling buffalo horns reaching toward sky, traditional Minang cuisine and culinary heritage famous throughout Indonesia and Malaysia, matriarchal inheritance and family systems where mothers pass property to daughters, traditional ceremonies and adat customs governing social behavior and community harmony, skilled traders and merchants throughout Southeast Asia spreading Minang culture, traditional textiles and songket weaving with gold threads creating royal garments, Islamic scholarship and education with famous religious schools, traditional music and dance celebrating Minang cultural identity, philosophical wisdom and proverbs (pepatah-petitih) guiding daily life, traditional architecture with carved wooden facades and steep roofs, clan system (suku) organizing social relationships and marriage rules, traditional markets with Minang women as successful traders, ceremonial costumes with elaborate headdresses and jewelry, hyperrealistic 8K cultural photography showing traditional rumah gadang architecture and Minang cultural practices with rich detail and atmospheric lighting",
       "balinese-tribe":
-        "GODLEVEL PROMPT: Bali island people with distinct Hindu-Dharma religion creating paradise of temples and ceremonies, elaborate temple ceremonies and festivals with thousands of devotees in colorful traditional dress, traditional Balinese architecture and sculpture with intricate stone carvings, intricate wood and stone carvings depicting Hindu mythology and local legends, traditional dance and music performances bringing Hindu epics to life, rice terrace agriculture and subak irrigation system creating spectacular landscapes, traditional clothing and ceremonial dress with gold ornaments and silk fabrics, artistic traditions in painting and crafts passed down through generations, community temple obligations and ceremonies connecting villages to divine realm, unique Balinese calendar system with religious festivals throughout the year, traditional healing practices using herbs and spiritual energy, temple festivals with elaborate decorations and offerings, gamelan orchestras playing sacred music for temple ceremonies, traditional crafts including wood carving, stone sculpture, and silver jewelry, Hindu philosophy integrated with local animistic beliefs, hyperrealistic cultural documentation showing Balinese temple ceremonies and traditional arts with dramatic lighting and spiritual atmosphere",
-
+        "GODLEVEL PROMPT: Bali island people with distinct Hindu-Dharma religion creating paradise of temples and ceremonies, elaborate temple ceremonies and festivals with thousands of devotees in colorful traditional dress, traditional Balinese architecture and sculpture with intricate stone carvings, intricate wood and stone carvings depicting Hindu mythology and local legends, traditional dance and music performances bringing Hindu epics to life, rice terrace agriculture and subak irrigation system creating spectacular landscapes, traditional clothing and ceremonial dress with gold ornaments and silk fabrics, artistic traditions in painting and crafts passed down through generations, community temple obligations and ceremonies connecting villages to divine realm, unique Balinese calendar system with religious festivals throughout the year, traditional healing practices using herbs and spiritual energy, temple festivals with elaborate decorations and offerings, gamelan orchestras playing sacred music for temple ceremonies, traditional crafts including wood carving, stone sculpture, and silver jewelry, Hindu philosophy integrated with local animistic beliefs, hyperrealistic 8K cultural documentation showing Balinese temple ceremonies and traditional arts with dramatic lighting and spiritual atmosphere",
       papuans:
-        "GODLEVEL PROMPT: New Guinea indigenous peoples with incredible cultural diversity representing hundreds of distinct tribes, traditional houses on stilts and tree houses built high above ground for protection, elaborate feathered headdresses and body decorations using bird of paradise plumes, hundreds of distinct languages and dialects making Papua most linguistically diverse region on Earth, traditional hunting and gathering practices using bows, arrows, and traditional traps, bird of paradise cultural significance with sacred feathers used in ceremonies, traditional music with drums and flutes creating rhythms that connect to ancestral spirits, body painting and scarification traditions marking tribal identity and spiritual protection, sago palm cultivation and processing providing staple food, tribal warfare and peace-making ceremonies with elaborate rituals, oral traditions and storytelling preserving tribal history and mythology, traditional tools and weapons made from stone, bone, and wood, highland tribes with different customs from coastal peoples, traditional ceremonies for initiation and life passages, hyperrealistic ethnographic photography showing Papuan cultural diversity with authentic tribal practices and dramatic New Guinea landscapes",
-
+        "GODLEVEL PROMPT: New Guinea indigenous peoples with incredible cultural diversity representing hundreds of distinct tribes, traditional houses on stilts and tree houses built high above ground for protection, elaborate feathered headdresses and body decorations using bird of paradise plumes, hundreds of distinct languages and dialects making Papua most linguistically diverse region on Earth, traditional hunting and gathering practices using bows, arrows, and traditional tools, bird of paradise cultural significance with sacred feathers used in ceremonies, traditional music with drums and flutes creating rhythms that connect to ancestral spirits, body painting and scarification traditions marking tribal identity and spiritual protection, sago palm cultivation and processing providing staple food, traditional peace-making ceremonies with elaborate rituals, oral traditions and storytelling preserving tribal history and mythology, traditional tools and implements made from natural materials, highland tribes with different customs from coastal peoples, traditional ceremonies for initiation and life passages, hyperrealistic 8K ethnographic photography showing Papuan cultural diversity with authentic tribal practices and dramatic New Guinea landscapes",
+      // Enhanced Unique Indigenous Communities - cleaned for safety
       baduy:
-        "GODLEVEL PROMPT: Banten Java Baduy tribe maintaining strict traditional lifestyle in complete rejection of modern world, traditional white and black clothing distinctions marking inner Baduy Dalam and outer Baduy Luar communities, sustainable agriculture without chemicals or modern tools preserving ancient farming methods, traditional houses without electricity, running water, or modern conveniences, oral tradition and customary law pikukuh governing every aspect of daily life, forest conservation and environmental protection as sacred duty, traditional crafts and weaving using only natural materials and ancient techniques, spiritual connection to ancestral lands considered sacred and protected, isolation from mainstream Indonesian society by choice and tradition, traditional leadership and governance systems based on ancestral wisdom, forbidden to use modern transportation, electronics, or synthetic materials, traditional medicine using forest plants and spiritual healing, sacred forests protected by traditional law and spiritual beliefs, traditional ceremonies marking seasonal changes and life passages, hyperrealistic documentary photography showing authentic traditional lifestyle with natural lighting and environmental context",
-
+        "GODLEVEL PROMPT: Banten Java Baduy tribe maintaining strict traditional lifestyle in harmony with nature, traditional white and black clothing distinctions marking inner (Baduy Dalam) and outer (Baduy Luar) communities, sustainable agriculture without chemicals or modern tools preserving ancient farming methods, traditional houses without electricity, running water, or modern conveniences, oral tradition and customary law (pikukuh) governing every aspect of daily life, forest conservation and environmental protection as sacred duty, traditional crafts and weaving using only natural materials and ancient techniques, spiritual connection to ancestral lands considered sacred and protected, peaceful isolation from mainstream Indonesian society by choice and tradition, traditional leadership and governance systems based on ancestral wisdom, commitment to avoiding modern transportation, electronics, or synthetic materials, traditional medicine using forest plants and spiritual healing, sacred forests protected by traditional law and spiritual beliefs, traditional ceremonies marking seasonal changes and life passages, hyperrealistic 8K documentary photography showing authentic traditional lifestyle with natural lighting and environmental context",
       "orang-rimba":
-        "GODLEVEL PROMPT: Sumatra nomadic hunter-gatherers known as Kubu people living deep in rainforest, traditional forest shelters built from natural materials and abandoned when moving to new areas, hunting and gathering traditional practices using blowguns and forest knowledge, shamanic spiritual beliefs and forest spirits guiding daily life, traditional medicine using forest plants and spiritual healing practices, oral traditions and forest knowledge passed down through generations, resistance to sedentarization and modernization to preserve traditional lifestyle, traditional tools and hunting weapons made from forest materials, forest conservation and sustainable practices as way of life, unique language and cultural expressions distinct from settled populations, adaptation to rainforest environment with intimate knowledge of forest ecology, traditional social organization based on kinship and forest territories, threatened by deforestation and palm oil plantations, traditional ceremonies connecting human world to forest spirits, hyperrealistic rainforest photography showing authentic nomadic lifestyle with atmospheric jungle lighting and environmental authenticity",
-
+        "GODLEVEL PROMPT: Sumatra nomadic forest dwellers known as Kubu people living deep in rainforest, traditional forest shelters built from natural materials and relocated when moving to new areas, hunting and gathering traditional practices using traditional tools and forest knowledge, shamanic spiritual beliefs and forest spirits guiding daily life, traditional medicine using forest plants and spiritual healing practices, oral traditions and forest knowledge passed down through generations, commitment to traditional lifestyle and forest preservation, traditional tools and implements made from forest materials, forest conservation and sustainable practices as way of life, unique language and cultural expressions distinct from settled populations, adaptation to rainforest environment with intimate knowledge of forest ecology, traditional social organization based on kinship and forest territories, traditional ceremonies connecting human world to forest spirits, hyperrealistic 8K rainforest photography showing authentic nomadic lifestyle with atmospheric jungle lighting and environmental authenticity",
       "hongana-manyawa":
-        "GODLEVEL PROMPT: One of Indonesia's last nomadic hunter-gatherer tribes living in remote rainforest areas of Halmahera island, traditional forest shelters and nomadic lifestyle moving seasonally through ancestral territories, hunting with traditional weapons and tools made from forest materials, gathering forest foods and medicines using ancient knowledge, shamanic spiritual practices connecting human world to forest spirits, oral traditions and forest knowledge threatened by outside contact, threatened by deforestation and mining destroying ancestral lands, traditional social organization based on kinship and forest territories, unique language and cultural practices distinct from outside world, adaptation to tropical rainforest with intimate ecological knowledge, resistance to outside contact to preserve traditional way of life, traditional ceremonies and rituals marking seasonal changes, forest spirits and ancestral beliefs guiding daily decisions, hyperrealistic ethnographic photography showing last remnants of stone age lifestyle with authentic forest environment and dramatic lighting",
-
+        "GODLEVEL PROMPT: One of Indonesia's last nomadic forest-dwelling tribes living in remote rainforest areas of Halmahera island, traditional forest shelters and nomadic lifestyle moving seasonally through ancestral territories, traditional practices using tools made from forest materials, gathering forest foods and medicines using ancient knowledge, shamanic spiritual practices connecting human world to forest spirits, oral traditions and forest knowledge preserved through generations, traditional social organization based on kinship and forest territories, unique language and cultural practices distinct from outside world, adaptation to tropical rainforest with intimate ecological knowledge, commitment to traditional way of life, traditional ceremonies and rituals marking seasonal changes, forest spirits and ancestral beliefs guiding daily decisions, hyperrealistic 8K ethnographic photography showing traditional forest lifestyle with authentic forest environment and dramatic lighting",
       asmat:
-        "GODLEVEL PROMPT: New Guinea indigenous Asmat people renowned worldwide for intricate wood carvings, traditional bis poles and ancestor sculptures reaching toward sky like prayers to ancestral spirits, elaborate ceremonial masks and shields with supernatural power, traditional cultural practices and ceremonial displays, sago palm cultivation and processing providing staple food in swampy environment, traditional houses on stilts built over tidal areas, spiritual beliefs connecting ancestors and nature in continuous cycle, traditional music and dance ceremonies honoring ancestral spirits, river-based transportation and settlements with traditional canoes, oral traditions and mythology explaining creation and tribal history, artistic heritage recognized worldwide with museums collecting Asmat art, traditional tools and carving techniques passed down through master-apprentice relationships, ceremonial feasts celebrating cultural achievements, traditional initiation ceremonies for young people, hyperrealistic art documentation showing master woodcarvers at work with intricate detail of traditional sculptures and atmospheric swamp environment, master craftsmen carving sacred bis poles from ironwood trees, intricate ancestral figures emerging from raw timber through skilled hands, ceremonial shields decorated with protective spirits and clan totems, traditional carving tools made from cassowary bones and wild boar tusks, swampy mangrove environment with traditional stilt houses reflecting in dark waters, spiritual connection between carver and ancestral spirits guiding every cut, UNESCO recognized artistic tradition preserving ancient Papuan culture, museum-quality sculptures representing thousands of years of artistic evolution, sacred men's houses displaying trophy skulls and ceremonial artifacts, traditional sago processing by women while men focus on sacred carving work, river ceremonies where finished sculptures are blessed by tribal elders, artistic mastery passed down through generations of master woodcarvers, each carving telling stories of creation myths and heroic ancestors",
+        "GODLEVEL PROMPT: New Guinea indigenous Asmat people renowned worldwide for intricate wood carvings, traditional bis poles and ancestor sculptures reaching toward sky like prayers to ancestral spirits, elaborate ceremonial masks and shields with spiritual power, traditional cultural practices and ceremonial displays, sago palm cultivation and processing providing staple food in swampy environment, traditional houses on stilts built over tidal areas, spiritual beliefs connecting ancestors and nature in continuous cycle, traditional music and dance ceremonies honoring ancestral spirits, river-based transportation and settlements with traditional canoes, oral traditions and mythology explaining creation and tribal history, artistic heritage recognized worldwide with museums collecting Asmat art, traditional tools and carving techniques passed down through master-apprentice relationships, ceremonial feasts celebrating cultural achievements, traditional initiation ceremonies for young people, hyperrealistic 8K art documentation showing master woodcarvers at work with intricate detail of traditional sculptures and atmospheric swamp environment",
     }
 
     if (scenarioPrompts[scenario]) {
-      prompt = scenarioPrompts[scenario]
+      prompt += ", " + scenarioPrompts[scenario]
     }
   }
 
-  // Simple colors
-  const simpleColors: Record<string, string> = {
-    plasma: "plasma colors",
-    quantum: "quantum blue",
-    cosmic: "cosmic purple",
-    thermal: "thermal red",
-    spectral: "rainbow",
-    crystalline: "crystal clear",
-    bioluminescent: "glowing blue",
-    aurora: "aurora green",
-    metallic: "metallic",
-    prismatic: "prismatic",
-    monochromatic: "grayscale",
-    infrared: "infrared",
-    lava: "lava red",
-    futuristic: "neon",
-    forest: "forest green",
-    ocean: "ocean blue",
-    sunset: "sunset orange",
-    arctic: "arctic blue",
-    neon: "neon bright",
-    vintage: "vintage sepia",
-    toxic: "toxic green",
-    ember: "ember orange",
-    lunar: "lunar gray",
-    tidal: "tidal blue",
+  // Add color scheme
+  const colorPrompts: Record<string, string> = {
+    plasma: "vibrant plasma colors, electric blues and magentas",
+    quantum: "quantum field colors, deep blues and ethereal whites",
+    cosmic: "cosmic colors, deep space purples and stellar golds",
+    thermal: "thermal imaging colors, heat signature reds and oranges",
+    spectral: "full spectrum rainbow colors, prismatic light effects",
+    crystalline: "crystalline colors, clear gems and mineral tones",
+    bioluminescent: "bioluminescent colors, glowing organic blues and greens",
+    aurora: "aurora borealis colors, dancing green and purple lights",
+    metallic: "metallic tones, silver and bronze accents",
+    prismatic: "prismatic light effects, rainbow refractions",
+    monochromatic: "monochromatic grayscale, black and white tones",
+    infrared: "infrared heat colors, thermal reds and oranges",
+    lava: "molten lava colors, glowing reds and oranges",
+    futuristic: "futuristic neon colors, cyberpunk aesthetics",
+    forest: "forest greens and earth tones",
+    ocean: "ocean blues and aqua tones",
+    sunset: "warm sunset colors, oranges and deep reds",
+    arctic: "arctic colors, ice blues and pristine whites",
+    neon: "bright neon colors, electric pinks and greens",
+    vintage: "vintage sepia tones, aged photograph aesthetics",
+    toxic: "toxic waste colors, radioactive greens and yellows",
+    ember: "glowing ember colors, warm orange and red coals",
+    lunar: "lunar surface colors, silver grays and crater shadows",
+    tidal: "tidal pool colors, ocean blues and sandy browns",
   }
 
-  return cleanPromptForImageGeneration(`${prompt}, ${simpleColors[colorScheme] || "vibrant"}, detailed, 8K`)
+  prompt += `, ${colorPrompts[colorScheme] || "vibrant colors"}`
+
+  // Add artistic quality descriptors
+  prompt +=
+    ", highly detailed, artistic masterpiece, professional photography quality, 8K resolution, stunning visual composition"
+
+  return prompt
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    console.log("🎨 AI Art API called - Mathematical Dome & Panorama Transformations")
+    console.log("🎨 AI Art API called with body:", JSON.stringify(body, null, 2))
 
     const {
       dataset,
@@ -172,249 +177,118 @@ export async function POST(request: NextRequest) {
       noise,
       timeStep,
       customPrompt,
-      domeDiameter = 20,
-      domeResolution = "4K",
-      projectionType = "fisheye",
-      panoramaResolution = "8K",
-      panoramaFormat = "equirectangular",
+      domeDiameter,
+      domeResolution,
+      projectionType,
+      panoramaResolution,
+      panoramaFormat,
       stereographicPerspective,
-      singleImageMode = false,
-      generationMode = "auto",
     } = body
 
-    // Build prompt with Indonesian Genesis Creation Story
-    const mainPrompt = buildUltraSimplePrompt(dataset, scenario, colorScheme, customPrompt)
-    console.log("📝 Prompt:", mainPrompt.substring(0, 200) + "...")
+    // Build the main prompt
+    const mainPrompt = buildPrompt(dataset, scenario, colorScheme, customPrompt)
+    console.log("📝 Generated main prompt:", mainPrompt.substring(0, 200) + "...")
     console.log("📏 Prompt length:", mainPrompt.length, "characters")
 
-    const isGodLevel = mainPrompt.includes("GODLEVEL PROMPT:")
-    const isGenesisElement = ["cosmos", "water", "plants-animals", "volcanoes"].includes(scenario)
+    let mainImageUrl: string
+    let domeImageUrl: string
+    let panoramaImageUrl: string
+    const generationDetails: any = {}
 
-    // Only use single image mode if explicitly requested or for extremely long prompts
-    const shouldUseSingleMode = singleImageMode || generationMode === "single" || mainPrompt.length > 3000
-
-    if (shouldUseSingleMode) {
-      console.log("🖼️ Single image mode with mathematical transformations")
-      try {
-        const result = await generateSingleImageOnly(mainPrompt)
-
-        return NextResponse.json({
-          success: true,
-          image: result.mainImage,
-          domeImage: result.domeImage,
-          panoramaImage: result.panoramaImage,
-          originalPrompt: mainPrompt,
-          promptLength: mainPrompt.length,
-          provider: "OpenAI",
-          model: "DALL-E 3",
-          estimatedFileSize: "~2-4MB",
-          generationMethod: result.method,
-          generationDetails: {
-            mainImage: "Generated successfully",
-            domeImage: "Mathematical fisheye transformation applied from source art",
-            panoramaImage: "Mathematical equirectangular transformation applied from source art",
-            note: "Single image mode with mathematical transformations from original art data",
-          },
-          parameters: {
-            dataset,
-            scenario,
-            colorScheme,
-            singleImageMode: true,
-            mathematicalTransforms: true,
-            genesisElement: isGenesisElement,
-          },
-        })
-      } catch (error: any) {
-        console.error("❌ Single image generation failed:", error.message)
-
-        return NextResponse.json(
-          {
-            success: false,
-            error: "Image generation failed",
-            details: error.message,
-            generationMethod: "single_failed",
-            suggestion: "OpenAI API may be experiencing issues. Please try again.",
-            troubleshooting: {
-              issue: "API Error",
-              cause: error.message.includes("503")
-                ? "OpenAI service temporarily unavailable"
-                : error.message.includes("429")
-                  ? "Rate limit exceeded"
-                  : error.message.includes("DEPLOYMENT_TIMEOUT")
-                    ? "Deployment timeout"
-                    : "API error",
-              solutions: [
-                "Try again in a few moments",
-                "OpenAI may be experiencing high load",
-                "Contact support if issue persists",
-              ],
-            },
-          },
-          { status: error.message.includes("DEPLOYMENT_TIMEOUT") ? 408 : 503 },
-        )
-      }
-    }
-
-    // Try mathematical transformation approach first
-    console.log(`⚡ Attempting ${isGodLevel ? "GODLEVEL" : "standard"} generation with mathematical transformations...`)
     try {
-      const domePrompt = generateDomePrompt(mainPrompt)
-      const panoramaPrompt = generatePanoramaPrompt(mainPrompt)
-
-      console.log("🧮 Using mathematical transformations from original art data")
-
-      // Extended timeout for Genesis elements and GODLEVEL prompts
-      const totalTimeout = isGodLevel ? (isGenesisElement ? 45000 : 40000) : 25000
-
-      const parallelResults = (await Promise.race([
-        generateImagesInParallel(mainPrompt, domePrompt, panoramaPrompt),
-        new Promise((_, reject) => setTimeout(() => reject(new Error("Parallel timeout")), totalTimeout)),
-      ])) as Awaited<ReturnType<typeof generateImagesInParallel>>
-
-      // Check if we got at least the main image
-      if (parallelResults.mainImage) {
-        console.log("✅ Generation with mathematical transformations successful!")
-
-        // Count successful generations
-        const successCount = [
-          parallelResults.mainImage,
-          parallelResults.domeImage,
-          parallelResults.panoramaImage,
-        ].filter(Boolean).length
-
-        return NextResponse.json({
-          success: true,
-          image: parallelResults.mainImage,
-          domeImage: parallelResults.domeImage || parallelResults.mainImage,
-          panoramaImage: parallelResults.panoramaImage || parallelResults.mainImage,
-          originalPrompt: mainPrompt,
-          promptLength: mainPrompt.length,
-          provider: "OpenAI",
-          model: "DALL-E 3",
-          estimatedFileSize: "~2-4MB",
-          generationMethod: isGodLevel ? "godlevel_mathematical_transforms" : "standard_mathematical_transforms",
-          generationDetails: {
-            mainImage: "Generated successfully",
-            domeImage: parallelResults.domeImage
-              ? "Mathematical fisheye transformation applied from original art data"
-              : "Using main image fallback",
-            panoramaImage: parallelResults.panoramaImage
-              ? "Mathematical equirectangular transformation applied from original art data"
-              : "Using main image fallback",
-            errors: parallelResults.errors,
-            successCount: `${successCount}/3 images generated`,
-            note: isGodLevel
-              ? "GODLEVEL generation with mathematical dome and panorama transformations from original art"
-              : "Standard generation with mathematical transformations from original art",
-            mathematicalTransforms: {
-              domeTransform: parallelResults.domeImage
-                ? "✅ Fisheye projection applied from mathematical data"
-                : "❌ Fallback used",
-              panoramaTransform: parallelResults.panoramaImage
-                ? "✅ Equirectangular projection applied from mathematical data"
-                : "❌ Fallback used",
-            },
-          },
-          parameters: {
-            dataset,
-            scenario,
-            colorScheme,
-            seed,
-            numSamples,
-            noiseScale: noise,
-            timeStep,
-            domeProjection: !!parallelResults.domeImage,
-            domeDiameter,
-            domeResolution,
-            projectionType: "fisheye",
-            panoramic360: !!parallelResults.panoramaImage,
-            panoramaResolution,
-            panoramaFormat: "equirectangular",
-            stereographicPerspective,
-            godlevelMode: isGodLevel,
-            genesisElement: isGenesisElement,
-            extendedTimeout: totalTimeout,
-            mathematicalTransforms: true,
-          },
-        })
-      } else {
-        throw new Error("No main image generated")
-      }
+      console.log("🖼️ Generating main image...")
+      mainImageUrl = await callOpenAI(mainPrompt)
+      generationDetails.mainImage = "Generated successfully"
+      console.log("✅ Main image generated successfully")
     } catch (error: any) {
-      console.log("⚠️ Mathematical transformation failed, falling back to single image:", error.message)
-
-      // Final fallback - single image only
-      try {
-        const result = await generateSingleImageOnly(mainPrompt)
-
-        return NextResponse.json({
-          success: true,
-          image: result.mainImage,
-          domeImage: result.domeImage,
-          panoramaImage: result.panoramaImage,
-          originalPrompt: mainPrompt,
+      console.error("❌ Main image generation failed:", error.message)
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Failed to generate main image: " + error.message,
           promptLength: mainPrompt.length,
-          provider: "OpenAI",
-          model: "DALL-E 3",
-          estimatedFileSize: "~2-4MB",
-          generationMethod: "emergency_single_mathematical",
-          generationDetails: {
-            mainImage: "Generated successfully",
-            domeImage: "Mathematical fisheye transformation applied from original art data (emergency fallback)",
-            panoramaImage:
-              "Mathematical equirectangular transformation applied from original art data (emergency fallback)",
-            errors: [`Mathematical parallel failed: ${error.message}`],
-            note: "Emergency single image mode with mathematical transformations from original art",
-          },
-          parameters: {
-            dataset,
-            scenario,
-            colorScheme,
-            emergencyMode: true,
-            mathematicalTransforms: true,
-          },
-        })
-      } catch (finalError: any) {
-        console.error("❌ All generation methods failed:", finalError.message)
-
-        return NextResponse.json(
-          {
-            success: false,
-            error: "All generation methods failed",
-            details: finalError.message,
-            timestamp: new Date().toISOString(),
-            generationMethod: "all_failed",
-            troubleshooting: {
-              issue: "Complete API Failure",
-              cause: finalError.message.includes("503")
-                ? "OpenAI service unavailable"
-                : finalError.message.includes("429")
-                  ? "Rate limit exceeded"
-                  : finalError.message.includes("DEPLOYMENT_TIMEOUT")
-                    ? "Deployment timeout"
-                    : "Unknown API error",
-              solutions: [
-                "OpenAI API is experiencing issues",
-                "Try again in a few minutes",
-                "Check OpenAI status page",
-                "Contact support if issue persists",
-              ],
-            },
-          },
-          { status: finalError.message.includes("DEPLOYMENT_TIMEOUT") ? 408 : 503 },
-        )
-      }
+          promptPreview: mainPrompt.substring(0, 200) + "...",
+        },
+        { status: 500 },
+      )
     }
-  } catch (error: any) {
-    console.error("❌ Route handler error:", error)
 
+    // ALWAYS generate dome projection for complete set with TUNNEL UP effect
+    console.log(`🏛️ Generating ${domeDiameter || 20}m dome projection with TUNNEL UP effect...`)
+    generationDetails.domeImage = "Generating..."
+    try {
+      const domePrompt = generateDomePrompt(mainPrompt, domeDiameter, domeResolution, projectionType)
+      console.log("📝 Generated dome TUNNEL UP prompt:", domePrompt.substring(0, 200) + "...")
+      domeImageUrl = await callOpenAI(domePrompt)
+      generationDetails.domeImage = "Generated successfully with TUNNEL UP effect"
+      console.log(`✅ ${domeDiameter || 20}m dome TUNNEL UP projection generated successfully`)
+    } catch (error: any) {
+      console.error(`❌ ${domeDiameter || 20}m dome TUNNEL UP projection generation failed:`, error.message)
+      domeImageUrl = mainImageUrl // Use main image as fallback
+      generationDetails.domeImage = `Fallback used: ${error.message}`
+    }
+
+    // ALWAYS generate 360° panorama for complete set
+    console.log("🌐 Generating 360° panorama...")
+    generationDetails.panoramaImage = "Generating..."
+    try {
+      const panoramaPrompt = generatePanoramaPrompt(
+        mainPrompt,
+        panoramaResolution,
+        panoramaFormat,
+        stereographicPerspective,
+      )
+      console.log("📝 Generated panorama prompt:", panoramaPrompt.substring(0, 200) + "...")
+      panoramaImageUrl = await callOpenAI(panoramaPrompt)
+      generationDetails.panoramaImage = "Generated successfully"
+      console.log("✅ 360° panorama generated successfully")
+    } catch (error: any) {
+      console.error("❌ 360° panorama generation failed:", error.message)
+      panoramaImageUrl = mainImageUrl // Use main image as fallback
+      generationDetails.panoramaImage = `Fallback used: ${error.message}`
+    }
+
+    // Prepare response with ALL THREE versions
+    const response = {
+      success: true,
+      image: mainImageUrl,
+      domeImage: domeImageUrl || mainImageUrl, // Always provide dome image with TUNNEL UP
+      panoramaImage: panoramaImageUrl || mainImageUrl, // Always provide panorama image
+      originalPrompt: mainPrompt,
+      promptLength: mainPrompt.length,
+      provider: "OpenAI",
+      model: "DALL-E 3",
+      estimatedFileSize: "~2-4MB",
+      generationDetails,
+      parameters: {
+        dataset,
+        scenario,
+        colorScheme,
+        seed,
+        numSamples,
+        noiseScale: noise,
+        timeStep,
+        domeProjection: true, // Always true since we generate all versions
+        domeDiameter: domeDiameter || 20,
+        domeResolution: domeResolution || "4K",
+        projectionType: projectionType || "fisheye",
+        panoramic360: true, // Always true since we generate all versions
+        panoramaResolution: panoramaResolution || "8K",
+        panoramaFormat: panoramaFormat || "equirectangular",
+        stereographicPerspective,
+      },
+    }
+
+    console.log("✅ Returning successful response with all three images including TUNNEL UP dome effect")
+    return NextResponse.json(response)
+  } catch (error: any) {
+    console.error("❌ AI Art generation error:", error)
     return NextResponse.json(
       {
         success: false,
-        error: "Request processing failed",
-        details: error.message,
+        error: error.message || "Failed to generate AI art",
+        details: error.stack,
         timestamp: new Date().toISOString(),
-        generationMethod: "request_failed",
       },
       { status: 500 },
     )
