@@ -856,7 +856,7 @@ export function generateFlowField(params: GenerationParams): string {
   return svg
 }
 
-// Dome projection utility
+// Enhanced dome projection utility with TUNNEL UP effect
 export function generateDomeProjection(options: {
   width: number
   height: number
@@ -865,33 +865,76 @@ export function generateDomeProjection(options: {
 }): string {
   const { width, height, fov, tilt } = options
 
-  // Generate fisheye projection for dome
+  // Generate fisheye projection for dome with TUNNEL UP effect
   let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <radialGradient id="domeGradient" cx="50%" cy="50%" r="50%">
+    <radialGradient id="domeTunnelGradient" cx="50%" cy="50%" r="50%">
       <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
-      <stop offset="70%" style="stop-color:#4444ff;stop-opacity:0.8" />
-      <stop offset="100%" style="stop-color:#000044;stop-opacity:0.6" />
+      <stop offset="30%" style="stop-color:#8888ff;stop-opacity:0.9" />
+      <stop offset="60%" style="stop-color:#4444ff;stop-opacity:0.7" />
+      <stop offset="85%" style="stop-color:#2222aa;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#000044;stop-opacity:0.3" />
     </radialGradient>
+    <filter id="tunnelBlur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1"/>
+    </filter>
   </defs>
   <rect width="${width}" height="${height}" fill="#000011"/>
-  <circle cx="${width / 2}" cy="${height / 2}" r="${Math.min(width, height) / 2 - 10}" fill="url(#domeGradient)" />
+  
+  <!-- TUNNEL UP EFFECT: Create dramatic upward tunnel perspective -->
+  <circle cx="${width / 2}" cy="${height / 2}" r="${Math.min(width, height) / 2 - 10}" 
+          fill="url(#domeTunnelGradient)" 
+          filter="url(#tunnelBlur)" />
 `
 
-  // Add dome-specific patterns
+  // Add dome-specific TUNNEL UP patterns
   const centerX = width / 2
   const centerY = height / 2
   const maxRadius = Math.min(width, height) / 2 - 20
 
-  for (let i = 0; i < 500; i++) {
-    const angle = (i / 500) * Math.PI * 2 * 8
-    const radius = Math.sqrt(i / 500) * maxRadius
-    const x = centerX + radius * Math.cos(angle)
-    const y = centerY + radius * Math.sin(angle)
-    const size = 2 + (1 - radius / maxRadius) * 4
-    const opacity = 0.3 + (1 - radius / maxRadius) * 0.5
+  // Create concentric rings that create tunnel up illusion
+  for (let ring = 0; ring < 8; ring++) {
+    const ringRadius = (ring / 8) * maxRadius
+    const ringOpacity = 0.8 - (ring / 8) * 0.6
+    const ringWidth = 2 + ring * 0.5
 
-    svg += `  <circle cx="${x}" cy="${y}" r="${size}" fill="#ffffff" opacity="${opacity}" />
+    svg += `  <circle cx="${centerX}" cy="${centerY}" r="${ringRadius}" 
+              fill="none" stroke="#ffffff" stroke-width="${ringWidth}" 
+              opacity="${ringOpacity}" />
+`
+  }
+
+  // Add spiral patterns that enhance tunnel up effect
+  for (let i = 0; i < 1000; i++) {
+    const t = i / 1000
+    const spiralAngle = t * Math.PI * 2 * 12 // Multiple spiral arms
+    const spiralRadius = t * maxRadius
+
+    // Create tunnel perspective by varying size based on distance from center
+    const tunnelPerspective = 1 - (spiralRadius / maxRadius) * 0.8
+    const size = 1 + tunnelPerspective * 4
+
+    const x = centerX + spiralRadius * Math.cos(spiralAngle)
+    const y = centerY + spiralRadius * Math.sin(spiralAngle)
+
+    // Only draw if within dome circle
+    if (spiralRadius <= maxRadius) {
+      const opacity = 0.2 + tunnelPerspective * 0.6
+      svg += `  <circle cx="${x}" cy="${y}" r="${size}" fill="#ffffff" opacity="${opacity}" />
+`
+    }
+  }
+
+  // Add radial lines that enhance upward tunnel perspective
+  for (let line = 0; line < 24; line++) {
+    const lineAngle = (line / 24) * Math.PI * 2
+    const x1 = centerX + Math.cos(lineAngle) * 20
+    const y1 = centerY + Math.sin(lineAngle) * 20
+    const x2 = centerX + Math.cos(lineAngle) * maxRadius
+    const y2 = centerY + Math.sin(lineAngle) * maxRadius
+
+    svg += `  <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" 
+              stroke="#ffffff" stroke-width="1" opacity="0.3" />
 `
   }
 
