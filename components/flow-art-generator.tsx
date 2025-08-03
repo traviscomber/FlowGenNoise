@@ -368,7 +368,7 @@ export function FlowArtGenerator() {
           value: "minangkabau",
           label: "🏠 Minangkabau Matrilineal Society",
           description:
-            "GODLEVEL PROMPT: West Sumatra Minangkabau people with unique matrilineal social structure where women hold property and family lineage, distinctive rumah gadang houses with dramatic horn-shaped roofs resembling buffalo horns reaching toward sky, traditional Minang cuisine and culinary heritage famous throughout Indonesia and Malaysia, matriarchal inheritance and family systems where mothers pass property to daughters, traditional ceremonies and adat customs governing social behavior and community harmony, skilled traders and merchants throughout Southeast Asia spreading Minang culture, traditional textiles and songket weaving with gold threads creating royal garments, Islamic scholarship and education with famous religious schools, traditional music and dance celebrating Minang cultural identity, philosophical wisdom and proverbs (pepatah-petitih) guiding daily life, traditional architecture with carved wooden facades and steep roofs, clan system (suku) organizing social relationships and marriage rules, traditional markets with Minang women as successful traders, ceremonial costumes with elaborate headdresses and jewelry, hyperrealistic 8K cultural photography showing traditional rumah gadang architecture and Minang cultural practices with rich detail and atmospheric lighting. Geolocation: West Sumatra highlands. Weapons: Keris, swords, knives. Costumes: Songket textiles, traditional headdresses. Vehicles: Buffalo-drawn carts, horses.",
+            "GODLEVEL PROMPT: West Sumatra Minangkabau people with unique matrilineal social structure where women hold property and family lineage, distinctive rumah gadang houses with dramatic horn-shaped roofs resembling buffalo horns reaching toward sky, traditional Minang cuisine and culinary heritage famous throughout Indonesia and Malaysia, matriarchal inheritance and family systems where mothers pass property to daughters, traditional ceremonies and adat customs governing social behavior and community harmony, skilled traders and merchants throughout Southeast Asia spreading Minang culture, traditional textiles and songket weaving with gold threads creating royal garments, matriarchal inheritance and family systems where mothers pass property to daughters, traditional ceremonies and adat customs governing social behavior and community harmony, skilled traders and merchants throughout Southeast Asia spreading Minang culture, traditional textiles and songket weaving with gold threads, Islamic scholarship and education with famous religious schools, traditional music and dance celebrating Minang cultural identity, philosophical wisdom and proverbs (pepatah-petitih) guiding daily life, traditional architecture with carved wooden facades and steep roofs, clan system (suku) organizing social relationships and marriage rules, traditional markets with Minang women as successful traders, ceremonial costumes with elaborate headdresses and jewelry, hyperrealistic 8K cultural photography showing traditional rumah gadang architecture and Minang cultural practices with rich detail and atmospheric lighting. Geolocation: West Sumatra highlands. Weapons: Keris, swords, knives. Costumes: Songket textiles, traditional headdresses. Vehicles: Buffalo-drawn carts, horses.",
         },
         {
           value: "balinese-tribe",
@@ -1342,12 +1342,11 @@ export function FlowArtGenerator() {
                                     <SelectItem value="tunnel">Tunnel</SelectItem>
                                     <SelectItem value="mirror-ball">Mirror Ball</SelectItem>
                                   </SelectContent>
-                                </Select>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
+                              </Select>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     {/* Generate Button */}
@@ -1901,5 +1900,5 @@ export function FlowArtGenerator() {
         </div>
       </div>
     </div>
-  )
+  )\
 }
