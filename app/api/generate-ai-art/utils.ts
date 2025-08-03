@@ -109,7 +109,31 @@ export function generateDomePrompt(
   resolution = "4K",
   projectionType = "fisheye",
 ): string {
-  return `${basePrompt}, TUNNEL UP DOME PROJECTION: Transform this artwork into a ${diameter}m planetarium dome projection with dramatic TUNNEL UP perspective effect, fisheye lens distortion creating immersive upward-looking view perfect for dome ceiling display, ${resolution} resolution optimized for planetarium projection systems, spherical mapping with zenith focus point, radial symmetry expanding outward from center, immersive 180-degree field of view, dome-optimized composition with enhanced peripheral detail, planetarium-grade visual quality with seamless edge blending, astronomical projection standards, fulldome cinema format, immersive overhead viewing experience, TUNNEL UP effect creating sense of looking up through a cosmic tunnel, dramatic perspective distortion for dome ceiling projection`
+  console.log(`🏛️ Generating dome prompt with projection type: ${projectionType}`)
+
+  // Define projection-specific transformations with enhanced effects
+  const projectionSpecs: Record<string, string> = {
+    fisheye:
+      "FISHEYE LENS DISTORTION creating dramatic immersive upward-looking TUNNEL UP view perfect for dome ceiling display, spherical mapping with zenith focus point creating powerful tunnel-like perspective effect, radial symmetry expanding outward from center with enhanced peripheral detail, dramatic upward perspective distortion specifically designed for planetarium dome ceiling projection with TUNNEL UP illusion, enhanced radial composition for immersive overhead viewing experience where viewers look up through a cosmic tunnel toward the dome ceiling",
+    equidistant:
+      "equidistant projection mapping with uniform angular distribution across dome surface, linear relationship between angle and radius for accurate dome projection, precise angular measurements for planetarium systems",
+    stereographic:
+      "stereographic projection with conformal mapping preserving angles and shapes, enhanced peripheral detail with smooth distortion gradients, optimal for dome edge clarity",
+    orthographic:
+      "orthographic projection with parallel ray mapping, maintaining true proportions across dome surface, ideal for architectural dome displays",
+    azimuthal:
+      "azimuthal projection with radial symmetry from dome center, equal-area mapping for consistent brightness across dome surface, optimized for fulldome cinema",
+  }
+
+  const projectionSpec = projectionSpecs[projectionType] || projectionSpecs.fisheye
+
+  // Enhanced dome prompt with projection-specific handling
+  const domePrompt = `${basePrompt}, PLANETARIUM DOME PROJECTION TRANSFORMATION: Convert this artwork into a ${diameter}m diameter planetarium dome projection using ${projectionType.toUpperCase()} PROJECTION TYPE with ${projectionSpec}, ${resolution} ultra-high resolution optimized for planetarium projection systems, immersive 180-degree field of view with dramatic perspective distortion, dome-optimized composition with seamless edge blending for overhead viewing, planetarium-grade visual quality meeting astronomical projection standards, fulldome cinema format creating sense of looking up through a cosmic tunnel toward the dome ceiling, ${projectionType} distortion specifically calibrated for ${diameter}m dome systems with enhanced perspective effect for immersive planetarium experience`
+
+  console.log(`🏛️ Generated dome prompt length: ${domePrompt.length} characters`)
+  console.log(`🏛️ Projection type applied: ${projectionType}`)
+
+  return domePrompt
 }
 
 export function generatePanoramaPrompt(
@@ -118,6 +142,28 @@ export function generatePanoramaPrompt(
   format = "equirectangular",
   perspective?: string,
 ): string {
-  const perspectiveText = perspective ? `, ${perspective} perspective` : ""
-  return `${basePrompt}, 360-DEGREE PANORAMIC VIEW: Transform this artwork into a complete 360-degree panoramic composition, ${format} projection mapping for VR and immersive displays, ${resolution} resolution with seamless horizontal wrapping, spherical panoramic format suitable for VR headsets and 360-degree viewers, immersive environmental mapping, full spherical coverage with no visible seams, panoramic distortion correction for equirectangular format, VR-ready composition with proper aspect ratio, 360-degree environmental storytelling, immersive wraparound visual experience${perspectiveText}, optimized for virtual reality and panoramic display systems`
+  const perspectiveText = perspective ? `, ${perspective} perspective transformation` : ""
+  console.log(`🌐 Generating panorama prompt with format: ${format}, resolution: ${resolution}`)
+
+  // Define format-specific transformations
+  const formatSpecs: Record<string, string> = {
+    equirectangular:
+      "equirectangular projection mapping for VR and immersive displays with proper 2:1 aspect ratio, spherical panoramic format suitable for VR headsets and 360-degree viewers, seamless horizontal wrapping with no visible seams",
+    cubemap:
+      "cubemap projection with six faces for 360-degree coverage, optimized for real-time rendering and VR applications, seamless face transitions",
+    cylindrical:
+      "cylindrical projection with horizontal 360-degree coverage, vertical perspective maintained, ideal for panoramic displays",
+    mercator:
+      "Mercator projection with conformal mapping, preserving angles and shapes across panoramic view, enhanced for wide-angle displays",
+  }
+
+  const formatSpec = formatSpecs[format] || formatSpecs.equirectangular
+
+  // Enhanced panorama prompt with format-specific handling
+  const panoramaPrompt = `${basePrompt}, 360-DEGREE PANORAMIC TRANSFORMATION: Convert this artwork into a complete 360-degree panoramic composition using ${format.toUpperCase()} FORMAT with ${formatSpec}, ${resolution} ultra-high resolution with immersive environmental mapping and full spherical coverage, panoramic distortion correction for ${format} format, VR-ready composition optimized for virtual reality headsets and panoramic display systems, seamless 360-degree horizontal coverage with enhanced peripheral detail${perspectiveText}, complete wraparound visual experience with proper ${format} mapping`
+
+  console.log(`🌐 Generated panorama prompt length: ${panoramaPrompt.length} characters`)
+  console.log(`🌐 Format applied: ${format}`)
+
+  return panoramaPrompt
 }

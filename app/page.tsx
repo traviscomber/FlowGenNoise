@@ -75,6 +75,37 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* COSMOS Test Section */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto">
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="p-6 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+              <h3 className="text-lg font-semibold text-purple-900 mb-3 flex items-center">
+                🌌 COSMOS 20m Dome TUNNEL UP Test
+              </h3>
+              <p className="text-purple-700 mb-4">
+                Test the 20m dome generation with COSMOS mathematical patterns, spiral galaxies, and stellar formations
+                optimized for planetarium dome projection with TUNNEL UP effect.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="bg-white p-3 rounded border border-purple-200">
+                  <div className="font-medium text-purple-900">COSMOS Patterns</div>
+                  <div className="text-purple-600">Spiral galaxies, stellar formations, cosmic fractals</div>
+                </div>
+                <div className="bg-white p-3 rounded border border-purple-200">
+                  <div className="font-medium text-purple-900">20m Dome TUNNEL UP</div>
+                  <div className="text-purple-600">8K resolution, fisheye projection, upward perspective</div>
+                </div>
+                <div className="bg-white p-3 rounded border border-purple-200">
+                  <div className="font-medium text-purple-900">16K 360° VR</div>
+                  <div className="text-purple-600">Ultra HD panoramic, equirectangular format</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Demo Selector */}
       <section className="py-8 px-4">
         <div className="container mx-auto">

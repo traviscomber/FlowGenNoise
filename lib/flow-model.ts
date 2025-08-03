@@ -208,6 +208,200 @@ function generateNuanuPattern(
   return points
 }
 
+// Advanced mathematical pattern generators for enhanced Garuda composition
+function generateAdvancedGarudaPattern(
+  params: GenerationParams,
+  rng: SeededRandom,
+): Array<{ x: number; y: number; color: string; size: number; type: string }> {
+  const points: Array<{ x: number; y: number; color: string; size: number; type: string }> = []
+  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
+
+  // Enhanced Garuda with advanced mathematical composition
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = i / params.numSamples
+
+    let elementType = "divine-element"
+    let x: number, y: number, size: number
+
+    // Fibonacci spiral flight pattern for Garuda's path
+    const phi = (1 + Math.sqrt(5)) / 2 // Golden ratio
+    const fibonacciAngle = (i * 2 * Math.PI) / phi
+    const fibonacciRadius = Math.sqrt(i) * 4
+
+    // Golden ratio focal points for divine positioning
+    const goldenX = 800 * 0.618 // Golden ratio point
+    const goldenY = 600 * 0.618
+
+    switch (params.scenario) {
+      case "garuda":
+        if (i < params.numSamples * 0.05) {
+          // Main Garuda figure at golden ratio focal point
+          elementType = "garuda-divine"
+          x = goldenX + Math.cos(fibonacciAngle) * 30 + rng.next() * 20
+          y = goldenY + Math.sin(fibonacciAngle) * 30 + rng.next() * 20
+          size = 15 + rng.next() * 10
+        } else if (i < params.numSamples * 0.1) {
+          // Lord Vishnu in tetrahedral sacred geometry
+          elementType = "vishnu-divine"
+          const tetraAngle = (i % 4) * (Math.PI / 2)
+          const tetraRadius = 40
+          x = goldenX + Math.cos(tetraAngle) * tetraRadius
+          y = goldenY + Math.sin(tetraAngle) * tetraRadius
+          size = 12 + rng.next() * 8
+        } else if (i < params.numSamples * 0.15) {
+          // Wing feathers in fractal geometric sequences
+          elementType = "feather-fractal"
+          const wingSpread = 200
+          const featherAngle = t * Math.PI * 2 * 8 // Multiple wing sections
+          const featherRadius = Math.pow(rng.next(), 0.7) * wingSpread
+          x = goldenX + Math.cos(featherAngle) * featherRadius
+          y = goldenY + Math.sin(featherAngle) * featherRadius * 0.6 // Wing aspect ratio
+          size = 3 + Math.sin(featherAngle * 4) * 4
+        } else if (i < params.numSamples * 0.2) {
+          // Sacred geometry symbols (Sri Yantra, Flower of Life, Metatron's Cube)
+          elementType = "sacred-geometry"
+          const geometryType = Math.floor(rng.next() * 3)
+          switch (geometryType) {
+            case 0: // Sri Yantra triangular patterns
+              const triangleAngle = t * Math.PI * 2 * 9 // 9 triangles
+              const triangleRadius = 60 + rng.next() * 40
+              x = goldenX + Math.cos(triangleAngle) * triangleRadius
+              y = goldenY + Math.sin(triangleAngle) * triangleRadius
+              break
+            case 1: // Flower of Life circular patterns
+              const flowerAngle = t * Math.PI * 2 * 6 // 6-fold symmetry
+              const flowerRadius = 80 + rng.next() * 30
+              x = goldenX + Math.cos(flowerAngle) * flowerRadius
+              y = goldenY + Math.sin(flowerAngle) * flowerRadius
+              break
+            case 2: // Metatron's Cube geometric patterns
+              const cubeAngle = t * Math.PI * 2 * 12 // 12-fold pattern
+              const cubeRadius = 70 + rng.next() * 35
+              x = goldenX + Math.cos(cubeAngle) * cubeRadius
+              y = goldenY + Math.sin(cubeAngle) * cubeRadius
+              break
+            default:
+              x = goldenX + rng.next() * 100
+              y = goldenY + rng.next() * 100
+          }
+          size = 4 + rng.next() * 6
+        } else if (i < params.numSamples * 0.3) {
+          // Gamelan music as sine/cosine wave harmonics
+          elementType = "gamelan-waves"
+          const waveFreq = 0.02 + rng.next() * 0.03
+          const waveAmplitude = 50 + rng.next() * 30
+          x = t * 800
+          y = 300 + Math.sin(x * waveFreq) * waveAmplitude + Math.cos(x * waveFreq * 1.618) * (waveAmplitude * 0.618)
+          size = 2 + Math.abs(Math.sin(x * waveFreq)) * 4
+        } else if (i < params.numSamples * 0.4) {
+          // Sanskrit mantras following Euler's spiral
+          elementType = "sanskrit-spiral"
+          const eulerAngle = t * Math.PI * 2 * 5
+          const eulerRadius = Math.exp(eulerAngle * 0.1) * 3
+          x = 400 + eulerRadius * Math.cos(eulerAngle)
+          y = 300 + eulerRadius * Math.sin(eulerAngle)
+          size = 1 + (5 - Math.min(eulerRadius / 20, 5))
+        } else if (i < params.numSamples * 0.5) {
+          // Indonesian archipelago in Voronoi distributions
+          elementType = "archipelago-voronoi"
+          const islandClusters = 17 // Representing major island groups
+          const clusterIndex = Math.floor(rng.next() * islandClusters)
+          const clusterX = (clusterIndex % 6) * 133 + 50
+          const clusterY = Math.floor(clusterIndex / 6) * 120 + 400
+          x = clusterX + (rng.next() - 0.5) * 80
+          y = clusterY + (rng.next() - 0.5) * 60
+          size = 1 + rng.next() * 3
+        } else if (i < params.numSamples * 0.6) {
+          // Ring of Fire volcanoes in prime number sequences
+          elementType = "volcano-prime"
+          const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+          const primeIndex = i % primes.length
+          const volcanoAngle = (primes[primeIndex] / 47) * Math.PI * 2
+          const volcanoRadius = 150 + rng.next() * 100
+          x = 400 + Math.cos(volcanoAngle) * volcanoRadius
+          y = 300 + Math.sin(volcanoAngle) * volcanoRadius
+          size = 3 + rng.next() * 5
+        } else if (i < params.numSamples * 0.7) {
+          // Temple spires in hexagonal crystal lattice
+          elementType = "temple-hexagonal"
+          const hexRadius = 120
+          const hexAngle = (i % 6) * (Math.PI / 3) // 60-degree intervals
+          const hexRing = (Math.floor(i / 6) % 3) + 1
+          x = 400 + Math.cos(hexAngle) * hexRadius * hexRing
+          y = 300 + Math.sin(hexAngle) * hexRadius * hexRing
+          size = 6 + rng.next() * 4
+        } else if (i < params.numSamples * 0.8) {
+          // Cosmic mandala in Archimedean spirals
+          elementType = "cosmic-mandala"
+          const archAngle = t * Math.PI * 2 * 10
+          const archRadius = archAngle * 2 // Linear growth
+          x = 400 + (archRadius % 200) * Math.cos(archAngle)
+          y = 300 + (archRadius % 200) * Math.sin(archAngle)
+          size = 2 + Math.sin(archAngle) * 3
+        } else if (i < params.numSamples * 0.9) {
+          // Lightning in Lichtenberg fractal patterns
+          elementType = "lightning-fractal"
+          const lightningBranch = Math.floor(rng.next() * 8)
+          const branchAngle = (lightningBranch / 8) * Math.PI * 2
+          const branchLength = rng.next() * 150
+          const branchDeviation = (rng.next() - 0.5) * 0.5
+          x = 400 + Math.cos(branchAngle + branchDeviation) * branchLength
+          y = 200 + Math.sin(branchAngle + branchDeviation) * branchLength
+          size = 1 + rng.next() * 2
+        } else {
+          // Quantum energy particles in probability wave functions
+          elementType = "quantum-particles"
+          const quantumX = rng.next() * 800
+          const quantumY = rng.next() * 600
+          const probability = Math.exp(-Math.pow((quantumX - 400) / 100, 2) - Math.pow((quantumY - 300) / 100, 2))
+          if (rng.next() < probability) {
+            x = quantumX
+            y = quantumY
+            size = 0.5 + probability * 2
+          } else {
+            continue // Skip this particle
+          }
+        }
+        break
+
+      default:
+        // Fallback to standard pattern
+        x = rng.next() * 800
+        y = rng.next() * 600
+        elementType = "divine-element"
+        size = 2 + rng.next() * 6
+    }
+
+    // Apply advanced mathematical transformations
+    // Golden ratio scaling
+    const goldenScale = 1 + Math.sin(t * Math.PI * 2) * 0.618
+    size *= goldenScale
+
+    // Fibonacci noise modulation
+    const fibNoise = Math.sin(t * Math.PI * 2 * phi) * params.noiseScale * 15
+    x += fibNoise
+    y += fibNoise * 0.618
+
+    // Complex number plane transformations for dimensional effects
+    const complex_real = (x - 400) / 200
+    const complex_imag = (y - 300) / 200
+    const complex_magnitude = Math.sqrt(complex_real * complex_real + complex_imag * complex_imag)
+    const complex_phase = Math.atan2(complex_imag, complex_real)
+
+    // Apply complex transformation
+    const transformed_magnitude = complex_magnitude * (1 + 0.1 * Math.sin(complex_phase * 5))
+    x = 400 + transformed_magnitude * Math.cos(complex_phase) * 200
+    y = 300 + transformed_magnitude * Math.sin(complex_phase) * 200
+
+    const colorIndex = Math.floor((t + rng.next() * 0.3) * palette.length) % palette.length
+    const color = palette[colorIndex]
+
+    points.push({ x, y, color, size, type: elementType })
+  }
+
+  return points
+}
+
 function generateBalinesePattern(
   params: GenerationParams,
   rng: SeededRandom,
@@ -829,25 +1023,42 @@ export function generateFlowField(params: GenerationParams): string {
     case "mandelbrot":
       points = generateMandelbrotPattern(params, rng)
       break
+    case "indonesian":
+      // Use advanced Garuda pattern for enhanced mathematical composition
+      if (params.scenario === "garuda") {
+        points = generateAdvancedGarudaPattern(params, rng)
+      } else {
+        points = generateGenericPattern(params, rng)
+      }
+      break
     default:
       points = generateGenericPattern(params, rng)
   }
 
-  // Create SVG
+  // Create SVG with enhanced mathematical precision
   let svg = `<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <radialGradient id="pointGradient" cx="50%" cy="50%" r="50%">
       <stop offset="0%" style="stop-opacity:1" />
       <stop offset="100%" style="stop-opacity:0.3" />
     </radialGradient>
+    <filter id="mathematicalGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
   <rect width="800" height="600" fill="#000011"/>
 `
 
-  // Add points
+  // Add points with mathematical precision
   points.forEach((point, index) => {
     const opacity = 0.6 + Math.sin(index * 0.1) * 0.3
-    svg += `  <circle cx="${point.x}" cy="${point.y}" r="${point.size}" fill="${point.color}" opacity="${opacity}" />
+    const filter =
+      point.type?.includes("divine") || point.type?.includes("sacred") ? 'filter="url(#mathematicalGlow)"' : ""
+    svg += `  <circle cx="${point.x.toFixed(3)}" cy="${point.y.toFixed(3)}" r="${point.size.toFixed(3)}" fill="${point.color}" opacity="${opacity.toFixed(3)}" ${filter} />
 `
   })
 
