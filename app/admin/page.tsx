@@ -1,361 +1,471 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
+import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Settings, Database, Users, BarChart3, Zap, Palette, RefreshCw, Eye } from "lucide-react"
-import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
+import { Trash2, Download, Undo, Redo, Play } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
-export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState("overview")
-  const [systemStatus, setSystemStatus] = useState({
-    apiStatus: "operational",
-    queueStatus: "processing",
-    storageUsed: "2.3 GB",
-    totalGenerations: 1247,
-    activeUsers: 23,
+/* ---------- tiny IndexedDB queue ---------- */
+const openDB = () =>
+  new Promise<IDBDatabase>((res) => {
+    const req = indexedDB.open("flowsketch", 1)
+    req.onupgradeneeded = (e) =>
+      (e.target as IDBOpenDBRequest).result.createObjectStore("jobs", { keyPath: "id", autoIncrement: true })
+    req.onsuccess = (e) => res((e.target as IDBOpenDBRequest).result)
   })
 
+const addJob = async (payload: any) => {
+  const db = await openDB()
+  return db.transaction("jobs", "readwrite").objectStore("jobs").add({
+    payload,
+    status: "pending",
+    createdAt: new Date().toISOString(),
+  })
+}
+
+const listJobs = async () => {
+  const db = await openDB()
+  const request = db.transaction("jobs").objectStore("jobs").getAll()
+  return new Promise<any[]>((resolve) => {
+    request.onsuccess = () => resolve(request.result)
+  })
+}
+
+const delJob = async (id: number) => {
+  const db = await openDB()
+  return db.transaction("jobs", "readwrite").objectStore("jobs").delete(id)
+}
+
+/* ---------- undo / redo ---------- */
+let stack: string[] = []
+let idx = -1
+
+const pushState = (obj: any) => {
+  stack = stack.slice(0, idx + 1)
+  stack.push(JSON.stringify(obj))
+  idx = stack.length - 1
+}
+
+const undo = () => (idx > 0 ? JSON.parse(stack[--idx]) : null)
+const redo = () => (idx < stack.length - 1 ? JSON.parse(stack[++idx]) : null)
+
+interface AdminParams {
+  prompt: string
+  dataPoints: number
+  noiseScale: number
+  timeStep: number
+  resolution: string
+  projection: string
+  colorScheme: string
+  flowType: string
+}
+
+export default function AdminPage() {
+  const { toast } = useToast()
+  const [params, setParams] = useState<AdminParams>({
+    prompt: "electric jellyfish flowing through cosmic space",
+    dataPoints: 3000,
+    noiseScale: 0.1,
+    timeStep: 0.01,
+    resolution: "4k",
+    projection: "equirectangular",
+    colorScheme: "rainbow",
+    flowType: "spiral",
+  })
+
+  const [jobList, setJobList] = useState<any[]>([])
+  const [isGenerating, setIsGenerating] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  /* thumbnail preview */
+  useEffect(() => {
+    if (!canvasRef.current) return
+
+    const ctx = canvasRef.current.getContext("2d")
+    if (!ctx) return
+
+    ctx.clearRect(0, 0, 200, 200)
+
+    // Generate preview based on current parameters
+    for (let i = 0; i < Math.min(params.dataPoints, 1000); i++) {
+      const t = i * params.timeStep * 20
+      const noise = params.noiseScale * Math.sin(i * 0.1)
+
+      let x, y
+      if (params.flowType === "spiral") {
+        x = 100 + (50 + noise * 20) * Math.cos(t)
+        y = 100 + (50 + noise * 20) * Math.sin(t)
+      } else if (params.flowType === "wave") {
+        x = (i / Math.min(params.dataPoints, 1000)) * 200
+        y = 100 + 40 * Math.sin(t + noise)
+      } else {
+        x = 100 + 80 * Math.cos(t + noise)
+        y = 100 + 80 * Math.sin(t * 1.5 + noise)
+      }
+
+      // Color based on scheme
+      let color
+      if (params.colorScheme === "rainbow") {
+        color = `hsl(${(t * 50) % 360}, 70%, 60%)`
+      } else if (params.colorScheme === "ocean") {
+        color = `hsl(${200 + ((t * 20) % 60)}, 80%, 50%)`
+      } else {
+        color = `hsl(${300 + ((t * 30) % 120)}, 60%, 70%)`
+      }
+
+      ctx.fillStyle = color
+      ctx.fillRect(x - 1, y - 1, 2, 2)
+    }
+  }, [params])
+
+  /* keyboard shortcuts */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "z" && !e.shiftKey) {
+        e.preventDefault()
+        const u = undo()
+        if (u) {
+          setParams(u)
+          toast({ title: "Undone", description: "Reverted to previous state" })
+        }
+      }
+      if ((e.ctrlKey && e.key === "y") || (e.ctrlKey && e.shiftKey && e.key === "Z")) {
+        e.preventDefault()
+        const r = redo()
+        if (r) {
+          setParams(r)
+          toast({ title: "Redone", description: "Applied next state" })
+        }
+      }
+    }
+
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [toast])
+
+  /* sync offline queue */
+  const refreshJobs = useCallback(async () => {
+    try {
+      const jobs = await listJobs()
+      setJobList(jobs)
+    } catch (error) {
+      console.error("Failed to refresh jobs:", error)
+    }
+  }, [])
+
+  useEffect(() => {
+    refreshJobs()
+  }, [refreshJobs])
+
+  const update = (key: keyof AdminParams, value: any) => {
+    const next = { ...params, [key]: value }
+    setParams(next)
+    pushState(next)
+  }
+
+  const enqueue = async () => {
+    try {
+      await addJob(params)
+      await refreshJobs()
+      toast({
+        title: "Job Queued",
+        description: "Art generation job added to offline queue",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to queue job",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const generateNow = async () => {
+    setIsGenerating(true)
+    try {
+      const response = await fetch("/api/generate-art", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(params),
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        toast({
+          title: "Generation Complete",
+          description: "Art has been generated successfully",
+        })
+      } else {
+        throw new Error("Generation failed")
+      }
+    } catch (error) {
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate art",
+        variant: "destructive",
+      })
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  const download = () => {
+    const blob = new Blob([JSON.stringify(params, null, 2)], { type: "application/json" })
+    const a = document.createElement("a")
+    a.href = URL.createObjectURL(blob)
+    a.download = `flowsketch-config-${Date.now()}.json`
+    a.click()
+
+    toast({
+      title: "Settings Exported",
+      description: "Configuration saved to file",
+    })
+  }
+
+  const deleteJob = async (id: number) => {
+    try {
+      await delJob(id)
+      await refreshJobs()
+      toast({
+        title: "Job Deleted",
+        description: "Removed job from queue",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete job",
+        variant: "destructive",
+      })
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      {/* Header */}
-      <header className="border-b bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Settings className="w-5 h-5 text-white" />
+    <div className="container mx-auto p-6 max-w-6xl">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">FlowSketch Admin Panel</h1>
+        <p className="text-muted-foreground">Advanced controls for mathematical art generation and job management</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Parameters Panel */}
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Generation Parameters</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Prompt */}
+              <div className="space-y-2">
+                <Label htmlFor="prompt">Prompt</Label>
+                <Textarea
+                  id="prompt"
+                  value={params.prompt}
+                  onChange={(e) => update("prompt", e.target.value)}
+                  rows={3}
+                  placeholder="Describe the art you want to generate..."
+                />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  FlowSketch Admin
-                </h1>
-                <p className="text-sm text-muted-foreground">System Administration Panel</p>
+
+              {/* Numeric Parameters */}
+              <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-2">
+                  <Label>Data Points: {params.dataPoints}</Label>
+                  <Slider
+                    value={[params.dataPoints]}
+                    onValueChange={([value]) => update("dataPoints", value)}
+                    min={100}
+                    max={10000}
+                    step={100}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Noise Scale: {params.noiseScale}</Label>
+                  <Slider
+                    value={[params.noiseScale]}
+                    onValueChange={([value]) => update("noiseScale", value)}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Time Step: {params.timeStep}</Label>
+                  <Slider
+                    value={[params.timeStep]}
+                    onValueChange={([value]) => update("timeStep", value)}
+                    min={0.001}
+                    max={0.1}
+                    step={0.001}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Link href="/">
-                <Button variant="outline" size="sm">
-                  <Palette className="w-4 h-4 mr-2" />
-                  Back to App
+
+              {/* Dropdown Parameters */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Resolution</Label>
+                  <Select value={params.resolution} onValueChange={(value) => update("resolution", value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1k">1K (1024x1024)</SelectItem>
+                      <SelectItem value="2k">2K (2048x2048)</SelectItem>
+                      <SelectItem value="4k">4K (4096x4096)</SelectItem>
+                      <SelectItem value="8k">8K (8192x8192)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Projection</Label>
+                  <Select value={params.projection} onValueChange={(value) => update("projection", value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="equirectangular">Equirectangular</SelectItem>
+                      <SelectItem value="stereographic">Stereographic</SelectItem>
+                      <SelectItem value="orthographic">Orthographic</SelectItem>
+                      <SelectItem value="mercator">Mercator</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Color Scheme</Label>
+                  <Select value={params.colorScheme} onValueChange={(value) => update("colorScheme", value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="rainbow">Rainbow</SelectItem>
+                      <SelectItem value="ocean">Ocean</SelectItem>
+                      <SelectItem value="sunset">Sunset</SelectItem>
+                      <SelectItem value="cosmic">Cosmic</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Flow Type</Label>
+                  <Select value={params.flowType} onValueChange={(value) => update("flowType", value)}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="spiral">Spiral</SelectItem>
+                      <SelectItem value="wave">Wave</SelectItem>
+                      <SelectItem value="orbital">Orbital</SelectItem>
+                      <SelectItem value="chaotic">Chaotic</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={generateNow} disabled={isGenerating}>
+                  <Play className="w-4 h-4 mr-2" />
+                  {isGenerating ? "Generating..." : "Generate Now"}
                 </Button>
-              </Link>
-            </div>
-          </div>
+                <Button onClick={enqueue} variant="outline">
+                  Queue Render
+                </Button>
+                <Button onClick={download} variant="outline">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export Settings
+                </Button>
+                <Button
+                  onClick={() => {
+                    const u = undo()
+                    if (u) setParams(u)
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
+                  <Undo className="w-4 h-4" />
+                </Button>
+                <Button
+                  onClick={() => {
+                    const r = redo()
+                    if (r) setParams(r)
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
+                  <Redo className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">Use Ctrl+Z/Ctrl+Y for undo/redo</p>
+            </CardContent>
+          </Card>
         </div>
-      </header>
 
-      <div className="container mx-auto px-4 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="generations">Generations</TabsTrigger>
-            <TabsTrigger value="users">Users</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          </TabsList>
+        {/* Preview and Queue Panel */}
+        <div className="space-y-6">
+          {/* Live Preview */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Live Preview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <canvas ref={canvasRef} width={200} height={200} className="border border-border rounded-lg" />
+              </div>
+              <p className="text-sm text-muted-foreground text-center mt-2">Real-time preview of current parameters</p>
+            </CardContent>
+          </Card>
 
-          <TabsContent value="overview" className="space-y-6">
-            {/* System Status Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">API Status</CardTitle>
-                  <Zap className="h-4 w-4 text-green-500" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">Operational</div>
-                  <Badge variant="secondary" className="mt-1">
-                    All systems online
-                  </Badge>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Generations</CardTitle>
-                  <BarChart3 className="h-4 w-4 text-blue-500" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{systemStatus.totalGenerations.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">+12% from last month</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-                  <Users className="h-4 w-4 text-purple-500" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{systemStatus.activeUsers}</div>
-                  <p className="text-xs text-muted-foreground">Currently online</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Storage Used</CardTitle>
-                  <Database className="h-4 w-4 text-orange-500" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{systemStatus.storageUsed}</div>
-                  <p className="text-xs text-muted-foreground">of 10 GB available</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>Latest system events and generations</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">New mathematical art generated</p>
-                      <p className="text-xs text-muted-foreground">Spiral pattern with cosmic theme - 2 minutes ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">Dome projection created</p>
-                      <p className="text-xs text-muted-foreground">20m planetarium format - 5 minutes ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">360° VR artwork generated</p>
-                      <p className="text-xs text-muted-foreground">16K resolution panorama - 8 minutes ago</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="generations" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Generation Management</CardTitle>
-                <CardDescription>Manage and monitor art generation processes</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium">Generation Queue</h4>
-                    <p className="text-sm text-muted-foreground">3 items in queue, 1 processing</p>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    <RefreshCw className="w-4 h-4 mr-2" />
-                    Refresh Queue
-                  </Button>
-                </div>
-
-                <div className="border rounded-lg p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
-                      <div>
-                        <p className="font-medium">Processing: Cosmic Spiral</p>
-                        <p className="text-sm text-muted-foreground">20m dome + 360° VR generation</p>
+          {/* Job Queue */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Offline Queue
+                <Badge variant="secondary">{jobList.length} jobs</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {jobList.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">No jobs in queue</p>
+              ) : (
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {jobList.map((job) => (
+                    <div key={job.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{job.payload.prompt}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {job.payload.dataPoints} points • {job.payload.resolution} • {job.payload.flowType}
+                        </p>
+                        {job.createdAt && (
+                          <p className="text-xs text-muted-foreground">{new Date(job.createdAt).toLocaleString()}</p>
+                        )}
                       </div>
-                    </div>
-                    <Badge variant="secondary">Processing</Badge>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
-                      <div>
-                        <p className="font-medium">Queued: Fractal Trees</p>
-                        <p className="text-sm text-muted-foreground">Standard generation</p>
-                      </div>
-                    </div>
-                    <Badge variant="outline">Queued</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="users" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>User Management</CardTitle>
-                <CardDescription>Monitor user activity and manage permissions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                        U
-                      </div>
-                      <div>
-                        <p className="font-medium">Anonymous User #1</p>
-                        <p className="text-sm text-muted-foreground">5 generations today</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Badge variant="secondary">Active</Badge>
-                      <Button variant="outline" size="sm">
-                        <Eye className="w-4 h-4" />
+                      <Button onClick={() => deleteJob(job.id)} variant="ghost" size="sm">
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                        U
-                      </div>
-                      <div>
-                        <p className="font-medium">Anonymous User #2</p>
-                        <p className="text-sm text-muted-foreground">12 generations today</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Badge variant="secondary">Active</Badge>
-                      <Button variant="outline" size="sm">
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="settings" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>System Settings</CardTitle>
-                <CardDescription>Configure system parameters and API settings</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="api-enabled">API Enabled</Label>
-                      <p className="text-sm text-muted-foreground">Enable or disable the generation API</p>
-                    </div>
-                    <Switch id="api-enabled" defaultChecked />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="dome-generation">Dome Generation</Label>
-                      <p className="text-sm text-muted-foreground">Enable 20m dome projection generation</p>
-                    </div>
-                    <Switch id="dome-generation" defaultChecked />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="vr-generation">360° VR Generation</Label>
-                      <p className="text-sm text-muted-foreground">Enable 16K panoramic VR generation</p>
-                    </div>
-                    <Switch id="vr-generation" defaultChecked />
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="max-queue">Maximum Queue Size</Label>
-                    <Input id="max-queue" type="number" defaultValue="10" className="mt-1" />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="default-resolution">Default Resolution</Label>
-                    <Select defaultValue="8k">
-                      <SelectTrigger className="mt-1">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="4k">4K</SelectItem>
-                        <SelectItem value="8k">8K</SelectItem>
-                        <SelectItem value="16k">16K</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="analytics" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Analytics Dashboard</CardTitle>
-                <CardDescription>System performance and usage statistics</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <h4 className="font-medium">Generation Types</h4>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Mathematical Flow</span>
-                        <span className="text-sm font-medium">45%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-blue-500 h-2 rounded-full" style={{ width: "45%" }}></div>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Dome Projections</span>
-                        <span className="text-sm font-medium">35%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-purple-500 h-2 rounded-full" style={{ width: "35%" }}></div>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">360° VR</span>
-                        <span className="text-sm font-medium">20%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-green-500 h-2 rounded-full" style={{ width: "20%" }}></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h4 className="font-medium">Popular Patterns</h4>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Cosmic Spirals</span>
-                        <Badge variant="secondary">342 uses</Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Fractal Trees</span>
-                        <Badge variant="secondary">289 uses</Badge>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">Crystal Cells</span>
-                        <Badge variant="secondary">156 uses</Badge>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )

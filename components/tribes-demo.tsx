@@ -26,10 +26,10 @@ export function TribesDemo() {
   const { toast } = useToast()
   const [params, setParams] = useState<TribesParams>({
     dataset: "tribes",
-    scenario: "pure",
-    colorScheme: "forest",
+    scenario: "landscape",
+    colorScheme: "sunset",
     seed: Math.floor(Math.random() * 10000),
-    numSamples: 3000,
+    numSamples: 2000,
     noiseScale: 0.05,
     customPrompt: "",
   })
@@ -52,7 +52,7 @@ export function TribesDemo() {
     setGenerationDetails(null)
 
     try {
-      console.log("🏘️ Starting tribal art generation:", params)
+      console.log("🏘️ Starting tribes art generation with params:", params)
 
       const response = await fetch("/api/generate-art", {
         method: "POST",
@@ -62,20 +62,23 @@ export function TribesDemo() {
         body: JSON.stringify(params),
       })
 
+      console.log("📡 API response status:", response.status)
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: "Unknown error" }))
+        console.error("❌ API error:", errorData)
         throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
       }
 
       const result = await response.json()
+      console.log("✅ Generation successful:", result.success)
 
       if (result.success && result.image) {
         setGeneratedImage(result.image)
         setGenerationDetails(result)
-
         toast({
-          title: "Cultural Art Generated!",
-          description: "Your tribal-themed artwork has been created successfully",
+          title: "Tribal Art Generated Successfully!",
+          description: `Created ${params.dataset} artwork with ${params.numSamples} cultural elements`,
         })
       } else {
         throw new Error(result.error || "Failed to generate image")
@@ -128,7 +131,7 @@ export function TribesDemo() {
             Cultural Themes Generator
           </CardTitle>
           <CardDescription>
-            Create artwork inspired by tribal cultures, native communities, and traditional art forms.
+            Create artwork featuring tribal settlements, native communities, and cultural elements
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -137,62 +140,61 @@ export function TribesDemo() {
             <Label htmlFor="customPrompt">Cultural Description (Optional)</Label>
             <Textarea
               id="customPrompt"
-              placeholder="Describe the cultural theme you want to explore..."
+              placeholder="Describe specific cultural elements, ceremonies, or traditions you want to include..."
               value={params.customPrompt}
               onChange={(e) => updateParam("customPrompt", e.target.value)}
               rows={3}
             />
           </div>
 
-          {/* Dataset and Scenario */}
+          {/* Dataset Selection */}
+          <div className="space-y-2">
+            <Label>Cultural Theme</Label>
+            <Select value={params.dataset} onValueChange={(value) => updateParam("dataset", value)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="tribes">Tribal Settlements</SelectItem>
+                <SelectItem value="natives">Native Communities</SelectItem>
+                <SelectItem value="heads">Portrait Mosaics</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Scenario and Color Scheme */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Cultural Pattern</Label>
-              <Select value={params.dataset} onValueChange={(value) => updateParam("dataset", value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="tribes">Tribal Networks</SelectItem>
-                  <SelectItem value="natives">Native Communities</SelectItem>
-                  <SelectItem value="statues">Sacred Sculptures</SelectItem>
-                  <SelectItem value="heads">Portrait Mosaics</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Cultural Theme</Label>
+              <Label>Environment</Label>
               <Select value={params.scenario} onValueChange={(value) => updateParam("scenario", value)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pure">Pure Cultural</SelectItem>
-                  <SelectItem value="cosmic">Cosmic Heritage</SelectItem>
-                  <SelectItem value="forest">Forest Wisdom</SelectItem>
-                  <SelectItem value="crystalline">Crystal Traditions</SelectItem>
+                  <SelectItem value="landscape">Natural Landscape</SelectItem>
+                  <SelectItem value="architectural">Village Architecture</SelectItem>
+                  <SelectItem value="ceremonial">Ceremonial Grounds</SelectItem>
+                  <SelectItem value="seasonal">Seasonal Activities</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-          </div>
 
-          {/* Color Scheme */}
-          <div className="space-y-2">
-            <Label>Color Palette</Label>
-            <Select value={params.colorScheme} onValueChange={(value) => updateParam("colorScheme", value)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="forest">Forest Earth</SelectItem>
-                <SelectItem value="sunset">Sunset Warmth</SelectItem>
-                <SelectItem value="ember">Sacred Fire</SelectItem>
-                <SelectItem value="vintage">Ancient Tones</SelectItem>
-                <SelectItem value="lunar">Moonlight Silver</SelectItem>
-                <SelectItem value="aurora">Spirit Lights</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <Label>Color Palette</Label>
+              <Select value={params.colorScheme} onValueChange={(value) => updateParam("colorScheme", value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sunset">Warm Sunset</SelectItem>
+                  <SelectItem value="earth">Earth Tones</SelectItem>
+                  <SelectItem value="forest">Forest Greens</SelectItem>
+                  <SelectItem value="desert">Desert Sands</SelectItem>
+                  <SelectItem value="ocean">Ocean Blues</SelectItem>
+                  <SelectItem value="fire">Fire & Ember</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Numerical Parameters */}
@@ -215,23 +217,23 @@ export function TribesDemo() {
             </div>
 
             <div className="space-y-2">
-              <Label>Community Size: {params.numSamples.toLocaleString()}</Label>
+              <Label>Cultural Elements: {params.numSamples.toLocaleString()}</Label>
               <Slider
                 value={[params.numSamples]}
                 onValueChange={([value]) => updateParam("numSamples", value)}
-                min={1000}
-                max={6000}
+                min={500}
+                max={5000}
                 step={100}
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Cultural Variation: {params.noiseScale}</Label>
+              <Label>Artistic Variation: {params.noiseScale}</Label>
               <Slider
                 value={[params.noiseScale]}
                 onValueChange={([value]) => updateParam("noiseScale", value)}
                 min={0}
-                max={0.15}
+                max={0.3}
                 step={0.01}
               />
             </div>
@@ -247,7 +249,7 @@ export function TribesDemo() {
             ) : (
               <>
                 <Users className="w-4 h-4 mr-2" />
-                Generate Cultural Art
+                Generate Cultural Artwork
               </>
             )}
           </Button>
@@ -258,14 +260,14 @@ export function TribesDemo() {
       <Card>
         <CardHeader>
           <CardTitle>Generated Cultural Art</CardTitle>
-          <CardDescription>Your AI-generated cultural-themed artwork</CardDescription>
+          <CardDescription>Your cultural-themed artwork will appear here once generated</CardDescription>
         </CardHeader>
         <CardContent>
           {isGenerating && (
             <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
               <div className="text-center">
                 <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">Creating cultural art...</p>
+                <p className="text-sm text-muted-foreground">Creating your cultural masterpiece...</p>
               </div>
             </div>
           )}
@@ -282,29 +284,24 @@ export function TribesDemo() {
                   unoptimized
                 />
               </div>
-              <div className="space-y-2">
-                <Badge variant="secondary">Cultural Art</Badge>
-                <p className="text-sm text-muted-foreground">
-                  Generated with {params.numSamples.toLocaleString()} cultural elements using {params.dataset} patterns
-                </p>
-              </div>
+
+              {generationDetails && (
+                <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="secondary">{generationDetails.provider}</Badge>
+                    <Badge variant="secondary">{generationDetails.model}</Badge>
+                    <Badge variant="secondary">{generationDetails.estimatedFileSize}</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Generated with {params.numSamples.toLocaleString()} cultural elements using {params.dataset} theme
+                  </p>
+                </div>
+              )}
+
               <Button onClick={downloadImage} className="w-full">
                 <Download className="w-4 h-4 mr-2" />
-                Download Cultural Artwork
+                Download Cultural Art
               </Button>
-            </div>
-          )}
-
-          {generationDetails && (
-            <div className="mt-4 space-y-2">
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">{generationDetails.provider}</Badge>
-                <Badge variant="secondary">{generationDetails.model}</Badge>
-                <Badge variant="secondary">{generationDetails.estimatedFileSize}</Badge>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Cultural prompt length: {generationDetails.promptLength} characters
-              </p>
             </div>
           )}
 
@@ -312,7 +309,7 @@ export function TribesDemo() {
             <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
               <div className="text-center">
                 <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">Configure your settings and generate cultural art</p>
+                <p className="text-sm text-muted-foreground">Click "Generate Cultural Artwork" to create your art</p>
               </div>
             </div>
           )}
