@@ -211,9 +211,20 @@ export async function POST(request: NextRequest) {
         "projection =",
         projectionType || "fisheye",
       )
+
+      // Special logging for fisheye TUNNEL UP
+      if ((projectionType || "fisheye") === "fisheye") {
+        console.log("🐟 FISHEYE TUNNEL UP: Generating circular fisheye format with upward tunnel perspective")
+        console.log("🐟 TUNNEL UP requirements: Circular frame, radial distortion, center-focused composition")
+      }
+
       domeImageUrl = await callOpenAI(domePrompt)
       generationDetails.domeImage = `Generated successfully with ${projectionType || "fisheye"} effect`
       console.log(`✅ ${domeDiameter || 20}m dome ${projectionType || "fisheye"} projection generated successfully`)
+
+      if ((projectionType || "fisheye") === "fisheye") {
+        console.log("🐟 FISHEYE TUNNEL UP dome generation completed - should show circular fisheye format")
+      }
     } catch (error: any) {
       console.error(`❌ ${domeDiameter || 20}m dome projection generation failed:`, error.message)
       domeImageUrl = mainImageUrl // Use main image as fallback

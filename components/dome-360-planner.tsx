@@ -168,14 +168,14 @@ export function Dome360Planner() {
       console.log("🐟 Starting FISHEYE TUNNEL UP projection test:", params)
       console.log("🏛️ Dome projection type:", params.projectionType)
 
-      // Force fisheye projection for this test
+      // Force fisheye projection for this test with enhanced TUNNEL UP requirements
       const fisheyeTestParams = {
         ...params,
         dataset: "spirals", // Use spirals for COSMOS patterns
         scenario: "cosmic", // Force cosmic scenario
         colorScheme: "cosmic", // Force cosmic colors
         customPrompt:
-          "COSMOS mathematical spiral galaxies with stellar formations, cosmic fractals, and celestial mathematical structures creating infinite cosmic beauty through algorithmic precision and geometric harmony, perfect for fisheye dome projection with dramatic upward tunnel perspective",
+          "COSMOS mathematical spiral galaxies with stellar formations, cosmic fractals, and celestial mathematical structures creating infinite cosmic beauty through algorithmic precision and geometric harmony, perfect for fisheye dome projection with dramatic upward tunnel perspective, content flowing toward center point in concentric circles, radial symmetry with zenith focus",
         domeDiameter: 20, // Force 20m diameter
         domeResolution: "8K", // Force highest resolution
         panoramaResolution: "16K", // Force highest resolution
@@ -186,6 +186,7 @@ export function Dome360Planner() {
 
       console.log("🐟 FISHEYE TUNNEL UP Test Configuration:", fisheyeTestParams)
       console.log("🏛️ Final projection type being sent:", fisheyeTestParams.projectionType)
+      console.log("🐟 TUNNEL UP format: Circular fisheye with radial distortion and center focus")
 
       // Use the correct API endpoint
       const response = await fetch("/api/generate-ai-art", {
@@ -224,7 +225,7 @@ export function Dome360Planner() {
 
         toast({
           title: "FISHEYE TUNNEL UP Generated Successfully!",
-          description: `Created ${versions.length} version${versions.length > 1 ? "s" : ""}: ${versions.join(", ")}`,
+          description: `Created ${versions.length} version${versions.length > 1 ? "s" : ""}: ${versions.join(", ")} - Dome should show circular fisheye format`,
         })
 
         // Log FISHEYE dome-specific test results
@@ -237,6 +238,7 @@ export function Dome360Planner() {
         console.log("- Projection type:", result.parameters?.projectionType || "Unknown")
         console.log("- Generation details:", result.generationDetails)
         console.log("- Prompt length:", result.promptLength || "Unknown")
+        console.log("🐟 TUNNEL UP format check: Dome image should be circular fisheye with center focus")
         console.log("- Custom prompt used:", fisheyeTestParams.customPrompt.substring(0, 100) + "...")
       } else {
         throw new Error(result.error || "Failed to generate FISHEYE TUNNEL UP image")
@@ -597,7 +599,8 @@ export function Dome360Planner() {
                 <div className="p-2 bg-blue-50 rounded text-xs text-blue-700">
                   {params.projectionType === "fisheye" && (
                     <span className="font-medium">
-                      🐟 Dramatic upward tunnel effect for immersive dome viewing with radial distortion
+                      🐟 TUNNEL UP fisheye: Circular format with dramatic upward tunnel effect, content flows toward
+                      center point creating immersive dome ceiling viewing experience
                     </span>
                   )}
                   {params.projectionType === "equidistant" && (

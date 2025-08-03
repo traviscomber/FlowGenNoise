@@ -111,27 +111,38 @@ export function generateDomePrompt(
 ): string {
   console.log(`🏛️ Generating dome prompt with projection type: ${projectionType}`)
 
-  // Define projection-specific transformations with enhanced effects
+  // Define projection-specific transformations with enhanced TUNNEL UP effects
   const projectionSpecs: Record<string, string> = {
     fisheye:
-      "FISHEYE LENS DISTORTION creating dramatic immersive upward-looking TUNNEL UP view perfect for dome ceiling display, spherical mapping with zenith focus point creating powerful tunnel-like perspective effect, radial symmetry expanding outward from center with enhanced peripheral detail, dramatic upward perspective distortion specifically designed for planetarium dome ceiling projection with TUNNEL UP illusion, enhanced radial composition for immersive overhead viewing experience where viewers look up through a cosmic tunnel toward the dome ceiling",
+      "FISHEYE LENS DISTORTION with dramatic immersive upward-looking TUNNEL UP view specifically designed for dome ceiling display, spherical fisheye mapping with zenith focus point creating powerful tunnel-like perspective effect where all content appears to flow upward toward the center creating an illusion of looking up through a cosmic tunnel, radial symmetry expanding outward from center with enhanced peripheral detail and dramatic circular fisheye distortion, TUNNEL UP perspective distortion specifically calibrated for planetarium dome ceiling projection where viewers look up and see content flowing toward the dome center like a tunnel effect, enhanced radial composition for immersive overhead viewing experience, circular fisheye format with 180-degree field of view compressed into circular frame, content arranged in concentric circles flowing toward center point",
     equidistant:
-      "equidistant projection mapping with uniform angular distribution across dome surface, linear relationship between angle and radius for accurate dome projection, precise angular measurements for planetarium systems",
+      "equidistant projection mapping with uniform angular distribution across dome surface, linear relationship between angle and radius for accurate dome projection, precise angular measurements for planetarium systems, content distributed evenly across dome hemisphere",
     stereographic:
-      "stereographic projection with conformal mapping preserving angles and shapes, enhanced peripheral detail with smooth distortion gradients, optimal for dome edge clarity",
+      "stereographic projection with conformal mapping preserving angles and shapes, enhanced peripheral detail with smooth distortion gradients, optimal for dome edge clarity, content maintains proportional relationships across dome surface",
     orthographic:
-      "orthographic projection with parallel ray mapping, maintaining true proportions across dome surface, ideal for architectural dome displays",
+      "orthographic projection with parallel ray mapping, maintaining true proportions across dome surface, ideal for architectural dome displays, content appears as if viewed from infinite distance",
     azimuthal:
-      "azimuthal projection with radial symmetry from dome center, equal-area mapping for consistent brightness across dome surface, optimized for fulldome cinema",
+      "azimuthal projection with radial symmetry from dome center, equal-area mapping for consistent brightness across dome surface, optimized for fulldome cinema, content distributed with equal area preservation",
   }
 
   const projectionSpec = projectionSpecs[projectionType] || projectionSpecs.fisheye
 
-  // Enhanced dome prompt with projection-specific handling
-  const domePrompt = `${basePrompt}, PLANETARIUM DOME PROJECTION TRANSFORMATION: Convert this artwork into a ${diameter}m diameter planetarium dome projection using ${projectionType.toUpperCase()} PROJECTION TYPE with ${projectionSpec}, ${resolution} ultra-high resolution optimized for planetarium projection systems, immersive 180-degree field of view with dramatic perspective distortion, dome-optimized composition with seamless edge blending for overhead viewing, planetarium-grade visual quality meeting astronomical projection standards, fulldome cinema format creating sense of looking up through a cosmic tunnel toward the dome ceiling, ${projectionType} distortion specifically calibrated for ${diameter}m dome systems with enhanced perspective effect for immersive planetarium experience`
+  // Enhanced dome prompt with strong TUNNEL UP emphasis for fisheye
+  let domePrompt = `${basePrompt}, PLANETARIUM DOME PROJECTION TRANSFORMATION: Convert this artwork into a ${diameter}m diameter planetarium dome projection using ${projectionType.toUpperCase()} PROJECTION TYPE with ${projectionSpec}, ${resolution} ultra-high resolution optimized for planetarium projection systems`
+
+  // Add specific TUNNEL UP formatting for fisheye
+  if (projectionType === "fisheye") {
+    domePrompt += `, CRITICAL FISHEYE TUNNEL UP FORMAT REQUIREMENTS: circular fisheye image with all content flowing toward center point creating dramatic upward tunnel perspective, content arranged in concentric circles with strongest detail at center diminishing toward edges, 180-degree field of view compressed into perfect circle, dramatic radial distortion where straight lines curve toward center point, zenith-focused composition where viewers look up through cosmic tunnel toward dome ceiling, fisheye lens effect with barrel distortion creating immersive tunnel-up illusion, circular frame format with black corners outside the fisheye circle`
+  }
+
+  domePrompt += `, immersive 180-degree field of view with dramatic perspective distortion, dome-optimized composition with seamless edge blending for overhead viewing, planetarium-grade visual quality meeting astronomical projection standards, fulldome cinema format creating sense of looking up through a cosmic tunnel toward the dome ceiling, ${projectionType} distortion specifically calibrated for ${diameter}m dome systems with enhanced perspective effect for immersive planetarium experience`
 
   console.log(`🏛️ Generated dome prompt length: ${domePrompt.length} characters`)
   console.log(`🏛️ Projection type applied: ${projectionType}`)
+
+  if (projectionType === "fisheye") {
+    console.log(`🐟 FISHEYE TUNNEL UP format requirements added`)
+  }
 
   return domePrompt
 }
