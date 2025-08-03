@@ -214,8 +214,9 @@ export async function POST(request: NextRequest) {
 
       // Special logging for fisheye TUNNEL UP
       if ((projectionType || "fisheye") === "fisheye") {
-        console.log("🐟 FISHEYE TUNNEL UP: Generating circular fisheye format with upward tunnel perspective")
-        console.log("🐟 TUNNEL UP requirements: Circular frame, radial distortion, center-focused composition")
+        console.log("🐟 FISHEYE TUNNEL UP: Generating CIRCULAR fisheye format with upward tunnel perspective")
+        console.log("🐟 TUNNEL UP requirements: CIRCULAR frame, radial distortion, center-focused composition")
+        console.log("🐟 Expected result: Circular image with black corners and content flowing to center")
       }
 
       domeImageUrl = await callOpenAI(domePrompt)
@@ -223,7 +224,8 @@ export async function POST(request: NextRequest) {
       console.log(`✅ ${domeDiameter || 20}m dome ${projectionType || "fisheye"} projection generated successfully`)
 
       if ((projectionType || "fisheye") === "fisheye") {
-        console.log("🐟 FISHEYE TUNNEL UP dome generation completed - should show circular fisheye format")
+        console.log("🐟 FISHEYE TUNNEL UP dome generation completed - should show CIRCULAR fisheye format")
+        console.log("🐟 Verify: Image should be circular with black corners and tunnel effect")
       }
     } catch (error: any) {
       console.error(`❌ ${domeDiameter || 20}m dome projection generation failed:`, error.message)
@@ -250,9 +252,12 @@ export async function POST(request: NextRequest) {
         "perspective =",
         stereographicPerspective || "none",
       )
+      console.log("🌐 Expected result: Equirectangular format with 2:1 aspect ratio for VR")
+
       panoramaImageUrl = await callOpenAI(panoramaPrompt)
       generationDetails.panoramaImage = "Generated successfully"
       console.log("✅ 360° panorama generated successfully")
+      console.log("🌐 Verify: Image should be equirectangular (2:1 ratio) different from dome")
     } catch (error: any) {
       console.error("❌ 360° panorama generation failed:", error.message)
       panoramaImageUrl = mainImageUrl // Use main image as fallback

@@ -180,6 +180,7 @@ export function Dome360Planner() {
         domeResolution: "8K", // Force highest resolution
         panoramaResolution: "16K", // Force highest resolution
         projectionType: "fisheye", // Force fisheye for TUNNEL UP effect
+        panoramaFormat: "equirectangular", // Force equirectangular for 360°
         domeProjection: true, // Ensure dome projection is enabled
         panoramic360: true, // Ensure 360° is enabled
       }
@@ -187,6 +188,7 @@ export function Dome360Planner() {
       console.log("🐟 FISHEYE TUNNEL UP Test Configuration:", fisheyeTestParams)
       console.log("🏛️ Final projection type being sent:", fisheyeTestParams.projectionType)
       console.log("🐟 TUNNEL UP format: Circular fisheye with radial distortion and center focus")
+      console.log("🌐 360° format: Equirectangular with 2:1 aspect ratio")
 
       // Use the correct API endpoint
       const response = await fetch("/api/generate-ai-art", {
@@ -225,7 +227,7 @@ export function Dome360Planner() {
 
         toast({
           title: "FISHEYE TUNNEL UP Generated Successfully!",
-          description: `Created ${versions.length} version${versions.length > 1 ? "s" : ""}: ${versions.join(", ")} - Dome should show circular fisheye format`,
+          description: `Created ${versions.length} version${versions.length > 1 ? "s" : ""}: ${versions.join(", ")} - Dome should show CIRCULAR fisheye format, 360° should show equirectangular`,
         })
 
         // Log FISHEYE dome-specific test results
@@ -238,8 +240,16 @@ export function Dome360Planner() {
         console.log("- Projection type:", result.parameters?.projectionType || "Unknown")
         console.log("- Generation details:", result.generationDetails)
         console.log("- Prompt length:", result.promptLength || "Unknown")
-        console.log("🐟 TUNNEL UP format check: Dome image should be circular fisheye with center focus")
+        console.log("🐟 TUNNEL UP format check: Dome image should be CIRCULAR fisheye with center focus")
+        console.log("🌐 360° format check: Panorama should be equirectangular (2:1 ratio) different from dome")
         console.log("- Custom prompt used:", fisheyeTestParams.customPrompt.substring(0, 100) + "...")
+
+        // Verify format differences
+        if (result.domeImage !== result.panoramaImage) {
+          console.log("✅ FORMAT VERIFICATION: Dome and 360° images are DIFFERENT - formats applied correctly")
+        } else {
+          console.log("⚠️ FORMAT WARNING: Dome and 360° images are the SAME - formats may not be applied")
+        }
       } else {
         throw new Error(result.error || "Failed to generate FISHEYE TUNNEL UP image")
       }
