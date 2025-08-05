@@ -1957,7 +1957,5 @@ export function FlowArtGenerator() {
       </div>
     </div>
   </div>
-)
+  )
 }
-
-export default FlowArtGenerator
