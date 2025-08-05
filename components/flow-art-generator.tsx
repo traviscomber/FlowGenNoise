@@ -167,6 +167,7 @@ export function FlowArtGenerator() {
       natives: "Ancient Native Tribes",
       statues: "Sacred & Sculptural Statues",
       "8bit": "8bit Pixel Art Generation",
+      escher: "M.C. Escher Mathematical Art",
     }
     return names[dataset] || dataset
   }
@@ -479,6 +480,99 @@ export function FlowArtGenerator() {
           value: "neon-labyrinth",
           label: "🌟 Neon Labyrinth Maze",
           description: "Impossible 8bit maze structures with glowing pathways and digital minotaur guardians",
+        },
+      ],
+      escher: [
+        { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty with Escher precision" },
+        {
+          value: "impossible-objects",
+          label: "🔄 Impossible Objects",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-inspired impossible geometric constructions defying three-dimensional logic, Penrose triangles with each corner appearing normal but the whole structure geometrically impossible, impossible cubes with contradictory perspective lines creating visual paradoxes, endless staircases that ascend and descend simultaneously in perpetual loops, architectural impossibilities with gravity-defying structures where up becomes down, mathematical precision in every line and angle despite logical impossibility, black and white lithographic style with meticulous cross-hatching and stippling techniques, geometric perfection meeting visual illusion, impossible waterfalls flowing upward in endless cycles, architectural elements that connect in ways that shouldn't exist in three-dimensional space, mathematical beauty emerging from logical contradictions, precise draftsmanship creating believable impossibilities, optical illusions that challenge perception and spatial reasoning, hyperrealistic technical drawing style with mathematical precision, 8K detail showing every carefully constructed impossible angle and perspective",
+        },
+        {
+          value: "tessellations",
+          label: "🔲 Mathematical Tessellations",
+          description:
+            "GODLEVEL PROMPT: Infinite mathematical tessellation patterns in the style of M.C. Escher, interlocking geometric shapes that tile perfectly across infinite planes, mathematical precision in every repeating unit, birds transforming into fish in seamless metamorphosis across the tessellated surface, lizards and salamanders interlocking in perfect geometric harmony, angels and demons in eternal balance creating perfect tessellation, mathematical symmetry operations including rotation, reflection, and translation, hyperbolic tessellations curving through non-Euclidean space, regular and semi-regular polygonal tilings with mathematical perfection, Islamic geometric patterns meeting Dutch mathematical precision, crystallographic symmetry groups visualized as living tessellations, mathematical beauty in repeating patterns that extend to infinity, precise geometric construction with compass and straightedge accuracy, black and white contrast emphasizing mathematical structure, organic forms constrained by rigid mathematical rules, hyperrealistic technical precision showing every geometric relationship, 8K resolution revealing mathematical perfection in every tessellated unit",
+        },
+        {
+          value: "metamorphosis",
+          label: "🦋 Metamorphosis Sequences",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-style mathematical metamorphosis sequences showing gradual transformation between different forms, geometric squares gradually morphing into flying birds through precise mathematical steps, architectural elements transforming into natural forms with mathematical precision, tessellated patterns evolving from abstract geometry to recognizable creatures, mathematical continuity maintained throughout the transformation process, each stage of metamorphosis following strict geometric rules, precise draftsmanship showing every intermediate form in the transformation, black and white lithographic technique with meticulous detail, mathematical beauty in the gradual change from one form to another, geometric precision meeting organic transformation, visual mathematics demonstrating topological transformations, seamless transitions that maintain mathematical relationships, architectural geometry becoming living creatures through mathematical metamorphosis, precise construction showing how mathematical forms can transform while maintaining structural integrity, hyperrealistic technical drawing with mathematical accuracy, 8K detail revealing every step of the mathematical transformation process",
+        },
+        {
+          value: "relativity",
+          label: "🌀 Relativity & Perspective",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher's 'Relativity' concept with multiple gravitational orientations and conflicting perspectives, architectural spaces where different gravity directions coexist simultaneously, staircases leading in all directions with figures walking on walls and ceilings, mathematical precision in perspective construction despite impossible spatial relationships, three different gravitational fields intersecting in one architectural space, figures oriented in different directions each following their own gravitational logic, precise architectural drawing with mathematical perspective accuracy, impossible spatial relationships that appear logical from each individual viewpoint, mathematical beauty in conflicting perspective systems, geometric precision in architectural elements despite spatial impossibility, lithographic black and white style with meticulous cross-hatching, mathematical exploration of relative perspective and spatial orientation, architectural impossibilities constructed with mathematical precision, visual representation of Einstein's relativity concepts through architectural geometry, hyperrealistic technical drawing showing impossible but mathematically consistent perspectives, 8K resolution revealing every precisely constructed architectural detail and perspective line",
+        },
+        {
+          value: "infinity",
+          label: "♾️ Mathematical Infinity",
+          description:
+            "GODLEVEL PROMPT: Visual representations of mathematical infinity in M.C. Escher style, infinite regression of geometric forms disappearing into mathematical vanishing points, circular limit patterns with hyperbolic geometry approaching infinite boundaries, mathematical sequences that continue forever with precise geometric progression, infinite tessellations extending beyond the visible frame, mathematical beauty in endless repetition and recursive patterns, precise geometric construction showing infinite series and mathematical limits, black and white contrast emphasizing infinite depth and mathematical structure, geometric forms becoming infinitely small while maintaining mathematical precision, visual mathematics demonstrating concepts of limits and infinite series, architectural spaces that extend infinitely inward and outward simultaneously, mathematical precision in every element despite infinite scale, lithographic technique with meticulous detail at every scale of infinity, geometric patterns that suggest infinite continuation beyond the visible boundaries, mathematical beauty in the concept of boundless geometric space, hyperrealistic technical precision showing infinite mathematical relationships, 8K detail revealing mathematical infinity through precise geometric construction",
+        },
+        {
+          value: "reflection",
+          label: "🪞 Reflection & Symmetry",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-inspired mathematical symmetry and reflection studies, perfect mirror symmetries with mathematical precision, crystallographic symmetry operations visualized through geometric art, reflective spheres showing impossible architectural spaces with mathematical accuracy, mathematical beauty in bilateral and rotational symmetry, precise geometric construction of symmetrical patterns and reflective surfaces, black and white lithographic style emphasizing symmetrical relationships, mathematical mirror operations creating perfect geometric balance, architectural reflections that reveal hidden mathematical relationships, spherical reflections showing entire rooms and impossible spaces, mathematical precision in every symmetrical element and reflective surface, geometric patterns that demonstrate mathematical symmetry groups, precise draftsmanship showing perfect mathematical reflections and symmetries, visual mathematics exploring symmetry operations and group theory, crystallographic precision in symmetrical geometric constructions, hyperrealistic technical drawing with mathematical accuracy in every reflection, 8K resolution showing perfect mathematical symmetry and precise reflective geometry",
+        },
+        {
+          value: "optical-illusions",
+          label: "👁️ Optical Mathematical Illusions",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-style optical illusions based on mathematical geometric constructions, visual paradoxes that challenge mathematical perception and spatial reasoning, geometric constructions that appear to change depending on viewing perspective, mathematical precision in creating visual ambiguity and perceptual confusion, impossible geometric relationships that seem logical until examined closely, precise draftsmanship creating believable mathematical impossibilities, black and white contrast emphasizing optical illusion effects, mathematical beauty in visual paradoxes and perceptual tricks, geometric constructions that exploit mathematical properties of human vision, architectural illusions with precise mathematical perspective, visual mathematics demonstrating properties of perception and geometric interpretation, precise technical drawing creating mathematical optical effects, geometric patterns that shift and change through mathematical visual tricks, mathematical precision in every line despite perceptual impossibility, hyperrealistic technical accuracy in creating mathematical visual illusions, 8K detail showing precise geometric construction of mathematical optical paradoxes",
+        },
+        {
+          value: "hyperbolic",
+          label: "📐 Hyperbolic Geometric Patterns",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-inspired hyperbolic geometry visualizations with non-Euclidean mathematical precision, circular limit patterns showing infinite tessellations in hyperbolic space, mathematical beauty in curved geometric spaces that defy Euclidean logic, precise construction of hyperbolic tilings with mathematical accuracy, geometric patterns that curve and bend according to hyperbolic mathematical rules, non-Euclidean geometry visualized through precise artistic construction, mathematical precision in every curved line and hyperbolic angle, black and white lithographic style emphasizing hyperbolic geometric relationships, infinite patterns approaching circular boundaries with mathematical limits, geometric constructions that demonstrate properties of hyperbolic space, mathematical beauty in non-Euclidean geometric relationships, precise draftsmanship showing hyperbolic tessellations and curved geometric spaces, visual mathematics exploring alternative geometric systems, hyperbolic symmetries and mathematical transformations, hyperrealistic technical precision in non-Euclidean geometric construction, 8K resolution revealing mathematical accuracy in hyperbolic geometric patterns and curved space visualizations",
+        },
+        {
+          value: "crystallography",
+          label: "💎 Mathematical Crystallography",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-style mathematical crystallography with precise geometric crystal structures, crystallographic symmetry groups visualized through artistic geometric construction, mathematical beauty in crystal lattice patterns and atomic arrangements, precise geometric representation of crystalline structures with mathematical accuracy, three-dimensional crystal systems rendered with technical precision, mathematical symmetry operations in crystallographic space groups, geometric patterns based on real crystal structures and mathematical lattice theory, black and white lithographic style emphasizing crystallographic geometric relationships, mathematical precision in every crystal face and geometric angle, crystallographic art combining scientific accuracy with mathematical beauty, precise construction showing crystal growth patterns and geometric relationships, visual mathematics demonstrating crystallographic symmetry and geometric order, architectural crystals with impossible geometric properties, mathematical beauty in ordered crystalline structures, hyperrealistic technical drawing with crystallographic mathematical precision, 8K detail showing perfect geometric crystal structures and mathematical lattice patterns",
+        },
+        {
+          value: "topology",
+          label: "🔗 Topological Mathematics",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-inspired topological mathematics with precise geometric visualization of topological concepts, mathematical surfaces that twist and connect in impossible ways, topological transformations showing mathematical continuity and geometric relationships, precise construction of mathematical surfaces like Klein bottles and topological spaces, mathematical beauty in surfaces that have no inside or outside, geometric visualization of topological invariants and mathematical properties, black and white lithographic precision emphasizing topological geometric relationships, mathematical accuracy in representing complex topological surfaces, architectural spaces with topological impossibilities and mathematical precision, visual mathematics demonstrating topological concepts through geometric art, precise draftsmanship showing mathematical surfaces and topological transformations, geometric constructions that explore mathematical topology and surface theory, mathematical precision in every topological relationship and geometric connection, topological art combining mathematical accuracy with visual beauty, hyperrealistic technical precision in topological geometric construction, 8K resolution showing mathematical topology through precise geometric visualization",
+        },
+        {
+          value: "mobius",
+          label: "🎀 Möbius Strip Mathematics",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-style Möbius strip mathematics with precise geometric construction of non-orientable surfaces, mathematical beauty in surfaces with only one side and one edge, geometric precision in constructing twisted mathematical surfaces, ants crawling along Möbius strips demonstrating mathematical properties of non-orientable surfaces, precise technical drawing showing mathematical properties of twisted geometric surfaces, mathematical accuracy in representing surfaces that challenge three-dimensional intuition, black and white lithographic style emphasizing mathematical geometric relationships, architectural Möbius strips with impossible geometric properties, mathematical precision in every twist and geometric connection, visual mathematics demonstrating topological properties through artistic construction, precise draftsmanship showing mathematical surfaces that defy geometric intuition, geometric constructions exploring mathematical properties of twisted surfaces, mathematical beauty in non-orientable geometric forms, topological art with mathematical precision and geometric accuracy, hyperrealistic technical drawing of mathematical Möbius surfaces, 8K detail showing precise geometric construction of mathematically impossible surfaces",
+        },
+        {
+          value: "knot-theory",
+          label: "🪢 Mathematical Knot Theory",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-inspired mathematical knot theory with precise geometric visualization of topological knots, mathematical beauty in knotted geometric structures and topological relationships, precise construction of mathematical knots with geometric accuracy, three-dimensional knot structures rendered with technical precision, mathematical knot invariants visualized through geometric art, topological knot theory demonstrated through precise artistic construction, black and white lithographic style emphasizing mathematical knot relationships, geometric precision in every knot crossing and mathematical connection, architectural knots with impossible geometric properties, mathematical accuracy in representing complex knotted structures, visual mathematics exploring knot theory through geometric construction, precise draftsmanship showing mathematical knots and topological relationships, geometric constructions that demonstrate mathematical properties of knotted surfaces, mathematical beauty in complex knotted geometric forms, topological art combining knot theory with geometric precision, hyperrealistic technical drawing with mathematical knot accuracy, 8K resolution showing precise geometric construction of mathematical knot structures",
+        },
+        {
+          value: "fractals",
+          label: "🌀 Fractal Escher Patterns",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-style fractal patterns with mathematical precision and infinite geometric detail, self-similar geometric structures with mathematical fractal properties, precise construction of fractal tessellations and recursive geometric patterns, mathematical beauty in infinitely detailed geometric structures, fractal geometry combined with Escher's precise artistic technique, black and white lithographic style emphasizing fractal mathematical relationships, geometric precision in every fractal iteration and mathematical detail, architectural fractals with impossible geometric properties, mathematical accuracy in representing self-similar geometric structures, visual mathematics demonstrating fractal geometry through artistic construction, precise draftsmanship showing mathematical fractals and recursive patterns, geometric constructions exploring mathematical properties of self-similar structures, mathematical beauty in infinitely complex geometric forms, fractal art with mathematical precision and geometric accuracy, hyperrealistic technical drawing of mathematical fractal structures, 8K resolution showing infinite geometric detail in mathematically precise fractal patterns",
+        },
+        {
+          value: "paradoxes",
+          label: "⚡ Geometric Mathematical Paradoxes",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-inspired geometric mathematical paradoxes with precise construction of logically impossible structures, visual paradoxes that challenge mathematical reasoning and geometric intuition, mathematical precision in creating geometric contradictions and logical impossibilities, precise technical drawing of paradoxical geometric constructions, mathematical beauty in structures that appear logical but contain geometric contradictions, black and white lithographic style emphasizing paradoxical mathematical relationships, geometric constructions that exploit mathematical properties to create visual paradoxes, architectural paradoxes with precise mathematical construction, mathematical accuracy in representing impossible geometric relationships, visual mathematics demonstrating logical paradoxes through geometric art, precise draftsmanship showing mathematical paradoxes and geometric contradictions, geometric constructions that challenge mathematical intuition and spatial reasoning, mathematical beauty in logically impossible geometric forms, paradoxical art combining mathematical precision with logical impossibility, hyperrealistic technical drawing with mathematical accuracy despite logical contradiction, 8K resolution showing precise geometric construction of mathematical paradoxes",
+        },
+        {
+          value: "architecture",
+          label: "🏛️ Mathematical Architecture",
+          description:
+            "GODLEVEL PROMPT: M.C. Escher-inspired mathematical architecture with precise geometric construction and architectural impossibilities, architectural spaces that follow mathematical rules while defying physical possibility, mathematical precision in architectural elements and structural geometry, precise technical drawing of impossible architectural constructions, mathematical beauty in architectural forms that challenge spatial intuition, geometric accuracy in architectural details despite structural impossibility, black and white lithographic style emphasizing architectural mathematical relationships, architectural geometry with precise mathematical construction, mathematical accuracy in representing impossible architectural spaces, visual mathematics demonstrating architectural geometry through artistic construction, precise draftsmanship showing mathematical architecture and geometric structures, architectural constructions exploring mathematical properties of space and structure, mathematical beauty in architecturally impossible geometric forms, architectural art combining mathematical precision with structural impossibility, hyperrealistic technical drawing with architectural mathematical accuracy, 8K resolution showing precise geometric construction of mathematically impossible architecture",
         },
       ],
       horror: [
@@ -955,831 +1049,834 @@ export function FlowArtGenerator() {
   }, [])
 
   return (
-  <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
-    <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="flex items-center justify-center gap-3">
-          <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
-            <Sparkles className="h-8 w-8 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-3">
+            <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+              <Sparkles className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              FlowSketch Art Generator
+            </h1>
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            FlowSketch Art Generator
-          </h1>
+          <p className="text-slate-300 text-lg max-w-2xl mx-auto">
+            Generate stunning mathematical visualizations and AI-powered artwork with advanced projection support for
+            domes and 360° environments. Now featuring GODLEVEL Indonesian tribal heritage prompts and M.C. Escher
+            mathematical art! 🇮🇩✨
+          </p>
         </div>
-        <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-          Generate stunning mathematical visualizations and AI-powered artwork with advanced projection support for
-          domes and 360° environments. Now featuring GODLEVEL Indonesian tribal heritage prompts! 🇮🇩✨
-        </p>
-      </div>
 
-      {/* Dataset Showcase Banner */}
-      <Card className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-purple-500/50">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <h3 className="text-xl font-bold text-purple-100 flex items-center gap-2">
-                ✨ {getDatasetDisplayName(dataset)} Showcase
-              </h3>
-              <p className="text-purple-200 text-sm">
-                Experience the full potential of {getDatasetDisplayName(dataset)} with{" "}
-                {getDatasetScenarios(dataset).length} unique GODLEVEL scenarios automatically generated
-              </p>
+        {/* Dataset Showcase Banner */}
+        <Card className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 border-purple-500/50">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold text-purple-100 flex items-center gap-2">
+                  ✨ {getDatasetDisplayName(dataset)} Showcase
+                </h3>
+                <p className="text-purple-200 text-sm">
+                  Experience the full potential of {getDatasetDisplayName(dataset)} with{" "}
+                  {getDatasetScenarios(dataset).length} unique GODLEVEL scenarios automatically generated
+                </p>
+              </div>
+              <Button
+                onClick={generateShowcase}
+                disabled={isAutoGenerating || isGenerating}
+                className="bg-purple-600 hover:bg-purple-700 text-white"
+              >
+                {isAutoGenerating ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Generating Showcase...
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-4 w-4 mr-2" />
+                    Generate {getDatasetScenarios(dataset).length}-Piece Showcase
+                  </>
+                )}
+              </Button>
             </div>
-            <Button
-              onClick={generateShowcase}
-              disabled={isAutoGenerating || isGenerating}
-              className="bg-purple-600 hover:bg-purple-700 text-white"
-            >
-              {isAutoGenerating ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Generating Showcase...
-                </>
-              ) : (
-                <>
-                  <Play className="h-4 w-4 mr-2" />
-                  Generate {getDatasetScenarios(dataset).length}-Piece Showcase
-                </>
-              )}
-            </Button>
-          </div>
-          {isAutoGenerating && (
-            <div className="mt-4 space-y-2">
-              <Progress value={autoGenProgress} className="w-full" />
-              <p className="text-xs text-purple-300 text-center">
-                {autoGenProgress.toFixed(0)}% complete - Creating {getDatasetScenarios(dataset).length} unique
-                GODLEVEL artworks
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            {isAutoGenerating && (
+              <div className="mt-4 space-y-2">
+                <Progress value={autoGenProgress} className="w-full" />
+                <p className="text-xs text-purple-300 text-center">
+                  {autoGenProgress.toFixed(0)}% complete - Creating {getDatasetScenarios(dataset).length} unique
+                  GODLEVEL artworks
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-      <Tabs defaultValue="generate" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 bg-slate-800 border-slate-700">
-          <TabsTrigger value="generate" className="data-[state=active]:bg-purple-600">
-            <Calculator className="h-4 w-4 mr-2" />
-            Generate Art
-          </TabsTrigger>
-          <TabsTrigger value="gallery" className="data-[state=active]:bg-purple-600">
-            <ImageIcon className="h-4 w-4 mr-2" />
-            Gallery ({gallery.length})
-          </TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="generate" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 bg-slate-800 border-slate-700">
+            <TabsTrigger value="generate" className="data-[state=active]:bg-purple-600">
+              <Calculator className="h-4 w-4 mr-2" />
+              Generate Art
+            </TabsTrigger>
+            <TabsTrigger value="gallery" className="data-[state=active]:bg-purple-600">
+              <ImageIcon className="h-4 w-4 mr-2" />
+              Gallery ({gallery.length})
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="generate" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Controls */}
-            <div className="lg:col-span-1 space-y-6">
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-slate-100">
-                    <Settings className="h-5 w-5" />
-                    Generation Settings
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Mode Selection */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-slate-300">Generation Mode</Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        variant={mode === "svg" ? "default" : "outline"}
-                        onClick={() => setMode("svg")}
-                        className={mode === "svg" ? "bg-purple-600 hover:bg-purple-700" : "border-slate-600"}
-                      >
-                        <Calculator className="h-4 w-4 mr-2" />
-                        Mathematical SVG
-                      </Button>
-                      <Button
-                        variant={mode === "ai" ? "default" : "outline"}
-                        onClick={() => setMode("ai")}
-                        className={mode === "ai" ? "bg-purple-600 hover:bg-purple-700" : "border-slate-600"}
-                      >
-                        <Sparkles className="h-4 w-4 mr-2" />
-                        AI Art
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Dataset Selection */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-slate-300">Mathematical Dataset</Label>
-                    <Select value={dataset} onValueChange={setDataset}>
-                      <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-slate-700 border-slate-600">
-                        <SelectItem value="indonesian">🇮🇩 Indonesian Tribal Heritage (GODLEVEL)</SelectItem>
-                        <SelectItem value="nuanu">🏗️ Nuanu Creative City</SelectItem>
-                        <SelectItem value="bali">🏝️ Balinese Cultural Heritage</SelectItem>
-                        <SelectItem value="thailand">🇹🇭 Thai Cultural Heritage</SelectItem>
-                        <SelectItem value="horror">👻 Indonesian Horror Creatures</SelectItem>
-                        <SelectItem value="spirals">🌀 Fibonacci Spirals</SelectItem>
-                        <SelectItem value="fractal">🌿 Fractal Trees</SelectItem>
-                        <SelectItem value="mandelbrot">🎭 Mandelbrot Set</SelectItem>
-                        <SelectItem value="julia">🔮 Julia Set</SelectItem>
-                        <SelectItem value="lorenz">🌪️ Lorenz Attractor</SelectItem>
-                        <SelectItem value="hyperbolic">📐 Hyperbolic Geometry</SelectItem>
-                        <SelectItem value="gaussian">📊 Gaussian Fields</SelectItem>
-                        <SelectItem value="cellular">🔲 Cellular Automata</SelectItem>
-                        <SelectItem value="voronoi">🕸️ Voronoi Diagrams</SelectItem>
-                        <SelectItem value="perlin">🌊 Perlin Noise</SelectItem>
-                        <SelectItem value="diffusion">⚗️ Reaction-Diffusion</SelectItem>
-                        <SelectItem value="wave">〰️ Wave Interference</SelectItem>
-                        <SelectItem value="moons">🌙 Lunar Orbital Mechanics</SelectItem>
-                        <SelectItem value="tribes">🏘️ Tribal Network Topology</SelectItem>
-                        <SelectItem value="heads">👥 Mosaic Head Compositions</SelectItem>
-                        <SelectItem value="natives">🏕️ Ancient Native Tribes</SelectItem>
-                        <SelectItem value="statues">🗿 Sacred & Sculptural Statues</SelectItem>
-                        <SelectItem value="8bit">🎮 8bit Pixel Art Generation</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Dataset Info */}
-                  <div className="bg-slate-900 p-3 rounded-lg border border-slate-600">
-                    <h4 className="text-sm font-medium text-slate-300 flex items-center gap-2 mb-2">
-                      <Users className="h-4 w-4" />
-                      {getDatasetDisplayName(dataset)} Active
-                    </h4>
-                    <p className="text-xs text-slate-400">
-                      This dataset includes {getDatasetScenarios(dataset).length} unique GODLEVEL scenarios for
-                      comprehensive artistic exploration with hyperrealistic detail.
-                    </p>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {getDatasetScenarios(dataset)
-                        .slice(0, 4)
-                        .map((scenario, index) => (
-                          <Badge key={index} variant="outline" className="text-xs border-slate-500 text-slate-400">
-                            {scenario.label}
-                          </Badge>
-                        ))}
-                      {getDatasetScenarios(dataset).length > 4 && (
-                        <Badge variant="outline" className="text-xs border-slate-500 text-slate-400">
-                          +{getDatasetScenarios(dataset).length - 4} more
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Scenario Selection */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-slate-300">Visual Scenario</Label>
-                    <Select value={scenario} onValueChange={setScenario}>
-                      <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-slate-700 border-slate-600">
-                        {getDatasetScenarios(dataset).map((scenarioOption) => (
-                          <SelectItem key={scenarioOption.value} value={scenarioOption.value}>
-                            {scenarioOption.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Color Scheme */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-slate-300">Color Palette</Label>
-                    <Select value={colorScheme} onValueChange={setColorScheme}>
-                      <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-slate-700 border-slate-600">
-                        <SelectItem value="plasma">🔥 Plasma</SelectItem>
-                        <SelectItem value="quantum">⚛️ Quantum</SelectItem>
-                        <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
-                        <SelectItem value="thermal">🌡️ Thermal</SelectItem>
-                        <SelectItem value="spectral">🌈 Spectral</SelectItem>
-                        <SelectItem value="crystalline">💎 Crystalline</SelectItem>
-                        <SelectItem value="bioluminescent">🦠 Bioluminescent</SelectItem>
-                        <SelectItem value="aurora">🌌 Aurora</SelectItem>
-                        <SelectItem value="metallic">⚙️ Metallic</SelectItem>
-                        <SelectItem value="prismatic">🔮 Prismatic</SelectItem>
-                        <SelectItem value="monochromatic">⚫ Monochromatic</SelectItem>
-                        <SelectItem value="infrared">🔴 Infrared</SelectItem>
-                        <SelectItem value="lava">🌋 Lava</SelectItem>
-                        <SelectItem value="futuristic">🚀 Futuristic</SelectItem>
-                        <SelectItem value="forest">🌲 Forest</SelectItem>
-                        <SelectItem value="ocean">🌊 Ocean</SelectItem>
-                        <SelectItem value="sunset">🌅 Sunset</SelectItem>
-                        <SelectItem value="arctic">❄️ Arctic</SelectItem>
-                        <SelectItem value="neon">💡 Neon</SelectItem>
-                        <SelectItem value="vintage">📻 Vintage</SelectItem>
-                        <SelectItem value="toxic">☢️ Toxic</SelectItem>
-                        <SelectItem value="ember">🔥 Ember</SelectItem>
-                        <SelectItem value="lunar">🌙 Lunar</SelectItem>
-                        <SelectItem value="tidal">🌊 Tidal</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Mathematical Parameters */}
-                  <div className="space-y-3 pt-3 border-t border-slate-600">
-                    <h4 className="text-sm font-medium text-slate-300">Mathematical Parameters</h4>
-
+          <TabsContent value="generate" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Controls */}
+              <div className="lg:col-span-1 space-y-6">
+                <Card className="bg-slate-800 border-slate-700">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-slate-100">
+                      <Settings className="h-5 w-5" />
+                      Generation Settings
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {/* Mode Selection */}
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-sm font-medium text-slate-300">Random Seed</Label>
+                      <Label className="text-sm font-medium text-slate-300">Generation Mode</Label>
+                      <div className="grid grid-cols-2 gap-2">
                         <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={randomizeSeed}
-                          className="h-6 px-2 text-xs border-slate-600 bg-transparent"
+                          variant={mode === "svg" ? "default" : "outline"}
+                          onClick={() => setMode("svg")}
+                          className={mode === "svg" ? "bg-purple-600 hover:bg-purple-700" : "border-slate-600"}
                         >
-                          <Dice1 className="h-3 w-3" />
+                          <Calculator className="h-4 w-4 mr-2" />
+                          Mathematical SVG
+                        </Button>
+                        <Button
+                          variant={mode === "ai" ? "default" : "outline"}
+                          onClick={() => setMode("ai")}
+                          className={mode === "ai" ? "bg-purple-600 hover:bg-purple-700" : "border-slate-600"}
+                        >
+                          <Sparkles className="h-4 w-4 mr-2" />
+                          AI Art
                         </Button>
                       </div>
-                      <Input
-                        type="number"
-                        value={seed}
-                        onChange={(e) => setSeed(Number.parseInt(e.target.value) || 0)}
-                        className="bg-slate-700 border-slate-600 text-slate-100"
-                        min="0"
-                        max="9999"
-                      />
                     </div>
 
+                    {/* Dataset Selection */}
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium text-slate-300">
-                        Data Points: {numSamples.toLocaleString()}
-                      </Label>
-                      <Slider
-                        value={[numSamples]}
-                        onValueChange={(value) => setNumSamples(value[0])}
-                        min={100}
-                        max={10000}
-                        step={100}
-                        className="w-full"
-                      />
+                      <Label className="text-sm font-medium text-slate-300">Mathematical Dataset</Label>
+                      <Select value={dataset} onValueChange={setDataset}>
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-700 border-slate-600">
+                          <SelectItem value="indonesian">🇮🇩 Indonesian Tribal Heritage (GODLEVEL)</SelectItem>
+                          <SelectItem value="escher">🎨 M.C. Escher Mathematical Art</SelectItem>
+                          <SelectItem value="nuanu">🏗️ Nuanu Creative City</SelectItem>
+                          <SelectItem value="bali">🏝️ Balinese Cultural Heritage</SelectItem>
+                          <SelectItem value="thailand">🇹🇭 Thai Cultural Heritage</SelectItem>
+                          <SelectItem value="horror">👻 Indonesian Horror Creatures</SelectItem>
+                          <SelectItem value="spirals">🌀 Fibonacci Spirals</SelectItem>
+                          <SelectItem value="fractal">🌿 Fractal Trees</SelectItem>
+                          <SelectItem value="mandelbrot">🎭 Mandelbrot Set</SelectItem>
+                          <SelectItem value="julia">🔮 Julia Set</SelectItem>
+                          <SelectItem value="lorenz">🌪️ Lorenz Attractor</SelectItem>
+                          <SelectItem value="hyperbolic">📐 Hyperbolic Geometry</SelectItem>
+                          <SelectItem value="gaussian">📊 Gaussian Fields</SelectItem>
+                          <SelectItem value="cellular">🔲 Cellular Automata</SelectItem>
+                          <SelectItem value="voronoi">🕸️ Voronoi Diagrams</SelectItem>
+                          <SelectItem value="perlin">🌊 Perlin Noise</SelectItem>
+                          <SelectItem value="diffusion">⚗️ Reaction-Diffusion</SelectItem>
+                          <SelectItem value="wave">〰️ Wave Interference</SelectItem>
+                          <SelectItem value="moons">🌙 Lunar Orbital Mechanics</SelectItem>
+                          <SelectItem value="tribes">🏘️ Tribal Network Topology</SelectItem>
+                          <SelectItem value="heads">👥 Mosaic Head Compositions</SelectItem>
+                          <SelectItem value="natives">🏕️ Ancient Native Tribes</SelectItem>
+                          <SelectItem value="statues">🗿 Sacred & Sculptural Statues</SelectItem>
+                          <SelectItem value="8bit">🎮 8bit Pixel Art Generation</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
+                    {/* Dataset Info */}
+                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-600">
+                      <h4 className="text-sm font-medium text-slate-300 flex items-center gap-2 mb-2">
+                        <Users className="h-4 w-4" />
+                        {getDatasetDisplayName(dataset)} Active
+                      </h4>
+                      <p className="text-xs text-slate-400">
+                        This dataset includes {getDatasetScenarios(dataset).length} unique GODLEVEL scenarios for
+                        comprehensive artistic exploration with hyperrealistic detail.
+                      </p>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {getDatasetScenarios(dataset)
+                          .slice(0, 4)
+                          .map((scenario, index) => (
+                            <Badge key={index} variant="outline" className="text-xs border-slate-500 text-slate-400">
+                              {scenario.label}
+                            </Badge>
+                          ))}
+                        {getDatasetScenarios(dataset).length > 4 && (
+                          <Badge variant="outline" className="text-xs border-slate-500 text-slate-400">
+                            +{getDatasetScenarios(dataset).length - 4} more
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Scenario Selection */}
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium text-slate-300">Noise Scale: {noiseScale}</Label>
-                      <Slider
-                        value={[noiseScale]}
-                        onValueChange={(value) => setNoiseScale(value[0])}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        className="w-full"
-                      />
+                      <Label className="text-sm font-medium text-slate-300">Visual Scenario</Label>
+                      <Select value={scenario} onValueChange={setScenario}>
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-700 border-slate-600">
+                          {getDatasetScenarios(dataset).map((scenarioOption) => (
+                            <SelectItem key={scenarioOption.value} value={scenarioOption.value}>
+                              {scenarioOption.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
 
+                    {/* Color Scheme */}
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium text-slate-300">Time Step: {timeStep}</Label>
-                      <Slider
-                        value={[timeStep]}
-                        onValueChange={(value) => setTimeStep(value[0])}
-                        min={0.001}
-                        max={0.1}
-                        step={0.001}
-                        className="w-full"
-                      />
+                      <Label className="text-sm font-medium text-slate-300">Color Palette</Label>
+                      <Select value={colorScheme} onValueChange={setColorScheme}>
+                        <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-700 border-slate-600">
+                          <SelectItem value="plasma">🔥 Plasma</SelectItem>
+                          <SelectItem value="quantum">⚛️ Quantum</SelectItem>
+                          <SelectItem value="cosmic">🌌 Cosmic</SelectItem>
+                          <SelectItem value="thermal">🌡️ Thermal</SelectItem>
+                          <SelectItem value="spectral">🌈 Spectral</SelectItem>
+                          <SelectItem value="crystalline">💎 Crystalline</SelectItem>
+                          <SelectItem value="bioluminescent">🦠 Bioluminescent</SelectItem>
+                          <SelectItem value="aurora">🌌 Aurora</SelectItem>
+                          <SelectItem value="metallic">⚙️ Metallic</SelectItem>
+                          <SelectItem value="prismatic">🔮 Prismatic</SelectItem>
+                          <SelectItem value="monochromatic">⚫ Monochromatic</SelectItem>
+                          <SelectItem value="infrared">🔴 Infrared</SelectItem>
+                          <SelectItem value="lava">🌋 Lava</SelectItem>
+                          <SelectItem value="futuristic">🚀 Futuristic</SelectItem>
+                          <SelectItem value="forest">🌲 Forest</SelectItem>
+                          <SelectItem value="ocean">🌊 Ocean</SelectItem>
+                          <SelectItem value="sunset">🌅 Sunset</SelectItem>
+                          <SelectItem value="arctic">❄️ Arctic</SelectItem>
+                          <SelectItem value="neon">💡 Neon</SelectItem>
+                          <SelectItem value="vintage">📻 Vintage</SelectItem>
+                          <SelectItem value="toxic">☢️ Toxic</SelectItem>
+                          <SelectItem value="ember">🔥 Ember</SelectItem>
+                          <SelectItem value="lunar">🌙 Lunar</SelectItem>
+                          <SelectItem value="tidal">🌊 Tidal</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                  </div>
 
-                  {/* Custom Prompt for AI */}
-                  {mode === "ai" && (
+                    {/* Mathematical Parameters */}
                     <div className="space-y-3 pt-3 border-t border-slate-600">
-                      <div className="flex items-center justify-between">
-                        <Label className="flex items-center space-x-2">
-                          <Switch checked={useCustomPrompt} onCheckedChange={setUseCustomPrompt} />
-                          <span className="text-sm font-medium text-slate-300">Custom AI Prompt</span>
-                        </Label>
+                      <h4 className="text-sm font-medium text-slate-300">Mathematical Parameters</h4>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-medium text-slate-300">Random Seed</Label>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={randomizeSeed}
+                            className="h-6 px-2 text-xs border-slate-600 bg-transparent"
+                          >
+                            <Dice1 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <Input
+                          type="number"
+                          value={seed}
+                          onChange={(e) => setSeed(Number.parseInt(e.target.value) || 0)}
+                          className="bg-slate-700 border-slate-600 text-slate-100"
+                          min="0"
+                          max="9999"
+                        />
                       </div>
-                      {useCustomPrompt && (
-                        <div className="space-y-3">
-                          <Textarea
-                            value={customPrompt}
-                            onChange={(e) => setCustomPrompt(e.target.value)}
-                            placeholder="Describe your vision... (will be enhanced with GODLEVEL Indonesian details)"
-                            className="bg-slate-700 border-slate-600 text-slate-100 text-sm min-h-[100px] resize-vertical"
-                            rows={4}
-                          />
-                          <div className="flex gap-2">
-                            <Button
-                              onClick={enhancePrompt}
-                              disabled={isEnhancingPrompt || !customPrompt.trim()}
-                              size="sm"
-                              variant="outline"
-                              className="border-purple-500 text-purple-400 hover:bg-purple-500/10 bg-transparent"
-                            >
-                              {isEnhancingPrompt ? (
-                                <>
-                                  <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                                  Enhancing...
-                                </>
-                              ) : (
-                                <>
-                                  <Wand2 className="h-3 w-3 mr-1" />
-                                  Enhance Prompt
-                                </>
-                              )}
-                            </Button>
-                          </div>
-                          {customPrompt && (
-                            <div className="bg-slate-900 p-3 rounded-md border border-slate-600">
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="text-xs font-medium text-slate-400">CURRENT CUSTOM PROMPT</span>
-                                <span className="text-xs text-slate-500">{customPrompt.length} characters</span>
-                              </div>
-                              <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
-                                {customPrompt}
-                              </p>
-                              <div className="mt-2 pt-2 border-t border-slate-700">
-                                <p className="text-xs text-slate-500">
-                                  This custom prompt will be integrated with {getDatasetDisplayName(dataset)} GODLEVEL
-                                  elements and mathematical precision based on your selected parameters.
-                                </p>
-                              </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-300">
+                          Data Points: {numSamples.toLocaleString()}
+                        </Label>
+                        <Slider
+                          value={[numSamples]}
+                          onValueChange={(value) => setNumSamples(value[0])}
+                          min={100}
+                          max={10000}
+                          step={100}
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-300">Noise Scale: {noiseScale}</Label>
+                        <Slider
+                          value={[noiseScale]}
+                          onValueChange={(value) => setNoiseScale(value[0])}
+                          min={0}
+                          max={1}
+                          step={0.01}
+                          className="w-full"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-300">Time Step: {timeStep}</Label>
+                        <Slider
+                          value={[timeStep]}
+                          onValueChange={(value) => setTimeStep(value[0])}
+                          min={0.001}
+                          max={0.1}
+                          step={0.001}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Custom Prompt for AI */}
+                    {mode === "ai" && (
+                      <div className="space-y-3 pt-3 border-t border-slate-600">
+                        <div className="flex items-center justify-between">
+                          <Label className="flex items-center space-x-2">
+                            <Switch checked={useCustomPrompt} onCheckedChange={setUseCustomPrompt} />
+                            <span className="text-sm font-medium text-slate-300">Custom AI Prompt</span>
+                          </Label>
+                        </div>
+                        {useCustomPrompt && (
+                          <div className="space-y-3">
+                            <Textarea
+                              value={customPrompt}
+                              onChange={(e) => setCustomPrompt(e.target.value)}
+                              placeholder="Describe your vision... (will be enhanced with GODLEVEL details)"
+                              className="bg-slate-700 border-slate-600 text-slate-100 text-sm min-h-[100px] resize-vertical"
+                              rows={4}
+                            />
+                            <div className="flex gap-2">
+                              <Button
+                                onClick={enhancePrompt}
+                                disabled={isEnhancingPrompt || !customPrompt.trim()}
+                                size="sm"
+                                variant="outline"
+                                className="border-purple-500 text-purple-400 hover:bg-purple-500/10 bg-transparent"
+                              >
+                                {isEnhancingPrompt ? (
+                                  <>
+                                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                                    Enhancing...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Wand2 className="h-3 w-3 mr-1" />
+                                    Enhance Prompt
+                                  </>
+                                )}
+                              </Button>
                             </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Projection Settings */}
-                  <div className="space-y-3 pt-3 border-t border-slate-600">
-                    <h4 className="text-sm font-medium text-slate-300">Projection Settings</h4>
-
-                    {/* Dome Projection */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Label className="flex items-center space-x-2">
-                          <Switch checked={domeEnabled} onCheckedChange={setDomeEnabled} />
-                          <span className="text-sm font-medium text-slate-300">
-                            Dome Projection ({domeDiameter}m)
-                          </span>
-                        </Label>
+                            {customPrompt && (
+                              <div className="bg-slate-900 p-3 rounded-md border border-slate-600">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="text-xs font-medium text-slate-400">CURRENT CUSTOM PROMPT</span>
+                                  <span className="text-xs text-slate-500">{customPrompt.length} characters</span>
+                                </div>
+                                <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
+                                  {customPrompt}
+                                </p>
+                                <div className="mt-2 pt-2 border-t border-slate-700">
+                                  <p className="text-xs text-slate-500">
+                                    This custom prompt will be integrated with {getDatasetDisplayName(dataset)} GODLEVEL
+                                    elements and mathematical precision based on your selected parameters.
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      {domeEnabled && (
-                        <div className="space-y-2 pl-6">
-                          <div className="space-y-1">
-                            <Label className="text-xs text-slate-400">Dome Diameter (meters)</Label>
-                            <Select
-                              value={domeDiameter.toString()}
-                              onValueChange={(value) => setDomeDiameter(Number(value))}
-                            >
-                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent className="bg-slate-700 border-slate-600">
-                                <SelectItem value="10">10m (Small Dome)</SelectItem>
-                                <SelectItem value="15">15m (Medium Dome)</SelectItem>
-                                <SelectItem value="20">20m (Large Dome)</SelectItem>
-                                <SelectItem value="25">25m (Extra Large Dome)</SelectItem>
-                                <SelectItem value="30">30m (Giant Dome)</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="space-y-1">
-                            <Label className="text-xs text-slate-400">Resolution</Label>
-                            <Select value={domeResolution} onValueChange={setDomeResolution}>
-                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent className="bg-slate-700 border-slate-600">
-                                <SelectItem value="2K">2K (2048x2048)</SelectItem>
-                                <SelectItem value="4K">4K (4096x4096)</SelectItem>
-                                <SelectItem value="8K">8K (8192x8192)</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="space-y-1">
-                            <Label className="text-xs text-slate-400">Projection Type</Label>
-                            <Select value={domeProjectionType} onValueChange={setDomeProjectionType}>
-                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent className="bg-slate-700 border-slate-600">
-                                <SelectItem value="fisheye">Fisheye</SelectItem>
-                                <SelectItem value="equidistant">Equidistant</SelectItem>
-                                <SelectItem value="stereographic">Stereographic</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    )}
 
-                    {/* 360° Panorama */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Label className="flex items-center space-x-2">
-                          <Switch checked={panorama360Enabled} onCheckedChange={setPanorama360Enabled} />
-                          <span className="text-sm font-medium text-slate-300">360° Panorama</span>
-                        </Label>
-                      </div>
-                      {panorama360Enabled && (
-                        <div className="space-y-2 pl-6">
-                          <div className="space-y-1">
-                            <Label className="text-xs text-slate-400">Resolution</Label>
-                            <Select value={panoramaResolution} onValueChange={setPanoramaResolution}>
-                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent className="bg-slate-700 border-slate-600">
-                                <SelectItem value="4K">4K (4096x2048)</SelectItem>
-                                <SelectItem value="8K">8K (8192x4096)</SelectItem>
-                                <SelectItem value="16K">16K (16384x8192)</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="space-y-1">
-                            <Label className="text-xs text-slate-400">Format</Label>
-                            <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
-                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent className="bg-slate-700 border-slate-600">
-                                <SelectItem value="equirectangular">Equirectangular</SelectItem>
-                                <SelectItem value="stereographic">Stereographic</SelectItem>
-                                <SelectItem value="cylindrical">Cylindrical</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          {panoramaFormat === "stereographic" && (
+                    {/* Projection Settings */}
+                    <div className="space-y-3 pt-3 border-t border-slate-600">
+                      <h4 className="text-sm font-medium text-slate-300">Projection Settings</h4>
+
+                      {/* Dome Projection */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label className="flex items-center space-x-2">
+                            <Switch checked={domeEnabled} onCheckedChange={setDomeEnabled} />
+                            <span className="text-sm font-medium text-slate-300">
+                              Dome Projection ({domeDiameter}m)
+                            </span>
+                          </Label>
+                        </div>
+                        {domeEnabled && (
+                          <div className="space-y-2 pl-6">
                             <div className="space-y-1">
-                              <Label className="text-xs text-slate-400">Perspective</Label>
-                              <Select value={stereographicPerspective} onValueChange={setStereographicPerspective}>
+                              <Label className="text-xs text-slate-400">Dome Diameter (meters)</Label>
+                              <Select
+                                value={domeDiameter.toString()}
+                                onValueChange={(value) => setDomeDiameter(Number(value))}
+                              >
                                 <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="bg-slate-700 border-slate-600">
-                                  <SelectItem value="little-planet">Little Planet</SelectItem>
-                                  <SelectItem value="tunnel">Tunnel</SelectItem>
-                                  <SelectItem value="mirror-ball">Mirror Ball</SelectItem>
+                                  <SelectItem value="10">10m (Small Dome)</SelectItem>
+                                  <SelectItem value="15">15m (Medium Dome)</SelectItem>
+                                  <SelectItem value="20">20m (Large Dome)</SelectItem>
+                                  <SelectItem value="25">25m (Extra Large Dome)</SelectItem>
+                                  <SelectItem value="30">30m (Giant Dome)</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
-                          )}
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-400">Resolution</Label>
+                              <Select value={domeResolution} onValueChange={setDomeResolution}>
+                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-700 border-slate-600">
+                                  <SelectItem value="2K">2K (2048x2048)</SelectItem>
+                                  <SelectItem value="4K">4K (4096x4096)</SelectItem>
+                                  <SelectItem value="8K">8K (8192x8192)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-400">Projection Type</Label>
+                              <Select value={domeProjectionType} onValueChange={setDomeProjectionType}>
+                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-700 border-slate-600">
+                                  <SelectItem value="fisheye">Fisheye</SelectItem>
+                                  <SelectItem value="equidistant">Equidistant</SelectItem>
+                                  <SelectItem value="stereographic">Stereographic</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* 360° Panorama */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Label className="flex items-center space-x-2">
+                            <Switch checked={panorama360Enabled} onCheckedChange={setPanorama360Enabled} />
+                            <span className="text-sm font-medium text-slate-300">360° Panorama</span>
+                          </Label>
                         </div>
-                      )}
+                        {panorama360Enabled && (
+                          <div className="space-y-2 pl-6">
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-400">Resolution</Label>
+                              <Select value={panoramaResolution} onValueChange={setPanoramaResolution}>
+                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-700 border-slate-600">
+                                  <SelectItem value="4K">4K (4096x2048)</SelectItem>
+                                  <SelectItem value="8K">8K (8192x4096)</SelectItem>
+                                  <SelectItem value="16K">16K (16384x8192)</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-400">Format</Label>
+                              <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
+                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-700 border-slate-600">
+                                  <SelectItem value="equirectangular">Equirectangular</SelectItem>
+                                  <SelectItem value="stereographic">Stereographic</SelectItem>
+                                  <SelectItem value="cylindrical">Cylindrical</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            {panoramaFormat === "stereographic" && (
+                              <div className="space-y-1">
+                                <Label className="text-xs text-slate-400">Perspective</Label>
+                                <Select value={stereographicPerspective} onValueChange={setStereographicPerspective}>
+                                  <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent className="bg-slate-700 border-slate-600">
+                                    <SelectItem value="little-planet">Little Planet</SelectItem>
+                                    <SelectItem value="tunnel">Tunnel</SelectItem>
+                                    <SelectItem value="mirror-ball">Mirror Ball</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Generate Button */}
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={generateArt}
-                      disabled={isGenerating || isAutoGenerating}
-                      className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3"
-                    >
-                      {isGenerating ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Generating GODLEVEL Art (3 Versions)...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="h-4 w-4 mr-2" />
-                          {useCustomPrompt && customPrompt.trim()
-                            ? "Generate Custom GODLEVEL Art (3 Versions)"
-                            : `Generate ${getDatasetDisplayName(dataset)} GODLEVEL (3 Versions)`}
-                        </>
-                      )}
-                    </Button>
-                  </div>
-
-                  {/* Progress Bar */}
-                  {isGenerating && progress > 0 && (
-                    <div className="space-y-2">
-                      <Progress value={progress} className="w-full" />
-                      <p className="text-xs text-slate-400 text-center">
-                        {progress}% complete - Creating GODLEVEL Original + Dome + 360° versions
-                      </p>
+                    {/* Generate Button */}
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={generateArt}
+                        disabled={isGenerating || isAutoGenerating}
+                        className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3"
+                      >
+                        {isGenerating ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Generating GODLEVEL Art (3 Versions)...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="h-4 w-4 mr-2" />
+                            {useCustomPrompt && customPrompt.trim()
+                              ? "Generate Custom GODLEVEL Art (3 Versions)"
+                              : `Generate ${getDatasetDisplayName(dataset)} GODLEVEL (3 Versions)`}
+                          </>
+                        )}
+                      </Button>
                     </div>
-                  )}
 
-                  {/* Error Display */}
-                  {error && (
-                    <Alert className="border-red-500 bg-red-500/10">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription className="text-red-400">{error}</AlertDescription>
-                    </Alert>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Preview - Enhanced to show all 3 versions clearly */}
-            <div className="lg:col-span-2">
-              <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between text-slate-100">
-                    <div className="flex items-center gap-2">
-                      <Eye className="h-5 w-5" />
-                      Generated {getDatasetDisplayName(dataset)} GODLEVEL Artwork
-                    </div>
-                    {generatedArt && (
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="border-purple-500 text-purple-400">
-                          ✨ {getDatasetDisplayName(dataset)}
-                        </Badge>
-                        <Badge variant="outline" className="border-green-500 text-green-400">
-                          3 GODLEVEL Versions
-                        </Badge>
+                    {/* Progress Bar */}
+                    {isGenerating && progress > 0 && (
+                      <div className="space-y-2">
+                        <Progress value={progress} className="w-full" />
+                        <p className="text-xs text-slate-400 text-center">
+                          {progress}% complete - Creating GODLEVEL Original + Dome + 360° versions
+                        </p>
                       </div>
                     )}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {generatedArt ? (
-                    <div className="space-y-6">
-                      {/* Three Version Display */}
-                      <Tabs defaultValue="original" className="w-full">
-                        <TabsList className="grid w-full grid-cols-3 bg-slate-700">
-                          <TabsTrigger value="original" className="data-[state=active]:bg-blue-600">
-                            <Camera className="h-4 w-4 mr-2" />
-                            Original
-                          </TabsTrigger>
-                          <TabsTrigger value="dome" className="data-[state=active]:bg-purple-600">
-                            <Mountain className="h-4 w-4 mr-2" />
-                            Dome {domeDiameter}m
-                          </TabsTrigger>
-                          <TabsTrigger value="panorama" className="data-[state=active]:bg-green-600">
-                            <Globe className="h-4 w-4 mr-2" />
-                            360° VR
-                          </TabsTrigger>
-                        </TabsList>
 
-                        <TabsContent value="original" className="space-y-4">
-                          <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-blue-500/30">
-                            {generatedArt.mode === "svg" ? (
-                              <div
-                                className="w-full h-96 flex items-center justify-center"
-                                dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
-                              />
-                            ) : (
-                              <img
-                                src={generatedArt.imageUrl || "/placeholder.svg"}
-                                alt={`Generated ${getDatasetDisplayName(dataset)} artwork - Original`}
-                                className="w-full h-96 object-cover"
-                              />
-                            )}
-                            <div className="absolute top-2 left-2">
-                              <Badge className="bg-blue-600 text-white">
-                                <Camera className="h-3 w-3 mr-1" />
-                                Original GODLEVEL
-                              </Badge>
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <h4 className="text-sm font-medium text-slate-300">Standard GODLEVEL Mathematical Art</h4>
-                            <p className="text-xs text-slate-400">
-                              Traditional format perfect for prints, displays, and standard viewing with
-                              hyperrealistic detail
-                            </p>
-                            <Button
-                              onClick={() => downloadImage("regular")}
-                              className="w-full bg-blue-600 hover:bg-blue-700"
-                            >
-                              <Download className="h-4 w-4 mr-2" />
-                              Download Original GODLEVEL Version
-                            </Button>
-                          </div>
-                        </TabsContent>
+                    {/* Error Display */}
+                    {error && (
+                      <Alert className="border-red-500 bg-red-500/10">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription className="text-red-400">{error}</AlertDescription>
+                      </Alert>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
 
-                        <TabsContent value="dome" className="space-y-4">
-                          <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-purple-500/30">
-                            {generatedArt.mode === "svg" ? (
-                              <div
-                                className="w-full h-96 flex items-center justify-center"
-                                dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
-                              />
-                            ) : (
-                              <img
-                                src={generatedArt.domeImageUrl || generatedArt.imageUrl || "/placeholder.svg"}
-                                alt={`Generated ${getDatasetDisplayName(dataset)} artwork - Dome Projection`}
-                                className="w-full h-96 object-cover"
-                              />
-                            )}
-                            <div className="absolute top-2 left-2">
-                              <Badge className="bg-purple-600 text-white">
-                                <Mountain className="h-3 w-3 mr-1" />
-                                Dome {domeDiameter}m GODLEVEL
-                              </Badge>
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <h4 className="text-sm font-medium text-slate-300">
-                              GODLEVEL Planetarium Dome Projection ({domeDiameter}m)
-                            </h4>
-                            <p className="text-xs text-slate-400">
-                              {domeProjectionType} projection optimized for {domeDiameter}m diameter planetarium dome
-                              with immersive tunnel effect and hyperrealistic Indonesian cultural details
-                            </p>
-                            <div className="flex gap-2 text-xs">
-                              <Badge variant="outline" className="border-purple-500 text-purple-400">
-                                {domeResolution}
-                              </Badge>
-                              <Badge variant="outline" className="border-purple-500 text-purple-400">
-                                {domeProjectionType}
-                              </Badge>
-                              <Badge variant="outline" className="border-purple-500 text-purple-400">
-                                GODLEVEL
-                              </Badge>
-                            </div>
-                            <Button
-                              onClick={() => downloadImage("dome")}
-                              className="w-full bg-purple-600 hover:bg-purple-700"
-                            >
-                              <Download className="h-4 w-4 mr-2" />
-                              Download Dome GODLEVEL Version
-                            </Button>
-                          </div>
-                        </TabsContent>
+              {/* Preview - Enhanced to show all 3 versions clearly */}
+              <div className="lg:col-span-2">
+                <Card className="bg-slate-800 border-slate-700">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between text-slate-100">
+                      <div className="flex items-center gap-2">
+                        <Eye className="h-5 w-5" />
+                        Generated {getDatasetDisplayName(dataset)} GODLEVEL Artwork
+                      </div>
+                      {generatedArt && (
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="border-purple-500 text-purple-400">
+                            ✨ {getDatasetDisplayName(dataset)}
+                          </Badge>
+                          <Badge variant="outline" className="border-green-500 text-green-400">
+                            3 GODLEVEL Versions
+                          </Badge>
+                        </div>
+                      )}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {generatedArt ? (
+                      <div className="space-y-6">
+                        {/* Three Version Display */}
+                        <Tabs defaultValue="original" className="w-full">
+                          <TabsList className="grid w-full grid-cols-3 bg-slate-700">
+                            <TabsTrigger value="original" className="data-[state=active]:bg-blue-600">
+                              <Camera className="h-4 w-4 mr-2" />
+                              Original
+                            </TabsTrigger>
+                            <TabsTrigger value="dome" className="data-[state=active]:bg-purple-600">
+                              <Mountain className="h-4 w-4 mr-2" />
+                              Dome {domeDiameter}m
+                            </TabsTrigger>
+                            <TabsTrigger value="panorama" className="data-[state=active]:bg-green-600">
+                              <Globe className="h-4 w-4 mr-2" />
+                              360° VR
+                            </TabsTrigger>
+                          </TabsList>
 
-                        <TabsContent value="panorama" className="space-y-4">
-                          <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-green-500/30">
-                            {generatedArt.mode === "svg" ? (
-                              <div
-                                className="w-full h-96 flex items-center justify-center"
-                                dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
-                              />
-                            ) : (
-                              <img
-                                src={generatedArt.panorama360Url || generatedArt.imageUrl || "/placeholder.svg"}
-                                alt={`Generated ${getDatasetDisplayName(dataset)} artwork - 360° Panorama`}
-                                className="w-full h-96 object-cover"
-                              />
-                            )}
-                            <div className="absolute top-2 left-2">
-                              <Badge className="bg-green-600 text-white">
-                                <Globe className="h-3 w-3 mr-1" />
-                                360° VR GODLEVEL
-                              </Badge>
-                            </div>
-                          </div>
-                          <div className="space-y-2">
-                            <h4 className="text-sm font-medium text-slate-300">
-                              GODLEVEL 360° Virtual Reality Panorama
-                            </h4>
-                            <p className="text-xs text-slate-400">
-                              {panoramaFormat} format at {panoramaResolution} resolution, perfect for VR headsets and
-                              immersive viewing with hyperrealistic Indonesian cultural immersion
-                            </p>
-                            <div className="flex gap-2 text-xs">
-                              <Badge variant="outline" className="border-green-500 text-green-400">
-                                {panoramaResolution}
-                              </Badge>
-                              <Badge variant="outline" className="border-green-500 text-green-400">
-                                {panoramaFormat}
-                              </Badge>
-                              <Badge variant="outline" className="border-green-500 text-green-400">
-                                GODLEVEL
-                              </Badge>
-                              {panoramaFormat === "stereographic" && (
-                                <Badge variant="outline" className="border-green-500 text-green-400">
-                                  {stereographicPerspective}
-                                </Badge>
+                          <TabsContent value="original" className="space-y-4">
+                            <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-blue-500/30">
+                              {generatedArt.mode === "svg" ? (
+                                <div
+                                  className="w-full h-96 flex items-center justify-center"
+                                  dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                                />
+                              ) : (
+                                <img
+                                  src={generatedArt.imageUrl || "/placeholder.svg"}
+                                  alt={`Generated ${getDatasetDisplayName(dataset)} artwork - Original`}
+                                  className="w-full h-96 object-cover"
+                                />
                               )}
-                            </div>
-                            <Button
-                              onClick={() => downloadImage("panorama")}
-                              className="w-full bg-green-600 hover:bg-green-700"
-                            >
-                              <Download className="h-4 w-4 mr-2" />
-                              Download 360° GODLEVEL Version
-                            </Button>
-                          </div>
-                        </TabsContent>
-                      </Tabs>
-
-                      {/* Download Status */}
-                      {downloadStatus && (
-                        <Alert className="border-green-500 bg-green-500/10">
-                          <CheckCircle className="h-4 w-4" />
-                          <AlertDescription className="text-green-400">{downloadStatus}</AlertDescription>
-                        </Alert>
-                      )}
-
-                      {/* Generation Status Summary */}
-                      {generatedArt.mode === "ai" && generatedArt.generationDetails && (
-                        <div className="bg-slate-900 p-4 rounded-lg border border-slate-600">
-                          <h4 className="text-sm font-medium text-slate-300 mb-3">
-                            GODLEVEL Generation Status Summary
-                          </h4>
-                          <div className="grid grid-cols-3 gap-4">
-                            <div className="text-center">
-                              <div className="flex items-center justify-center mb-2">
-                                <Camera className="h-5 w-5 text-blue-400" />
+                              <div className="absolute top-2 left-2">
+                                <Badge className="bg-blue-600 text-white">
+                                  <Camera className="h-3 w-3 mr-1" />
+                                  Original GODLEVEL
+                                </Badge>
                               </div>
-                              <p className="text-xs font-medium text-slate-300">Original</p>
-                              <Badge variant="outline" className="text-xs mt-1 border-green-500 text-green-400">
-                                {generatedArt.generationDetails.mainImage}
-                              </Badge>
                             </div>
-                            <div className="text-center">
-                              <div className="flex items-center justify-center mb-2">
-                                <Mountain className="h-5 w-5 text-purple-400" />
-                              </div>
-                              <p className="text-xs font-medium text-slate-300">Dome</p>
-                              <Badge
-                                variant="outline"
-                                className={`text-xs mt-1 ${
-                                  generatedArt.generationDetails.domeImage.includes("successfully")
-                                    ? "border-green-500 text-green-400"
-                                    : "border-yellow-500 text-yellow-400"
-                                }`}
+                            <div className="space-y-2">
+                              <h4 className="text-sm font-medium text-slate-300">Standard GODLEVEL Mathematical Art</h4>
+                              <p className="text-xs text-slate-400">
+                                Traditional format perfect for prints, displays, and standard viewing with
+                                hyperrealistic detail
+                              </p>
+                              <Button
+                                onClick={() => downloadImage("regular")}
+                                className="w-full bg-blue-600 hover:bg-blue-700"
                               >
-                                {generatedArt.generationDetails.domeImage.includes("successfully")
-                                  ? "✓ GODLEVEL Generated"
-                                  : "⚠ Fallback"}
-                              </Badge>
+                                <Download className="h-4 w-4 mr-2" />
+                                Download Original GODLEVEL Version
+                              </Button>
                             </div>
-                            <div className="text-center">
-                              <div className="flex items-center justify-center mb-2">
-                                <Globe className="h-5 w-5 text-green-400" />
+                          </TabsContent>
+
+                          <TabsContent value="dome" className="space-y-4">
+                            <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-purple-500/30">
+                              {generatedArt.mode === "svg" ? (
+                                <div
+                                  className="w-full h-96 flex items-center justify-center"
+                                  dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                                />
+                              ) : (
+                                <img
+                                  src={generatedArt.domeImageUrl || generatedArt.imageUrl || "/placeholder.svg"}
+                                  alt={`Generated ${getDatasetDisplayName(dataset)} artwork - Dome Projection`}
+                                  className="w-full h-96 object-cover"
+                                />
+                              )}
+                              <div className="absolute top-2 left-2">
+                                <Badge className="bg-purple-600 text-white">
+                                  <Mountain className="h-3 w-3 mr-1" />
+                                  Dome {domeDiameter}m GODLEVEL
+                                </Badge>
                               </div>
-                              <p className="text-xs font-medium text-slate-300">360° VR</p>
-                              <Badge
-                                variant="outline"
-                                className={`text-xs mt-1 ${
-                                  generatedArt.generationDetails.panoramaImage.includes("successfully")
-                                    ? "border-green-500 text-green-400"
-                                    : "border-yellow-500 text-yellow-400"
-                                }`}
+                            </div>
+                            <div className="space-y-2">
+                              <h4 className="text-sm font-medium text-slate-300">
+                                GODLEVEL Planetarium Dome Projection ({domeDiameter}m)
+                              </h4>
+                              <p className="text-xs text-slate-400">
+                                {domeProjectionType} projection optimized for {domeDiameter}m diameter planetarium dome
+                                with immersive tunnel effect and hyperrealistic details
+                              </p>
+                              <div className="flex gap-2 text-xs">
+                                <Badge variant="outline" className="border-purple-500 text-purple-400">
+                                  {domeResolution}
+                                </Badge>
+                                <Badge variant="outline" className="border-purple-500 text-purple-400">
+                                  {domeProjectionType}
+                                </Badge>
+                                <Badge variant="outline" className="border-purple-500 text-purple-400">
+                                  GODLEVEL
+                                </Badge>
+                              </div>
+                              <Button
+                                onClick={() => downloadImage("dome")}
+                                className="w-full bg-purple-600 hover:bg-purple-700"
                               >
-                                {generatedArt.generationDetails.panoramaImage.includes("successfully")
-                                  ? "✓ GODLEVEL Generated"
-                                  : "⚠ Fallback"}
-                              </Badge>
+                                <Download className="h-4 w-4 mr-2" />
+                                Download Dome GODLEVEL Version
+                              </Button>
                             </div>
-                          </div>
-                        </div>
-                      )}
+                          </TabsContent>
 
-                      {/* Artwork Details */}
-                      <div className="space-y-3 pt-4 border-t border-slate-600">
-                        <h4 className="text-sm font-medium text-slate-300">GODLEVEL Artwork Details</h4>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                          <div>
-                            <span className="text-slate-400">Dataset:</span>
-                            <p className="text-slate-200 capitalize">{generatedArt.params?.dataset || "N/A"}</p>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Scenario:</span>
-                            <p className="text-slate-200 capitalize">{generatedArt.params?.scenario || "N/A"}</p>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Color Scheme:</span>
-                            <p className="text-slate-200 capitalize">{generatedArt.params?.colorScheme || "N/A"}</p>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Seed:</span>
-                            <p className="text-slate-200">{generatedArt.params?.seed || "N/A"}</p>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Data Points:</span>
-                            <p className="text-slate-200">
-                              {generatedArt.params?.numSamples?.toLocaleString() || "N/A"}
-                            </p>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Noise Scale:</span>
-                            <p className="text-slate-200">{generatedArt.params?.noiseScale || "N/A"}</p>
-                          </div>
-                          <div>
-                            <span className="text-slate-400">Time Step:</span>
-                            <p className="text-slate-200">{generatedArt.params?.timeStep || "N/A"}</p>
-                          </div>
-                          {generatedArt.mode === "ai" && generatedArt.provider && (
-                            <div>
-                              <span className="text-slate-400">Provider:</span>
-                              <p className="text-slate-200 capitalize">{generatedArt.provider}</p>
+                          <TabsContent value="panorama" className="space-y-4">
+                            <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-green-500/30">
+                              {generatedArt.mode === "svg" ? (
+                                <div
+                                  className="w-full h-96 flex items-center justify-center"
+                                  dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
+                                />
+                              ) : (
+                                <img
+                                  src={generatedArt.panorama360Url || generatedArt.imageUrl || "/placeholder.svg"}
+                                  alt={`Generated ${getDatasetDisplayName(dataset)} artwork - 360° Panorama`}
+                                  className="w-full h-96 object-cover"
+                                />
+                              )}
+                              <div className="absolute top-2 left-2">
+                                <Badge className="bg-green-600 text-white">
+                                  <Globe className="h-3 w-3 mr-1" />
+                                  360° VR GODLEVEL
+                                </Badge>
+                              </div>
                             </div>
-                          )}
-                        </div>
+                            <div className="space-y-2">
+                              <h4 className="text-sm font-medium text-slate-300">
+                                GODLEVEL 360° Virtual Reality Panorama
+                              </h4>
+                              <p className="text-xs text-slate-400">
+                                {panoramaFormat} format at {panoramaResolution} resolution, perfect for VR headsets and
+                                immersive viewing with hyperrealistic details
+                              </p>
+                              <div className="flex gap-2 text-xs">
+                                <Badge variant="outline" className="border-green-500 text-green-400">
+                                  {panoramaResolution}
+                                </Badge>
+                                <Badge variant="outline" className="border-green-500 text-green-400">
+                                  {panoramaFormat}
+                                </Badge>
+                                <Badge variant="outline" className="border-green-500 text-green-400">
+                                  GODLEVEL
+                                </Badge>
+                                {panoramaFormat === "stereographic" && (
+                                  <Badge variant="outline" className="border-green-500 text-green-400">
+                                    {stereographicPerspective}
+                                  </Badge>
+                                )}
+                              </div>
+                              <Button
+                                onClick={() => downloadImage("panorama")}
+                                className="w-full bg-green-600 hover:bg-green-700"
+                              >
+                                <Download className="h-4 w-4 mr-2" />
+                                Download 360° GODLEVEL Version
+                              </Button>
+                            </div>
+                          </TabsContent>
+                        </Tabs>
 
-                        {/* Custom Prompt Display */}
-                        {generatedArt.mode === "ai" && generatedArt.customPrompt && (
-                          <div className="space-y-2">
-                            <span className="text-slate-400 text-sm">Custom GODLEVEL Prompt Used:</span>
-                            <div className="bg-slate-900 p-3 rounded-md max-h-32 overflow-y-auto">
-                              <p className="text-slate-300 text-sm leading-relaxed">{generatedArt.customPrompt}</p>
+                        {/* Download Status */}
+                        {downloadStatus && (
+                          <Alert className="border-green-500 bg-green-500/10">
+                            <CheckCircle className="h-4 w-4" />
+                            <AlertDescription className="text-green-400">{downloadStatus}</AlertDescription>
+                          </Alert>
+                        )}
+
+                        {/* Generation Status Summary */}
+                        {generatedArt.mode === "ai" && generatedArt.generationDetails && (
+                          <div className="bg-slate-900 p-4 rounded-lg border border-slate-600">
+                            <h4 className="text-sm font-medium text-slate-300 mb-3">
+                              GODLEVEL Generation Status Summary
+                            </h4>
+                            <div className="grid grid-cols-3 gap-4">
+                              <div className="text-center">
+                                <div className="flex items-center justify-center mb-2">
+                                  <Camera className="h-5 w-5 text-blue-400" />
+                                </div>
+                                <p className="text-xs font-medium text-slate-300">Original</p>
+                                <Badge variant="outline" className="text-xs mt-1 border-green-500 text-green-400">
+                                  {generatedArt.generationDetails.mainImage}
+                                </Badge>
+                              </div>
+                              <div className="text-center">
+                                <div className="flex items-center justify-center mb-2">
+                                  <Mountain className="h-5 w-5 text-purple-400" />
+                                </div>
+                                <p className="text-xs font-medium text-slate-300">Dome</p>
+                                <Badge
+                                  variant="outline"
+                                  className={`text-xs mt-1 ${
+                                    generatedArt.generationDetails.domeImage.includes("successfully")
+                                      ? "border-green-500 text-green-400"
+                                      : "border-yellow-500 text-yellow-400"
+                                  }`}
+                                >
+                                  {generatedArt.generationDetails.domeImage.includes("successfully")
+                                    ? "✓ GODLEVEL Generated"
+                                    : "⚠ Fallback"}
+                                </Badge>
+                              </div>
+                              <div className="text-center">
+                                <div className="flex items-center justify-center mb-2">
+                                  <Globe className="h-5 w-5 text-green-400" />
+                                </div>
+                                <p className="text-xs font-medium text-slate-300">360° VR</p>
+                                <Badge
+                                  variant="outline"
+                                  className={`text-xs mt-1 ${
+                                    generatedArt.generationDetails.panoramaImage.includes("successfully")
+                                      ? "border-green-500 text-green-400"
+                                      : "border-yellow-500 text-yellow-400"
+                                  }`}
+                                >
+                                  {generatedArt.generationDetails.panoramaImage.includes("successfully")
+                                    ? "✓ GODLEVEL Generated"
+                                    : "⚠ Fallback"}
+                                </Badge>
+                              </div>
                             </div>
                           </div>
                         )}
 
-                        {generatedArt.mode === "ai" && generatedArt.finalPrompt && (
-                          <div className="space-y-2">
-                            <span className="text-slate-400 text-sm">Final Enhanced GODLEVEL Prompt:</span>
-                            <div className="bg-slate-900 p-3 rounded-md max-h-32 overflow-y-auto">
-                              <p className="text-slate-300 text-sm leading-relaxed">
-                                {generatedArt.finalPrompt.substring(0, 500)}
-                                {generatedArt.finalPrompt.length > 500 && "..."}
-                              </p>
-                              {generatedArt.promptLength && (
-                                <p className="text-slate-500 text-xs mt-2">{generatedArt.promptLength} characters</p>
-                              )}
+                        {/* Artwork Details */}
+                        <div className="space-y-3 pt-4 border-t border-slate-600">
+                          <h4 className="text-sm font-medium text-slate-300">GODLEVEL Artwork Details</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div>
+                              <span className="text-slate-400">Dataset:</span>
+                              <p className="text-slate-200 capitalize">{generatedArt.params?.dataset || "N/A"}</p>
                             </div>
+                            <div>
+                              <span className="text-slate-400">Scenario:</span>
+                              <p className="text-slate-200 capitalize">{generatedArt.params?.scenario || "N/A"}</p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Color Scheme:</span>
+                              <p className="text-slate-200 capitalize">{generatedArt.params?.colorScheme || "N/A"}</p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Seed:</span>
+                              <p className="text-slate-200">{generatedArt.params?.seed || "N/A"}</p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Data Points:</span>
+                              <p className="text-slate-200">
+                                {generatedArt.params?.numSamples?.toLocaleString() || "N/A"}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Noise Scale:</span>
+                              <p className="text-slate-200">{generatedArt.params?.noiseScale || "N/A"}</p>
+                            </div>
+                            <div>
+                              <span className="text-slate-400">Time Step:</span>
+                              <p className="text-slate-200">{generatedArt.params?.timeStep || "N/A"}</p>
+                            </div>
+                            {generatedArt.mode === "ai" && generatedArt.provider && (
+                              <div>
+                                <span className="text-slate-400">Provider:</span>
+                                <p className="text-slate-200 capitalize">{generatedArt.provider}</p>
+                              </div>
+                            )}
                           </div>
+
+                          {/* Custom Prompt Display */}
+                          {generatedArt.mode === "ai" && generatedArt.customPrompt && (
+                            <div className="space-y-2">
+                              <span className="text-slate-400 text-sm">Custom GODLEVEL Prompt Used:</span>
+                              <div className="bg-slate-900 p-3 rounded-md max-h-32 overflow-y-auto">
+                                <p className="text-slate-300 text-sm leading-relaxed">{generatedArt.customPrompt}</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {generatedArt.mode === "ai" && generatedArt.finalPrompt && (
+                            <div className="space-y-2">
+                              <span className="text-slate-400 text-sm">Final Enhanced GODLEVEL Prompt:</span>
+                              <div className="bg-slate-900 p-3 rounded-md max-h-32 overflow-y-auto">
+                                <p className="text-slate-300 text-sm leading-relaxed">
+                                  {generatedArt.finalPrompt.substring(0, 500)}
+                                  {generatedArt.finalPrompt.length > 500 && "..."}
+                                </p>
+                                {generatedArt.promptLength && (
+                                  <p className="text-slate-500 text-xs mt-2">{generatedArt.promptLength} characters</p>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -1794,7 +1891,7 @@ export function FlowArtGenerator() {
                             </p>
                             <p className="text-sm text-slate-400">
                               {useCustomPrompt && customPrompt.trim()
-                                ? "Your custom prompt will be enhanced with GODLEVEL Indonesian elements"
+                                ? "Your custom prompt will be enhanced with GODLEVEL elements"
                                 : `Click "Generate ${getDatasetDisplayName(dataset)} GODLEVEL" to create all 3 hyperrealistic versions`}
                             </p>
                             <div className="flex justify-center gap-4 mt-4">
@@ -1816,146 +1913,208 @@ export function FlowArtGenerator() {
                       </div>
                     )}
                   </CardContent>
-              </Card>
+                </Card>
+              </div>
             </div>
-          </div>
-        </TabsContent>
+          </TabsContent>
 
-        <TabsContent value="gallery" className="space-y-6">
-          <Card className="bg-slate-800 border-slate-700">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between text-slate-100">
-                <div className="flex items-center gap-2">
-                  <ImageIcon className="h-5 w-5" />
-                  GODLEVEL Art Gallery
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={clearGallery}
-                    className="h-6 px-2 text-xs border-red-500 text-red-400 hover:bg-red-500/10 bg-transparent"
-                  >
-                    Clear Gallery
-                  </Button>
-                  <Badge variant="secondary">{gallery.length} GODLEVEL artworks</Badge>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {gallery.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-48 bg-slate-900 rounded-lg border border-slate-700">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-center">
-                      <ImageIcon className="h-8 w-8 text-slate-400" />
-                    </div>
-                    <div className="text-center">
-                      <p className="text-lg font-medium text-slate-300">No GODLEVEL artworks in gallery</p>
-                      <p className="text-sm text-slate-400">Generate some GODLEVEL Indonesian art to see it here</p>
+          <TabsContent value="gallery" className="space-y-6">
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between text-slate-100">
+                  <div className="flex items-center gap-2">
+                    <ImageIcon className="h-5 w-5" />
+                    GODLEVEL Art Gallery
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={clearGallery}
+                      className="h-6 px-2 text-xs border-red-500 text-red-400 hover:bg-red-500/10 bg-transparent"
+                    >
+                      Clear Gallery
+                    </Button>
+                    <Badge variant="secondary">{gallery.length} GODLEVEL artworks</Badge>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {gallery.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-48 bg-slate-900 rounded-lg border border-slate-700">
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-center">
+                        <ImageIcon className="h-8 w-8 text-slate-400" />
+                      </div>
+                      <div className="text-center">
+                        <p className="text-lg font-medium text-slate-300">No GODLEVEL artworks in gallery</p>
+                        <p className="text-sm text-slate-400">Generate some GODLEVEL art to see it here</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {currentItems.map((art) => (
-                      <Card key={art.id} className="bg-slate-800 border-slate-700">
-                        <CardContent className="p-3 space-y-2">
-                          <div className="relative bg-slate-900 rounded-lg overflow-hidden">
+                ) : (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {currentItems.map((art) => (
+                        <Card key={art.id} className="bg-slate-900 border-slate-600 overflow-hidden">
+                          <div className="relative">
                             {art.mode === "svg" ? (
                               <div
-                                className="w-full h-48 flex items-center justify-center"
+                                className="w-full h-48 flex items-center justify-center bg-slate-800"
                                 dangerouslySetInnerHTML={{ __html: art.svgContent }}
                               />
                             ) : (
                               <img
                                 src={art.imageUrl || "/placeholder.svg"}
-                                alt={`Generated ${getDatasetDisplayName(dataset)} artwork`}
+                                alt={`Generated ${art.params?.dataset} artwork`}
                                 className="w-full h-48 object-cover"
                               />
                             )}
                             <div className="absolute top-2 left-2">
-                              <Badge className="bg-purple-600 text-white">
-                                ✨ {art.mode === "svg" ? "SVG" : "AI"} GODLEVEL
+                              <Badge className="bg-purple-600 text-white text-xs">
+                                {getDatasetDisplayName(art.params?.dataset || "")}
                               </Badge>
-                              {art.customPrompt && (
-                                <Badge className="ml-1 bg-blue-600 text-white">
-                                  Custom
-                                </Badge>
-                              )}
-                              {art.isDomeProjection && (
-                                <Badge className="ml-1 bg-pink-600 text-white">
-                                  Dome
-                                </Badge>
-                              )}
-                              {art.is360Panorama && (
-                                <Badge className="ml-1 bg-green-600 text-white">
-                                  360°
-                                </Badge>
-                              )}
+                            </div>
+                            <div className="absolute top-2 right-2">
+                              <Badge variant="outline" className="border-green-500 text-green-400 text-xs">
+                                GODLEVEL
+                              </Badge>
                             </div>
                           </div>
-                          <div className="space-y-1">
-                            <p className="text-sm font-medium text-slate-300">
-                              {art.mode === "svg" ? "Mathematical GODLEVEL Visualization" : "AI Generated GODLEVEL Art"}
-                            </p>
-                            <p className="text-xs text-slate-400">
-                              {new Date(art.timestamp).toLocaleDateString()} - {art.params?.dataset || "Unknown"} GODLEVEL
-                            </p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-
-                  {totalPages > 1 && (
-                    <div className="flex items-center justify-between">
-                      <Button
-                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                        disabled={currentPage === 1}
-                        variant="outline"
-                        className="border-slate-500 text-slate-400"
-                      >
-                        Previous
-                      </Button>
-                      <p className="text-sm text-slate-400">
-                        Page {currentPage} of {totalPages}
-                      </p>
-                      <Button
-                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                        disabled={currentPage === totalPages}
-                        variant="outline"
-                        className="border-slate-500 text-slate-400"
-                      >
-                        Next
-                      </Button>
+                          <CardContent className="p-4">
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <h4 className="text-sm font-medium text-slate-200 capitalize">
+                                  {art.params?.scenario || "Unknown"}
+                                </h4>
+                                <span className="text-xs text-slate-400">
+                                  {new Date(art.timestamp).toLocaleDateString()}
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-1">
+                                <Badge variant="outline" className="text-xs border-slate-500 text-slate-400">
+                                  {art.params?.colorScheme}
+                                </Badge>
+                                <Badge variant="outline" className="text-xs border-slate-500 text-slate-400">
+                                  {art.mode.toUpperCase()}
+                                </Badge>
+                                {art.isDomeProjection && (
+                                  <Badge variant="outline" className="text-xs border-purple-500 text-purple-400">
+                                    Dome
+                                  </Badge>
+                                )}
+                                {art.is360Panorama && (
+                                  <Badge variant="outline" className="text-xs border-green-500 text-green-400">
+                                    360°
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="flex gap-1">
+                                <Button
+                                  size="sm"
+                                  onClick={() => {
+                                    setGeneratedArt(art)
+                                    // Switch to generate tab to view
+                                    const generateTab = document.querySelector('[value="generate"]') as HTMLElement
+                                    generateTab?.click()
+                                  }}
+                                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-xs h-7"
+                                >
+                                  <Eye className="h-3 w-3 mr-1" />
+                                  View
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
                     </div>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
 
-      {/* Reset Button */}
-      <div className="text-center">
-        <Button
-          onClick={resetAllParameters}
-          variant="destructive"
-          className="bg-red-600 hover:bg-red-700 text-white font-medium py-3"
-        >
-          Reset All Parameters
-        </Button>
-      </div>
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                      <div className="flex items-center justify-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                          disabled={currentPage === 1}
+                          className="border-slate-600 bg-transparent"
+                        >
+                          Previous
+                        </Button>
+                        <span className="text-sm text-slate-400">
+                          Page {currentPage} of {totalPages}
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                          disabled={currentPage === totalPages}
+                          className="border-slate-600 bg-transparent"
+                        >
+                          Next
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
 
-      {/* Footer */}
-      <div className="text-center text-slate-500 text-sm">
-        Created with ❤️ by <a href="https://neural.love/" target="_blank" rel="noopener noreferrer" className="underline">
-          Neuralia
-        </a> - Powered by GODLEVEL mathematical creativity and AI. 🇮🇩✨
+        {/* Quick Actions */}
+        <Card className="bg-slate-800 border-slate-700">
+          <CardContent className="p-4">
+            <div className="flex flex-wrap gap-2 justify-center">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={resetAllParameters}
+                className="border-slate-600 bg-transparent text-slate-300 hover:bg-slate-700"
+              >
+                Reset Parameters
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={randomizeSeed}
+                className="border-slate-600 bg-transparent text-slate-300 hover:bg-slate-700"
+              >
+                <Dice1 className="h-3 w-3 mr-1" />
+                Random Seed
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setDataset("indonesian")}
+                className="border-slate-600 bg-transparent text-slate-300 hover:bg-slate-700"
+              >
+                🇮🇩 Indonesian GODLEVEL
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setDataset("escher")}
+                className="border-slate-600 bg-transparent text-slate-300 hover:bg-slate-700"
+              >
+                🎨 M.C. Escher Math
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setDataset("8bit")}
+                className="border-slate-600 bg-transparent text-slate-300 hover:bg-slate-700"
+              >
+                🎮 8bit Pixel Art
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
-  </div>
   )
 }
+
+// Default export
+export default FlowArtGenerator
