@@ -87,6 +87,213 @@ const colorPalettes: Record<string, string[]> = {
   tidal: ["#003366", "#0066cc", "#3399ff", "#66ccff", "#99e6ff", "#ccf5ff"],
 }
 
+// 8bit pattern generator
+function generate8bitPattern(
+  params: GenerationParams,
+  rng: SeededRandom,
+): Array<{ x: number; y: number; color: string; size: number; type: string }> {
+  const points: Array<{ x: number; y: number; color: string; size: number; type: string }> = []
+  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
+
+  // 8bit specific color limitations - reduce to 16 colors max
+  const limitedPalette = palette.slice(0, 16)
+
+  for (let i = 0; i < params.numSamples; i++) {
+    const t = i / params.numSamples
+
+    let elementType = "pixel"
+    let x: number, y: number, size: number
+
+    // Snap to pixel grid for authentic 8bit feel
+    const pixelSize = 8
+    const gridWidth = Math.floor(800 / pixelSize)
+    const gridHeight = Math.floor(600 / pixelSize)
+
+    switch (params.scenario) {
+      case "retro-arcade":
+        // Classic arcade game layout
+        const spriteX = Math.floor(rng.next() * gridWidth) * pixelSize
+        const spriteY = Math.floor(rng.next() * gridHeight) * pixelSize
+        x = spriteX
+        y = spriteY
+        elementType = i < params.numSamples * 0.1 ? "player-sprite" : "background-pixel"
+        size = pixelSize
+        break
+
+      case "cyberpunk-8bit":
+        // Neon-lit cityscape with pixel buildings
+        if (i < params.numSamples * 0.3) {
+          // Buildings
+          x = Math.floor(rng.next() * gridWidth) * pixelSize
+          y = Math.floor(rng.next() * (gridHeight * 0.7)) * pixelSize + gridHeight * 0.3 * pixelSize
+          elementType = "building-pixel"
+          size = pixelSize
+        } else {
+          // Neon effects
+          x = Math.floor(rng.next() * gridWidth) * pixelSize
+          y = Math.floor(rng.next() * gridHeight) * pixelSize
+          elementType = "neon-pixel"
+          size = pixelSize / 2
+        }
+        break
+
+      case "fantasy-quest":
+        // RPG world with castles and dungeons
+        if (i < params.numSamples * 0.05) {
+          // Castle structures
+          x = 200 + Math.floor(rng.next() * 20) * pixelSize
+          y = 100 + Math.floor(rng.next() * 15) * pixelSize
+          elementType = "castle-pixel"
+          size = pixelSize * 2
+        } else {
+          // Terrain
+          x = Math.floor(rng.next() * gridWidth) * pixelSize
+          y = Math.floor(rng.next() * gridHeight) * pixelSize
+          elementType = "terrain-pixel"
+          size = pixelSize
+        }
+        break
+
+      case "space-adventure":
+        // Retro space shooter
+        if (i < params.numSamples * 0.1) {
+          // Spaceships
+          x = Math.floor(rng.next() * gridWidth) * pixelSize
+          y = Math.floor(rng.next() * (gridHeight * 0.5)) * pixelSize
+          elementType = "spaceship-pixel"
+          size = pixelSize * 1.5
+        } else {
+          // Stars and space
+          x = Math.floor(rng.next() * gridWidth) * pixelSize
+          y = Math.floor(rng.next() * gridHeight) * pixelSize
+          elementType = "star-pixel"
+          size = pixelSize / 2
+        }
+        break
+
+      case "ocean-depths":
+        // Underwater pixel world
+        const waveY = Math.sin(i * 0.1) * 20 + 100
+        x = Math.floor(rng.next() * gridWidth) * pixelSize
+        y = Math.floor((waveY + rng.next() * 400) / pixelSize) * pixelSize
+        elementType = y < 200 ? "surface-pixel" : "underwater-pixel"
+        size = pixelSize
+        break
+
+      case "desert-wasteland":
+        // Post-apocalyptic desert
+        x = Math.floor(rng.next() * gridWidth) * pixelSize
+        y = Math.floor((300 + rng.next() * 300) / pixelSize) * pixelSize
+        elementType = "desert-pixel"
+        size = pixelSize
+        break
+
+      case "magical-forest":
+        // Enchanted woodland
+        if (i < params.numSamples * 0.2) {
+          // Trees
+          x = Math.floor(rng.next() * gridWidth) * pixelSize
+          y = Math.floor(rng.next() * (gridHeight * 0.8)) * pixelSize
+          elementType = "tree-pixel"
+          size = pixelSize * 2
+        } else {
+          // Forest floor
+          x = Math.floor(rng.next() * gridWidth) * pixelSize
+          y = Math.floor((400 + rng.next() * 200) / pixelSize) * pixelSize
+          elementType = "forest-pixel"
+          size = pixelSize
+        }
+        break
+
+      case "steampunk-city":
+        // Industrial steampunk
+        if (i < params.numSamples * 0.4) {
+          // Buildings and machinery
+          x = Math.floor(rng.next() * gridWidth) * pixelSize
+          y = Math.floor(rng.next() * (gridHeight * 0.8)) * pixelSize + gridHeight * 0.2 * pixelSize
+          elementType = "steampunk-pixel"
+          size = pixelSize
+        } else {
+          // Steam and smoke
+          x = Math.floor(rng.next() * gridWidth) * pixelSize
+          y = Math.floor(rng.next() * (gridHeight * 0.5)) * pixelSize
+          elementType = "steam-pixel"
+          size = pixelSize / 2
+        }
+        break
+
+      case "neon-nights":
+        // 80s synthwave
+        if (i < params.numSamples * 0.3) {
+          // Grid lines
+          x = i % 2 === 0 ? Math.floor(rng.next() * gridWidth) * pixelSize : Math.floor(rng.next() * 10) * pixelSize * 8
+          y =
+            i % 2 === 0 ? Math.floor(rng.next() * 10) * pixelSize * 6 : Math.floor(rng.next() * gridHeight) * pixelSize
+          elementType = "grid-pixel"
+          size = pixelSize / 4
+        } else {
+          // Neon elements
+          x = Math.floor(rng.next() * gridWidth) * pixelSize
+          y = Math.floor(rng.next() * gridHeight) * pixelSize
+          elementType = "synthwave-pixel"
+          size = pixelSize
+        }
+        break
+
+      case "pixel-dungeon":
+        // Dark dungeon
+        const roomX = Math.floor(i / 100) % 4
+        const roomY = Math.floor(i / 400)
+        x = roomX * 200 + Math.floor(rng.next() * 25) * pixelSize
+        y = roomY * 150 + Math.floor(rng.next() * 18) * pixelSize
+        elementType = "dungeon-pixel"
+        size = pixelSize
+        break
+
+      case "cosmic-shooter":
+        // Space shooter
+        if (i < params.numSamples * 0.15) {
+          // Enemy formations
+          const formationX = (i % 10) * pixelSize * 6
+          const formationY = Math.floor(i / 10) * pixelSize * 4
+          x = formationX + 100
+          y = formationY + 50
+          elementType = "enemy-pixel"
+          size = pixelSize
+        } else {
+          // Background stars
+          x = Math.floor(rng.next() * gridWidth) * pixelSize
+          y = Math.floor(rng.next() * gridHeight) * pixelSize
+          elementType = "space-pixel"
+          size = pixelSize / 4
+        }
+        break
+
+      default:
+        // Default 8bit pattern
+        x = Math.floor(rng.next() * gridWidth) * pixelSize
+        y = Math.floor(rng.next() * gridHeight) * pixelSize
+        elementType = "pixel"
+        size = pixelSize
+    }
+
+    // Apply minimal noise for 8bit precision
+    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 4
+    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 4
+
+    // Snap back to pixel grid
+    x = Math.round(x / pixelSize) * pixelSize
+    y = Math.round(y / pixelSize) * pixelSize
+
+    const colorIndex = Math.floor((t + rng.next() * 0.3) * limitedPalette.length) % limitedPalette.length
+    const color = limitedPalette[colorIndex]
+
+    points.push({ x, y, color, size, type: elementType })
+  }
+
+  return points
+}
+
 // Mathematical functions for different datasets
 function generateNuanuPattern(
   params: GenerationParams,
@@ -808,6 +1015,9 @@ export function generateFlowField(params: GenerationParams): string {
 
   // Generate points based on dataset
   switch (params.dataset) {
+    case "8bit":
+      points = generate8bitPattern(params, rng)
+      break
     case "nuanu":
       points = generateNuanuPattern(params, rng)
       break
