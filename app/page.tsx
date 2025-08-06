@@ -4,13 +4,13 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { FlowArtGenerator } from "@/components/flow-art-generator"
+import FlowArtGenerator from "@/components/flow-art-generator"
 import { TribesDemo } from "@/components/tribes-demo"
 import { Dome360Planner } from "@/components/dome-360-planner"
-import { Settings, Palette, Zap, Globe, Users, Mountain } from "lucide-react"
+import { Settings, Palette, Zap, Globe, Users, Mountain } from 'lucide-react'
 import Link from "next/link"
 
-export default function HomePage() {
+export default function Home() {
   const [activeDemo, setActiveDemo] = useState<"flow" | "tribes" | "dome">("flow")
 
   return (
