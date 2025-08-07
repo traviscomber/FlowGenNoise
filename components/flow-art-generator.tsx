@@ -48,7 +48,7 @@ interface GeneratedArt {
     mainImage: string
     domeImage: string
     panoramaImage: string
-    }
+  }
 }
 
 export function FlowArtGenerator() {
@@ -152,7 +152,8 @@ export function FlowArtGenerator() {
       "8bit": "8bit Pixel Art Generation",
       escher: "M.C. Escher Mathematical Art",
       bosch: "Hieronymus Bosch Fantastical Worlds",
-      picasso: "Pablo Picasso Artistic Periods",
+      picasso: "Pablo Picasso Cubist Masterpieces",
+      genesis: "Genesis Creation",
       camouflage: "Nature's Camouflage Mastery",
     }
     return names[dataset] || dataset
@@ -351,6 +352,54 @@ export function FlowArtGenerator() {
           description:
             "GODLEVEL PROMPT: Majestic Mount Merapi smoking against dawn sky like sleeping dragon breathing fire, most active volcano in Indonesia with glowing lava flows creating rivers of molten rock, terraced rice fields cascading down volcanic slopes in perfect geometric patterns reflecting golden sunrise, Mount Bromo crater lake reflecting morning light like mirror of the gods surrounded by sea of sand and ancient caldera walls, sacred Mount Agung towering over Balinese temples as spiritual axis of the island where gods reside, volcanic ash creating fertile soil that feeds millions of Indonesians across the archipelago, traditional offerings of flowers and rice placed at crater edges by local villagers seeking protection from volcanic spirits, spiritual beliefs connecting mountains to divine realm where ancestors watch over their descendants, Ring of Fire geological power with 130 active volcanoes forming backbone of Indonesian islands, lush tropical vegetation thriving on mineral-rich volcanic slopes creating emerald green landscapes, cultural reverence for volcanic forces as both destroyer and creator of life, traditional Indonesian villages built on volcanic slopes where people have learned to live with constant geological activity, Mount Krakatoa's legendary 1883 eruption that was heard around the world, sulfur miners working in dangerous conditions at Kawah Ijen volcano with blue flames of burning sulfur creating otherworldly scenes, volcanic hot springs and geysers creating natural spas where locals bathe in healing mineral waters, traditional ceremonies to appease volcano spirits with elaborate rituals and offerings, scientific monitoring stations tracking seismic activity and gas emissions, dramatic volcanic sunsets with ash clouds creating spectacular colors across Indonesian skies, hyperrealistic 8K landscape photography with dramatic lighting, showing raw geological power and human adaptation, atmospheric effects with volcanic smoke and ash, cultural integration of volcanic forces into daily Indonesian life",
         },
+        {
+          value: "dayak",
+          label: "🏹 Dayak Tribal Warriors of Borneo",
+          description:
+            "GODLEVEL PROMPT: Fierce Dayak tribal warriors of Borneo in full traditional regalia with elaborate feathered headdresses made from hornbill feathers and bird of paradise plumes, intricate tattoos covering their bodies telling stories of headhunting victories and spiritual protection, traditional mandau swords with ornate carved handles and razor-sharp blades forged by master smiths, longhouse communities built on stilts above jungle rivers with extended families living in harmony, traditional Dayak shields decorated with protective spirits and ancestral symbols, war paint made from natural pigments creating fearsome masks for battle and ceremony, blowpipes with poison darts for hunting in dense Borneo rainforest, traditional beadwork and brass ornaments indicating social status and spiritual power, shamanic rituals connecting with forest spirits and ancestral guidance, headhunting traditions transformed into spiritual ceremonies honoring fallen enemies, traditional Dayak music with gongs and drums echoing through jungle canopy, rice wine ceremonies celebrating harvest and community bonds, traditional weaving creating textiles with sacred patterns and protective meanings, jungle survival skills passed down through generations of forest dwellers, traditional Dayak architecture with carved wooden totems and spirit houses, animistic beliefs where every tree and river has spiritual significance, traditional hunting techniques using ancient knowledge of animal behavior, Dayak oral traditions preserving thousands of years of tribal wisdom, modern Dayak communities balancing traditional culture with contemporary Indonesian society, conservation efforts protecting Borneo rainforest and traditional Dayak territories, hyperrealistic 8K ethnographic photography showing authentic tribal culture, atmospheric jungle lighting with mist and dramatic shadows, cultural authenticity respecting living Dayak communities and their sacred traditions",
+        },
+        {
+          value: "toraja",
+          label: "⚰️ Toraja Death Rituals and Ancestral Ceremonies",
+          description:
+            "GODLEVEL PROMPT: Sacred Toraja death ceremonies in highland Sulawesi with elaborate funeral rituals lasting for days, traditional tongkonan houses with distinctive boat-shaped roofs and intricate carved decorations representing cosmic order, massive stone graves carved into cliff faces with tau tau wooden effigies guarding the deceased, water buffalo sacrifices honoring the dead with hundreds of animals offered to ensure safe passage to afterlife, traditional Toraja textiles with geometric patterns representing the journey between life and death, elaborate funeral processions with entire villages participating in honoring the deceased, traditional Toraja architecture with houses built without nails using ancient joinery techniques, rice terraces carved into mountainsides creating stunning geometric landscapes, traditional Toraja coffee cultivation in highland plantations with beans grown in volcanic soil, ancestral worship ceremonies where the dead continue to participate in family decisions, traditional Toraja wood carving with intricate patterns telling stories of creation and afterlife, funeral feasts with traditional foods prepared according to ancient recipes, traditional Toraja music with bamboo instruments and chanting that connects living with dead, stone megaliths marking sacred sites and ancestral burial grounds, traditional Toraja weaving creating ceremonial cloths for funeral rituals, highland landscapes with mist-covered mountains and ancient forests, traditional Toraja beliefs where death is not an ending but a transformation, modern Toraja communities maintaining ancient traditions while adapting to contemporary Indonesia, cultural tourism bringing visitors to witness authentic funeral ceremonies, conservation efforts protecting traditional Toraja architecture and cultural practices, hyperrealistic 8K documentary photography showing authentic ceremonial details, atmospheric highland lighting with mist and dramatic mountain vistas, cultural sensitivity respecting sacred Toraja death rituals and ancestral traditions",
+        },
+        {
+          value: "batak",
+          label: "🎵 Batak Tribal Music and Lake Toba Legends",
+          description:
+            "GODLEVEL PROMPT: Traditional Batak tribal communities around Lake Toba in North Sumatra with ancient musical traditions and legendary folklore, gondang sabangunan orchestras with traditional drums, gongs, and wind instruments creating hypnotic rhythms, traditional Batak houses with distinctive peaked roofs and elaborate carved decorations, Lake Toba as the world's largest volcanic lake with Samosir Island rising from crystal blue waters, traditional Batak textiles with ulos ceremonial cloths woven with sacred patterns and protective meanings, ancient Batak script carved into bamboo and bark preserving tribal wisdom and genealogies, traditional Batak ceremonies with ritual dancing and ancestral invocations, legendary stories of Princess Mandalika and the creation of Lake Toba through supernatural events, traditional Batak agriculture with rice cultivation and water buffalo farming around the lake, traditional Batak architecture with houses built on stilts and decorated with protective symbols, shamanic traditions with datu spiritual leaders performing healing and divination rituals, traditional Batak weapons including ceremonial swords and shields with spiritual significance, funeral ceremonies with elaborate rituals ensuring proper passage to ancestral realm, traditional Batak cuisine with unique flavors and ceremonial foods for special occasions, traditional Batak boat building with vessels designed for Lake Toba's unique conditions, ancient megalithic sites with stone monuments and burial chambers, traditional Batak calendar system based on lunar cycles and agricultural seasons, modern Batak communities preserving cultural traditions while participating in contemporary Indonesian society, cultural festivals celebrating Batak heritage with music, dance, and traditional crafts, conservation efforts protecting Lake Toba ecosystem and traditional Batak territories, hyperrealistic 8K landscape photography showing Lake Toba's stunning natural beauty, atmospheric lake lighting with mist and dramatic mountain reflections, cultural authenticity honoring living Batak communities and their sacred traditions",
+        },
+        {
+          value: "asmat",
+          label: "🗿 Asmat Wood Carving Masters of Papua",
+          description:
+            "GODLEVEL PROMPT: Master Asmat wood carvers of Papua creating intricate sculptures and totems with supernatural artistic skill, traditional Asmat villages built on stilts above tidal swamps with houses connected by wooden walkways, elaborate bis poles carved from single trees reaching heights of 20 feet with intricate ancestral figures, traditional Asmat shields with carved faces and protective spirits designed for warfare and ceremony, headhunting traditions transformed into artistic expression with carved heads representing spiritual power, traditional Asmat canoes carved from massive trees for navigating swamp waterways, sago palm cultivation providing staple food harvested from swamp forests, traditional Asmat masks with elaborate feathers and carved features for ceremonial dances, ancestral worship with carved figures representing deceased family members and tribal heroes, traditional Asmat weapons including spears, bows, and clubs decorated with intricate carvings, initiation ceremonies with young men learning traditional carving techniques from master artisans, traditional Asmat music with drums made from tree trunks and ceremonial chanting, swamp forest environment with unique ecosystem of mangroves and tidal waterways, traditional Asmat architecture with communal houses for extended families, shamanic traditions with spiritual leaders communicating with forest spirits and ancestors, traditional Asmat textiles with bark cloth and feathered decorations, modern Asmat communities balancing traditional culture with contemporary Indonesian society, art collectors and museums recognizing Asmat carvings as masterpieces of primitive art, conservation efforts protecting Papua swamp forests and traditional Asmat territories, cultural tourism bringing visitors to witness authentic Asmat carving demonstrations, hyperrealistic 8K ethnographic photography showing authentic tribal craftsmanship, atmospheric swamp lighting with filtered sunlight through forest canopy, cultural respect for living Asmat communities and their sacred artistic traditions",
+        },
+        {
+          value: "mentawai",
+          label: "🌿 Mentawai Shamanic Traditions and Rainforest Wisdom",
+          description:
+            "GODLEVEL PROMPT: Ancient Mentawai tribal shamans in Siberut Island rainforests performing healing rituals with supernatural spiritual power, traditional Mentawai tattoos covering entire bodies with intricate patterns representing spiritual protection and tribal identity, sikerei shamanic leaders communicating with forest spirits and ancestral souls through trance ceremonies, traditional Mentawai longhouses built from jungle materials with extended families living in harmony, uma traditional communal houses with elaborate carved decorations and spiritual significance, traditional Mentawai hunting with poison arrows and blowpipes in pristine rainforest environment, medicinal plant knowledge with shamans using hundreds of forest species for healing, traditional Mentawai clothing with bark cloth and natural fiber textiles, animistic beliefs where every tree, river, and animal has spiritual essence, traditional Mentawai music with bamboo instruments and chanting that connects with forest spirits, sago palm cultivation and traditional food gathering from rainforest resources, traditional Mentawai boats carved from single trees for navigating island rivers, initiation ceremonies with young people learning shamanic traditions and forest wisdom, traditional Mentawai weapons including spears and shields decorated with spiritual symbols, funeral rituals with elaborate ceremonies ensuring proper passage to ancestral realm, traditional Mentawai calendar based on natural cycles and spiritual observations, pristine rainforest environment with unique endemic species found nowhere else on Earth, traditional Mentawai architecture with houses built without nails using ancient techniques, modern challenges with deforestation threatening traditional Mentawai territories and culture, conservation efforts protecting Siberut Island rainforest and indigenous rights, cultural tourism bringing visitors to learn about authentic shamanic traditions, hyperrealistic 8K rainforest photography showing pristine jungle environment, atmospheric forest lighting with filtered sunlight and mist, cultural sensitivity respecting sacred Mentawai shamanic practices and forest wisdom",
+        },
+        {
+          value: "bugis",
+          label: "⛵ Bugis Maritime Warriors and Trading Empire",
+          description:
+            "GODLEVEL PROMPT: Legendary Bugis maritime warriors and traders from Sulawesi with their magnificent pinisi sailing ships dominating Southeast Asian seas, traditional pinisi vessels with distinctive seven-sailed configuration built by master shipwrights using ancient techniques, Bugis navigators using traditional knowledge of stars, winds, and currents to sail across vast ocean distances, traditional Bugis houses on stilts with elaborate carved decorations and distinctive architectural features, Makassar as the great trading port where Bugis merchants established commercial networks across the archipelago, traditional Bugis textiles with silk weaving and intricate patterns representing maritime heritage, legendary Bugis warriors with traditional weapons including keris daggers and ceremonial swords, traditional Bugis music with gambus lutes and traditional songs celebrating maritime adventures, Bugis trading expeditions reaching as far as northern Australia and establishing settlements, traditional Bugis boat building with skills passed down through generations of master craftsmen, maritime ceremonies honoring sea spirits and ensuring safe voyages, traditional Bugis cuisine with seafood dishes and spices from their trading networks, Bugis script and literature preserving epic tales of maritime adventures and heroic deeds, traditional Bugis fishing techniques adapted to different marine environments across the archipelago, Bugis cultural influence spreading throughout maritime Southeast Asia through trade and migration, traditional Bugis wedding ceremonies with elaborate rituals and maritime symbolism, modern Bugis communities maintaining maritime traditions while adapting to contemporary Indonesian society, Bugis diaspora communities throughout Indonesia preserving cultural heritage, conservation efforts protecting traditional pinisi shipbuilding and maritime knowledge, cultural festivals celebrating Bugis maritime heritage with boat races and traditional ceremonies, hyperrealistic 8K maritime photography showing traditional pinisi ships under full sail, atmospheric ocean lighting with dramatic skies and seascapes, cultural pride in Bugis maritime mastery and trading empire legacy",
+        },
+        {
+          value: "minangkabau",
+          label: "🏠 Minangkabau Matriarchal Society and Rumah Gadang",
+          description:
+            "GODLEVEL PROMPT: Traditional Minangkabau matriarchal society in West Sumatra with distinctive rumah gadang houses featuring dramatic curved roofs resembling buffalo horns, matrilineal inheritance system where property and family names pass through female lineage, traditional Minangkabau architecture with houses built without nails using intricate wooden joinery, elaborate wood carvings decorating rumah gadang with geometric patterns and floral motifs, traditional Minangkabau textiles with songket weaving using gold and silver threads, Padang cuisine with rendang and other spicy dishes that have become internationally famous, traditional Minangkabau ceremonies with adat customs governing social behavior and community relationships, surau traditional Islamic schools where young men learn religious and cultural knowledge, traditional Minangkabau music with saluang bamboo flutes and traditional songs, merantau tradition where young men leave home to seek knowledge and fortune before returning, traditional Minangkabau dance with elegant movements and colorful costumes, rice cultivation in terraced fields with traditional irrigation systems, traditional Minangkabau crafts including weaving, wood carving, and metalwork, Islamic influence blending with traditional adat customs creating unique cultural synthesis, traditional Minangkabau wedding ceremonies with elaborate rituals and community participation, modern Minangkabau communities balancing traditional matriarchal values with contemporary Indonesian society, Minangkabau diaspora throughout Indonesia maintaining cultural connections to homeland, traditional Minangkabau philosophy emphasizing harmony between nature, society, and spiritual values, conservation efforts protecting traditional rumah gadang architecture and cultural practices, cultural tourism showcasing authentic Minangkabau traditions and hospitality, educational institutions preserving Minangkabau language and cultural knowledge, hyperrealistic 8K architectural photography showing magnificent rumah gadang structures, atmospheric highland lighting with mist and dramatic mountain landscapes, cultural respect for living Minangkabau communities and their matriarchal traditions",
+        },
+        {
+          value: "sundanese",
+          label: "🎭 Sundanese Arts and Highland Culture",
+          description:
+            "GODLEVEL PROMPT: Traditional Sundanese culture in West Java highlands with angklung bamboo orchestras creating ethereal musical harmonies, traditional Sundanese dance with jaipong and other elegant performances in royal courts, wayang golek wooden puppet shows telling epic stories with master dalang puppeteers, traditional Sundanese architecture with distinctive wooden houses and carved decorations, Sundanese language and literature preserving ancient wisdom and poetic traditions, traditional Sundanese textiles with batik and ikat weaving techniques, highland landscapes with tea plantations and volcanic mountains creating stunning scenery, traditional Sundanese cuisine with unique flavors and ceremonial dishes, gamelan degung orchestras with bronze instruments creating sophisticated musical compositions, traditional Sundanese ceremonies with elaborate rituals and community participation, Islamic influence blending with traditional Sundanese customs creating unique cultural synthesis, traditional Sundanese crafts including bamboo work, wood carving, and textile production, rice cultivation in terraced fields with traditional irrigation systems, traditional Sundanese calendar based on lunar cycles and agricultural seasons, modern Sundanese communities preserving cultural heritage while participating in contemporary Indonesian society, Sundanese diaspora maintaining cultural connections throughout Indonesia, traditional Sundanese philosophy emphasizing harmony between human, nature, and divine, conservation efforts protecting traditional Sundanese arts and cultural practices, cultural festivals celebrating Sundanese heritage with music, dance, and traditional crafts, educational institutions teaching Sundanese language and cultural knowledge, hyperrealistic 8K highland photography showing stunning West Java landscapes, atmospheric mountain lighting with mist and dramatic volcanic vistas, cultural authenticity honoring living Sundanese communities and their artistic traditions",
+        },
       ],
       "8bit": [
         { value: "pure", label: "Pure Mathematical", description: "Raw mathematical beauty with 8bit aesthetics" },
@@ -525,7 +574,7 @@ export function FlowArtGenerator() {
         {
           value: "garden-earthly-delights",
           label: "🌺 Garden of Earthly Delights Triptych",
-          description: "GODLEVEL PROMPT: Hieronymus Bosch's masterpiece Garden of Earthly Delights as three-panel triptych showing progression from Paradise through earthly pleasures to Hell, left panel depicting Adam and Eve in pristine Garden of Eden with exotic animals and fantastical plants, God presenting Eve to Adam under crystalline fountain of life, strange hybrid creatures and impossible architectural forms, middle panel exploding with naked figures engaged in surreal pleasures among giant fruits and bizarre contraptions, humans riding oversized animals through landscapes of coral-pink pools and crystal spheres, right panel showing apocalyptic hellscape with demons torturing souls using musical instruments as torture devices, burning cities and nightmarish creatures with human heads and animal bodies, intricate symbolism woven throughout each panel with hidden meanings about human nature and divine judgment, hyperrealistic 15th century Flemish painting technique with oil glazes creating luminous depth, every figure meticulously detailed despite fantastical nature, surreal juxtapositions of sacred and profane imagery, 8K resolution showing every brushstroke and symbolic detail"
+          description: "GODLEVEL PROMPT: Hieronymus Bosch's masterpiece Garden of Earthly Delights as three-panel triptych showing progression from Paradise through earthly pleasures to Hell, left panel depicting Adam and Eve in pristine Garden of Eden with exotic animals and fantastical plants, God presenting Eve to Adam under crystalline fountain of life, strange hybrid creatures and impossible architectural forms, middle panel exploding with naked figures engaged in surreal pleasures among giant fruits and contraptions, humans riding oversized animals through landscapes of coral-pink pools and crystal spheres, right panel showing apocalyptic hellscape with demons torturing souls using musical instruments as torture devices, burning cities and nightmarish creatures with human heads and animal bodies, intricate symbolism woven throughout each panel with hidden meanings about human nature and divine judgment, hyperrealistic 15th century Flemish painting technique with oil glazes creating luminous depth, every figure meticulously detailed despite fantastical nature, surreal juxtapositions of sacred and profane imagery, 8K resolution showing every brushstroke and symbolic detail"
         },
         {
           value: "temptation-saint-anthony",
@@ -550,32 +599,7 @@ export function FlowArtGenerator() {
         {
           value: "last-judgment",
           label: "⚖️ Last Judgment Apocalypse",
-          description: "GODLEVEL PROMPT: Hieronymus Bosch's terrifying vision of the Last Judgment with Christ as judge separating saved from damned, central figure of Christ displaying wounds of crucifixion while seated on rainbow throne, Virgin Mary and John the Baptist interceding for humanity, angels blowing trumpets to wake the dead from their graves, resurrected souls emerging from earth in various states of decay and restoration, blessed souls ascending toward heavenly light guided by angels, damned souls dragged downward by demons into fiery pit of Hell, fantastical punishments awaiting sinners with creative tortures matching their earthly crimes, hybrid demon creatures with animal heads and human bodies administering eternal justice, landscape divided between heavenly paradise and hellish wasteland, architectural marvels in heaven contrasting with burning ruins in Hell, symbolic imagery throughout representing divine justice and human moral choices, saints and martyrs surrounding Christ's throne displaying instruments of their martyrdom, detailed crowd scenes showing humanity from all walks of life facing final judgment, masterful use of vertical composition emphasizing ascension and descent, Flemish painting technique with luminous colors for heaven and dark tones for Hell, theological complexity expressed through visual narrative, 8K hyperrealistic detail capturing every soul's fate and divine majesty"
-        },
-        {
-          value: "death-miser",
-          label: "💰 Death and the Miser",
-          description: "GODLEVEL PROMPT: Hieronymus Bosch's moral allegory of Death and the Miser showing wealthy man's final moments torn between salvation and damnation, dying miser in bed reaching toward bag of gold while angel points toward crucifix offering redemption, Death entering chamber as skeleton with arrow ready to claim soul, demon emerging from beneath bed offering earthly treasures as final temptation, room filled with symbols of worldly wealth including coins, jewelry, and fine fabrics, younger version of miser in background storing gold in chest while demons whisper encouragement, moral choice visualized through miser's gesture reaching simultaneously toward money and salvation, architectural details showing luxury of wealthy household with ornate furnishings, symbolic objects throughout room representing vanity and temporary nature of material possessions, contrast between spiritual and material values embodied in single dramatic moment, angel's serene expression opposing demon's grotesque features, Death portrayed as inevitable equalizer regardless of earthly status, rich symbolism drawn from medieval morality traditions, Flemish oil painting technique creating dramatic lighting effects, psychological tension expressed through body language and facial expressions, 8K resolution showing every symbolic detail and moral lesson about choosing eternal over temporal values"
-        },
-        {
-          value: "conjurer",
-          label: "🎭 The Conjurer Deception",
-          description: "GODLEVEL PROMPT: Hieronymus Bosch's satirical scene of The Conjurer showing street magician deceiving gullible audience through sleight of hand, central figure of conjurer performing cup-and-ball trick while pickpocket accomplice steals from mesmerized spectators, crowd of onlookers with varying expressions from wonder to suspicion, symbolic owl perched nearby representing wisdom ignored by foolish audience, conjurer's table displaying magical implements and mysterious objects, background figures engaged in various forms of deception and trickery, moral allegory about human susceptibility to illusion and false promises, detailed character studies showing different personality types from naive to cunning, rich costume details indicating social status of various spectators, symbolic elements throughout scene warning against trusting appearances, masterful composition drawing viewer's eye to central deception while revealing secondary tricks, psychological insight into human nature and desire to believe in magic, social commentary on charlatans and their willing victims, Flemish painting technique with precise brushwork and luminous colors, hidden symbolic meanings in everyday objects and gestures, 8K hyperrealistic detail capturing every facial expression and symbolic element revealing deeper truths about human gullibility and moral blindness"
-        },
-        {
-          value: "stone-operation",
-          label: "🔪 Extraction of Stone of Madness",
-          description: "GODLEVEL PROMPT: Hieronymus Bosch's satirical medical scene showing quack surgeon extracting 'stone of folly' from patient's head, central composition featuring supposed doctor wearing funnel as hat performing fraudulent operation, patient seated in chair with head bandaged while flower emerges instead of stone, audience of onlookers including nun and monk observing procedure with mixture of faith and skepticism, Latin inscription warning against trusting false healers, symbolic elements throughout scene representing different forms of human folly, medical instruments displayed prominently despite their uselessness for actual healing, landscape background showing normal life continuing while deception unfolds, rich symbolism with funnel representing empty-headedness of both doctor and patient, flower symbolizing natural growth versus artificial intervention, detailed facial expressions revealing character of each participant, social commentary on medical charlatanry and human desperation for cures, masterful use of circular composition focusing attention on central deception, Flemish oil painting technique creating precise detail and luminous effects, psychological insight into relationship between healer and patient, moral lesson about distinguishing genuine help from exploitation, 8K resolution showing every brushstroke and symbolic meaning in this allegory of human gullibility"
-        },
-        {
-          value: "adoration-magi",
-          label: "👑 Adoration of the Magi",
-          description: "GODLEVEL PROMPT: Hieronymus Bosch's unique interpretation of the Adoration of the Magi blending traditional nativity with fantastical elements, three wise men presenting gifts to infant Christ while strange figures lurk in background, Melchior, Caspar, and Balthazar depicted with rich oriental costumes and exotic features, Virgin Mary holding Christ child in humble stable contrasting with elaborate gifts, Joseph standing protectively nearby while mysterious figures peer through stable openings, background landscape filled with Bosch's characteristic hybrid creatures and impossible architecture, symbolic gifts of gold, frankincense, and myrrh displayed prominently, angels hovering overhead in luminous glory, demonic figures hidden in shadows representing evil's presence even at Christ's birth, detailed crowd scenes showing mixture of devotion and curiosity, exotic animals from distant lands accompanying the magi's caravan, architectural elements combining realistic stable with fantastical structures, rich symbolism throughout representing triumph of good over evil, masterful use of light focusing on holy family while shadows conceal threatening elements, Flemish painting technique with jewel-like colors and precise detail, theological complexity expressed through visual narrative, 8K hyperrealistic resolution capturing every symbolic element and devotional detail in this sacred yet surreal composition"
-        },
-        {
-          value: "christ-carrying-cross",
-          label: "✝️ Christ Carrying the Cross",
-          description: "GODLEVEL PROMPT: Hieronymus Bosch's intense close-up composition of Christ carrying the cross surrounded by grotesque faces of tormentors, central figure of Christ with serene expression amid chaos of hatred and mockery, crowd of distorted faces showing various expressions of cruelty, indifference, and sadistic pleasure, two thieves also visible with contrasting expressions of repentance and defiance, detailed physiognomy studies revealing inner character through external features, symbolic elements including crown of thorns and instruments of passion, masterful psychological portraiture showing spectrum of human nature from divine to demonic, rich symbolism with each face representing different aspect of humanity's response to divine sacrifice, composition creating claustrophobic effect emphasizing Christ's isolation, Flemish oil painting technique achieving photographic realism in facial details, moral commentary on human capacity for both cruelty and redemption, background elements minimal to focus attention on human drama, lighting effects creating dramatic contrast between Christ's luminous face and dark surrounding figures, theological depth expressed through visual narrative of salvation, 8K hyperrealistic detail showing every wrinkle, expression, and symbolic element in this profound meditation on human nature and divine love"
+          description: "GODLEVEL PROMPT: Hieronymus Bosch's terrifying vision of the Last Judgment with Christ as judge separating saved from damned, central figure of Christ displaying wounds of crucifixion while seated on rainbow throne, Virgin Mary and John the Baptist interceding for humanity, angels blowing trumpets to wake the dead from their graves, resurrected souls emerging from earth in various states of decay and restoration, blessed souls ascending toward heavenly light guided by angels, damned souls dragged downward by demons into fiery pit of Hell, fantastical punishments awaiting sinners with creative tortures matching their earthly crimes, hybrid demon creatures with animal heads and human bodies administering eternal justice, landscape divided between heavenly paradise and hellish wasteland, architectural marvels in heaven contrasting with burning ruins in Hell, symbolic imagery throughout representing divine justice and human moral choices, saints and martyrs surrounding Christ's throne displaying instruments of their martyrdom, detailed crowd scenes showing humanity from all walks of life facing final judgment, masterful use of vertical composition emphasizing ascension and descent, Flemish painting technique with luminous colors for heaven and dark tones for Hell, theological complexity expressed through visual narrative of salvation, 8K hyperrealistic detail capturing every soul's fate and divine majesty"
         }
       ],
       picasso: [
@@ -719,9 +743,9 @@ export function FlowArtGenerator() {
         {
           value: "adaptive-materials",
           label: "🧬 Adaptive Camouflage Materials Science",
-          description: "GODLEVEL PROMPT: Cutting-edge materials science creating adaptive camouflage inspired by nature, metamaterials with programmable optical properties, mathematical modeling of light interaction with nanostructures, biomimetic design principles from natural camouflage systems, smart textiles responding to environmental conditions, military and civilian applications of adaptive camouflage, ethical considerations in camouflage technology development, manufacturing challenges and scalability issues, international cooperation and competition in camouflage research, future possibilities including true optical invisibility, hyperrealistic visualization of advanced materials and applications, scientific accuracy in depicting actual materials science research, technological optimism balanced with ethical responsibility"
+          description: "GODLEVEL PROMPT: Cutting-edge materials science creating adaptive camouflage inspired by nature, metamaterials with programmable optical properties, mathematical modeling of light interaction with nanostructures, biomimetic design principles from natural camouflage systems, smart textiles responding to environmental conditions, military and civilian applications of adaptive camouflage, ethical considerations in camouflage technology development, manufacturing challenges and scalability issues, international cooperation and competition in camouflage research, future possibilities including true optical invisibility, hyperrealistic visualization of advanced materials and applications, scientific accuracy in depicting actual materials science research, technological applications in medicine and biotechnology"
         }
-      ],
+      ]
     }
     return (
       scenarios[dataset] || [
@@ -912,7 +936,7 @@ export function FlowArtGenerator() {
           mode: "ai" as const,
           customPrompt: promptToSend,
           originalPrompt: data.originalPrompt,
-          finalPrompt: data.originalPrompt,
+          finalPrompt: data.finalPrompt,
           promptLength: data.promptLength,
           estimatedFileSize: data.estimatedFileSize,
           provider: data.provider,
@@ -1087,74 +1111,106 @@ export function FlowArtGenerator() {
 
   const downloadImage = useCallback(
     async (format: "regular" | "dome" | "panorama" = "regular") => {
-      if (!generatedArt) {
-        console.log("No generated art to download")
-        return
+    if (!generatedArt) {
+      console.log("No generated art to download")
+      return
+    }
+
+    console.log("Download button clicked!", format)
+    setDownloadStatus("Preparing download...")
+
+    try {
+      let imageUrl: string
+      let filename: string
+
+      switch (format) {
+        case "dome":
+          if (!generatedArt.domeImageUrl) {
+            throw new Error("No dome projection available")
+          }
+          imageUrl = generatedArt.domeImageUrl
+          filename = `flowsketch-dome-${generatedArt.params?.dataset || "unknown"}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "png"}`
+          break
+        case "panorama":
+          if (!generatedArt.panorama360Url) {
+            throw new Error("No 360° panorama available")
+          }
+          imageUrl = generatedArt.panorama360Url
+          filename = `flowsketch-360-${generatedArt.params?.dataset || "unknown"}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "png"}`
+          break
+        default:
+          imageUrl = generatedArt.imageUrl
+          filename = `flowsketch-${generatedArt.params?.dataset || "unknown"}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "png"}`
       }
 
-      console.log("Download button clicked!", format)
-      setDownloadStatus("Preparing download...")
+      console.log("Downloading from URL:", imageUrl)
 
-      try {
-        let imageUrl: string
-        let filename: string
-
-        switch (format) {
-          case "dome":
-            if (!generatedArt.domeImageUrl) {
-              throw new Error("No dome projection available")
-            }
-            imageUrl = generatedArt.domeImageUrl
-            filename = `flowsketch-dome-${generatedArt.params?.dataset || "unknown"}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "jpg"}`
-            break
-          case "panorama":
-            if (!generatedArt.panorama360Url) {
-              throw new Error("No 360° panorama available")
-            }
-            imageUrl = generatedArt.panorama360Url
-            filename = `flowsketch-360-${generatedArt.params?.dataset || "unknown"}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "jpg"}`
-            break
-          default:
-            imageUrl = generatedArt.imageUrl
-            filename = `flowsketch-${generatedArt.params?.dataset || "unknown"}-${Date.now()}.${generatedArt.mode === "svg" ? "svg" : "jpg"}`
-        }
-
-        console.log("Downloading from URL:", imageUrl)
-
-        if (generatedArt.mode === "svg") {
-          // Direct download for SVG
+      if (generatedArt.mode === "svg") {
+        // Direct download for SVG
+        const link = document.createElement("a")
+        link.href = imageUrl
+        link.download = filename
+        link.style.display = "none"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        setDownloadStatus("SVG downloaded successfully!")
+      } else {
+        // For AI-generated images, fetch and create blob URL for download
+        try {
+          const response = await fetch(imageUrl, {
+            mode: 'cors',
+            credentials: 'omit'
+          })
+          
+          if (!response.ok) {
+            throw new Error(`Failed to fetch image: ${response.status}`)
+          }
+          
+          const blob = await response.blob()
+          const blobUrl = URL.createObjectURL(blob)
+          
           const link = document.createElement("a")
-          link.href = imageUrl
+          link.href = blobUrl
           link.download = filename
+          link.style.display = "none"
           document.body.appendChild(link)
           link.click()
           document.body.removeChild(link)
-          setDownloadStatus("SVG downloaded successfully!")
-        } else {
-          // Use proxy for AI-generated images
+          
+          // Clean up blob URL after a delay
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 1000)
+          
+          setDownloadStatus("Image downloaded successfully!")
+        } catch (fetchError) {
+          console.warn("Direct fetch failed, trying proxy method:", fetchError)
+          
+          // Fallback to proxy method
           const proxyUrl = `/api/download-proxy?url=${encodeURIComponent(imageUrl)}&filename=${encodeURIComponent(filename)}`
           console.log("Using proxy URL:", proxyUrl)
 
           const link = document.createElement("a")
           link.href = proxyUrl
           link.download = filename
+          link.style.display = "none"
           document.body.appendChild(link)
           link.click()
           document.body.removeChild(link)
-          setDownloadStatus("Image downloaded successfully!")
+          setDownloadStatus("Image downloaded via proxy!")
         }
-
-        toast.success(`Download Complete! 📥 ${filename} has been saved to your device.`)
-      } catch (error: any) {
-        console.error("Download error:", error)
-        setDownloadStatus(`Download failed: ${error.message}`)
-        toast.error(error.message || "Failed to download image. Please try again.")
-      } finally {
-        setTimeout(() => setDownloadStatus(null), 3000)
       }
-    },
-    [generatedArt],
-  )
+
+      toast.success(`Download Complete! 📥 ${filename} has been saved to your device.`)
+    } catch (error: any) {
+      console.error("Download error:", error)
+      setDownloadStatus(`Download failed: ${error.message}`)
+      toast.error(error.message || "Failed to download image. Please try again.")
+    } finally {
+      setTimeout(() => setDownloadStatus(null), 3000)
+    }
+  },
+  [generatedArt],
+)
 
   const clearGallery = useCallback(() => {
     setGallery([])
@@ -1200,7 +1256,7 @@ export function FlowArtGenerator() {
           </div>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto">
             Generate stunning mathematical visualizations and AI-powered artwork with advanced projection support for
-            domes and 360° environments. Now featuring GODLEVEL Indonesian tribal heritage, M.C. Escher mathematical art, and Pablo Picasso artistic periods! 🇮🇩✨🎨
+            domes and 360° environments. Now featuring GODLEVEL Indonesian tribal heritage, M.C. Escher mathematical art, and Pablo Picasso cubist masterpieces! 🇮🇩✨🎨
           </p>
         </div>
 
@@ -1303,10 +1359,7 @@ export function FlowArtGenerator() {
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-600">
                           <SelectItem value="indonesian">🇮🇩 Indonesian Tribal Heritage (GODLEVEL)</SelectItem>
-                          <SelectItem value="picasso">🎨 Pablo Picasso Artistic Periods</SelectItem>
-                          <SelectItem value="escher">🔮 M.C. Escher Mathematical Art</SelectItem>
-                          <SelectItem value="bosch">👹 Hieronymus Bosch Fantastical Worlds</SelectItem>
-                          <SelectItem value="camouflage">🦎 Nature's Camouflage Mastery</SelectItem>
+                          <SelectItem value="escher">🎨 M.C. Escher Mathematical Art</SelectItem>
                           <SelectItem value="nuanu">🏗️ Nuanu Creative City</SelectItem>
                           <SelectItem value="bali">🏝️ Balinese Cultural Heritage</SelectItem>
                           <SelectItem value="thailand">🇹🇭 Thai Cultural Heritage</SelectItem>
@@ -1329,6 +1382,7 @@ export function FlowArtGenerator() {
                           <SelectItem value="natives">🏕️ Ancient Native Tribes</SelectItem>
                           <SelectItem value="statues">🗿 Sacred & Sculptural Statues</SelectItem>
                           <SelectItem value="8bit">🎮 8bit Pixel Art Generation</SelectItem>
+                          <SelectItem value="bosch">🎨 Hieronymus Bosch Fantastical Worlds</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -1396,45 +1450,38 @@ export function FlowArtGenerator() {
                           <SelectItem value="prismatic">🔮 Prismatic</SelectItem>
                           <SelectItem value="monochromatic">⚫ Monochromatic</SelectItem>
                           <SelectItem value="infrared">🔴 Infrared</SelectItem>
-                          <SelectItem value="lava">🌋 Lava</SelectItem>
-                          <SelectItem value="futuristic">🚀 Futuristic</SelectItem>
-                          <SelectItem value="forest">🌲 Forest</SelectItem>
-                          <SelectItem value="ocean">🌊 Ocean</SelectItem>
-                          <SelectItem value="sunset">🌅 Sunset</SelectItem>
-                          <SelectItem value="arctic">❄️ Arctic</SelectItem>
+                          <SelectItem value="ultraviolet">🟣 Ultraviolet</SelectItem>
                           <SelectItem value="neon">💡 Neon</SelectItem>
-                          <SelectItem value="vintage">📻 Vintage</SelectItem>
-                          <SelectItem value="toxic">☢️ Toxic</SelectItem>
-                          <SelectItem value="ember">🔥 Ember</SelectItem>
-                          <SelectItem value="lunar">🌙 Lunar</SelectItem>
-                          <SelectItem value="tidal">🌊 Tidal</SelectItem>
+                          <SelectItem value="pastel">🎨 Pastel</SelectItem>
+                          <SelectItem value="earth">🌍 Earth Tones</SelectItem>
+                          <SelectItem value="ocean">🌊 Ocean Blues</SelectItem>
+                          <SelectItem value="sunset">🌅 Sunset</SelectItem>
+                          <SelectItem value="forest">🌲 Forest Greens</SelectItem>
+                          <SelectItem value="volcanic">🌋 Volcanic</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
-                    {/* Mathematical Parameters */}
-                    <div className="space-y-3 pt-3 border-t border-slate-600">
-                      <h4 className="text-sm font-medium text-slate-300">Mathematical Parameters</h4>
-
+                    {/* Advanced Parameters */}
+                    <div className="space-y-4 pt-4 border-t border-slate-600">
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <Label className="text-sm font-medium text-slate-300">Random Seed</Label>
                           <Button
-                            size="sm"
                             variant="outline"
+                            size="sm"
                             onClick={randomizeSeed}
-                            className="h-6 px-2 text-xs border-slate-600 bg-transparent"
+                            className="border-slate-600 text-slate-300 hover:bg-slate-700"
                           >
-                            <Dice1 className="h-3 w-3" />
+                            <Dice1 className="h-3 w-3 mr-1" />
+                            Random
                           </Button>
                         </div>
                         <Input
                           type="number"
                           value={seed}
-                          onChange={(e) => setSeed(Number.parseInt(e.target.value) || 0)}
+                          onChange={(e) => setSeed(parseInt(e.target.value) || 0)}
                           className="bg-slate-700 border-slate-600 text-slate-100"
-                          min="0"
-                          max="9999"
                         />
                       </div>
 
@@ -1445,9 +1492,9 @@ export function FlowArtGenerator() {
                         <Slider
                           value={[numSamples]}
                           onValueChange={(value) => setNumSamples(value[0])}
-                          min={100}
+                          min={1000}
                           max={10000}
-                          step={100}
+                          step={500}
                           className="w-full"
                         />
                       </div>
@@ -1457,8 +1504,8 @@ export function FlowArtGenerator() {
                         <Slider
                           value={[noiseScale]}
                           onValueChange={(value) => setNoiseScale(value[0])}
-                          min={0}
-                          max={1}
+                          min={0.01}
+                          max={1.0}
                           step={0.01}
                           className="w-full"
                         />
@@ -1477,60 +1524,177 @@ export function FlowArtGenerator() {
                       </div>
                     </div>
 
-                    {/* Custom Prompt for AI */}
-                    {mode === "ai" && (
-                      <div className="space-y-3 pt-3 border-t border-slate-600">
-                        <div className="flex items-center justify-between">
-                          <Label className="flex items-center space-x-2">
-                            <Switch checked={useCustomPrompt} onCheckedChange={setUseCustomPrompt} />
-                            <span className="text-sm font-medium text-slate-300">Custom AI Prompt</span>
-                          </Label>
-                        </div>
-                        {useCustomPrompt && (
-                          <div className="space-y-3">
-                            <Textarea
-                              value={customPrompt}
-                              onChange={(e) => setCustomPrompt(e.target.value)}
-                              placeholder="Describe your vision... (will be enhanced with GODLEVEL details)"
-                              className="bg-slate-700 border-slate-600 text-slate-100 text-sm min-h-[100px] resize-vertical"
-                              rows={4}
+                    {/* Dome Projection Settings */}
+                    <div className="space-y-4 pt-4 border-t border-slate-600">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                          <Globe className="h-4 w-4" />
+                          Dome Projection
+                        </Label>
+                        <Switch checked={domeEnabled} onCheckedChange={setDomeEnabled} />
+                      </div>
+
+                      {domeEnabled && (
+                        <div className="space-y-3 pl-6 border-l-2 border-purple-500/30">
+                          <div className="space-y-2">
+                            <Label className="text-xs text-slate-400">Dome Diameter (meters)</Label>
+                            <Slider
+                              value={[domeDiameter]}
+                              onValueChange={(value) => setDomeDiameter(value[0])}
+                              min={5}
+                              max={50}
+                              step={1}
+                              className="w-full"
                             />
-                            <div className="flex gap-2">
-                              <Button
-                                onClick={enhancePrompt}
-                                disabled={isEnhancingPrompt || !customPrompt.trim()}
-                                size="sm"
-                                variant="outline"
-                                className="border-purple-500 text-purple-400 hover:bg-purple-500/10 bg-transparent"
-                              >
-                                {isEnhancingPrompt ? (
-                                  <>
-                                    <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                                    Enhancing...
-                                  </>
-                                ) : (
-                                  <>
-                                    <Wand2 className="h-3 w-3 mr-1" />
-                                    Enhance Prompt
-                                  </>
-                                )}
-                              </Button>
+                            <div className="text-xs text-slate-400 text-center">{domeDiameter}m diameter</div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-xs text-slate-400">Resolution</Label>
+                            <Select value={domeResolution} onValueChange={setDomeResolution}>
+                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-700 border-slate-600">
+                                <SelectItem value="2K">2K (2048×2048)</SelectItem>
+                                <SelectItem value="4K">4K (4096×4096)</SelectItem>
+                                <SelectItem value="8K">8K (8192×8192)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-xs text-slate-400">Projection Type</Label>
+                            <Select value={domeProjectionType} onValueChange={setDomeProjectionType}>
+                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-700 border-slate-600">
+                                <SelectItem value="fisheye">Fisheye</SelectItem>
+                                <SelectItem value="equidistant">Equidistant</SelectItem>
+                                <SelectItem value="stereographic">Stereographic</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 360° Panorama Settings */}
+                    <div className="space-y-4 pt-4 border-t border-slate-600">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                          <Camera className="h-4 w-4" />
+                          360° Panorama
+                        </Label>
+                        <Switch checked={panorama360Enabled} onCheckedChange={setPanorama360Enabled} />
+                      </div>
+
+                      {panorama360Enabled && (
+                        <div className="space-y-3 pl-6 border-l-2 border-pink-500/30">
+                          <div className="space-y-2">
+                            <Label className="text-xs text-slate-400">Resolution</Label>
+                            <Select value={panoramaResolution} onValueChange={setPanoramaResolution}>
+                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-700 border-slate-600">
+                                <SelectItem value="4K">4K (4096×2048)</SelectItem>
+                                <SelectItem value="8K">8K (8192×4096)</SelectItem>
+                                <SelectItem value="12K">12K (12288×6144)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-xs text-slate-400">Format</Label>
+                            <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
+                              <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className="bg-slate-700 border-slate-600">
+                                <SelectItem value="equirectangular">Equirectangular</SelectItem>
+                                <SelectItem value="stereographic">Stereographic</SelectItem>
+                                <SelectItem value="cubemap">Cubemap</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          {panoramaFormat === "stereographic" && (
+                            <div className="space-y-2">
+                              <Label className="text-xs text-slate-400">Perspective</Label>
+                              <Select value={stereographicPerspective} onValueChange={setStereographicPerspective}>
+                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-700 border-slate-600">
+                                  <SelectItem value="little-planet">Little Planet</SelectItem>
+                                  <SelectItem value="tunnel">Tunnel View</SelectItem>
+                                  <SelectItem value="standard">Standard</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </div>
-                            {customPrompt && (
-                              <div className="bg-slate-900 p-3 rounded-md border border-slate-600">
-                                <div className="flex items-center justify-between mb-2">
-                                  <span className="text-xs font-medium text-slate-400">CURRENT CUSTOM PROMPT</span>
-                                  <span className="text-xs text-slate-500">{customPrompt.length} characters</span>
-                                </div>
-                                <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">
-                                  {customPrompt}
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* AI Mode Custom Prompt */}
+                    {mode === "ai" && (
+                      <div className="space-y-4 pt-4 border-t border-slate-600">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                            <Wand2 className="h-4 w-4" />
+                            Custom Prompt Override
+                          </Label>
+                          <Switch checked={useCustomPrompt} onCheckedChange={setUseCustomPrompt} />
+                        </div>
+
+                        {useCustomPrompt && (
+                          <div className="space-y-3 pl-6 border-l-2 border-blue-500/30">
+                            <div className="space-y-2">
+                              <Label className="text-xs text-slate-400">Your Custom Prompt</Label>
+                              <Textarea
+                                value={customPrompt}
+                                onChange={(e) => setCustomPrompt(e.target.value)}
+                                placeholder="Enter your custom artistic vision here... This will override the dataset scenario."
+                                className="bg-slate-700 border-slate-600 text-slate-100 min-h-[100px] text-sm"
+                              />
+                              <div className="text-xs text-slate-400">
+                                {customPrompt.length}/2000 characters
+                                {customPrompt.length > 1500 && (
+                                  <span className="text-yellow-400 ml-2">⚠️ Very long prompt</span>
+                                )}
+                              </div>
+                            </div>
+
+                            <Button
+                              onClick={enhancePrompt}
+                              disabled={isEnhancingPrompt || !customPrompt.trim()}
+                              variant="outline"
+                              size="sm"
+                              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                            >
+                              {isEnhancingPrompt ? (
+                                <>
+                                  <Loader2 className="h-3 w-3 mr-2 animate-spin" />
+                                  Enhancing...
+                                </>
+                              ) : (
+                                <>
+                                  <Sparkles className="h-3 w-3 mr-2" />
+                                  Enhance with AI
+                                </>
+                              )}
+                            </Button>
+
+                            {enhancedPrompt && (
+                              <div className="bg-slate-900 p-3 rounded-lg border border-slate-600">
+                                <Label className="text-xs text-slate-400 mb-2 block">Enhanced Prompt Preview:</Label>
+                                <p className="text-xs text-slate-300 leading-relaxed">
+                                  {enhancedPrompt.substring(0, 200)}
+                                  {enhancedPrompt.length > 200 && "..."}
                                 </p>
-                                <div className="mt-2 pt-2 border-t border-slate-700">
-                                  <p className="text-xs text-slate-500">
-                                    This custom prompt will be integrated with {getDatasetDisplayName(dataset)} GODLEVEL
-                                    elements and mathematical precision based on your selected parameters.
-                                  </p>
-                                </div>
                               </div>
                             )}
                           </div>
@@ -1538,443 +1702,478 @@ export function FlowArtGenerator() {
                       </div>
                     )}
 
-                    {/* Projection Settings */}
-                    <div className="space-y-3 pt-3 border-t border-slate-600">
-                      <h4 className="text-sm font-medium text-slate-300">Projection Settings</h4>
-
-                      {/* Dome Projection */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <Label className="flex items-center space-x-2">
-                            <Switch checked={domeEnabled} onCheckedChange={setDomeEnabled} />
-                            <span className="text-sm font-medium text-slate-300">
-                              Dome Projection ({domeDiameter}m)
-                            </span>
-                          </Label>
-                        </div>
-                        {domeEnabled && (
-                          <div className="space-y-2 pl-6">
-                            <div className="space-y-1">
-                              <Label className="text-xs text-slate-400">Dome Diameter (meters)</Label>
-                              <Select
-                                value={domeDiameter.toString()}
-                                onValueChange={(value) => setDomeDiameter(Number(value))}
-                              >
-                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-slate-700 border-slate-600">
-                                  <SelectItem value="10">10m (Small Dome)</SelectItem>
-                                  <SelectItem value="15">15m (Medium Dome)</SelectItem>
-                                  <SelectItem value="20">20m (Large Dome)</SelectItem>
-                                  <SelectItem value="25">25m (Extra Large Dome)</SelectItem>
-                                  <SelectItem value="30">30m (Giant Dome)</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="space-y-1">
-                              <Label className="text-xs text-slate-400">Resolution</Label>
-                              <Select value={domeResolution} onValueChange={setDomeResolution}>
-                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-slate-700 border-slate-600">
-                                  <SelectItem value="2K">2K (2048x2048)</SelectItem>
-                                  <SelectItem value="4K">4K (4096x4096)</SelectItem>
-                                  <SelectItem value="8K">8K (8192x8192)</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="space-y-1">
-                              <Label className="text-xs text-slate-400">Projection Type</Label>
-                              <Select value={domeProjectionType} onValueChange={setDomeProjectionType}>
-                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-slate-700 border-slate-600">
-                                  <SelectItem value="fisheye">Fisheye</SelectItem>
-                                  <SelectItem value="equidistant">Equidistant</SelectItem>
-                                  <SelectItem value="stereographic">Stereographic</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* 360° Panorama */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <Label className="flex items-center space-x-2">
-                            <Switch checked={panorama360Enabled} onCheckedChange={setPanorama360Enabled} />
-                            <span className="text-sm font-medium text-slate-300">360° Panorama</span>
-                          </Label>
-                        </div>
-                        {panorama360Enabled && (
-                          <div className="space-y-2 pl-6">
-                            <div className="space-y-1">
-                              <Label className="text-xs text-slate-400">Resolution</Label>
-                              <Select value={panoramaResolution} onValueChange={setPanoramaResolution}>
-                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-slate-700 border-slate-600">
-                                  <SelectItem value="4K">4K (4096x2048)</SelectItem>
-                                  <SelectItem value="8K">8K (8192x4096)</SelectItem>
-                                  <SelectItem value="16K">16K (16384x8192)</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="space-y-1">
-                              <Label className="text-xs text-slate-400">Format</Label>
-                              <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
-                                <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-slate-700 border-slate-600">
-                                  <SelectItem value="equirectangular">Equirectangular</SelectItem>
-                                  <SelectItem value="stereographic">Stereographic</SelectItem>
-                                  <SelectItem value="cylindrical">Cylindrical</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            {panoramaFormat === "stereographic" && (
-                              <div className="space-y-1">
-                                <Label className="text-xs text-slate-400">Perspective</Label>
-                                <Select value={stereographicPerspective} onValueChange={setStereographicPerspective}>
-                                  <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100 h-8 text-xs">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent className="bg-slate-700 border-slate-600">
-                                    <SelectItem value="little-planet">Little Planet</SelectItem>
-                                    <SelectItem value="tunnel">Tunnel</SelectItem>
-                                    <SelectItem value="mirror-ball">Mirror Ball</SelectItem>
-                                  </SelectContent>
-                              </Select>
-                            </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                    {/* Generate Button */}
-                    <div className="flex gap-2">
+                    {/* Action Buttons */}
+                    <div className="space-y-3 pt-4 border-t border-slate-600">
                       <Button
                         onClick={generateArt}
                         disabled={isGenerating || isAutoGenerating}
-                        className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3"
+                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium"
                       >
                         {isGenerating ? (
                           <>
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            Generating GODLEVEL Art (3 Versions)...
+                            Generating {mode === "svg" ? "Mathematical SVG" : "AI Art"}...
                           </>
                         ) : (
                           <>
                             <Sparkles className="h-4 w-4 mr-2" />
-                            {useCustomPrompt && customPrompt.trim()
-                              ? "Generate Custom GODLEVEL Art (3 Versions)"
-                              : `Generate ${getDatasetDisplayName(dataset)} GODLEVEL (3 Versions)`}
+                            Generate {mode === "svg" ? "Mathematical SVG" : "AI Art"}
                           </>
                         )}
                       </Button>
-                    </div>
 
-                    {/* Progress Bar */}
-                    {isGenerating && progress > 0 && (
-                      <div className="space-y-2">
-                        <Progress value={progress} className="w-full" />
-                        <p className="text-xs text-slate-400 text-center">
-                          {progress}% complete - Creating GODLEVEL Original + Dome + 360° versions
-                        </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          onClick={randomizeSeed}
+                          variant="outline"
+                          size="sm"
+                          className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                        >
+                          <Dice1 className="h-3 w-3 mr-1" />
+                          Random Seed
+                        </Button>
+                        <Button
+                          onClick={resetAllParameters}
+                          variant="outline"
+                          size="sm"
+                          className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                        >
+                          Reset All
+                        </Button>
                       </div>
-                    )}
-
-                    {/* Error Display */}
-                    {error && (
-                      <Alert className="border-red-500 bg-red-500/10">
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertDescription className="text-red-400">{error}</AlertDescription>
-                      </Alert>
-                    )}
+                    </div>
                   </CardContent>
                 </Card>
               </div>
 
-              {/* Preview - Enhanced to show all 3 versions clearly */}
-              <div className="lg:col-span-2">
-                <Card className="bg-slate-800 border-slate-700">
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between text-slate-100">
-                      <div className="flex items-center gap-2">
-                        <Eye className="h-5 w-5" />
-                        Generated {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"} GODLEVEL Artwork
-                      </div>
-                      {generatedArt && (
-                        <div className="flex items-center gap-2">
+              {/* Preview */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Generation Progress */}
+                {isGenerating && (
+                  <Card className="bg-slate-800 border-slate-700">
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold text-slate-100">
+                            Generating {mode === "svg" ? "Mathematical SVG" : "AI Art"}...
+                          </h3>
                           <Badge variant="outline" className="border-purple-500 text-purple-400">
-                            ✨ {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"}
-                          </Badge>
-                          <Badge variant="outline" className="border-green-500 text-green-400">
-                            3 GODLEVEL Versions
+                            {progress.toFixed(0)}%
                           </Badge>
                         </div>
-                      )}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {generatedArt ? (
-                      <div className="space-y-6">
-                        {/* Three Version Display */}
-                        <Tabs defaultValue="original" className="w-full">
-                          <TabsList className="grid w-full grid-cols-3 bg-slate-700">
-                            <TabsTrigger value="original" className="data-[state=active]:bg-blue-600">
-                              <Camera className="h-4 w-4 mr-2" />
-                              Original
-                            </TabsTrigger>
-                            <TabsTrigger value="dome" className="data-[state=active]:bg-purple-600">
-                              <Mountain className="h-4 w-4 mr-2" />
-                              Dome {domeDiameter}m
-                            </TabsTrigger>
-                            <TabsTrigger value="panorama" className="data-[state=active]:bg-green-600">
-                              <Globe className="h-4 w-4 mr-2" />
-                              360° VR
-                            </TabsTrigger>
-                          </TabsList>
+                        <Progress value={progress} className="w-full" />
+                        <p className="text-sm text-slate-400 text-center">
+                          {mode === "svg"
+                            ? "Computing mathematical flow fields and generating SVG visualization..."
+                            : "Creating AI artwork with DALL-E 3 and generating dome + 360° projections..."}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
 
-                          <TabsContent value="original" className="space-y-4">
-                            <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-blue-500/30">
-                              {generatedArt.mode === "svg" ? (
-                                <div
-                                  className="w-full h-96 flex items-center justify-center"
-                                  dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
-                                />
-                              ) : (
-                                <img
-                                  src={generatedArt.imageUrl || "/placeholder.svg"}
-                                  alt={`Generated ${getDatasetDisplayName(dataset)} artwork - Original`}
-                                  className="w-full h-96 object-cover"
-                                />
-                              )}
+                {/* Error Display */}
+                {error && (
+                  <Alert className="border-red-500 bg-red-900/20">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription className="text-red-200">{error}</AlertDescription>
+                  </Alert>
+                )}
 
-                              <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-transparent p-4 text-slate-200">
-                                <h4 className="font-semibold">Original Artwork</h4>
-                                <p className="text-sm">
-                                  {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"} + {generatedArt?.params?.scenario || "Unknown"} - {generatedArt?.params?.colorScheme || "Unknown"}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                size="sm"
-                                onClick={() => downloadImage("regular")}
-                                disabled={isGenerating}
-                                className="bg-blue-600 hover:bg-blue-700 text-white"
-                              >
-                                <Download className="h-4 w-4 mr-2" />
-                                Download Original
-                              </Button>
-                            </div>
-                          </TabsContent>
-
-                          <TabsContent value="dome" className="space-y-4">
-                            <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-purple-500/30">
-                              {generatedArt.mode === "svg" ? (
-                                <div
-                                  className="w-full h-96 flex items-center justify-center"
-                                  dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
-                                />
-                              ) : (
-                                <img
-                                  src={generatedArt.domeImageUrl || "/placeholder.svg"}
-                                  alt={`Generated ${getDatasetDisplayName(dataset)} artwork - Dome Projection`}
-                                  className="w-full h-96 object-cover"
-                                />
-                              )}
-                              <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-transparent p-4 text-slate-200">
-                                <h4 className="font-semibold">Dome Projection - {domeDiameter}m</h4>
-                                <p className="text-sm">
-                                  {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"} + {generatedArt?.params?.scenario || "Unknown"} - {domeResolution} -{" "}
-                                  {domeProjectionType}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                size="sm"
-                                onClick={() => downloadImage("dome")}
-                                disabled={isGenerating}
-                                className="bg-purple-600 hover:bg-purple-700 text-white"
-                              >
-                                <Download className="h-4 w-4 mr-2" />
-                                Download Dome
-                              </Button>
-                            </div>
-                          </TabsContent>
-
-                          <TabsContent value="panorama" className="space-y-4">
-                            <div className="relative bg-slate-900 rounded-lg overflow-hidden border-2 border-green-500/30">
-                              {generatedArt.mode === "svg" ? (
-                                <div
-                                  className="w-full h-96 flex items-center justify-center"
-                                  dangerouslySetInnerHTML={{ __html: generatedArt.svgContent }}
-                                />
-                              ) : (
-                                <img
-                                  src={generatedArt.panorama360Url || "/placeholder.svg"}
-                                  alt={`Generated ${getDatasetDisplayName(dataset)} artwork - 360° Panorama`}
-                                  className="w-full h-96 object-cover"
-                                />
-                              )}
-                              <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-transparent p-4 text-slate-200">
-                                <h4 className="font-semibold">360° Panorama - VR Ready</h4>
-                                <p className="text-sm">
-                                  {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"} + {generatedArt?.params?.scenario || "Unknown"} - {panoramaResolution} -{" "}
-                                  {panoramaFormat}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                size="sm"
-                                onClick={() => downloadImage("panorama")}
-                                disabled={isGenerating}
-                                className="bg-green-600 hover:bg-green-700 text-white"
-                              >
-                                <Download className="h-4 w-4 mr-2" />
-                                Download 360° VR
-                              </Button>
-                            </div>
-                          </TabsContent>
-                        </Tabs>
-
-                        {/* Generation Details */}
-                        <div className="bg-slate-900 p-4 rounded-lg border border-slate-700 space-y-3">
-                          <h4 className="text-lg font-semibold text-slate-200">Generation Details</h4>
-                          <div className="space-y-2">
-                            <p className="text-sm text-slate-400">
-                              <span className="font-medium text-slate-300">Dataset:</span>{" "}
-                              {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"}
-                            </p>
-                            <p className="text-sm text-slate-400">
-                              <span className="font-medium text-slate-300">Scenario:</span> {generatedArt?.params?.scenario || "Unknown"}
-                            </p>
-                            <p className="text-sm text-slate-400">
-                              <span className="font-medium text-slate-300">Color Scheme:</span> {generatedArt?.params?.colorScheme || "Unknown"}
-                            </p>
-                            <p className="text-sm text-slate-400">
-                              <span className="font-medium text-slate-300">Seed:</span> {generatedArt?.params?.seed || "Unknown"}
-                            </p>
-                            <p className="text-sm text-slate-400">
-                              <span className="font-medium text-slate-300">Data Points:</span>{" "}
-                              {generatedArt?.params?.numSamples?.toLocaleString() || "Unknown"}
-                            </p>
-                            <p className="text-sm text-slate-400">
-                              <span className="font-medium text-slate-300">Noise Scale:</span> {generatedArt?.params?.noiseScale || "Unknown"}
-                            </p>
-                            <p className="text-sm text-slate-400">
-                              <span className="font-medium text-slate-300">Time Step:</span> {generatedArt?.params?.timeStep || "Unknown"}
-                            </p>
-                            {generatedArt.mode === "ai" && (
-                              <>
-                                <p className="text-sm text-slate-400">
-                                  <span className="font-medium text-slate-300">AI Provider:</span>{" "}
-                                  {generatedArt.provider || "Unknown"}
-                                </p>
-                                <p className="text-sm text-slate-400">
-                                  <span className="font-medium text-slate-300">AI Model:</span> {generatedArt.model || "Unknown"}
-                                </p>
-                                {generatedArt.customPrompt && (
-                                  <p className="text-sm text-slate-400">
-                                    <span className="font-medium text-slate-300">Custom Prompt:</span>{" "}
-                                    {generatedArt.customPrompt}
-                                  </p>
-                                )}
-                                {generatedArt.originalPrompt && (
-                                  <p className="text-sm text-slate-400">
-                                    <span className="font-medium text-slate-300">Original Prompt:</span>{" "}
-                                    {generatedArt.originalPrompt}
-                                  </p>
-                                )}
-                                {generatedArt.finalPrompt && (
-                                  <p className="text-sm text-slate-400">
-                                    <span className="font-medium text-slate-300">Final Prompt:</span>{" "}
-                                    {generatedArt.finalPrompt}
-                                  </p>
-                                )}
-                                {generatedArt.promptLength && (
-                                  <p className="text-sm text-slate-400">
-                                    <span className="font-medium text-slate-300">Prompt Length:</span>{" "}
-                                    {generatedArt.promptLength} characters
-                                  </p>
-                                )}
-                                {generatedArt.estimatedFileSize && (
-                                  <p className="text-sm text-slate-400">
-                                    <span className="font-medium text-slate-300">Estimated File Size:</span>{" "}
-                                    {generatedArt.estimatedFileSize}
-                                  </p>
-                                )}
-                              </>
-                            )}
-                            <p className="text-sm text-slate-500">
-                              Generated on {new Date(generatedArt.timestamp).toLocaleString()}
-                            </p>
+                {/* Generated Art Display */}
+                {generatedArt && (
+                  <Card className="bg-slate-800 border-slate-700">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-slate-100 flex items-center gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-400" />
+                          Generated Artwork
+                        </CardTitle>
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant="outline"
+                            className={
+                              generatedArt.mode === "svg"
+                                ? "border-blue-500 text-blue-400"
+                                : "border-purple-500 text-purple-400"
+                            }
+                          >
+                            {generatedArt.mode === "svg" ? "Mathematical SVG" : "AI Generated"}
+                          </Badge>
+                          {generatedArt.isDomeProjection && (
+                            <Badge variant="outline" className="border-green-500 text-green-400">
+                              <Globe className="h-3 w-3 mr-1" />
+                              Dome
+                            </Badge>
+                          )}
+                          {generatedArt.is360Panorama && (
+                            <Badge variant="outline" className="border-pink-500 text-pink-400">
+                              <Camera className="h-3 w-3 mr-1" />
+                              360°
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {/* Main Image */}
+                      <div className="relative group">
+                        <img
+                          src={generatedArt.imageUrl || "/placeholder.svg"}
+                          alt="Generated artwork"
+                          className="w-full h-auto rounded-lg border border-slate-600 cursor-pointer"
+                          onContextMenu={(e) => {
+                            // Allow right-click context
+                            e.stopPropagation()
+                          }}
+                          onClick={() => {
+                            // Open image in new tab for easy right-click save
+                            window.open(generatedArt.imageUrl, '_blank')
+                          }}
+                          title="Click to open in new tab, or right-click to save"
+                        />
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                          <div className="flex gap-2">
+                            <Button
+                              onClick={() => downloadImage("regular")}
+                              className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
+                            >
+                              <Download className="h-4 w-4 mr-2" />
+                              Download Original
+                            </Button>
+                            <Button
+                              onClick={() => window.open(generatedArt.imageUrl, '_blank')}
+                              variant="outline"
+                              className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm border-white/30"
+                            >
+                              Open in New Tab
+                            </Button>
                           </div>
                         </div>
                       </div>
-                    ) : (
-                      <div className="text-center text-slate-400 py-12">
-                        <ImageIcon className="h-10 w-10 mx-auto mb-4" />
-                        No artwork generated yet. Click "Generate" to create some GODLEVEL art!
+
+                      {/* Additional Projections */}
+                      {(generatedArt.domeImageUrl || generatedArt.panorama360Url) && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {generatedArt.domeImageUrl && (
+                            <div className="space-y-2">
+                              <h4 className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                                <Globe className="h-4 w-4" />
+                                Dome Projection ({generatedArt.domeSpecs?.diameter}m)
+                              </h4>
+                              <div className="relative group">
+                                <img
+                                  src={generatedArt.domeImageUrl || "/placeholder.svg"}
+                                  alt="Dome projection"
+                                  className="w-full h-auto rounded-lg border border-slate-600 cursor-pointer"
+                                  onContextMenu={(e) => {
+                                    e.stopPropagation()
+                                  }}
+                                  onClick={() => {
+                                    window.open(generatedArt.domeImageUrl, '_blank')
+                                  }}
+                                  title="Click to open in new tab, or right-click to save"
+                                />
+                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                  <div className="flex gap-1">
+                                    <Button
+                                      onClick={() => downloadImage("dome")}
+                                      size="sm"
+                                      className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
+                                    >
+                                      <Download className="h-3 w-3 mr-1" />
+                                      Download
+                                    </Button>
+                                    <Button
+                                      onClick={() => window.open(generatedArt.domeImageUrl, '_blank')}
+                                      size="sm"
+                                      variant="outline"
+                                      className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm border-white/30"
+                                    >
+                                      Open
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {generatedArt.panorama360Url && (
+                            <div className="space-y-2">
+                              <h4 className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                                <Camera className="h-4 w-4" />
+                                360° Panorama ({generatedArt.panoramaSpecs?.resolution})
+                              </h4>
+                              <div className="relative group">
+                                <img
+                                  src={generatedArt.panorama360Url || "/placeholder.svg"}
+                                  alt="360° panorama"
+                                  className="w-full h-auto rounded-lg border border-slate-600 cursor-pointer"
+                                  onContextMenu={(e) => {
+                                    e.stopPropagation()
+                                  }}
+                                  onClick={() => {
+                                    window.open(generatedArt.panorama360Url, '_blank')
+                                  }}
+                                  title="Click to open in new tab, or right-click to save"
+                                />
+                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                  <div className="flex gap-1">
+                                    <Button
+                                      onClick={() => downloadImage("panorama")}
+                                      size="sm"
+                                      className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
+                                    >
+                                      <Download className="h-3 w-3 mr-1" />
+                                      Download
+                                    </Button>
+                                    <Button
+                                      onClick={() => window.open(generatedArt.panorama360Url, '_blank')}
+                                      size="sm"
+                                      variant="outline"
+                                      className="bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm border-white/30"
+                                    >
+                                      Open
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Generation Details */}
+                      <div className="bg-slate-900 p-4 rounded-lg border border-slate-600 space-y-3">
+                        <h4 className="text-sm font-medium text-slate-300">Generation Details</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                          <div>
+                            <span className="text-slate-400">Dataset:</span>
+                            <p className="text-slate-200 font-medium">{generatedArt.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"}</p>
+                          </div>
+                          <div>
+                            <span className="text-slate-400">Scenario:</span>
+                            <p className="text-slate-200 font-medium">
+                              {generatedArt.params ? (getDatasetScenarios(generatedArt.params.dataset).find((s) => s.value === generatedArt.params.scenario)?.label || generatedArt.params.scenario) : "Unknown"}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-slate-400">Color Scheme:</span>
+                            <p className="text-slate-200 font-medium">{generatedArt.params?.colorScheme || "Unknown"}</p>
+                          </div>
+                          <div>
+                            <span className="text-slate-400">Seed:</span>
+                            <p className="text-slate-200 font-medium">{generatedArt.params?.seed || "Unknown"}</p>
+                          </div>
+                        </div>
+
+                        {generatedArt.mode === "ai" && (
+                          <div className="space-y-2 pt-2 border-t border-slate-700">
+                            {generatedArt.customPrompt && (
+                              <div>
+                                <span className="text-slate-400 text-xs">Custom Prompt:</span>
+                                <p className="text-slate-200 text-xs mt-1 leading-relaxed">
+                                  {generatedArt.customPrompt.substring(0, 150)}
+                                  {generatedArt.customPrompt.length > 150 && "..."}
+                                </p>
+                              </div>
+                            )}
+                            {generatedArt.finalPrompt && (
+                              <div>
+                                <span className="text-slate-400 text-xs">Final AI Prompt:</span>
+                                <p className="text-slate-200 text-xs mt-1 leading-relaxed">
+                                  {generatedArt.finalPrompt.substring(0, 200)}
+                                  {generatedArt.finalPrompt.length > 200 && "..."}
+                                </p>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-4 text-xs">
+                              {generatedArt.provider && (
+                                <span className="text-slate-400">
+                                  Provider: <span className="text-slate-200">{generatedArt.provider}</span>
+                                </span>
+                              )}
+                              {generatedArt.model && (
+                                <span className="text-slate-400">
+                                  Model: <span className="text-slate-200">{generatedArt.model}</span>
+                                </span>
+                              )}
+                              {generatedArt.promptLength && (
+                                <span className="text-slate-400">
+                                  Prompt Length: <span className="text-slate-200">{generatedArt.promptLength}</span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
+
+                      {/* Download Status */}
+                      {downloadStatus && (
+                        <Alert className="border-blue-500 bg-blue-900/20">
+                          <Download className="h-4 w-4" />
+                          <AlertDescription className="text-blue-200">{downloadStatus}</AlertDescription>
+                        </Alert>
+                      )}
+
+                      {/* Download Buttons */}
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          onClick={() => downloadImage("regular")}
+                          className="bg-purple-600 hover:bg-purple-700 text-white"
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Download Original
+                        </Button>
+                        {generatedArt.domeImageUrl && (
+                          <Button
+                            onClick={() => downloadImage("dome")}
+                            variant="outline"
+                            className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                          >
+                            <Globe className="h-4 w-4 mr-2" />
+                            Download Dome
+                          </Button>
+                        )}
+                        {generatedArt.panorama360Url && (
+                          <Button
+                            onClick={() => downloadImage("panorama")}
+                            variant="outline"
+                            className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                          >
+                            <Camera className="h-4 w-4 mr-2" />
+                            Download 360°
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             </div>
           </TabsContent>
 
-          {/* Gallery Tab */}
           <TabsContent value="gallery" className="space-y-6">
-            {gallery.length > 0 ? (
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-slate-100">Gallery ({gallery.length} artworks)</h2>
+              <div className="flex items-center gap-2">
+                {gallery.length > 0 && (
+                  <Button
+                    onClick={clearGallery}
+                    variant="outline"
+                    size="sm"
+                    className="border-red-500 text-red-400 hover:bg-red-900/20"
+                  >
+                    Clear Gallery
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {gallery.length === 0 ? (
+              <Card className="bg-slate-800 border-slate-700">
+                <CardContent className="p-12 text-center">
+                  <ImageIcon className="h-16 w-16 text-slate-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-slate-300 mb-2">No Artworks Yet</h3>
+                  <p className="text-slate-400 mb-6">Generate your first mathematical visualization or AI artwork!</p>
+                  <Button
+                    onClick={() => {
+                      // Switch to generate tab
+                      const generateTab = document.querySelector('[value="generate"]') as HTMLElement
+                      generateTab?.click()
+                    }}
+                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Start Creating
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {currentItems.map((art) => (
-                    <Card key={art.id} className="bg-slate-800 border-slate-700">
-                      <CardHeader>
-                        <CardTitle className="text-sm font-medium text-slate-200">
-                          {art.params ? getDatasetDisplayName(art.params.dataset) : "Unknown Dataset"} - {art.params?.scenario || "Unknown Scenario"}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        <div className="relative bg-slate-900 rounded-lg overflow-hidden">
-                          {art.mode === "svg" ? (
-                            <div
-                              className="w-full h-48 flex items-center justify-center"
-                              dangerouslySetInnerHTML={{ __html: art.svgContent }}
-                            />
-                          ) : (
-                            <img
-                              src={art.imageUrl || "/placeholder.svg"}
-                              alt={`Generated ${art.params ? getDatasetDisplayName(art.params.dataset) : "Unknown"} artwork`}
-                              className="w-full h-48 object-cover"
-                            />
-                          )}
+                    <Card key={art.id} className="bg-slate-800 border-slate-700 group">
+                      <CardContent className="p-4 space-y-3">
+                        <div className="relative">
+                          <img
+                            src={art.imageUrl || "/placeholder.svg"}
+                            alt="Generated artwork"
+                            className="w-full h-48 object-cover rounded-lg border border-slate-600 cursor-pointer"
+                            onContextMenu={(e) => {
+                              e.stopPropagation()
+                            }}
+                            onClick={() => {
+                              window.open(art.imageUrl, '_blank')
+                            }}
+                            title="Click to open in new tab, or right-click to save"
+                          />
+                          <div className="absolute top-2 right-2 flex gap-1">
+                            <Badge
+                              variant="outline"
+                              className={
+                                art.mode === "svg"
+                                  ? "border-blue-500 text-blue-400 bg-blue-900/50"
+                                  : "border-purple-500 text-purple-400 bg-purple-900/50"
+                              }
+                            >
+                              {art.mode === "svg" ? "SVG" : "AI"}
+                            </Badge>
+                            {art.isDomeProjection && (
+                              <Badge variant="outline" className="border-green-500 text-green-400 bg-green-900/50">
+                                <Globe className="h-3 w-3" />
+                              </Badge>
+                            )}
+                            {art.is360Panorama && (
+                              <Badge variant="outline" className="border-pink-500 text-pink-400 bg-pink-900/50">
+                                <Camera className="h-3 w-3" />
+                              </Badge>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex justify-between items-center">
-                          <p className="text-xs text-slate-400">
-                            {new Date(art.timestamp).toLocaleDateString()}
-                          </p>
+
+                        <h3 className="font-medium text-slate-200 text-sm">
+                          {art.params ? getDatasetDisplayName(art.params.dataset) : "Unknown Dataset"} -{" "}
+                          {art.params ? (getDatasetScenarios(art.params.dataset).find((s) => s.value === art.params.scenario)
+                            ?.label || art.params.scenario) : "Unknown Scenario"}
+                        </h3>
+                        <div className="flex items-center justify-between text-xs text-slate-400">
+                          <span>{art.params?.colorScheme || "Unknown"}</span>
+                          <span>{new Date(art.timestamp).toLocaleDateString()}</span>
+                        </div>
+
+                        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Button
-                            size="sm"
-                            variant="outline"
                             onClick={() => {
                               setGeneratedArt(art)
-                              toast.success("Artwork loaded for download. Select version and click Download.")
+                              // Switch to generate tab to view
+                              const generateTab = document.querySelector('[value="generate"]') as HTMLElement
+                              generateTab?.click()
                             }}
-                            className="border-slate-500 text-slate-400 hover:bg-slate-500/10"
+                            size="sm"
+                            variant="outline"
+                            className="border-slate-600 text-slate-300 hover:bg-slate-700 flex-1"
                           >
-                            Load
+                            <Eye className="h-3 w-3 mr-1" />
+                            View
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              // Try direct download first
+                              const link = document.createElement("a")
+                              link.href = art.imageUrl
+                              link.download = `flowsketch-${art.params?.dataset || "unknown"}-${Date.now()}.${art.mode === "svg" ? "svg" : "png"}`
+                              link.style.display = "none"
+                              document.body.appendChild(link)
+                              link.click()
+                              document.body.removeChild(link)
+                            }}
+                            size="sm"
+                            variant="outline"
+                            className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                            title="Download image"
+                          >
+                            <Download className="h-3 w-3" />
                           </Button>
                         </div>
                       </CardContent>
@@ -1984,71 +2183,34 @@ export function FlowArtGenerator() {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex justify-center gap-4">
+                  <div className="flex items-center justify-center gap-2">
                     <Button
-                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                       disabled={currentPage === 1}
                       variant="outline"
-                      className="border-slate-500 text-slate-400 hover:bg-slate-500/10"
+                      size="sm"
+                      className="border-slate-600 text-slate-300 hover:bg-slate-700"
                     >
                       Previous
                     </Button>
-                    <span className="text-slate-400">
+                    <span className="text-slate-400 text-sm">
                       Page {currentPage} of {totalPages}
                     </span>
                     <Button
-                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                       disabled={currentPage === totalPages}
                       variant="outline"
-                      className="border-slate-500 text-slate-400 hover:bg-slate-500/10"
+                      size="sm"
+                      className="border-slate-600 text-slate-300 hover:bg-slate-700"
                     >
                       Next
                     </Button>
                   </div>
                 )}
               </>
-            ) : (
-              <div className="text-center text-slate-400 py-12">
-                <ImageIcon className="h-10 w-10 mx-auto mb-4" />
-                No artwork in the gallery yet. Generate some art to see it here!
-              </div>
             )}
           </TabsContent>
         </Tabs>
-
-        {/* Quick Actions */}
-        <Card className="bg-slate-800 border-slate-700">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-slate-100">
-              <Wand2 className="h-5 w-5" />
-              Quick Actions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex justify-between">
-            <Button
-              onClick={resetAllParameters}
-              variant="outline"
-              className="border-yellow-500 text-yellow-400 hover:bg-yellow-500/10"
-            >
-              Reset Parameters
-            </Button>
-            <Button
-              onClick={clearGallery}
-              variant="destructive"
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
-              Clear Gallery
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Download Status */}
-        {downloadStatus && (
-          <Alert className="border-blue-500 bg-blue-500/10">
-            <CheckCircle className="h-4 w-4" />
-            <AlertDescription className="text-blue-400">{downloadStatus}</AlertDescription>
-          </Alert>
-        )}
       </div>
     </div>
   )
