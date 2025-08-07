@@ -48,7 +48,7 @@ interface GeneratedArt {
     mainImage: string
     domeImage: string
     panoramaImage: string
-  }
+    }
 }
 
 export function FlowArtGenerator() {
@@ -152,6 +152,8 @@ export function FlowArtGenerator() {
       "8bit": "8bit Pixel Art Generation",
       escher: "M.C. Escher Mathematical Art",
       bosch: "Hieronymus Bosch Fantastical Worlds",
+      picasso: "Pablo Picasso Artistic Periods",
+      camouflage: "Nature's Camouflage Mastery",
     }
     return names[dataset] || dataset
   }
@@ -441,7 +443,7 @@ export function FlowArtGenerator() {
           value: "ascending-descending-stairs",
           label: "🪜 Ascending & Descending Stairs",
           description:
-            "GODLEVEL PROMPT: M.C. Escher's impossible staircase where figures eternally climb stairs that simultaneously ascend and descend in an endless loop, architectural impossibility with precise mathematical perspective construction, robed figures walking clockwise around rectangular staircase that defies gravity and logic, each step appearing normal but the complete circuit being geometrically impossible, medieval monastery architecture with stone arches and columns, mathematical precision in every architectural detail despite spatial impossibility, visual paradox demonstrating relativity of up and down directions, lithographic black and white technique with detailed cross-hatching and architectural rendering, impossible architecture that seems believable through mathematical precision, geometric construction exploiting visual perception to create spatial paradox, figures trapped in eternal mathematical loop of climbing, precise perspective drawing making impossible architecture appear real, architectural elements following individual logic but creating collective impossibility, mathematical beauty in perpetual motion paradox, hyperrealistic stone texture and architectural detail, 8K resolution showing every architectural element in impossible but convincing detail",
+            "GODLEVEL PROMPT: M.C. Escher's impossible staircase where figures eternally climb stairs that simultaneously ascend and descend in an endless loop, architectural impossibility with precise mathematical perspective construction, robed figures walking clockwise around rectangular staircase that defies gravity and logic, each step appearing normal but the complete circuit being geometrically impossible, medieval monastery architecture with stone arches and columns, mathematical precision in every architectural detail despite spatial impossibility, visual paradox demonstrating relativity of up and down directions, lithographic black and white technique with detailed cross-hatching and architectural rendering, impossible architecture that seems believable through mathematical precision, geometric construction exploiting visual perception to create spatial paradox, figures trapped in eternal mathematical loop of climbing, precise perspective drawing making impossible architecture appear real, architectural elements that follow individual logic but creating collective impossibility, mathematical beauty in perpetual motion paradox, hyperrealistic stone texture and architectural detail, 8K resolution showing every architectural element in impossible but convincing detail",
         },
         {
           value: "lizards-metamorphosis",
@@ -574,6 +576,150 @@ export function FlowArtGenerator() {
           value: "christ-carrying-cross",
           label: "✝️ Christ Carrying the Cross",
           description: "GODLEVEL PROMPT: Hieronymus Bosch's intense close-up composition of Christ carrying the cross surrounded by grotesque faces of tormentors, central figure of Christ with serene expression amid chaos of hatred and mockery, crowd of distorted faces showing various expressions of cruelty, indifference, and sadistic pleasure, two thieves also visible with contrasting expressions of repentance and defiance, detailed physiognomy studies revealing inner character through external features, symbolic elements including crown of thorns and instruments of passion, masterful psychological portraiture showing spectrum of human nature from divine to demonic, rich symbolism with each face representing different aspect of humanity's response to divine sacrifice, composition creating claustrophobic effect emphasizing Christ's isolation, Flemish oil painting technique achieving photographic realism in facial details, moral commentary on human capacity for both cruelty and redemption, background elements minimal to focus attention on human drama, lighting effects creating dramatic contrast between Christ's luminous face and dark surrounding figures, theological depth expressed through visual narrative of salvation, 8K hyperrealistic detail showing every wrinkle, expression, and symbolic element in this profound meditation on human nature and divine love"
+        }
+      ],
+      picasso: [
+        { 
+          value: "pure", 
+          label: "Pure Mathematical", 
+          description: "Raw mathematical beauty with Picasso's geometric precision and cubist innovation" 
+        },
+        {
+          value: "blue-period",
+          label: "🔵 Blue Period Melancholy",
+          description: "GODLEVEL PROMPT: Pablo Picasso's Blue Period masterpiece with profound melancholic atmosphere, monochromatic blue palette ranging from deep cobalt to pale cerulean, elongated figures with sorrowful expressions and downcast eyes, The Old Guitarist with weathered hands caressing guitar strings, emaciated beggars and street musicians in tattered clothing, mother and child compositions showing tender vulnerability amid poverty, angular faces with sharp cheekbones and hollow eyes, simplified forms with emotional weight, Barcelona street scenes with lonely figures in doorways, café interiors with solitary drinkers, symbolic use of blue representing sadness, isolation, and spiritual depth, brushwork showing visible texture and emotional intensity, figures emerging from dark backgrounds like ghosts, psychological portraits revealing inner turmoil, social commentary on human suffering and dignity, masterful use of light and shadow in monochromatic scheme, oil painting technique with thick impasto and expressive brushstrokes, 8K hyperrealistic detail showing every brushstroke and emotional nuance"
+        },
+        {
+          value: "rose-period",
+          label: "🌹 Rose Period Circus Life",
+          description: "GODLEVEL PROMPT: Pablo Picasso's Rose Period celebrating circus performers and bohemian life, warm palette of rose, pink, and terra cotta tones, graceful acrobats and harlequins in diamond-patterned costumes, Family of Saltimbanques with melancholic dignity, circus performers between shows in moments of quiet contemplation, young boy leading horse with gentle authority, trapeze artists suspended in mid-air with balletic grace, commedia dell'arte characters with painted faces and theatrical gestures, tender mother and child scenes with circus families, backstage glimpses of performers preparing makeup and costumes, romantic couples embracing in circus wagons, symbolic roses and flowers representing love and beauty, softer brushwork compared to Blue Period harshness, figures with more rounded forms and gentle expressions, Mediterranean light filtering through circus tents, psychological depth in performer portraits showing vulnerability behind entertainment, masterful composition balancing figures in space, oil painting technique with luminous color harmonies, 8K resolution capturing every costume detail and emotional expression"
+        },
+        {
+          value: "african-period",
+          label: "🗿 African Art Influence",
+          description: "GODLEVEL PROMPT: Pablo Picasso's African Period showing revolutionary influence of African masks and sculpture, geometric simplification of human forms inspired by Iberian and African art, mask-like faces with angular features and stylized expressions, Les Demoiselles d'Avignon with five female figures showing progression from naturalistic to geometric abstraction, tribal mask influences with elongated noses and almond-shaped eyes, earth tones of ochre, sienna, and burnt umber, sculptural quality in painted figures with volume and weight, primitive art aesthetics challenging European artistic traditions, bold outlines defining geometric planes, simplified anatomy with emphasis on essential forms, cultural appropriation and artistic innovation intersecting, studio scenes with African masks and sculptures as inspiration, figures with totemic power and spiritual presence, revolutionary departure from Renaissance perspective, proto-cubist experimentation with multiple viewpoints, psychological intensity in mask-like portraits, oil painting technique with bold brushwork and textural surfaces, 8K hyperrealistic detail showing influence of non-Western art traditions"
+        },
+        {
+          value: "analytic-cubism",
+          label: "📐 Analytic Cubism Deconstruction",
+          description: "GODLEVEL PROMPT: Pablo Picasso's Analytic Cubism masterpiece deconstructing reality into geometric fragments, monochromatic palette of browns, grays, and ochres, multiple viewpoints of single subject shown simultaneously, Girl with a Mandolin fragmented into overlapping planes, violin and guitar still lifes broken into geometric components, portrait faces showing profile and frontal view at once, architectural backgrounds dissolving into abstract geometry, newspaper fragments and text integrated into compositions, shallow picture plane with compressed space, analytical approach to form and structure, mathematical precision in geometric relationships, collaboration with Georges Braque pushing boundaries, café table scenes with bottles and glasses fragmented, musical instruments as favorite subjects for geometric analysis, revolutionary challenge to single-point perspective, intellectual approach to visual representation, brushwork subordinated to geometric structure, collage elements beginning to appear, proto-abstract compositions maintaining connection to reality, oil painting technique with subtle tonal variations, 8K resolution showing every geometric plane and analytical detail"
+        },
+        {
+          value: "synthetic-cubism",
+          label: "🎨 Synthetic Cubism Collage",
+          description: "GODLEVEL PROMPT: Pablo Picasso's Synthetic Cubism with revolutionary collage techniques, brighter colors returning after Analytic period austerity, Three Musicians with flat, decorative shapes in bold colors, newspaper clippings and wallpaper fragments pasted onto canvas, guitar and violin compositions with mixed media elements, harlequin figures in diamond patterns and bright costumes, still life arrangements with fruit and bottles in simplified forms, papier collé technique combining painting and collage, synthetic construction rather than analytical deconstruction, playful experimentation with materials and textures, café scenes with decorative patterns and text fragments, musical themes with instruments as geometric shapes, collaboration with Braque continuing innovation, flat planes of color creating spatial relationships, decorative elements from wallpaper and fabric, revolutionary integration of real materials into fine art, oil paint combined with charcoal, chalk, and paper, compositional balance of geometric and organic forms, 8K hyperrealistic detail showing texture of collaged materials and painted surfaces"
+        },
+        {
+          value: "neoclassical-period",
+          label: "🏛️ Neoclassical Return to Order",
+          description: "GODLEVEL PROMPT: Pablo Picasso's Neoclassical Period showing return to classical forms after cubist experimentation, monumental figures with sculptural weight and volume, Three Women at the Spring with statuesque poses, classical drapery and flowing robes in earth tones, maternal themes with mother and child compositions, beach scenes with bathers in timeless poses, Greek and Roman sculpture influences, simplified but naturalistic forms, warm Mediterranean palette, figures with classical proportions and dignity, pastoral scenes with shepherds and rural life, ballet designs for Diaghilev productions, line drawings with classical purity, portraits with Renaissance-like modeling, reaction against avant-garde experimentation, return to traditional artistic values, oil painting technique with smooth surfaces, classical composition and balance, psychological depth in portrait studies, masterful draftsmanship in figure drawing, 8K resolution showing classical beauty and technical mastery"
+        },
+        {
+          value: "surrealist-period",
+          label: "🌙 Surrealist Dream Imagery",
+          description: "GODLEVEL PROMPT: Pablo Picasso's Surrealist Period exploring unconscious mind and dream imagery, The Dream with sleeping woman in vibrant colors, distorted figures with multiple eyes and displaced features, metamorphosis of human forms into fantastic creatures, automatic drawing techniques revealing subconscious, erotic symbolism and psychological themes, Minotaur mythology with bull-headed creatures, beach scenes with bathers transformed into monsters, double images and visual puns, collaboration with surrealist poets and writers, studio scenes with artist and model themes, psychological portraits revealing hidden desires, mythological subjects with modern interpretation, violent and tender emotions juxtaposed, experimental techniques with sand and unconventional materials, dream logic in compositional arrangements, Freudian influences on artistic expression, oil painting with bold colors and expressive brushwork, 8K hyperrealistic detail showing surrealist transformation and psychological depth"
+        },
+        {
+          value: "guernica",
+          label: "⚡ Guernica Anti-War Masterpiece",
+          description: "GODLEVEL PROMPT: Pablo Picasso's Guernica, the most powerful anti-war painting in art history, monumental black, white, and gray composition depicting Spanish Civil War bombing, fragmented bull representing Spain in agony, screaming horse pierced by spear symbolizing suffering people, dismembered warrior with broken sword representing defeat, mother holding dead child in ultimate grief, light bulb eye of God witnessing destruction, woman with lamp seeking truth in darkness, geometric fragmentation showing violence and chaos, cubist techniques serving political message, newspaper texture referencing media coverage, symbols of Spanish culture under attack, universal themes of war's brutality, compositional drama with diagonal movements, emotional intensity in distorted faces, historical documentation through artistic expression, oil painting technique with powerful black and white contrasts, international symbol of peace and anti-war sentiment, 8K resolution showing every symbolic detail and emotional impact"
+        },
+        {
+          value: "demoiselles-avignon",
+          label: "👥 Les Demoiselles d'Avignon Revolution",
+          description: "GODLEVEL PROMPT: Pablo Picasso's Les Demoiselles d'Avignon, the revolutionary painting that launched modern art, five female figures in Barcelona brothel setting, radical departure from Renaissance perspective, African mask influences on faces, geometric simplification of human forms, multiple viewpoints shown simultaneously, pink and ochre color palette, angular bodies with sharp edges, confrontational gazes challenging viewer, prostitutes as subjects breaking artistic taboos, proto-cubist experimentation with form, influence of Iberian sculpture, revolutionary challenge to Western art traditions, compositional tension and psychological intensity, brushwork showing artistic struggle and innovation, cultural appropriation and artistic breakthrough, studio studies and preparatory sketches, oil painting technique with bold geometric planes, art historical significance as birth of modernism, 8K hyperrealistic detail showing revolutionary artistic innovation"
+        },
+        {
+          value: "weeping-woman",
+          label: "😭 The Weeping Woman Emotional Intensity",
+          description: "GODLEVEL PROMPT: Pablo Picasso's The Weeping Woman series showing ultimate expression of grief and suffering, Dora Maar as model with tears streaming down fragmented face, handkerchief pressed to eyes in universal gesture of sorrow, bright colors contrasting with emotional darkness, cubist fragmentation serving emotional expression, multiple profiles showing different aspects of grief, Spanish Civil War context of universal suffering, psychological portrait of modern anxiety, geometric tears and distorted features, hat and clothing in decorative patterns, emotional intensity through artistic distortion, series variations exploring theme, oil painting technique with expressive brushwork, symbolic representation of all war victims, masterful combination of personal and political themes, 8K resolution showing every tear and emotional detail"
+        },
+        {
+          value: "three-musicians",
+          label: "🎵 Three Musicians Synthetic Cubism",
+          description: "GODLEVEL PROMPT: Pablo Picasso's Three Musicians showcasing mature Synthetic Cubism, three figures in carnival costumes playing musical instruments, harlequin in diamond-patterned outfit with guitar, pierrot in white with clarinet, monk in brown robes with accordion, flat geometric shapes in bright colors, collage-like composition with overlapping planes, musical theme celebrating art and creativity, decorative patterns and bold color contrasts, synthetic construction rather than analytical breakdown, playful experimentation with form and color, café concert atmosphere, friendship and artistic collaboration themes, oil painting technique with flat color areas, compositional balance and rhythmic movement, celebration of bohemian artistic life, 8K hyperrealistic detail showing geometric precision and decorative beauty"
+        },
+        {
+          value: "later-works",
+          label: "🎭 Later Works Continued Innovation",
+          description: "GODLEVEL PROMPT: Pablo Picasso's later works showing continued artistic experimentation into old age, Las Meninas series reinterpreting Velázquez masterpiece, bold colors and expressive brushwork, mythological themes with fauns and centaurs, studio scenes with artist and model, ceramic works with Mediterranean themes, printmaking innovations with linocuts and etchings, portrait variations exploring artistic identity, playful experimentation with different styles, return to classical themes with modern interpretation, prolific output in final decades, artistic vitality and creative energy, oil painting technique with loose, confident brushwork, synthesis of lifetime artistic exploration, 8K resolution showing artistic mastery and continued innovation"
+        }
+      ],
+      camouflage: [
+        { 
+          value: "pure", 
+          label: "Pure Mathematical", 
+          description: "Raw mathematical beauty with camouflage pattern precision and adaptive algorithms" 
+        },
+        {
+          value: "chameleon-spectrum",
+          label: "🦎 Chameleon Spectrum Transformation",
+          description: "GODLEVEL PROMPT: Magnificent chameleon displaying full spectrum color transformation abilities, skin cells containing chromatophores with crystalline nanostructures reflecting light in impossible rainbow cascades, mathematical precision in color-changing algorithms as reptile shifts from emerald forest greens to sunset oranges and deep ocean blues, each scale a microscopic prism refracting light into component wavelengths, eyes rotating independently to track multiple prey while body remains perfectly camouflaged against tropical Madagascar rainforest backdrop, tongue extending with ballistic precision to capture insects in slow-motion photography, adaptive camouflage responding to emotional states and environmental stimuli, cellular-level detail showing iridophores and leucophores working in harmony, branches and leaves morphing to match chameleon's skin patterns in symbiotic visual illusion, hyperrealistic 8K macro photography capturing every chromatophore expansion and contraction, volumetric lighting showing light interaction with biological photonic crystals, scientific accuracy in depicting actual chameleon physiology while enhancing natural beauty to supernatural levels"
+        },
+        {
+          value: "arctic-fox-seasons",
+          label: "🦊 Arctic Fox Seasonal Metamorphosis",
+          description: "GODLEVEL PROMPT: Arctic fox undergoing dramatic seasonal coat transformation from pure winter white to rich summer brown, molecular-level detail showing individual hair follicles changing pigmentation through genetic expression, mathematical precision in fur density adaptation from 70% increase in winter coat thickness, camouflage perfection against shifting Arctic landscape from snow-covered tundra to exposed rocky terrain, behavioral adaptation showing fox hunting techniques optimized for each seasonal camouflage, den sites strategically chosen to complement coat coloration, family groups with cubs displaying various stages of seasonal transition, predator-prey dynamics visualized through camouflage effectiveness against snowy owls and polar bears, climate change impact on camouflage timing creating evolutionary pressure, traditional Inuit knowledge of fox behavior and seasonal patterns, conservation biology showing habitat requirements for successful camouflage, hyperrealistic wildlife cinematography capturing fur texture and environmental integration, atmospheric Arctic lighting with aurora borealis creating ethereal backdrop, scientific accuracy in depicting actual Arctic fox physiology and behavior"
+        },
+        {
+          value: "octopus-intelligence",
+          label: "🐙 Octopus Neural Camouflage Network",
+          description: "GODLEVEL PROMPT: Giant Pacific octopus demonstrating supreme intelligence through instantaneous camouflage transformations, chromatophores controlled by sophisticated neural networks creating real-time pattern matching with coral reef environment, skin texture morphing from smooth to spiky to match surrounding surfaces with mathematical precision, behavioral intelligence showing problem-solving abilities while maintaining perfect camouflage, tentacles independently adapting coloration and texture for multi-surface blending, eyes with advanced visual processing analyzing environment for optimal camouflage strategies, hunting sequences showing coordinated camouflage and predation techniques, communication through color patterns between octopus individuals, escape artistry using camouflage combined with jet propulsion and ink clouds, laboratory studies revealing cognitive abilities and learning capacity, conservation importance of protecting octopus habitats and intelligence, hyperrealistic underwater cinematography with advanced lighting showing chromatophore detail, marine biology accuracy in depicting actual octopus physiology and behavior, philosophical implications of non-human intelligence and consciousness"
+        },
+        {
+          value: "butterfly-mimicry",
+          label: "🦋 Butterfly Mimicry Evolution Masterpiece",
+          description: "GODLEVEL PROMPT: Evolutionary masterpiece of butterfly mimicry showing Batesian and Müllerian mimicry in action, toxic monarch butterflies with warning coloration alongside harmless viceroy butterflies displaying convergent evolution, mathematical precision in wing pattern genetics and developmental biology, metamorphosis sequences showing how camouflage patterns develop during pupation, predator-prey coevolution with birds learning to distinguish between toxic and harmless species, migration patterns where camouflage strategies change across geographical regions, pollination ecology showing how camouflage affects plant-butterfly interactions, climate change impacts on mimicry effectiveness and species survival, laboratory breeding programs revealing genetic basis of pattern formation, traditional knowledge from indigenous cultures about butterfly behavior and ecology, conservation efforts protecting butterfly habitats and migration corridors, hyperrealistic macro photography capturing wing scale structure and iridescence, scientific accuracy in depicting actual butterfly physiology and evolutionary biology, artistic beauty in natural selection's creative power"
+        },
+        {
+          value: "stick-insect-mastery",
+          label: "🌿 Stick Insect Botanical Perfection",
+          description: "GODLEVEL PROMPT: Master stick insects achieving perfect botanical mimicry with body segments precisely matching tree branches, bark texture, and leaf structures, mathematical precision in body proportions following golden ratio found in plant growth patterns, behavioral adaptations including swaying motion to mimic wind-blown branches, reproductive strategies where eggs resemble seeds scattered on forest floor, predator avoidance through absolute stillness and perfect camouflage integration, species diversity showing adaptation to different plant hosts from tropical rainforests to temperate woodlands, evolutionary arms race between stick insects and visual predators, laboratory studies revealing genetic basis of morphological adaptation, ecological importance as herbivores and prey species in forest ecosystems, traditional uses in indigenous medicine and cultural practices, conservation challenges from habitat destruction and climate change, hyperrealistic macro photography showing incredible detail in body structure and plant mimicry, scientific accuracy in depicting actual phasmid physiology and behavior, artistic appreciation for nature's sculptural perfection"
+        },
+        {
+          value: "cuttlefish-hypnosis",
+          label: "🦑 Cuttlefish Hypnotic Wave Patterns",
+          description: "GODLEVEL PROMPT: Cuttlefish displaying mesmerizing hypnotic wave patterns across skin surface, chromatophores creating traveling waves of color and texture that confuse prey and predators, mathematical precision in wave propagation and interference patterns, neural control systems managing thousands of individual color cells simultaneously, hunting strategies using dynamic camouflage to approach prey while remaining invisible, mating displays with elaborate color shows and pattern competitions, intelligence demonstrations through problem-solving and learning experiments, communication through rapid color changes and body postures, predator evasion using startling displays and rapid camouflage shifts, evolutionary relationship to other cephalopods and camouflage innovations, marine ecosystem role as both predator and prey species, hyperrealistic underwater cinematography capturing dynamic color changes, scientific accuracy in depicting actual cuttlefish physiology and behavior, artistic beauty in living kaleidoscope displays"
+        },
+        {
+          value: "military-evolution",
+          label: "🎖️ Military Camouflage Evolution History",
+          description: "GODLEVEL PROMPT: Comprehensive evolution of military camouflage from World War I dazzle ships to modern adaptive digital patterns, mathematical analysis of pattern effectiveness across different environments and detection methods, historical development showing influence of natural camouflage on military design, technological advancement from simple disruptive patterns to advanced metamaterials, psychological warfare aspects of camouflage and deception operations, cultural impact of camouflage patterns in fashion and art movements, scientific research into visual perception and pattern recognition, modern developments in active camouflage and optical invisibility, ethical considerations in military technology and civilian applications, international regulations and treaties regarding camouflage use, hyperrealistic historical recreation showing authentic uniforms and equipment, technical accuracy in depicting actual camouflage effectiveness and development, artistic appreciation for functional design and visual innovation"
+        },
+        {
+          value: "urban-adaptation",
+          label: "🏙️ Urban Wildlife Camouflage Adaptation",
+          description: "GODLEVEL PROMPT: Urban wildlife species adapting camouflage strategies for city environments, peppered moths evolving darker coloration to match pollution-darkened tree bark, birds modifying nest camouflage using human-made materials, mammals adapting behavior and appearance for urban survival, mathematical modeling of evolutionary pressure in urban environments, pollution impact on traditional camouflage effectiveness, artificial lighting effects on nocturnal camouflage strategies, human-wildlife conflict resolution through understanding adaptation, conservation biology in urban planning and green space design, citizen science projects documenting urban wildlife adaptation, hyperrealistic urban wildlife photography showing adaptation in action, scientific accuracy in depicting actual evolutionary processes, environmental message about coexistence and adaptation"
+        },
+        {
+          value: "deep-sea-bioluminescence",
+          label: "🌊 Deep Sea Bioluminescent Camouflage",
+          description: "GODLEVEL PROMPT: Deep sea creatures using bioluminescent camouflage in the eternal darkness of ocean depths, mathematical precision in light production and wavelength optimization, counter-illumination strategies where creatures match downwelling light to become invisible from below, predator-prey dynamics in three-dimensional darkness using light as camouflage, evolutionary adaptations to extreme pressure and temperature conditions, biochemistry of luciferin-luciferase reactions producing biological light, ecological relationships in deep sea food webs and energy transfer, technological applications inspired by biological bioluminescence, conservation challenges in deep ocean environments, scientific exploration using advanced submersibles and imaging technology, hyperrealistic deep sea cinematography with accurate lighting conditions, marine biology accuracy in depicting actual deep sea organisms, artistic beauty in nature's light shows"
+        },
+        {
+          value: "plant-mimicry",
+          label: "🌺 Plant Mimicry and Deception Strategies",
+          description: "GODLEVEL PROMPT: Plants employing sophisticated mimicry and camouflage strategies for survival and reproduction, orchids mimicking female insects to attract male pollinators, carnivorous plants disguising deadly traps as attractive flowers, mathematical precision in flower structure and pollinator attraction, coevolutionary relationships between plants and their mimicry targets, chemical camouflage using scent compounds to avoid herbivore detection, seasonal camouflage strategies in deciduous and evergreen species, agricultural applications of plant camouflage in crop protection, traditional knowledge of plant deception from indigenous cultures, conservation importance of protecting plant-pollinator relationships, hyperrealistic botanical photography showing mimicry details, scientific accuracy in depicting actual plant physiology and ecology, artistic appreciation for nature's deceptive beauty"
+        },
+        {
+          value: "predator-patterns",
+          label: "🐅 Predator Camouflage Hunting Strategies",
+          description: "GODLEVEL PROMPT: Apex predators demonstrating masterful camouflage hunting strategies, tigers using stripe patterns to blend with tall grass and shadows, leopards adapting spot patterns for tree branch camouflage, mathematical analysis of pattern effectiveness in different lighting conditions, behavioral hunting techniques optimized for camouflage advantage, prey species counter-adaptations and evolutionary arms races, habitat requirements for effective predator camouflage, conservation challenges from habitat fragmentation, human-predator conflict and coexistence strategies, traditional knowledge from indigenous hunting cultures, hyperrealistic wildlife photography capturing predator-prey interactions, scientific accuracy in depicting actual predator behavior and ecology, conservation message about protecting apex predators and ecosystems"
+        },
+        {
+          value: "seasonal-forest",
+          label: "🍂 Seasonal Forest Camouflage Cycles",
+          description: "GODLEVEL PROMPT: Forest ecosystems demonstrating seasonal camouflage cycles with mathematical precision, deciduous trees coordinating leaf color changes for optimal light capture and protection, understory plants adapting to changing light conditions throughout seasons, animal species timing coat changes with environmental transitions, mathematical modeling of phenological timing and climate adaptation, ecosystem-level coordination of seasonal changes, climate change impacts on traditional seasonal timing, forest management practices supporting natural camouflage cycles, traditional ecological knowledge of seasonal patterns, hyperrealistic forest photography showing seasonal transitions, ecological accuracy in depicting actual forest dynamics, artistic beauty in nature's seasonal transformations"
+        },
+        {
+          value: "microscopic-camouflage",
+          label: "🔬 Microscopic World Camouflage Mastery",
+          description: "GODLEVEL PROMPT: Microscopic organisms demonstrating incredible camouflage strategies at cellular level, bacteria using quorum sensing to coordinate camouflage responses, protozoans mimicking cellular debris to avoid immune detection, mathematical precision in molecular camouflage mechanisms, viral camouflage strategies for immune system evasion, symbiotic relationships where camouflage benefits multiple species, biotechnology applications inspired by microscopic camouflage, medical research into pathogen camouflage and treatment strategies, evolutionary biology of microscopic adaptation, hyperrealistic microscopy imaging showing cellular detail, scientific accuracy in depicting actual microscopic organisms, technological applications in medicine and biotechnology"
+        },
+        {
+          value: "adaptive-materials",
+          label: "🧬 Adaptive Camouflage Materials Science",
+          description: "GODLEVEL PROMPT: Cutting-edge materials science creating adaptive camouflage inspired by nature, metamaterials with programmable optical properties, mathematical modeling of light interaction with nanostructures, biomimetic design principles from natural camouflage systems, smart textiles responding to environmental conditions, military and civilian applications of adaptive camouflage, ethical considerations in camouflage technology development, manufacturing challenges and scalability issues, international cooperation and competition in camouflage research, future possibilities including true optical invisibility, hyperrealistic visualization of advanced materials and applications, scientific accuracy in depicting actual materials science research, technological optimism balanced with ethical responsibility"
         }
       ],
     }
@@ -1054,8 +1200,7 @@ export function FlowArtGenerator() {
           </div>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto">
             Generate stunning mathematical visualizations and AI-powered artwork with advanced projection support for
-            domes and 360° environments. Now featuring GODLEVEL Indonesian tribal heritage prompts and M.C. Escher
-            mathematical art! 🇮🇩✨
+            domes and 360° environments. Now featuring GODLEVEL Indonesian tribal heritage, M.C. Escher mathematical art, and Pablo Picasso artistic periods! 🇮🇩✨🎨
           </p>
         </div>
 
@@ -1158,7 +1303,10 @@ export function FlowArtGenerator() {
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-600">
                           <SelectItem value="indonesian">🇮🇩 Indonesian Tribal Heritage (GODLEVEL)</SelectItem>
-                          <SelectItem value="escher">🎨 M.C. Escher Mathematical Art</SelectItem>
+                          <SelectItem value="picasso">🎨 Pablo Picasso Artistic Periods</SelectItem>
+                          <SelectItem value="escher">🔮 M.C. Escher Mathematical Art</SelectItem>
+                          <SelectItem value="bosch">👹 Hieronymus Bosch Fantastical Worlds</SelectItem>
+                          <SelectItem value="camouflage">🦎 Nature's Camouflage Mastery</SelectItem>
                           <SelectItem value="nuanu">🏗️ Nuanu Creative City</SelectItem>
                           <SelectItem value="bali">🏝️ Balinese Cultural Heritage</SelectItem>
                           <SelectItem value="thailand">🇹🇭 Thai Cultural Heritage</SelectItem>
@@ -1181,7 +1329,6 @@ export function FlowArtGenerator() {
                           <SelectItem value="natives">🏕️ Ancient Native Tribes</SelectItem>
                           <SelectItem value="statues">🗿 Sacred & Sculptural Statues</SelectItem>
                           <SelectItem value="8bit">🎮 8bit Pixel Art Generation</SelectItem>
-                          <SelectItem value="bosch">🎨 Hieronymus Bosch Fantastical Worlds</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -1509,7 +1656,6 @@ export function FlowArtGenerator() {
                           </div>
                         )}
                       </div>
-                    </div>
 
                     {/* Generate Button */}
                     <div className="flex gap-2">
@@ -1562,12 +1708,12 @@ export function FlowArtGenerator() {
                     <CardTitle className="flex items-center justify-between text-slate-100">
                       <div className="flex items-center gap-2">
                         <Eye className="h-5 w-5" />
-                        Generated {getDatasetDisplayName(dataset)} GODLEVEL Artwork
+                        Generated {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"} GODLEVEL Artwork
                       </div>
                       {generatedArt && (
                         <div className="flex items-center gap-2">
                           <Badge variant="outline" className="border-purple-500 text-purple-400">
-                            ✨ {getDatasetDisplayName(dataset)}
+                            ✨ {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"}
                           </Badge>
                           <Badge variant="outline" className="border-green-500 text-green-400">
                             3 GODLEVEL Versions
@@ -1610,25 +1756,23 @@ export function FlowArtGenerator() {
                                   className="w-full h-96 object-cover"
                                 />
                               )}
-                              <div className="absolute top-2 left-2">
-                                <Badge className="bg-blue-600 text-white">
-                                  <Camera className="h-3 w-3 mr-1" />
-                                  Original GODLEVEL
-                                </Badge>
+
+                              <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-transparent p-4 text-slate-200">
+                                <h4 className="font-semibold">Original Artwork</h4>
+                                <p className="text-sm">
+                                  {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"} + {generatedArt?.params?.scenario || "Unknown"} - {generatedArt?.params?.colorScheme || "Unknown"}
+                                </p>
                               </div>
                             </div>
-                            <div className="space-y-2">
-                              <h4 className="text-sm font-medium text-slate-300">Standard GODLEVEL Mathematical Art</h4>
-                              <p className="text-xs text-slate-400">
-                                Traditional format perfect for prints, displays, and standard viewing with
-                                hyperrealistic detail
-                              </p>
+                            <div className="flex justify-end gap-2">
                               <Button
+                                size="sm"
                                 onClick={() => downloadImage("regular")}
-                                className="w-full bg-blue-600 hover:bg-blue-700"
+                                disabled={isGenerating}
+                                className="bg-blue-600 hover:bg-blue-700 text-white"
                               >
                                 <Download className="h-4 w-4 mr-2" />
-                                Download Original GODLEVEL Version
+                                Download Original
                               </Button>
                             </div>
                           </TabsContent>
@@ -1642,43 +1786,28 @@ export function FlowArtGenerator() {
                                 />
                               ) : (
                                 <img
-                                  src={generatedArt.domeImageUrl || generatedArt.imageUrl || "/placeholder.svg"}
+                                  src={generatedArt.domeImageUrl || "/placeholder.svg"}
                                   alt={`Generated ${getDatasetDisplayName(dataset)} artwork - Dome Projection`}
                                   className="w-full h-96 object-cover"
                                 />
                               )}
-                              <div className="absolute top-2 left-2">
-                                <Badge className="bg-purple-600 text-white">
-                                  <Mountain className="h-3 w-3 mr-1" />
-                                  Dome {domeDiameter}m GODLEVEL
-                                </Badge>
+                              <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-transparent p-4 text-slate-200">
+                                <h4 className="font-semibold">Dome Projection - {domeDiameter}m</h4>
+                                <p className="text-sm">
+                                  {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"} + {generatedArt?.params?.scenario || "Unknown"} - {domeResolution} -{" "}
+                                  {domeProjectionType}
+                                </p>
                               </div>
                             </div>
-                            <div className="space-y-2">
-                              <h4 className="text-sm font-medium text-slate-300">
-                                GODLEVEL Planetarium Dome Projection ({domeDiameter}m)
-                              </h4>
-                              <p className="text-xs text-slate-400">
-                                {domeProjectionType} projection optimized for {domeDiameter}m diameter planetarium dome
-                                with immersive tunnel effect and hyperrealistic details
-                              </p>
-                              <div className="flex gap-2 text-xs">
-                                <Badge variant="outline" className="border-purple-500 text-purple-400">
-                                  {domeResolution}
-                                </Badge>
-                                <Badge variant="outline" className="border-purple-500 text-purple-400">
-                                  {domeProjectionType}
-                                </Badge>
-                                <Badge variant="outline" className="border-purple-500 text-purple-400">
-                                  GODLEVEL
-                                </Badge>
-                              </div>
+                            <div className="flex justify-end gap-2">
                               <Button
+                                size="sm"
                                 onClick={() => downloadImage("dome")}
-                                className="w-full bg-purple-600 hover:bg-purple-700"
+                                disabled={isGenerating}
+                                className="bg-purple-600 hover:bg-purple-700 text-white"
                               >
                                 <Download className="h-4 w-4 mr-2" />
-                                Download Dome GODLEVEL Version
+                                Download Dome
                               </Button>
                             </div>
                           </TabsContent>
@@ -1692,216 +1821,111 @@ export function FlowArtGenerator() {
                                 />
                               ) : (
                                 <img
-                                  src={generatedArt.panorama360Url || generatedArt.imageUrl || "/placeholder.svg"}
+                                  src={generatedArt.panorama360Url || "/placeholder.svg"}
                                   alt={`Generated ${getDatasetDisplayName(dataset)} artwork - 360° Panorama`}
                                   className="w-full h-96 object-cover"
                                 />
                               )}
-                              <div className="absolute top-2 left-2">
-                                <Badge className="bg-green-600 text-white">
-                                  <Globe className="h-3 w-3 mr-1" />
-                                  360° VR GODLEVEL
-                                </Badge>
+                              <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-transparent p-4 text-slate-200">
+                                <h4 className="font-semibold">360° Panorama - VR Ready</h4>
+                                <p className="text-sm">
+                                  {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"} + {generatedArt?.params?.scenario || "Unknown"} - {panoramaResolution} -{" "}
+                                  {panoramaFormat}
+                                </p>
                               </div>
                             </div>
-                            <div className="space-y-2">
-                              <h4 className="text-sm font-medium text-slate-300">
-                                GODLEVEL 360° Virtual Reality Panorama
-                              </h4>
-                              <p className="text-xs text-slate-400">
-                                {panoramaFormat} format at {panoramaResolution} resolution, perfect for VR headsets and
-                                immersive viewing with hyperrealistic details
-                              </p>
-                              <div className="flex gap-2 text-xs">
-                                <Badge variant="outline" className="border-green-500 text-green-400">
-                                  {panoramaResolution}
-                                </Badge>
-                                <Badge variant="outline" className="border-green-500 text-green-400">
-                                  {panoramaFormat}
-                                </Badge>
-                                <Badge variant="outline" className="border-green-500 text-green-400">
-                                  GODLEVEL
-                                </Badge>
-                                {panoramaFormat === "stereographic" && (
-                                  <Badge variant="outline" className="border-green-500 text-green-400">
-                                    {stereographicPerspective}
-                                  </Badge>
-                                )}
-                              </div>
+                            <div className="flex justify-end gap-2">
                               <Button
+                                size="sm"
                                 onClick={() => downloadImage("panorama")}
-                                className="w-full bg-green-600 hover:bg-green-700"
+                                disabled={isGenerating}
+                                className="bg-green-600 hover:bg-green-700 text-white"
                               >
                                 <Download className="h-4 w-4 mr-2" />
-                                Download 360° GODLEVEL Version
+                                Download 360° VR
                               </Button>
                             </div>
                           </TabsContent>
                         </Tabs>
 
-                        {/* Download Status */}
-                        {downloadStatus && (
-                          <Alert className="border-green-500 bg-green-500/10">
-                            <CheckCircle className="h-4 w-4" />
-                            <AlertDescription className="text-green-400">{downloadStatus}</AlertDescription>
-                          </Alert>
-                        )}
-
-                        {/* Generation Status Summary */}
-                        {generatedArt.mode === "ai" && generatedArt.generationDetails && (
-                          <div className="bg-slate-900 p-4 rounded-lg border border-slate-600">
-                            <h4 className="text-sm font-medium text-slate-300 mb-3">
-                              GODLEVEL Generation Status Summary
-                            </h4>
-                            <div className="grid grid-cols-3 gap-4">
-                              <div className="text-center">
-                                <div className="flex items-center justify-center mb-2">
-                                  <Camera className="h-5 w-5 text-blue-400" />
-                                </div>
-                                <p className="text-xs font-medium text-slate-300">Original</p>
-                                <Badge variant="outline" className="text-xs mt-1 border-green-500 text-green-400">
-                                  {generatedArt.generationDetails.mainImage}
-                                </Badge>
-                              </div>
-                              <div className="text-center">
-                                <div className="flex items-center justify-center mb-2">
-                                  <Mountain className="h-5 w-5 text-purple-400" />
-                                </div>
-                                <p className="text-xs font-medium text-slate-300">Dome</p>
-                                <Badge
-                                  variant="outline"
-                                  className={`text-xs mt-1 ${
-                                    generatedArt.generationDetails.domeImage.includes("successfully")
-                                      ? "border-green-500 text-green-400"
-                                      : "border-yellow-500 text-yellow-400"
-                                  }`}
-                                >
-                                  {generatedArt.generationDetails.domeImage.includes("successfully")
-                                    ? "✓ GODLEVEL Generated"
-                                    : "⚠ Fallback"}
-                                </Badge>
-                              </div>
-                              <div className="text-center">
-                                <div className="flex items-center justify-center mb-2">
-                                  <Globe className="h-5 w-5 text-green-400" />
-                                </div>
-                                <p className="text-xs font-medium text-slate-300">360° VR</p>
-                                <Badge
-                                  variant="outline"
-                                  className={`text-xs mt-1 ${
-                                    generatedArt.generationDetails.panoramaImage.includes("successfully")
-                                      ? "border-green-500 text-green-400"
-                                      : "border-yellow-500 text-yellow-400"
-                                  }`}
-                                >
-                                  {generatedArt.generationDetails.panoramaImage.includes("successfully")
-                                    ? "✓ GODLEVEL Generated"
-                                    : "⚠ Fallback"}
-                                </Badge>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Artwork Details */}
-                        <div className="space-y-3 pt-4 border-t border-slate-600">
-                          <h4 className="text-sm font-medium text-slate-300">GODLEVEL Artwork Details</h4>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                            <div>
-                              <span className="text-slate-400">Dataset:</span>
-                              <p className="text-slate-200 capitalize">{generatedArt.params?.dataset || "N/A"}</p>
-                            </div>
-                            <div>
-                              <span className="text-slate-400">Scenario:</span>
-                              <p className="text-slate-200 capitalize">{generatedArt.params?.scenario || "N/A"}</p>
-                            </div>
-                            <div>
-                              <span className="text-slate-400">Color Scheme:</span>
-                              <p className="text-slate-200 capitalize">{generatedArt.params?.colorScheme || "N/A"}</p>
-                            </div>
-                            <div>
-                              <span className="text-slate-400">Seed:</span>
-                              <p className="text-slate-200">{generatedArt.params?.seed || "N/A"}</p>
-                            </div>
-                            <div>
-                              <span className="text-slate-400">Data Points:</span>
-                              <p className="text-slate-200">
-                                {generatedArt.params?.numSamples?.toLocaleString() || "N/A"}
-                              </p>
-                            </div>
-                            <div>
-                              <span className="text-slate-400">Noise Scale:</span>
-                              <p className="text-slate-200">{generatedArt.params?.noiseScale || "N/A"}</p>
-                            </div>
-                            <div>
-                              <span className="text-slate-400">Time Step:</span>
-                              <p className="text-slate-200">{generatedArt.params?.timeStep || "N/A"}</p>
-                            </div>
-                            {generatedArt.mode === "ai" && generatedArt.provider && (
-                              <div>
-                                <span className="text-slate-400">Provider:</span>
-                                <p className="text-slate-200 capitalize">{generatedArt.provider}</p>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Custom Prompt Display */}
-                          {generatedArt.mode === "ai" && generatedArt.customPrompt && (
-                            <div className="space-y-2">
-                              <span className="text-slate-400 text-sm">Custom GODLEVEL Prompt Used:</span>
-                              <div className="bg-slate-900 p-3 rounded-md max-h-32 overflow-y-auto">
-                                <p className="text-slate-300 text-sm leading-relaxed">{generatedArt.customPrompt}</p>
-                              </div>
-                            </div>
-                          )}
-
-                          {generatedArt.mode === "ai" && generatedArt.finalPrompt && (
-                            <div className="space-y-2">
-                              <span className="text-slate-400 text-sm">Final Enhanced GODLEVEL Prompt:</span>
-                              <div className="bg-slate-900 p-3 rounded-md max-h-32 overflow-y-auto">
-                                <p className="text-slate-300 text-sm leading-relaxed">
-                                  {generatedArt.finalPrompt.substring(0, 500)}
-                                  {generatedArt.finalPrompt.length > 500 && "..."}
+                        {/* Generation Details */}
+                        <div className="bg-slate-900 p-4 rounded-lg border border-slate-700 space-y-3">
+                          <h4 className="text-lg font-semibold text-slate-200">Generation Details</h4>
+                          <div className="space-y-2">
+                            <p className="text-sm text-slate-400">
+                              <span className="font-medium text-slate-300">Dataset:</span>{" "}
+                              {generatedArt?.params ? getDatasetDisplayName(generatedArt.params.dataset) : "Unknown"}
+                            </p>
+                            <p className="text-sm text-slate-400">
+                              <span className="font-medium text-slate-300">Scenario:</span> {generatedArt?.params?.scenario || "Unknown"}
+                            </p>
+                            <p className="text-sm text-slate-400">
+                              <span className="font-medium text-slate-300">Color Scheme:</span> {generatedArt?.params?.colorScheme || "Unknown"}
+                            </p>
+                            <p className="text-sm text-slate-400">
+                              <span className="font-medium text-slate-300">Seed:</span> {generatedArt?.params?.seed || "Unknown"}
+                            </p>
+                            <p className="text-sm text-slate-400">
+                              <span className="font-medium text-slate-300">Data Points:</span>{" "}
+                              {generatedArt?.params?.numSamples?.toLocaleString() || "Unknown"}
+                            </p>
+                            <p className="text-sm text-slate-400">
+                              <span className="font-medium text-slate-300">Noise Scale:</span> {generatedArt?.params?.noiseScale || "Unknown"}
+                            </p>
+                            <p className="text-sm text-slate-400">
+                              <span className="font-medium text-slate-300">Time Step:</span> {generatedArt?.params?.timeStep || "Unknown"}
+                            </p>
+                            {generatedArt.mode === "ai" && (
+                              <>
+                                <p className="text-sm text-slate-400">
+                                  <span className="font-medium text-slate-300">AI Provider:</span>{" "}
+                                  {generatedArt.provider || "Unknown"}
                                 </p>
-                                {generatedArt.promptLength && (
-                                  <p className="text-slate-500 text-xs mt-2">{generatedArt.promptLength} characters</p>
+                                <p className="text-sm text-slate-400">
+                                  <span className="font-medium text-slate-300">AI Model:</span> {generatedArt.model || "Unknown"}
+                                </p>
+                                {generatedArt.customPrompt && (
+                                  <p className="text-sm text-slate-400">
+                                    <span className="font-medium text-slate-300">Custom Prompt:</span>{" "}
+                                    {generatedArt.customPrompt}
+                                  </p>
                                 )}
-                              </div>
-                            </div>
-                          )}
+                                {generatedArt.originalPrompt && (
+                                  <p className="text-sm text-slate-400">
+                                    <span className="font-medium text-slate-300">Original Prompt:</span>{" "}
+                                    {generatedArt.originalPrompt}
+                                  </p>
+                                )}
+                                {generatedArt.finalPrompt && (
+                                  <p className="text-sm text-slate-400">
+                                    <span className="font-medium text-slate-300">Final Prompt:</span>{" "}
+                                    {generatedArt.finalPrompt}
+                                  </p>
+                                )}
+                                {generatedArt.promptLength && (
+                                  <p className="text-sm text-slate-400">
+                                    <span className="font-medium text-slate-300">Prompt Length:</span>{" "}
+                                    {generatedArt.promptLength} characters
+                                  </p>
+                                )}
+                                {generatedArt.estimatedFileSize && (
+                                  <p className="text-sm text-slate-400">
+                                    <span className="font-medium text-slate-300">Estimated File Size:</span>{" "}
+                                    {generatedArt.estimatedFileSize}
+                                  </p>
+                                )}
+                              </>
+                            )}
+                            <p className="text-sm text-slate-500">
+                              Generated on {new Date(generatedArt.timestamp).toLocaleString()}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     ) : (
-                      <div className="flex flex-col items-center justify-center h-96 bg-slate-900 rounded-lg border border-slate-700">
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-center">
-                            <ImageIcon className="h-8 w-8" />
-                          </div>
-                          <div className="text-center">
-                            <p className="text-lg font-medium text-slate-300">
-                              Ready to Generate {getDatasetDisplayName(dataset)} GODLEVEL Art
-                            </p>
-                            <p className="text-sm text-slate-400">
-                              {useCustomPrompt && customPrompt.trim()
-                                ? "Your custom prompt will be enhanced with GODLEVEL elements"
-                                : `Click "Generate ${getDatasetDisplayName(dataset)} GODLEVEL" to create all 3 hyperrealistic versions`}
-                            </p>
-                            <div className="flex justify-center gap-4 mt-4">
-                              <div className="flex items-center gap-2 text-xs text-slate-500">
-                                <Camera className="h-4 w-4" />
-                                Original
-                              </div>
-                              <div className="flex items-center gap-2 text-xs text-slate-500">
-                                <Mountain className="h-4 w-4" />
-                                Dome
-                              </div>
-                              <div className="flex items-center gap-2 text-xs text-slate-500">
-                                <Globe className="h-4 w-4" />
-                                360° VR
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                      <div className="text-center text-slate-400 py-12">
+                        <ImageIcon className="h-10 w-10 mx-auto mb-4" />
+                        No artwork generated yet. Click "Generate" to create some GODLEVEL art!
                       </div>
                     )}
                   </CardContent>
@@ -1910,204 +1934,124 @@ export function FlowArtGenerator() {
             </div>
           </TabsContent>
 
+          {/* Gallery Tab */}
           <TabsContent value="gallery" className="space-y-6">
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between text-slate-100">
-                  <div className="flex items-center gap-2">
-                    <ImageIcon className="h-5 w-5" />
-                    GODLEVEL Art Gallery
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={clearGallery}
-                      className="h-6 px-2 text-xs border-red-500 text-red-400 hover:bg-red-500/10 bg-transparent"
-                    >
-                      Clear Gallery
-                    </Button>
-                    <Badge variant="secondary">{gallery.length} GODLEVEL artworks</Badge>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {gallery.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-48 bg-slate-900 rounded-lg border border-slate-700">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-center">
-                        <ImageIcon className="h-8 w-8 text-slate-400" />
-                      </div>
-                      <div className="text-center">
-                        <p className="text-lg font-medium text-slate-300">No GODLEVEL artworks in gallery</p>
-                        <p className="text-sm text-slate-400">Generate some GODLEVEL art to see it here</p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {currentItems.map((art) => (
-                        <Card key={art.id} className="bg-slate-900 border-slate-600 overflow-hidden">
-                          <div className="relative">
-                            {art.mode === "svg" ? (
-                              <div
-                                className="w-full h-48 flex items-center justify-center bg-slate-800"
-                                dangerouslySetInnerHTML={{ __html: art.svgContent }}
-                              />
-                            ) : (
-                              <img
-                                src={art.imageUrl || "/placeholder.svg"}
-                                alt={`Generated ${art.params?.dataset} artwork`}
-                                className="w-full h-48 object-cover"
-                              />
-                            )}
-                            <div className="absolute top-2 left-2">
-                              <Badge className="bg-purple-600 text-white text-xs">
-                                {getDatasetDisplayName(art.params?.dataset || "unknown")}
-                              </Badge>
-                            </div>
-                            <div className="absolute top-2 right-2">
-                              <Badge variant="outline" className="border-green-500 text-green-400 text-xs">
-                                GODLEVEL
-                              </Badge>
-                            </div>
-                          </div>
-                          <CardContent className="p-4">
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between">
-                                <h4 className="text-sm font-medium text-slate-200 capitalize">
-                                  {art.params?.scenario || "Unknown"}
-                                </h4>
-                                <span className="text-xs text-slate-400">
-                                  {new Date(art.timestamp).toLocaleDateString()}
-                                </span>
-                              </div>
-                              <div className="flex flex-wrap gap-1">
-                                <Badge variant="outline" className="text-xs border-slate-500 text-slate-400">
-                                  {art.params?.colorScheme || "Default"}
-                                </Badge>
-                                <Badge variant="outline" className="text-xs border-slate-500 text-slate-400">
-                                  {art.mode?.toUpperCase() || "UNKNOWN"}
-                                </Badge>
-                                {art.isDomeProjection && (
-                                  <Badge variant="outline" className="text-xs border-purple-500 text-purple-400">
-                                    Dome
-                                  </Badge>
-                                )}
-                                {art.is360Panorama && (
-                                  <Badge variant="outline" className="text-xs border-green-500 text-green-400">
-                                    360°
-                                  </Badge>
-                                )}
-                              </div>
-                              <div className="flex gap-1">
-                                <Button
-                                  size="sm"
-                                  onClick={() => {
-                                    setGeneratedArt(art)
-                                    // Switch to generate tab to view
-                                    const generateTab = document.querySelector('[value="generate"]') as HTMLElement
-                                    generateTab?.click()
-                                  }}
-                                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-xs h-7"
-                                >
-                                  <Eye className="h-3 w-3 mr-1" />
-                                  View
-                                </Button>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
+            {gallery.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {currentItems.map((art) => (
+                    <Card key={art.id} className="bg-slate-800 border-slate-700">
+                      <CardHeader>
+                        <CardTitle className="text-sm font-medium text-slate-200">
+                          {art.params ? getDatasetDisplayName(art.params.dataset) : "Unknown Dataset"} - {art.params?.scenario || "Unknown Scenario"}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="relative bg-slate-900 rounded-lg overflow-hidden">
+                          {art.mode === "svg" ? (
+                            <div
+                              className="w-full h-48 flex items-center justify-center"
+                              dangerouslySetInnerHTML={{ __html: art.svgContent }}
+                            />
+                          ) : (
+                            <img
+                              src={art.imageUrl || "/placeholder.svg"}
+                              alt={`Generated ${art.params ? getDatasetDisplayName(art.params.dataset) : "Unknown"} artwork`}
+                              className="w-full h-48 object-cover"
+                            />
+                          )}
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <p className="text-xs text-slate-400">
+                            {new Date(art.timestamp).toLocaleDateString()}
+                          </p>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setGeneratedArt(art)
+                              toast.success("Artwork loaded for download. Select version and click Download.")
+                            }}
+                            className="border-slate-500 text-slate-400 hover:bg-slate-500/10"
+                          >
+                            Load
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
 
-                    {/* Pagination */}
-                    {totalPages > 1 && (
-                      <div className="flex items-center justify-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                          disabled={currentPage === 1}
-                          className="border-slate-600 bg-transparent"
-                        >
-                          Previous
-                        </Button>
-                        <span className="text-sm text-slate-400">
-                          Page {currentPage} of {totalPages}
-                        </span>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                          disabled={currentPage === totalPages}
-                          className="border-slate-600 bg-transparent"
-                        >
-                          Next
-                        </Button>
-                      </div>
-                    )}
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center gap-4">
+                    <Button
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                      variant="outline"
+                      className="border-slate-500 text-slate-400 hover:bg-slate-500/10"
+                    >
+                      Previous
+                    </Button>
+                    <span className="text-slate-400">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <Button
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                      variant="outline"
+                      className="border-slate-500 text-slate-400 hover:bg-slate-500/10"
+                    >
+                      Next
+                    </Button>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </>
+            ) : (
+              <div className="text-center text-slate-400 py-12">
+                <ImageIcon className="h-10 w-10 mx-auto mb-4" />
+                No artwork in the gallery yet. Generate some art to see it here!
+              </div>
+            )}
           </TabsContent>
         </Tabs>
 
         {/* Quick Actions */}
         <Card className="bg-slate-800 border-slate-700">
-          <CardContent className="p-4">
-            <div className="flex flex-wrap gap-2 justify-center">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={resetAllParameters}
-                className="border-slate-600 bg-transparent text-slate-300 hover:bg-slate-700"
-              >
-                Reset Parameters
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={randomizeSeed}
-                className="border-slate-600 bg-transparent text-slate-300 hover:bg-slate-700"
-              >
-                <Dice1 className="h-3 w-3 mr-1" />
-                Random Seed
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setDataset("indonesian")}
-                className="border-slate-600 bg-transparent text-slate-300 hover:bg-slate-700"
-              >
-                🇮🇩 Indonesian GODLEVEL
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setDataset("escher")}
-                className="border-slate-600 bg-transparent text-slate-300 hover:bg-slate-700"
-              >
-                🎨 M.C. Escher Math
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setDataset("8bit")}
-                className="border-slate-600 bg-transparent text-slate-300 hover:bg-slate-700"
-              >
-                🎮 8bit Pixel Art
-              </Button>
-            </div>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-slate-100">
+              <Wand2 className="h-5 w-5" />
+              Quick Actions
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex justify-between">
+            <Button
+              onClick={resetAllParameters}
+              variant="outline"
+              className="border-yellow-500 text-yellow-400 hover:bg-yellow-500/10"
+            >
+              Reset Parameters
+            </Button>
+            <Button
+              onClick={clearGallery}
+              variant="destructive"
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Clear Gallery
+            </Button>
           </CardContent>
         </Card>
+
+        {/* Download Status */}
+        {downloadStatus && (
+          <Alert className="border-blue-500 bg-blue-500/10">
+            <CheckCircle className="h-4 w-4" />
+            <AlertDescription className="text-blue-400">{downloadStatus}</AlertDescription>
+          </Alert>
+        )}
       </div>
     </div>
   )
 }
 
-
-// Default export
 export default FlowArtGenerator
