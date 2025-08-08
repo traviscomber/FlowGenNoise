@@ -16,11 +16,14 @@ export interface GenerationParams {
   stereographicPerspective?: string
 }
 
-export interface DomeProjectionParams {
-  width: number
-  height: number
-  fov: number
-  tilt: number
+export interface Point {
+  x: number
+  y: number
+  vx?: number
+  vy?: number
+  color?: string
+  size?: number
+  opacity?: number
 }
 
 // Seeded random number generator
@@ -35,1120 +38,770 @@ class SeededRandom {
     this.seed = (this.seed * 9301 + 49297) % 233280
     return this.seed / 233280
   }
-}
 
-// Color palette definitions
-const colorPalettes: Record<string, string[]> = {
-  plasma: [
-    "#0d0887",
-    "#46039f",
-    "#7201a8",
-    "#9c179e",
-    "#bd3786",
-    "#d8576b",
-    "#ed7953",
-    "#fb9f3a",
-    "#fdca26",
-    "#f0f921",
-  ],
-  quantum: ["#000428", "#004e92", "#009ffd", "#00d2ff", "#ffffff"],
-  cosmic: ["#2c1810", "#8b4513", "#ff6347", "#ffa500", "#ffff00", "#ffffff"],
-  thermal: ["#000000", "#440154", "#31688e", "#35b779", "#fde725"],
-  spectral: [
-    "#9e0142",
-    "#d53e4f",
-    "#f46d43",
-    "#fdae61",
-    "#fee08b",
-    "#e6f598",
-    "#abdda4",
-    "#66c2a5",
-    "#3288bd",
-    "#5e4fa2",
-  ],
-  crystalline: ["#1a1a2e", "#16213e", "#0f3460", "#533483", "#7209b7", "#a663cc"],
-  bioluminescent: ["#0c0c0c", "#1a4c96", "#0066cc", "#00ccff", "#66ffcc", "#ccffcc"],
-  aurora: ["#0d1b2a", "#415a77", "#778da9", "#e0e1dd", "#a8dadc", "#457b9d"],
-  metallic: ["#2c2c2c", "#4a4a4a", "#696969", "#a9a9a9", "#c0c0c0", "#f5f5f5"],
-  prismatic: ["#ff0080", "#ff8000", "#ffff00", "#80ff00", "#00ff80", "#0080ff"],
-  monochromatic: ["#000000", "#333333", "#666666", "#999999", "#cccccc", "#ffffff"],
-  infrared: ["#000000", "#8b0000", "#ff0000", "#ff6347", "#ffa500", "#ffff00"],
-  lava: ["#1a0000", "#660000", "#cc0000", "#ff3300", "#ff6600", "#ffcc00"],
-  futuristic: ["#0a0a0a", "#1a1a2e", "#16213e", "#0f3460", "#533483", "#7209b7"],
-  forest: ["#0b2818", "#1e5128", "#4e9f3d", "#8bc34a", "#cddc39", "#ffeb3b"],
-  ocean: ["#001f3f", "#0074d9", "#39cccc", "#2ecc40", "#01ff70", "#ffffff"],
-  sunset: ["#ff6b35", "#f7931e", "#ffd23f", "#5d2e5d", "#1fb3d3", "#ffffff"],
-  arctic: ["#e6f3ff", "#b3d9ff", "#80bfff", "#4da6ff", "#1a8cff", "#0066cc"],
-  neon: ["#ff00ff", "#00ffff", "#ffff00", "#ff0080", "#8000ff", "#00ff80"],
-  vintage: ["#8b4513", "#daa520", "#cd853f", "#f4a460", "#ffefd5", "#fff8dc"],
-  toxic: ["#32cd32", "#7fff00", "#adff2f", "#9acd32", "#6b8e23", "#556b2f"],
-  ember: ["#2c0703", "#8b1538", "#dc143c", "#ff6347", "#ffa500", "#ffd700"],
-  lunar: ["#1c1c1c", "#4a4a4a", "#808080", "#c0c0c0", "#e6e6e6", "#ffffff"],
-  tidal: ["#003366", "#0066cc", "#3399ff", "#66ccff", "#99e6ff", "#ccf5ff"],
-}
-
-// 8bit pattern generator
-function generate8bitPattern(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string; size: number; type: string }> {
-  const points: Array<{ x: number; y: number; color: string; size: number; type: string }> = []
-  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
-
-  // 8bit specific color limitations - reduce to 16 colors max
-  const limitedPalette = palette.slice(0, 16)
-
-  for (let i = 0; i < params.numSamples; i++) {
-    const t = i / params.numSamples
-
-    let elementType = "pixel"
-    let x: number, y: number, size: number
-
-    // Snap to pixel grid for authentic 8bit feel
-    const pixelSize = 8
-    const gridWidth = Math.floor(800 / pixelSize)
-    const gridHeight = Math.floor(600 / pixelSize)
-
-    switch (params.scenario) {
-      case "retro-arcade":
-        // Classic arcade game layout
-        const spriteX = Math.floor(rng.next() * gridWidth) * pixelSize
-        const spriteY = Math.floor(rng.next() * gridHeight) * pixelSize
-        x = spriteX
-        y = spriteY
-        elementType = i < params.numSamples * 0.1 ? "player-sprite" : "background-pixel"
-        size = pixelSize
-        break
-
-      case "cyberpunk-8bit":
-        // Neon-lit cityscape with pixel buildings
-        if (i < params.numSamples * 0.3) {
-          // Buildings
-          x = Math.floor(rng.next() * gridWidth) * pixelSize
-          y = Math.floor(rng.next() * (gridHeight * 0.7)) * pixelSize + gridHeight * 0.3 * pixelSize
-          elementType = "building-pixel"
-          size = pixelSize
-        } else {
-          // Neon effects
-          x = Math.floor(rng.next() * gridWidth) * pixelSize
-          y = Math.floor(rng.next() * gridHeight) * pixelSize
-          elementType = "neon-pixel"
-          size = pixelSize / 2
-        }
-        break
-
-      case "fantasy-quest":
-        // RPG world with castles and dungeons
-        if (i < params.numSamples * 0.05) {
-          // Castle structures
-          x = 200 + Math.floor(rng.next() * 20) * pixelSize
-          y = 100 + Math.floor(rng.next() * 15) * pixelSize
-          elementType = "castle-pixel"
-          size = pixelSize * 2
-        } else {
-          // Terrain
-          x = Math.floor(rng.next() * gridWidth) * pixelSize
-          y = Math.floor(rng.next() * gridHeight) * pixelSize
-          elementType = "terrain-pixel"
-          size = pixelSize
-        }
-        break
-
-      case "space-adventure":
-        // Retro space shooter
-        if (i < params.numSamples * 0.1) {
-          // Spaceships
-          x = Math.floor(rng.next() * gridWidth) * pixelSize
-          y = Math.floor(rng.next() * (gridHeight * 0.5)) * pixelSize
-          elementType = "spaceship-pixel"
-          size = pixelSize * 1.5
-        } else {
-          // Stars and space
-          x = Math.floor(rng.next() * gridWidth) * pixelSize
-          y = Math.floor(rng.next() * gridHeight) * pixelSize
-          elementType = "star-pixel"
-          size = pixelSize / 2
-        }
-        break
-
-      case "ocean-depths":
-        // Underwater pixel world
-        const waveY = Math.sin(i * 0.1) * 20 + 100
-        x = Math.floor(rng.next() * gridWidth) * pixelSize
-        y = Math.floor((waveY + rng.next() * 400) / pixelSize) * pixelSize
-        elementType = y < 200 ? "surface-pixel" : "underwater-pixel"
-        size = pixelSize
-        break
-
-      case "desert-wasteland":
-        // Post-apocalyptic desert
-        x = Math.floor(rng.next() * gridWidth) * pixelSize
-        y = Math.floor((300 + rng.next() * 300) / pixelSize) * pixelSize
-        elementType = "desert-pixel"
-        size = pixelSize
-        break
-
-      case "magical-forest":
-        // Enchanted woodland
-        if (i < params.numSamples * 0.2) {
-          // Trees
-          x = Math.floor(rng.next() * gridWidth) * pixelSize
-          y = Math.floor(rng.next() * (gridHeight * 0.8)) * pixelSize
-          elementType = "tree-pixel"
-          size = pixelSize * 2
-        } else {
-          // Forest floor
-          x = Math.floor(rng.next() * gridWidth) * pixelSize
-          y = Math.floor((400 + rng.next() * 200) / pixelSize) * pixelSize
-          elementType = "forest-pixel"
-          size = pixelSize
-        }
-        break
-
-      case "steampunk-city":
-        // Industrial steampunk
-        if (i < params.numSamples * 0.4) {
-          // Buildings and machinery
-          x = Math.floor(rng.next() * gridWidth) * pixelSize
-          y = Math.floor(rng.next() * (gridHeight * 0.8)) * pixelSize + gridHeight * 0.2 * pixelSize
-          elementType = "steampunk-pixel"
-          size = pixelSize
-        } else {
-          // Steam and smoke
-          x = Math.floor(rng.next() * gridWidth) * pixelSize
-          y = Math.floor(rng.next() * (gridHeight * 0.5)) * pixelSize
-          elementType = "steam-pixel"
-          size = pixelSize / 2
-        }
-        break
-
-      case "neon-nights":
-        // 80s synthwave
-        if (i < params.numSamples * 0.3) {
-          // Grid lines
-          x = i % 2 === 0 ? Math.floor(rng.next() * gridWidth) * pixelSize : Math.floor(rng.next() * 10) * pixelSize * 8
-          y =
-            i % 2 === 0 ? Math.floor(rng.next() * 10) * pixelSize * 6 : Math.floor(rng.next() * gridHeight) * pixelSize
-          elementType = "grid-pixel"
-          size = pixelSize / 4
-        } else {
-          // Neon elements
-          x = Math.floor(rng.next() * gridWidth) * pixelSize
-          y = Math.floor(rng.next() * gridHeight) * pixelSize
-          elementType = "synthwave-pixel"
-          size = pixelSize
-        }
-        break
-
-      case "pixel-dungeon":
-        // Dark dungeon
-        const roomX = Math.floor(i / 100) % 4
-        const roomY = Math.floor(i / 400)
-        x = roomX * 200 + Math.floor(rng.next() * 25) * pixelSize
-        y = roomY * 150 + Math.floor(rng.next() * 18) * pixelSize
-        elementType = "dungeon-pixel"
-        size = pixelSize
-        break
-
-      case "cosmic-shooter":
-        // Space shooter
-        if (i < params.numSamples * 0.15) {
-          // Enemy formations
-          const formationX = (i % 10) * pixelSize * 6
-          const formationY = Math.floor(i / 10) * pixelSize * 4
-          x = formationX + 100
-          y = formationY + 50
-          elementType = "enemy-pixel"
-          size = pixelSize
-        } else {
-          // Background stars
-          x = Math.floor(rng.next() * gridWidth) * pixelSize
-          y = Math.floor(rng.next() * gridHeight) * pixelSize
-          elementType = "space-pixel"
-          size = pixelSize / 4
-        }
-        break
-
-      default:
-        // Default 8bit pattern
-        x = Math.floor(rng.next() * gridWidth) * pixelSize
-        y = Math.floor(rng.next() * gridHeight) * pixelSize
-        elementType = "pixel"
-        size = pixelSize
-    }
-
-    // Apply minimal noise for 8bit precision
-    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 4
-    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 4
-
-    // Snap back to pixel grid
-    x = Math.round(x / pixelSize) * pixelSize
-    y = Math.round(y / pixelSize) * pixelSize
-
-    const colorIndex = Math.floor((t + rng.next() * 0.3) * limitedPalette.length) % limitedPalette.length
-    const color = limitedPalette[colorIndex]
-
-    points.push({ x, y, color, size, type: elementType })
+  nextInt(min: number, max: number): number {
+    return Math.floor(this.next() * (max - min + 1)) + min
   }
 
+  nextGaussian(): number {
+    const u = 0.5 - this.next()
+    const v = 0.5 - this.next()
+    return Math.sqrt(-2.0 * Math.log(Math.abs(u))) * Math.cos(2.0 * Math.PI * v)
+  }
+}
+
+// Color scheme definitions
+const colorSchemes: Record<string, string[]> = {
+  plasma: ["#0d0887", "#46039f", "#7201a8", "#9c179e", "#bd3786", "#d8576b", "#ed7953", "#fb9f3a", "#fdca26", "#f0f921"],
+  quantum: ["#000428", "#004e92", "#009ffd", "#00d2ff", "#ffffff", "#ff0080", "#8b0000", "#4b0082", "#000428"],
+  cosmic: ["#0f0f23", "#1a1a2e", "#16213e", "#0f3460", "#533483", "#7209b7", "#a663cc", "#4cc9f0", "#7209b7"],
+  thermal: ["#000000", "#330000", "#660000", "#990000", "#cc0000", "#ff0000", "#ff3300", "#ff6600", "#ff9900", "#ffcc00", "#ffff00"],
+  spectral: ["#9e0142", "#d53e4f", "#f46d43", "#fdae61", "#fee08b", "#e6f598", "#abdda4", "#66c2a5", "#3288bd", "#5e4fa2"],
+  crystalline: ["#e8f4f8", "#d1e7dd", "#b8dbd9", "#9ecccb", "#85bcbc", "#6caaa1", "#539885", "#3a8569", "#21734d", "#086030"],
+  bioluminescent: ["#0a0a0a", "#1a4a3a", "#2a6a5a", "#3a8a7a", "#4aaa9a", "#5acaba", "#6aeada", "#7afffa", "#8affff", "#9affff"],
+  aurora: ["#0d1b2a", "#1b263b", "#415a77", "#778da9", "#e0e1dd", "#778da9", "#415a77", "#1b263b", "#0d1b2a"],
+  metallic: ["#2c2c2c", "#3c3c3c", "#4c4c4c", "#5c5c5c", "#6c6c6c", "#7c7c7c", "#8c8c8c", "#9c9c9c", "#acacac", "#bcbcbc"],
+  prismatic: ["#ff0000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80", "#00ffff", "#0080ff", "#0000ff", "#8000ff"],
+  monochromatic: ["#000000", "#1a1a1a", "#333333", "#4d4d4d", "#666666", "#808080", "#999999", "#b3b3b3", "#cccccc", "#ffffff"],
+  infrared: ["#000000", "#330000", "#660000", "#990000", "#cc0000", "#ff0000", "#ff3333", "#ff6666", "#ff9999", "#ffcccc"],
+  ultraviolet: ["#000000", "#1a0033", "#330066", "#4d0099", "#6600cc", "#8000ff", "#9933ff", "#b366ff", "#cc99ff", "#e6ccff"],
+  neon: ["#ff00ff", "#ff0080", "#ff0040", "#ff0000", "#ff4000", "#ff8000", "#ffff00", "#80ff00", "#00ff00", "#00ff80"],
+  pastel: ["#ffd1dc", "#ffb6c1", "#ffc0cb", "#ffb3ba", "#ffdfba", "#ffffba", "#baffc9", "#bae1ff", "#c9c9ff", "#e6e6fa"],
+  earth: ["#8b4513", "#a0522d", "#cd853f", "#daa520", "#b8860b", "#228b22", "#32cd32", "#6b8e23", "#9acd32", "#adff2f"],
+  ocean: ["#000080", "#0000cd", "#0066cc", "#0099ff", "#00ccff", "#00ffff", "#66ffff", "#99ffff", "#ccffff", "#ffffff"],
+  sunset: ["#ff4500", "#ff6347", "#ff7f50", "#ffa500", "#ffb347", "#ffd700", "#ffff00", "#ffffe0", "#fffacd", "#ffffff"],
+  forest: ["#013220", "#228b22", "#32cd32", "#90ee90", "#98fb98", "#00ff7f", "#00fa9a", "#40e0d0", "#48d1cc", "#afeeee"],
+  volcanic: ["#000000", "#8b0000", "#b22222", "#dc143c", "#ff0000", "#ff4500", "#ff6347", "#ff7f50", "#ffa500", "#ffff00"]
+}
+
+// Get color from scheme
+function getColor(scheme: string, index: number, total: number): string {
+  const colors = colorSchemes[scheme] || colorSchemes.plasma
+  const colorIndex = Math.floor((index / total) * (colors.length - 1))
+  return colors[colorIndex]
+}
+
+// Noise function (simplified Perlin noise)
+function noise(x: number, y: number, seed: number): number {
+  const random = new SeededRandom(seed + Math.floor(x * 12.9898 + y * 78.233) * 43758.5453)
+  return random.next() * 2 - 1
+}
+
+// Generate cellular automata patterns
+function generateCellularPattern(params: GenerationParams, rng: SeededRandom): Point[] {
+  const points: Point[] = []
+  const { scenario, colorScheme, numSamples } = params
+  
+  // Grid dimensions
+  const gridSize = Math.floor(Math.sqrt(numSamples))
+  const cellSize = 800 / gridSize
+  
+  switch (scenario) {
+    case "conway-life":
+      return generateConwayLife(gridSize, cellSize, colorScheme, rng)
+    case "rule-30":
+      return generateRule30(gridSize, cellSize, colorScheme, rng)
+    case "rule-110":
+      return generateRule110(gridSize, cellSize, colorScheme, rng)
+    case "brians-brain":
+      return generateBriansBrain(gridSize, cellSize, colorScheme, rng)
+    case "wireworld":
+      return generateWireworld(gridSize, cellSize, colorScheme, rng)
+    case "langtons-ant":
+      return generateLangtonsAnt(gridSize, cellSize, colorScheme, rng)
+    case "forest-fire":
+      return generateForestFire(gridSize, cellSize, colorScheme, rng)
+    case "majority-rule":
+      return generateMajorityRule(gridSize, cellSize, colorScheme, rng)
+    default:
+      return generateConwayLife(gridSize, cellSize, colorScheme, rng)
+  }
+}
+
+// Conway's Game of Life
+function generateConwayLife(gridSize: number, cellSize: number, colorScheme: string, rng: SeededRandom): Point[] {
+  const points: Point[] = []
+  let grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(false))
+  
+  // Initialize with random pattern
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      grid[i][j] = rng.next() < 0.3
+    }
+  }
+  
+  // Evolve for several generations
+  for (let gen = 0; gen < 50; gen++) {
+    const newGrid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(false))
+    
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        const neighbors = countNeighbors(grid, i, j, gridSize)
+        
+        if (grid[i][j]) {
+          // Cell is alive
+          newGrid[i][j] = neighbors === 2 || neighbors === 3
+        } else {
+          // Cell is dead
+          newGrid[i][j] = neighbors === 3
+        }
+      }
+    }
+    
+    grid = newGrid
+  }
+  
+  // Convert to points
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (grid[i][j]) {
+        points.push({
+          x: j * cellSize + cellSize / 2,
+          y: i * cellSize + cellSize / 2,
+          color: getColor(colorScheme, i * gridSize + j, gridSize * gridSize),
+          size: cellSize * 0.8,
+          opacity: 0.8
+        })
+      }
+    }
+  }
+  
   return points
 }
 
-// Mathematical functions for different datasets
-function generateNuanuPattern(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string; size: number; type: string }> {
-  const points: Array<{ x: number; y: number; color: string; size: number; type: string }> = []
-  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
+// Count living neighbors for Conway's Game of Life
+function countNeighbors(grid: boolean[][], x: number, y: number, size: number): number {
+  let count = 0
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      if (dx === 0 && dy === 0) continue
+      const nx = (x + dx + size) % size
+      const ny = (y + dy + size) % size
+      if (grid[nx][ny]) count++
+    }
+  }
+  return count
+}
 
-  // Generate Nuanu Creative City elements
-  for (let i = 0; i < params.numSamples; i++) {
-    const t = i / params.numSamples
+// Rule 30 Elementary Cellular Automaton
+function generateRule30(gridSize: number, cellSize: number, colorScheme: string, rng: SeededRandom): Point[] {
+  const points: Point[] = []
+  const generations = gridSize
+  let currentRow = Array(gridSize).fill(false)
+  
+  // Initialize with single cell in center
+  currentRow[Math.floor(gridSize / 2)] = true
+  
+  for (let gen = 0; gen < generations; gen++) {
+    // Add current row to points
+    for (let i = 0; i < gridSize; i++) {
+      if (currentRow[i]) {
+        points.push({
+          x: i * cellSize + cellSize / 2,
+          y: gen * cellSize + cellSize / 2,
+          color: getColor(colorScheme, gen, generations),
+          size: cellSize * 0.9,
+          opacity: 0.8
+        })
+      }
+    }
+    
+    // Generate next row using Rule 30
+    const nextRow = Array(gridSize).fill(false)
+    for (let i = 0; i < gridSize; i++) {
+      const left = currentRow[(i - 1 + gridSize) % gridSize]
+      const center = currentRow[i]
+      const right = currentRow[(i + 1) % gridSize]
+      
+      // Rule 30: 111->0, 110->0, 101->0, 100->1, 011->1, 010->1, 001->1, 000->0
+      const pattern = (left ? 4 : 0) + (center ? 2 : 0) + (right ? 1 : 0)
+      nextRow[i] = [false, true, true, true, true, false, false, false][pattern]
+    }
+    
+    currentRow = nextRow
+  }
+  
+  return points
+}
 
-    // Create different types of creative elements based on scenario
-    let elementType = "creative-space"
-    let x: number, y: number, size: number
+// Rule 110 Elementary Cellular Automaton
+function generateRule110(gridSize: number, cellSize: number, colorScheme: string, rng: SeededRandom): Point[] {
+  const points: Point[] = []
+  const generations = gridSize
+  let currentRow = Array(gridSize).fill(false)
+  
+  // Initialize with random pattern
+  for (let i = 0; i < gridSize; i++) {
+    currentRow[i] = rng.next() < 0.1
+  }
+  
+  for (let gen = 0; gen < generations; gen++) {
+    // Add current row to points
+    for (let i = 0; i < gridSize; i++) {
+      if (currentRow[i]) {
+        points.push({
+          x: i * cellSize + cellSize / 2,
+          y: gen * cellSize + cellSize / 2,
+          color: getColor(colorScheme, gen, generations),
+          size: cellSize * 0.9,
+          opacity: 0.8
+        })
+      }
+    }
+    
+    // Generate next row using Rule 110
+    const nextRow = Array(gridSize).fill(false)
+    for (let i = 0; i < gridSize; i++) {
+      const left = currentRow[(i - 1 + gridSize) % gridSize]
+      const center = currentRow[i]
+      const right = currentRow[(i + 1) % gridSize]
+      
+      // Rule 110: 111->0, 110->1, 101->1, 100->0, 011->1, 010->1, 001->1, 000->0
+      const pattern = (left ? 4 : 0) + (center ? 2 : 0) + (right ? 1 : 0)
+      nextRow[i] = [false, true, true, true, false, true, true, false][pattern]
+    }
+    
+    currentRow = nextRow
+  }
+  
+  return points
+}
 
-    switch (params.scenario) {
-      case "thk-tower":
-        // Central tower with radiating creative elements
-        if (i < params.numSamples * 0.1) {
-          elementType = "tower"
-          x = 400 + Math.cos(t * Math.PI * 2) * 50 * rng.next()
-          y = 300 + Math.sin(t * Math.PI * 2) * 50 * rng.next()
-          size = 8 + rng.next() * 12
+// Brian's Brain (3-state cellular automaton)
+function generateBriansBrain(gridSize: number, cellSize: number, colorScheme: string, rng: SeededRandom): Point[] {
+  const points: Point[] = []
+  // 0 = ready, 1 = firing, 2 = refractory
+  let grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0))
+  
+  // Initialize with random firing cells
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (rng.next() < 0.1) grid[i][j] = 1
+    }
+  }
+  
+  // Evolve for several generations
+  for (let gen = 0; gen < 100; gen++) {
+    const newGrid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0))
+    
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        const firingNeighbors = countFiringNeighbors(grid, i, j, gridSize)
+        
+        if (grid[i][j] === 0) {
+          // Ready cell fires if exactly 2 neighbors are firing
+          newGrid[i][j] = firingNeighbors === 2 ? 1 : 0
+        } else if (grid[i][j] === 1) {
+          // Firing cell becomes refractory
+          newGrid[i][j] = 2
         } else {
-          elementType = "creative-space"
-          const angle = t * Math.PI * 2 + rng.next() * 0.5
-          const radius = 100 + rng.next() * 200
-          x = 400 + Math.cos(angle) * radius
-          y = 300 + Math.sin(angle) * radius
-          size = 3 + rng.next() * 6
+          // Refractory cell becomes ready
+          newGrid[i][j] = 0
         }
-        break
+      }
+    }
+    
+    grid = newGrid
+  }
+  
+  // Convert to points
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (grid[i][j] > 0) {
+        const intensity = grid[i][j] === 1 ? 1.0 : 0.5
+        points.push({
+          x: j * cellSize + cellSize / 2,
+          y: i * cellSize + cellSize / 2,
+          color: getColor(colorScheme, i * gridSize + j, gridSize * gridSize),
+          size: cellSize * 0.8,
+          opacity: intensity
+        })
+      }
+    }
+  }
+  
+  return points
+}
 
-      case "popper-sentinels":
-        // Guardian statues positioned strategically
-        if (i < params.numSamples * 0.05) {
-          elementType = "sentinel"
-          x = 100 + (i % 6) * 120 + rng.next() * 40
-          y = 100 + Math.floor(i / 6) * 120 + rng.next() * 40
-          size = 10 + rng.next() * 8
+// Count firing neighbors for Brian's Brain
+function countFiringNeighbors(grid: number[][], x: number, y: number, size: number): number {
+  let count = 0
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      if (dx === 0 && dy === 0) continue
+      const nx = (x + dx + size) % size
+      const ny = (y + dy + size) % size
+      if (grid[nx][ny] === 1) count++
+    }
+  }
+  return count
+}
+
+// Wireworld (4-state cellular automaton)
+function generateWireworld(gridSize: number, cellSize: number, colorScheme: string, rng: SeededRandom): Point[] {
+  const points: Point[] = []
+  // 0 = empty, 1 = conductor, 2 = electron head, 3 = electron tail
+  let grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0))
+  
+  // Create some wire patterns
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (rng.next() < 0.3) grid[i][j] = 1 // conductor
+      if (rng.next() < 0.05) grid[i][j] = 2 // electron head
+    }
+  }
+  
+  // Evolve for several generations
+  for (let gen = 0; gen < 50; gen++) {
+    const newGrid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0))
+    
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        const electronHeads = countElectronHeads(grid, i, j, gridSize)
+        
+        if (grid[i][j] === 0) {
+          // Empty stays empty
+          newGrid[i][j] = 0
+        } else if (grid[i][j] === 1) {
+          // Conductor becomes electron head if 1 or 2 electron head neighbors
+          newGrid[i][j] = (electronHeads === 1 || electronHeads === 2) ? 2 : 1
+        } else if (grid[i][j] === 2) {
+          // Electron head becomes electron tail
+          newGrid[i][j] = 3
         } else {
-          elementType = "creative-space"
-          x = rng.next() * 800
-          y = rng.next() * 600
-          size = 2 + rng.next() * 4
+          // Electron tail becomes conductor
+          newGrid[i][j] = 1
         }
-        break
-
-      case "luna-beach":
-        // Coastal creative spaces
-        elementType = i < params.numSamples * 0.3 ? "beach-pavilion" : "creative-space"
-        x = rng.next() * 800
-        y = 400 + Math.sin(x * 0.01) * 100 + rng.next() * 100 // Coastal curve
-        size = elementType === "beach-pavilion" ? 6 + rng.next() * 8 : 2 + rng.next() * 4
-        break
-
-      case "labyrinth-dome":
-        // Geodesic dome with internal patterns
-        const centerX = 400,
-          centerY = 300
-        const domeRadius = 150
-        const angle = t * Math.PI * 2 * 5 // Multiple spirals
-        const radius = rng.next() * domeRadius * Math.sqrt(rng.next()) // Even distribution
-        x = centerX + Math.cos(angle) * radius
-        y = centerY + Math.sin(angle) * radius
-        elementType = radius < domeRadius * 0.3 ? "dome-core" : "dome-element"
-        size = elementType === "dome-core" ? 8 + rng.next() * 6 : 3 + rng.next() * 5
-        break
-
-      case "creative-studios":
-        // Clustered studio spaces
-        const clusterX = (Math.floor(i / 50) % 4) * 200 + 100
-        const clusterY = Math.floor(i / 200) * 150 + 100
-        x = clusterX + (rng.next() - 0.5) * 80
-        y = clusterY + (rng.next() - 0.5) * 80
-        elementType = "studio"
-        size = 4 + rng.next() * 6
-        break
-
-      case "community-plaza":
-        // Central plaza with radiating community spaces
-        const plazaRadius = 120
-        const communityAngle = t * Math.PI * 2
-        const communityRadius = rng.next() * plazaRadius + 50
-        x = 400 + Math.cos(communityAngle) * communityRadius
-        y = 300 + Math.sin(communityAngle) * communityRadius
-        elementType = communityRadius < 80 ? "plaza-center" : "community-space"
-        size = elementType === "plaza-center" ? 6 + rng.next() * 8 : 3 + rng.next() * 5
-        break
-
-      case "digital-gardens":
-        // Tech-nature integration patterns
-        x = rng.next() * 800
-        y = rng.next() * 600
-        const techNature = Math.sin(x * 0.02) * Math.cos(y * 0.02)
-        elementType = techNature > 0 ? "digital-element" : "garden-element"
-        size = 3 + rng.next() * 6 + Math.abs(techNature) * 4
-        break
-
-      default: // landscape and pure
-        // Overall Nuanu landscape
-        x = rng.next() * 800
-        y = rng.next() * 600
-        elementType = "creative-space"
-        size = 2 + rng.next() * 6
+      }
     }
-
-    // Apply noise and time evolution
-    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
-    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
-
-    const colorIndex = Math.floor((t + rng.next() * 0.3) * palette.length) % palette.length
-    const color = palette[colorIndex]
-
-    points.push({ x, y, color, size, type: elementType })
+    
+    grid = newGrid
   }
-
+  
+  // Convert to points
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (grid[i][j] > 0) {
+        const stateColors = ['#000000', '#888888', '#ffff00', '#ff0000']
+        points.push({
+          x: j * cellSize + cellSize / 2,
+          y: i * cellSize + cellSize / 2,
+          color: stateColors[grid[i][j]],
+          size: cellSize * 0.8,
+          opacity: 0.8
+        })
+      }
+    }
+  }
+  
   return points
 }
 
-function generateBalinesePattern(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string; size: number; type: string }> {
-  const points: Array<{ x: number; y: number; color: string; size: number; type: string }> = []
-  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
+// Count electron heads for Wireworld
+function countElectronHeads(grid: number[][], x: number, y: number, size: number): number {
+  let count = 0
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      if (dx === 0 && dy === 0) continue
+      const nx = (x + dx + size) % size
+      const ny = (y + dy + size) % size
+      if (grid[nx][ny] === 2) count++
+    }
+  }
+  return count
+}
 
-  // Generate Balinese cultural elements
-  for (let i = 0; i < params.numSamples; i++) {
-    const t = i / params.numSamples
+// Langton's Ant
+function generateLangtonsAnt(gridSize: number, cellSize: number, colorScheme: string, rng: SeededRandom): Point[] {
+  const points: Point[] = []
+  const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(false))
+  
+  // Ant position and direction
+  let antX = Math.floor(gridSize / 2)
+  let antY = Math.floor(gridSize / 2)
+  let direction = 0 // 0=up, 1=right, 2=down, 3=left
+  
+  // Run ant for many steps
+  for (let step = 0; step < gridSize * gridSize; step++) {
+    // Turn based on current cell
+    if (grid[antY][antX]) {
+      direction = (direction + 1) % 4 // Turn right
+    } else {
+      direction = (direction + 3) % 4 // Turn left
+    }
+    
+    // Flip current cell
+    grid[antY][antX] = !grid[antY][antX]
+    
+    // Move forward
+    switch (direction) {
+      case 0: antY = (antY - 1 + gridSize) % gridSize; break
+      case 1: antX = (antX + 1) % gridSize; break
+      case 2: antY = (antY + 1) % gridSize; break
+      case 3: antX = (antX - 1 + gridSize) % gridSize; break
+    }
+  }
+  
+  // Convert to points
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (grid[i][j]) {
+        points.push({
+          x: j * cellSize + cellSize / 2,
+          y: i * cellSize + cellSize / 2,
+          color: getColor(colorScheme, i * gridSize + j, gridSize * gridSize),
+          size: cellSize * 0.8,
+          opacity: 0.8
+        })
+      }
+    }
+  }
+  
+  return points
+}
 
-    // Create different types of cultural elements based on scenario
-    let elementType = "cultural-element"
-    let x: number, y: number, size: number
-
-    switch (params.scenario) {
-      case "temples":
-        // Temple complexes with sacred geometry
-        if (i < params.numSamples * 0.1) {
-          elementType = "temple"
-          x = 200 + (i % 3) * 200 + rng.next() * 50
-          y = 150 + Math.floor(i / 3) * 150 + rng.next() * 50
-          size = 12 + rng.next() * 8
+// Forest Fire Model
+function generateForestFire(gridSize: number, cellSize: number, colorScheme: string, rng: SeededRandom): Point[] {
+  const points: Point[] = []
+  // 0 = empty, 1 = tree, 2 = burning
+  let grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0))
+  
+  // Initialize with trees
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (rng.next() < 0.6) grid[i][j] = 1
+    }
+  }
+  
+  // Start some fires
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (grid[i][j] === 1 && rng.next() < 0.01) grid[i][j] = 2
+    }
+  }
+  
+  // Evolve fire spread
+  for (let gen = 0; gen < 100; gen++) {
+    const newGrid = grid.map(row => [...row])
+    
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        if (grid[i][j] === 0) {
+          // Empty land grows tree with probability
+          if (rng.next() < 0.01) newGrid[i][j] = 1
+        } else if (grid[i][j] === 1) {
+          // Tree catches fire from burning neighbors or lightning
+          const burningNeighbors = countBurningNeighbors(grid, i, j, gridSize)
+          if (burningNeighbors > 0 || rng.next() < 0.0001) {
+            newGrid[i][j] = 2
+          }
         } else {
-          elementType = "temple-element"
-          const templeX = 200 + (Math.floor(i / 100) % 3) * 200
-          const templeY = 150 + Math.floor(i / 300) * 150
-          x = templeX + (rng.next() - 0.5) * 100
-          y = templeY + (rng.next() - 0.5) * 100
-          size = 3 + rng.next() * 6
+          // Burning tree becomes empty
+          newGrid[i][j] = 0
         }
-        break
-
-      case "rice-terraces":
-        // Terraced landscape patterns
-        const terraceLevel = Math.floor(y / 60)
-        x = rng.next() * 800
-        y = terraceLevel * 60 + rng.next() * 50
-        elementType = "rice-terrace"
-        size = 2 + rng.next() * 4
-        break
-
-      case "ceremonies":
-        // Ceremonial gathering patterns
-        const ceremonyX = 400,
-          ceremonyY = 300
-        const ceremonyRadius = 80 + rng.next() * 120
-        const ceremonyAngle = t * Math.PI * 2 + rng.next() * 0.5
-        x = ceremonyX + Math.cos(ceremonyAngle) * ceremonyRadius
-        y = ceremonyY + Math.sin(ceremonyAngle) * ceremonyRadius
-        elementType = ceremonyRadius < 100 ? "ceremony-center" : "ceremony-participant"
-        size = elementType === "ceremony-center" ? 8 + rng.next() * 6 : 3 + rng.next() * 5
-        break
-
-      case "dancers":
-        // Dance formation patterns
-        const danceFormation = Math.floor(i / 20)
-        const danceAngle = (i % 20) * ((Math.PI * 2) / 20)
-        const danceRadius = 60 + (danceFormation % 3) * 40
-        x = 400 + Math.cos(danceAngle) * danceRadius
-        y = 300 + Math.sin(danceAngle) * danceRadius
-        elementType = "dancer"
-        size = 4 + rng.next() * 6
-        break
-
-      case "beaches":
-        // Coastal temple and beach patterns
-        x = rng.next() * 800
-        y = 450 + Math.sin(x * 0.01) * 50 + rng.next() * 100
-        elementType = y > 500 ? "beach-element" : "coastal-temple"
-        size = elementType === "coastal-temple" ? 6 + rng.next() * 8 : 2 + rng.next() * 4
-        break
-
-      case "artisans":
-        // Artisan workshop clusters
-        const workshopX = (Math.floor(i / 40) % 5) * 160 + 80
-        const workshopY = Math.floor(i / 200) * 120 + 100
-        x = workshopX + (rng.next() - 0.5) * 60
-        y = workshopY + (rng.next() - 0.5) * 60
-        elementType = "artisan"
-        size = 3 + rng.next() * 5
-        break
-
-      case "volcanoes":
-        // Sacred mountain patterns
-        const volcanoX = 400,
-          volcanoY = 200
-        const volcanoRadius = Math.sqrt(rng.next()) * 200
-        const volcanoAngle = rng.next() * Math.PI * 2
-        x = volcanoX + Math.cos(volcanoAngle) * volcanoRadius
-        y = volcanoY + Math.sin(volcanoAngle) * volcanoRadius + volcanoRadius * 0.5
-        elementType = volcanoRadius < 50 ? "volcano-peak" : "volcano-slope"
-        size = elementType === "volcano-peak" ? 10 + rng.next() * 8 : 2 + rng.next() * 6
-        break
-
-      default: // landscape and pure
-        // General Balinese landscape
-        x = rng.next() * 800
-        y = rng.next() * 600
-        elementType = "cultural-element"
-        size = 2 + rng.next() * 6
+      }
     }
-
-    // Apply noise and time evolution
-    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
-    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
-
-    const colorIndex = Math.floor((t + rng.next() * 0.3) * palette.length) % palette.length
-    const color = palette[colorIndex]
-
-    points.push({ x, y, color, size, type: elementType })
+    
+    grid = newGrid
   }
-
+  
+  // Convert to points
+  const stateColors = ['#8B4513', '#228B22', '#FF4500'] // brown, green, orange
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (grid[i][j] > 0) {
+        points.push({
+          x: j * cellSize + cellSize / 2,
+          y: i * cellSize + cellSize / 2,
+          color: stateColors[grid[i][j]],
+          size: cellSize * 0.8,
+          opacity: 0.8
+        })
+      }
+    }
+  }
+  
   return points
 }
 
-function generateThaiPattern(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string; size: number; type: string }> {
-  const points: Array<{ x: number; y: number; color: string; size: number; type: string }> = []
-  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
-
-  for (let i = 0; i < params.numSamples; i++) {
-    const t = i / params.numSamples
-
-    let elementType = "cultural-element"
-    let x: number, y: number, size: number
-
-    switch (params.scenario) {
-      case "landscape":
-        // Thai temple landscape
-        if (i < params.numSamples * 0.15) {
-          elementType = "temple"
-          x = 150 + (i % 4) * 150 + rng.next() * 50
-          y = 100 + Math.floor(i / 4) * 120 + rng.next() * 50
-          size = 10 + rng.next() * 8
-        } else {
-          x = rng.next() * 800
-          y = rng.next() * 600
-          size = 2 + rng.next() * 5
-        }
-        break
-
-      case "architectural":
-        // Temple architecture focus
-        const templeCount = 6
-        const templeIndex = Math.floor(i / (params.numSamples / templeCount))
-        const templeX = (templeIndex % 3) * 250 + 125
-        const templeY = Math.floor(templeIndex / 3) * 200 + 150
-        x = templeX + (rng.next() - 0.5) * 80
-        y = templeY + (rng.next() - 0.5) * 80
-        elementType = "temple-detail"
-        size = 3 + rng.next() * 7
-        break
-
-      case "ceremonial":
-        // Buddhist ceremony patterns
-        const centerX = 400,
-          centerY = 300
-        const ceremonyRadius = 60 + rng.next() * 100
-        const angle = t * Math.PI * 2 * 3
-        x = centerX + Math.cos(angle) * ceremonyRadius
-        y = centerY + Math.sin(angle) * ceremonyRadius
-        elementType = "ceremony"
-        size = 4 + rng.next() * 6
-        break
-
-      case "urban":
-        // Bangkok street life
-        x = rng.next() * 800
-        y = rng.next() * 600
-        elementType = "urban-element"
-        size = 2 + rng.next() * 4
-        break
-
-      case "botanical":
-        // Thai gardens with lotus ponds
-        const gardenClusters = 4
-        const clusterIndex = Math.floor(i / (params.numSamples / gardenClusters))
-        const clusterX = (clusterIndex % 2) * 400 + 200
-        const clusterY = Math.floor(clusterIndex / 2) * 300 + 150
-        x = clusterX + (rng.next() - 0.5) * 150
-        y = clusterY + (rng.next() - 0.5) * 150
-        elementType = "botanical"
-        size = 3 + rng.next() * 6
-        break
-
-      case "floating":
-        // Floating market patterns
-        x = rng.next() * 800
-        y = 250 + Math.sin(x * 0.02) * 100 + rng.next() * 100
-        elementType = "floating-market"
-        size = 3 + rng.next() * 5
-        break
-
-      case "monks":
-        // Monk procession patterns
-        const processionPath = t * 800
-        x = processionPath % 800
-        y = 300 + Math.sin(processionPath * 0.01) * 50 + rng.next() * 40
-        elementType = "monk"
-        size = 4 + rng.next() * 4
-        break
-
-      default:
-        x = rng.next() * 800
-        y = rng.next() * 600
-        size = 2 + rng.next() * 6
+// Count burning neighbors for forest fire
+function countBurningNeighbors(grid: number[][], x: number, y: number, size: number): number {
+  let count = 0
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      if (dx === 0 && dy === 0) continue
+      const nx = (x + dx + size) % size
+      const ny = (y + dy + size) % size
+      if (grid[nx][ny] === 2) count++
     }
-
-    // Apply noise and time evolution
-    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
-    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
-
-    const colorIndex = Math.floor((t + rng.next() * 0.3) * palette.length) % palette.length
-    const color = palette[colorIndex]
-
-    points.push({ x, y, color, size, type: elementType })
   }
+  return count
+}
 
+// Majority Rule
+function generateMajorityRule(gridSize: number, cellSize: number, colorScheme: string, rng: SeededRandom): Point[] {
+  const points: Point[] = []
+  let grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(false))
+  
+  // Initialize with random states
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      grid[i][j] = rng.next() < 0.5
+    }
+  }
+  
+  // Evolve using majority rule
+  for (let gen = 0; gen < 50; gen++) {
+    const newGrid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(false))
+    
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        const trueNeighbors = countTrueNeighbors(grid, i, j, gridSize)
+        const totalNeighbors = 8
+        
+        // Adopt majority state of neighborhood
+        newGrid[i][j] = trueNeighbors > totalNeighbors / 2
+      }
+    }
+    
+    grid = newGrid
+  }
+  
+  // Convert to points
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (grid[i][j]) {
+        points.push({
+          x: j * cellSize + cellSize / 2,
+          y: i * cellSize + cellSize / 2,
+          color: getColor(colorScheme, i * gridSize + j, gridSize * gridSize),
+          size: cellSize * 0.8,
+          opacity: 0.8
+        })
+      }
+    }
+  }
+  
   return points
 }
 
-function generateStatuePattern(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string; size: number; type: string }> {
-  const points: Array<{ x: number; y: number; color: string; size: number; type: string }> = []
-  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
-
-  for (let i = 0; i < params.numSamples; i++) {
-    const t = i / params.numSamples
-
-    let elementType = "statue"
-    let x: number, y: number, size: number
-
-    switch (params.scenario) {
-      case "buddha":
-        // Buddha statue arrangements
-        if (i < params.numSamples * 0.2) {
-          elementType = "buddha-statue"
-          x = 200 + (i % 3) * 200 + rng.next() * 80
-          y = 150 + Math.floor(i / 3) * 150 + rng.next() * 80
-          size = 12 + rng.next() * 8
-        } else {
-          elementType = "meditation-element"
-          x = rng.next() * 800
-          y = rng.next() * 600
-          size = 2 + rng.next() * 4
-        }
-        break
-
-      case "cats":
-        // Cat sculpture arrangements
-        const catPositions = [
-          { x: 150, y: 150 },
-          { x: 400, y: 100 },
-          { x: 650, y: 200 },
-          { x: 200, y: 350 },
-          { x: 500, y: 300 },
-          { x: 700, y: 400 },
-          { x: 100, y: 500 },
-          { x: 350, y: 450 },
-          { x: 600, y: 500 },
-        ]
-        if (i < catPositions.length * 20) {
-          const catIndex = Math.floor(i / 20)
-          const cat = catPositions[catIndex]
-          x = cat.x + (rng.next() - 0.5) * 60
-          y = cat.y + (rng.next() - 0.5) * 60
-          elementType = i % 20 === 0 ? "cat-statue" : "cat-detail"
-          size = elementType === "cat-statue" ? 8 + rng.next() * 6 : 2 + rng.next() * 4
-        } else {
-          x = rng.next() * 800
-          y = rng.next() * 600
-          elementType = "environment"
-          size = 1 + rng.next() * 3
-        }
-        break
-
-      case "greek":
-        // Classical Greek arrangement
-        const greekColumns = 5
-        const columnSpacing = 800 / (greekColumns + 1)
-        if (i < params.numSamples * 0.3) {
-          const columnIndex = i % greekColumns
-          x = columnSpacing * (columnIndex + 1) + (rng.next() - 0.5) * 40
-          y = 200 + rng.next() * 200
-          elementType = "greek-statue"
-          size = 10 + rng.next() * 8
-        } else {
-          x = rng.next() * 800
-          y = rng.next() * 600
-          elementType = "classical-element"
-          size = 2 + rng.next() * 5
-        }
-        break
-
-      case "modern":
-        // Modern sculpture arrangement
-        const modernClusters = 4
-        const clusterIndex = Math.floor(i / (params.numSamples / modernClusters))
-        const clusterX = (clusterIndex % 2) * 400 + 200
-        const clusterY = Math.floor(clusterIndex / 2) * 300 + 150
-        x = clusterX + (rng.next() - 0.5) * 120
-        y = clusterY + (rng.next() - 0.5) * 120
-        elementType = "modern-sculpture"
-        size = 4 + rng.next() * 8
-        break
-
-      case "angels":
-        // Angelic figure arrangements
-        const angelFormation = Math.floor(i / 30)
-        const angelAngle = (i % 30) * ((Math.PI * 2) / 30)
-        const angelRadius = 80 + (angelFormation % 3) * 50
-        x = 400 + Math.cos(angelAngle) * angelRadius
-        y = 300 + Math.sin(angelAngle) * angelRadius
-        elementType = "angel-statue"
-        size = 6 + rng.next() * 8
-        break
-
-      case "warriors":
-        // Warrior statue formations
-        const battleLines = 3
-        const lineIndex = Math.floor(i / (params.numSamples / battleLines))
-        x = (i % (params.numSamples / battleLines)) * (800 / (params.numSamples / battleLines)) + rng.next() * 40
-        y = 150 + lineIndex * 150 + rng.next() * 80
-        elementType = "warrior-statue"
-        size = 8 + rng.next() * 6
-        break
-
-      case "animals":
-        // Animal totem arrangements
-        const animalTypes = 6
-        const animalIndex = i % animalTypes
-        const animalX = (animalIndex % 3) * 250 + 125
-        const animalY = Math.floor(animalIndex / 3) * 250 + 125
-        x = animalX + (rng.next() - 0.5) * 100
-        y = animalY + (rng.next() - 0.5) * 100
-        elementType = "animal-totem"
-        size = 6 + rng.next() * 8
-        break
-
-      default: // landscape and pure
-        x = rng.next() * 800
-        y = rng.next() * 600
-        elementType = "statue"
-        size = 4 + rng.next() * 8
+// Count true neighbors for majority rule
+function countTrueNeighbors(grid: boolean[][], x: number, y: number, size: number): number {
+  let count = 0
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      if (dx === 0 && dy === 0) continue
+      const nx = (x + dx + size) % size
+      const ny = (y + dy + size) % size
+      if (grid[nx][ny]) count++
     }
-
-    // Apply noise and time evolution
-    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 15
-    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 15
-
-    const colorIndex = Math.floor((t + rng.next() * 0.3) * palette.length) % palette.length
-    const color = palette[colorIndex]
-
-    points.push({ x, y, color, size, type: elementType })
   }
-
-  return points
+  return count
 }
 
-function generateSpiralPattern(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string; size: number }> {
-  const points: Array<{ x: number; y: number; color: string; size: number }> = []
-  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
-
-  for (let i = 0; i < params.numSamples; i++) {
-    const t = i / params.numSamples
-
-    // Different spiral types based on scenario
-    let x: number, y: number
-
-    switch (params.scenario) {
-      case "fibonacci":
-        // Fibonacci spiral with golden ratio
-        const phi = (1 + Math.sqrt(5)) / 2
-        const angle = (i * 2 * Math.PI) / phi
-        const radius = Math.sqrt(i) * 3
-        x = 400 + radius * Math.cos(angle)
-        y = 300 + radius * Math.sin(angle)
-        break
-
-      case "galaxy":
-        // Galactic spiral arms
-        const armAngle = t * Math.PI * 8 + params.seed
-        const armRadius = t * 200 + rng.next() * 20
-        x = 400 + armRadius * Math.cos(armAngle)
-        y = 300 + armRadius * Math.sin(armAngle)
-        break
-
-      case "nautilus":
-        // Nautilus shell spiral
-        const nautilusAngle = t * Math.PI * 6
-        const nautilusRadius = Math.exp(nautilusAngle * 0.1) * 2
-        x = 400 + nautilusRadius * Math.cos(nautilusAngle)
-        y = 300 + nautilusRadius * Math.sin(nautilusAngle)
-        break
-
-      case "vortex":
-        // Energy vortex
-        const vortexAngle = t * Math.PI * 12 + Math.sin(t * Math.PI * 4) * 0.5
-        const vortexRadius = (1 - t) * 150 + Math.sin(t * Math.PI * 8) * 20
-        x = 400 + vortexRadius * Math.cos(vortexAngle)
-        y = 300 + vortexRadius * Math.sin(vortexAngle)
-        break
-
-      case "logarithmic":
-        // Logarithmic spiral
-        const logAngle = t * Math.PI * 10
-        const logRadius = Math.exp(logAngle * 0.05) * 5
-        x = 400 + logRadius * Math.cos(logAngle)
-        y = 300 + logRadius * Math.sin(logAngle)
-        break
-
-      default:
-        // Basic spiral
-        const basicAngle = t * Math.PI * 6
-        const basicRadius = t * 150
-        x = 400 + basicRadius * Math.cos(basicAngle)
-        y = 300 + basicRadius * Math.sin(basicAngle)
-    }
-
-    // Apply noise and time evolution
-    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
-    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
-
-    const colorIndex = Math.floor(t * palette.length) % palette.length
-    const color = palette[colorIndex]
-    const size = 2 + Math.sin(t * Math.PI * 4) * 3
-
-    points.push({ x, y, color, size })
-  }
-
-  return points
-}
-
-// Additional pattern generators for other datasets...
-function generateFractalPattern(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string; size: number }> {
-  const points: Array<{ x: number; y: number; color: string; size: number }> = []
-  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
-
-  // L-system fractal generation
-  for (let i = 0; i < params.numSamples; i++) {
-    const t = i / params.numSamples
-
-    // Fractal tree branching
-    const depth = Math.floor(t * 8)
-    const branchAngle = (t * Math.PI * 2 * Math.pow(2, depth)) % (Math.PI * 2)
-    const branchLength = 100 / Math.pow(1.5, depth)
-
-    let x = 400
-    let y = 500
-
-    // Build fractal path
-    for (let d = 0; d <= depth; d++) {
-      const angle = branchAngle + ((d * Math.PI) / 4) * (rng.next() - 0.5)
-      const length = branchLength * Math.pow(0.7, d)
-      x += Math.cos(angle) * length
-      y -= Math.sin(angle) * length
-    }
-
-    // Apply noise
-    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 10
-    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 10
-
-    const colorIndex = Math.floor(t * palette.length) % palette.length
-    const color = palette[colorIndex]
-    const size = 1 + (8 - depth) * 0.5
-
-    points.push({ x, y, color, size })
-  }
-
-  return points
-}
-
-function generateMandelbrotPattern(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string; size: number }> {
-  const points: Array<{ x: number; y: number; color: string; size: number }> = []
-  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
-
-  for (let i = 0; i < params.numSamples; i++) {
-    const t = i / params.numSamples
-
-    // Map to complex plane
-    const cx = -2 + t * 3
-    const cy = -1.5 + (i % 100) * 0.03
-
-    // Mandelbrot iteration
-    let zx = 0,
-      zy = 0
-    let iterations = 0
-    const maxIterations = 50
-
-    while (zx * zx + zy * zy < 4 && iterations < maxIterations) {
-      const xtemp = zx * zx - zy * zy + cx
-      zy = 2 * zx * zy + cy
-      zx = xtemp
-      iterations++
-    }
-
-    // Map back to screen coordinates
-    const x = 200 + (cx + 2) * 100
-    const y = 200 + (cy + 1.5) * 100
-
-    const colorIndex = Math.floor((iterations / maxIterations) * palette.length) % palette.length
-    const color = palette[colorIndex]
-    const size = iterations < maxIterations ? 2 + iterations * 0.1 : 1
-
-    points.push({ x, y, color, size })
-  }
-
-  return points
-}
-
-// Generic pattern generator for other datasets
-function generateGenericPattern(
-  params: GenerationParams,
-  rng: SeededRandom,
-): Array<{ x: number; y: number; color: string; size: number }> {
-  const points: Array<{ x: number; y: number; color: string; size: number }> = []
-  const palette = colorPalettes[params.colorScheme] || colorPalettes.plasma
-
-  for (let i = 0; i < params.numSamples; i++) {
-    const t = i / params.numSamples
-
-    // Generate based on dataset type
-    let x: number, y: number, size: number
-
-    switch (params.dataset) {
-      case "julia":
-        // Julia set
-        const angle = t * Math.PI * 2
-        const radius = Math.sqrt(rng.next()) * 200
-        x = 400 + radius * Math.cos(angle)
-        y = 300 + radius * Math.sin(angle)
-        size = 2 + Math.sin(angle * 4) * 2
-        break
-
-      case "lorenz":
-        // Lorenz attractor
-        const lorenzT = t * 100
-        x = 400 + Math.sin(lorenzT * 0.1) * 150
-        y = 300 + Math.cos(lorenzT * 0.07) * 100
-        size = 1 + Math.abs(Math.sin(lorenzT * 0.05)) * 3
-        break
-
-      case "voronoi":
-        // Voronoi diagram
-        x = rng.next() * 800
-        y = rng.next() * 600
-        size = 2 + rng.next() * 4
-        break
-
-      case "tribes":
-      case "heads":
-      case "natives":
-        // Organic clustering
-        const clusterX = (Math.floor(i / 50) % 4) * 200 + 100
-        const clusterY = Math.floor(i / 200) * 150 + 100
-        x = clusterX + (rng.next() - 0.5) * 80
-        y = clusterY + (rng.next() - 0.5) * 80
-        size = 3 + rng.next() * 5
-        break
-
-      default:
-        // Default pattern
-        x = rng.next() * 800
-        y = rng.next() * 600
-        size = 2 + rng.next() * 4
-    }
-
-    // Apply noise and time evolution
-    x += Math.sin(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
-    y += Math.cos(t * Math.PI * 2 + params.seed) * params.noiseScale * 20
-
-    const colorIndex = Math.floor(t * palette.length) % palette.length
-    const color = palette[colorIndex]
-
-    points.push({ x, y, color, size })
-  }
-
-  return points
-}
-
+// Generate flow field based on dataset and scenario
 export function generateFlowField(params: GenerationParams): string {
-  const rng = new SeededRandom(params.seed)
-  let points: Array<{ x: number; y: number; color: string; size: number; type?: string }>
-
-  // Generate points based on dataset
-  switch (params.dataset) {
-    case "8bit":
-      points = generate8bitPattern(params, rng)
+  const { dataset, scenario, colorScheme, seed, numSamples, noiseScale, timeStep } = params
+  const rng = new SeededRandom(seed)
+  
+  let points: Point[] = []
+  
+  switch (dataset) {
+    case "cellular":
+      points = generateCellularPattern(params, rng)
       break
-    case "nuanu":
-      points = generateNuanuPattern(params, rng)
-      break
-    case "bali":
-      points = generateBalinesePattern(params, rng)
-      break
-    case "thailand":
-      points = generateThaiPattern(params, rng)
-      break
-    case "statues":
-      points = generateStatuePattern(params, rng)
-      break
+      
     case "spirals":
       points = generateSpiralPattern(params, rng)
       break
+      
     case "fractal":
       points = generateFractalPattern(params, rng)
       break
+      
     case "mandelbrot":
-      points = generateMandelbrotPattern(params, rng)
+      points = generateMandelbrotSet(params, rng)
       break
+      
+    case "julia":
+      points = generateJuliaSet(params, rng)
+      break
+      
+    case "lorenz":
+      points = generateLorenzAttractor(params, rng)
+      break
+      
+    case "hyperbolic":
+      points = generateHyperbolicPattern(params, rng)
+      break
+      
+    case "gaussian":
+      points = generateGaussianField(params, rng)
+      break
+      
+    case "voronoi":
+      points = generateVoronoiDiagram(params, rng)
+      break
+      
+    case "perlin":
+      points = generatePerlinNoise(params, rng)
+      break
+      
+    case "diffusion":
+      points = generateReactionDiffusion(params, rng)
+      break
+      
+    case "wave":
+      points = generateWaveInterference(params, rng)
+      break
+      
     default:
-      points = generateGenericPattern(params, rng)
+      // Default to simple flow field
+      points = generateSimpleFlowField(params, rng)
+      break
   }
-
-  // Create SVG
-  let svg = `<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="pointGradient" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-opacity:1" />
-      <stop offset="100%" style="stop-opacity:0.3" />
-    </radialGradient>
-  </defs>
-  <rect width="800" height="600" fill="#000011"/>
-`
-
-  // Add points
-  points.forEach((point, index) => {
-    const opacity = 0.6 + Math.sin(index * 0.1) * 0.3
-    svg += `  <circle cx="${point.x}" cy="${point.y}" r="${point.size}" fill="${point.color}" opacity="${opacity}" />
-`
-  })
-
-  svg += `</svg>`
-
-  return svg
+  
+  // Generate SVG
+  const svgElements = points.map(point => {
+    const color = point.color || getColor(colorScheme, Math.floor(point.x + point.y), numSamples)
+    const size = point.size || 2
+    const opacity = point.opacity || 0.7
+    
+    return `<circle cx="${point.x}" cy="${point.y}" r="${size}" fill="${color}" opacity="${opacity}" />`
+  }).join('\n')
+  
+  return `<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="800" height="800" fill="#000000"/>
+    ${svgElements}
+  </svg>`
 }
 
-// Enhanced dome projection utility with TUNNEL UP effect
-export function generateDomeProjection(options: {
-  width: number
-  height: number
-  fov: number
-  tilt: number
-}): string {
-  const { width, height, fov, tilt } = options
-
-  // Generate fisheye projection for dome with TUNNEL UP effect
-  let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="domeTunnelGradient" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
-      <stop offset="30%" style="stop-color:#8888ff;stop-opacity:0.9" />
-      <stop offset="60%" style="stop-color:#4444ff;stop-opacity:0.7" />
-      <stop offset="85%" style="stop-color:#2222aa;stop-opacity:0.5" />
-      <stop offset="100%" style="stop-color:#000044;stop-opacity:0.3" />
-    </radialGradient>
-    <filter id="tunnelBlur">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="1"/>
-    </filter>
-  </defs>
-  <rect width="${width}" height="${height}" fill="#000011"/>
+// Simple flow field generator (fallback)
+function generateSimpleFlowField(params: GenerationParams, rng: SeededRandom): Point[] {
+  const points: Point[] = []
+  const { numSamples, noiseScale, timeStep } = params
   
-  <!-- TUNNEL UP EFFECT: Create dramatic upward tunnel perspective -->
-  <circle cx="${width / 2}" cy="${height / 2}" r="${Math.min(width, height) / 2 - 10}" 
-          fill="url(#domeTunnelGradient)" 
-          filter="url(#tunnelBlur)" />
-`
-
-  // Add dome-specific TUNNEL UP patterns
-  const centerX = width / 2
-  const centerY = height / 2
-  const maxRadius = Math.min(width, height) / 2 - 20
-
-  // Create concentric rings that create tunnel up illusion
-  for (let ring = 0; ring < 8; ring++) {
-    const ringRadius = (ring / 8) * maxRadius
-    const ringOpacity = 0.8 - (ring / 8) * 0.6
-    const ringWidth = 2 + ring * 0.5
-
-    svg += `  <circle cx="${centerX}" cy="${centerY}" r="${ringRadius}" 
-              fill="none" stroke="#ffffff" stroke-width="${ringWidth}" 
-              opacity="${ringOpacity}" />
-`
+  for (let i = 0; i < numSamples; i++) {
+    const x = rng.next() * 800
+    const y = rng.next() * 800
+    
+    // Simple flow based on position
+    const angle = noise(x * noiseScale, y * noiseScale, rng.seed) * Math.PI * 2
+    const vx = Math.cos(angle) * timeStep * 100
+    const vy = Math.sin(angle) * timeStep * 100
+    
+    points.push({
+      x: x + vx,
+      y: y + vy,
+      vx,
+      vy
+    })
   }
+  
+  return points
+}
 
-  // Add spiral patterns that enhance tunnel up effect
-  for (let i = 0; i < 1000; i++) {
-    const t = i / 1000
-    const spiralAngle = t * Math.PI * 2 * 12 // Multiple spiral arms
-    const spiralRadius = t * maxRadius
-
-    // Create tunnel perspective by varying size based on distance from center
-    const tunnelPerspective = 1 - (spiralRadius / maxRadius) * 0.8
-    const size = 1 + tunnelPerspective * 4
-
-    const x = centerX + spiralRadius * Math.cos(spiralAngle)
-    const y = centerY + spiralRadius * Math.sin(spiralAngle)
-
-    // Only draw if within dome circle
-    if (spiralRadius <= maxRadius) {
-      const opacity = 0.2 + tunnelPerspective * 0.6
-      svg += `  <circle cx="${x}" cy="${y}" r="${size}" fill="#ffffff" opacity="${opacity}" />
-`
+// Placeholder functions for other patterns (implement as needed)
+function generateSpiralPattern(params: GenerationParams, rng: SeededRandom): Point[] {
+  const points: Point[] = []
+  const { numSamples, colorScheme } = params
+  
+  for (let i = 0; i < numSamples; i++) {
+    const t = (i / numSamples) * Math.PI * 20
+    const r = t * 2
+    const x = 400 + r * Math.cos(t)
+    const y = 400 + r * Math.sin(t)
+    
+    if (x >= 0 && x <= 800 && y >= 0 && y <= 800) {
+      points.push({
+        x,
+        y,
+        color: getColor(colorScheme, i, numSamples),
+        size: 2,
+        opacity: 0.7
+      })
     }
   }
+  
+  return points
+}
 
-  // Add radial lines that enhance upward tunnel perspective
-  for (let line = 0; line < 24; line++) {
-    const lineAngle = (line / 24) * Math.PI * 2
-    const x1 = centerX + Math.cos(lineAngle) * 20
-    const y1 = centerY + Math.sin(lineAngle) * 20
-    const x2 = centerX + Math.cos(lineAngle) * maxRadius
-    const y2 = centerY + Math.sin(lineAngle) * maxRadius
+function generateFractalPattern(params: GenerationParams, rng: SeededRandom): Point[] {
+  // Implement fractal generation
+  return generateSimpleFlowField(params, rng)
+}
 
-    svg += `  <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" 
-              stroke="#ffffff" stroke-width="1" opacity="0.3" />
-`
+function generateMandelbrotSet(params: GenerationParams, rng: SeededRandom): Point[] {
+  // Implement Mandelbrot set generation
+  return generateSimpleFlowField(params, rng)
+}
+
+function generateJuliaSet(params: GenerationParams, rng: SeededRandom): Point[] {
+  // Implement Julia set generation
+  return generateSimpleFlowField(params, rng)
+}
+
+function generateLorenzAttractor(params: GenerationParams, rng: SeededRandom): Point[] {
+  // Implement Lorenz attractor generation
+  return generateSimpleFlowField(params, rng)
+}
+
+function generateHyperbolicPattern(params: GenerationParams, rng: SeededRandom): Point[] {
+  // Implement hyperbolic geometry generation
+  return generateSimpleFlowField(params, rng)
+}
+
+function generateGaussianField(params: GenerationParams, rng: SeededRandom): Point[] {
+  // Implement Gaussian field generation
+  return generateSimpleFlowField(params, rng)
+}
+
+function generateVoronoiDiagram(params: GenerationParams, rng: SeededRandom): Point[] {
+  // Implement Voronoi diagram generation
+  return generateSimpleFlowField(params, rng)
+}
+
+function generatePerlinNoise(params: GenerationParams, rng: SeededRandom): Point[] {
+  // Implement Perlin noise visualization
+  return generateSimpleFlowField(params, rng)
+}
+
+function generateReactionDiffusion(params: GenerationParams, rng: SeededRandom): Point[] {
+  // Implement reaction-diffusion system
+  return generateSimpleFlowField(params, rng)
+}
+
+function generateWaveInterference(params: GenerationParams, rng: SeededRandom): Point[] {
+  // Implement wave interference patterns
+  return generateSimpleFlowField(params, rng)
+}
+
+// Dome projection generator
+export function generateDomeProjection(params: { width: number; height: number; fov: number; tilt: number }): string {
+  const { width, height, fov, tilt } = params
+  const centerX = width / 2
+  const centerY = height / 2
+  const radius = Math.min(width, height) / 2 * 0.9
+  
+  // Generate dome projection pattern
+  const elements: string[] = []
+  
+  // Create concentric circles for dome effect
+  for (let r = 0; r < radius; r += 20) {
+    const opacity = 1 - (r / radius) * 0.7
+    elements.push(`<circle cx="${centerX}" cy="${centerY}" r="${r}" fill="none" stroke="#ffffff" stroke-width="1" opacity="${opacity}" />`)
   }
-
-  svg += `</svg>`
-
-  return svg
+  
+  // Add radial lines
+  for (let angle = 0; angle < 360; angle += 30) {
+    const rad = (angle * Math.PI) / 180
+    const x2 = centerX + radius * Math.cos(rad)
+    const y2 = centerY + radius * Math.sin(rad)
+    elements.push(`<line x1="${centerX}" y1="${centerY}" x2="${x2}" y2="${y2}" stroke="#ffffff" stroke-width="1" opacity="0.3" />`)
+  }
+  
+  return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+    <rect width="${width}" height="${height}" fill="#000000"/>
+    ${elements.join('\n')}
+  </svg>`
 }
