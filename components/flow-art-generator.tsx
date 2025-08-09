@@ -1,19 +1,33 @@
-'use client'
+"use client"
 
-import React, { useCallback, useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { Progress } from '@/components/ui/progress'
-import { toast } from '@/hooks/use-toast'
-import { Sparkles, Settings, ImageIcon, Download, Loader2, Globe, Building, Dice6, Mountain, Pencil } from 'lucide-react'
+import { useCallback, useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { Progress } from "@/components/ui/progress"
+import { toast } from "@/hooks/use-toast"
+import { AspectRatio } from "@/components/ui/aspect-ratio"
+import {
+  Sparkles,
+  Settings,
+  ImageIcon,
+  Download,
+  Loader2,
+  Globe,
+  Building,
+  Dice6,
+  Mountain,
+  Pencil,
+  Eye,
+  AlertCircle,
+} from "lucide-react"
 
 interface GeneratedArtResponse {
   success: boolean
@@ -36,9 +50,9 @@ interface GeneratedArtResponse {
 
 export default function FlowArtGenerator() {
   // Core params
-  const [dataset, setDataset] = useState('indonesian')
-  const [scenario, setScenario] = useState('garuda')
-  const [colorScheme, setColorScheme] = useState('metallic')
+  const [dataset, setDataset] = useState("indonesian")
+  const [scenario, setScenario] = useState("garuda")
+  const [colorScheme, setColorScheme] = useState("metallic")
 
   const [seed, setSeed] = useState(1234)
   const [numSamples, setNumSamples] = useState(3000)
@@ -46,27 +60,32 @@ export default function FlowArtGenerator() {
   const [timeStep, setTimeStep] = useState(0.01)
 
   // Prompt editing
-  const [promptPreview, setPromptPreview] = useState('')
+  const [promptPreview, setPromptPreview] = useState("")
   const [editEnabled, setEditEnabled] = useState(false)
-  const [editedPrompt, setEditedPrompt] = useState('')
+  const [editedPrompt, setEditedPrompt] = useState("")
 
   // Dome settings
   const [domeProjection, setDomeProjection] = useState(true)
   const [domeDiameter, setDomeDiameter] = useState(20)
-  const [domeResolution, setDomeResolution] = useState('4K')
-  const [projectionType, setProjectionType] = useState('fisheye')
+  const [domeResolution, setDomeResolution] = useState("4K")
+  const [projectionType, setProjectionType] = useState("fisheye")
 
   // 360 panorama settings
   const [panoramic360, setPanoramic360] = useState(true)
-  const [panoramaResolution, setPanoramaResolution] = useState('8K')
-  const [panoramaFormat, setPanoramaFormat] = useState<'equirectangular' | 'stereographic' | 'cubemap' | 'cylindrical'>('equirectangular')
-  const [stereographicPerspective, setStereographicPerspective] = useState<'little-planet' | 'tunnel' | 'fisheye'>('little-planet')
+  const [panoramaResolution, setPanoramaResolution] = useState("8K")
+  const [panoramaFormat, setPanoramaFormat] = useState<"equirectangular" | "stereographic" | "cubemap" | "cylindrical">(
+    "equirectangular",
+  )
+  const [stereographicPerspective, setStereographicPerspective] = useState<"little-planet" | "tunnel" | "fisheye">(
+    "little-planet",
+  )
 
   // UI state
   const [isGenerating, setIsGenerating] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [activeTab, setActiveTab] = useState<'regular' | 'dome' | 'panorama'>('regular')
+  const [activeTab, setActiveTab] = useState<"regular" | "dome" | "panorama">("regular")
   const [error, setError] = useState<string | null>(null)
+  const [showExamples, setShowExamples] = useState(false)
 
   // Results
   const [image, setImage] = useState<string | null>(null)
@@ -74,72 +93,72 @@ export default function FlowArtGenerator() {
   const [panoramaImage, setPanoramaImage] = useState<string | null>(null)
 
   const datasetOptions = [
-    { value: 'indonesian', label: 'Indonesian Heritage' },
-    { value: 'thailand', label: 'Thailand' },
-    { value: 'spirals', label: 'Spirals' },
-    { value: 'fractal', label: 'Fractal' },
-    { value: 'mandelbrot', label: 'Mandelbrot' },
-    { value: 'julia', label: 'Julia' },
-    { value: 'lorenz', label: 'Lorenz' },
-    { value: 'hyperbolic', label: 'Hyperbolic' },
-    { value: 'gaussian', label: 'Gaussian' },
-    { value: 'cellular', label: 'Cellular' },
-    { value: 'voronoi', label: 'Voronoi' },
-    { value: 'perlin', label: 'Perlin' },
-    { value: 'diffusion', label: 'Reaction-Diffusion' },
-    { value: 'wave', label: 'Wave' },
-    { value: 'escher', label: 'Escher' },
-    { value: '8bit', label: '8bit' },
-    { value: 'bosch', label: 'Bosch' },
+    { value: "indonesian", label: "Indonesian Heritage" },
+    { value: "thailand", label: "Thailand" },
+    { value: "spirals", label: "Spirals" },
+    { value: "fractal", label: "Fractal" },
+    { value: "mandelbrot", label: "Mandelbrot" },
+    { value: "julia", label: "Julia" },
+    { value: "lorenz", label: "Lorenz" },
+    { value: "hyperbolic", label: "Hyperbolic" },
+    { value: "gaussian", label: "Gaussian" },
+    { value: "cellular", label: "Cellular" },
+    { value: "voronoi", label: "Voronoi" },
+    { value: "perlin", label: "Perlin" },
+    { value: "diffusion", label: "Reaction-Diffusion" },
+    { value: "wave", label: "Wave" },
+    { value: "escher", label: "Escher" },
+    { value: "8bit", label: "8bit" },
+    { value: "bosch", label: "Bosch" },
   ]
 
   const indonesianScenarios = [
-    { value: 'pure', label: 'Pure Mathematical' },
-    { value: 'garuda', label: 'Garuda Wisnu Kencana' },
-    { value: 'wayang', label: 'Wayang Kulit' },
-    { value: 'batik', label: 'Batik Patterns' },
-    { value: 'borobudur', label: 'Borobudur Temple' },
-    { value: 'javanese', label: 'Javanese Culture' },
-    { value: 'sundanese', label: 'Sundanese Heritage' },
-    { value: 'batak', label: 'Batak Traditions' },
-    { value: 'dayak', label: 'Dayak Culture' },
-    { value: 'acehnese', label: 'Acehnese Heritage' },
-    { value: 'minangkabau', label: 'Minangkabau Culture' },
-    { value: 'balinese-tribe', label: 'Balinese Traditions' },
-    { value: 'papuans', label: 'Papuan Heritage' },
-    { value: 'baduy', label: 'Baduy Tribe' },
-    { value: 'orang-rimba', label: 'Orang Rimba' },
-    { value: 'hongana-manyawa', label: 'Hongana Manyawa' },
-    { value: 'asmat', label: 'Asmat Art' },
-    { value: 'komodo', label: 'Dragon Legends' },
-    { value: 'dance', label: 'Traditional Dance' },
-    { value: 'volcanoes', label: 'Volcanic Landscapes' },
-    { value: 'temples', label: 'Sacred Temples' },
+    { value: "pure", label: "Pure Mathematical" },
+    { value: "garuda", label: "Garuda Wisnu Kencana" },
+    { value: "wayang", label: "Wayang Kulit" },
+    { value: "batik", label: "Batik Patterns" },
+    { value: "borobudur", label: "Borobudur Temple" },
+    { value: "javanese", label: "Javanese Culture" },
+    { value: "sundanese", label: "Sundanese Heritage" },
+    { value: "batak", label: "Batak Traditions" },
+    { value: "dayak", label: "Dayak Culture" },
+    { value: "acehnese", label: "Acehnese Heritage" },
+    { value: "minangkabau", label: "Minangkabau Culture" },
+    { value: "balinese-tribe", label: "Balinese Traditions" },
+    { value: "papuans", label: "Papuan Heritage" },
+    { value: "baduy", label: "Baduy Tribe" },
+    { value: "orang-rimba", label: "Orang Rimba" },
+    { value: "hongana-manyawa", label: "Hongana Manyawa" },
+    { value: "asmat", label: "Asmat Art" },
+    { value: "komodo", label: "Dragon Legends" },
+    { value: "dance", label: "Traditional Dance" },
+    { value: "volcanoes", label: "Volcanic Landscapes" },
+    { value: "temples", label: "Sacred Temples" },
   ]
 
   // Ensure stereographic default when format is stereographic
   useEffect(() => {
-    if (panoramaFormat === 'stereographic' && !stereographicPerspective) {
-      setStereographicPerspective('little-planet')
+    if (panoramaFormat === "stereographic" && !stereographicPerspective) {
+      setStereographicPerspective("little-planet")
     }
   }, [panoramaFormat, stereographicPerspective])
 
   // Keep scenario valid for Indonesian dataset
   useEffect(() => {
-    if (dataset === 'indonesian') {
-      const isValid = indonesianScenarios.some(s => s.value === scenario)
-      if (!isValid) setScenario('pure')
+    if (dataset === "indonesian") {
+      const isValid = indonesianScenarios.some((s) => s.value === scenario)
+      if (!isValid) setScenario("pure")
     }
   }, [dataset]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const refreshPrompt = useCallback(async () => {
     try {
-      const res = await fetch('/api/preview-ai-prompt', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/preview-ai-prompt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           dataset,
-          scenario: dataset === 'indonesian' ? scenario : undefined,
+          scenario: dataset === "indonesian" ? scenario : undefined,
           colorScheme,
           customPrompt: editEnabled && editedPrompt.trim() ? editedPrompt.trim() : undefined,
         }),
@@ -149,7 +168,7 @@ export default function FlowArtGenerator() {
         setPromptPreview(data.prompt)
         if (!editEnabled) setEditedPrompt(data.prompt)
       }
-    } catch (e: any) {
+    } catch {
       // no-op
     }
   }, [dataset, scenario, colorScheme, editEnabled, editedPrompt])
@@ -181,12 +200,12 @@ export default function FlowArtGenerator() {
     setError(null)
 
     try {
-      const res = await fetch('/api/generate-ai-art', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/generate-ai-art", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           dataset,
-          scenario: dataset === 'indonesian' ? scenario : undefined,
+          scenario: dataset === "indonesian" ? scenario : undefined,
           colorScheme,
           seed,
           numSamples,
@@ -199,7 +218,7 @@ export default function FlowArtGenerator() {
           panoramaResolution: panoramic360 ? panoramaResolution : undefined,
           panoramaFormat,
           stereographicPerspective:
-            panoramic360 && panoramaFormat === 'stereographic' ? stereographicPerspective : undefined,
+            panoramic360 && panoramaFormat === "stereographic" ? stereographicPerspective : undefined,
         }),
       })
 
@@ -210,12 +229,12 @@ export default function FlowArtGenerator() {
         throw new Error(txt || `Request failed with ${res.status}`)
       }
       const data: GeneratedArtResponse = await res.json()
-      if (!data.success) throw new Error(data.error || 'Generation failed')
+      if (!data.success) throw new Error(data.error || "Generation failed")
 
       setImage(data.image)
       setDomeImage(data.domeImage || null)
       setPanoramaImage(data.panoramaImage || null)
-      setActiveTab('regular')
+      setActiveTab("regular")
       setProgress(100)
       toast({
         title: "Art Generated",
@@ -223,10 +242,10 @@ export default function FlowArtGenerator() {
       })
     } catch (e: any) {
       console.error(e)
-      setError(e?.message || 'Failed to generate')
+      setError(e?.message || "Failed to generate")
       toast({
         title: "Generation failed",
-        description: e?.message || 'Please try again.',
+        description: e?.message || "Please try again.",
         variant: "destructive",
       })
     } finally {
@@ -256,10 +275,10 @@ export default function FlowArtGenerator() {
   const download = useCallback(async (url: string | null, filename: string) => {
     if (!url) return
     try {
-      const r = await fetch(url, { mode: 'cors', credentials: 'omit' })
+      const r = await fetch(url, { mode: "cors", credentials: "omit" })
       const blob = await r.blob()
       const blobUrl = URL.createObjectURL(blob)
-      const a = document.createElement('a')
+      const a = document.createElement("a")
       a.href = blobUrl
       a.download = filename
       a.click()
@@ -269,7 +288,7 @@ export default function FlowArtGenerator() {
         description: filename,
       })
     } catch {
-      const a = document.createElement('a')
+      const a = document.createElement("a")
       a.href = `/api/download-proxy?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`
       a.download = filename
       a.click()
@@ -290,7 +309,7 @@ export default function FlowArtGenerator() {
             </h1>
           </div>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-            Generate mathematical visualizations and AI-powered artwork including Dome and 360° stereographic variations.
+            Generate mathematical visualizations and AI-powered artwork including Dome and 360° panoramic variations.
           </p>
         </div>
 
@@ -323,7 +342,7 @@ export default function FlowArtGenerator() {
               </div>
 
               {/* Scenario (only for Indonesian dataset) */}
-              {dataset === 'indonesian' ? (
+              {dataset === "indonesian" ? (
                 <div className="space-y-2">
                   <Label className="text-slate-300">Scenario</Label>
                   <Select value={scenario} onValueChange={setScenario}>
@@ -331,20 +350,22 @@ export default function FlowArtGenerator() {
                       <SelectValue placeholder="Select a scenario" />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-700 border-slate-600 max-h-72">
-                      {indonesianScenarios.map(sc => (
+                      {indonesianScenarios.map((sc) => (
                         <SelectItem key={sc.value} value={sc.value}>
                           {sc.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  <p className="text-xs text-slate-400">Scenarios provide curated, rich prompts for Indonesian heritage.</p>
+                  <p className="text-xs text-slate-400">
+                    Scenarios provide curated, rich prompts for Indonesian heritage.
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-1.5">
                   <Label className="text-slate-300">Scenario</Label>
                   <p className="text-xs text-slate-400">
-                    Scenario is available for the Indonesian dataset. Choose “Indonesian Heritage” to enable it.
+                    Scenario is available for the Indonesian dataset. Choose "Indonesian Heritage" to enable it.
                   </p>
                 </div>
               )}
@@ -358,7 +379,30 @@ export default function FlowArtGenerator() {
                   </SelectTrigger>
                   <SelectContent className="bg-slate-700 border-slate-600 max-h-72">
                     {[
-                      'plasma','quantum','cosmic','thermal','spectral','crystalline','bioluminescent','aurora','metallic','prismatic','monochromatic','infrared','lava','futuristic','forest','ocean','sunset','arctic','neon','vintage','toxic','ember','lunar','tidal'
+                      "plasma",
+                      "quantum",
+                      "cosmic",
+                      "thermal",
+                      "spectral",
+                      "crystalline",
+                      "bioluminescent",
+                      "aurora",
+                      "metallic",
+                      "prismatic",
+                      "monochromatic",
+                      "infrared",
+                      "lava",
+                      "futuristic",
+                      "forest",
+                      "ocean",
+                      "sunset",
+                      "arctic",
+                      "neon",
+                      "vintage",
+                      "toxic",
+                      "ember",
+                      "lunar",
+                      "tidal",
                     ].map((c) => (
                       <SelectItem key={c} value={c}>
                         {c[0].toUpperCase() + c.slice(1)}
@@ -376,10 +420,10 @@ export default function FlowArtGenerator() {
                     <Input
                       type="number"
                       value={seed}
-                      onChange={(e) => setSeed(parseInt(e.target.value || '0', 10))}
+                      onChange={(e) => setSeed(Number.parseInt(e.target.value || "0", 10))}
                       className="bg-slate-700 border-slate-600 text-slate-100"
                     />
-                    <Button variant="outline" onClick={randomizeSeed} className="border-slate-600">
+                    <Button variant="outline" onClick={randomizeSeed} className="border-slate-600 bg-transparent">
                       <Dice6 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -389,7 +433,7 @@ export default function FlowArtGenerator() {
                   <Input
                     type="number"
                     value={numSamples}
-                    onChange={(e) => setNumSamples(parseInt(e.target.value || '1000', 10))}
+                    onChange={(e) => setNumSamples(Number.parseInt(e.target.value || "1000", 10))}
                     className="bg-slate-700 border-slate-600 text-slate-100"
                   />
                 </div>
@@ -400,10 +444,10 @@ export default function FlowArtGenerator() {
                       type="number"
                       step="0.01"
                       value={noiseScale}
-                      onChange={(e) => setNoiseScale(parseFloat(e.target.value || '0.1'))}
+                      onChange={(e) => setNoiseScale(Number.parseFloat(e.target.value || "0.1"))}
                       className="bg-slate-700 border-slate-600 text-slate-100"
                     />
-                    <Button variant="outline" onClick={randomizeNoise} className="border-slate-600">
+                    <Button variant="outline" onClick={randomizeNoise} className="border-slate-600 bg-transparent">
                       <Dice6 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -415,10 +459,10 @@ export default function FlowArtGenerator() {
                       type="number"
                       step="0.001"
                       value={timeStep}
-                      onChange={(e) => setTimeStep(parseFloat(e.target.value || '0.01'))}
+                      onChange={(e) => setTimeStep(Number.parseFloat(e.target.value || "0.01"))}
                       className="bg-slate-700 border-slate-600 text-slate-100"
                     />
-                    <Button variant="outline" onClick={randomizeTimeStep} className="border-slate-600">
+                    <Button variant="outline" onClick={randomizeTimeStep} className="border-slate-600 bg-transparent">
                       <Dice6 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -427,13 +471,76 @@ export default function FlowArtGenerator() {
 
               {/* 360° */}
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Switch checked={panoramic360} onCheckedChange={setPanoramic360} />
-                  <Label className="text-slate-300 flex items-center gap-2">
-                    <Globe className="h-4 w-4" />
-                    360° Panorama
-                  </Label>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Switch checked={panoramic360} onCheckedChange={setPanoramic360} />
+                    <Label className="text-slate-300 flex items-center gap-2">
+                      <Globe className="h-4 w-4" />
+                      360° Panorama
+                    </Label>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowExamples(!showExamples)}
+                    className={`text-slate-400 hover:text-slate-300 ${showExamples ? "bg-slate-700" : ""}`}
+                  >
+                    <Eye className="h-4 w-4 mr-1" />
+                    Examples
+                  </Button>
                 </div>
+
+                {showExamples && (
+                  <div className="space-y-3 p-4 bg-slate-900 rounded-lg border border-slate-700">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Globe className="h-4 w-4 text-purple-400" />
+                      <p className="text-sm font-medium text-slate-300">360° Equirectangular Examples</p>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="space-y-2">
+                        <div className="relative">
+                          <img
+                            src="/360-test-pattern.jpg"
+                            alt="360° Test Pattern"
+                            className="w-full h-20 object-cover rounded border border-slate-600"
+                          />
+                          <Badge className="absolute top-1 left-1 bg-blue-600 text-xs">Technical Pattern</Badge>
+                        </div>
+                        <p className="text-xs text-slate-400">
+                          <strong>ORION360 Calibration Pattern:</strong> Shows proper equirectangular format with{" "}
+                          <span className="text-yellow-400 font-semibold">2:1 aspect ratio (WIDTH = 2 × HEIGHT)</span>.
+                          Notice how patterns repeat horizontally and stretch toward top/bottom edges.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="relative">
+                          <img
+                            src="/360-aqueduct-example.jpg"
+                            alt="360° Aqueduct Panorama"
+                            className="w-full h-20 object-cover rounded border border-slate-600"
+                          />
+                          <Badge className="absolute top-1 left-1 bg-green-600 text-xs">Natural Scene</Badge>
+                        </div>
+                        <p className="text-xs text-slate-400">
+                          <strong>Roman Aqueduct Panorama:</strong> Real-world example with characteristic
+                          equirectangular distortion. Sky occupies upper half with horizontal stretching, ground curves
+                          at edges.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="pt-2 border-t border-slate-700">
+                      <div className="flex items-start gap-2">
+                        <AlertCircle className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                        <p className="text-xs text-slate-500">
+                          <strong className="text-amber-400">Critical:</strong> Equirectangular format requires{" "}
+                          <span className="font-mono bg-slate-800 px-1 rounded">WIDTH = 2 × HEIGHT</span> (e.g.,
+                          4096×2048, 8192×4096) for proper 360° sphere mapping.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {panoramic360 && (
                   <div className="space-y-2 pl-6">
                     <div className="grid grid-cols-2 gap-3">
@@ -447,15 +554,14 @@ export default function FlowArtGenerator() {
                           <SelectItem value="16K">16K</SelectItem>
                         </SelectContent>
                       </Select>
-                      <Select
-                        value={panoramaFormat}
-                        onValueChange={(v: any) => setPanoramaFormat(v)}
-                      >
+                      <Select value={panoramaFormat} onValueChange={(v: any) => setPanoramaFormat(v)}>
                         <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-600">
-                          <SelectItem value="equirectangular">Equirectangular</SelectItem>
+                          <SelectItem value="equirectangular">
+                            Equirectangular <span className="text-amber-400">(2:1)</span>
+                          </SelectItem>
                           <SelectItem value="stereographic">Stereographic</SelectItem>
                           <SelectItem value="cubemap">Cubemap</SelectItem>
                           <SelectItem value="cylindrical">Cylindrical</SelectItem>
@@ -463,7 +569,18 @@ export default function FlowArtGenerator() {
                       </Select>
                     </div>
 
-                    {panoramaFormat === 'stereographic' && (
+                    {panoramaFormat === "equirectangular" && (
+                      <div className="p-2 bg-amber-500/10 border border-amber-500/20 rounded text-xs text-amber-300">
+                        <div className="flex items-center gap-1 mb-1">
+                          <AlertCircle className="h-3 w-3" />
+                          <span className="font-semibold">Aspect Ratio Requirement</span>
+                        </div>
+                        Equirectangular format enforces <span className="font-mono">WIDTH = 2 × HEIGHT</span> for proper
+                        360° sphere mapping (e.g., 4096×2048 pixels).
+                      </div>
+                    )}
+
+                    {panoramaFormat === "stereographic" && (
                       <div className="grid grid-cols-1">
                         <Label className="text-slate-300">Stereographic Perspective</Label>
                         <Select
@@ -499,7 +616,7 @@ export default function FlowArtGenerator() {
                     <Input
                       type="number"
                       value={domeDiameter}
-                      onChange={(e) => setDomeDiameter(parseInt(e.target.value || '20', 10))}
+                      onChange={(e) => setDomeDiameter(Number.parseInt(e.target.value || "20", 10))}
                       className="bg-slate-700 border-slate-600 text-slate-100"
                       placeholder="Diameter (m)"
                     />
@@ -540,7 +657,8 @@ export default function FlowArtGenerator() {
                     <Button
                       type="button"
                       variant="outline"
-                      className="border-slate-600"
+                      size="sm"
+                      className="border-slate-600 bg-transparent"
                       onClick={refreshPrompt}
                     >
                       Refresh
@@ -556,19 +674,21 @@ export default function FlowArtGenerator() {
                           }
                         }}
                       />
-                      <Label htmlFor="enable-edit" className="text-slate-300">Edit</Label>
+                      <Label htmlFor="enable-edit" className="text-slate-300">
+                        Edit
+                      </Label>
                     </div>
                   </div>
                 </div>
                 <Textarea
                   value={editEnabled ? editedPrompt : promptPreview}
-                  onChange={(e) => editEnabled ? setEditedPrompt(e.target.value) : undefined}
+                  onChange={(e) => (editEnabled ? setEditedPrompt(e.target.value) : undefined)}
                   className="bg-slate-700 border-slate-600 text-slate-100 min-h-[120px]"
                   placeholder="Prompt preview will appear here..."
                   readOnly={!editEnabled}
                 />
                 <p className="text-xs text-slate-400">
-                  This is the exact prompt sent to the AI. Toggle “Edit” to customize it before generating.
+                  This is the exact prompt sent to the AI. Toggle "Edit" to customize it before generating.
                 </p>
               </div>
 
@@ -599,9 +719,7 @@ export default function FlowArtGenerator() {
               )}
 
               {error && (
-                <div className="text-sm text-red-400 bg-red-500/10 border border-red-500 rounded p-2">
-                  {error}
-                </div>
+                <div className="text-sm text-red-400 bg-red-500/10 border border-red-500 rounded p-2">{error}</div>
               )}
             </CardContent>
           </Card>
@@ -659,7 +777,11 @@ export default function FlowArtGenerator() {
                         {domeImage && (
                           <>
                             <div className="aspect-square bg-slate-900 rounded-lg overflow-hidden">
-                              <img src={domeImage || "/placeholder.svg"} alt="Dome" className="w-full h-full object-cover" />
+                              <img
+                                src={domeImage || "/placeholder.svg"}
+                                alt="Dome"
+                                className="w-full h-full object-cover"
+                              />
                             </div>
                             <div className="mt-2 text-center">
                               <Badge variant="outline" className="border-slate-600 text-slate-300">
@@ -673,12 +795,34 @@ export default function FlowArtGenerator() {
                       <TabsContent value="panorama" className="mt-4">
                         {panoramaImage && (
                           <>
-                            <div className="aspect-square bg-slate-900 rounded-lg overflow-hidden">
-                              <img src={panoramaImage || "/placeholder.svg"} alt="360°" className="w-full h-full object-cover" />
-                            </div>
+                            {panoramaFormat === "equirectangular" ? (
+                              <div className="w-full">
+                                <AspectRatio ratio={2} className="bg-slate-900 rounded-lg overflow-hidden">
+                                  <img
+                                    src={panoramaImage || "/placeholder.svg"}
+                                    alt="360° Equirectangular Panorama"
+                                    className="w-full h-full object-contain"
+                                    style={{ objectFit: "contain" }}
+                                  />
+                                </AspectRatio>
+                              </div>
+                            ) : (
+                              <div className="aspect-square bg-slate-900 rounded-lg overflow-hidden">
+                                <img
+                                  src={panoramaImage || "/placeholder.svg"}
+                                  alt={`360° ${panoramaFormat}`}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            )}
                             <div className="mt-2 text-center space-y-1">
                               <Badge variant="outline" className="border-slate-600 text-slate-300">
-                                360° Panorama {panoramaFormat === 'stereographic' ? `• ${stereographicPerspective}` : ''}
+                                360° Panorama{" "}
+                                {panoramaFormat === "stereographic"
+                                  ? `• ${stereographicPerspective}`
+                                  : panoramaFormat === "equirectangular"
+                                    ? "• 2:1 Widescreen"
+                                    : ""}
                               </Badge>
                             </div>
                           </>
@@ -689,7 +833,10 @@ export default function FlowArtGenerator() {
                     <Separator className="bg-slate-700" />
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                      <Button onClick={() => download(image, `flowsketch-regular-${Date.now()}.png`)} className="bg-green-600 hover:bg-green-700">
+                      <Button
+                        onClick={() => download(image, `flowsketch-regular-${Date.now()}.png`)}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
                         <Download className="h-4 w-4 mr-2" />
                         Download Regular
                       </Button>
