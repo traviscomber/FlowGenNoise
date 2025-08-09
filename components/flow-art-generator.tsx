@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -136,6 +136,33 @@ export default function FlowArtGenerator() {
     { value: "temples", label: "Sacred Temples" },
   ]
 
+  const thailandScenarios = [
+    { value: "pure", label: "Pure Mathematical" },
+    { value: "garuda", label: "🦅 Garuda - Divine Eagle" },
+    { value: "naga", label: "🐉 Naga - Serpent Dragon" },
+    { value: "erawan", label: "🐘 Erawan - Three-Headed Elephant" },
+    { value: "karen", label: "🏔️ Karen Hill Tribe" },
+    { value: "hmong", label: "🎭 Hmong Mountain People" },
+    { value: "ayutthaya", label: "🏛️ Ayutthaya Ancient Capital" },
+    { value: "sukhothai", label: "🏺 Sukhothai Dawn Kingdom" },
+    { value: "songkran", label: "💦 Songkran Water Festival" },
+    { value: "loy-krathong", label: "🕯️ Loy Krathong Floating Lights" },
+    { value: "coronation", label: "👑 Royal Coronation Ceremony" },
+    { value: "wat-pho", label: "🧘 Wat Pho Reclining Buddha" },
+    { value: "wat-arun", label: "🌅 Wat Arun Temple of Dawn" },
+    { value: "muay-thai", label: "🥊 Muay Thai Ancient Boxing" },
+    { value: "classical-dance", label: "💃 Thai Classical Dance" },
+    { value: "golden-triangle", label: "🌊 Golden Triangle Mekong" },
+    { value: "floating-markets", label: "🛶 Traditional Floating Markets" },
+  ]
+
+  // Get current scenarios based on dataset
+  const getCurrentScenarios = () => {
+    if (dataset === "indonesian") return indonesianScenarios
+    if (dataset === "thailand") return thailandScenarios
+    return [{ value: "cosmic", label: "Cosmic" }]
+  }
+
   // Ensure stereographic default when format is stereographic
   useEffect(() => {
     if (panoramaFormat === "stereographic" && !stereographicPerspective) {
@@ -143,13 +170,14 @@ export default function FlowArtGenerator() {
     }
   }, [panoramaFormat, stereographicPerspective])
 
-  // Keep scenario valid for Indonesian dataset
+  // Keep scenario valid for current dataset
   useEffect(() => {
-    if (dataset === "indonesian") {
-      const isValid = indonesianScenarios.some((s) => s.value === scenario)
-      if (!isValid) setScenario("pure")
+    const currentScenarios = getCurrentScenarios()
+    const isValid = currentScenarios.some((s) => s.value === scenario)
+    if (!isValid) {
+      setScenario(currentScenarios[0]?.value || "pure")
     }
-  }, [dataset]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dataset, scenario])
 
   const refreshPrompt = useCallback(async () => {
     try {
@@ -158,7 +186,7 @@ export default function FlowArtGenerator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           dataset,
-          scenario: dataset === "indonesian" ? scenario : undefined,
+          scenario: dataset === "indonesian" || dataset === "thailand" ? scenario : undefined,
           colorScheme,
           customPrompt: editEnabled && editedPrompt.trim() ? editedPrompt.trim() : undefined,
         }),
@@ -205,7 +233,7 @@ export default function FlowArtGenerator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           dataset,
-          scenario: dataset === "indonesian" ? scenario : undefined,
+          scenario: dataset === "indonesian" || dataset === "thailand" ? scenario : undefined,
           colorScheme,
           seed,
           numSamples,
@@ -341,8 +369,8 @@ export default function FlowArtGenerator() {
                 </Select>
               </div>
 
-              {/* Scenario (only for Indonesian dataset) */}
-              {dataset === "indonesian" ? (
+              {/* Scenario (for Indonesian and Thailand datasets) */}
+              {dataset === "indonesian" || dataset === "thailand" ? (
                 <div className="space-y-2">
                   <Label className="text-slate-300">Scenario</Label>
                   <Select value={scenario} onValueChange={setScenario}>
@@ -350,7 +378,7 @@ export default function FlowArtGenerator() {
                       <SelectValue placeholder="Select a scenario" />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-700 border-slate-600 max-h-72">
-                      {indonesianScenarios.map((sc) => (
+                      {getCurrentScenarios().map((sc) => (
                         <SelectItem key={sc.value} value={sc.value}>
                           {sc.label}
                         </SelectItem>
@@ -358,14 +386,17 @@ export default function FlowArtGenerator() {
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-slate-400">
-                    Scenarios provide curated, rich prompts for Indonesian heritage.
+                    {dataset === "indonesian"
+                      ? "Scenarios provide curated, rich prompts for Indonesian heritage."
+                      : "God-level detailed scenarios for Thai culture, temples, and traditions."}
                   </p>
                 </div>
               ) : (
                 <div className="space-y-1.5">
                   <Label className="text-slate-300">Scenario</Label>
                   <p className="text-xs text-slate-400">
-                    Scenario is available for the Indonesian dataset. Choose "Indonesian Heritage" to enable it.
+                    Scenarios are available for Indonesian Heritage and Thailand datasets. Choose one to enable detailed
+                    cultural scenarios.
                   </p>
                 </div>
               )}

@@ -34,8 +34,8 @@ interface DomeParams {
 export function Dome360Planner() {
   const { toast } = useToast()
   const [params, setParams] = useState<DomeParams>({
-    dataset: "spirals",
-    scenario: "cosmic",
+    dataset: "thailand",
+    scenario: "garuda",
     colorScheme: "cosmic",
     seed: Math.floor(Math.random() * 10000),
     numSamples: 4000,
@@ -60,11 +60,71 @@ export function Dome360Planner() {
   const [generationDetails, setGenerationDetails] = useState<any>(null)
 
   const updateParam = (key: keyof DomeParams, value: any) => {
-    setParams((prev) => ({ ...prev, [key]: value }))
+    setParams((prev) => {
+      const newParams = { ...prev, [key]: value }
+
+      // Reset scenario to first available option when dataset changes
+      if (key === "dataset") {
+        const scenarios = getScenarios(value)
+        newParams.scenario = scenarios[0]?.value || "pure"
+      }
+
+      return newParams
+    })
   }
 
   const generateRandomSeed = () => {
     updateParam("seed", Math.floor(Math.random() * 10000))
+  }
+
+  // Get scenarios based on selected dataset
+  const getScenarios = (dataset?: string) => {
+    const currentDataset = dataset || params.dataset
+    if (currentDataset === "thailand") {
+      return [
+        { value: "pure", label: "Pure Mathematical" },
+        { value: "garuda", label: "🦅 Garuda - Divine Eagle" },
+        { value: "naga", label: "🐉 Naga - Serpent Dragon" },
+        { value: "erawan", label: "🐘 Erawan - Three-Headed Elephant" },
+        { value: "karen", label: "🏔️ Karen Hill Tribe" },
+        { value: "hmong", label: "🎭 Hmong Mountain People" },
+        { value: "ayutthaya", label: "🏛️ Ayutthaya Ancient Capital" },
+        { value: "sukhothai", label: "🏺 Sukhothai Dawn Kingdom" },
+        { value: "songkran", label: "💦 Songkran Water Festival" },
+        { value: "loy-krathong", label: "🕯️ Loy Krathong Floating Lights" },
+        { value: "coronation", label: "👑 Royal Coronation Ceremony" },
+        { value: "wat-pho", label: "🧘 Wat Pho Reclining Buddha" },
+        { value: "wat-arun", label: "🌅 Wat Arun Temple of Dawn" },
+        { value: "muay-thai", label: "🥊 Muay Thai Ancient Boxing" },
+        { value: "classical-dance", label: "💃 Thai Classical Dance" },
+        { value: "golden-triangle", label: "🌊 Golden Triangle Mekong" },
+        { value: "floating-markets", label: "🛶 Traditional Floating Markets" },
+      ]
+    } else if (currentDataset === "indonesian") {
+      return [
+        { value: "pure", label: "Pure Mathematical" },
+        { value: "garuda", label: "🦅 Garuda Wisnu Kencana" },
+        { value: "wayang", label: "🎭 Wayang Shadow Puppets" },
+        { value: "batik", label: "🎨 Traditional Batik" },
+        { value: "borobudur", label: "🏛️ Borobudur Temple" },
+        { value: "javanese", label: "🎵 Javanese Culture" },
+        { value: "balinese-tribe", label: "🌺 Balinese Hindu" },
+        { value: "dayak", label: "🏞️ Dayak Borneo" },
+        { value: "papuans", label: "🪶 Papuan Tribes" },
+        { value: "komodo", label: "🦎 Komodo Dragons" },
+        { value: "volcanoes", label: "🌋 Ring of Fire" },
+        { value: "temples", label: "🏯 Sacred Temples" },
+      ]
+    } else {
+      return [
+        { value: "cosmic", label: "Deep Space" },
+        { value: "underwater", label: "Ocean Depths" },
+        { value: "crystalline", label: "Crystal Caverns" },
+        { value: "forest", label: "Enchanted Forest" },
+        { value: "aurora", label: "Aurora Skies" },
+        { value: "volcanic", label: "Volcanic Landscape" },
+      ]
+    }
   }
 
   const generateArt = async () => {
@@ -183,36 +243,37 @@ export function Dome360Planner() {
           {/* Dataset and Scenario */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Mathematical Pattern</Label>
+              <Label>Cultural Dataset</Label>
               <Select value={params.dataset} onValueChange={(value) => updateParam("dataset", value)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="spirals">Cosmic Spirals</SelectItem>
-                  <SelectItem value="fractal">Fractal Trees</SelectItem>
-                  <SelectItem value="mandelbrot">Mandelbrot Zoom</SelectItem>
-                  <SelectItem value="julia">Julia Landscapes</SelectItem>
-                  <SelectItem value="lorenz">Chaos Attractors</SelectItem>
-                  <SelectItem value="voronoi">Crystal Cells</SelectItem>
-                  <SelectItem value="wave">Wave Fields</SelectItem>
+                  <SelectItem value="thailand">🇹🇭 Thailand - Gods & Ceremonies</SelectItem>
+                  <SelectItem value="indonesian">🇮🇩 Indonesian Heritage</SelectItem>
+                  <SelectItem value="spirals">🌀 Cosmic Spirals</SelectItem>
+                  <SelectItem value="fractal">🌿 Fractal Trees</SelectItem>
+                  <SelectItem value="mandelbrot">🔢 Mandelbrot Zoom</SelectItem>
+                  <SelectItem value="julia">🎨 Julia Landscapes</SelectItem>
+                  <SelectItem value="lorenz">🦋 Chaos Attractors</SelectItem>
+                  <SelectItem value="voronoi">💎 Crystal Cells</SelectItem>
+                  <SelectItem value="wave">🌊 Wave Fields</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label>Immersive Theme</Label>
+              <Label>Immersive Scenario</Label>
               <Select value={params.scenario} onValueChange={(value) => updateParam("scenario", value)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="cosmic">Deep Space</SelectItem>
-                  <SelectItem value="underwater">Ocean Depths</SelectItem>
-                  <SelectItem value="crystalline">Crystal Caverns</SelectItem>
-                  <SelectItem value="forest">Enchanted Forest</SelectItem>
-                  <SelectItem value="aurora">Aurora Skies</SelectItem>
-                  <SelectItem value="volcanic">Volcanic Landscape</SelectItem>
+                  {getScenarios().map((scenario) => (
+                    <SelectItem key={scenario.value} value={scenario.value}>
+                      {scenario.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -226,13 +287,16 @@ export function Dome360Planner() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="cosmic">Cosmic Nebula</SelectItem>
-                <SelectItem value="aurora">Aurora Borealis</SelectItem>
-                <SelectItem value="plasma">Electric Plasma</SelectItem>
-                <SelectItem value="thermal">Thermal Vision</SelectItem>
-                <SelectItem value="spectral">Full Spectrum</SelectItem>
-                <SelectItem value="bioluminescent">Bioluminescent</SelectItem>
-                <SelectItem value="crystalline">Crystal Prisms</SelectItem>
+                <SelectItem value="cosmic">🌌 Cosmic Nebula</SelectItem>
+                <SelectItem value="aurora">🌈 Aurora Borealis</SelectItem>
+                <SelectItem value="plasma">⚡ Electric Plasma</SelectItem>
+                <SelectItem value="thermal">🔥 Thermal Vision</SelectItem>
+                <SelectItem value="spectral">🎨 Full Spectrum</SelectItem>
+                <SelectItem value="bioluminescent">🌟 Bioluminescent</SelectItem>
+                <SelectItem value="crystalline">💎 Crystal Prisms</SelectItem>
+                <SelectItem value="golden">✨ Royal Gold</SelectItem>
+                <SelectItem value="temple">🏛️ Temple Sacred</SelectItem>
+                <SelectItem value="festival">🎊 Festival Bright</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -276,9 +340,9 @@ export function Dome360Planner() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="fisheye">Fisheye Tunnel</SelectItem>
-                    <SelectItem value="equidistant">Equidistant Tunnel</SelectItem>
-                    <SelectItem value="stereographic">Little Planet Effect</SelectItem>
+                    <SelectItem value="fisheye">🐟 Fisheye Tunnel</SelectItem>
+                    <SelectItem value="equidistant">📐 Equidistant Tunnel</SelectItem>
+                    <SelectItem value="stereographic">🌍 Little Planet Effect</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -312,8 +376,8 @@ export function Dome360Planner() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="equirectangular">Equirectangular</SelectItem>
-                      <SelectItem value="stereographic">Stereographic</SelectItem>
+                      <SelectItem value="equirectangular">📐 Equirectangular</SelectItem>
+                      <SelectItem value="stereographic">🌍 Stereographic</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
