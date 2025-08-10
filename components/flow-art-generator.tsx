@@ -50,8 +50,8 @@ interface GeneratedArtResponse {
 
 export default function FlowArtGenerator() {
   // Core params
-  const [dataset, setDataset] = useState("vietnamese")
-  const [scenario, setScenario] = useState("temple-of-literature")
+  const [dataset, setDataset] = useState("indonesian")
+  const [scenario, setScenario] = useState("garuda")
   const [colorScheme, setColorScheme] = useState("metallic")
 
   const [seed, setSeed] = useState(1234)
@@ -93,7 +93,6 @@ export default function FlowArtGenerator() {
   const [panoramaImage, setPanoramaImage] = useState<string | null>(null)
 
   const datasetOptions = [
-    { value: "vietnamese", label: "Vietnamese Heritage" },
     { value: "indonesian", label: "Indonesian Heritage" },
     { value: "thailand", label: "Thailand" },
     { value: "spirals", label: "Spirals" },
@@ -111,28 +110,6 @@ export default function FlowArtGenerator() {
     { value: "escher", label: "Escher" },
     { value: "8bit", label: "8bit" },
     { value: "bosch", label: "Bosch" },
-  ]
-
-  const vietnameseScenarios = [
-    { value: "pure", label: "Pure Mathematical" },
-    { value: "temple-of-literature", label: "🏛️ Temple of Literature - First University" },
-    { value: "jade-emperor-pagoda", label: "🏮 Jade Emperor Pagoda - Taoist Temple" },
-    { value: "imperial-city-hue", label: "👑 Imperial City Hue - Royal Palace" },
-    { value: "tomb-of-khai-dinh", label: "⚱️ Tomb of Khai Dinh - Imperial Mausoleum" },
-    { value: "sapa-terraces", label: "🌾 Sapa Rice Terraces - Mountain Agriculture" },
-    { value: "mekong-delta", label: "🌊 Mekong Delta - River Life" },
-    { value: "tet-celebration", label: "🎊 Tet Celebration - Lunar New Year" },
-    { value: "mid-autumn-festival", label: "🏮 Mid-Autumn Festival - Lantern Night" },
-    { value: "water-puppetry", label: "🎭 Water Puppetry - Traditional Theater" },
-    { value: "lacquerware-craft", label: "🎨 Lacquerware Craft - Traditional Art" },
-    { value: "bach-dang-victory", label: "⚔️ Bach Dang Victory - Naval Battle" },
-    { value: "trung-sisters-rebellion", label: "🛡️ Trung Sisters - Female Warriors" },
-    { value: "halong-bay", label: "🏔️ Ha Long Bay - Limestone Karsts" },
-    { value: "phong-nha-caves", label: "🕳️ Phong Nha Caves - Underground Wonder" },
-    { value: "floating-market-mekong", label: "🛶 Floating Market - River Commerce" },
-    { value: "pho-street-culture", label: "🍜 Pho Street Culture - Culinary Heritage" },
-    { value: "ca-tru-performance", label: "🎵 Ca Tru Performance - Ancient Music" },
-    { value: "quan-ho-folk-songs", label: "🎶 Quan Ho Folk Songs - Traditional Singing" },
   ]
 
   const indonesianScenarios = [
@@ -181,7 +158,6 @@ export default function FlowArtGenerator() {
 
   // Get current scenarios based on dataset
   const getCurrentScenarios = () => {
-    if (dataset === "vietnamese") return vietnameseScenarios
     if (dataset === "indonesian") return indonesianScenarios
     if (dataset === "thailand") return thailandScenarios
     return [{ value: "cosmic", label: "Cosmic" }]
@@ -210,8 +186,7 @@ export default function FlowArtGenerator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           dataset,
-          scenario:
-            dataset === "indonesian" || dataset === "thailand" || dataset === "vietnamese" ? scenario : undefined,
+          scenario: dataset === "indonesian" || dataset === "thailand" ? scenario : undefined,
           colorScheme,
           customPrompt: editEnabled && editedPrompt.trim() ? editedPrompt.trim() : undefined,
         }),
@@ -258,8 +233,7 @@ export default function FlowArtGenerator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           dataset,
-          scenario:
-            dataset === "indonesian" || dataset === "thailand" || dataset === "vietnamese" ? scenario : undefined,
+          scenario: dataset === "indonesian" || dataset === "thailand" ? scenario : undefined,
           colorScheme,
           seed,
           numSamples,
@@ -395,8 +369,8 @@ export default function FlowArtGenerator() {
                 </Select>
               </div>
 
-              {/* Scenario (for Vietnamese, Indonesian and Thailand datasets) */}
-              {dataset === "vietnamese" || dataset === "indonesian" || dataset === "thailand" ? (
+              {/* Scenario (for Indonesian and Thailand datasets) */}
+              {dataset === "indonesian" || dataset === "thailand" ? (
                 <div className="space-y-2">
                   <Label className="text-slate-300">Scenario</Label>
                   <Select value={scenario} onValueChange={setScenario}>
@@ -412,19 +386,17 @@ export default function FlowArtGenerator() {
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-slate-400">
-                    {dataset === "vietnamese"
-                      ? "God-level detailed scenarios for Vietnamese heritage, temples, and cultural traditions."
-                      : dataset === "indonesian"
-                        ? "Scenarios provide curated, rich prompts for Indonesian heritage."
-                        : "God-level detailed scenarios for Thai culture, temples, and traditions."}
+                    {dataset === "indonesian"
+                      ? "Scenarios provide curated, rich prompts for Indonesian heritage."
+                      : "God-level detailed scenarios for Thai culture, temples, and traditions."}
                   </p>
                 </div>
               ) : (
                 <div className="space-y-1.5">
                   <Label className="text-slate-300">Scenario</Label>
                   <p className="text-xs text-slate-400">
-                    Scenarios are available for Vietnamese Heritage, Indonesian Heritage and Thailand datasets. Choose
-                    one to enable detailed cultural scenarios.
+                    Scenarios are available for Indonesian Heritage and Thailand datasets. Choose one to enable detailed
+                    cultural scenarios.
                   </p>
                 </div>
               )}

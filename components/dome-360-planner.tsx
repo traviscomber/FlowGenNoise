@@ -34,8 +34,8 @@ interface DomeParams {
 export function Dome360Planner() {
   const { toast } = useToast()
   const [params, setParams] = useState<DomeParams>({
-    dataset: "vietnamese",
-    scenario: "temple-of-literature",
+    dataset: "thailand",
+    scenario: "garuda",
     colorScheme: "cosmic",
     seed: Math.floor(Math.random() * 10000),
     numSamples: 4000,
@@ -80,29 +80,7 @@ export function Dome360Planner() {
   // Get scenarios based on selected dataset
   const getScenarios = (dataset?: string) => {
     const currentDataset = dataset || params.dataset
-    if (currentDataset === "vietnamese") {
-      return [
-        { value: "pure", label: "Pure Mathematical" },
-        { value: "temple-of-literature", label: "🏛️ Temple of Literature - First University" },
-        { value: "jade-emperor-pagoda", label: "🏮 Jade Emperor Pagoda - Taoist Temple" },
-        { value: "imperial-city-hue", label: "👑 Imperial City Hue - Royal Palace" },
-        { value: "tomb-of-khai-dinh", label: "⚱️ Tomb of Khai Dinh - Imperial Mausoleum" },
-        { value: "sapa-terraces", label: "🌾 Sapa Rice Terraces - Mountain Agriculture" },
-        { value: "mekong-delta", label: "🌊 Mekong Delta - River Life" },
-        { value: "tet-celebration", label: "🎊 Tet Celebration - Lunar New Year" },
-        { value: "mid-autumn-festival", label: "🏮 Mid-Autumn Festival - Lantern Night" },
-        { value: "water-puppetry", label: "🎭 Water Puppetry - Traditional Theater" },
-        { value: "lacquerware-craft", label: "🎨 Lacquerware Craft - Traditional Art" },
-        { value: "bach-dang-victory", label: "⚔️ Bach Dang Victory - Naval Battle" },
-        { value: "trung-sisters-rebellion", label: "🛡️ Trung Sisters - Female Warriors" },
-        { value: "halong-bay", label: "🏔️ Ha Long Bay - Limestone Karsts" },
-        { value: "phong-nha-caves", label: "🕳️ Phong Nha Caves - Underground Wonder" },
-        { value: "floating-market-mekong", label: "🛶 Floating Market - River Commerce" },
-        { value: "pho-street-culture", label: "🍜 Pho Street Culture - Culinary Heritage" },
-        { value: "ca-tru-performance", label: "🎵 Ca Tru Performance - Ancient Music" },
-        { value: "quan-ho-folk-songs", label: "🎶 Quan Ho Folk Songs - Traditional Singing" },
-      ]
-    } else if (currentDataset === "thailand") {
+    if (currentDataset === "thailand") {
       return [
         { value: "pure", label: "Pure Mathematical" },
         { value: "garuda", label: "🦅 Garuda - Divine Eagle" },
@@ -271,7 +249,6 @@ export function Dome360Planner() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="vietnamese">🇻🇳 Vietnamese Heritage</SelectItem>
                   <SelectItem value="thailand">🇹🇭 Thailand - Gods & Ceremonies</SelectItem>
                   <SelectItem value="indonesian">🇮🇩 Indonesian Heritage</SelectItem>
                   <SelectItem value="spirals">🌀 Cosmic Spirals</SelectItem>
