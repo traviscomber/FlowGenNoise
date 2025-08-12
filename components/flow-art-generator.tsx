@@ -26,7 +26,7 @@ import {
   Mountain,
   Pencil,
   Eye,
-  AlertCircle,
+  Zap,
 } from "lucide-react"
 
 interface GeneratedArtResponse {
@@ -38,6 +38,7 @@ interface GeneratedArtResponse {
   promptLength?: number
   provider?: string
   model?: string
+  quality?: string
   estimatedFileSize?: string
   generationDetails?: {
     mainImage: string
@@ -113,6 +114,28 @@ export default function FlowArtGenerator() {
     { value: "bosch", label: "Bosch" },
   ]
 
+  const vietnameseScenarios = [
+    { value: "pure", label: "Pure Mathematical" },
+    { value: "temple-of-literature", label: "🏛️ Temple of Literature - First University" },
+    { value: "jade-emperor-pagoda", label: "🏮 Jade Emperor Pagoda - Taoist Temple" },
+    { value: "imperial-city-hue", label: "👑 Imperial City Hue - Royal Palace" },
+    { value: "tomb-of-khai-dinh", label: "⚱️ Tomb of Khai Dinh - Imperial Mausoleum" },
+    { value: "sapa-terraces", label: "🌾 Sapa Rice Terraces - Mountain Agriculture" },
+    { value: "mekong-delta", label: "🌊 Mekong Delta - River Life" },
+    { value: "tet-celebration", label: "🎊 Tet Celebration - Lunar New Year" },
+    { value: "mid-autumn-festival", label: "🏮 Mid-Autumn Festival - Lantern Night" },
+    { value: "water-puppetry", label: "🎭 Water Puppetry - Traditional Theater" },
+    { value: "lacquerware-craft", label: "🎨 Lacquerware Craft - Traditional Art" },
+    { value: "bach-dang-victory", label: "⚔️ Bach Dang Victory - Naval Battle" },
+    { value: "trung-sisters-rebellion", label: "🛡️ Trung Sisters - Female Warriors" },
+    { value: "halong-bay", label: "🏔️ Ha Long Bay - Limestone Karsts" },
+    { value: "phong-nha-caves", label: "🕳️ Phong Nha Caves - Underground Wonder" },
+    { value: "floating-market-mekong", label: "🛶 Floating Market - River Commerce" },
+    { value: "pho-street-culture", label: "🍜 Pho Street Culture - Culinary Heritage" },
+    { value: "ca-tru-performance", label: "🎵 Ca Tru Performance - Ancient Music" },
+    { value: "quan-ho-folk-songs", label: "🎶 Quan Ho Folk Songs - Traditional Singing" },
+  ]
+
   const indonesianScenarios = [
     { value: "pure", label: "Pure Mathematical" },
     { value: "garuda", label: "Garuda Wisnu Kencana" },
@@ -155,28 +178,6 @@ export default function FlowArtGenerator() {
     { value: "classical-dance", label: "💃 Thai Classical Dance" },
     { value: "golden-triangle", label: "🌊 Golden Triangle Mekong" },
     { value: "floating-markets", label: "🛶 Traditional Floating Markets" },
-  ]
-
-  const vietnameseScenarios = [
-    { value: "pure", label: "Pure Mathematical" },
-    { value: "temple-of-literature", label: "🏛️ Temple of Literature - First University" },
-    { value: "jade-emperor-pagoda", label: "🏮 Jade Emperor Pagoda - Taoist Temple" },
-    { value: "imperial-city-hue", label: "👑 Imperial City Hue - Royal Palace" },
-    { value: "tomb-of-khai-dinh", label: "⚱️ Tomb of Khai Dinh - Imperial Mausoleum" },
-    { value: "sapa-terraces", label: "🌾 Sapa Rice Terraces - Mountain Agriculture" },
-    { value: "mekong-delta", label: "🌊 Mekong Delta - River Life" },
-    { value: "tet-celebration", label: "🎊 Tet Celebration - Lunar New Year" },
-    { value: "mid-autumn-festival", label: "🏮 Mid-Autumn Festival - Lantern Night" },
-    { value: "water-puppetry", label: "🎭 Water Puppetry - Traditional Theater" },
-    { value: "lacquerware-craft", label: "🎨 Lacquerware Craft - Traditional Art" },
-    { value: "bach-dang-victory", label: "⚔️ Bach Dang Victory - Naval Battle" },
-    { value: "trung-sisters-rebellion", label: "🛡️ Trung Sisters - Female Warriors" },
-    { value: "halong-bay", label: "🏔️ Ha Long Bay - Limestone Karsts" },
-    { value: "phong-nha-caves", label: "🕳️ Phong Nha Caves - Underground Wonder" },
-    { value: "floating-market-mekong", label: "🛶 Floating Market - River Commerce" },
-    { value: "pho-street-culture", label: "🍜 Pho Street Culture - Culinary Heritage" },
-    { value: "ca-tru-performance", label: "🎵 Ca Tru Performance - Ancient Music" },
-    { value: "quan-ho-folk-songs", label: "🎶 Quan Ho Folk Songs - Traditional Singing" },
   ]
 
   // Get current scenarios based on dataset
@@ -267,7 +268,7 @@ export default function FlowArtGenerator() {
           timeStep,
           customPrompt: editEnabled && editedPrompt.trim() ? editedPrompt.trim() : undefined,
           domeDiameter: domeProjection ? domeDiameter : undefined,
-          domeResolution: domeProjection ? domeResolution : undefined,
+          domeResolution: domeResolution ? domeResolution : undefined,
           projectionType: domeProjection ? projectionType : undefined,
           panoramaResolution: panoramic360 ? panoramaResolution : undefined,
           panoramaFormat,
@@ -291,8 +292,8 @@ export default function FlowArtGenerator() {
       setActiveTab("regular")
       setProgress(100)
       toast({
-        title: "Art Generated",
-        description: "Regular, Dome, and 360° variants are ready.",
+        title: "Professional Art Generated",
+        description: `${data.quality || "HD"} quality images ready for download.`,
       })
     } catch (e: any) {
       console.error(e)
@@ -359,11 +360,12 @@ export default function FlowArtGenerator() {
               <Sparkles className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              FlowSketch Art Generator
+              FlowSketch Professional Art Generator
             </h1>
           </div>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-            Generate mathematical visualizations and AI-powered artwork including Dome and 360° panoramic variations.
+            Generate professional-grade mathematical visualizations and AI-powered artwork with seamless 360° panoramic
+            wrapping and dome projections.
           </p>
         </div>
 
@@ -373,9 +375,11 @@ export default function FlowArtGenerator() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-slate-100">
                 <Settings className="h-5 w-5" />
-                Settings
+                Professional Settings
               </CardTitle>
-              <CardDescription className="text-slate-400">Configure parameters and projections</CardDescription>
+              <CardDescription className="text-slate-400">
+                Configure parameters for professional-grade output
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Dataset */}
@@ -395,10 +399,10 @@ export default function FlowArtGenerator() {
                 </Select>
               </div>
 
-              {/* Scenario (for Indonesian and Thailand datasets) */}
+              {/* Scenario (for Vietnamese, Indonesian and Thailand datasets) */}
               {dataset === "vietnamese" || dataset === "indonesian" || dataset === "thailand" ? (
                 <div className="space-y-2">
-                  <Label className="text-slate-300">Scenario</Label>
+                  <Label className="text-slate-300">Cultural Scenario</Label>
                   <Select value={scenario} onValueChange={setScenario}>
                     <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
                       <SelectValue placeholder="Select a scenario" />
@@ -413,25 +417,25 @@ export default function FlowArtGenerator() {
                   </Select>
                   <p className="text-xs text-slate-400">
                     {dataset === "vietnamese"
-                      ? "God-level detailed scenarios for Vietnamese heritage, temples, and cultural traditions."
+                      ? "Professional-grade detailed scenarios for Vietnamese heritage, temples, and cultural traditions."
                       : dataset === "indonesian"
-                        ? "Scenarios provide curated, rich prompts for Indonesian heritage."
-                        : "God-level detailed scenarios for Thai culture, temples, and traditions."}
+                        ? "Authentic scenarios for Indonesian cultural heritage with professional quality."
+                        : "Professional Thai cultural scenarios with authentic traditional elements."}
                   </p>
                 </div>
               ) : (
                 <div className="space-y-1.5">
-                  <Label className="text-slate-300">Scenario</Label>
+                  <Label className="text-slate-300">Cultural Scenario</Label>
                   <p className="text-xs text-slate-400">
-                    Scenarios are available for Vietnamese Heritage, Indonesian Heritage and Thailand datasets. Choose
-                    one to enable detailed cultural scenarios.
+                    Cultural scenarios are available for Vietnamese Heritage, Indonesian Heritage and Thailand datasets.
+                    Choose one to enable detailed professional cultural scenarios.
                   </p>
                 </div>
               )}
 
               {/* Color Scheme */}
               <div className="space-y-2">
-                <Label className="text-slate-300">Color Scheme</Label>
+                <Label className="text-slate-300">Professional Color Palette</Label>
                 <Select value={colorScheme} onValueChange={setColorScheme}>
                   <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
                     <SelectValue />
@@ -528,14 +532,14 @@ export default function FlowArtGenerator() {
                 </div>
               </div>
 
-              {/* 360° */}
+              {/* 360° Professional Panorama */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Switch checked={panoramic360} onCheckedChange={setPanoramic360} />
                     <Label className="text-slate-300 flex items-center gap-2">
                       <Globe className="h-4 w-4" />
-                      360° Panorama
+                      Professional 360° Panorama
                     </Label>
                   </div>
                   <Button
@@ -552,8 +556,8 @@ export default function FlowArtGenerator() {
                 {showExamples && (
                   <div className="space-y-3 p-4 bg-slate-900 rounded-lg border border-slate-700">
                     <div className="flex items-center gap-2 mb-3">
-                      <Globe className="h-4 w-4 text-purple-400" />
-                      <p className="text-sm font-medium text-slate-300">360° Equirectangular Examples</p>
+                      <Zap className="h-4 w-4 text-purple-400" />
+                      <p className="text-sm font-medium text-slate-300">Professional Seamless Wrapping</p>
                     </div>
                     <div className="grid grid-cols-1 gap-4">
                       <div className="space-y-2">
@@ -563,12 +567,14 @@ export default function FlowArtGenerator() {
                             alt="360° Test Pattern"
                             className="w-full h-20 object-cover rounded border border-slate-600"
                           />
-                          <Badge className="absolute top-1 left-1 bg-blue-600 text-xs">Technical Pattern</Badge>
+                          <Badge className="absolute top-1 left-1 bg-blue-600 text-xs">Seamless Pattern</Badge>
                         </div>
                         <p className="text-xs text-slate-400">
-                          <strong>ORION360 Calibration Pattern:</strong> Shows proper equirectangular format with{" "}
-                          <span className="text-yellow-400 font-semibold">2:1 aspect ratio (WIDTH = 2 × HEIGHT)</span>.
-                          Notice how patterns repeat horizontally and stretch toward top/bottom edges.
+                          <strong>Professional Equirectangular:</strong> Notice how the pattern wraps seamlessly from
+                          right edge to left edge.{" "}
+                          <span className="text-green-400 font-semibold">
+                            No visible seams when wrapped around a sphere.
+                          </span>
                         </p>
                       </div>
                       <div className="space-y-2">
@@ -578,22 +584,21 @@ export default function FlowArtGenerator() {
                             alt="360° Aqueduct Panorama"
                             className="w-full h-20 object-cover rounded border border-slate-600"
                           />
-                          <Badge className="absolute top-1 left-1 bg-green-600 text-xs">Natural Scene</Badge>
+                          <Badge className="absolute top-1 left-1 bg-green-600 text-xs">VR Ready</Badge>
                         </div>
                         <p className="text-xs text-slate-400">
-                          <strong>Roman Aqueduct Panorama:</strong> Real-world example with characteristic
-                          equirectangular distortion. Sky occupies upper half with horizontal stretching, ground curves
-                          at edges.
+                          <strong>Professional VR Panorama:</strong> Seamless horizontal wrapping with proper
+                          equirectangular distortion. Content flows continuously across the wrap point.
                         </p>
                       </div>
                     </div>
                     <div className="pt-2 border-t border-slate-700">
                       <div className="flex items-start gap-2">
-                        <AlertCircle className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                        <Zap className="h-4 w-4 text-purple-500 mt-0.5 flex-shrink-0" />
                         <p className="text-xs text-slate-500">
-                          <strong className="text-amber-400">Critical:</strong> Equirectangular format requires{" "}
-                          <span className="font-mono bg-slate-800 px-1 rounded">WIDTH = 2 × HEIGHT</span> (e.g.,
-                          4096×2048, 8192×4096) for proper 360° sphere mapping.
+                          <strong className="text-purple-400">Professional Mode:</strong> Our advanced prompting ensures{" "}
+                          <span className="font-mono bg-slate-800 px-1 rounded">seamless horizontal wrapping</span> with
+                          no visible seams when edges connect in VR viewers.
                         </p>
                       </div>
                     </div>
@@ -608,9 +613,9 @@ export default function FlowArtGenerator() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-600">
-                          <SelectItem value="4K">4K</SelectItem>
-                          <SelectItem value="8K">8K</SelectItem>
-                          <SelectItem value="16K">16K</SelectItem>
+                          <SelectItem value="4K">4K Professional</SelectItem>
+                          <SelectItem value="8K">8K Ultra</SelectItem>
+                          <SelectItem value="16K">16K Cinema</SelectItem>
                         </SelectContent>
                       </Select>
                       <Select value={panoramaFormat} onValueChange={(v: any) => setPanoramaFormat(v)}>
@@ -619,7 +624,7 @@ export default function FlowArtGenerator() {
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-600">
                           <SelectItem value="equirectangular">
-                            Equirectangular <span className="text-amber-400">(2:1)</span>
+                            Equirectangular <span className="text-green-400">(Seamless)</span>
                           </SelectItem>
                           <SelectItem value="stereographic">Stereographic</SelectItem>
                           <SelectItem value="cubemap">Cubemap</SelectItem>
@@ -629,19 +634,20 @@ export default function FlowArtGenerator() {
                     </div>
 
                     {panoramaFormat === "equirectangular" && (
-                      <div className="p-2 bg-amber-500/10 border border-amber-500/20 rounded text-xs text-amber-300">
+                      <div className="p-3 bg-green-500/10 border border-green-500/20 rounded text-xs text-green-300">
                         <div className="flex items-center gap-1 mb-1">
-                          <AlertCircle className="h-3 w-3" />
-                          <span className="font-semibold">Aspect Ratio Requirement</span>
+                          <Zap className="h-3 w-3" />
+                          <span className="font-semibold">Professional Seamless Wrapping</span>
                         </div>
-                        Equirectangular format enforces <span className="font-mono">WIDTH = 2 × HEIGHT</span> for proper
-                        360° sphere mapping (e.g., 4096×2048 pixels).
+                        Advanced prompting ensures perfect horizontal continuity. Left and right edges connect
+                        seamlessly for professional VR applications. Output: 1792×1024 (1.75:1 - closest to ideal 2:1
+                        with DALL-E 3).
                       </div>
                     )}
 
                     {panoramaFormat === "stereographic" && (
                       <div className="grid grid-cols-1">
-                        <Label className="text-slate-300">Stereographic Perspective</Label>
+                        <Label className="text-slate-300">Stereographic Style</Label>
                         <Select
                           value={stereographicPerspective}
                           onValueChange={(v: any) => setStereographicPerspective(v)}
@@ -651,7 +657,7 @@ export default function FlowArtGenerator() {
                           </SelectTrigger>
                           <SelectContent className="bg-slate-700 border-slate-600">
                             <SelectItem value="little-planet">Little Planet</SelectItem>
-                            <SelectItem value="tunnel">Tunnel</SelectItem>
+                            <SelectItem value="tunnel">Tunnel Effect</SelectItem>
                             <SelectItem value="fisheye">Fisheye</SelectItem>
                           </SelectContent>
                         </Select>
@@ -661,13 +667,13 @@ export default function FlowArtGenerator() {
                 )}
               </div>
 
-              {/* Dome */}
+              {/* Professional Dome Projection */}
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Switch checked={domeProjection} onCheckedChange={setDomeProjection} />
                   <Label className="text-slate-300 flex items-center gap-2">
                     <Building className="h-4 w-4" />
-                    Dome Projection
+                    Professional Dome Projection
                   </Label>
                 </div>
                 {domeProjection && (
@@ -684,9 +690,9 @@ export default function FlowArtGenerator() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-slate-700 border-slate-600">
-                        <SelectItem value="2K">2K</SelectItem>
-                        <SelectItem value="4K">4K</SelectItem>
-                        <SelectItem value="8K">8K</SelectItem>
+                        <SelectItem value="2K">2K Standard</SelectItem>
+                        <SelectItem value="4K">4K Professional</SelectItem>
+                        <SelectItem value="8K">8K Cinema</SelectItem>
                       </SelectContent>
                     </Select>
                     <div className="col-span-2">
@@ -695,7 +701,7 @@ export default function FlowArtGenerator() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-slate-700 border-slate-600">
-                          <SelectItem value="fisheye">Fisheye</SelectItem>
+                          <SelectItem value="fisheye">Fisheye Professional</SelectItem>
                           <SelectItem value="equidistant">Equidistant</SelectItem>
                           <SelectItem value="stereographic">Stereographic</SelectItem>
                         </SelectContent>
@@ -705,12 +711,12 @@ export default function FlowArtGenerator() {
                 )}
               </div>
 
-              {/* Final Prompt (last step before Generate) */}
+              {/* Professional Prompt Editor */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label className="text-slate-300 flex items-center gap-2">
                     <Pencil className="h-4 w-4" />
-                    Final Prompt
+                    Professional Prompt
                   </Label>
                   <div className="flex items-center gap-2">
                     <Button
@@ -743,15 +749,16 @@ export default function FlowArtGenerator() {
                   value={editEnabled ? editedPrompt : promptPreview}
                   onChange={(e) => (editEnabled ? setEditedPrompt(e.target.value) : undefined)}
                   className="bg-slate-700 border-slate-600 text-slate-100 min-h-[120px]"
-                  placeholder="Prompt preview will appear here..."
+                  placeholder="Professional prompt preview will appear here..."
                   readOnly={!editEnabled}
                 />
                 <p className="text-xs text-slate-400">
-                  This is the exact prompt sent to the AI. Toggle "Edit" to customize it before generating.
+                  Professional-grade prompt with seamless wrapping instructions. Toggle "Edit" to customize before
+                  generating.
                 </p>
               </div>
 
-              {/* Generate */}
+              {/* Generate Professional */}
               <Button
                 onClick={generate}
                 disabled={isGenerating}
@@ -760,12 +767,12 @@ export default function FlowArtGenerator() {
                 {isGenerating ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Generating...
+                    Generating Professional Art...
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Generate Art
+                    <Zap className="h-4 w-4 mr-2" />
+                    Generate Professional Art
                   </>
                 )}
               </Button>
@@ -773,7 +780,9 @@ export default function FlowArtGenerator() {
               {isGenerating && (
                 <div className="space-y-2">
                   <Progress value={progress} className="w-full" />
-                  <p className="text-xs text-slate-400 text-center">{progress}% complete</p>
+                  <p className="text-xs text-slate-400 text-center">
+                    {progress}% complete - Professional quality generation
+                  </p>
                 </div>
               )}
 
@@ -783,16 +792,16 @@ export default function FlowArtGenerator() {
             </CardContent>
           </Card>
 
-          {/* Preview */}
+          {/* Professional Preview */}
           <div className="lg:col-span-2">
             <Card className="bg-slate-800 border-slate-700">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-slate-100">
                   <ImageIcon className="h-5 w-5" />
-                  Preview
+                  Professional Preview
                 </CardTitle>
                 <CardDescription className="text-slate-400">
-                  Switch between Regular, Dome, and 360° views
+                  Professional-grade output with seamless wrapping and dome projections
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -801,7 +810,7 @@ export default function FlowArtGenerator() {
                     <Tabs value={activeTab} onValueChange={(v: any) => setActiveTab(v)} className="w-full">
                       <TabsList className="grid w-full grid-cols-3 bg-slate-700">
                         <TabsTrigger value="regular" className="data-[state=active]:bg-purple-600">
-                          Regular
+                          Professional
                         </TabsTrigger>
                         <TabsTrigger
                           value="dome"
@@ -809,7 +818,7 @@ export default function FlowArtGenerator() {
                           className="data-[state=active]:bg-purple-600 disabled:opacity-50"
                         >
                           <Mountain className="h-4 w-4 mr-2" />
-                          Dome
+                          Dome Pro
                         </TabsTrigger>
                         <TabsTrigger
                           value="panorama"
@@ -817,17 +826,21 @@ export default function FlowArtGenerator() {
                           className="data-[state=active]:bg-purple-600 disabled:opacity-50"
                         >
                           <Globe className="h-4 w-4 mr-2" />
-                          360°
+                          360° Pro
                         </TabsTrigger>
                       </TabsList>
 
                       <TabsContent value="regular" className="mt-4">
                         <div className="aspect-square bg-slate-900 rounded-lg overflow-hidden">
-                          <img src={image || "/placeholder.svg"} alt="Regular" className="w-full h-full object-cover" />
+                          <img
+                            src={image || "/placeholder.svg"}
+                            alt="Professional"
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                         <div className="mt-2 text-center">
                           <Badge variant="outline" className="border-slate-600 text-slate-300">
-                            Regular View
+                            Professional HD Quality
                           </Badge>
                         </div>
                       </TabsContent>
@@ -838,13 +851,13 @@ export default function FlowArtGenerator() {
                             <div className="aspect-square bg-slate-900 rounded-lg overflow-hidden">
                               <img
                                 src={domeImage || "/placeholder.svg"}
-                                alt="Dome"
+                                alt="Professional Dome"
                                 className="w-full h-full object-cover"
                               />
                             </div>
                             <div className="mt-2 text-center">
                               <Badge variant="outline" className="border-slate-600 text-slate-300">
-                                Dome Projection
+                                Professional Dome Projection
                               </Badge>
                             </div>
                           </>
@@ -856,12 +869,15 @@ export default function FlowArtGenerator() {
                           <>
                             {panoramaFormat === "equirectangular" ? (
                               <div className="w-full">
-                                <AspectRatio ratio={2} className="bg-slate-900 rounded-lg overflow-hidden">
+                                <AspectRatio ratio={1.75} className="bg-slate-900 rounded-lg overflow-hidden">
                                   <img
                                     src={panoramaImage || "/placeholder.svg"}
-                                    alt="360° Equirectangular Panorama"
-                                    className="w-full h-full object-contain"
-                                    style={{ objectFit: "contain" }}
+                                    alt="Professional 360° Seamless Panorama"
+                                    className="w-full h-full object-cover"
+                                    style={{
+                                      objectFit: "cover",
+                                      objectPosition: "center",
+                                    }}
                                   />
                                 </AspectRatio>
                               </div>
@@ -869,18 +885,18 @@ export default function FlowArtGenerator() {
                               <div className="aspect-square bg-slate-900 rounded-lg overflow-hidden">
                                 <img
                                   src={panoramaImage || "/placeholder.svg"}
-                                  alt={`360° ${panoramaFormat}`}
+                                  alt={`Professional 360° ${panoramaFormat}`}
                                   className="w-full h-full object-cover"
                                 />
                               </div>
                             )}
                             <div className="mt-2 text-center space-y-1">
                               <Badge variant="outline" className="border-slate-600 text-slate-300">
-                                360° Panorama{" "}
+                                Professional 360° Panorama{" "}
                                 {panoramaFormat === "stereographic"
                                   ? `• ${stereographicPerspective}`
                                   : panoramaFormat === "equirectangular"
-                                    ? "• 2:1 Widescreen"
+                                    ? "• Seamless Wrapping"
                                     : ""}
                               </Badge>
                             </div>
@@ -893,29 +909,29 @@ export default function FlowArtGenerator() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                       <Button
-                        onClick={() => download(image, `flowsketch-regular-${Date.now()}.png`)}
+                        onClick={() => download(image, `flowsketch-professional-${Date.now()}.png`)}
                         className="bg-green-600 hover:bg-green-700"
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        Download Regular
+                        Download Professional
                       </Button>
                       <Button
                         variant="outline"
-                        onClick={() => download(domeImage, `flowsketch-dome-${Date.now()}.png`)}
+                        onClick={() => download(domeImage, `flowsketch-dome-pro-${Date.now()}.png`)}
                         disabled={!domeImage}
                         className="border-slate-600"
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        Dome
+                        Dome Pro
                       </Button>
                       <Button
                         variant="outline"
-                        onClick={() => download(panoramaImage, `flowsketch-360-${Date.now()}.png`)}
+                        onClick={() => download(panoramaImage, `flowsketch-360-pro-${Date.now()}.png`)}
                         disabled={!panoramaImage}
                         className="border-slate-600"
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        360°
+                        360° Pro
                       </Button>
                     </div>
                   </div>
@@ -923,7 +939,8 @@ export default function FlowArtGenerator() {
                   <div className="aspect-square bg-slate-900 rounded-lg flex items-center justify-center">
                     <div className="text-center text-slate-400">
                       <ImageIcon className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                      <p>Generated artwork will appear here</p>
+                      <p>Professional artwork will appear here</p>
+                      <p className="text-xs mt-2">HD quality with seamless wrapping</p>
                     </div>
                   </div>
                 )}

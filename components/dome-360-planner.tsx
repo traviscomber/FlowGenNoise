@@ -272,23 +272,15 @@ export function Dome360Planner() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="vietnamese">🇻🇳 Vietnamese Heritage</SelectItem>
-                  <SelectItem value="indonesian">🇮🇩 Indonesian Heritage</SelectItem>
                   <SelectItem value="thailand">🇹🇭 Thailand - Gods & Ceremonies</SelectItem>
+                  <SelectItem value="indonesian">🇮🇩 Indonesian Heritage</SelectItem>
                   <SelectItem value="spirals">🌀 Cosmic Spirals</SelectItem>
                   <SelectItem value="fractal">🌿 Fractal Trees</SelectItem>
                   <SelectItem value="mandelbrot">🔢 Mandelbrot Zoom</SelectItem>
                   <SelectItem value="julia">🎨 Julia Landscapes</SelectItem>
                   <SelectItem value="lorenz">🦋 Chaos Attractors</SelectItem>
-                  <SelectItem value="hyperbolic">📐 Hyperbolic Geometry</SelectItem>
-                  <SelectItem value="gaussian">📊 Gaussian Distributions</SelectItem>
-                  <SelectItem value="cellular">🔬 Cellular Automata</SelectItem>
                   <SelectItem value="voronoi">💎 Crystal Cells</SelectItem>
-                  <SelectItem value="perlin">🌊 Perlin Noise</SelectItem>
-                  <SelectItem value="diffusion">⚗️ Reaction-Diffusion</SelectItem>
                   <SelectItem value="wave">🌊 Wave Fields</SelectItem>
-                  <SelectItem value="escher">🔄 M.C. Escher Paradoxes</SelectItem>
-                  <SelectItem value="8bit">🎮 8-bit Pixel Art</SelectItem>
-                  <SelectItem value="bosch">🎨 Hieronymus Bosch Surreal</SelectItem>
                 </SelectContent>
               </Select>
             </div>

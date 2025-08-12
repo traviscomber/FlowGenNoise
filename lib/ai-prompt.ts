@@ -1,247 +1,175 @@
-interface PromptParams {
-  dataset: string
-  scenario?: string
-  colorScheme: string
-  customPrompt?: string
-}
-
-export function buildPrompt(
-  dataset: string,
-  scenario?: string,
-  colorScheme = "metallic",
-  customPrompt?: string,
-): string {
-  if (customPrompt?.trim()) {
-    return customPrompt.trim()
+export function buildPrompt(dataset: string, scenario?: string, colorScheme = "plasma", customPrompt?: string): string {
+  // If custom prompt is provided, use it directly
+  if (customPrompt && customPrompt.trim()) {
+    return truncatePrompt(customPrompt.trim())
   }
 
-  // Base mathematical flow dynamics
-  let basePrompt = "Create a stunning mathematical visualization featuring dynamic flow patterns, "
+  // Base professional visualization prompt
+  let basePrompt = `Create a stunning professional-grade mathematical art visualization with intricate patterns and flowing dynamics. `
 
-  // Dataset-specific content
-  if (dataset === "indonesian" && scenario) {
-    basePrompt += getIndonesianScenarioPrompt(scenario)
-  } else if (dataset === "thailand" && scenario) {
-    basePrompt += getThailandScenarioPrompt(scenario)
-  } else if (dataset === "vietnamese" && scenario) {
+  // Add dataset-specific content
+  if (dataset === "vietnamese" && scenario && scenario !== "pure") {
     basePrompt += getVietnameseScenarioPrompt(scenario)
+  } else if (dataset === "indonesian" && scenario && scenario !== "pure") {
+    basePrompt += getIndonesianScenarioPrompt(scenario)
+  } else if (dataset === "thailand" && scenario && scenario !== "pure") {
+    basePrompt += getThailandScenarioPrompt(scenario)
   } else {
+    // Mathematical dataset prompts
     basePrompt += getDatasetPrompt(dataset)
   }
 
-  // Color scheme enhancement
-  basePrompt += ` Rendered in ${getColorSchemeDescription(colorScheme)} color palette with rich gradients and luminous effects.`
+  // Add professional color scheme
+  basePrompt += ` Render in professional ${colorScheme} color palette with rich gradients, luminous effects, and sophisticated color harmony. `
 
-  // Technical specifications for high quality
-  basePrompt +=
-    " Ultra-high resolution, photorealistic rendering, dramatic lighting, intricate mathematical patterns, flowing organic curves, mesmerizing visual complexity."
+  // Add professional technical specifications
+  basePrompt += `PROFESSIONAL QUALITY: Ultra-high detail, photorealistic rendering, dramatic cinematic lighting, masterful composition, commercial-grade visual quality, suitable for professional presentation and immersive experiences.`
 
-  return basePrompt
-}
-
-function getIndonesianScenarioPrompt(scenario: string): string {
-  const scenarios: Record<string, string> = {
-    pure: "pure mathematical flow dynamics with abstract geometric patterns, ",
-    garuda:
-      "the majestic Garuda Wisnu Kencana monument rising through swirling mathematical currents, golden wings spread wide against flowing parametric equations, divine Indonesian mythology merged with computational beauty, ",
-    wayang:
-      "traditional Wayang Kulit shadow puppets dancing through mathematical flow fields, intricate leather cutouts casting dynamic shadows, Javanese storytelling through algorithmic art, ",
-    batik:
-      "traditional Indonesian Batik patterns flowing like liquid mathematics, intricate geometric motifs swirling in organic currents, wax-resist dyeing techniques translated into digital flow dynamics, ",
-    borobudur:
-      "the ancient Borobudur temple emerging from mathematical flow patterns, Buddhist stupas and relief carvings integrated with parametric equations, spiritual geometry in motion, ",
-    javanese:
-      "Javanese cultural elements flowing through mathematical currents, gamelan instruments, traditional architecture, and royal court aesthetics merged with computational art, ",
-    sundanese:
-      "Sundanese highland culture flowing through mathematical patterns, traditional houses, rice terraces, and mountain landscapes integrated with algorithmic beauty, ",
-    batak:
-      "Batak traditional architecture and cultural symbols flowing through mathematical currents, Lake Toba landscapes, traditional houses, and tribal patterns in dynamic motion, ",
-    dayak:
-      "Dayak Borneo culture flowing through mathematical patterns, traditional longhouses, tribal art, and rainforest elements merged with computational dynamics, ",
-    acehnese:
-      "Acehnese Islamic culture flowing through mathematical currents, traditional mosques, calligraphy, and Sufi mysticism integrated with algorithmic art, ",
-    minangkabau:
-      "Minangkabau traditional architecture flowing through mathematical patterns, distinctive curved roofs, matrilineal culture, and Padang highlands in dynamic motion, ",
-    "balinese-tribe":
-      "Balinese Hindu culture flowing through mathematical currents, temple architecture, traditional ceremonies, and spiritual symbolism merged with computational beauty, ",
-    papuans:
-      "Papuan tribal culture flowing through mathematical patterns, traditional art, bird of paradise motifs, and highland landscapes integrated with algorithmic dynamics, ",
-    baduy:
-      "Baduy indigenous culture flowing through mathematical currents, traditional villages, sustainable living, and ancestral wisdom merged with computational art, ",
-    "orang-rimba":
-      "Orang Rimba forest culture flowing through mathematical patterns, jungle life, traditional knowledge, and harmony with nature in dynamic motion, ",
-    "hongana-manyawa":
-      "Hongana Manyawa tribal culture flowing through mathematical currents, Halmahera island life, traditional practices, and indigenous wisdom integrated with algorithmic beauty, ",
-    asmat:
-      "Asmat tribal art flowing through mathematical patterns, traditional wood carvings, ancestor worship, and Papua cultural heritage in dynamic motion, ",
-    komodo:
-      "Komodo dragon legends flowing through mathematical currents, ancient reptilian forms, Flores island landscapes, and mythical creatures merged with computational dynamics, ",
-    dance:
-      "traditional Indonesian dance flowing through mathematical patterns, graceful movements, cultural storytelling, and rhythmic motion integrated with algorithmic art, ",
-    volcanoes:
-      "Indonesian Ring of Fire flowing through mathematical currents, volcanic landscapes, lava flows, and geological forces merged with computational beauty, ",
-    temples:
-      "sacred Indonesian temples flowing through mathematical patterns, ancient architecture, spiritual geometry, and religious symbolism in dynamic motion, ",
-  }
-  return scenarios[scenario] || scenarios.pure
-}
-
-function getThailandScenarioPrompt(scenario: string): string {
-  const scenarios: Record<string, string> = {
-    pure: "pure mathematical flow dynamics with abstract geometric patterns, ",
-    garuda:
-      "the divine Garuda soaring through celestial mathematical currents, massive golden wings spanning the dome of heaven, mythical bird-deity emerging from swirling parametric equations, Thai Buddhist cosmology merged with computational beauty, DOME IMMERSION with the majestic creature filling the entire spherical view, ",
-    naga: "colossal Naga serpent-dragon coiling through underwater temple ruins, massive scaled body undulating through mathematical flow fields, ancient Thai mythology of the water serpent merged with algorithmic art, DOME PROJECTION showing the creature's immense form wrapping around the viewer, ",
-    erawan:
-      "the three-headed white elephant Erawan floating through cloud kingdoms, divine mount of Indra moving through celestial mathematical patterns, Thai Hindu-Buddhist mythology integrated with computational dynamics, DOME EXPERIENCE with the sacred elephant majestically positioned overhead, ",
-    karen:
-      "Karen hill tribe village life flowing through misty mountain mathematical currents, traditional silver jewelry glinting in algorithmic light, bamboo houses and terraced fields merged with computational beauty, DOME IMMERSION in the highland mist and cultural traditions, ",
-    hmong:
-      "Hmong New Year celebrations flowing through mathematical patterns, elaborate traditional costumes swirling in algorithmic motion, shamanic rituals and mountain culture integrated with computational art, DOME PROJECTION of the vibrant festival filling the spherical view, ",
-    ayutthaya:
-      "ancient Ayutthaya historical park flowing through mathematical currents, towering prangs and temple ruins reaching toward the dome zenith, UNESCO World Heritage architecture merged with algorithmic beauty, DOME EXPERIENCE with ancient spires surrounding the viewer, ",
-    sukhothai:
-      "Sukhothai dawn kingdom flowing through mathematical patterns, walking Buddha statues moving through algorithmic light, birthplace of Thai civilization integrated with computational dynamics, DOME IMMERSION in the golden age of Thai culture, ",
-    songkran:
-      "Songkran water festival flowing through mathematical currents, rainbow spray effects filling the dome space, traditional Thai New Year celebrations merged with algorithmic beauty, DOME PROJECTION with water and joy surrounding the viewer in 360 degrees, ",
-    "loy-krathong":
-      "Loy Krathong floating lights ceremony flowing through mathematical patterns, thousands of candlelit krathongs drifting on algorithmic water, full moon festival integrated with computational art, DOME EXPERIENCE with floating lights creating a magical celestial canopy, ",
-    coronation:
-      "Royal Thai coronation ceremony flowing through mathematical currents, elaborate golden regalia and throne room splendor merged with algorithmic beauty, ancient royal traditions integrated with computational dynamics, DOME IMMERSION in the majesty of Thai royalty, ",
-    "wat-pho":
-      "Wat Pho temple flowing through mathematical patterns, the colossal 46-meter golden reclining Buddha statue filling the entire dome view with exquisite detail, serene peaceful facial expression with half-closed eyes in meditation, perfectly proportioned body draped in golden robes with intricate folds and textures, massive head resting on ornate pillow with detailed carved patterns, the famous mother-of-pearl inlay work on the soles of the feet showing 108 auspicious symbols including lotus flowers, stupas, and sacred geometry, golden surface reflecting light with realistic metallic sheen and patina, individual fingers delicately positioned, traditional Thai artistic styling with authentic proportions, surrounded by traditional Thai temple architecture with ornate pillars and decorative elements, DOME PROJECTION with the sacred Buddha's magnificent form positioned majestically overhead in photorealistic detail, ",
-    "wat-arun":
-      "Wat Arun Temple of Dawn flowing through mathematical currents, towering central prang reaching toward the dome zenith at sunrise, Khmer-style architecture integrated with algorithmic beauty, DOME EXPERIENCE with the temple spire piercing the celestial sphere, ",
-    "muay-thai":
-      "ancient Muay Thai martial arts flowing through mathematical patterns, traditional training rituals and sacred mongkol headbands merged with computational dynamics, Thai boxing culture integrated with algorithmic art, DOME IMMERSION in the warrior traditions, ",
-    "classical-dance":
-      "Thai classical dance flowing through mathematical currents, elaborate costumes and graceful movements swirling in algorithmic motion, court dance traditions merged with computational beauty, DOME PROJECTION with dancers filling the spherical performance space, ",
-    "golden-triangle":
-      "Golden Triangle Mekong confluence flowing through mathematical patterns, three countries meeting in algorithmic harmony, river landscapes and cultural diversity integrated with computational art, DOME EXPERIENCE with the mighty Mekong surrounding the viewer, ",
-    "floating-markets":
-      "traditional Thai floating markets flowing through mathematical currents, vendors in boats navigating algorithmic canals, authentic Thai canal life merged with computational dynamics, DOME IMMERSION in the bustling waterway commerce and culture, ",
-  }
-  return scenarios[scenario] || scenarios.pure
+  return truncatePrompt(basePrompt)
 }
 
 function getVietnameseScenarioPrompt(scenario: string): string {
   const scenarios: Record<string, string> = {
-    pure: "pure mathematical flow dynamics with abstract geometric patterns, ",
+    "temple-of-literature": `Majestic Temple of Literature (Văn Miếu) in Hanoi, Vietnam's first university from 1070 AD. Ancient red-lacquered wooden architecture with upturned eaves and traditional Vietnamese roof tiles, ornate dragon carvings on pillars, stone stelae of doctorate holders in peaceful courtyards. Ancient scholars in traditional áo dài studying under centuries-old banyan trees, incense smoke curling through carved wooden screens, traditional Vietnamese lanterns casting warm golden light on stone pathways. Morning mist filtering through traditional gates, lotus ponds reflecting ancient pavilions, Confucian scholarly atmosphere with traditional calligraphy and ancient books. Professional architectural photography quality with authentic Vietnamese cultural details. `,
 
-    // Ancient Temples & Spiritual Sites - ULTRA GOD LEVEL DETAIL
-    "temple-of-literature":
-      "DOME IMMERSION: Van Mieu Temple of Literature flowing through sacred mathematical currents, Vietnam's first university established 1070 AD with magnificent traditional Vietnamese Confucian architecture filling the entire dome sphere, massive traditional curved rooflines with intricate hand-carved dragon motifs and phoenix sculptures reaching majestically across the dome ceiling in photorealistic detail, vermillion red lacquered pillars with golden Vietnamese calligraphy inscriptions glowing with algorithmic light, ancient stone stelae of 82 doctoral graduates mounted on sacred turtle backs (Bia Rua) positioned around the dome perimeter with authentic historical inscriptions, traditional Vietnamese courtyard gardens with pristine lotus ponds reflecting mathematical light patterns, ancient banyan trees with massive sprawling root systems creating natural fractal formations, scholars in traditional white ao dai robes with black silk headbands studying ancient Confucian texts under algorithmic sunlight, traditional Vietnamese incense burners with spiraling smoke creating complex fluid dynamics, authentic Vietnamese architectural elements including upturned eaves, ceramic roof tiles, and wooden lattice screens, traditional Vietnamese scholarly instruments including ink stones, bamboo brushes, and silk scrolls, morning mist rising through the temple courtyards in ethereal mathematical patterns, traditional Vietnamese temple bells creating sound visualization across the dome, DOME PROJECTION with the sacred temple complex's scholarly atmosphere enveloping the viewer in 360-degree educational serenity and ancient wisdom, ",
+    "jade-emperor-pagoda": `Sacred Jade Emperor Pagoda (Chùa Ngọc Hoàng) in Ho Chi Minh City, mystical Taoist temple filled with ethereal incense smoke and spiritual energy. Dark wooden interior with intricate hand-carved dragons, phoenixes, and mythical creatures, statues of Taoist deities surrounded by offerings of tropical fruits and flowers. Thick aromatic incense smoke creating mystical atmosphere, red prayer papers hanging from ceiling, traditional turtle pond with ancient tortoises, ornate altars with golden Buddha statues gleaming through incense haze. Devotees in traditional Vietnamese dress performing rituals, flickering candlelight casting dancing shadows on carved wooden surfaces. Professional documentary photography style capturing authentic Vietnamese spiritual culture. `,
 
-    "jade-emperor-pagoda":
-      "DOME IMMERSION: Jade Emperor Pagoda (Chua Ngoc Hoang) flowing through mystical Taoist mathematical patterns, ancient temple built 1909 filled with supernatural incense smoke creating ethereal algorithmic clouds across the entire dome ceiling, intricate hand-carved wooden dragons and phoenixes with photorealistic scales and feathers, statues of Taoist deities including the Jade Emperor himself positioned majestically around the spherical view with authentic Vietnamese religious artistry, traditional Vietnamese lacquerware altars with mother-of-pearl inlay work glowing with algorithmic light, burning joss sticks creating spiraling smoke fractals in complex fluid dynamics, sacred turtle pond with ancient turtles swimming in mathematical harmony while devotees pray, massive ancient banyan tree roots penetrating the temple structure in organic mathematical curves, traditional Vietnamese red lanterns casting warm algorithmic shadows, statues of Buddhist bodhisattvas and Taoist immortals with intricate robes and serene expressions, traditional Vietnamese incense coils hanging from the ceiling creating geometric patterns, devotees in traditional Vietnamese clothing offering prayers and burning incense, traditional Vietnamese temple architecture with curved rooflines and ceramic decorations, DOME PROJECTION with the pagoda's mystical supernatural atmosphere enveloping the viewer in spiritual 360-degree immersion, ",
+    "imperial-city-hue": `Grand Imperial City of Hue (Đại Nội), former royal capital of Vietnam's Nguyen Dynasty. Magnificent Purple Forbidden City with traditional Vietnamese palace architecture, ornate golden dragons on red-lacquered pillars, royal courtyards with geometric stone patterns. Peaceful lotus-filled moats reflecting ancient pavilions, traditional Vietnamese gardens with carefully pruned bonsai trees and stone bridges, imperial tombs with intricate mosaic work using ceramic and glass. Traditional court musicians in historical costumes, royal guards in authentic uniforms, morning light filtering through ancient courtyards. UNESCO World Heritage grandeur with professional architectural documentation quality. `,
 
-    // Imperial Heritage - Hue Dynasty ULTRA DETAILED
-    "imperial-city-hue":
-      "DOME IMMERSION: Imperial City of Hue (Dai Noi) flowing through royal mathematical currents, UNESCO World Heritage Nguyen Dynasty palace complex (1802-1945) with magnificent traditional Vietnamese imperial architecture filling the dome, the Forbidden Purple City (Tu Cam Thanh) with ornate dragon-decorated rooflines extending majestically across the dome ceiling, traditional Vietnamese imperial colors of gold and vermillion in algorithmic splendor with authentic historical accuracy, intricate ceramic tile work featuring phoenix and dragon motifs with photorealistic detail, royal throne halls including the Thai Hoa Palace with elaborate carved wooden screens and golden decorations, traditional Vietnamese court gardens with geometric lotus ponds and ancient bonsai trees, imperial guards in traditional Nguyen Dynasty uniforms with detailed embroidery and ceremonial weapons, the Perfume River (Song Huong) flowing through the scene in mathematical curves with traditional dragon boats, ancient citadel walls with traditional Vietnamese fortification design and cannon emplacements, traditional Vietnamese imperial ceremonies with court officials in silk robes, royal palanquins with intricate carvings and silk curtains, traditional Vietnamese court music with ancient instruments, morning mist rising from the Perfume River creating ethereal atmospheric effects, DOME PROJECTION with the imperial grandeur of Vietnamese royalty surrounding the viewer in majestic 360-degree historical splendor, ",
+    "tomb-of-khai-dinh": `Elaborate Tomb of Emperor Khai Dinh in Hue, unique fusion of Vietnamese and European architectural styles. Intricate mosaic decorations with porcelain, glass, and ceramic shards creating stunning geometric patterns, ornate dragon staircases with detailed stone carvings, imperial burial chambers with golden decorative elements. Traditional Vietnamese roof architecture combined with French baroque influences, peaceful mountain setting with ancient pine trees, ceremonial pathways leading to the tomb. Mystical atmosphere of royal heritage with professional heritage photography quality capturing the artistic fusion of cultures. `,
 
-    "tomb-of-khai-dinh":
-      "DOME IMMERSION: Tomb of Emperor Khai Dinh (Lang Khai Dinh) flowing through architectural mathematical patterns, fusion of Vietnamese and European styles (completed 1931) in algorithmic harmony across the dome, intricate mosaic work with thousands of ceramic and glass pieces creating complex geometric patterns covering the dome surface, elaborate dragon and phoenix motifs in traditional Vietnamese imperial art with photorealistic scales and feathers, ornate French colonial architectural elements merged seamlessly with Vietnamese design, detailed stone carvings with mathematical precision including lotus flowers and imperial symbols, traditional Vietnamese imperial tomb architecture with multiple ascending levels toward the dome zenith, colorful ceramic decorations reflecting light in prismatic algorithmic effects, the emperor's bronze statue with authentic historical detail, traditional Vietnamese imperial symbolism integrated with computational beauty, elaborate stairways with dragon balustrades, traditional Vietnamese guardian statues with fierce expressions, morning sunlight creating dramatic shadows and highlights, DOME PROJECTION with the tomb's magnificent fusion architecture enveloping the viewer in imperial 360-degree grandeur, ",
+    "sapa-terraces": `Breathtaking Sapa rice terraces in northern Vietnam mountains, carved into hillsides by Hmong and Red Dao ethnic minorities over centuries. Emerald green rice paddies reflecting sky like natural mirrors, traditional wooden stilt houses with thatched roofs, ethnic minority farmers in colorful traditional clothing working the fields. Misty mountain peaks surrounding the terraces, water buffalo grazing in flooded fields, ancient agricultural techniques passed down through generations. Terraced landscapes stretching to the horizon, golden sunrise over mountains, peaceful rural life with traditional farming methods. UNESCO World Heritage landscape with professional nature photography quality. `,
 
-    // Traditional Villages & Rural Life MEGA DETAILED
-    "sapa-terraces":
-      "DOME IMMERSION: Sapa rice terraces flowing through mountainous mathematical currents, spectacular stepped agricultural landscapes carved into misty Hoang Lien Son mountain slopes extending across the entire dome view, Hmong and Red Dao ethnic minority villages with traditional wooden stilt houses positioned around the dome perimeter, morning mist rising through the terraces in complex fluid dynamics creating ethereal atmospheric effects, traditional Vietnamese conical hats (non la) worn by farmers working in the flooded fields with water buffalo, traditional ethnic minority textiles with intricate geometric patterns including indigo-dyed hemp and silver jewelry, mountain peaks including Fansipan (3,143m) shrouded in clouds creating natural mathematical formations, traditional Vietnamese highland agriculture with ancient irrigation systems, ethnic minority women in traditional colorful clothing harvesting rice, traditional Vietnamese mountain villages with wooden houses on stilts, terraced fields reflecting the sky in mathematical mirror patterns, traditional Vietnamese farming tools including wooden plows and bamboo baskets, morning sunrise creating golden algorithmic light effects across the terraces, traditional Vietnamese highland culture with ethnic festivals and ceremonies, DOME PROJECTION with the breathtaking terraced landscape surrounding the viewer in 360-degree mountain agricultural serenity, ",
+    "mekong-delta": `Vibrant Mekong Delta river life with floating markets and traditional Vietnamese boats. Wooden sampans loaded with tropical fruits, vegetables, and flowers, floating vendors in traditional conical hats (nón lá) conducting early morning commerce. Coconut palms lining peaceful waterways, traditional stilt houses over water with fishing nets drying in tropical sun, children playing by riverbanks. Water hyacinth flowers floating on river surface, traditional river life with authentic Vietnamese culture, lush tropical vegetation, golden sunset reflections on water. Professional travel photography capturing authentic Vietnamese river commerce and traditional lifestyle. `,
 
-    "mekong-delta":
-      "DOME IMMERSION: Mekong Delta flowing through aquatic mathematical currents, vast network of rivers and canals creating complex algorithmic waterways across the dome surface, traditional Vietnamese sampan boats with curved bamboo covers navigating the mathematical flow fields, floating markets with vendors selling tropical fruits including dragon fruit, rambutan, and durian from traditional boats, traditional Vietnamese stilt houses on the riverbanks with corrugated metal roofs and wooden structures, coconut palms swaying in algorithmic wind patterns with realistic frond movement, traditional Vietnamese fishing nets and bamboo fish traps creating geometric patterns in the muddy water, rice paddies flooded with water reflecting the dome sky in mirror-like mathematical patterns, traditional Vietnamese river life with families cooking and living on boats, traditional Vietnamese fishing techniques with cormorant birds, water hyacinth and lotus flowers floating in algorithmic patterns, traditional Vietnamese delta architecture adapted to flooding, morning mist rising from the water creating ethereal atmospheric effects, DOME PROJECTION with the delta's intricate waterway system enveloping the viewer in aquatic 360-degree immersion, ",
+    "tet-celebration": `Joyous Tet (Lunar New Year) celebration with traditional Vietnamese festivities and cultural traditions. Red and gold decorations everywhere, blooming peach blossoms (hoa đào) and yellow apricot flowers (hoa mai), families in traditional áo dài gathering for reunion dinner. Dragon and lion dances in streets with traditional drums and gongs, red envelopes (lì xì) being exchanged, traditional foods like bánh chưng and bánh tét. Ancestral altars with offerings and incense, fireworks lighting up night sky, children playing traditional games, festive lanterns illuminating celebrations. Temple visits for good fortune, community celebrations with traditional Vietnamese music. Professional cultural photography capturing authentic Vietnamese New Year traditions. `,
 
-    // Cultural Festivals & Traditions ULTRA IMMERSIVE
-    "tet-celebration":
-      "DOME IMMERSION: Tet Lunar New Year celebration flowing through festive mathematical patterns, traditional Vietnamese New Year festivities filling the entire dome space with joy and vibrant colors, elaborate peach blossom trees (hoa dao) and kumquat trees (cay quat) with algorithmic floral patterns and realistic petals, traditional Vietnamese ao dai dresses in silk with intricate embroidery swirling through the dome in mathematical harmony, dragon and lion dances with photorealistic costume details including scales, fur, and flowing fabric moving in complex choreographed patterns, traditional Vietnamese calligraphy banners with golden characters including 'Phuc' (luck) and 'Tho' (longevity), red envelopes (li xi) floating through the air in algorithmic motion with traditional Vietnamese decorative patterns, traditional Vietnamese New Year foods including banh chung (square sticky rice cake) and mut (candied fruits), fireworks exploding in complex mathematical patterns across the dome ceiling with realistic light effects, family gatherings with multiple generations in traditional Vietnamese clothing, traditional Vietnamese Tet decorations including parallel sentences (cau doi) and apricot blossoms, traditional Vietnamese New Year customs including ancestor worship and temple visits, children playing traditional Vietnamese games, DOME PROJECTION with the Tet celebration's joyous atmosphere surrounding the viewer in 360-degree festive cultural immersion, ",
+    "mid-autumn-festival": `Magical Mid-Autumn Festival (Tết Trung Thu) with colorful lanterns and traditional moon worship. Children carrying star-shaped, fish-shaped, and butterfly-shaped lanterns through streets, traditional lion dances with elaborate costumes, families gathering under full moon. Colorful paper lanterns hanging from trees and buildings, moon cake sharing ceremonies with intricate designs, traditional folk tales being told to children. Festive street decorations, cultural performances with traditional Vietnamese instruments, community celebrations with warm family gatherings. Traditional Vietnamese music and storytelling, authentic cultural festival atmosphere. Professional festival photography capturing the magic of Vietnamese children's festival. `,
 
-    "mid-autumn-festival":
-      "DOME IMMERSION: Mid-Autumn Festival (Tet Trung Thu) flowing through lunar mathematical patterns, traditional Vietnamese children's festival with colorful lanterns in algorithmic processions across the dome, elaborate traditional Vietnamese lanterns in shapes of fish, dragons, stars, and lotus flowers creating geometric light patterns, mooncakes with intricate designs featuring traditional Vietnamese symbols including lotus flowers and Chinese characters, traditional Vietnamese folk dances with performers in colorful silk costumes with flowing sleeves, full moon illuminating the dome ceiling with ethereal algorithmic silver light, traditional Vietnamese musical instruments including dan bau (monochord) and trong com (rice drum) creating sound visualization patterns, children in traditional Vietnamese clothing playing traditional games including den ong sao (star-shaped lanterns), lion dances with detailed costume work moving through mathematical formations, traditional Vietnamese Mid-Autumn stories including Chang'e and the Moon Palace, traditional Vietnamese mooncake making with wooden molds, families gathering in courtyards under the full moon, traditional Vietnamese lantern parades through ancient streets, DOME PROJECTION with the festival's magical lunar atmosphere enveloping the viewer in childhood wonder and cultural celebration, ",
+    "water-puppetry": `Traditional Vietnamese water puppetry (múa rối nước) performance on village pond stage. Wooden puppets dancing gracefully on water surface, controlled by skilled puppet masters hidden behind bamboo screen, traditional Vietnamese folk stories being performed. Traditional musicians with drums, gongs, and wooden fish instruments, rural village setting with traditional architecture, lotus ponds and bamboo groves. Folk tales of Vietnamese legends and daily life, children watching in wonder, cultural heritage performance with authentic traditional staging. Evening setting with traditional lanterns, authentic Vietnamese folk art with professional cultural documentation quality. `,
 
-    // Traditional Arts & Crafts MASTER LEVEL DETAIL
-    "water-puppetry":
-      "DOME IMMERSION: Vietnamese water puppetry (Mua Roi Nuoc) flowing through aquatic mathematical currents, traditional wooden puppets dancing on water surfaces with intricate hand-carved details and colorful lacquer work, puppet masters hidden behind bamboo screens manipulating the figures with mathematical precision using underwater rods, traditional Vietnamese folk tales including 'The Legend of the Restored Sword' coming to life through algorithmic puppet movements, water splashing in complex fluid dynamics as puppets move creating realistic spray patterns, traditional Vietnamese musical accompaniment with drums, gongs, wooden fish, and dan bau creating sound visualization patterns across the dome, elaborate puppet stage with traditional Vietnamese architectural elements including curved rooflines and red lacquer, rice paddy settings with water buffalo and farmers as puppet characters, traditional Vietnamese village scenes with markets and festivals, dragon puppets breathing fire effects, phoenix puppets with flowing feathers, traditional Vietnamese fishing scenes with nets and boats, puppet battles with traditional Vietnamese weapons, DOME PROJECTION with the water puppet theater surrounding the viewer in immersive cultural performance with splashing water effects, ",
+    "lacquerware-craft": `Master Vietnamese artisan creating traditional lacquerware with mother-of-pearl inlay work. Intricate hand-painted designs on glossy black lacquer surfaces, traditional workshop setting with wooden tools and brushes, delicate mother-of-pearl patterns being carefully applied. Traditional Vietnamese decorative motifs of dragons, phoenixes, and lotus flowers, artistic concentration and cultural craftsmanship, detailed work requiring years of training. Traditional Vietnamese art techniques passed down through generations, workshop filled with beautiful lacquered objects including boxes, furniture, and decorative items. Artistic heritage preservation with professional craft photography quality. `,
 
-    "lacquerware-craft":
-      "DOME IMMERSION: Vietnamese lacquerware craftsmanship flowing through artistic mathematical patterns, master artisans applying multiple layers of traditional Vietnamese lacquer (son ta) with mathematical precision, intricate mother-of-pearl inlay work (kham oc) creating complex geometric designs across the dome surface, traditional Vietnamese motifs including dragons, phoenixes, lotus flowers, and bamboo rendered in exquisite photorealistic detail, eggshell lacquer technique creating delicate crackled patterns with authentic texture, traditional Vietnamese lacquer colors of deep black, vermillion red, and golden yellow in algorithmic harmony, bamboo and wood base materials being transformed through traditional techniques passed down through generations, traditional Vietnamese workshop settings with artisans in traditional clothing using ancient tools, traditional Vietnamese lacquer trees (cay son) with sap collection, traditional Vietnamese decorative objects including jewelry boxes, vases, and screens, traditional Vietnamese lacquer painting techniques with fine brushwork, traditional Vietnamese patterns including geometric designs and nature motifs, DOME PROJECTION with the lacquerware creation process enveloping the viewer in artistic immersion and traditional craftsmanship, ",
+    "bach-dang-victory": `Historic Bach Dang River naval victory with traditional Vietnamese war boats and strategic military tactics. Ancient wooden warships with dragon prows and traditional Vietnamese naval architecture, Vietnamese warriors in traditional armor and weapons, strategic river battle scene with bamboo stakes planted in river. Traditional military banners with Vietnamese symbols, heroic naval combat demonstrating Vietnamese military ingenuity, historical Vietnamese military tactics against foreign invaders. River landscape with traditional boat construction, cultural pride and heritage, patriotic atmosphere celebrating Vietnamese independence. Professional historical documentation quality capturing legendary Vietnamese military victory. `,
 
-    // Historical Battles & Heroes EPIC SCALE
-    "bach-dang-victory":
-      "DOME IMMERSION: Bach Dang River victory (938 AD) flowing through historical mathematical currents, legendary Vietnamese naval battle against Chinese Southern Han invasion with traditional Vietnamese war junks positioned strategically across the dome, General Ngo Quyen's brilliant tactical use of iron-tipped stakes hidden in the river creating geometric defensive patterns, traditional Vietnamese naval warfare with detailed historical accuracy including traditional weapons and armor, Chinese invasion fleets being defeated through mathematical strategic planning with realistic battle scenes, traditional Vietnamese military uniforms and weapons including crossbows, spears, and traditional swords with authentic historical detail, the Bach Dang River delta landscape with traditional Vietnamese villages and fishing boats, heroic Vietnamese defenders in traditional armor with detailed metalwork, traditional Vietnamese war drums and battle flags, traditional Vietnamese naval tactics including fire ships and ramming, victory celebrations with traditional Vietnamese ceremonies, traditional Vietnamese historical monuments commemorating the victory, DOME PROJECTION with the historic naval victory surrounding the viewer in patriotic 360-degree immersion and national pride, ",
+    "trung-sisters-rebellion": `Legendary Trung Sisters (Hai Bà Trưng) leading Vietnamese rebellion against Chinese rule in 40 AD. Two determined warrior sisters on war elephants, traditional Vietnamese armor and ancient weapons, female leadership in ancient Vietnam. Ancient battlefield with Vietnamese independence fighters, traditional military banners with Vietnamese cultural symbols, heroic stance representing resistance against oppression. Cultural symbols of Vietnamese female empowerment, historical Vietnamese costumes and military equipment, patriotic atmosphere celebrating national heroes. Legendary female warriors who became symbols of Vietnamese independence, national heroes with professional historical portrait quality. `,
 
-    "trung-sisters-rebellion":
-      "DOME IMMERSION: Trung Sisters rebellion (40-43 AD) flowing through heroic mathematical patterns, legendary Vietnamese female warriors Trung Trac and Trung Nhi leading the resistance against Chinese Han occupation, traditional Vietnamese war elephants with ornate decorations and armor moving through algorithmic battle formations, ancient Vietnamese citadels and fortifications with traditional architectural details and defensive walls, traditional Vietnamese weapons and military equipment with historical accuracy including bronze spears and crossbows, Vietnamese people in traditional Han-era clothing supporting the rebellion with detailed period costumes, traditional Vietnamese landscapes with rivers, mountains, and ancient forests, heroic statues and monuments commemorating the sisters with traditional Vietnamese sculptural style, traditional Vietnamese female warriors in armor with authentic historical detail, ancient Vietnamese battle tactics and formations, traditional Vietnamese victory celebrations and ceremonies, traditional Vietnamese historical sites associated with the rebellion, DOME PROJECTION with the rebellion's epic scope enveloping the viewer in historical grandeur and female empowerment, ",
+    "halong-bay": `Spectacular Ha Long Bay with thousands of limestone karsts rising majestically from emerald waters. Traditional Vietnamese junk boats with distinctive brown sails navigating between towering limestone pillars, hidden caves and grottoes with stalactites and stalagmites. Fishing villages on stilts with traditional architecture, peaceful bay waters reflecting dramatic rock formations, UNESCO World Heritage natural wonder. Traditional Vietnamese fishing boats with authentic design, misty morning atmosphere creating mystical beauty, pristine natural landscape. Geological marvels formed over millions of years, professional nature photography capturing Vietnam's most iconic natural treasure. `,
 
-    // Natural Wonders & Landscapes BREATHTAKING DETAIL
-    "halong-bay":
-      "DOME IMMERSION: Ha Long Bay flowing through maritime mathematical currents, 1,600 limestone karst towers rising from emerald waters in complex geological formations across the dome, traditional Vietnamese junk boats with distinctive red sails and wooden hulls navigating through the algorithmic seascape, hidden caves and grottoes including Sung Sot Cave with stalactites and stalagmites creating natural mathematical patterns, traditional Vietnamese fishing villages floating on the water with houses on stilts, morning mist creating ethereal atmospheric effects with realistic fog patterns, traditional Vietnamese fishing techniques with cormorant birds and traditional nets, UNESCO World Heritage landscape with pristine natural beauty and biodiversity, traditional Vietnamese legends including the dragon creating the bay, limestone formations with names like Fighting Cock Islet and Stone Dog, traditional Vietnamese seafood including fresh fish, crab, and squid, traditional Vietnamese boat life with families living on junks, emerald green water with realistic wave patterns and reflections, DOME PROJECTION with the bay's magnificent karst landscape surrounding the viewer in 360-degree natural wonder and maritime beauty, ",
+    "phong-nha-caves": `Magnificent Phong Nha-Ke Bang caves with underground rivers and massive limestone formations. Ancient cave systems with cathedral-like chambers, underground boat tours through crystal-clear rivers, dramatic stalactites and stalagmites creating natural sculptures. Spectacular cave formations with natural lighting effects, pristine underground ecosystems, geological wonders formed over millennia. Cave exploration with traditional Vietnamese boats navigating underground waterways, natural heritage site with mysterious underground world. Professional cave photography capturing the majesty of Vietnam's underground natural wonders. `,
 
-    "phong-nha-caves":
-      "DOME IMMERSION: Phong Nha-Ke Bang caves flowing through subterranean mathematical currents, massive limestone cave systems with cathedral-like chambers extending across the dome ceiling, spectacular stalactite and stalagmite formations creating natural algorithmic sculptures with realistic mineral textures, underground rivers flowing through mathematical cave networks with crystal-clear water, traditional Vietnamese cave exploration with local guides using traditional bamboo boats, bioluminescent cave formations glowing with natural algorithmic light effects, traditional Vietnamese karst landscape above ground with dense tropical jungle vegetation, UNESCO World Heritage geological formations with millions of years of natural mathematical processes, traditional Vietnamese cave temples and shrines with Buddhist statues, traditional Vietnamese legends about cave spirits and dragons, massive cave chambers including the world's largest cave passage, traditional Vietnamese speleology with ancient exploration techniques, underground waterfalls and pools with realistic water effects, DOME PROJECTION with the cave system's magnificent underground architecture enveloping the viewer in subterranean wonder, ",
+    "floating-market-mekong": `Bustling Cai Rang floating market in Mekong Delta with boats full of fresh tropical produce. Colorful wooden boats loaded with tropical fruits, vegetables, and local products, vendors in traditional conical hats conducting early morning commerce. Traditional river commerce with authentic Vietnamese trading methods, floating vendors calling out prices and displaying goods on long poles. Fresh tropical produce including dragon fruit, rambutan, and mangoes, traditional boat life with authentic Vietnamese river culture. Vibrant market atmosphere with traditional trading methods, professional documentary photography capturing authentic Vietnamese floating market culture. `,
 
-    // Traditional Cuisine & Markets SENSORY IMMERSION
-    "floating-market-mekong":
-      "DOME IMMERSION: Mekong floating market flowing through commercial mathematical currents, traditional Vietnamese river commerce with hundreds of boats creating algorithmic market patterns across the dome, vendors selling tropical fruits including dragon fruit, rambutan, mangosteen, and durian from traditional sampan boats, traditional Vietnamese conical hats and colorful clothing creating visual harmony, traditional Vietnamese river life with families living and working on boats, traditional cooking demonstrations on floating kitchens with realistic steam and smoke effects, traditional Vietnamese market calls and bargaining in authentic Vietnamese language, sunrise over the Mekong creating golden algorithmic light effects with realistic water reflections, traditional Vietnamese river transportation including motorboats and paddle boats, traditional Vietnamese floating architecture adapted to river life, traditional Vietnamese river food including fresh fish soup and tropical fruit, traditional Vietnamese commerce with traditional scales and baskets, traditional Vietnamese river culture with boat races and festivals, DOME PROJECTION with the floating market's vibrant commerce surrounding the viewer in 360-degree cultural and commercial immersion, ",
+    "pho-street-culture": `Authentic Vietnamese pho street culture with steaming bowls and traditional sidewalk dining. Traditional pho vendors with large soup pots simmering aromatic beef broth, customers sitting on low plastic stools enjoying breakfast. Fresh herbs including cilantro, Thai basil, and mint, lime wedges and chili sauce, bustling street food scene with authentic Vietnamese breakfast culture. Steam rising from bowls of pho, traditional Vietnamese food preparation methods, community dining atmosphere with locals gathering for morning meals. Cultural food heritage with traditional recipes passed down through generations, professional food photography capturing authentic Vietnamese street food culture. `,
 
-    "pho-street-culture":
-      "DOME IMMERSION: Vietnamese pho street culture flowing through culinary mathematical patterns, traditional Vietnamese street food vendors with steaming pho bowls creating aromatic algorithmic clouds, traditional Vietnamese pho preparation with master chefs slicing beef paper-thin with mathematical precision, traditional Vietnamese street scenes with Honda motorbikes, cyclos, and pedestrians in algorithmic urban harmony, traditional Vietnamese architecture with French colonial influences including shuttered windows and balconies, traditional Vietnamese street furniture including low plastic stools and aluminum tables, traditional Vietnamese herbs and spices including star anise, cinnamon, and fresh herbs creating complex aromatic patterns, traditional Vietnamese coffee culture with ca phe sua da (iced coffee with condensed milk), traditional Vietnamese street life with vendors selling banh mi, spring rolls, and fresh fruit, traditional Vietnamese urban sounds including motorbike engines and street vendors, traditional Vietnamese street cooking with portable stoves and woks, traditional Vietnamese social culture with people gathering to eat and talk, DOME PROJECTION with the street food culture's authentic atmosphere enveloping the viewer in urban culinary immersion, ",
+    "ca-tru-performance": `Traditional Ca Tru musical performance with female vocalist and authentic Vietnamese instruments. Elegant female singer in traditional áo dài performing ancient court music, traditional Vietnamese musical instruments including đàn đáy (three-stringed lute) and phách (bamboo clappers). Intimate performance setting with traditional Vietnamese cultural arts, UNESCO recognized intangible heritage, sophisticated musical tradition from Vietnamese royal courts. Traditional costume and makeup, musical storytelling with ancient Vietnamese songs, preserved cultural art form with authentic Vietnamese folk music. Artistic cultural expression with professional cultural documentation quality. `,
 
-    // Traditional Music & Performance ARTISTIC MASTERY
-    "ca-tru-performance":
-      "DOME IMMERSION: Ca Tru traditional music flowing through acoustic mathematical patterns, UNESCO Intangible Cultural Heritage performance with traditional Vietnamese female singers in elaborate ao dai costumes with silk embroidery, traditional Vietnamese musical instruments including dan day (3-string lute) and phach (bamboo percussion) creating sound visualization across the dome, traditional Vietnamese poetic lyrics with ancient literary references and sophisticated wordplay, traditional Vietnamese performance spaces with intimate settings including traditional furniture and decorations, traditional Vietnamese audience participation with connoisseurs appreciating the subtle artistry through traditional gestures, traditional Vietnamese cultural preservation efforts with master artists teaching students, traditional Vietnamese court music traditions with refined artistic expression, traditional Vietnamese literary culture with poetry and classical texts, traditional Vietnamese musical theory with complex rhythmic patterns, traditional Vietnamese artistic refinement with sophisticated cultural appreciation, traditional Vietnamese performance costumes with intricate details and traditional jewelry, DOME PROJECTION with the ca tru performance's refined atmosphere surrounding the viewer in cultural sophistication and artistic mastery, ",
-
-    "quan-ho-folk-songs":
-      "DOME IMMERSION: Quan Ho folk songs flowing through melodic mathematical patterns, traditional Vietnamese antiphonal singing from Bac Ninh province with male and female groups responding to each other across the dome space, traditional Vietnamese festival settings with colorful traditional costumes including silk ao dai and traditional headwear, traditional Vietnamese courtship rituals expressed through song with authentic cultural practices, traditional Vietnamese rural landscapes with rice paddies and village settings, traditional Vietnamese musical harmony creating algorithmic sound patterns with traditional pentatonic scales, UNESCO Intangible Cultural Heritage performance with authentic cultural detail, traditional Vietnamese community celebrations and gatherings with multiple generations participating, traditional Vietnamese folk poetry with improvised lyrics and traditional themes, traditional Vietnamese cultural transmission with elders teaching youth, traditional Vietnamese seasonal festivals with quan ho performances, traditional Vietnamese social bonding through communal singing, traditional Vietnamese musical instruments accompanying the singing, DOME PROJECTION with the quan ho tradition's communal spirit enveloping the viewer in folk cultural immersion and traditional Vietnamese social harmony, ",
+    "quan-ho-folk-songs": `Traditional Quan Ho folk singing with alternating male and female voices from Bac Ninh province. Singers in traditional Vietnamese costumes performing antiphonal singing style, cultural music performance with authentic Vietnamese musical heritage. Traditional folk songs with call-and-response between groups, community cultural gathering with traditional Vietnamese singing techniques. Cultural celebration with folk music tradition, artistic cultural expression with traditional Vietnamese music, authentic Vietnamese musical heritage with professional cultural photography quality. `,
   }
-  return scenarios[scenario] || scenarios.pure
+
+  return scenarios[scenario] || scenarios["temple-of-literature"]
+}
+
+function getIndonesianScenarioPrompt(scenario: string): string {
+  const scenarios: Record<string, string> = {
+    garuda: `Majestic Garuda Wisnu Kencana statue with professional Hindu-Buddhist symbolism, golden wings spread wide in divine majesty, intricate traditional Balinese stone carvings, authentic Indonesian temple architecture. Professional cultural monument photography. `,
+    wayang: `Traditional Wayang Kulit shadow puppet performance with intricate hand-carved leather puppets, professional gamelan orchestra, dramatic shadows on traditional screen, authentic Javanese cultural storytelling. Professional cultural documentation. `,
+    batik: `Exquisite Indonesian batik patterns with traditional wax-resist dyeing techniques, intricate geometric and floral motifs showcasing centuries of cultural heritage, rich traditional colors and authentic Indonesian textile artistry. Professional textile photography. `,
+    borobudur: `Ancient Borobudur temple complex with Buddhist stupas and detailed stone reliefs, sunrise over Central Java, UNESCO World Heritage site with professional architectural documentation quality. `,
+    javanese: `Traditional Javanese court culture with authentic gamelan music performance, classical dance in traditional costumes, intricate batik textiles, royal palace architecture with professional cultural photography. `,
+    sundanese: `Sundanese cultural traditions with traditional angklung bamboo instruments, authentic dance performances, West Java mountain landscapes with professional cultural documentation. `,
+    batak: `Batak tribal culture from North Sumatra with traditional distinctive houses, authentic cultural ceremonies, Lake Toba setting with professional ethnographic photography. `,
+    dayak: `Dayak indigenous culture from Borneo with traditional longhouses, authentic tribal art and crafts, rainforest setting with professional indigenous culture documentation. `,
+    acehnese: `Acehnese Islamic culture with traditional mosque architecture, authentic Sufi traditions, northern Sumatra landscapes with professional religious architecture photography. `,
+    minangkabau: `Minangkabau matriarchal culture with distinctive horn-shaped traditional roofs, authentic ceremonies, West Sumatra setting with professional architectural documentation. `,
+    "balinese-tribe": `Balinese Hindu culture with authentic temple ceremonies, traditional dance performances in elaborate costumes, rice terraces, spiritual rituals with professional cultural photography. `,
+    papuans: `Papuan indigenous culture with traditional dress and tribal ceremonies, New Guinea highlands setting with professional ethnographic documentation. `,
+    baduy: `Baduy tribe traditional lifestyle with simple traditional clothing, sustainable living practices, West Java mountains with professional indigenous culture photography. `,
+    "orang-rimba": `Orang Rimba forest people with traditional forest lifestyle, authentic Sumatra rainforest setting with professional indigenous culture documentation. `,
+    "hongana-manyawa": `Hongana Manyawa indigenous people with traditional forest culture, authentic Halmahera island setting with professional ethnographic photography. `,
+    asmat: `Asmat tribal art with intricate traditional wood carvings, authentic sculptures, Papua cultural heritage with professional indigenous art documentation. `,
+    komodo: `Komodo dragon legends with ancient reptiles in natural habitat, Komodo National Park, Indonesian wildlife heritage with professional nature photography. `,
+    dance: `Traditional Indonesian dance with elaborate authentic costumes, cultural performances showcasing diverse regional styles with professional cultural documentation. `,
+    volcanoes: `Indonesian volcanic landscapes with active volcanoes, dramatic geological formations, Ring of Fire with professional landscape photography. `,
+    temples: `Sacred Indonesian temples with authentic Hindu-Buddhist architecture, spiritual ceremonies, cultural heritage with professional religious architecture photography. `,
+  }
+
+  return scenarios[scenario] || scenarios["garuda"]
+}
+
+function getThailandScenarioPrompt(scenario: string): string {
+  const scenarios: Record<string, string> = {
+    garuda: `Magnificent Garuda, the divine eagle mount of Vishnu in Thai Buddhist-Hindu tradition. Golden feathered creature with human torso, spread wings in majestic pose, royal Thai temple setting with intricate traditional artistic details and authentic Thai religious symbolism. Professional temple architecture photography. `,
+    naga: `Sacred Naga serpent dragon from Thai Buddhist mythology. Multi-headed serpent with iridescent scales, temple guardian statue, Mekong River setting, traditional Thai temple architecture with golden decorations and authentic Thai religious artistry. Professional religious sculpture photography. `,
+    erawan: `Erawan, the three-headed white elephant from Thai Hindu-Buddhist tradition. Majestic white elephant with multiple heads, royal Thai symbolism, ornate traditional decorations, authentic temple setting with professional cultural monument photography. `,
+    karen: `Karen Hill Tribe people in traditional dress with intricate silver jewelry, authentic mountain villages, northern Thailand highlands, traditional weaving and cultural ceremonies with professional ethnographic photography. `,
+    hmong: `Hmong mountain people with colorful traditional clothing featuring intricate embroidery, authentic mountain villages, cultural festivals, northern Thailand setting with professional cultural documentation. `,
+    ayutthaya: `Ancient Ayutthaya kingdom ruins with Buddhist temples, weathered stone Buddha statues, historical Thai architecture, UNESCO World Heritage site with professional archaeological photography. `,
+    sukhothai: `Sukhothai Historical Park with ancient Thai temples, distinctive walking Buddha statues, lotus ponds with reflections, dawn of Thai civilization with professional heritage photography. `,
+    songkran: `Songkran Water Festival celebration with traditional water splashing, authentic Thai New Year customs, temple visits, community festivities, April celebrations with professional cultural festival photography. `,
+    "loy-krathong": `Loy Krathong Festival with floating lanterns on water, traditional banana leaf boats with candles, full moon night, romantic Thai tradition with professional festival photography. `,
+    coronation: `Thai Royal Coronation ceremony with elaborate golden regalia, traditional Thai royal costumes, authentic Buddhist rituals, palace setting with professional ceremonial photography. `,
+    "wat-pho": `Wat Pho Temple with massive Reclining Buddha statue measuring 46 meters, golden decorations, traditional Thai temple architecture, Bangkok setting, peaceful meditation atmosphere with professional temple photography. `,
+    "wat-arun": `Wat Arun Temple of Dawn with towering spires decorated with porcelain, Chao Phraya River setting, sunrise lighting, iconic Bangkok landmark with professional architectural photography. `,
+    "muay-thai": `Ancient Muay Thai boxing with traditional rituals, sacred headbands (mongkol), temple training grounds, cultural martial arts heritage with professional sports photography. `,
+    "classical-dance": `Thai Classical Dance with elaborate traditional costumes, graceful hand movements, traditional masks, royal court performances, cultural artistry with professional dance photography. `,
+    "golden-triangle": `Golden Triangle region where Thailand, Laos, and Myanmar meet, Mekong River confluence, mountainous border region, cultural crossroads with professional landscape photography. `,
+    "floating-markets": `Traditional Thai floating markets with boats full of tropical fruits, vendors in traditional hats, authentic canal commerce, traditional Thai culture with professional market photography. `,
+  }
+
+  return scenarios[scenario] || scenarios["garuda"]
 }
 
 function getDatasetPrompt(dataset: string): string {
-  const datasets: Record<string, string> = {
-    spirals:
-      "mesmerizing spiral patterns flowing in mathematical harmony, Fibonacci sequences and golden ratio spirals, ",
-    fractal: "intricate fractal geometries with self-similar patterns repeating at infinite scales, ",
-    mandelbrot: "the iconic Mandelbrot set with its infinite complexity and boundary details, ",
-    julia: "Julia set fractals with their elegant mathematical beauty and chaotic attractors, ",
-    lorenz: "Lorenz attractor butterfly patterns flowing through phase space, ",
-    hyperbolic: "hyperbolic geometry with its non-Euclidean mathematical beauty, ",
-    gaussian: "Gaussian distributions and probability flows in mathematical space, ",
-    cellular: "cellular automata patterns evolving through mathematical rules, ",
-    voronoi: "Voronoi diagrams with their organic cell-like mathematical structures, ",
-    perlin: "Perlin noise patterns creating organic mathematical textures, ",
-    diffusion: "reaction-diffusion patterns with their chemical-mathematical beauty, ",
-    wave: "wave interference patterns and mathematical oscillations, ",
-    escher: "M.C. Escher-inspired impossible geometries and mathematical paradoxes, ",
-    "8bit": "8-bit pixel art aesthetics merged with mathematical flow patterns, ",
-    bosch: "Hieronymus Bosch surreal imagery flowing through mathematical currents, ",
+  const prompts: Record<string, string> = {
+    spirals: `Mesmerizing spiral patterns with golden ratio proportions, Fibonacci sequences creating natural mathematical beauty, logarithmic spirals, nautilus shell formations with professional mathematical visualization. `,
+    fractal: `Intricate fractal geometry with self-similar patterns, infinite detail, Mandelbrot-like structures, recursive mathematical beauty with professional scientific visualization quality. `,
+    mandelbrot: `Classic Mandelbrot set visualization with complex number iterations, infinite zoom detail, boundary explorations with professional mathematical art quality. `,
+    julia: `Julia set fractals with complex parameter variations, filled and unfilled sets, mathematical elegance with professional computational art quality. `,
+    lorenz: `Lorenz attractor chaos theory visualization with butterfly effect patterns, strange attractors, dynamic systems with professional scientific visualization. `,
+    hyperbolic: `Hyperbolic geometry with non-Euclidean space, Poincaré disk models, tessellations, curved space mathematics with professional geometric visualization. `,
+    gaussian: `Gaussian distribution patterns with probability curves, statistical visualizations, bell curve mathematics with professional data visualization quality. `,
+    cellular: `Cellular automata patterns with Conway's Game of Life, emergent complexity, rule-based evolution with professional computational visualization. `,
+    voronoi: `Voronoi diagram tessellations with natural cell patterns, computational geometry, organic structures with professional geometric visualization. `,
+    perlin: `Perlin noise landscapes with procedural generation, natural textures, terrain modeling with professional procedural art quality. `,
+    diffusion: `Reaction-diffusion patterns with Turing structures, chemical wave propagation, biological pattern formation with professional scientific visualization. `,
+    wave: `Wave interference patterns with constructive and destructive interference, harmonic oscillations, fluid dynamics with professional physics visualization. `,
+    escher: `M.C. Escher-inspired impossible geometries with optical illusions, tessellations, mathematical art with professional artistic visualization quality. `,
+    "8bit": `8-bit pixel art style with retro gaming aesthetics, digital nostalgia, computational art with professional pixel art quality. `,
+    bosch: `Hieronymus Bosch-inspired surreal landscapes with fantastical creatures, medieval symbolism, artistic complexity with professional surreal art quality. `,
   }
-  return datasets[dataset] || "abstract mathematical patterns flowing in dynamic harmony, "
+
+  return prompts[dataset] || prompts.fractal
 }
 
-function getColorSchemeDescription(colorScheme: string): string {
-  const schemes: Record<string, string> = {
-    plasma: "vibrant plasma colors with electric purples, magentas, and yellows",
-    quantum: "quantum-inspired colors with ethereal blues, greens, and silver highlights",
-    cosmic: "deep space colors with cosmic purples, blues, and stellar whites",
-    thermal: "thermal imaging colors with intense reds, oranges, and yellows",
-    spectral: "full spectrum rainbow colors with prismatic light effects",
-    crystalline: "crystal-clear colors with diamond whites, ice blues, and prismatic refractions",
-    bioluminescent: "bioluminescent colors with glowing greens, blues, and phosphorescent highlights",
-    aurora: "aurora borealis colors with dancing greens, purples, and ethereal lights",
-    metallic: "metallic colors with gold, silver, copper, and bronze reflections",
-    prismatic: "prismatic colors with rainbow refractions and light-splitting effects",
-    monochromatic: "elegant monochromatic tones with subtle gradations",
-    infrared: "infrared thermal colors with heat-signature reds and oranges",
-    lava: "molten lava colors with intense reds, oranges, and volcanic blacks",
-    futuristic: "futuristic neon colors with electric blues, cyans, and digital highlights",
-    forest: "natural forest colors with deep greens, earth browns, and organic tones",
-    ocean: "ocean depth colors with deep blues, teals, and aquatic highlights",
-    sunset: "sunset colors with warm oranges, pinks, and golden hour lighting",
-    arctic: "arctic colors with ice blues, polar whites, and crystalline effects",
-    neon: "vibrant neon colors with electric pinks, greens, and glowing highlights",
-    vintage: "vintage colors with sepia tones, aged patinas, and nostalgic warmth",
-    toxic: "toxic waste colors with radioactive greens, chemical yellows, and danger reds",
-    ember: "glowing ember colors with warm reds, oranges, and fire-like intensity",
-    lunar: "lunar surface colors with silver grays, crater shadows, and moonlight whites",
-    tidal: "tidal pool colors with sea greens, coral pinks, and oceanic blues",
+function truncatePrompt(prompt: string): string {
+  if (prompt.length <= 4000) {
+    return prompt
   }
-  return schemes[colorScheme] || "vibrant multi-colored"
+
+  // Try to truncate at a sentence boundary
+  const sentences = prompt.split(". ")
+  let truncated = ""
+
+  for (const sentence of sentences) {
+    const testLength = truncated.length + sentence.length + 2 // +2 for '. '
+    if (testLength > 3900) {
+      break
+    }
+    truncated += (truncated ? ". " : "") + sentence
+  }
+
+  // If we couldn't fit any complete sentences, truncate at word boundary
+  if (!truncated) {
+    const words = prompt.split(" ")
+    for (const word of words) {
+      const testLength = truncated.length + word.length + 1 // +1 for space
+      if (testLength > 3900) {
+        break
+      }
+      truncated += (truncated ? " " : "") + word
+    }
+  }
+
+  return truncated + "..."
 }

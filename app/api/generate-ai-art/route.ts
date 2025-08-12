@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       stereographicPerspective,
     } = body
 
-    console.log("🎨 Starting AI art generation with parameters:", {
+    console.log("🎨 Starting professional AI art generation with parameters:", {
       dataset,
       scenario,
       colorScheme,
@@ -45,21 +45,21 @@ export async function POST(request: NextRequest) {
 
     // Generate main image
     console.log("🖼️ Generating main image...")
-    const mainImage = await callOpenAI(basePrompt)
+    const mainImage = await callOpenAI(basePrompt, { quality: "hd" })
 
     let domeImage: string | undefined
     let panoramaImage: string | undefined
 
     // Generate dome projection if requested
     if (domeDiameter && domeResolution && projectionType) {
-      console.log("🏛️ Generating dome projection...")
+      console.log("🏛️ Generating professional dome projection...")
       const domePrompt = generateDomePrompt(basePrompt, domeDiameter, domeResolution, projectionType)
-      domeImage = await callOpenAI(domePrompt)
+      domeImage = await callOpenAI(domePrompt, { quality: "hd" })
     }
 
     // Generate 360° panorama if requested
     if (panoramaResolution && panoramaFormat) {
-      console.log("🌐 Generating 360° panorama...")
+      console.log("🌐 Generating professional 360° panorama with seamless wrapping...")
       const panoramaPrompt = generatePanoramaPrompt(
         basePrompt,
         panoramaResolution,
@@ -67,13 +67,23 @@ export async function POST(request: NextRequest) {
         stereographicPerspective,
       )
 
-      // Prefer a landscape panoramic output (closest to 2:1) for equirectangular.
-      const panoSize = panoramaFormat === "equirectangular" ? "1792x1024" : "1024x1024"
+      // Use optimal size for each format
+      let panoSize: "1024x1024" | "1792x1024" | "1024x1792" = "1024x1024"
 
-      panoramaImage = await callOpenAI(panoramaPrompt, { size: panoSize })
+      if (panoramaFormat === "equirectangular") {
+        // Use 1792x1024 for equirectangular (professional widescreen panorama)
+        panoSize = "1792x1024"
+        console.log(`📐 Using professional panorama format: ${panoSize} (1.75:1 ratio) for seamless 360° wrapping`)
+      } else {
+        // Use square format for other projection types
+        panoSize = "1024x1024"
+        console.log(`📐 Using square format: ${panoSize} for ${panoramaFormat} projection`)
+      }
+
+      panoramaImage = await callOpenAI(panoramaPrompt, { size: panoSize, quality: "hd" })
     }
 
-    console.log("✅ All images generated successfully")
+    console.log("✅ All professional images generated successfully")
 
     return NextResponse.json({
       success: true,
@@ -84,6 +94,7 @@ export async function POST(request: NextRequest) {
       promptLength: basePrompt.length,
       provider: "OpenAI",
       model: "DALL-E 3",
+      quality: "HD Professional",
       parameters: {
         dataset,
         scenario,
@@ -101,7 +112,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error: any) {
-    console.error("❌ AI art generation failed:", error)
+    console.error("❌ Professional AI art generation failed:", error)
     return NextResponse.json(
       {
         success: false,

@@ -5,12 +5,20 @@ export async function callOpenAI(
   const maxRetries = 3
   const baseDelay = 2000 // 2 seconds
   const size = options?.size || "1024x1024"
-  const quality = options?.quality || "standard"
+  const quality = options?.quality || "hd"
+
+  // Validate size parameter for DALL-E 3
+  const validSizes = ["1024x1024", "1792x1024", "1024x1792"]
+  if (!validSizes.includes(size)) {
+    console.warn(`⚠️ Invalid size ${size}, defaulting to 1024x1024`)
+    options = { ...options, size: "1024x1024" }
+  }
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       console.log(`🤖 OpenAI API attempt ${attempt}/${maxRetries}`)
       console.log(`📝 Prompt length: ${prompt.length} characters`)
+      console.log(`📐 Image size: ${size}`)
 
       // Create AbortController for timeout
       const controller = new AbortController()
@@ -26,8 +34,8 @@ export async function callOpenAI(
           model: "dall-e-3",
           prompt: prompt.length > 3900 ? prompt.substring(0, 3900) + "..." : prompt,
           n: 1,
-          size, // use requested size
-          quality, // use requested quality
+          size: size,
+          quality: quality,
           response_format: "url",
         }),
         signal: controller.signal,
@@ -105,45 +113,63 @@ export async function callOpenAI(
   throw new Error("OpenAI API call failed: Maximum retries exceeded")
 }
 
-export function generateDomePrompt(
-  basePrompt: string,
-  diameter = 20,
-  resolution = "4K",
-  projectionType = "fisheye",
-): string {
-  return `${basePrompt}, TUNNEL UP DOME PROJECTION: Transform this artwork into a ${diameter}m planetarium dome projection with dramatic TUNNEL UP perspective effect, ${projectionType} lens distortion creating immersive upward-looking view perfect for dome ceiling display, ${resolution} resolution optimized for planetarium projection systems, spherical mapping with zenith focus point, radial symmetry expanding outward from center, immersive 180-degree field of view, dome-optimized composition with enhanced peripheral detail, planetarium-grade visual quality with seamless edge blending, astronomical projection standards, fulldome cinema format, immersive overhead viewing experience, TUNNEL UP effect creating sense of looking up through a cosmic tunnel, dramatic perspective distortion for dome ceiling projection`
+export function generateDomePrompt(basePrompt: string, diameter: number, resolution: string, projectionType: string) {
+  const domeSpecs = `Professional planetarium dome projection for ${diameter}m fulldome theater, ${resolution} resolution, ${projectionType} projection mapping. `
+  const domeInstructions = `Create a perfect circular fisheye view optimized for dome projection. The image must be perfectly circular with rich content distributed evenly across the hemisphere. Design for overhead planetarium viewing with immersive detail extending to the dome edges. Ensure proper fisheye distortion with zenith at center and horizon at circle edge. Professional fulldome cinema quality. `
+
+  return domeSpecs + domeInstructions + basePrompt
 }
 
-export function generatePanoramaPrompt(
-  basePrompt: string,
-  resolution = "8K",
-  format = "equirectangular",
-  perspective?: string,
-): string {
-  const fmt = (format || "").toLowerCase()
-  const persp = (perspective || "").toLowerCase()
+export function generatePanoramaPrompt(basePrompt: string, resolution: string, format: string, perspective?: string) {
+  let formatInstructions = ""
 
-  let prompt = `${basePrompt}, 360-DEGREE PANORAMIC VIEW: Transform this artwork into a complete 360-degree panoramic composition`
+  switch (format) {
+    case "equirectangular":
+      formatInstructions = `PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA: Create a seamless 360-degree panoramic image with PERFECT HORIZONTAL WRAPPING. CRITICAL: The left edge must connect seamlessly with the right edge when wrapped around a sphere - NO VISIBLE SEAMS, NO DISCONTINUITIES, NO EDGE ARTIFACTS. 
 
-  if (fmt === "equirectangular") {
-    prompt += `, EQUIRECTANGULAR PROJECTION FORMAT: rendered in proper equirectangular mapping with EXACT 2:1 aspect ratio where WIDTH IS TWICE THE HEIGHT (for example 2048x1024 or 4096x2048), horizontal field of view spanning complete 360 degrees, vertical field of view covering full 180 degrees from zenith to nadir, characteristic equirectangular distortion where polar regions are stretched horizontally across the entire width, seamless horizontal wrapping at 0°/360° longitude meridian, proper spherical coordinate mapping, sky occupying upper half with progressive horizontal stretching toward poles, ground/nadir region in lower portion with corresponding polar stretching, NO VERTICAL SEAMS at edges, continuous horizontal wrap, optimized for VR headsets and 360° viewers, ${resolution} resolution with MANDATORY 2:1 WIDTH-TO-HEIGHT RATIO, immersive spherical environment suitable for virtual reality consumption`
-  } else if (fmt === "stereographic") {
-    if (persp === "little-planet") {
-      prompt += `, STEREOGRAPHIC LITTLE PLANET: render as a "tiny planet" with the horizon forming a perfect circle around the frame, ground wrapping outward and sky concentrated toward the center, extreme wide-angle stereographic projection, pronounced curvature of edges, zenith-focused view, distinctive miniature-planet illusion, crisp radial mapping with high peripheral detail, balanced center compression characteristic of little-planet photography, avoid seams, authoritative tiny-planet look`
-    } else if (persp === "tunnel") {
-      prompt += `, STEREOGRAPHIC TUNNEL: render as a stereographic "tunnel" projection with the scene wrapping inward toward the center like a vortex, sky and environment curving into a cylindrical tunnel, strong inward curvature and central pull, extreme wide-angle stereographic mapping, clean circular symmetry, continuous wrap with no seams, authoritative tunnel-vision look`
-    } else if (persp === "fisheye") {
-      prompt += `, STEREOGRAPHIC FISHEYE: circular frame with pronounced barrel distortion, edges bending strongly, center appearing more natural, extreme wide-angle stereographic mapping, maintain a clean circular boundary, no seams`
-    } else {
-      prompt += `, STEREOGRAPHIC PROJECTION: extreme wide-angle curved mapping, circular symmetry, clean edges, no seams`
-    }
-  } else if (fmt === "cubemap") {
-    prompt += `, CUBEMAP FORMAT: six square faces arranged for cube mapping (front, back, left, right, up, down), each face covering 90° field of view, seamless edges between adjacent faces, suitable for real-time 3D rendering and game engines`
-  } else if (fmt === "cylindrical") {
-    prompt += `, CYLINDRICAL PROJECTION: horizontal 360° wrap with minimal vertical distortion, maintaining natural vertical perspective, suitable for architectural and landscape panoramas`
+TECHNICAL SPECIFICATIONS:
+- Horizontal field of view: Complete 360° with seamless wraparound
+- Vertical field of view: 180° from zenith to nadir
+- Projection: Equirectangular mapping with proper spherical distortion
+- Edge continuity: Left and right edges must be identical when wrapped
+- Horizon placement: Horizontal line across the middle of the image
+- Polar stretching: Natural equirectangular distortion toward top/bottom edges
+- VR compatibility: Optimized for VR headsets and 360° viewers
+
+SEAMLESS WRAPPING REQUIREMENTS:
+- Content must flow continuously from right edge to left edge
+- No objects cut off at the edges - they must wrap around naturally
+- Lighting and shadows must be consistent across the wrap point
+- Color gradients must transition smoothly across edges
+- Architectural elements must align perfectly when wrapped
+- Sky and ground elements must connect seamlessly
+
+PROFESSIONAL QUALITY:
+- Ultra-high detail suitable for VR immersion
+- Consistent lighting throughout the 360° environment
+- Rich environmental storytelling in all directions
+- Professional photography-grade composition
+- Suitable for commercial VR applications
+
+`
+      break
+    case "stereographic":
+      formatInstructions = `Professional ${perspective || "little-planet"} stereographic projection. `
+      if (perspective === "little-planet") {
+        formatInstructions += `Create a perfect "tiny planet" effect with the ground curved into a miniature sphere at the bottom and sky surrounding it. Ensure perfect circular symmetry and seamless curvature. `
+      } else if (perspective === "tunnel") {
+        formatInstructions += `Create a dramatic tunnel effect with content curving inward toward the center point. Maintain perfect radial symmetry. `
+      } else {
+        formatInstructions += `Create a professional fisheye circular view with extreme wide-angle distortion and perfect circular boundary. `
+      }
+      break
+    case "cubemap":
+      formatInstructions = `Professional cubemap projection with six seamless faces for real-time 3D rendering. Each face must align perfectly with adjacent faces. `
+      break
+    case "cylindrical":
+      formatInstructions = `Professional cylindrical panoramic projection with seamless horizontal 360° wrapping and natural vertical perspective. `
+      break
   }
 
-  prompt += `, ${resolution} resolution, immersive environmental storytelling, VR-ready composition, optimized for virtual reality and panoramic display systems`
-
-  return prompt
+  return formatInstructions + basePrompt
 }
