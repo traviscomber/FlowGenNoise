@@ -3,19 +3,19 @@ import { type NextRequest, NextResponse } from "next/server"
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const url = searchParams.get("url")
-    const filename = searchParams.get("filename") || "download"
+    const imageUrl = searchParams.get("url")
 
-    if (!url) {
-      return NextResponse.json({ error: "URL parameter is required" }, { status: 400 })
+    if (!imageUrl) {
+      return NextResponse.json({ error: "Missing image URL" }, { status: 400 })
     }
 
-    console.log("📥 Download proxy request for:", url.substring(0, 50) + "...")
+    console.log("📥 Downloading image from:", imageUrl)
 
     // Fetch the image
-    const response = await fetch(url, {
+    const response = await fetch(imageUrl, {
       headers: {
-        "User-Agent": "FlowSketch-Art-Generator/1.0",
+        "User-Agent": "FlowSketch-Professional/1.0",
+        Accept: "image/*",
       },
     })
 
@@ -23,20 +23,32 @@ export async function GET(request: NextRequest) {
       throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`)
     }
 
-    const contentType = response.headers.get("content-type") || "application/octet-stream"
-    const buffer = await response.arrayBuffer()
+    const contentType = response.headers.get("content-type") || "image/png"
+    const imageBuffer = await response.arrayBuffer()
 
-    console.log("✅ Image fetched successfully, size:", buffer.byteLength)
+    console.log("✅ Image downloaded successfully")
+    console.log("📊 Content-Type:", contentType)
+    console.log("📏 Size:", imageBuffer.byteLength, "bytes")
 
-    return new NextResponse(buffer, {
+    // Return the image with proper headers
+    return new NextResponse(imageBuffer, {
+      status: 200,
       headers: {
         "Content-Type": contentType,
-        "Content-Disposition": `attachment; filename="${filename}"`,
-        "Content-Length": buffer.byteLength.toString(),
+        "Content-Length": imageBuffer.byteLength.toString(),
+        "Cache-Control": "public, max-age=31536000",
+        "Content-Disposition": 'attachment; filename="flowsketch-professional.png"',
       },
     })
   } catch (error: any) {
     console.error("❌ Download proxy failed:", error)
-    return NextResponse.json({ error: "Failed to download image: " + error.message }, { status: 500 })
+
+    return NextResponse.json(
+      {
+        error: error.message || "Failed to download image",
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 },
+    )
   }
 }

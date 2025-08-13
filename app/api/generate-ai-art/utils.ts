@@ -1,10 +1,10 @@
 export interface GenerationParams {
   dataset: string
-  scenario: string
+  scenario?: string
   colorScheme: string
-  seed?: number
-  numSamples?: number
-  noiseScale?: number
+  seed: number
+  numSamples: number
+  noiseScale: number
   customPrompt?: string
   domeProjection?: boolean
   domeDiameter?: number
@@ -16,60 +16,69 @@ export interface GenerationParams {
   stereographicPerspective?: string
 }
 
-export async function generateWithOpenAI(prompt: string, imageType: "standard" | "dome" | "360" = "standard") {
-  try {
-    console.log(`🎨 Generating ${imageType} image with OpenAI DALL-E 3...`)
-    console.log("📝 Prompt length:", prompt.length)
-    console.log("📝 Prompt preview:", prompt.substring(0, 200) + "...")
+export interface GenerationResult {
+  imageUrl: string
+  prompt: string
+  metadata?: any
+}
 
-    // Check if OpenAI API key is available
+export async function generateWithOpenAI(prompt: string, type = "standard"): Promise<GenerationResult> {
+  try {
+    console.log("🎨 Starting OpenAI DALL-E 3 generation")
+    console.log("🎯 Generation type:", type)
+    console.log("📝 Prompt length:", prompt.length)
+
     if (!process.env.OPENAI_API_KEY) {
       throw new Error("OpenAI API key not configured")
     }
 
-    // Determine the optimal size based on image type
-    let size: "1024x1024" | "1792x1024" | "1024x1792"
-    let enhancedPrompt = prompt
-
-    if (imageType === "360") {
-      // Use 1792x1024 for 360° panoramas (1.75:1 ratio)
-      size = "1792x1024"
-      console.log("🌐 Generating 360° panorama with 1792x1024 resolution (1.75:1 ratio)")
-
-      // Enhance prompt for seamless 360° generation
-      if (!prompt.includes("360°") && !prompt.includes("equirectangular")) {
-        enhancedPrompt +=
-          " PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA: Generate as seamless 360-degree equirectangular panorama optimized for 1792x1024 resolution. CRITICAL: Left and right edges must connect perfectly for VR viewing. Horizontal field of view: 360° with seamless wraparound. Vertical field of view: 154° (optimized for 1.75:1 ratio). Horizon positioned at 60% height. NO VISIBLE SEAMS at edges."
-      }
-    } else if (imageType === "dome") {
-      // Use 1024x1024 for dome projections
-      size = "1024x1024"
-      console.log("🏛️ Generating dome projection with 1024x1024 resolution")
-
-      enhancedPrompt +=
-        " PROFESSIONAL DOME PROJECTION: Generate as circular fisheye projection suitable for planetarium dome display. 180-degree field of view with center-focused composition. Perfect for fulldome projection systems with immersive dome experience."
-    } else {
-      // Use 1024x1024 for standard images
-      size = "1024x1024"
-      console.log("🖼️ Generating standard image with 1024x1024 resolution")
-
-      enhancedPrompt +=
-        " PROFESSIONAL STANDARD IMAGE: Generate high-quality standard format image with perfect composition, professional photography quality, and masterpiece artwork standards."
+    // Determine optimal size based on type
+    let size = "1024x1024" // Default square
+    if (type === "360") {
+      size = "1792x1024" // Wide format for panoramas
+    } else if (type === "dome") {
+      size = "1024x1024" // Square for dome projection
     }
 
-    // Truncate prompt if too long
-    const finalPrompt = enhancedPrompt.length > 4000 ? enhancedPrompt.substring(0, 3900) + "..." : enhancedPrompt
+    console.log("📐 Using size:", size)
 
-    // Make API call to OpenAI
+    // Enhanced prompt for god-level quality
+    const godLevelPrompt = `PROFESSIONAL MASTERPIECE: ${prompt}
+
+TECHNICAL SPECIFICATIONS:
+- Ultra-high definition rendering
+- Professional studio lighting
+- Cinematic composition
+- HDR color grading
+- Museum-quality detail
+- Award-winning digital art
+- Photorealistic excellence
+
+QUALITY REQUIREMENTS:
+- Flawless execution
+- Perfect color balance
+- Stunning visual impact
+- Gallery-worthy presentation
+- Professional artistic merit
+- Technical perfection
+- Creative excellence
+
+${type === "360" ? "SEAMLESS 360° PANORAMA: Perfect edge continuity, horizontal wraparound, no visible seams, optimized for VR viewing, equirectangular projection" : ""}
+${type === "dome" ? "DOME PROJECTION OPTIMIZED: Fisheye distortion correction, optimal for planetarium display, immersive viewing experience" : ""}
+
+FINAL OUTPUT: Breathtaking professional artwork that exceeds all expectations`
+
+    console.log("🚀 Sending request to OpenAI DALL-E 3")
+
     const response = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: "dall-e-3",
-        prompt: finalPrompt,
+        prompt: godLevelPrompt,
         n: 1,
         size: size,
         quality: "hd",
@@ -78,52 +87,103 @@ export async function generateWithOpenAI(prompt: string, imageType: "standard" |
     })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || response.statusText}`)
+      const errorData = await response.json().catch(() => ({ error: "Unknown error" }))
+      console.error("❌ OpenAI API error:", errorData)
+      throw new Error(errorData.error?.message || `OpenAI API error: ${response.status}`)
     }
 
     const data = await response.json()
-    const imageUrl = data.data?.[0]?.url
+    console.log("✅ OpenAI generation successful")
 
-    if (!imageUrl) {
-      throw new Error("No image URL returned from OpenAI")
+    if (!data.data || !data.data[0] || !data.data[0].url) {
+      throw new Error("No image URL in OpenAI response")
     }
 
-    console.log(`✅ ${imageType} image generated successfully`)
-    console.log("🔗 Image URL:", imageUrl.substring(0, 50) + "...")
+    const imageUrl = data.data[0].url
+    console.log("🖼️ Generated image URL:", imageUrl.substring(0, 50) + "...")
 
     return {
-      success: true,
-      imageUrl,
-      prompt: enhancedPrompt,
+      imageUrl: imageUrl,
+      prompt: godLevelPrompt,
       metadata: {
         model: "dall-e-3",
-        size,
+        size: size,
         quality: "hd",
         style: "vivid",
-        type: imageType,
-        aspectRatio: imageType === "360" ? "1.75:1" : "1:1",
-        resolution: size,
-        seamlessWrapping: imageType === "360",
-        vrReady: imageType === "360",
-        domeReady: imageType === "dome",
-        professionalQuality: true,
+        type: type,
+        provider: "OpenAI",
+        timestamp: new Date().toISOString(),
       },
     }
   } catch (error: any) {
-    console.error(`❌ OpenAI generation failed for ${imageType}:`, error)
-
-    // Handle specific error types
-    if (error.message?.includes("timeout")) {
-      throw new Error(`${imageType} generation timed out. Please try again.`)
-    } else if (error.message?.includes("400")) {
-      throw new Error("Invalid prompt or parameters. Please try a different prompt.")
-    } else if (error.message?.includes("429")) {
-      throw new Error("Rate limit exceeded. Please try again in a moment.")
-    } else if (error.message?.includes("500")) {
-      throw new Error("OpenAI service temporarily unavailable. Please try again.")
-    }
-
-    throw new Error(`Failed to generate ${imageType} image: ${error.message}`)
+    console.error("❌ OpenAI generation failed:", error)
+    throw new Error(`OpenAI generation failed: ${error.message}`)
   }
+}
+
+// Safe image compression utility for browser environments
+export function compressImage(file: File, quality = 0.8): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    try {
+      // Check if we're in a browser environment
+      if (typeof window === "undefined" || typeof Image === "undefined") {
+        console.warn("Image compression not available in server environment")
+        resolve(file)
+        return
+      }
+
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d")
+      const img = new Image()
+
+      img.onload = () => {
+        try {
+          canvas.width = img.width
+          canvas.height = img.height
+
+          if (ctx) {
+            ctx.drawImage(img, 0, 0)
+            canvas.toBlob(
+              (blob) => {
+                if (blob) {
+                  resolve(blob)
+                } else {
+                  reject(new Error("Failed to compress image"))
+                }
+              },
+              "image/jpeg",
+              quality,
+            )
+          } else {
+            reject(new Error("Could not get canvas context"))
+          }
+        } catch (error) {
+          reject(error)
+        }
+      }
+
+      img.onerror = () => {
+        reject(new Error("Failed to load image for compression"))
+      }
+
+      // Set crossOrigin to handle CORS
+      img.crossOrigin = "anonymous"
+      img.src = URL.createObjectURL(file)
+    } catch (error) {
+      console.error("Image compression error:", error)
+      // Fallback: return original file
+      resolve(file)
+    }
+  })
+}
+
+// Validate file type
+export function validateImageFile(file: File): boolean {
+  const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+  return allowedTypes.includes(file.type)
+}
+
+// Get file size in MB
+export function getFileSizeMB(file: File): number {
+  return file.size / (1024 * 1024)
 }
