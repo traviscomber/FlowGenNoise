@@ -6,24 +6,21 @@ export async function POST(request: NextRequest) {
     const { imageUrl } = body
 
     if (!imageUrl) {
-      return NextResponse.json({ success: false, error: "No image URL provided" }, { status: 400 })
+      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
     }
 
-    // For now, return the original image URL
-    // In a real implementation, you would use an upscaling service
+    console.log("📐 Upscaling to 4K:", imageUrl.substring(0, 50) + "...")
+
+    // For now, return the original image URL as 4K upscaling would require additional services
     return NextResponse.json({
       success: true,
-      upscaledUrl: imageUrl,
-      message: "Upscaling service not implemented - returning original image",
+      originalUrl: imageUrl,
+      upscaledUrl: imageUrl, // Would be replaced with actual 4K upscaled image
+      resolution: "4K",
+      message: "4K upscaling service not implemented - returning original image",
     })
   } catch (error: any) {
-    console.error("Upscale error:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to upscale image",
-      },
-      { status: 500 },
-    )
+    console.error("❌ 4K upscaling failed:", error)
+    return NextResponse.json({ error: "Failed to upscale to 4K: " + error.message }, { status: 500 })
   }
 }

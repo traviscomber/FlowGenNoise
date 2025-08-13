@@ -3,41 +3,40 @@ import { type NextRequest, NextResponse } from "next/server"
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const imageUrl = searchParams.get("url")
-    const filename = searchParams.get("filename") || "flowsketch-art.png"
+    const url = searchParams.get("url")
+    const filename = searchParams.get("filename") || "download"
 
-    if (!imageUrl) {
-      return NextResponse.json({ error: "No image URL provided" }, { status: 400 })
+    if (!url) {
+      return NextResponse.json({ error: "URL parameter is required" }, { status: 400 })
     }
 
-    console.log("Downloading image from:", imageUrl)
+    console.log("📥 Download proxy request for:", url.substring(0, 50) + "...")
 
     // Fetch the image
-    const imageResponse = await fetch(imageUrl, {
+    const response = await fetch(url, {
       headers: {
         "User-Agent": "FlowSketch-Art-Generator/1.0",
       },
     })
 
-    if (!imageResponse.ok) {
-      throw new Error(`Failed to fetch image: ${imageResponse.status}`)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`)
     }
 
-    const imageBuffer = await imageResponse.arrayBuffer()
-    const contentType = imageResponse.headers.get("content-type") || "image/png"
+    const contentType = response.headers.get("content-type") || "application/octet-stream"
+    const buffer = await response.arrayBuffer()
 
-    console.log("Image downloaded, size:", imageBuffer.byteLength, "bytes")
+    console.log("✅ Image fetched successfully, size:", buffer.byteLength)
 
-    // Return the image with appropriate headers
-    return new NextResponse(imageBuffer, {
+    return new NextResponse(buffer, {
       headers: {
         "Content-Type": contentType,
         "Content-Disposition": `attachment; filename="${filename}"`,
-        "Content-Length": imageBuffer.byteLength.toString(),
+        "Content-Length": buffer.byteLength.toString(),
       },
     })
   } catch (error: any) {
-    console.error("Download proxy error:", error)
-    return NextResponse.json({ error: error.message || "Failed to download image" }, { status: 500 })
+    console.error("❌ Download proxy failed:", error)
+    return NextResponse.json({ error: "Failed to download image: " + error.message }, { status: 500 })
   }
 }

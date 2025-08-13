@@ -6,26 +6,21 @@ export async function POST(request: NextRequest) {
     const { imageUrl, scale = 2 } = body
 
     if (!imageUrl) {
-      return NextResponse.json({ success: false, error: "No image URL provided" }, { status: 400 })
+      return NextResponse.json({ error: "Image URL is required" }, { status: 400 })
     }
 
-    // For now, return the original image URL
-    // In a real implementation, you would use an upscaling service
+    console.log("🔍 Upscaling image:", imageUrl.substring(0, 50) + "...")
+
+    // For now, return the original image URL as upscaling would require additional services
     return NextResponse.json({
       success: true,
-      upscaledUrl: imageUrl,
-      originalSize: "1024x1024",
-      upscaledSize: `${1024 * scale}x${1024 * scale}`,
+      originalUrl: imageUrl,
+      upscaledUrl: imageUrl, // Would be replaced with actual upscaled image
+      scale: scale,
       message: "Upscaling service not implemented - returning original image",
     })
   } catch (error: any) {
-    console.error("Upscale error:", error)
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to upscale image",
-      },
-      { status: 500 },
-    )
+    console.error("❌ Image upscaling failed:", error)
+    return NextResponse.json({ error: "Failed to upscale image: " + error.message }, { status: 500 })
   }
 }

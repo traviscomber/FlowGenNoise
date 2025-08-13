@@ -1,630 +1,563 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Loader2, Download, Globe, Mountain, RefreshCw } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-import Image from "next/image"
+import { Separator } from "@/components/ui/separator"
+import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { toast } from "@/hooks/use-toast"
+import { Building, Globe, Settings, Zap, Eye, Download, Loader2, RotateCcw } from "lucide-react"
 
-interface DomeParams {
-  dataset: string
-  scenario: string
-  colorScheme: string
-  seed: number
-  numSamples: number
-  noiseScale: number
-  customPrompt: string
-  domeProjection: boolean
-  domeDiameter: number
-  domeResolution: string
-  projectionType: string
-  panoramic360: boolean
-  panoramaResolution: string
-  panoramaFormat: string
-  stereographicPerspective: string
-}
+export default function Dome360Planner() {
+  // Core settings
+  const [dataset, setDataset] = useState("vietnamese")
+  const [scenario, setScenario] = useState("temple-of-literature")
+  const [colorScheme, setColorScheme] = useState("cosmic")
 
-export function Dome360Planner() {
-  const { toast } = useToast()
-  const [params, setParams] = useState<DomeParams>({
-    dataset: "vietnamese",
-    scenario: "temple-of-literature",
-    colorScheme: "cosmic",
-    seed: Math.floor(Math.random() * 10000),
-    numSamples: 4000,
-    noiseScale: 0.08,
-    customPrompt: "",
-    domeProjection: true,
-    domeDiameter: 15,
-    domeResolution: "4K",
-    projectionType: "fisheye",
-    panoramic360: true,
-    panoramaResolution: "8K",
-    panoramaFormat: "equirectangular",
-    stereographicPerspective: "little-planet",
-  })
+  // Dome settings
+  const [domeDiameter, setDomeDiameter] = useState(20)
+  const [domeHeight, setDomeHeight] = useState(12)
+  const [domeTilt, setDomeTilt] = useState([45])
+  const [projectionType, setProjectionType] = useState("fisheye")
+  const [domeResolution, setDomeResolution] = useState("4K")
 
+  // 360° settings
+  const [panoramaFormat, setPanoramaFormat] = useState<"equirectangular" | "stereographic" | "cubemap">(
+    "equirectangular",
+  )
+  const [panoramaResolution, setPanoramaResolution] = useState("8K")
+  const [fieldOfView, setFieldOfView] = useState([360])
+  const [verticalFOV, setVerticalFOV] = useState([180])
+
+  // Preview
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [generatedImages, setGeneratedImages] = useState<{
-    main?: string
-    dome?: string
-    panorama?: string
-  }>({})
-  const [generationDetails, setGenerationDetails] = useState<any>(null)
+  const [activeView, setActiveView] = useState<"dome" | "360">("dome")
 
-  const updateParam = (key: keyof DomeParams, value: any) => {
-    setParams((prev) => {
-      const newParams = { ...prev, [key]: value }
+  const datasetOptions = [
+    { value: "vietnamese", label: "Vietnamese Heritage" },
+    { value: "indonesian", label: "Indonesian Heritage" },
+    { value: "thailand", label: "Thailand" },
+    { value: "spirals", label: "Spirals" },
+    { value: "fractal", label: "Fractal" },
+    { value: "mandelbrot", label: "Mandelbrot" },
+    { value: "julia", label: "Julia" },
+    { value: "lorenz", label: "Lorenz" },
+    { value: "hyperbolic", label: "Hyperbolic" },
+    { value: "gaussian", label: "Gaussian" },
+    { value: "cellular", label: "Cellular" },
+    { value: "voronoi", label: "Voronoi" },
+    { value: "perlin", label: "Perlin" },
+    { value: "diffusion", label: "Reaction-Diffusion" },
+    { value: "wave", label: "Wave" },
+    { value: "escher", label: "Escher" },
+    { value: "8bit", label: "8bit" },
+    { value: "bosch", label: "Bosch" },
+  ]
 
-      // Reset scenario to first available option when dataset changes
-      if (key === "dataset") {
-        const scenarios = getScenarios(value)
-        newParams.scenario = scenarios[0]?.value || "pure"
-      }
+  const vietnameseScenarios = [
+    { value: "pure", label: "Pure Mathematical" },
+    { value: "temple-of-literature", label: "🏛️ Temple of Literature - First University" },
+    { value: "jade-emperor-pagoda", label: "🏮 Jade Emperor Pagoda - Taoist Temple" },
+    { value: "imperial-city-hue", label: "👑 Imperial City Hue - Royal Palace" },
+    { value: "halong-bay", label: "🏔️ Ha Long Bay - Limestone Karsts" },
+    { value: "sapa-terraces", label: "🌾 Sapa Rice Terraces - Mountain Agriculture" },
+    { value: "mekong-delta", label: "🌊 Mekong Delta - River Life" },
+  ]
 
-      return newParams
-    })
+  const indonesianScenarios = [
+    { value: "pure", label: "Pure Mathematical" },
+    { value: "garuda", label: "Garuda Wisnu Kencana" },
+    { value: "wayang", label: "Wayang Kulit" },
+    { value: "batik", label: "Batik Patterns" },
+    { value: "borobudur", label: "Borobudur Temple" },
+    { value: "javanese", label: "Javanese Culture" },
+    { value: "sundanese", label: "Sundanese Heritage" },
+    { value: "batak", label: "Batak Traditions" },
+    { value: "dayak", label: "Dayak Culture" },
+    { value: "acehnese", label: "Acehnese Heritage" },
+    { value: "minangkabau", label: "Minangkabau Culture" },
+    { value: "balinese-tribe", label: "Balinese Traditions" },
+    { value: "papuans", label: "Papuan Heritage" },
+    { value: "baduy", label: "Baduy Tribe" },
+    { value: "orang-rimba", label: "Orang Rimba" },
+    { value: "hongana-manyawa", label: "Hongana Manyawa" },
+    { value: "asmat", label: "Asmat Art" },
+    { value: "komodo", label: "Dragon Legends" },
+    { value: "dance", label: "Traditional Dance" },
+    { value: "volcanoes", label: "Volcanic Landscapes" },
+    { value: "temples", label: "Sacred Temples" },
+  ]
+
+  const thailandScenarios = [
+    { value: "pure", label: "Pure Mathematical" },
+    { value: "garuda", label: "🦅 Garuda - Divine Eagle" },
+    { value: "naga", label: "🐉 Naga - Serpent Dragon" },
+    { value: "erawan", label: "🐘 Erawan - Three-Headed Elephant" },
+    { value: "karen", label: "🏔️ Karen Hill Tribe" },
+    { value: "hmong", label: "🎭 Hmong Mountain People" },
+    { value: "ayutthaya", label: "🏛️ Ayutthaya Ancient Capital" },
+    { value: "sukhothai", label: "🏺 Sukhothai Dawn Kingdom" },
+    { value: "songkran", label: "💦 Songkran Water Festival" },
+    { value: "loy-krathong", label: "🕯️ Loy Krathong Floating Lights" },
+    { value: "coronation", label: "👑 Royal Coronation Ceremony" },
+    { value: "wat-pho", label: "🧘 Wat Pho Reclining Buddha" },
+    { value: "wat-arun", label: "🌅 Wat Arun Temple of Dawn" },
+    { value: "muay-thai", label: "🥊 Muay Thai Ancient Boxing" },
+    { value: "classical-dance", label: "💃 Thai Classical Dance" },
+    { value: "golden-triangle", label: "🌊 Golden Triangle Mekong" },
+    { value: "floating-markets", label: "🛶 Traditional Floating Markets" },
+  ]
+
+  // Get current scenarios based on dataset
+  const getCurrentScenarios = () => {
+    if (dataset === "vietnamese") return vietnameseScenarios
+    if (dataset === "indonesian") return indonesianScenarios
+    if (dataset === "thailand") return thailandScenarios
+    return [{ value: "cosmic", label: "Cosmic" }]
   }
 
-  const generateRandomSeed = () => {
-    updateParam("seed", Math.floor(Math.random() * 10000))
-  }
-
-  // Get scenarios based on selected dataset
-  const getScenarios = (dataset?: string) => {
-    const currentDataset = dataset || params.dataset
-    if (currentDataset === "vietnamese") {
-      return [
-        { value: "pure", label: "Pure Mathematical" },
-        { value: "temple-of-literature", label: "🏛️ Temple of Literature - First University" },
-        { value: "jade-emperor-pagoda", label: "🏮 Jade Emperor Pagoda - Taoist Temple" },
-        { value: "imperial-city-hue", label: "👑 Imperial City Hue - Royal Palace" },
-        { value: "tomb-of-khai-dinh", label: "⚱️ Tomb of Khai Dinh - Imperial Mausoleum" },
-        { value: "sapa-terraces", label: "🌾 Sapa Rice Terraces - Mountain Agriculture" },
-        { value: "mekong-delta", label: "🌊 Mekong Delta - River Life" },
-        { value: "tet-celebration", label: "🎊 Tet Celebration - Lunar New Year" },
-        { value: "mid-autumn-festival", label: "🏮 Mid-Autumn Festival - Lantern Night" },
-        { value: "water-puppetry", label: "🎭 Water Puppetry - Traditional Theater" },
-        { value: "lacquerware-craft", label: "🎨 Lacquerware Craft - Traditional Art" },
-        { value: "bach-dang-victory", label: "⚔️ Bach Dang Victory - Naval Battle" },
-        { value: "trung-sisters-rebellion", label: "🛡️ Trung Sisters - Female Warriors" },
-        { value: "halong-bay", label: "🏔️ Ha Long Bay - Limestone Karsts" },
-        { value: "phong-nha-caves", label: "🕳️ Phong Nha Caves - Underground Wonder" },
-        { value: "floating-market-mekong", label: "🛶 Floating Market - River Commerce" },
-        { value: "pho-street-culture", label: "🍜 Pho Street Culture - Culinary Heritage" },
-        { value: "ca-tru-performance", label: "🎵 Ca Tru Performance - Ancient Music" },
-        { value: "quan-ho-folk-songs", label: "🎶 Quan Ho Folk Songs - Traditional Singing" },
-      ]
-    } else if (currentDataset === "thailand") {
-      return [
-        { value: "pure", label: "Pure Mathematical" },
-        { value: "garuda", label: "🦅 Garuda - Divine Eagle" },
-        { value: "naga", label: "🐉 Naga - Serpent Dragon" },
-        { value: "erawan", label: "🐘 Erawan - Three-Headed Elephant" },
-        { value: "karen", label: "🏔️ Karen Hill Tribe" },
-        { value: "hmong", label: "🎭 Hmong Mountain People" },
-        { value: "ayutthaya", label: "🏛️ Ayutthaya Ancient Capital" },
-        { value: "sukhothai", label: "🏺 Sukhothai Dawn Kingdom" },
-        { value: "songkran", label: "💦 Songkran Water Festival" },
-        { value: "loy-krathong", label: "🕯️ Loy Krathong Floating Lights" },
-        { value: "coronation", label: "👑 Royal Coronation Ceremony" },
-        { value: "wat-pho", label: "🧘 Wat Pho Reclining Buddha" },
-        { value: "wat-arun", label: "🌅 Wat Arun Temple of Dawn" },
-        { value: "muay-thai", label: "🥊 Muay Thai Ancient Boxing" },
-        { value: "classical-dance", label: "💃 Thai Classical Dance" },
-        { value: "golden-triangle", label: "🌊 Golden Triangle Mekong" },
-        { value: "floating-markets", label: "🛶 Traditional Floating Markets" },
-      ]
-    } else if (currentDataset === "indonesian") {
-      return [
-        { value: "pure", label: "Pure Mathematical" },
-        { value: "garuda", label: "🦅 Garuda Wisnu Kencana" },
-        { value: "wayang", label: "🎭 Wayang Shadow Puppets" },
-        { value: "batik", label: "🎨 Traditional Batik" },
-        { value: "borobudur", label: "🏛️ Borobudur Temple" },
-        { value: "javanese", label: "🎵 Javanese Culture" },
-        { value: "balinese-tribe", label: "🌺 Balinese Hindu" },
-        { value: "dayak", label: "🏞️ Dayak Borneo" },
-        { value: "papuans", label: "🪶 Papuan Tribes" },
-        { value: "komodo", label: "🦎 Komodo Dragons" },
-        { value: "volcanoes", label: "🌋 Ring of Fire" },
-        { value: "temples", label: "🏯 Sacred Temples" },
-      ]
-    } else {
-      return [
-        { value: "cosmic", label: "Deep Space" },
-        { value: "underwater", label: "Ocean Depths" },
-        { value: "crystalline", label: "Crystal Caverns" },
-        { value: "forest", label: "Enchanted Forest" },
-        { value: "aurora", label: "Aurora Skies" },
-        { value: "volcanic", label: "Volcanic Landscape" },
-      ]
-    }
-  }
-
-  const generateArt = async () => {
+  const generatePreview = useCallback(async () => {
     setIsGenerating(true)
-    setGeneratedImages({})
-    setGenerationDetails(null)
-
     try {
-      console.log("🏛️ Starting dome/360° art generation with params:", params)
-
-      const response = await fetch("/api/generate-ai-art", {
+      const res = await fetch("/api/generate-ai-art", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          dataset,
+          scenario:
+            dataset === "vietnamese" || dataset === "indonesian" || dataset === "thailand" ? scenario : undefined,
+          colorScheme,
+          domeProjection: activeView === "dome",
+          domeDiameter,
+          domeResolution,
+          projectionType,
+          panoramic360: activeView === "360",
+          panoramaResolution,
+          panoramaFormat,
+        }),
       })
 
-      console.log("📡 API response status:", response.status)
+      if (!res.ok) throw new Error("Generation failed")
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: "Unknown error" }))
-        console.error("❌ API error:", errorData)
-        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
-      }
+      const data = await res.json()
+      if (!data.success) throw new Error(data.error)
 
-      const result = await response.json()
-      console.log("✅ Generation successful:", result.success)
-
-      if (result.success && result.image) {
-        setGeneratedImages({
-          main: result.image,
-          dome: result.domeImage || result.image, // Fallback to main if dome missing
-          panorama: result.panoramaImage || result.image, // Fallback to main if panorama missing
-        })
-        setGenerationDetails(result)
-
-        // Count how many unique versions we got
-        const versions = []
-        if (result.image) versions.push("original")
-        if (result.domeImage && result.domeImage !== result.image) versions.push("dome tunnel")
-        if (result.panoramaImage && result.panoramaImage !== result.image) versions.push("360° VR")
-
-        toast({
-          title: "Immersive Art Generated Successfully!",
-          description: `Created ${versions.length} version${versions.length > 1 ? "s" : ""}: ${versions.join(", ")}`,
-        })
-      } else {
-        throw new Error(result.error || "Failed to generate image")
-      }
-    } catch (error: any) {
-      console.error("💥 Generation failed:", error)
+      setPreviewImage(activeView === "dome" ? data.domeImage : data.panoramaImage)
       toast({
-        title: "Generation Failed",
-        description: error.message || "An unexpected error occurred",
+        title: "Preview Generated",
+        description: `${activeView === "dome" ? "Dome" : "360°"} preview ready`,
+      })
+    } catch (error: any) {
+      toast({
+        title: "Generation failed",
+        description: error.message,
         variant: "destructive",
       })
     } finally {
       setIsGenerating(false)
     }
-  }
+  }, [
+    dataset,
+    scenario,
+    colorScheme,
+    activeView,
+    domeDiameter,
+    domeResolution,
+    projectionType,
+    panoramaResolution,
+    panoramaFormat,
+  ])
 
-  const downloadImage = async (imageUrl: string, suffix: string) => {
-    if (!imageUrl) return
-
-    try {
-      const response = await fetch(imageUrl)
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = `flowsketch-${suffix}-${params.seed}.png`
-      a.click()
-      window.URL.revokeObjectURL(url)
-
-      toast({
-        title: "Download Started",
-        description: `Your ${suffix} artwork is being downloaded`,
-      })
-    } catch (error) {
-      toast({
-        title: "Download Failed",
-        description: "Could not download the image",
-        variant: "destructive",
-      })
-    }
-  }
+  const resetSettings = useCallback(() => {
+    setDomeDiameter(20)
+    setDomeHeight(12)
+    setDomeTilt([45])
+    setFieldOfView([360])
+    setVerticalFOV([180])
+    setPanoramaFormat("equirectangular")
+    toast({
+      title: "Settings Reset",
+      description: "All parameters reset to defaults",
+    })
+  }, [])
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Controls Panel */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Globe className="w-5 h-5 mr-2" />
-            Dome & 360° Planner
-          </CardTitle>
-          <CardDescription>
-            Create immersive artwork for planetariums, dome theaters, and VR experiences. Generates all 3 versions:
-            Original, Dome Tunnel, and 360° VR.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Custom Prompt */}
-          <div className="space-y-2">
-            <Label htmlFor="customPrompt">Immersive Description (Optional)</Label>
-            <Textarea
-              id="customPrompt"
-              placeholder="Describe the immersive experience you want to create..."
-              value={params.customPrompt}
-              onChange={(e) => updateParam("customPrompt", e.target.value)}
-              rows={3}
-            />
-          </div>
-
-          {/* Dataset and Scenario */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Cultural Dataset</Label>
-              <Select value={params.dataset} onValueChange={(value) => updateParam("dataset", value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="vietnamese">🇻🇳 Vietnamese Heritage</SelectItem>
-                  <SelectItem value="thailand">🇹🇭 Thailand - Gods & Ceremonies</SelectItem>
-                  <SelectItem value="indonesian">🇮🇩 Indonesian Heritage</SelectItem>
-                  <SelectItem value="spirals">🌀 Cosmic Spirals</SelectItem>
-                  <SelectItem value="fractal">🌿 Fractal Trees</SelectItem>
-                  <SelectItem value="mandelbrot">🔢 Mandelbrot Zoom</SelectItem>
-                  <SelectItem value="julia">🎨 Julia Landscapes</SelectItem>
-                  <SelectItem value="lorenz">🦋 Chaos Attractors</SelectItem>
-                  <SelectItem value="voronoi">💎 Crystal Cells</SelectItem>
-                  <SelectItem value="wave">🌊 Wave Fields</SelectItem>
-                </SelectContent>
-              </Select>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-3">
+            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl">
+              <Building className="h-8 w-8 text-white" />
             </div>
-
-            <div className="space-y-2">
-              <Label>Immersive Scenario</Label>
-              <Select value={params.scenario} onValueChange={(value) => updateParam("scenario", value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {getScenarios().map((scenario) => (
-                    <SelectItem key={scenario.value} value={scenario.value}>
-                      {scenario.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Professional Dome & 360° Planner
+            </h1>
           </div>
+          <p className="text-slate-300 text-lg max-w-2xl mx-auto">
+            Specialized planning tool for dome projections and 360° panoramic experiences with professional-grade
+            output.
+          </p>
+        </div>
 
-          {/* Color Scheme */}
-          <div className="space-y-2">
-            <Label>Color Palette</Label>
-            <Select value={params.colorScheme} onValueChange={(value) => updateParam("colorScheme", value)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="cosmic">🌌 Cosmic Nebula</SelectItem>
-                <SelectItem value="aurora">🌈 Aurora Borealis</SelectItem>
-                <SelectItem value="plasma">⚡ Electric Plasma</SelectItem>
-                <SelectItem value="thermal">🔥 Thermal Vision</SelectItem>
-                <SelectItem value="spectral">🎨 Full Spectrum</SelectItem>
-                <SelectItem value="bioluminescent">🌟 Bioluminescent</SelectItem>
-                <SelectItem value="crystalline">💎 Crystal Prisms</SelectItem>
-                <SelectItem value="golden">✨ Royal Gold</SelectItem>
-                <SelectItem value="temple">🏛️ Temple Sacred</SelectItem>
-                <SelectItem value="festival">🎊 Festival Bright</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Dome Settings */}
-          <div className="space-y-4">
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h4 className="font-medium text-blue-900 mb-2">Dome Projection Settings</h4>
-              <p className="text-sm text-blue-700 mb-3">Configure dome tunnel effect for planetarium projection</p>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Dome Diameter: {params.domeDiameter}m</Label>
-                  <Slider
-                    value={[params.domeDiameter]}
-                    onValueChange={([value]) => updateParam("domeDiameter", value)}
-                    min={5}
-                    max={30}
-                    step={1}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Resolution</Label>
-                  <Select value={params.domeResolution} onValueChange={(value) => updateParam("domeResolution", value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="2K">2K (2048x2048)</SelectItem>
-                      <SelectItem value="4K">4K (4096x4096)</SelectItem>
-                      <SelectItem value="8K">8K (8192x8192)</SelectItem>
-                    </SelectContent>
-                  </Select>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Controls */}
+          <Card className="bg-slate-800 border-slate-700">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-slate-100">
+                <Settings className="h-5 w-5" />
+                Professional Configuration
+              </CardTitle>
+              <CardDescription className="text-slate-400">Configure dome and 360° parameters</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* View Type */}
+              <div className="space-y-2">
+                <Label className="text-slate-300">Output Type</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant={activeView === "dome" ? "default" : "outline"}
+                    onClick={() => setActiveView("dome")}
+                    className="flex items-center gap-2"
+                  >
+                    <Building className="h-4 w-4" />
+                    Dome
+                  </Button>
+                  <Button
+                    variant={activeView === "360" ? "default" : "outline"}
+                    onClick={() => setActiveView("360")}
+                    className="flex items-center gap-2"
+                  >
+                    <Globe className="h-4 w-4" />
+                    360°
+                  </Button>
                 </div>
               </div>
 
-              <div className="space-y-2 mt-4">
-                <Label>Projection Type</Label>
-                <Select value={params.projectionType} onValueChange={(value) => updateParam("projectionType", value)}>
-                  <SelectTrigger>
+              {/* Dataset */}
+              <div className="space-y-2">
+                <Label className="text-slate-300">Dataset</Label>
+                <Select value={dataset} onValueChange={setDataset}>
+                  <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="fisheye">🐟 Fisheye Tunnel</SelectItem>
-                    <SelectItem value="equidistant">📐 Equidistant Tunnel</SelectItem>
-                    <SelectItem value="stereographic">🌍 Little Planet Effect</SelectItem>
+                  <SelectContent className="bg-slate-700 border-slate-600 max-h-72">
+                    {datasetOptions.map((d) => (
+                      <SelectItem key={d.value} value={d.value}>
+                        {d.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
-            </div>
 
-            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-              <h4 className="font-medium text-green-900 mb-2">360° VR Settings</h4>
-              <p className="text-sm text-green-700 mb-3">Configure panoramic settings for VR and immersive viewing</p>
-              <div className="grid grid-cols-2 gap-4">
+              {/* Scenario */}
+              {(dataset === "vietnamese" || dataset === "indonesian" || dataset === "thailand") && (
                 <div className="space-y-2">
-                  <Label>Resolution</Label>
-                  <Select
-                    value={params.panoramaResolution}
-                    onValueChange={(value) => updateParam("panoramaResolution", value)}
-                  >
-                    <SelectTrigger>
+                  <Label className="text-slate-300">Cultural Scenario</Label>
+                  <Select value={scenario} onValueChange={setScenario}>
+                    <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="4K">4K</SelectItem>
-                      <SelectItem value="8K">8K</SelectItem>
-                      <SelectItem value="16K">16K</SelectItem>
+                    <SelectContent className="bg-slate-700 border-slate-600 max-h-72">
+                      {getCurrentScenarios().map((sc) => (
+                        <SelectItem key={sc.value} value={sc.value}>
+                          {sc.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
+              )}
 
-                <div className="space-y-2">
-                  <Label>Format</Label>
-                  <Select value={params.panoramaFormat} onValueChange={(value) => updateParam("panoramaFormat", value)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="equirectangular">📐 Equirectangular</SelectItem>
-                      <SelectItem value="stereographic">🌍 Stereographic</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              {/* Color Scheme */}
+              <div className="space-y-2">
+                <Label className="text-slate-300">Color Palette</Label>
+                <Select value={colorScheme} onValueChange={setColorScheme}>
+                  <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-700 border-slate-600 max-h-72">
+                    {[
+                      "plasma",
+                      "quantum",
+                      "cosmic",
+                      "thermal",
+                      "spectral",
+                      "crystalline",
+                      "bioluminescent",
+                      "aurora",
+                      "metallic",
+                      "prismatic",
+                      "monochromatic",
+                      "infrared",
+                      "lava",
+                      "futuristic",
+                      "forest",
+                      "ocean",
+                      "sunset",
+                      "arctic",
+                      "neon",
+                      "vintage",
+                      "toxic",
+                      "ember",
+                      "lunar",
+                      "tidal",
+                    ].map((c) => (
+                      <SelectItem key={c} value={c}>
+                        {c[0].toUpperCase() + c.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            </div>
-          </div>
 
-          {/* Numerical Parameters */}
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>Seed: {params.seed}</Label>
-                <Button onClick={generateRandomSeed} variant="outline" size="sm">
-                  <RefreshCw className="w-3 h-3 mr-1" />
-                  Random
+              <Separator className="bg-slate-700" />
+
+              {/* Dome Settings */}
+              {activeView === "dome" && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Building className="h-4 w-4 text-blue-400" />
+                    <Label className="text-slate-300 font-medium">Dome Configuration</Label>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label className="text-slate-300 text-sm">Diameter (m)</Label>
+                      <Input
+                        type="number"
+                        value={domeDiameter}
+                        onChange={(e) => setDomeDiameter(Number(e.target.value))}
+                        className="bg-slate-700 border-slate-600 text-slate-100"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-slate-300 text-sm">Height (m)</Label>
+                      <Input
+                        type="number"
+                        value={domeHeight}
+                        onChange={(e) => setDomeHeight(Number(e.target.value))}
+                        className="bg-slate-700 border-slate-600 text-slate-100"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-slate-300 text-sm">Dome Tilt: {domeTilt[0]}°</Label>
+                    <Slider value={domeTilt} onValueChange={setDomeTilt} max={90} min={0} step={5} className="w-full" />
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3">
+                    <Select value={projectionType} onValueChange={setProjectionType}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-700 border-slate-600">
+                        <SelectItem value="fisheye">Fisheye Professional</SelectItem>
+                        <SelectItem value="equidistant">Equidistant</SelectItem>
+                        <SelectItem value="stereographic">Stereographic</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={domeResolution} onValueChange={setDomeResolution}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-700 border-slate-600">
+                        <SelectItem value="2K">2K Standard</SelectItem>
+                        <SelectItem value="4K">4K Professional</SelectItem>
+                        <SelectItem value="8K">8K Cinema</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+
+              {/* 360° Settings */}
+              {activeView === "360" && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Globe className="h-4 w-4 text-green-400" />
+                    <Label className="text-slate-300 font-medium">360° Configuration</Label>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-slate-300 text-sm">Horizontal FOV: {fieldOfView[0]}°</Label>
+                    <Slider
+                      value={fieldOfView}
+                      onValueChange={setFieldOfView}
+                      max={360}
+                      min={180}
+                      step={30}
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-slate-300 text-sm">Vertical FOV: {verticalFOV[0]}°</Label>
+                    <Slider
+                      value={verticalFOV}
+                      onValueChange={setVerticalFOV}
+                      max={180}
+                      min={90}
+                      step={15}
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3">
+                    <Select value={panoramaFormat} onValueChange={(v: any) => setPanoramaFormat(v)}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-700 border-slate-600">
+                        <SelectItem value="equirectangular">
+                          Equirectangular <span className="text-green-400">(Seamless)</span>
+                        </SelectItem>
+                        <SelectItem value="stereographic">Stereographic</SelectItem>
+                        <SelectItem value="cubemap">Cubemap</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={panoramaResolution} onValueChange={setPanoramaResolution}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-700 border-slate-600">
+                        <SelectItem value="4K">4K Professional</SelectItem>
+                        <SelectItem value="8K">8K Ultra</SelectItem>
+                        <SelectItem value="16K">16K Cinema</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {panoramaFormat === "equirectangular" && (
+                    <div className="p-3 bg-green-500/10 border border-green-500/20 rounded text-xs text-green-300">
+                      <div className="flex items-center gap-1 mb-1">
+                        <Zap className="h-3 w-3" />
+                        <span className="font-semibold">Professional Seamless Wrapping</span>
+                      </div>
+                      Advanced prompting ensures perfect horizontal continuity. Left and right edges connect seamlessly
+                      for professional VR applications.
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <Separator className="bg-slate-700" />
+
+              {/* Actions */}
+              <div className="space-y-2">
+                <Button
+                  onClick={generatePreview}
+                  disabled={isGenerating}
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Generating {activeView === "dome" ? "Dome" : "360°"}...
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="h-4 w-4 mr-2" />
+                      Generate {activeView === "dome" ? "Dome" : "360°"} Preview
+                    </>
+                  )}
+                </Button>
+
+                <Button variant="outline" onClick={resetSettings} className="w-full border-slate-600 bg-transparent">
+                  <RotateCcw className="h-4 w-4 mr-2" />
+                  Reset Settings
                 </Button>
               </div>
-              <Slider
-                value={[params.seed]}
-                onValueChange={([value]) => updateParam("seed", value)}
-                min={1}
-                max={10000}
-                step={1}
-              />
-            </div>
+            </CardContent>
+          </Card>
 
-            <div className="space-y-2">
-              <Label>Data Points: {params.numSamples.toLocaleString()}</Label>
-              <Slider
-                value={[params.numSamples]}
-                onValueChange={([value]) => updateParam("numSamples", value)}
-                min={1000}
-                max={8000}
-                step={100}
-              />
-            </div>
+          {/* Preview */}
+          <div className="lg:col-span-2">
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-slate-100">
+                  {activeView === "dome" ? <Building className="h-5 w-5" /> : <Globe className="h-5 w-5" />}
+                  {activeView === "dome" ? "Dome Projection Preview" : "360° Panorama Preview"}
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Professional {activeView === "dome" ? "dome projection" : "360° panoramic"} visualization
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {previewImage ? (
+                  <div className="space-y-4">
+                    {activeView === "360" && panoramaFormat === "equirectangular" ? (
+                      <div className="w-full">
+                        <AspectRatio ratio={1.75} className="bg-slate-900 rounded-lg overflow-hidden">
+                          <img
+                            src={previewImage || "/placeholder.svg"}
+                            alt="Professional 360° Seamless Panorama"
+                            className="w-full h-full object-contain"
+                            style={{
+                              backgroundColor: "#1e293b",
+                            }}
+                          />
+                        </AspectRatio>
+                        <div className="mt-2 text-center">
+                          <Badge variant="outline" className="border-slate-600 text-slate-300">
+                            Professional 1.75:1 Equirectangular • Seamless Wrapping
+                          </Badge>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="aspect-square bg-slate-900 rounded-lg overflow-hidden">
+                        <img
+                          src={previewImage || "/placeholder.svg"}
+                          alt={`Professional ${activeView === "dome" ? "Dome" : "360°"}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
 
-            <div className="space-y-2">
-              <Label>Noise Scale: {params.noiseScale}</Label>
-              <Slider
-                value={[params.noiseScale]}
-                onValueChange={([value]) => updateParam("noiseScale", value)}
-                min={0}
-                max={0.2}
-                step={0.01}
-              />
-            </div>
+                    <div className="grid grid-cols-1 gap-2">
+                      <Button
+                        onClick={() => {
+                          const a = document.createElement("a")
+                          a.href = previewImage
+                          a.download = `flowsketch-${activeView}-professional-${Date.now()}.png`
+                          a.click()
+                        }}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Download {activeView === "dome" ? "Dome" : "360°"} Professional
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="aspect-square bg-slate-900 rounded-lg flex items-center justify-center">
+                    <div className="text-center text-slate-400">
+                      {activeView === "dome" ? (
+                        <Building className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                      ) : (
+                        <Globe className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                      )}
+                      <p>Professional {activeView === "dome" ? "dome projection" : "360° panorama"} will appear here</p>
+                      <p className="text-xs mt-2">Configure settings and generate preview</p>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
-
-          {/* Generate Button */}
-          <Button onClick={generateArt} disabled={isGenerating} className="w-full" size="lg">
-            {isGenerating ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Creating All 3 Versions...
-              </>
-            ) : (
-              <>
-                <Globe className="w-4 h-4 mr-2" />
-                Generate All 3 Versions
-              </>
-            )}
-          </Button>
-          <p className="text-xs text-muted-foreground text-center">
-            Generates Original + Dome Tunnel + 360° VR versions
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Results Panel */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Generated Immersive Art</CardTitle>
-          <CardDescription>All 3 versions: Original, Dome Tunnel, and 360° VR</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isGenerating && (
-            <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
-              <div className="text-center">
-                <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">Creating all 3 immersive versions...</p>
-                <p className="text-xs text-muted-foreground mt-1">Original → Dome Tunnel → 360° VR</p>
-              </div>
-            </div>
-          )}
-
-          {(generatedImages.main || generatedImages.dome || generatedImages.panorama) && (
-            <Tabs defaultValue="main" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="main">Original</TabsTrigger>
-                <TabsTrigger value="dome">Dome Tunnel</TabsTrigger>
-                <TabsTrigger value="panorama">360° VR</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="main" className="space-y-4">
-                {generatedImages.main && (
-                  <>
-                    <div className="relative">
-                      <Image
-                        src={generatedImages.main || "/placeholder.svg"}
-                        alt="Generated standard mathematical art"
-                        width={512}
-                        height={512}
-                        className="w-full rounded-lg shadow-lg"
-                        unoptimized
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Badge variant="secondary">Original Mathematical Art</Badge>
-                      <p className="text-sm text-muted-foreground">
-                        Standard mathematical artwork with algorithmic beauty and geometric precision
-                      </p>
-                    </div>
-                    <Button onClick={() => downloadImage(generatedImages.main!, "original")} className="w-full">
-                      <Download className="w-4 h-4 mr-2" />
-                      Download Original Version
-                    </Button>
-                  </>
-                )}
-              </TabsContent>
-
-              <TabsContent value="dome" className="space-y-4">
-                {generatedImages.dome && (
-                  <>
-                    <div className="relative">
-                      <Image
-                        src={generatedImages.dome || "/placeholder.svg"}
-                        alt="Generated dome tunnel projection art"
-                        width={512}
-                        height={512}
-                        className="w-full rounded-lg shadow-lg"
-                        unoptimized
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Badge variant="secondary">
-                        <Mountain className="w-3 h-3 mr-1" />
-                        {params.domeDiameter}m Dome Tunnel • {params.domeResolution}
-                      </Badge>
-                      <p className="text-sm text-muted-foreground">
-                        Fisheye tunnel effect optimized for {params.domeDiameter}m diameter planetarium dome with
-                        dramatic depth illusion
-                      </p>
-                    </div>
-                    <Button onClick={() => downloadImage(generatedImages.dome!, "dome-tunnel")} className="w-full">
-                      <Download className="w-4 h-4 mr-2" />
-                      Download Dome Tunnel Version
-                    </Button>
-                  </>
-                )}
-              </TabsContent>
-
-              <TabsContent value="panorama" className="space-y-4">
-                {generatedImages.panorama && (
-                  <>
-                    <div className="relative">
-                      <Image
-                        src={generatedImages.panorama || "/placeholder.svg"}
-                        alt="Generated 360° panorama mathematical art"
-                        width={512}
-                        height={params.panoramaFormat === "equirectangular" ? 256 : 512}
-                        className="w-full rounded-lg shadow-lg"
-                        unoptimized
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Badge variant="secondary">
-                        <Globe className="w-3 h-3 mr-1" />
-                        360° VR • {params.panoramaResolution} • {params.panoramaFormat}
-                      </Badge>
-                      <p className="text-sm text-muted-foreground">
-                        {params.panoramaFormat === "equirectangular"
-                          ? "Seamless 360° mathematical art ready for VR headsets and immersive viewing"
-                          : `${params.stereographicPerspective} stereographic mathematical projection`}
-                      </p>
-                    </div>
-                    <Button onClick={() => downloadImage(generatedImages.panorama!, "360-vr")} className="w-full">
-                      <Download className="w-4 h-4 mr-2" />
-                      Download 360° VR Version
-                    </Button>
-                  </>
-                )}
-              </TabsContent>
-            </Tabs>
-          )}
-
-          {generationDetails && (
-            <div className="mt-4 space-y-2">
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">{generationDetails.provider}</Badge>
-                <Badge variant="secondary">{generationDetails.model}</Badge>
-                <Badge variant="secondary">{generationDetails.estimatedFileSize}</Badge>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Generated with {params.numSamples.toLocaleString()} data points for immersive display
-              </p>
-              <div className="grid grid-cols-3 gap-2 text-xs">
-                <div className="text-center p-2 bg-blue-50 rounded">
-                  <div className="font-medium">Original</div>
-                  <div className="text-muted-foreground">{generationDetails.mainImage}</div>
-                </div>
-                <div className="text-center p-2 bg-purple-50 rounded">
-                  <div className="font-medium">Dome</div>
-                  <div className="text-muted-foreground">{generationDetails.domeImage}</div>
-                </div>
-                <div className="text-center p-2 bg-green-50 rounded">
-                  <div className="font-medium">360° VR</div>
-                  <div className="text-muted-foreground">{generationDetails.panoramaImage}</div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {!isGenerating && !generatedImages.main && (
-            <div className="flex items-center justify-center h-64 bg-muted rounded-lg">
-              <div className="text-center">
-                <Globe className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">Configure your settings and generate all 3 versions</p>
-                <p className="text-xs text-muted-foreground mt-1">Original + Dome Tunnel + 360° VR</p>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }
+
+// Named export for compatibility
+export { Dome360Planner }

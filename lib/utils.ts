@@ -99,3 +99,83 @@ export function throttle<T extends (...args: any[]) => any>(func: T, limit: numb
     }
   }
 }
+
+// Safe image compression utility for production
+export async function compressImage(file: File, quality = 0.8): Promise<File> {
+  return new Promise((resolve, reject) => {
+    try {
+      // Create canvas element
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d")
+
+      if (!ctx) {
+        reject(new Error("Canvas context not available"))
+        return
+      }
+
+      // Create image element
+      const img = new Image()
+
+      img.onload = () => {
+        try {
+          // Set canvas dimensions
+          canvas.width = img.width
+          canvas.height = img.height
+
+          // Draw image to canvas
+          ctx.drawImage(img, 0, 0)
+
+          // Convert to blob with compression
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                const compressedFile = new File([blob], file.name, {
+                  type: file.type,
+                  lastModified: Date.now(),
+                })
+                resolve(compressedFile)
+              } else {
+                reject(new Error("Failed to compress image"))
+              }
+            },
+            file.type,
+            quality,
+          )
+        } catch (error) {
+          reject(error)
+        }
+      }
+
+      img.onerror = () => {
+        reject(new Error("Failed to load image"))
+      }
+
+      // Load image
+      img.src = URL.createObjectURL(file)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+// Validate image file
+export function validateImageFile(file: File): { valid: boolean; error?: string } {
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/tiff"]
+  const maxSize = 50 * 1024 * 1024 // 50MB
+
+  if (!allowedTypes.includes(file.type)) {
+    return {
+      valid: false,
+      error: "Unsupported file type. Please use JPG, PNG, WebP, HEIC, or TIFF.",
+    }
+  }
+
+  if (file.size > maxSize) {
+    return {
+      valid: false,
+      error: "File too large. Maximum size is 50MB.",
+    }
+  }
+
+  return { valid: true }
+}
