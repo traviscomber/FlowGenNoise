@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { Separator } from "@/components/ui/separator"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { toast } from "@/hooks/use-toast"
 import {
   Download,
@@ -27,7 +29,6 @@ import {
   Sparkles,
   Eye,
   RefreshCw,
-  Wand2,
   Play,
   Square,
   Globe,
@@ -38,6 +39,8 @@ import {
   ArrowUp,
   ArrowDown,
   Orbit,
+  AlertCircle,
+  Edit3,
 } from "lucide-react"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios } from "@/lib/ai-prompt"
 
@@ -93,9 +96,14 @@ export default function FlowArtGenerator() {
   const [domeImage, setDomeImage] = useState<GeneratedImage | null>(null)
   const [panoramaImage, setPanoramaImage] = useState<GeneratedImage | null>(null)
 
-  // Dialog states
-  const [promptPreview, setPromptPreview] = useState("")
+  // Prompt enhancement state
   const [isPromptDialogOpen, setIsPromptDialogOpen] = useState(false)
+  const [enhancedPrompt, setEnhancedPrompt] = useState("")
+  const [isEnhancing, setIsEnhancing] = useState(false)
+  const [promptStats, setPromptStats] = useState<any>(null)
+  const [editablePrompt, setEditablePrompt] = useState("")
+  const [variationType, setVariationType] = useState<"slight" | "moderate" | "dramatic">("moderate")
+  const [error, setError] = useState<string | null>(null)
 
   // Refs
   const abortControllerRef = useRef<AbortController | null>(null)
@@ -111,6 +119,7 @@ export default function FlowArtGenerator() {
     if (firstScenario) {
       setScenario(firstScenario)
     }
+    setError(null)
   }, [])
 
   // Generate random parameters
@@ -130,53 +139,78 @@ export default function FlowArtGenerator() {
     setProjectionType(projectionTypes[Math.floor(Math.random() * projectionTypes.length)])
     setPanoramaFormat(panoramaFormats[Math.floor(Math.random() * panoramaFormats.length)])
 
+    setError(null)
     toast({
       title: "Parameters Randomized",
       description: "New random values generated for all parameters",
     })
   }, [])
 
-  // Preview prompt
-  const previewPrompt = useCallback(async () => {
-    try {
-      const response = await fetch("/api/preview-ai-prompt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          dataset,
-          scenario,
-          colorScheme,
-          seed,
-          numSamples,
-          noiseScale,
-          customPrompt,
-          panoramic360: false,
-          projectionType,
-          panoramaFormat,
-        }),
-      })
+  // Preview and enhance prompt
+  const previewPrompt = useCallback(
+    async (generationType: "standard" | "dome" | "360" = "standard") => {
+      setIsEnhancing(true)
+      setError(null)
 
-      const data = await response.json()
+      try {
+        const response = await fetch("/api/enhance-prompt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            dataset,
+            scenario,
+            colorScheme,
+            seed,
+            numSamples,
+            noiseScale,
+            customPrompt,
+            panoramic360: generationType === "360",
+            panoramaFormat,
+            projectionType,
+            variationType,
+            generationType,
+          }),
+        })
 
-      if (data.success) {
-        setPromptPreview(data.prompt)
-        setIsPromptDialogOpen(true)
-      } else {
+        if (!response.ok) {
+          throw new Error(`Failed to enhance prompt: ${response.statusText}`)
+        }
+
+        const data = await response.json()
+
+        if (data.success) {
+          setEnhancedPrompt(data.enhancedPrompt)
+          setEditablePrompt(data.enhancedPrompt)
+          setPromptStats(data.statistics)
+          setIsPromptDialogOpen(true)
+        } else {
+          throw new Error(data.error || "Failed to enhance prompt")
+        }
+      } catch (error: any) {
+        console.error("Prompt enhancement error:", error)
+        setError(error.message || "Failed to enhance prompt")
         toast({
-          title: "Preview Failed",
-          description: data.error || "Failed to generate prompt preview",
+          title: "Enhancement Failed",
+          description: error.message || "Failed to enhance prompt",
           variant: "destructive",
         })
+      } finally {
+        setIsEnhancing(false)
       }
-    } catch (error) {
-      console.error("Preview error:", error)
-      toast({
-        title: "Preview Error",
-        description: "Failed to preview prompt",
-        variant: "destructive",
-      })
-    }
-  }, [dataset, scenario, colorScheme, seed, numSamples, noiseScale, customPrompt, projectionType, panoramaFormat])
+    },
+    [
+      dataset,
+      scenario,
+      colorScheme,
+      seed,
+      numSamples,
+      noiseScale,
+      customPrompt,
+      panoramaFormat,
+      projectionType,
+      variationType,
+    ],
+  )
 
   // Main generation function - generates all 3 types
   const generateAllTypes = useCallback(async () => {
@@ -185,6 +219,7 @@ export default function FlowArtGenerator() {
     setIsGenerating(true)
     setGenerationProgress(0)
     setGenerationStatus("Preparing generation...")
+    setError(null)
 
     // Clear previous images
     setStandardImage(null)
@@ -208,7 +243,7 @@ export default function FlowArtGenerator() {
           seed,
           numSamples,
           noiseScale,
-          customPrompt,
+          customPrompt: editablePrompt || customPrompt,
           projectionType,
           panoramaFormat,
           generateAll: true, // This triggers batch generation
@@ -254,6 +289,7 @@ export default function FlowArtGenerator() {
         })
       } else {
         setGenerationStatus("Generation failed")
+        setError(error.message || "Failed to generate images")
         toast({
           title: "Generation Failed",
           description: error.message || "Failed to generate images",
@@ -273,6 +309,7 @@ export default function FlowArtGenerator() {
     numSamples,
     noiseScale,
     customPrompt,
+    editablePrompt,
     projectionType,
     panoramaFormat,
     isGenerating,
@@ -286,6 +323,7 @@ export default function FlowArtGenerator() {
       setIsGenerating(true)
       setGenerationProgress(0)
       setGenerationStatus(`Generating ${type} image...`)
+      setError(null)
 
       // Create abort controller
       abortControllerRef.current = new AbortController()
@@ -303,7 +341,7 @@ export default function FlowArtGenerator() {
             seed,
             numSamples,
             noiseScale,
-            customPrompt,
+            customPrompt: editablePrompt || customPrompt,
             projectionType,
             panoramaFormat,
             type: type,
@@ -364,6 +402,7 @@ export default function FlowArtGenerator() {
           })
         } else {
           setGenerationStatus("Generation failed")
+          setError(error.message || "Failed to generate image")
           toast({
             title: "Generation Failed",
             description: error.message || "Failed to generate image",
@@ -384,6 +423,7 @@ export default function FlowArtGenerator() {
       numSamples,
       noiseScale,
       customPrompt,
+      editablePrompt,
       projectionType,
       panoramaFormat,
       isGenerating,
@@ -441,9 +481,24 @@ export default function FlowArtGenerator() {
           FlowSketch Art Generator
         </h1>
         <p className="text-muted-foreground">
-          Professional AI-powered art generation with Standard, Dome, and 360° Panorama modes
+          Professional AI-powered art generation with ChatGPT-enhanced prompts and multiple output formats
         </p>
+        <div className="flex justify-center gap-2">
+          <Badge variant="secondary">
+            <Sparkles className="w-3 h-3 mr-1" />
+            ChatGPT Enhanced
+          </Badge>
+          <Badge variant="secondary">Standard • Dome • 360°</Badge>
+        </div>
       </div>
+
+      {/* Error Alert */}
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Controls Panel */}
@@ -620,6 +675,113 @@ export default function FlowArtGenerator() {
                 />
               </div>
 
+              {/* Prompt Enhancement Section */}
+              <Separator />
+              <div className="space-y-4">
+                <Label className="text-sm font-semibold flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  ChatGPT Prompt Enhancement
+                </Label>
+
+                <div className="space-y-2">
+                  <Label className="text-sm">Enhancement Level</Label>
+                  <Select
+                    value={variationType}
+                    onValueChange={(value: "slight" | "moderate" | "dramatic") => setVariationType(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="slight">🔹 Slight Enhancement</SelectItem>
+                      <SelectItem value="moderate">🔸 Moderate Enhancement</SelectItem>
+                      <SelectItem value="dramatic">🔶 Dramatic Enhancement</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Dialog open={isPromptDialogOpen} onOpenChange={setIsPromptDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      onClick={() => previewPrompt(activeTab as "standard" | "dome" | "360")}
+                      variant="outline"
+                      className="w-full"
+                      disabled={isEnhancing}
+                    >
+                      {isEnhancing ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Enhancing with ChatGPT...
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="h-4 w-4 mr-2" />
+                          Preview & Enhance Prompt
+                        </>
+                      )}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <Sparkles className="h-5 w-5" />
+                        ChatGPT Enhanced Prompt
+                      </DialogTitle>
+                      <DialogDescription>
+                        Review and edit the ChatGPT-enhanced prompt before generation. The prompt has been optimized for
+                        artistic quality and cultural authenticity.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      {promptStats && (
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <strong>Original:</strong> {promptStats.original.characters} chars,{" "}
+                            {promptStats.original.words} words
+                          </div>
+                          <div>
+                            <strong>Enhanced:</strong> {promptStats.enhanced.characters} chars,{" "}
+                            {promptStats.enhanced.words} words
+                          </div>
+                          <div>
+                            <strong>Enhancement:</strong> {variationType} level
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium flex items-center gap-2">
+                          <Edit3 className="h-4 w-4" />
+                          Enhanced Prompt (Editable)
+                        </Label>
+                        <Textarea
+                          value={editablePrompt}
+                          onChange={(e) => setEditablePrompt(e.target.value)}
+                          rows={12}
+                          className="font-mono text-sm"
+                        />
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-muted-foreground">
+                          {editablePrompt.length} / 4000 characters
+                          {editablePrompt.length > 4000 && <span className="text-red-500 ml-2">⚠️ Too long</span>}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button variant="outline" onClick={() => setEditablePrompt(enhancedPrompt)}>
+                            Reset to Enhanced
+                          </Button>
+                          <Button onClick={() => setIsPromptDialogOpen(false)}>
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            Use This Prompt
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+
               {/* Action Buttons */}
               <div className="space-y-2">
                 <Button onClick={generateAllTypes} disabled={isGenerating} className="w-full" size="lg">
@@ -661,50 +823,10 @@ export default function FlowArtGenerator() {
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <Button onClick={randomizeParameters} variant="outline" size="sm">
-                    <RefreshCw className="h-4 w-4 mr-1" />
-                    Randomize
-                  </Button>
-                  <Dialog open={isPromptDialogOpen} onOpenChange={setIsPromptDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button onClick={previewPrompt} variant="outline" size="sm">
-                        <Eye className="h-4 w-4 mr-1" />
-                        Preview
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
-                      <DialogHeader>
-                        <DialogTitle>Prompt Preview</DialogTitle>
-                        <DialogDescription>Preview the generated prompt before creating your artwork</DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <Textarea
-                          value={promptPreview}
-                          onChange={(e) => setPromptPreview(e.target.value)}
-                          rows={10}
-                          className="font-mono text-sm"
-                        />
-                        <div className="flex justify-between items-center">
-                          <Badge variant="secondary">{promptPreview.length} characters</Badge>
-                          <Button
-                            onClick={() => {
-                              setCustomPrompt(promptPreview)
-                              setIsPromptDialogOpen(false)
-                              toast({
-                                title: "Prompt Applied",
-                                description: "Custom prompt has been set",
-                              })
-                            }}
-                          >
-                            <Wand2 className="h-4 w-4 mr-2" />
-                            Use This Prompt
-                          </Button>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
+                <Button onClick={randomizeParameters} variant="outline" className="w-full bg-transparent">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Randomize Parameters
+                </Button>
 
                 {isGenerating && (
                   <Button onClick={cancelGeneration} variant="destructive" size="sm" className="w-full">
@@ -737,7 +859,9 @@ export default function FlowArtGenerator() {
                 <Play className="h-5 w-5" />
                 Generated Artwork
               </CardTitle>
-              <CardDescription>View your generated Standard, Dome, and 360° Panorama images</CardDescription>
+              <CardDescription>
+                View your generated Standard, Dome, and 360° Panorama images with ChatGPT-enhanced prompts
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -771,7 +895,10 @@ export default function FlowArtGenerator() {
                       </AspectRatio>
                       <div className="flex justify-between items-center">
                         <div className="space-y-1">
-                          <Badge variant="secondary">{standardImage.format}</Badge>
+                          <div className="flex gap-2">
+                            <Badge variant="secondary">{standardImage.format}</Badge>
+                            <Badge variant="outline">Professional Quality</Badge>
+                          </div>
                           <p className="text-sm text-muted-foreground">{standardImage.resolution || "1024×1024"}</p>
                         </div>
                         <Button
@@ -788,6 +915,7 @@ export default function FlowArtGenerator() {
                       <div className="text-center space-y-2">
                         <Square className="h-12 w-12 mx-auto text-muted-foreground" />
                         <p className="text-muted-foreground">No standard image generated yet</p>
+                        <p className="text-sm text-muted-foreground">Perfect for general use and display</p>
                       </div>
                     </div>
                   )}

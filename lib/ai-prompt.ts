@@ -595,13 +595,13 @@ export function buildPrompt(params: {
     basePrompt +=
       "GODLEVEL professional quality with museum-grade attention to detail, award-winning artistic composition, masterpiece-level execution, ultra-high definition clarity, immersive cinematic lighting with dramatic shadows and highlights, breathtaking visual impact, "
 
-    // Add 360° specific instructions if needed - ENHANCED FOR PERFECT SEAMLESS WRAPPING
+    // Add 360° specific instructions if needed - ULTRA-ENHANCED FOR PERFECT SEAMLESS WRAPPING
     if (params.panoramic360 && params.panoramaFormat === "equirectangular") {
       basePrompt +=
-        "CRITICAL GODLEVEL SEAMLESS 360° EQUIRECTANGULAR PANORAMA: Perfect horizontal wraparound where left edge connects flawlessly with right edge with mathematical precision, zero visible seams or discontinuities, continuous circular environment with professional cylindrical projection mapping, optimized for premium VR viewing with museum-quality seamless wrapping, "
+        "🌟 CRITICAL GODLEVEL SEAMLESS 360° EQUIRECTANGULAR PANORAMA MASTERY: Perfect horizontal wraparound where LEFT EDGE connects with RIGHT EDGE with MATHEMATICAL PERFECTION - zero visible seams, discontinuities, or artifacts. Continuous circular environment with professional cylindrical projection mapping. The image must wrap seamlessly as if painted on a perfect cylinder where the left boundary equals the right boundary with pixel-perfect precision. Optimized for premium VR viewing with museum-quality flawless seamless wrapping that creates one unbroken immersive world. ZERO tolerance for edge discontinuity - the wraparound must be completely invisible and professionally seamless. "
     } else if (params.panoramic360 && params.panoramaFormat === "stereographic") {
       basePrompt +=
-        "GODLEVEL STEREOGRAPHIC 360° PROJECTION: Perfect circular fisheye distortion with entire 360-degree view compressed into flawless circular frame, center focus with mathematically precise radial distortion, professional stereographic mapping with award-winning precision, "
+        "🌟 GODLEVEL STEREOGRAPHIC 360° PROJECTION MASTERY: Perfect circular fisheye distortion with entire 360-degree view compressed into flawless circular frame, center focus with mathematically precise radial distortion, professional stereographic mapping with award-winning precision, "
     }
 
     // Add final godlevel quality tags
