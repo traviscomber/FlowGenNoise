@@ -35,6 +35,9 @@ import {
   Loader2,
   CheckCircle,
   XCircle,
+  ArrowUp,
+  ArrowDown,
+  Orbit,
 } from "lucide-react"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios } from "@/lib/ai-prompt"
 
@@ -47,7 +50,8 @@ interface GeneratedImage {
   vrOptimized?: boolean
   seamlessWrapping?: boolean
   planetariumOptimized?: boolean
-  fisheyePerspective?: boolean
+  projectionType?: string
+  panoramaFormat?: string
 }
 
 interface BatchGenerationResult {
@@ -74,6 +78,11 @@ export default function FlowArtGenerator() {
   const [numSamples, setNumSamples] = useState(4000)
   const [noiseScale, setNoiseScale] = useState(0.08)
   const [customPrompt, setCustomPrompt] = useState("")
+
+  // Projection settings
+  const [projectionType, setProjectionType] = useState("fisheye")
+  const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
+
   const [isGenerating, setIsGenerating] = useState(false)
   const [generationProgress, setGenerationProgress] = useState(0)
   const [generationStatus, setGenerationStatus] = useState("")
@@ -115,6 +124,12 @@ export default function FlowArtGenerator() {
     const randomColor = colorKeys[Math.floor(Math.random() * colorKeys.length)]
     setColorScheme(randomColor)
 
+    // Random projection types
+    const projectionTypes = ["fisheye", "tunnel-up", "tunnel-down", "little-planet"]
+    const panoramaFormats = ["equirectangular", "stereographic"]
+    setProjectionType(projectionTypes[Math.floor(Math.random() * projectionTypes.length)])
+    setPanoramaFormat(panoramaFormats[Math.floor(Math.random() * panoramaFormats.length)])
+
     toast({
       title: "Parameters Randomized",
       description: "New random values generated for all parameters",
@@ -136,6 +151,8 @@ export default function FlowArtGenerator() {
           noiseScale,
           customPrompt,
           panoramic360: false,
+          projectionType,
+          panoramaFormat,
         }),
       })
 
@@ -159,7 +176,7 @@ export default function FlowArtGenerator() {
         variant: "destructive",
       })
     }
-  }, [dataset, scenario, colorScheme, seed, numSamples, noiseScale, customPrompt])
+  }, [dataset, scenario, colorScheme, seed, numSamples, noiseScale, customPrompt, projectionType, panoramaFormat])
 
   // Main generation function - generates all 3 types
   const generateAllTypes = useCallback(async () => {
@@ -192,6 +209,8 @@ export default function FlowArtGenerator() {
           numSamples,
           noiseScale,
           customPrompt,
+          projectionType,
+          panoramaFormat,
           generateAll: true, // This triggers batch generation
         }),
         signal: abortControllerRef.current.signal,
@@ -246,7 +265,18 @@ export default function FlowArtGenerator() {
       setGenerationProgress(0)
       abortControllerRef.current = null
     }
-  }, [dataset, scenario, colorScheme, seed, numSamples, noiseScale, customPrompt, isGenerating])
+  }, [
+    dataset,
+    scenario,
+    colorScheme,
+    seed,
+    numSamples,
+    noiseScale,
+    customPrompt,
+    projectionType,
+    panoramaFormat,
+    isGenerating,
+  ])
 
   // Generate single image type
   const generateSingleType = useCallback(
@@ -274,6 +304,8 @@ export default function FlowArtGenerator() {
             numSamples,
             noiseScale,
             customPrompt,
+            projectionType,
+            panoramaFormat,
             type: type,
             generateAll: false,
           }),
@@ -298,7 +330,8 @@ export default function FlowArtGenerator() {
             vrOptimized: data.vrOptimized,
             seamlessWrapping: data.seamlessWrapping,
             planetariumOptimized: data.planetariumOptimized,
-            fisheyePerspective: data.fisheyePerspective,
+            projectionType: data.projectionType,
+            panoramaFormat: data.panoramaFormat,
           }
 
           // Set the appropriate image
@@ -343,7 +376,18 @@ export default function FlowArtGenerator() {
         abortControllerRef.current = null
       }
     },
-    [dataset, scenario, colorScheme, seed, numSamples, noiseScale, customPrompt, isGenerating],
+    [
+      dataset,
+      scenario,
+      colorScheme,
+      seed,
+      numSamples,
+      noiseScale,
+      customPrompt,
+      projectionType,
+      panoramaFormat,
+      isGenerating,
+    ],
   )
 
   // Cancel generation
@@ -467,8 +511,76 @@ export default function FlowArtGenerator() {
                 </Select>
               </div>
 
+              {/* Projection Settings */}
+              <div className="space-y-4 border-t pt-4">
+                <Label className="text-sm font-semibold">Projection Settings</Label>
+
+                {/* Dome Projection Type */}
+                <div className="space-y-2">
+                  <Label className="text-sm">Dome Projection</Label>
+                  <Select value={projectionType} onValueChange={setProjectionType}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fisheye">
+                        <div className="flex items-center gap-2">
+                          <CircleDot className="h-4 w-4" />
+                          Fisheye
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="tunnel-up">
+                        <div className="flex items-center gap-2">
+                          <ArrowUp className="h-4 w-4" />
+                          Tunnel Up
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="tunnel-down">
+                        <div className="flex items-center gap-2">
+                          <ArrowDown className="h-4 w-4" />
+                          Tunnel Down
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="little-planet">
+                        <div className="flex items-center gap-2">
+                          <Orbit className="h-4 w-4" />
+                          Little Planet
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* 360° Panorama Format */}
+                <div className="space-y-2">
+                  <Label className="text-sm">360° Format</Label>
+                  <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="equirectangular">
+                        <div className="flex items-center gap-2">
+                          <Globe className="h-4 w-4" />
+                          Equirectangular
+                          <Badge variant="outline" className="ml-2 text-xs">
+                            Seamless
+                          </Badge>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="stereographic">
+                        <div className="flex items-center gap-2">
+                          <CircleDot className="h-4 w-4" />
+                          Stereographic
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
               {/* Parameters */}
-              <div className="space-y-4">
+              <div className="space-y-4 border-t pt-4">
                 <div className="space-y-2">
                   <Label>Seed: {seed}</Label>
                   <Slider value={[seed]} onValueChange={(value) => setSeed(value[0])} max={9999} min={1} step={1} />
@@ -696,7 +808,7 @@ export default function FlowArtGenerator() {
                           <div className="flex gap-2">
                             <Badge variant="secondary">{domeImage.format}</Badge>
                             {domeImage.planetariumOptimized && <Badge variant="outline">Planetarium Ready</Badge>}
-                            {domeImage.fisheyePerspective && <Badge variant="outline">Fisheye</Badge>}
+                            <Badge variant="outline">{domeImage.projectionType || projectionType}</Badge>
                           </div>
                           <p className="text-sm text-muted-foreground">1024×1024 • Dome Projection</p>
                         </div>
@@ -711,6 +823,7 @@ export default function FlowArtGenerator() {
                       <div className="text-center space-y-2">
                         <CircleDot className="h-12 w-12 mx-auto text-muted-foreground" />
                         <p className="text-muted-foreground">No dome projection generated yet</p>
+                        <p className="text-xs text-muted-foreground">Current: {projectionType}</p>
                       </div>
                     </div>
                   )}
@@ -732,8 +845,9 @@ export default function FlowArtGenerator() {
                             <Badge variant="secondary">{panoramaImage.format}</Badge>
                             {panoramaImage.vrOptimized && <Badge variant="outline">VR Ready</Badge>}
                             {panoramaImage.seamlessWrapping && <Badge variant="outline">Seamless</Badge>}
+                            <Badge variant="outline">{panoramaImage.panoramaFormat || panoramaFormat}</Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground">1792×1024 • Equirectangular</p>
+                          <p className="text-sm text-muted-foreground">1792×1024 • 360° Panorama</p>
                         </div>
                         <Button onClick={() => downloadImage(panoramaImage.imageUrl, "flowsketch-360.jpg")} size="sm">
                           <Download className="h-4 w-4 mr-2" />
@@ -746,6 +860,7 @@ export default function FlowArtGenerator() {
                       <div className="text-center space-y-2">
                         <Globe className="h-12 w-12 mx-auto text-muted-foreground" />
                         <p className="text-muted-foreground">No 360° panorama generated yet</p>
+                        <p className="text-xs text-muted-foreground">Current: {panoramaFormat}</p>
                       </div>
                     </div>
                   )}

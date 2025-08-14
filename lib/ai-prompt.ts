@@ -526,6 +526,7 @@ export function buildPrompt(params: {
   customPrompt?: string
   panoramic360?: boolean
   panoramaFormat?: string
+  projectionType?: string
 }) {
   try {
     // If custom prompt is provided, use it

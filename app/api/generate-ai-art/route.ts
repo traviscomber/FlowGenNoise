@@ -48,11 +48,11 @@ export async function POST(request: NextRequest) {
 
         console.log("📝 Base prompt generated:", basePrompt.substring(0, 200) + "...")
 
-        // Generate all 3 types in parallel
+        // Generate all 3 types in parallel with their specific parameters
         const [standardResult, domeResult, panoramaResult] = await Promise.all([
-          generateWithOpenAI(basePrompt, "standard", signal),
-          generateWithOpenAI(basePrompt, "dome", signal),
-          generateWithOpenAI(basePrompt, "360", signal),
+          generateWithOpenAI(basePrompt, "standard", params, signal),
+          generateWithOpenAI(basePrompt, "dome", params, signal),
+          generateWithOpenAI(basePrompt, "360", params, signal),
         ])
 
         clearTimeout(timeoutId)
@@ -73,17 +73,18 @@ export async function POST(request: NextRequest) {
               imageUrl: domeResult.imageUrl,
               prompt: domeResult.prompt,
               aspectRatio: "1:1",
-              format: "Dome Projection",
+              format: `Dome ${params.projectionType || "Fisheye"}`,
               planetariumOptimized: true,
-              fisheyePerspective: true,
+              projectionType: params.projectionType || "fisheye",
             },
             panorama: {
               imageUrl: panoramaResult.imageUrl,
               prompt: panoramaResult.prompt,
               aspectRatio: "1.75:1",
-              format: "Equirectangular Panorama",
+              format: `${params.panoramaFormat === "stereographic" ? "Stereographic" : "Equirectangular"} Panorama`,
               vrOptimized: true,
-              seamlessWrapping: true,
+              seamlessWrapping: params.panoramaFormat === "equirectangular",
+              panoramaFormat: params.panoramaFormat || "equirectangular",
             },
           },
           provider: "OpenAI DALL-E 3",
@@ -130,8 +131,8 @@ export async function POST(request: NextRequest) {
 
       console.log("📝 Generated prompt:", prompt.substring(0, 200) + "...")
 
-      // Generate the single image
-      const result = await generateWithOpenAI(prompt, generationType as "standard" | "dome" | "360")
+      // Generate the single image with parameters
+      const result = await generateWithOpenAI(prompt, generationType as "standard" | "dome" | "360", params)
 
       console.log("✅ Single image generated successfully")
 
@@ -153,16 +154,17 @@ export async function POST(request: NextRequest) {
       if (generationType === "360") {
         Object.assign(response, {
           aspectRatio: "1.75:1",
-          format: "Equirectangular Panorama",
+          format: `${params.panoramaFormat === "stereographic" ? "Stereographic" : "Equirectangular"} Panorama`,
           vrOptimized: true,
-          seamlessWrapping: true,
+          seamlessWrapping: params.panoramaFormat === "equirectangular",
+          panoramaFormat: params.panoramaFormat || "equirectangular",
         })
       } else if (generationType === "dome") {
         Object.assign(response, {
           aspectRatio: "1:1",
-          format: "Dome Projection",
+          format: `Dome ${params.projectionType || "Fisheye"}`,
           planetariumOptimized: true,
-          fisheyePerspective: true,
+          projectionType: params.projectionType || "fisheye",
         })
       } else {
         Object.assign(response, {

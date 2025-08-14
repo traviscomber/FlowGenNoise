@@ -9,7 +9,19 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { toast } from "@/hooks/use-toast"
-import { Download, Settings, Sparkles, RefreshCw, Globe, CircleDot, Loader2 } from "lucide-react"
+import {
+  Download,
+  Settings,
+  Sparkles,
+  RefreshCw,
+  Globe,
+  CircleDot,
+  Loader2,
+  ArrowUp,
+  ArrowDown,
+  Orbit,
+  Palette,
+} from "lucide-react"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios } from "@/lib/ai-prompt"
 
 interface GeneratedImage {
@@ -17,6 +29,10 @@ interface GeneratedImage {
   prompt: string
   aspectRatio: string
   format: string
+  projectionType?: string
+  panoramaFormat?: string
+  seamlessWrapping?: boolean
+  planetariumOptimized?: boolean
 }
 
 export default function Dome360Planner() {
@@ -27,7 +43,11 @@ export default function Dome360Planner() {
   const [seed, setSeed] = useState(1234)
   const [numSamples, setNumSamples] = useState(4000)
   const [noiseScale, setNoiseScale] = useState(0.08)
-  const [domeTilt, setDomeTilt] = useState(45)
+
+  // Projection settings
+  const [projectionType, setProjectionType] = useState("fisheye")
+  const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
+
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImage, setGeneratedImage] = useState<GeneratedImage | null>(null)
   const [generationType, setGenerationType] = useState<"dome" | "360">("dome")
@@ -50,12 +70,17 @@ export default function Dome360Planner() {
     setSeed(Math.floor(Math.random() * 10000))
     setNumSamples(Math.floor(Math.random() * 6000) + 2000)
     setNoiseScale(Math.random() * 0.15 + 0.05)
-    setDomeTilt(Math.floor(Math.random() * 91))
 
     // Random color scheme
     const colorKeys = Object.keys(COLOR_SCHEMES)
     const randomColor = colorKeys[Math.floor(Math.random() * colorKeys.length)]
     setColorScheme(randomColor)
+
+    // Random projection types
+    const projectionTypes = ["fisheye", "tunnel-up", "tunnel-down", "little-planet"]
+    const panoramaFormats = ["equirectangular", "stereographic"]
+    setProjectionType(projectionTypes[Math.floor(Math.random() * projectionTypes.length)])
+    setPanoramaFormat(panoramaFormats[Math.floor(Math.random() * panoramaFormats.length)])
 
     toast({
       title: "Parameters Randomized",
@@ -81,7 +106,8 @@ export default function Dome360Planner() {
           numSamples,
           noiseScale,
           type: generationType,
-          domeTilt,
+          projectionType,
+          panoramaFormat,
         }),
       })
 
@@ -93,6 +119,10 @@ export default function Dome360Planner() {
           prompt: data.prompt,
           aspectRatio: data.aspectRatio || (generationType === "360" ? "1.75:1" : "1:1"),
           format: data.format || (generationType === "360" ? "360° Panorama" : "Dome Projection"),
+          projectionType: data.projectionType,
+          panoramaFormat: data.panoramaFormat,
+          seamlessWrapping: data.seamlessWrapping,
+          planetariumOptimized: data.planetariumOptimized,
         })
 
         toast({
@@ -112,7 +142,18 @@ export default function Dome360Planner() {
     } finally {
       setIsGenerating(false)
     }
-  }, [dataset, scenario, colorScheme, seed, numSamples, noiseScale, generationType, domeTilt, isGenerating])
+  }, [
+    dataset,
+    scenario,
+    colorScheme,
+    seed,
+    numSamples,
+    noiseScale,
+    generationType,
+    projectionType,
+    panoramaFormat,
+    isGenerating,
+  ])
 
   // Download image
   const downloadImage = useCallback(async (imageUrl: string, filename: string) => {
@@ -193,6 +234,73 @@ export default function Dome360Planner() {
                 </Select>
               </div>
 
+              {/* Projection Type Selection */}
+              {generationType === "dome" && (
+                <div className="space-y-2">
+                  <Label>Dome Projection Type</Label>
+                  <Select value={projectionType} onValueChange={setProjectionType}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fisheye">
+                        <div className="flex items-center gap-2">
+                          <CircleDot className="h-4 w-4" />
+                          Fisheye
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="tunnel-up">
+                        <div className="flex items-center gap-2">
+                          <ArrowUp className="h-4 w-4" />
+                          Tunnel Up
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="tunnel-down">
+                        <div className="flex items-center gap-2">
+                          <ArrowDown className="h-4 w-4" />
+                          Tunnel Down
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="little-planet">
+                        <div className="flex items-center gap-2">
+                          <Orbit className="h-4 w-4" />
+                          Little Planet
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Panorama Format Selection */}
+              {generationType === "360" && (
+                <div className="space-y-2">
+                  <Label>360° Panorama Format</Label>
+                  <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="equirectangular">
+                        <div className="flex items-center gap-2">
+                          <Globe className="h-4 w-4" />
+                          Equirectangular
+                          <Badge variant="outline" className="ml-2 text-xs">
+                            Seamless
+                          </Badge>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="stereographic">
+                        <div className="flex items-center gap-2">
+                          <CircleDot className="h-4 w-4" />
+                          Stereographic
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
               {/* Dataset Selection */}
               <div className="space-y-2">
                 <Label>Cultural Dataset</Label>
@@ -237,7 +345,10 @@ export default function Dome360Planner() {
                   <SelectContent>
                     {Object.entries(COLOR_SCHEMES).map(([key]) => (
                       <SelectItem key={key} value={key}>
-                        {key}
+                        <div className="flex items-center gap-2">
+                          <Palette className="h-4 w-4" />
+                          {key}
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -245,7 +356,7 @@ export default function Dome360Planner() {
               </div>
 
               {/* Parameters */}
-              <div className="space-y-4">
+              <div className="space-y-4 border-t pt-4">
                 <div className="space-y-2">
                   <Label>Seed: {seed}</Label>
                   <Slider value={[seed]} onValueChange={(value) => setSeed(value[0])} max={9999} min={1} step={1} />
@@ -272,19 +383,6 @@ export default function Dome360Planner() {
                     step={0.001}
                   />
                 </div>
-
-                {generationType === "dome" && (
-                  <div className="space-y-2">
-                    <Label>Dome Tilt: {domeTilt}°</Label>
-                    <Slider
-                      value={[domeTilt]}
-                      onValueChange={(value) => setDomeTilt(value[0])}
-                      max={90}
-                      min={0}
-                      step={1}
-                    />
-                  </div>
-                )}
               </div>
 
               {/* Action Buttons */}
@@ -308,6 +406,25 @@ export default function Dome360Planner() {
                   Randomize Parameters
                 </Button>
               </div>
+
+              {/* Current Settings Display */}
+              <div className="space-y-2 border-t pt-4">
+                <Label className="text-sm font-semibold">Current Settings</Label>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Type:</span>
+                    <Badge variant="outline" className="text-xs">
+                      {generationType === "360" ? "360°" : "Dome"}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Format:</span>
+                    <Badge variant="outline" className="text-xs">
+                      {generationType === "360" ? panoramaFormat : projectionType}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -322,8 +439,8 @@ export default function Dome360Planner() {
               </CardTitle>
               <CardDescription>
                 {generationType === "360"
-                  ? "Seamless 360° panoramic artwork optimized for VR viewing"
-                  : "Fisheye projection optimized for planetarium dome display"}
+                  ? `${panoramaFormat === "equirectangular" ? "Seamless equirectangular" : "Stereographic"} 360° panoramic artwork optimized for VR viewing`
+                  : `${projectionType} projection optimized for planetarium dome display`}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -338,9 +455,16 @@ export default function Dome360Planner() {
                   </AspectRatio>
                   <div className="flex justify-between items-center">
                     <div className="space-y-1">
-                      <Badge variant="secondary">{generatedImage.format}</Badge>
+                      <div className="flex gap-2">
+                        <Badge variant="secondary">{generatedImage.format}</Badge>
+                        {generatedImage.planetariumOptimized && <Badge variant="outline">Planetarium Ready</Badge>}
+                        {generatedImage.seamlessWrapping && <Badge variant="outline">Seamless</Badge>}
+                        <Badge variant="outline">
+                          {generationType === "360" ? generatedImage.panoramaFormat : generatedImage.projectionType}
+                        </Badge>
+                      </div>
                       <p className="text-sm text-muted-foreground">
-                        {generationType === "360" ? "1792×1024 • Equirectangular" : "1024×1024 • Fisheye"}
+                        {generationType === "360" ? "1792×1024 • 360° Panorama" : "1024×1024 • Dome Projection"}
                       </p>
                     </div>
                     <Button
@@ -364,6 +488,9 @@ export default function Dome360Planner() {
                     )}
                     <p className="text-muted-foreground">
                       No {generationType === "360" ? "360° panorama" : "dome projection"} generated yet
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Current: {generationType === "360" ? panoramaFormat : projectionType}
                     </p>
                   </div>
                 </div>
