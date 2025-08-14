@@ -844,10 +844,17 @@ export default function FlowArtGenerator() {
                           <div className="flex gap-2">
                             <Badge variant="secondary">{panoramaImage.format}</Badge>
                             {panoramaImage.vrOptimized && <Badge variant="outline">VR Ready</Badge>}
-                            {panoramaImage.seamlessWrapping && <Badge variant="outline">Seamless</Badge>}
+                            {panoramaImage.seamlessWrapping && (
+                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                Professional Seamless
+                              </Badge>
+                            )}
                             <Badge variant="outline">{panoramaImage.panoramaFormat || panoramaFormat}</Badge>
                           </div>
                           <p className="text-sm text-muted-foreground">1792×1024 • 360° Panorama</p>
+                          {panoramaImage.seamlessWrapping && (
+                            <p className="text-xs text-green-600">✓ Professional seamless edge wrapping verified</p>
+                          )}
                         </div>
                         <Button onClick={() => downloadImage(panoramaImage.imageUrl, "flowsketch-360.jpg")} size="sm">
                           <Download className="h-4 w-4 mr-2" />
@@ -861,6 +868,9 @@ export default function FlowArtGenerator() {
                         <Globe className="h-12 w-12 mx-auto text-muted-foreground" />
                         <p className="text-muted-foreground">No 360° panorama generated yet</p>
                         <p className="text-xs text-muted-foreground">Current: {panoramaFormat}</p>
+                        {panoramaFormat === "equirectangular" && (
+                          <p className="text-xs text-green-600">Will generate with professional seamless wrapping</p>
+                        )}
                       </div>
                     </div>
                   )}

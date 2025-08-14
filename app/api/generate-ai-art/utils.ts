@@ -58,9 +58,24 @@ export async function generateWithOpenAI(
     const panoramaFormat = params?.panoramaFormat || "equirectangular"
 
     if (panoramaFormat === "equirectangular") {
-      enhancedPrompt = `PERFECT SEAMLESS 360° EQUIRECTANGULAR PANORAMA: ${prompt}. CRITICAL REQUIREMENTS: The leftmost edge must connect PERFECTLY with the rightmost edge with absolutely no visible seam, discontinuity, or break in the pattern. The image must wrap around seamlessly in a continuous loop. Ensure horizontal continuity across the entire 360-degree view. The composition should flow naturally from left edge to right edge as if it's one continuous circular environment. No abrupt changes or mismatched elements at the edges. Optimized for VR viewing with flawless wraparound experience. Perfect cylindrical projection mapping.`
+      enhancedPrompt = `GODLEVEL PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA - SEAMLESS WRAPPING CRITICAL: ${prompt}. 
+
+MANDATORY SEAMLESS REQUIREMENTS FOR PROFESSIONAL VR QUALITY:
+- The LEFT EDGE must connect PERFECTLY with the RIGHT EDGE with ZERO visible seam, discontinuity, or break
+- Imagine wrapping this image around a perfect cylinder - left and right edges must align flawlessly
+- NO abrupt color changes, lighting differences, shadow breaks, or object interruptions at horizontal edges
+- The composition must flow continuously as one unbroken 360-degree circular environment
+- Treat this as cylindrical projection mapping where left boundary = right boundary exactly
+- Perfect horizontal continuity across the entire panoramic view with seamless wraparound
+- NO vertical seams, discontinuities, mismatched lighting, or broken architectural elements at edges
+- Optimized for premium VR headset viewing with museum-quality flawless wraparound experience
+- Professional equirectangular mapping with mathematically perfect edge alignment
+- The final image should appear as one continuous immersive world when wrapped cylindrically
+- Godlevel attention to edge matching, lighting consistency, and compositional flow
+
+TECHNICAL EXCELLENCE: Equirectangular projection, perfect 2:1 aspect ratio, seamless horizontal wrapping, VR-optimized, professional broadcast quality, award-winning immersive art, museum exhibition standard.`
     } else if (panoramaFormat === "stereographic") {
-      enhancedPrompt = `STEREOGRAPHIC 360° PROJECTION: ${prompt}. Create a stereographic projection with circular fisheye distortion, where the entire 360-degree view is compressed into a circular frame. The center should be the primary focus with increasing distortion toward the edges. Perfect for immersive spherical viewing experiences. Stereographic mapping with radial symmetry.`
+      enhancedPrompt = `GODLEVEL STEREOGRAPHIC 360° PROJECTION: ${prompt}. Create a premium stereographic projection with perfect circular fisheye distortion, where the entire 360-degree view is compressed into a flawless circular frame. The center should be the primary focus with mathematically precise increasing distortion toward the edges. Perfect for immersive spherical viewing experiences. Professional stereographic mapping with radial symmetry from center outward, award-winning fisheye lens effect, museum-quality precision.`
     }
   } else if (type === "dome") {
     size = "1024x1024"
@@ -69,17 +84,17 @@ export async function generateWithOpenAI(
     const projectionType = params?.projectionType || "fisheye"
 
     if (projectionType === "fisheye") {
-      enhancedPrompt = `DOME FISHEYE PROJECTION: ${prompt}, perfect fisheye perspective with circular composition, radial symmetry from center outward, optimized for planetarium dome projection, immersive 360-degree viewing experience, no distortion artifacts, professional dome mapping`
+      enhancedPrompt = `GODLEVEL DOME FISHEYE PROJECTION: ${prompt}, perfect fisheye perspective with flawless circular composition, precise radial symmetry from center outward, optimized for premium planetarium dome projection, immersive 360-degree viewing experience with zero distortion artifacts, professional dome mapping with mathematical precision, award-winning planetarium quality, museum-grade immersive art`
     } else if (projectionType === "tunnel-up") {
-      enhancedPrompt = `DOME TUNNEL UP PROJECTION: ${prompt}, upward tunnel perspective with vanishing point at top center, vertical cylindrical mapping, looking up through a circular tunnel, dramatic perspective with depth, optimized for dome ceiling projection, immersive upward viewing experience`
+      enhancedPrompt = `GODLEVEL DOME TUNNEL UP PROJECTION: ${prompt}, dramatic upward tunnel perspective with perfect vanishing point at top center, precise vertical cylindrical mapping, looking up through a perfectly circular tunnel with mathematical perspective accuracy, dramatic depth with professional lighting, optimized for premium dome ceiling projection, immersive upward viewing experience, award-winning architectural perspective, museum-quality depth rendering`
     } else if (projectionType === "tunnel-down") {
-      enhancedPrompt = `DOME TUNNEL DOWN PROJECTION: ${prompt}, downward tunnel perspective with vanishing point at bottom center, vertical cylindrical mapping, looking down through a circular tunnel, dramatic downward perspective with depth, optimized for dome floor projection, immersive downward viewing experience`
+      enhancedPrompt = `GODLEVEL DOME TUNNEL DOWN PROJECTION: ${prompt}, dramatic downward tunnel perspective with perfect vanishing point at bottom center, precise vertical cylindrical mapping, looking down through a mathematically perfect circular tunnel, professional downward perspective with accurate depth rendering, optimized for premium dome floor projection, immersive downward viewing experience, award-winning architectural visualization, museum-quality perspective art`
     } else if (projectionType === "little-planet") {
-      enhancedPrompt = `DOME LITTLE PLANET PROJECTION: ${prompt}, stereographic little planet effect with spherical distortion, tiny planet perspective with curved horizon, 360-degree world wrapped into circular frame, whimsical planetary view, optimized for dome projection with spherical mapping`
+      enhancedPrompt = `GODLEVEL DOME LITTLE PLANET PROJECTION: ${prompt}, premium stereographic little planet effect with perfect spherical distortion, tiny planet perspective with beautifully curved horizon, complete 360-degree world wrapped into flawless circular frame, whimsical yet mathematically precise planetary view, optimized for premium dome projection with perfect spherical mapping, award-winning little planet art, museum-quality stereographic projection`
     }
   } else {
     size = "1024x1024"
-    enhancedPrompt = `STANDARD COMPOSITION: ${prompt}, balanced and centered composition, optimal framing, professional quality`
+    enhancedPrompt = `GODLEVEL STANDARD COMPOSITION: ${prompt}, perfectly balanced and centered composition with professional framing, optimal visual hierarchy, award-winning artistic quality, museum-grade professional excellence, masterpiece-level attention to detail, premium artistic execution`
   }
 
   console.log(`🎨 Generating ${type} image with OpenAI DALL-E 3`)

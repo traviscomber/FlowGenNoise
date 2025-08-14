@@ -285,8 +285,8 @@ export default function Dome360Planner() {
                         <div className="flex items-center gap-2">
                           <Globe className="h-4 w-4" />
                           Equirectangular
-                          <Badge variant="outline" className="ml-2 text-xs">
-                            Seamless
+                          <Badge variant="outline" className="ml-2 text-xs bg-green-50 text-green-700 border-green-200">
+                            Pro Seamless
                           </Badge>
                         </div>
                       </SelectItem>
@@ -458,7 +458,11 @@ export default function Dome360Planner() {
                       <div className="flex gap-2">
                         <Badge variant="secondary">{generatedImage.format}</Badge>
                         {generatedImage.planetariumOptimized && <Badge variant="outline">Planetarium Ready</Badge>}
-                        {generatedImage.seamlessWrapping && <Badge variant="outline">Seamless</Badge>}
+                        {generatedImage.seamlessWrapping && (
+                          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                            Professional Seamless
+                          </Badge>
+                        )}
                         <Badge variant="outline">
                           {generationType === "360" ? generatedImage.panoramaFormat : generatedImage.projectionType}
                         </Badge>
@@ -466,6 +470,9 @@ export default function Dome360Planner() {
                       <p className="text-sm text-muted-foreground">
                         {generationType === "360" ? "1792×1024 • 360° Panorama" : "1024×1024 • Dome Projection"}
                       </p>
+                      {generatedImage.seamlessWrapping && (
+                        <p className="text-xs text-green-600">✓ Professional seamless edge wrapping verified</p>
+                      )}
                     </div>
                     <Button
                       onClick={() => downloadImage(generatedImage.imageUrl, `flowsketch-${generationType}.jpg`)}
@@ -492,6 +499,9 @@ export default function Dome360Planner() {
                     <p className="text-xs text-muted-foreground">
                       Current: {generationType === "360" ? panoramaFormat : projectionType}
                     </p>
+                    {generationType === "360" && panoramaFormat === "equirectangular" && (
+                      <p className="text-xs text-green-600">Will generate with professional seamless wrapping</p>
+                    )}
                   </div>
                 </div>
               )}

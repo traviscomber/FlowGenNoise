@@ -515,7 +515,7 @@ export const COLOR_SCHEMES = {
   tidal: "tidal pool colors with blues, greens, and sandy tones",
 } as const
 
-// Build comprehensive prompt for AI generation
+// Build comprehensive prompt for AI generation with GODLEVEL quality
 export function buildPrompt(params: {
   dataset: string
   scenario?: string
@@ -534,7 +534,7 @@ export function buildPrompt(params: {
       return params.customPrompt.trim()
     }
 
-    let basePrompt = "PROFESSIONAL MASTERPIECE: "
+    let basePrompt = "GODLEVEL PROFESSIONAL MASTERPIECE: "
     let scenarioDescription = ""
 
     // Get scenario description based on dataset
@@ -584,24 +584,29 @@ export function buildPrompt(params: {
       }
     }
 
-    // Add color scheme
+    // Add color scheme with enhanced descriptions
     const colorDescription = COLOR_SCHEMES[params.colorScheme as keyof typeof COLOR_SCHEMES] || "vibrant colors"
-    basePrompt += `${colorDescription}, `
+    basePrompt += `rendered in exquisite ${colorDescription} with professional color grading and artistic mastery, `
 
-    // Add technical parameters
-    basePrompt += `generated with ${params.numSamples || 4000} data points, noise scale ${params.noiseScale || 0.08}, seed ${params.seed || 1234}, `
+    // Add technical parameters with professional quality emphasis
+    basePrompt += `meticulously crafted with ${params.numSamples || 4000} precision data points, expertly tuned noise scale of ${params.noiseScale || 0.08}, deterministic seed ${params.seed || 1234} for reproducible excellence, `
 
-    // Add quality descriptors
-    basePrompt += "professional quality, ultra-high detail, immersive, cinematic lighting, masterpiece artwork, "
+    // Add godlevel quality descriptors
+    basePrompt +=
+      "GODLEVEL professional quality with museum-grade attention to detail, award-winning artistic composition, masterpiece-level execution, ultra-high definition clarity, immersive cinematic lighting with dramatic shadows and highlights, breathtaking visual impact, "
 
     // Add 360° specific instructions if needed - ENHANCED FOR PERFECT SEAMLESS WRAPPING
     if (params.panoramic360 && params.panoramaFormat === "equirectangular") {
       basePrompt +=
-        "PERFECT SEAMLESS 360° EQUIRECTANGULAR PANORAMA with absolutely flawless horizontal wraparound, the leftmost pixel must connect perfectly with the rightmost pixel, no visible seams or discontinuities, continuous circular environment, optimized for VR viewing, "
+        "CRITICAL GODLEVEL SEAMLESS 360° EQUIRECTANGULAR PANORAMA: Perfect horizontal wraparound where left edge connects flawlessly with right edge with mathematical precision, zero visible seams or discontinuities, continuous circular environment with professional cylindrical projection mapping, optimized for premium VR viewing with museum-quality seamless wrapping, "
+    } else if (params.panoramic360 && params.panoramaFormat === "stereographic") {
+      basePrompt +=
+        "GODLEVEL STEREOGRAPHIC 360° PROJECTION: Perfect circular fisheye distortion with entire 360-degree view compressed into flawless circular frame, center focus with mathematically precise radial distortion, professional stereographic mapping with award-winning precision, "
     }
 
-    // Add final quality tags
-    basePrompt += "8K resolution, HDR, photorealistic, award-winning digital art, museum quality"
+    // Add final godlevel quality tags
+    basePrompt +=
+      "rendered in stunning 8K resolution with HDR color depth, photorealistic detail with artistic flair, award-winning digital art worthy of international exhibitions, museum-quality masterpiece with godlevel artistic excellence, professional broadcast quality, premium artistic execution that transcends ordinary AI art"
 
     // Truncate if too long
     if (basePrompt.length > 4000) {
@@ -611,8 +616,8 @@ export function buildPrompt(params: {
     return basePrompt
   } catch (error) {
     console.error("Error building prompt:", error)
-    // Return a safe fallback
-    return "PROFESSIONAL MASTERPIECE: Beautiful mathematical art with cosmic colors, professional quality, ultra-high detail, masterpiece artwork, 8K resolution, HDR, photorealistic, award-winning digital art"
+    // Return a safe fallback with godlevel quality
+    return "GODLEVEL PROFESSIONAL MASTERPIECE: Beautiful mathematical art with cosmic colors, museum-grade professional quality, ultra-high detail with artistic mastery, award-winning composition, 8K resolution, HDR color depth, photorealistic excellence, premium digital art worthy of international exhibitions"
   }
 }
 
