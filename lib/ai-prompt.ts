@@ -1,3 +1,19 @@
+// Enhanced AI Prompt Generation System with Godlevel Quality
+// Optimized for 1400 base characters with room for ChatGPT enhancement up to 4000 total
+
+export interface PromptParams {
+  dataset: string
+  scenario: string
+  colorScheme: string
+  seed: number
+  numSamples: number
+  noiseScale: number
+  customPrompt?: string
+  panoramic360?: boolean
+  panoramaFormat?: "equirectangular" | "stereographic"
+  projectionType?: "fisheye" | "tunnel-up" | "tunnel-down" | "little-planet"
+}
+
 // Cultural datasets with detailed scenarios
 export const CULTURAL_DATASETS = {
   vietnamese: {
@@ -515,7 +531,7 @@ export const COLOR_SCHEMES = {
   tidal: "tidal pool colors with blues, greens, and sandy tones",
 } as const
 
-// Build comprehensive prompt for AI generation with GODLEVEL quality
+// Build comprehensive prompt for AI generation with GODLEVEL quality - OPTIMIZED FOR 4000 CHAR LIMIT
 export function buildPrompt(params: {
   dataset: string
   scenario?: string
@@ -534,7 +550,7 @@ export function buildPrompt(params: {
       return params.customPrompt.trim()
     }
 
-    let basePrompt = "GODLEVEL PROFESSIONAL MASTERPIECE: "
+    let basePrompt = "GODLEVEL MASTERPIECE: "
     let scenarioDescription = ""
 
     // Get scenario description based on dataset
@@ -580,44 +596,68 @@ export function buildPrompt(params: {
       if (datasetInfo && datasetInfo.scenarios.pure) {
         basePrompt += `${datasetInfo.scenarios.pure.description}, `
       } else {
-        basePrompt += `Beautiful mathematical visualization of ${params.dataset} patterns, `
+        basePrompt += `Mathematical visualization of ${params.dataset} patterns, `
       }
     }
 
     // Add color scheme with enhanced descriptions
     const colorDescription = COLOR_SCHEMES[params.colorScheme as keyof typeof COLOR_SCHEMES] || "vibrant colors"
-    basePrompt += `rendered in exquisite ${colorDescription} with professional color grading and artistic mastery, `
+    basePrompt += `rendered in ${colorDescription} with professional color grading, `
 
-    // Add technical parameters with professional quality emphasis
-    basePrompt += `meticulously crafted with ${params.numSamples || 4000} precision data points, expertly tuned noise scale of ${params.noiseScale || 0.08}, deterministic seed ${params.seed || 1234} for reproducible excellence, `
+    // Add technical parameters - OPTIMIZED FOR SPACE
+    basePrompt += `${params.numSamples || 4000} data points, noise scale ${params.noiseScale || 0.08}, seed ${params.seed || 1234}, `
 
-    // Add godlevel quality descriptors
+    // Add godlevel quality descriptors - CONDENSED
     basePrompt +=
-      "GODLEVEL professional quality with museum-grade attention to detail, award-winning artistic composition, masterpiece-level execution, ultra-high definition clarity, immersive cinematic lighting with dramatic shadows and highlights, breathtaking visual impact, "
+      "museum-grade professional quality, award-winning composition, ultra-high definition, cinematic lighting, breathtaking visual impact, "
 
-    // Add 360° specific instructions if needed - ULTRA-ENHANCED FOR PERFECT SEAMLESS WRAPPING
+    // Add 360° specific instructions if needed - CRITICAL SEAMLESS WRAPPING
     if (params.panoramic360 && params.panoramaFormat === "equirectangular") {
       basePrompt +=
-        "🌟 CRITICAL GODLEVEL SEAMLESS 360° EQUIRECTANGULAR PANORAMA MASTERY: Perfect horizontal wraparound where LEFT EDGE connects with RIGHT EDGE with MATHEMATICAL PERFECTION - zero visible seams, discontinuities, or artifacts. Continuous circular environment with professional cylindrical projection mapping. The image must wrap seamlessly as if painted on a perfect cylinder where the left boundary equals the right boundary with pixel-perfect precision. Optimized for premium VR viewing with museum-quality flawless seamless wrapping that creates one unbroken immersive world. ZERO tolerance for edge discontinuity - the wraparound must be completely invisible and professionally seamless. "
+        "CRITICAL 360° SEAMLESS WRAPPING: LEFT EDGE must connect PERFECTLY with RIGHT EDGE - zero visible seam, continuous circular environment, professional cylindrical projection, VR-optimized seamless wraparound, "
     } else if (params.panoramic360 && params.panoramaFormat === "stereographic") {
       basePrompt +=
-        "🌟 GODLEVEL STEREOGRAPHIC 360° PROJECTION MASTERY: Perfect circular fisheye distortion with entire 360-degree view compressed into flawless circular frame, center focus with mathematically precise radial distortion, professional stereographic mapping with award-winning precision, "
+        "STEREOGRAPHIC 360°: perfect circular fisheye distortion, entire 360° view in circular frame, center focus with radial distortion, "
     }
 
-    // Add final godlevel quality tags
+    // Add final quality tags - CONDENSED
     basePrompt +=
-      "rendered in stunning 8K resolution with HDR color depth, photorealistic detail with artistic flair, award-winning digital art worthy of international exhibitions, museum-quality masterpiece with godlevel artistic excellence, professional broadcast quality, premium artistic execution that transcends ordinary AI art"
+      "8K HDR, photorealistic detail, award-winning digital art, museum exhibition quality, godlevel artistic excellence, professional broadcast standard"
 
-    // Truncate if too long
-    if (basePrompt.length > 4000) {
-      basePrompt = basePrompt.substring(0, 3900) + "..."
+    // Ensure we stay within reasonable limits while preserving critical information
+    if (basePrompt.length > 1800) {
+      // Intelligently truncate while preserving key elements
+      const criticalPhrases = [
+        "LEFT EDGE must connect PERFECTLY with RIGHT EDGE",
+        "seamless",
+        "godlevel",
+        "museum-grade",
+        "professional",
+      ]
+
+      let truncated = basePrompt.substring(0, 1700)
+      const lastComma = truncated.lastIndexOf(",")
+      if (lastComma > 1500) {
+        truncated = truncated.substring(0, lastComma)
+      }
+
+      // Ensure critical seamless instruction is preserved for 360°
+      if (
+        params.panoramic360 &&
+        params.panoramaFormat === "equirectangular" &&
+        !truncated.includes("LEFT EDGE must connect PERFECTLY")
+      ) {
+        truncated += ", CRITICAL: LEFT EDGE must connect PERFECTLY with RIGHT EDGE - zero seam"
+      }
+
+      basePrompt = truncated
     }
 
     return basePrompt
   } catch (error) {
     console.error("Error building prompt:", error)
     // Return a safe fallback with godlevel quality
-    return "GODLEVEL PROFESSIONAL MASTERPIECE: Beautiful mathematical art with cosmic colors, museum-grade professional quality, ultra-high detail with artistic mastery, award-winning composition, 8K resolution, HDR color depth, photorealistic excellence, premium digital art worthy of international exhibitions"
+    return "GODLEVEL MASTERPIECE: Beautiful mathematical art with cosmic colors, museum-grade professional quality, ultra-high detail, award-winning composition, 8K HDR, photorealistic excellence, premium digital art"
   }
 }
 
@@ -639,4 +679,21 @@ export function validateDatasetScenario(dataset: string, scenario: string): bool
   if (!datasetInfo) return false
 
   return scenario in datasetInfo.scenarios
+}
+
+// Get all available datasets
+export function getDatasets() {
+  return Object.entries(CULTURAL_DATASETS).map(([key, value]) => ({
+    id: key,
+    name: value.name,
+  }))
+}
+
+// Get color schemes
+export function getColorSchemes() {
+  return Object.entries(COLOR_SCHEMES).map(([key, value]) => ({
+    id: key,
+    name: key.charAt(0).toUpperCase() + key.slice(1),
+    description: value,
+  }))
 }
