@@ -63,7 +63,7 @@ interface PromptEnhancement {
   enhancementMethod: string
 }
 
-export default function FlowArtGenerator() {
+export function FlowArtGenerator() {
   // Core generation parameters
   const [dataset, setDataset] = useState("vietnamese")
   const [scenario, setScenario] = useState("trung-sisters")
@@ -1027,3 +1027,5 @@ export default function FlowArtGenerator() {
     </div>
   )
 }
+
+export default FlowArtGenerator

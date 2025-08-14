@@ -14,16 +14,11 @@ export interface PromptParams {
   projectionType?: "fisheye" | "tunnel-up" | "tunnel-down" | "little-planet"
 }
 
-// Cultural datasets with detailed scenarios
+// Cultural datasets with detailed scenarios - COMPLETE RESTORATION OF ALL DATASETS
 export const CULTURAL_DATASETS = {
   vietnamese: {
     name: "🇻🇳 Vietnamese Heritage",
     scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Pure mathematical visualization without cultural elements, focusing on algorithmic beauty and mathematical patterns.",
-      },
       "trung-sisters": {
         name: "⚔️ Hai Bà Trưng - Trung Sisters",
         description:
@@ -119,26 +114,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Traditional Vietnamese conical hat (non la) making, palm leaf weaving, traditional craftsmanship, cultural symbol, artisan skills, rural Vietnamese traditions, traditional headwear, cultural identity symbol.",
       },
-      "bach-ma-temple": {
-        name: "🏛️ Bach Ma Temple - White Horse",
-        description:
-          "Ancient Bach Ma Temple in Hanoi's Old Quarter, dedicated to the White Horse spirit, traditional Vietnamese folk religion, ancient architecture, cultural heritage, spiritual guardian of the city, traditional Vietnamese beliefs.",
-      },
-      "van-mieu-quoc-tu-giam": {
-        name: "📚 Van Mieu Quoc Tu Giam - Imperial Academy",
-        description:
-          "Vietnam's first university and Confucian temple, traditional Vietnamese educational heritage, ancient learning traditions, scholarly atmosphere, Confucian architecture, cultural education center, academic excellence traditions.",
-      },
     },
   },
   indonesian: {
     name: "🇮🇩 Indonesian Heritage",
     scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Pure mathematical visualization without cultural elements, focusing on algorithmic beauty and mathematical patterns.",
-      },
       garuda: {
         name: "🦅 Garuda Wisnu Kencana",
         description:
@@ -242,13 +222,8 @@ export const CULTURAL_DATASETS = {
     },
   },
   thailand: {
-    name: "🇹🇭 Thailand - Gods & Ceremonies",
+    name: "🇹🇭 Thailand Heritage",
     scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Pure mathematical visualization without cultural elements, focusing on algorithmic beauty and mathematical patterns.",
-      },
       garuda: {
         name: "🦅 Garuda - Divine Eagle",
         description:
@@ -331,134 +306,9 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-  spirals: {
-    name: "🌀 Spirals",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Mathematical spiral patterns, Fibonacci sequences, golden ratio spirals, logarithmic spirals, Archimedean spirals, hyperbolic spirals, mathematical precision, geometric beauty.",
-      },
-    },
-  },
-  fractal: {
-    name: "🔺 Fractal",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Fractal geometry patterns, self-similar structures, infinite complexity, recursive patterns, mathematical fractals, geometric iterations, fractal dimensions, mathematical beauty.",
-      },
-    },
-  },
-  mandelbrot: {
-    name: "🔢 Mandelbrot",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Mandelbrot set visualizations, complex number iterations, fractal boundaries, mathematical complexity, infinite detail, chaotic dynamics, mathematical art, computational beauty.",
-      },
-    },
-  },
-  julia: {
-    name: "🎭 Julia",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Julia set fractals, complex dynamics, mathematical iterations, fractal art, chaotic attractors, mathematical beauty, computational geometry, infinite patterns.",
-      },
-    },
-  },
-  lorenz: {
-    name: "🦋 Lorenz",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Lorenz attractor patterns, chaos theory visualization, butterfly effect, strange attractors, dynamical systems, mathematical chaos, nonlinear dynamics, chaotic beauty.",
-      },
-    },
-  },
-  hyperbolic: {
-    name: "🌐 Hyperbolic",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Hyperbolic geometry patterns, non-Euclidean geometry, curved space visualizations, hyperbolic tessellations, mathematical geometry, geometric art, spatial mathematics.",
-      },
-    },
-  },
-  gaussian: {
-    name: "📊 Gaussian",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Gaussian distributions, statistical visualizations, probability curves, normal distributions, mathematical statistics, data visualization, statistical beauty, mathematical probability.",
-      },
-    },
-  },
-  cellular: {
-    name: "🔬 Cellular",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Cellular automata patterns, Conway's Game of Life, emergent behavior, computational patterns, rule-based systems, mathematical emergence, algorithmic art, computational beauty.",
-      },
-    },
-  },
-  voronoi: {
-    name: "🕸️ Voronoi",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Voronoi diagrams, spatial partitioning, geometric tessellations, proximity patterns, computational geometry, mathematical partitions, geometric art, spatial mathematics.",
-      },
-    },
-  },
-  perlin: {
-    name: "🌊 Perlin",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Perlin noise patterns, procedural generation, natural randomness, algorithmic textures, computational noise, mathematical randomness, procedural art, algorithmic beauty.",
-      },
-    },
-  },
-  diffusion: {
-    name: "⚗️ Reaction-Diffusion",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Reaction-diffusion systems, pattern formation, chemical patterns, Turing patterns, mathematical biology, emergent patterns, natural mathematics, biological computation.",
-      },
-    },
-  },
-  wave: {
-    name: "〰️ Wave",
-    scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "Wave interference patterns, harmonic oscillations, wave equations, frequency visualizations, mathematical waves, acoustic patterns, wave mathematics, harmonic beauty.",
-      },
-    },
-  },
   escher: {
-    name: "🎨 Escher",
+    name: "🎨 Escher Inspired",
     scenarios: {
-      pure: {
-        name: "Pure Mathematical",
-        description:
-          "M.C. Escher inspired mathematical art, impossible geometries, optical illusions, tessellations, infinite loops, architectural paradoxes, mathematical impossibilities, geometric art.",
-      },
       "impossible-stairs": {
         name: "♾️ Impossible Staircases",
         description:
@@ -479,15 +329,140 @@ export const CULTURAL_DATASETS = {
         description:
           "Mind-bending optical illusions in Escher style with impossible objects, visual paradoxes, mathematical impossibilities made visual, geometric illusions with professional artistic craftsmanship. Perspective tricks and mathematical visual illusions.",
       },
+      relativity: {
+        name: "🏗️ Relativity Architecture",
+        description:
+          "Escher's Relativity-inspired impossible architecture with multiple gravity directions, staircases going in all directions, people walking on walls and ceilings, architectural paradox with geometric precision, mind-bending spatial relationships.",
+      },
+    },
+  },
+  spirals: {
+    name: "🌀 Spirals",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical Spirals",
+        description:
+          "Mathematical spiral patterns with Fibonacci sequences, golden ratio spirals, logarithmic spirals, Archimedean spirals, hyperbolic spirals, mathematical precision, geometric beauty, natural spiral formations, mathematical elegance.",
+      },
+    },
+  },
+  fractal: {
+    name: "🔺 Fractal",
+    scenarios: {
+      pure: {
+        name: "Pure Fractal Geometry",
+        description:
+          "Fractal geometry patterns with self-similar structures, infinite complexity, recursive patterns, mathematical fractals, geometric iterations, fractal dimensions, mathematical beauty, infinite detail, natural fractal formations.",
+      },
+    },
+  },
+  mandelbrot: {
+    name: "🔢 Mandelbrot",
+    scenarios: {
+      pure: {
+        name: "Mandelbrot Set Visualization",
+        description:
+          "Mandelbrot set visualizations with complex number iterations, fractal boundaries, mathematical complexity, infinite detail, chaotic dynamics, mathematical art, computational beauty, complex plane mathematics.",
+      },
+    },
+  },
+  julia: {
+    name: "🎭 Julia",
+    scenarios: {
+      pure: {
+        name: "Julia Set Fractals",
+        description:
+          "Julia set fractals with complex dynamics, mathematical iterations, fractal art, chaotic attractors, mathematical beauty, computational geometry, infinite patterns, complex number mathematics.",
+      },
+    },
+  },
+  lorenz: {
+    name: "🦋 Lorenz",
+    scenarios: {
+      pure: {
+        name: "Lorenz Attractor Chaos",
+        description:
+          "Lorenz attractor patterns with chaos theory visualization, butterfly effect, strange attractors, dynamical systems, mathematical chaos, nonlinear dynamics, chaotic beauty, sensitive dependence.",
+      },
+    },
+  },
+  hyperbolic: {
+    name: "🌐 Hyperbolic",
+    scenarios: {
+      pure: {
+        name: "Hyperbolic Geometry",
+        description:
+          "Hyperbolic geometry patterns with non-Euclidean geometry, curved space visualizations, hyperbolic tessellations, mathematical geometry, geometric art, spatial mathematics, curved space beauty.",
+      },
+    },
+  },
+  gaussian: {
+    name: "📊 Gaussian",
+    scenarios: {
+      pure: {
+        name: "Gaussian Distributions",
+        description:
+          "Gaussian distributions with statistical visualizations, probability curves, normal distributions, mathematical statistics, data visualization, statistical beauty, mathematical probability, bell curves.",
+      },
+    },
+  },
+  cellular: {
+    name: "🔬 Cellular",
+    scenarios: {
+      pure: {
+        name: "Cellular Automata",
+        description:
+          "Cellular automata patterns with Conway's Game of Life, emergent behavior, computational patterns, rule-based systems, mathematical emergence, algorithmic art, computational beauty, emergent complexity.",
+      },
+    },
+  },
+  voronoi: {
+    name: "🕸️ Voronoi",
+    scenarios: {
+      pure: {
+        name: "Voronoi Diagrams",
+        description:
+          "Voronoi diagrams with spatial partitioning, geometric tessellations, proximity patterns, computational geometry, mathematical partitions, geometric art, spatial mathematics, natural patterns.",
+      },
+    },
+  },
+  perlin: {
+    name: "🌊 Perlin",
+    scenarios: {
+      pure: {
+        name: "Perlin Noise Patterns",
+        description:
+          "Perlin noise patterns with procedural generation, natural randomness, algorithmic textures, computational noise, mathematical randomness, procedural art, algorithmic beauty, natural textures.",
+      },
+    },
+  },
+  diffusion: {
+    name: "⚗️ Reaction-Diffusion",
+    scenarios: {
+      pure: {
+        name: "Reaction-Diffusion Systems",
+        description:
+          "Reaction-diffusion systems with pattern formation, chemical patterns, Turing patterns, mathematical biology, emergent patterns, natural mathematics, biological computation, self-organization.",
+      },
+    },
+  },
+  wave: {
+    name: "〰️ Wave",
+    scenarios: {
+      pure: {
+        name: "Wave Interference",
+        description:
+          "Wave interference patterns with harmonic oscillations, wave equations, frequency visualizations, mathematical waves, acoustic patterns, wave mathematics, harmonic beauty, wave dynamics.",
+      },
     },
   },
   "8bit": {
     name: "🎮 8bit",
     scenarios: {
       pure: {
-        name: "Pure Mathematical",
+        name: "8-bit Pixel Art",
         description:
-          "8-bit pixel art patterns, retro gaming aesthetics, pixelated mathematical visualizations, digital art, computational graphics, nostalgic computing, pixel mathematics, digital beauty.",
+          "8-bit pixel art patterns with retro gaming aesthetics, pixelated mathematical visualizations, digital art, computational graphics, nostalgic computing, pixel mathematics, digital beauty, retro aesthetics.",
       },
     },
   },
@@ -495,15 +470,15 @@ export const CULTURAL_DATASETS = {
     name: "🖼️ Bosch",
     scenarios: {
       pure: {
-        name: "Pure Mathematical",
+        name: "Bosch-Inspired Surrealism",
         description:
-          "Hieronymus Bosch inspired surreal mathematical art, fantastical creatures, surreal landscapes, medieval artistic style, imaginative mathematics, artistic surrealism, mathematical fantasy.",
+          "Hieronymus Bosch inspired surreal mathematical art with fantastical creatures, surreal landscapes, medieval artistic style, imaginative mathematics, artistic surrealism, mathematical fantasy, dreamlike imagery.",
       },
     },
   },
 } as const
 
-// Color schemes with professional descriptions
+// Color schemes with professional descriptions - EXPORTED
 export const COLOR_SCHEMES = {
   plasma: "vibrant plasma colors with electric blues, magentas, and cyans",
   quantum: "quantum field colors with particle physics inspired hues",

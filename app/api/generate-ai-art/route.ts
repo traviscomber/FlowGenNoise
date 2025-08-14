@@ -34,117 +34,96 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    console.log("📝 Final prompt length:", finalPrompt?.length || 0, "characters")
+    if (!finalPrompt || finalPrompt.length === 0) {
+      throw new Error("Failed to generate prompt")
+    }
+
+    console.log("📝 Final prompt generated:", finalPrompt.substring(0, 200) + "...")
 
     // Handle batch generation (all 3 types)
     if (body.generateAll) {
-      console.log("🚀 Starting batch generation for all 3 types...")
+      console.log("🔄 Starting batch generation for all 3 types...")
 
       const results: any = { errors: [] }
 
       // Generate standard image
       try {
-        console.log("🎨 Generating standard image...")
+        console.log("🎯 Generating standard image...")
         const standardResult = await generateWithOpenAI(finalPrompt, "standard", params)
         results.standard = standardResult.imageUrl
         console.log("✅ Standard image generated successfully")
       } catch (error: any) {
-        console.error("❌ Standard generation failed:", error.message)
+        console.error("❌ Standard generation failed:", error)
         results.errors.push(`Standard generation failed: ${error.message}`)
       }
 
-      // Generate dome image
+      // Generate dome projection
       try {
-        console.log("🏔️ Generating dome image...")
+        console.log("🎯 Generating dome projection...")
         const domeResult = await generateWithOpenAI(finalPrompt, "dome", params)
         results.dome = domeResult.imageUrl
-        console.log("✅ Dome image generated successfully")
+        console.log("✅ Dome projection generated successfully")
       } catch (error: any) {
-        console.error("❌ Dome generation failed:", error.message)
+        console.error("❌ Dome generation failed:", error)
         results.errors.push(`Dome generation failed: ${error.message}`)
       }
 
       // Generate 360° panorama
       try {
-        console.log("🌐 Generating 360° panorama...")
+        console.log("🎯 Generating 360° panorama...")
         const panoramaResult = await generateWithOpenAI(finalPrompt, "360", params)
         results.panorama360 = panoramaResult.imageUrl
         console.log("✅ 360° panorama generated successfully")
       } catch (error: any) {
-        console.error("❌ 360° generation failed:", error.message)
+        console.error("❌ 360° generation failed:", error)
         results.errors.push(`360° generation failed: ${error.message}`)
       }
 
-      // Check if at least one image was generated
       const successCount = [results.standard, results.dome, results.panorama360].filter(Boolean).length
-      console.log(`📊 Batch generation complete: ${successCount}/3 images generated`)
-
-      if (successCount === 0) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: "All generations failed",
-            errors: results.errors,
-          },
-          { status: 500 },
-        )
-      }
+      console.log(`🎉 Batch generation completed: ${successCount}/3 images generated`)
 
       return NextResponse.json({
         success: true,
         batchGeneration: true,
         ...results,
-        provider: "OpenAI DALL-E 3",
-        model: "dall-e-3",
-        quality: "GODLEVEL Professional",
+        prompt: finalPrompt,
         parameters: params,
         timestamp: new Date().toISOString(),
       })
     }
 
     // Handle single image generation
-    const type = body.type || "standard"
-    console.log(`🎨 Generating single ${type} image...`)
+    const generationType = body.type || "standard"
+    console.log(`🎯 Generating single ${generationType} image...`)
 
-    try {
-      const result = await generateWithOpenAI(finalPrompt, type, params)
+    const result = await generateWithOpenAI(finalPrompt, generationType, params)
 
-      return NextResponse.json({
-        success: true,
-        imageUrl: result.imageUrl,
-        prompt: result.prompt,
-        type: type,
-        aspectRatio: type === "360" ? "2:1" : "1:1",
-        format: type === "360" ? "360° Panorama" : type === "dome" ? "Dome Projection" : "Standard",
-        resolution: type === "360" ? "1792×1024" : "1024×1024",
-        vrOptimized: type === "360",
-        seamlessWrapping: type === "360" && params.panoramaFormat === "equirectangular",
-        planetariumOptimized: type === "dome",
-        projectionType: type === "dome" ? params.projectionType : undefined,
-        panoramaFormat: type === "360" ? params.panoramaFormat : undefined,
-        provider: "OpenAI DALL-E 3",
-        model: "dall-e-3",
-        quality: "GODLEVEL Professional",
-        parameters: params,
-        timestamp: new Date().toISOString(),
-      })
-    } catch (error: any) {
-      console.error(`❌ ${type} generation failed:`, error.message)
-      return NextResponse.json(
-        {
-          success: false,
-          error: error.message || `${type} generation failed`,
-          type: type,
-        },
-        { status: 500 },
-      )
-    }
+    console.log(`✅ ${generationType} image generated successfully`)
+
+    return NextResponse.json({
+      success: true,
+      imageUrl: result.imageUrl,
+      prompt: result.prompt,
+      type: generationType,
+      aspectRatio: generationType === "360" ? "1.75:1" : "1:1",
+      format: generationType === "360" ? "360° Panorama" : generationType === "dome" ? "Dome Projection" : "Standard",
+      resolution: generationType === "360" ? "1792×1024" : "1024×1024",
+      vrOptimized: generationType === "360",
+      seamlessWrapping: generationType === "360" && params.panoramaFormat === "equirectangular",
+      planetariumOptimized: generationType === "dome",
+      projectionType: generationType === "dome" ? params.projectionType : undefined,
+      panoramaFormat: generationType === "360" ? params.panoramaFormat : undefined,
+      parameters: params,
+      timestamp: new Date().toISOString(),
+    })
   } catch (error: any) {
-    console.error("❌ API route error:", error)
+    console.error("❌ Generation API error:", error)
+
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Internal server error",
+        error: error.message || "Generation failed",
+        timestamp: new Date().toISOString(),
       },
       { status: 500 },
     )
