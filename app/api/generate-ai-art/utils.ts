@@ -16,60 +16,66 @@ export interface GenerationParams {
   stereographicPerspective?: string
 }
 
-export interface GenerationResult {
-  imageUrl: string
-  prompt: string
-  metadata?: any
+export function validateGenerationParams(body: any): GenerationParams {
+  return {
+    dataset: body.dataset || "vietnamese",
+    scenario: body.scenario || "trung-sisters",
+    colorScheme: body.colorScheme || "metallic",
+    seed: body.seed || Math.floor(Math.random() * 10000),
+    numSamples: body.numSamples || 4000,
+    noiseScale: body.noiseScale || 0.08,
+    customPrompt: body.customPrompt || "",
+    domeProjection: body.domeProjection !== undefined ? body.domeProjection : false,
+    domeDiameter: body.domeDiameter || 15,
+    domeResolution: body.domeResolution || "4K",
+    projectionType: body.projectionType || "fisheye",
+    panoramic360: body.panoramic360 !== undefined ? body.panoramic360 : false,
+    panoramaResolution: body.panoramaResolution || "8K",
+    panoramaFormat: body.panoramaFormat || "equirectangular",
+    stereographicPerspective: body.stereographicPerspective || "little-planet",
+  }
 }
 
-export async function generateWithOpenAI(prompt: string, type = "standard"): Promise<GenerationResult> {
+export async function generateWithOpenAI(
+  prompt: string,
+  type: "standard" | "dome" | "360" = "standard",
+  signal?: AbortSignal,
+): Promise<{ imageUrl: string; prompt: string }> {
+  console.log(`🎨 Generating ${type} image with OpenAI DALL-E 3`)
+
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error("OpenAI API key not configured")
+  }
+
   try {
-    console.log("🎨 Starting OpenAI DALL-E 3 generation")
-    console.log("🎯 Generation type:", type)
-    console.log("📝 Prompt length:", prompt.length)
+    // Determine the appropriate size based on generation type
+    let size: "1024x1024" | "1792x1024" | "1024x1792"
 
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error("OpenAI API key not configured")
-    }
-
-    // Determine optimal size based on type
-    let size = "1024x1024" // Default square
     if (type === "360") {
       size = "1792x1024" // Wide format for panoramas
-    } else if (type === "dome") {
-      size = "1024x1024" // Square for dome projection
+    } else {
+      size = "1024x1024" // Square format for standard and dome
     }
 
-    console.log("📐 Using size:", size)
+    console.log(`📐 Using size: ${size} for ${type} generation`)
 
-    // Enhanced prompt for god-level quality
-    const godLevelPrompt = `PROFESSIONAL MASTERPIECE: ${prompt}
+    // Enhance prompt based on type
+    let enhancedPrompt = prompt
 
-TECHNICAL SPECIFICATIONS:
-- Ultra-high definition rendering
-- Professional studio lighting
-- Cinematic composition
-- HDR color grading
-- Museum-quality detail
-- Award-winning digital art
-- Photorealistic excellence
+    if (type === "360") {
+      enhancedPrompt = `SEAMLESS 360° PANORAMA: ${prompt}, equirectangular projection, seamless left-right wrapping, continuous horizon, no visible seams, VR-ready panoramic view`
+    } else if (type === "dome") {
+      enhancedPrompt = `DOME PROJECTION: ${prompt}, fisheye perspective, circular composition, radial symmetry, optimized for planetarium dome projection, immersive 360° viewing experience`
+    }
 
-QUALITY REQUIREMENTS:
-- Flawless execution
-- Perfect color balance
-- Stunning visual impact
-- Gallery-worthy presentation
-- Professional artistic merit
-- Technical perfection
-- Creative excellence
+    // Truncate if too long
+    if (enhancedPrompt.length > 4000) {
+      enhancedPrompt = enhancedPrompt.substring(0, 3900) + "..."
+    }
 
-${type === "360" ? "SEAMLESS 360° PANORAMA: Perfect edge continuity, horizontal wraparound, no visible seams, optimized for VR viewing, equirectangular projection" : ""}
-${type === "dome" ? "DOME PROJECTION OPTIMIZED: Fisheye distortion correction, optimal for planetarium display, immersive viewing experience" : ""}
+    console.log(`📝 Enhanced prompt (${enhancedPrompt.length} chars):`, enhancedPrompt.substring(0, 200) + "...")
 
-FINAL OUTPUT: Breathtaking professional artwork that exceeds all expectations`
-
-    console.log("🚀 Sending request to OpenAI DALL-E 3")
-
+    // Use native fetch instead of OpenAI SDK
     const response = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
@@ -78,112 +84,57 @@ FINAL OUTPUT: Breathtaking professional artwork that exceeds all expectations`
       },
       body: JSON.stringify({
         model: "dall-e-3",
-        prompt: godLevelPrompt,
+        prompt: enhancedPrompt,
         n: 1,
         size: size,
         quality: "hd",
         style: "vivid",
       }),
+      signal: signal,
     })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: "Unknown error" }))
-      console.error("❌ OpenAI API error:", errorData)
-      throw new Error(errorData.error?.message || `OpenAI API error: ${response.status}`)
+      const errorData = await response.json().catch(() => ({}))
+      console.error(`❌ OpenAI API error for ${type}:`, errorData)
+
+      if (response.status === 429) {
+        throw new Error("Rate limit exceeded. Please try again in a few minutes.")
+      } else if (response.status === 400) {
+        throw new Error(`Invalid request for ${type}: ${errorData.error?.message || "Bad request"}`)
+      } else if (response.status === 401) {
+        throw new Error("Invalid API key - please check your OpenAI configuration")
+      } else if (response.status === 500) {
+        throw new Error("OpenAI server error - please try again later")
+      } else {
+        throw new Error(`OpenAI API error for ${type}: ${response.status} ${response.statusText}`)
+      }
     }
 
     const data = await response.json()
-    console.log("✅ OpenAI generation successful")
 
     if (!data.data || !data.data[0] || !data.data[0].url) {
-      throw new Error("No image URL in OpenAI response")
+      throw new Error(`No image URL received from OpenAI for ${type}`)
     }
 
     const imageUrl = data.data[0].url
-    console.log("🖼️ Generated image URL:", imageUrl.substring(0, 50) + "...")
+    console.log(`✅ ${type} image generated successfully:`, imageUrl.substring(0, 100) + "...")
 
     return {
       imageUrl: imageUrl,
-      prompt: godLevelPrompt,
-      metadata: {
-        model: "dall-e-3",
-        size: size,
-        quality: "hd",
-        style: "vivid",
-        type: type,
-        provider: "OpenAI",
-        timestamp: new Date().toISOString(),
-      },
+      prompt: enhancedPrompt,
     }
   } catch (error: any) {
-    console.error("❌ OpenAI generation failed:", error)
-    throw new Error(`OpenAI generation failed: ${error.message}`)
-  }
-}
+    console.error(`❌ OpenAI ${type} generation failed:`, error)
 
-// Safe image compression utility for browser environments
-export function compressImage(file: File, quality = 0.8): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    try {
-      // Check if we're in a browser environment
-      if (typeof window === "undefined" || typeof Image === "undefined") {
-        console.warn("Image compression not available in server environment")
-        resolve(file)
-        return
-      }
-
-      const canvas = document.createElement("canvas")
-      const ctx = canvas.getContext("2d")
-      const img = new Image()
-
-      img.onload = () => {
-        try {
-          canvas.width = img.width
-          canvas.height = img.height
-
-          if (ctx) {
-            ctx.drawImage(img, 0, 0)
-            canvas.toBlob(
-              (blob) => {
-                if (blob) {
-                  resolve(blob)
-                } else {
-                  reject(new Error("Failed to compress image"))
-                }
-              },
-              "image/jpeg",
-              quality,
-            )
-          } else {
-            reject(new Error("Could not get canvas context"))
-          }
-        } catch (error) {
-          reject(error)
-        }
-      }
-
-      img.onerror = () => {
-        reject(new Error("Failed to load image for compression"))
-      }
-
-      // Set crossOrigin to handle CORS
-      img.crossOrigin = "anonymous"
-      img.src = URL.createObjectURL(file)
-    } catch (error) {
-      console.error("Image compression error:", error)
-      // Fallback: return original file
-      resolve(file)
+    if (error.name === "AbortError") {
+      throw new Error(`${type} generation was cancelled`)
     }
-  })
-}
 
-// Validate file type
-export function validateImageFile(file: File): boolean {
-  const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
-  return allowedTypes.includes(file.type)
-}
+    // Handle fetch errors
+    if (error.message?.includes("fetch")) {
+      throw new Error(`Network error during ${type} generation`)
+    }
 
-// Get file size in MB
-export function getFileSizeMB(file: File): number {
-  return file.size / (1024 * 1024)
+    throw new Error(error.message || `Failed to generate ${type} image with OpenAI`)
+  }
 }

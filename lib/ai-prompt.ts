@@ -8,6 +8,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Pure mathematical visualization without cultural elements, focusing on algorithmic beauty and mathematical patterns.",
       },
+      "trung-sisters": {
+        name: "⚔️ Hai Bà Trưng - Trung Sisters",
+        description:
+          "Legendary Vietnamese heroines Hai Bà Trưng (Trung Sisters), ancient warriors who led rebellion against Chinese rule in 40 AD, riding war elephants, traditional Vietnamese armor, heroic legends, national independence symbols, ancient Vietnamese military traditions, cultural heroes, patriotic spirit, historical valor, bronze weapons, traditional Vietnamese battle formations, ancient citadels, heroic sacrifice for freedom.",
+      },
       "temple-of-literature": {
         name: "🏛️ Temple of Literature - First University",
         description:
@@ -98,11 +103,6 @@ export const CULTURAL_DATASETS = {
         description:
           "Traditional Vietnamese conical hat (non la) making, palm leaf weaving, traditional craftsmanship, cultural symbol, artisan skills, rural Vietnamese traditions, traditional headwear, cultural identity symbol.",
       },
-      "trung-sisters": {
-        name: "⚔️ Hai Bà Trưng - Trung Sisters",
-        description:
-          "Legendary Vietnamese heroines Hai Bà Trưng (Trung Sisters), ancient warriors who led rebellion against Chinese rule in 40 AD, riding war elephants, traditional Vietnamese armor, heroic legends, national independence symbols, ancient Vietnamese military traditions, cultural heroes, patriotic spirit, historical valor.",
-      },
       "bach-ma-temple": {
         name: "🏛️ Bach Ma Temple - White Horse",
         description:
@@ -115,199 +115,334 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-  thailand: {
-    name: "🇹🇭 Thailand - Gods & Ceremonies",
-    scenarios: {
-      garuda: {
-        name: "Garuda - Divine Eagle",
-        description:
-          "Majestic Garuda, the divine eagle from Thai mythology, golden feathers, powerful wings, royal symbol of Thailand, traditional Thai art style, mythical creature, spiritual guardian, ornate details.",
-      },
-      naga: {
-        name: "Naga - Serpent Dragon",
-        description:
-          "Powerful Naga serpent dragon from Thai Buddhist mythology, multiple heads, scales gleaming, guardian of temples, traditional Thai artistic style, mythical water deity, spiritual protector.",
-      },
-      erawan: {
-        name: "Erawan - Three-Headed Elephant",
-        description:
-          "Erawan, the three-headed white elephant from Thai mythology, mount of Indra, majestic and powerful, traditional Thai artistic representation, mythical creature, spiritual significance.",
-      },
-      karen: {
-        name: "Karen Hill Tribe",
-        description:
-          "Karen hill tribe people in traditional dress, mountainous landscape, traditional lifestyle, ethnic minority culture, handwoven textiles, traditional jewelry, cultural heritage of northern Thailand.",
-      },
-      hmong: {
-        name: "Hmong Mountain People",
-        description:
-          "Hmong ethnic group in traditional colorful clothing, intricate embroidery, silver jewelry, mountain villages, traditional lifestyle, cultural ceremonies, northern Thailand heritage.",
-      },
-      ayutthaya: {
-        name: "Ayutthaya Ancient Capital",
-        description:
-          "Ancient ruins of Ayutthaya, former capital of Siam, Buddhist temples, stone Buddha statues, historical architecture, UNESCO World Heritage site, Thai historical grandeur.",
-      },
-      sukhothai: {
-        name: "Sukhothai Dawn Kingdom",
-        description:
-          "Sukhothai historical park, first Thai kingdom, ancient Buddhist temples, walking Buddha statues, lotus pond reflections, dawn of Thai civilization, peaceful historical atmosphere.",
-      },
-      songkran: {
-        name: "Songkran Water Festival",
-        description:
-          "Thai New Year water festival, people celebrating with water, traditional ceremonies, temple visits, cultural celebration, joyful atmosphere, Thai cultural tradition.",
-      },
-      "loy-krathong": {
-        name: "Loy Krathong Floating Lights",
-        description:
-          "Loy Krathong festival, floating krathongs on water, candles and incense, lotus-shaped boats, romantic evening atmosphere, Thai cultural celebration, spiritual offerings.",
-      },
-      coronation: {
-        name: "Royal Coronation Ceremony",
-        description:
-          "Thai royal coronation ceremony, elaborate golden regalia, traditional Thai royal dress, ornate throne, ceremonial atmosphere, Thai monarchy traditions, cultural grandeur.",
-      },
-      "wat-pho": {
-        name: "Wat Pho Reclining Buddha",
-        description:
-          "Wat Pho temple with massive golden reclining Buddha statue, 46 meters long, intricate mother-of-pearl inlay on feet, traditional Thai temple architecture, spiritual serenity, Bangkok landmark.",
-      },
-      "wat-arun": {
-        name: "Wat Arun Temple of Dawn",
-        description:
-          "Wat Arun temple at sunrise, towering spires decorated with colorful porcelain, Chao Phraya River, traditional Thai temple architecture, golden morning light, Bangkok icon.",
-      },
-      "muay-thai": {
-        name: "Muay Thai Ancient Boxing",
-        description:
-          "Traditional Muay Thai boxing, fighters in traditional mongkol headbands, ancient martial art, cultural sport, training rituals, Thai fighting traditions, athletic prowess.",
-      },
-      "classical-dance": {
-        name: "Thai Classical Dance",
-        description:
-          "Traditional Thai classical dance, elaborate costumes, graceful movements, cultural performance, ornate headdresses, artistic expression, Thai cultural heritage.",
-      },
-      "golden-triangle": {
-        name: "Golden Triangle Mekong",
-        description:
-          "Golden Triangle where Thailand, Laos, and Myanmar meet, Mekong River, mountainous landscape, cultural crossroads, traditional river life, Southeast Asian heritage.",
-      },
-      "floating-markets": {
-        name: "Traditional Floating Markets",
-        description:
-          "Thai floating markets, vendors in traditional boats, tropical fruits and vegetables, canal life, traditional commerce, cultural authenticity, vibrant market atmosphere.",
-      },
-    },
-  },
   indonesian: {
     name: "🇮🇩 Indonesian Heritage",
     scenarios: {
-      garuda: {
-        name: "Garuda Wisnu Kencana",
+      pure: {
+        name: "Pure Mathematical",
         description:
-          "Majestic Garuda, the divine eagle mount of Vishnu, with massive wings spread wide, golden feathers gleaming, carrying Lord Vishnu, traditional Indonesian Hindu-Buddhist art style, intricate details, spiritual power, cultural monument.",
+          "Pure mathematical visualization without cultural elements, focusing on algorithmic beauty and mathematical patterns.",
+      },
+      garuda: {
+        name: "🦅 Garuda Wisnu Kencana",
+        description:
+          "Majestic Garuda, the divine eagle mount of Vishnu, with massive wings spread wide, golden feathers gleaming, carrying Lord Vishnu, traditional Indonesian Hindu-Buddhist art style, intricate details, spiritual power, cultural monument, Balinese artistic traditions, sacred symbolism.",
       },
       wayang: {
-        name: "Wayang Kulit Shadow Puppets",
+        name: "🎭 Wayang Kulit Shadow Puppets",
         description:
-          "Traditional Indonesian shadow puppet theater, intricate leather puppets with elaborate details, dramatic shadows cast on screen, traditional gamelan music atmosphere, cultural storytelling, artistic silhouettes, Indonesian heritage.",
+          "Traditional Indonesian shadow puppet theater, intricate leather puppets with elaborate details, dramatic shadows cast on screen, traditional gamelan music atmosphere, cultural storytelling, artistic silhouettes, Indonesian heritage, Javanese artistic traditions.",
       },
       batik: {
-        name: "Batik Traditional Patterns",
+        name: "🎨 Batik Traditional Patterns",
         description:
-          "Intricate Indonesian batik patterns with traditional motifs, wax-resist dyeing technique, geometric and floral designs, rich colors, cultural textile art, traditional Indonesian craftsmanship, detailed patterns.",
+          "Intricate Indonesian batik patterns with traditional motifs, wax-resist dyeing technique, geometric and floral designs, rich colors, cultural textile art, traditional Indonesian craftsmanship, detailed patterns, Javanese and Balinese styles.",
       },
       borobudur: {
-        name: "Borobudur Temple",
+        name: "🏛️ Borobudur Temple",
         description:
-          "Ancient Buddhist temple with massive stone structure, intricate relief carvings, stupas, traditional Indonesian Buddhist architecture, spiritual atmosphere, historical monument, sunrise lighting.",
+          "Ancient Buddhist temple with massive stone structure, intricate relief carvings, stupas, traditional Indonesian Buddhist architecture, spiritual atmosphere, historical monument, sunrise lighting, Central Java heritage.",
       },
       javanese: {
-        name: "Javanese Culture",
+        name: "🎪 Javanese Culture",
         description:
-          "Traditional Javanese cultural elements, batik patterns, gamelan instruments, traditional architecture, royal palaces, cultural ceremonies, Indonesian heritage, artistic traditions.",
+          "Traditional Javanese cultural elements, batik patterns, gamelan instruments, traditional architecture, royal palaces, cultural ceremonies, Indonesian heritage, artistic traditions, court culture, traditional dances.",
       },
       sundanese: {
-        name: "Sundanese Heritage",
+        name: "🎵 Sundanese Heritage",
         description:
-          "West Javanese Sundanese culture, traditional music, angklung bamboo instruments, traditional houses, cultural dances, Indonesian regional heritage, artistic expressions.",
+          "West Javanese Sundanese culture, traditional music, angklung bamboo instruments, traditional houses, cultural dances, Indonesian regional heritage, artistic expressions, mountain culture, traditional crafts.",
       },
       batak: {
-        name: "Batak Traditions",
+        name: "🏘️ Batak Traditions",
         description:
-          "North Sumatran Batak culture, traditional houses with distinctive roofs, cultural ceremonies, traditional textiles, Indonesian tribal heritage, architectural elements.",
+          "North Sumatran Batak culture, traditional houses with distinctive roofs, cultural ceremonies, traditional textiles, Indonesian tribal heritage, architectural elements, Lake Toba region, traditional music.",
       },
       dayak: {
-        name: "Dayak Culture",
+        name: "🌿 Dayak Culture",
         description:
-          "Bornean Dayak indigenous culture, traditional longhouses, cultural ceremonies, traditional crafts, Indonesian tribal art, forest heritage, cultural traditions.",
+          "Bornean Dayak indigenous culture, traditional longhouses, cultural ceremonies, traditional crafts, Indonesian tribal art, forest heritage, cultural traditions, river communities, traditional tattoos.",
       },
       acehnese: {
-        name: "Acehnese Heritage",
+        name: "🕌 Acehnese Heritage",
         description:
-          "Acehnese Islamic culture, traditional architecture, cultural ceremonies, Indonesian regional heritage, Islamic artistic elements, traditional crafts.",
+          "Acehnese Islamic culture, traditional architecture, cultural ceremonies, Indonesian regional heritage, Islamic artistic elements, traditional crafts, Sumatran culture, historical sultanate.",
       },
       minangkabau: {
-        name: "Minangkabau Culture",
+        name: "🏠 Minangkabau Culture",
         description:
-          "West Sumatran Minangkabau culture, distinctive traditional houses with horn-shaped roofs, cultural ceremonies, Indonesian matriarchal society, architectural heritage.",
+          "West Sumatran Minangkabau culture, distinctive traditional houses with horn-shaped roofs, cultural ceremonies, Indonesian matriarchal society, architectural heritage, traditional crafts, Padang culture.",
       },
       "balinese-tribe": {
-        name: "Balinese Traditions",
+        name: "🌺 Balinese Traditions",
         description:
-          "Balinese Hindu culture, temple ceremonies, traditional dances, cultural festivals, Indonesian island heritage, spiritual traditions, artistic expressions.",
+          "Balinese Hindu culture, temple ceremonies, traditional dances, cultural festivals, Indonesian island heritage, spiritual traditions, artistic expressions, rice terraces, temple architecture.",
       },
       papuans: {
-        name: "Papuan Heritage",
+        name: "🪶 Papuan Heritage",
         description:
-          "Papua indigenous culture, traditional ceremonies, cultural art, Indonesian tribal heritage, traditional crafts, cultural diversity.",
+          "Papua indigenous culture, traditional ceremonies, cultural art, Indonesian tribal heritage, traditional crafts, cultural diversity, bird of paradise symbolism, traditional body art.",
       },
       baduy: {
-        name: "Baduy Tribe",
+        name: "🌱 Baduy Tribe",
         description:
-          "Baduy indigenous people of West Java, traditional lifestyle, cultural preservation, Indonesian tribal heritage, traditional practices, cultural authenticity.",
+          "Baduy indigenous people of West Java, traditional lifestyle, cultural preservation, Indonesian tribal heritage, traditional practices, cultural authenticity, sustainable living, traditional clothing.",
       },
       "orang-rimba": {
-        name: "Orang Rimba Forest People",
+        name: "🌳 Orang Rimba Forest People",
         description:
-          "Sumatran forest-dwelling people, traditional forest lifestyle, Indonesian indigenous culture, cultural preservation, traditional practices.",
+          "Sumatran forest-dwelling people, traditional forest lifestyle, Indonesian indigenous culture, cultural preservation, traditional practices, jungle heritage, sustainable forest living.",
       },
       "hongana-manyawa": {
-        name: "Hongana Manyawa People",
+        name: "🏝️ Hongana Manyawa People",
         description:
-          "Indigenous people of Halmahera, traditional culture, Indonesian tribal heritage, cultural preservation, traditional lifestyle.",
+          "Indigenous people of Halmahera, traditional culture, Indonesian tribal heritage, cultural preservation, traditional lifestyle, island culture, traditional fishing, forest traditions.",
       },
       asmat: {
-        name: "Asmat Wood Carving Art",
+        name: "🗿 Asmat Wood Carving Art",
         description:
-          "Papuan Asmat wood carving traditions, intricate sculptures, cultural art, Indonesian tribal craftsmanship, traditional artistic expressions.",
+          "Papuan Asmat wood carving traditions, intricate sculptures, cultural art, Indonesian tribal craftsmanship, traditional artistic expressions, ancestor worship, traditional masks, spiritual art.",
       },
       komodo: {
-        name: "Komodo Dragon Legends",
+        name: "🐉 Komodo Dragon Legends",
         description:
-          "Legendary Komodo dragons, Indonesian wildlife heritage, mythical creatures, cultural legends, natural heritage, traditional stories.",
+          "Legendary Komodo dragons, Indonesian wildlife heritage, mythical creatures, cultural legends, natural heritage, traditional stories, island culture, conservation symbolism.",
       },
       dance: {
-        name: "Traditional Indonesian Dance",
+        name: "💃 Traditional Indonesian Dance",
         description:
-          "Various traditional Indonesian dances, cultural performances, artistic expressions, Indonesian heritage, ceremonial dances, cultural celebrations.",
+          "Various traditional Indonesian dances, cultural performances, artistic expressions, Indonesian heritage, ceremonial dances, cultural celebrations, regional variations, traditional costumes.",
       },
       volcanoes: {
-        name: "Indonesian Volcanic Landscapes",
+        name: "🌋 Indonesian Volcanic Landscapes",
         description:
-          "Dramatic volcanic landscapes, Indonesian geological heritage, natural beauty, traditional relationship with volcanoes, cultural significance.",
+          "Dramatic volcanic landscapes, Indonesian geological heritage, natural beauty, traditional relationship with volcanoes, cultural significance, Ring of Fire, traditional ceremonies, volcanic lakes.",
       },
       temples: {
-        name: "Sacred Indonesian Temples",
+        name: "🏛️ Sacred Indonesian Temples",
         description:
-          "Various Indonesian temples, Hindu-Buddhist architecture, spiritual sites, cultural monuments, Indonesian religious heritage, traditional architecture.",
+          "Various Indonesian temples, Hindu-Buddhist architecture, spiritual sites, cultural monuments, Indonesian religious heritage, traditional architecture, temple complexes, spiritual ceremonies.",
+      },
+    },
+  },
+  thailand: {
+    name: "🇹🇭 Thailand - Gods & Ceremonies",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Pure mathematical visualization without cultural elements, focusing on algorithmic beauty and mathematical patterns.",
+      },
+      garuda: {
+        name: "🦅 Garuda - Divine Eagle",
+        description:
+          "Majestic Garuda, the divine eagle from Thai mythology, golden feathers, powerful wings, royal symbol of Thailand, traditional Thai art style, mythical creature, spiritual guardian, ornate details, Buddhist symbolism.",
+      },
+      naga: {
+        name: "🐉 Naga - Serpent Dragon",
+        description:
+          "Powerful Naga serpent dragon from Thai Buddhist mythology, multiple heads, scales gleaming, guardian of temples, traditional Thai artistic style, mythical water deity, spiritual protector, temple decorations.",
+      },
+      erawan: {
+        name: "🐘 Erawan - Three-Headed Elephant",
+        description:
+          "Erawan, the three-headed white elephant from Thai mythology, mount of Indra, majestic and powerful, traditional Thai artistic representation, mythical creature, spiritual significance, royal symbolism.",
+      },
+      karen: {
+        name: "🏔️ Karen Hill Tribe",
+        description:
+          "Karen hill tribe people in traditional dress, mountainous landscape, traditional lifestyle, ethnic minority culture, handwoven textiles, traditional jewelry, cultural heritage of northern Thailand, long-neck traditions.",
+      },
+      hmong: {
+        name: "🎭 Hmong Mountain People",
+        description:
+          "Hmong ethnic group in traditional colorful clothing, intricate embroidery, silver jewelry, mountain villages, traditional lifestyle, cultural ceremonies, northern Thailand heritage, traditional crafts.",
+      },
+      ayutthaya: {
+        name: "🏛️ Ayutthaya Ancient Capital",
+        description:
+          "Ancient ruins of Ayutthaya, former capital of Siam, Buddhist temples, stone Buddha statues, historical architecture, UNESCO World Heritage site, Thai historical grandeur, ancient kingdom.",
+      },
+      sukhothai: {
+        name: "🏺 Sukhothai Dawn Kingdom",
+        description:
+          "Sukhothai historical park, first Thai kingdom, ancient Buddhist temples, walking Buddha statues, lotus pond reflections, dawn of Thai civilization, peaceful historical atmosphere, traditional architecture.",
+      },
+      songkran: {
+        name: "💦 Songkran Water Festival",
+        description:
+          "Thai New Year water festival, people celebrating with water, traditional ceremonies, temple visits, cultural celebration, joyful atmosphere, Thai cultural tradition, water blessings, festive spirit.",
+      },
+      "loy-krathong": {
+        name: "🕯️ Loy Krathong Floating Lights",
+        description:
+          "Loy Krathong festival, floating krathongs on water, candles and incense, lotus-shaped boats, romantic evening atmosphere, Thai cultural celebration, spiritual offerings, traditional festival.",
+      },
+      coronation: {
+        name: "👑 Royal Coronation Ceremony",
+        description:
+          "Thai royal coronation ceremony, elaborate golden regalia, traditional Thai royal dress, ornate throne, ceremonial atmosphere, Thai monarchy traditions, cultural grandeur, royal pageantry.",
+      },
+      "wat-pho": {
+        name: "🧘 Wat Pho Reclining Buddha",
+        description:
+          "Wat Pho temple with massive golden reclining Buddha statue, 46 meters long, intricate mother-of-pearl inlay on feet, traditional Thai temple architecture, spiritual serenity, Bangkok landmark, Buddhist heritage.",
+      },
+      "wat-arun": {
+        name: "🌅 Wat Arun Temple of Dawn",
+        description:
+          "Wat Arun temple at sunrise, towering spires decorated with colorful porcelain, Chao Phraya River, traditional Thai temple architecture, golden morning light, Bangkok icon, riverside temple.",
+      },
+      "muay-thai": {
+        name: "🥊 Muay Thai Ancient Boxing",
+        description:
+          "Traditional Muay Thai boxing, fighters in traditional mongkol headbands, ancient martial art, cultural sport, training rituals, Thai fighting traditions, athletic prowess, traditional ceremonies.",
+      },
+      "classical-dance": {
+        name: "💃 Thai Classical Dance",
+        description:
+          "Traditional Thai classical dance, elaborate costumes, graceful movements, cultural performance, ornate headdresses, artistic expression, Thai cultural heritage, royal court traditions.",
+      },
+      "golden-triangle": {
+        name: "🌊 Golden Triangle Mekong",
+        description:
+          "Golden Triangle where Thailand, Laos, and Myanmar meet, Mekong River, mountainous landscape, cultural crossroads, traditional river life, Southeast Asian heritage, border region.",
+      },
+      "floating-markets": {
+        name: "🛶 Traditional Floating Markets",
+        description:
+          "Thai floating markets, vendors in traditional boats, tropical fruits and vegetables, canal life, traditional commerce, cultural authenticity, vibrant market atmosphere, water-based trading.",
+      },
+    },
+  },
+  spirals: {
+    name: "🌀 Spirals",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Mathematical spiral patterns, Fibonacci sequences, golden ratio spirals, logarithmic spirals, Archimedean spirals, hyperbolic spirals, mathematical precision, geometric beauty.",
+      },
+    },
+  },
+  fractal: {
+    name: "🔺 Fractal",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Fractal geometry patterns, self-similar structures, infinite complexity, recursive patterns, mathematical fractals, geometric iterations, fractal dimensions, mathematical beauty.",
+      },
+    },
+  },
+  mandelbrot: {
+    name: "🔢 Mandelbrot",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Mandelbrot set visualizations, complex number iterations, fractal boundaries, mathematical complexity, infinite detail, chaotic dynamics, mathematical art, computational beauty.",
+      },
+    },
+  },
+  julia: {
+    name: "🎭 Julia",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Julia set fractals, complex dynamics, mathematical iterations, fractal art, chaotic attractors, mathematical beauty, computational geometry, infinite patterns.",
+      },
+    },
+  },
+  lorenz: {
+    name: "🦋 Lorenz",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Lorenz attractor patterns, chaos theory visualization, butterfly effect, strange attractors, dynamical systems, mathematical chaos, nonlinear dynamics, chaotic beauty.",
+      },
+    },
+  },
+  hyperbolic: {
+    name: "🌐 Hyperbolic",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Hyperbolic geometry patterns, non-Euclidean geometry, curved space visualizations, hyperbolic tessellations, mathematical geometry, geometric art, spatial mathematics.",
+      },
+    },
+  },
+  gaussian: {
+    name: "📊 Gaussian",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Gaussian distributions, statistical visualizations, probability curves, normal distributions, mathematical statistics, data visualization, statistical beauty, mathematical probability.",
+      },
+    },
+  },
+  cellular: {
+    name: "🔬 Cellular",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Cellular automata patterns, Conway's Game of Life, emergent behavior, computational patterns, rule-based systems, mathematical emergence, algorithmic art, computational beauty.",
+      },
+    },
+  },
+  voronoi: {
+    name: "🕸️ Voronoi",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Voronoi diagrams, spatial partitioning, geometric tessellations, proximity patterns, computational geometry, mathematical partitions, geometric art, spatial mathematics.",
+      },
+    },
+  },
+  perlin: {
+    name: "🌊 Perlin",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Perlin noise patterns, procedural generation, natural randomness, algorithmic textures, computational noise, mathematical randomness, procedural art, algorithmic beauty.",
+      },
+    },
+  },
+  diffusion: {
+    name: "⚗️ Reaction-Diffusion",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Reaction-diffusion systems, pattern formation, chemical patterns, Turing patterns, mathematical biology, emergent patterns, natural mathematics, biological computation.",
+      },
+    },
+  },
+  wave: {
+    name: "〰️ Wave",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Wave interference patterns, harmonic oscillations, wave equations, frequency visualizations, mathematical waves, acoustic patterns, wave mathematics, harmonic beauty.",
       },
     },
   },
   escher: {
-    name: "🎨 Escher - Impossible Geometry",
+    name: "🎨 Escher",
     scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "M.C. Escher inspired mathematical art, impossible geometries, optical illusions, tessellations, infinite loops, architectural paradoxes, mathematical impossibilities, geometric art.",
+      },
       "impossible-stairs": {
         name: "♾️ Impossible Staircases",
         description:
@@ -327,6 +462,26 @@ export const CULTURAL_DATASETS = {
         name: "👁️ Optical Illusions",
         description:
           "Mind-bending optical illusions in Escher style with impossible objects, visual paradoxes, mathematical impossibilities made visual, geometric illusions with professional artistic craftsmanship. Perspective tricks and mathematical visual illusions.",
+      },
+    },
+  },
+  "8bit": {
+    name: "🎮 8bit",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "8-bit pixel art patterns, retro gaming aesthetics, pixelated mathematical visualizations, digital art, computational graphics, nostalgic computing, pixel mathematics, digital beauty.",
+      },
+    },
+  },
+  bosch: {
+    name: "🖼️ Bosch",
+    scenarios: {
+      pure: {
+        name: "Pure Mathematical",
+        description:
+          "Hieronymus Bosch inspired surreal mathematical art, fantastical creatures, surreal landscapes, medieval artistic style, imaginative mathematics, artistic surrealism, mathematical fantasy.",
       },
     },
   },
@@ -378,7 +533,7 @@ export function buildPrompt(params: {
       return params.customPrompt.trim()
     }
 
-    let basePrompt = ""
+    let basePrompt = "PROFESSIONAL MASTERPIECE: "
     let scenarioDescription = ""
 
     // Get scenario description based on dataset
@@ -390,7 +545,7 @@ export function buildPrompt(params: {
       const scenario =
         CULTURAL_DATASETS.vietnamese.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.vietnamese.scenarios]
       scenarioDescription = scenario.description
-      basePrompt = `${scenarioDescription}, `
+      basePrompt += `${scenarioDescription}, `
     } else if (
       params.dataset === "indonesian" &&
       params.scenario &&
@@ -399,7 +554,7 @@ export function buildPrompt(params: {
       const scenario =
         CULTURAL_DATASETS.indonesian.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.indonesian.scenarios]
       scenarioDescription = scenario.description
-      basePrompt = `${scenarioDescription}, `
+      basePrompt += `${scenarioDescription}, `
     } else if (
       params.dataset === "thailand" &&
       params.scenario &&
@@ -408,13 +563,24 @@ export function buildPrompt(params: {
       const scenario =
         CULTURAL_DATASETS.thailand.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.thailand.scenarios]
       scenarioDescription = scenario.description
-      basePrompt = `${scenarioDescription}, `
-    } else if (params.dataset === "escher") {
-      basePrompt =
-        "M.C. Escher inspired mathematical art, impossible geometries, optical illusions, tessellations, infinite loops, architectural paradoxes, black and white engravings style, precise mathematical patterns, "
+      basePrompt += `${scenarioDescription}, `
+    } else if (
+      params.dataset === "escher" &&
+      params.scenario &&
+      CULTURAL_DATASETS.escher.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.escher.scenarios]
+    ) {
+      const scenario =
+        CULTURAL_DATASETS.escher.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.escher.scenarios]
+      scenarioDescription = scenario.description
+      basePrompt += `${scenarioDescription}, `
     } else {
       // Mathematical/abstract datasets
-      basePrompt = `Beautiful mathematical visualization of ${params.dataset} patterns, `
+      const datasetInfo = CULTURAL_DATASETS[params.dataset as keyof typeof CULTURAL_DATASETS]
+      if (datasetInfo && datasetInfo.scenarios.pure) {
+        basePrompt += `${datasetInfo.scenarios.pure.description}, `
+      } else {
+        basePrompt += `Beautiful mathematical visualization of ${params.dataset} patterns, `
+      }
     }
 
     // Add color scheme
@@ -434,7 +600,7 @@ export function buildPrompt(params: {
     }
 
     // Add final quality tags
-    basePrompt += "8K resolution, HDR, photorealistic, award-winning digital art"
+    basePrompt += "8K resolution, HDR, photorealistic, award-winning digital art, museum quality"
 
     // Truncate if too long
     if (basePrompt.length > 4000) {
@@ -445,7 +611,7 @@ export function buildPrompt(params: {
   } catch (error) {
     console.error("Error building prompt:", error)
     // Return a safe fallback
-    return "Beautiful mathematical art with cosmic colors, professional quality, ultra-high detail, masterpiece artwork, 8K resolution"
+    return "PROFESSIONAL MASTERPIECE: Beautiful mathematical art with cosmic colors, professional quality, ultra-high detail, masterpiece artwork, 8K resolution, HDR, photorealistic, award-winning digital art"
   }
 }
 

@@ -7,62 +7,60 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { prompt, style = "professional" } = body
 
-    if (!prompt) {
-      return NextResponse.json({ error: "Missing prompt" }, { status: 400 })
+    if (!prompt || typeof prompt !== "string") {
+      return NextResponse.json({ error: "Missing or invalid prompt parameter" }, { status: 400 })
     }
 
-    console.log("🔧 Enhancing prompt with style:", style)
+    console.log("🎨 Enhancing prompt with style:", style)
     console.log("📝 Original prompt length:", prompt.length)
 
     let enhancedPrompt = prompt
 
-    // God-level enhancement based on style
+    // Enhancement based on style
     switch (style) {
       case "professional":
-        enhancedPrompt = `PROFESSIONAL MASTERPIECE: ${prompt}, ultra-high definition, award-winning digital art, museum quality, professional lighting, cinematic composition, HDR, 8K resolution, photorealistic rendering, masterful technique, artistic excellence, gallery-worthy, professional color grading, perfect composition, stunning visual impact`
+        enhancedPrompt = `PROFESSIONAL MASTERPIECE: ${prompt}, ultra-high detail, professional quality, award-winning digital art, museum quality, 8K resolution, HDR, photorealistic`
         break
 
       case "cinematic":
-        enhancedPrompt = `CINEMATIC EPIC: ${prompt}, dramatic lighting, epic composition, movie-quality visuals, cinematic color palette, professional cinematography, blockbuster quality, IMAX-worthy, Hollywood production value, epic scale, dramatic atmosphere, cinematic storytelling, visual spectacle`
+        enhancedPrompt = `CINEMATIC MASTERPIECE: ${prompt}, dramatic lighting, cinematic composition, film photography, professional cinematography, epic scale, movie poster quality, Hollywood production value`
         break
 
       case "artistic":
-        enhancedPrompt = `ARTISTIC MASTERWORK: ${prompt}, fine art quality, artistic brilliance, creative excellence, innovative composition, artistic vision, expressive technique, aesthetic perfection, artistic sophistication, creative mastery, fine art gallery piece, artistic innovation`
+        enhancedPrompt = `ARTISTIC MASTERPIECE: ${prompt}, fine art quality, gallery exhibition worthy, artistic composition, creative interpretation, masterful technique, artistic vision, contemporary art style`
         break
 
-      case "technical":
-        enhancedPrompt = `TECHNICAL EXCELLENCE: ${prompt}, precise mathematical accuracy, technical perfection, engineering precision, scientific visualization, technical mastery, computational excellence, algorithmic beauty, mathematical elegance, technical sophistication, precision rendering`
+      case "fantasy":
+        enhancedPrompt = `FANTASY EPIC: ${prompt}, magical atmosphere, mystical elements, fantasy art style, enchanted realm, otherworldly beauty, mythical quality, legendary artwork`
         break
 
       case "cultural":
-        enhancedPrompt = `CULTURAL HERITAGE MASTERPIECE: ${prompt}, authentic cultural representation, historical accuracy, cultural significance, traditional artistry, heritage preservation, cultural authenticity, respectful interpretation, cultural depth, traditional craftsmanship, cultural storytelling`
+        enhancedPrompt = `CULTURAL HERITAGE MASTERPIECE: ${prompt}, authentic cultural representation, traditional artistic elements, historical accuracy, cultural significance, heritage preservation, respectful interpretation`
         break
 
       default:
-        enhancedPrompt = `GOD-LEVEL CREATION: ${prompt}, transcendent quality, divine artistry, otherworldly beauty, supernatural excellence, legendary masterpiece, mythical perfection, celestial composition, divine inspiration, godlike technique, transcendent vision`
+        enhancedPrompt = `ENHANCED: ${prompt}, high quality, detailed, professional artwork`
     }
 
-    // Add god-level quality descriptors
-    enhancedPrompt +=
-      ", professional studio quality, award-winning composition, trending on ArtStation, featured in galleries, critically acclaimed, visually stunning, breathtaking detail, flawless execution, artistic triumph, visual poetry, creative genius, masterful artistry"
+    // Ensure prompt doesn't exceed limits
+    if (enhancedPrompt.length > 4000) {
+      enhancedPrompt = enhancedPrompt.substring(0, 3900) + "..."
+    }
 
-    console.log("✅ Prompt enhanced to god-level quality")
+    console.log("✅ Prompt enhanced successfully")
     console.log("📏 Enhanced prompt length:", enhancedPrompt.length)
 
-    const response = {
+    return NextResponse.json({
       success: true,
       originalPrompt: prompt,
       enhancedPrompt: enhancedPrompt,
       style: style,
-      enhancement: "God-Level Professional",
       originalLength: prompt.length,
       enhancedLength: enhancedPrompt.length,
       timestamp: new Date().toISOString(),
-    }
-
-    return NextResponse.json(response)
+    })
   } catch (error: any) {
-    console.error("❌ Prompt enhancement failed:", error)
+    console.error("❌ Enhance prompt failed:", error)
 
     return NextResponse.json(
       {

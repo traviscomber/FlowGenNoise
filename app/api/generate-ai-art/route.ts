@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { buildPrompt } from "@/lib/ai-prompt"
-import { generateWithOpenAI, type GenerationParams } from "./utils"
+import { generateWithOpenAI, validateGenerationParams, type GenerationParams } from "./utils"
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,78 +9,199 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     console.log("📝 Request body:", JSON.stringify(body, null, 2))
 
-    // Extract parameters with safe defaults
-    const params: GenerationParams = {
-      dataset: body.dataset || "vietnamese",
-      scenario: body.scenario || "trung-sisters",
-      colorScheme: body.colorScheme || "metallic",
-      seed: body.seed || Math.floor(Math.random() * 10000),
-      numSamples: body.numSamples || 4000,
-      noiseScale: body.noiseScale || 0.08,
-      customPrompt: body.customPrompt || "",
-      domeProjection: body.domeProjection !== undefined ? body.domeProjection : false,
-      domeDiameter: body.domeDiameter || 15,
-      domeResolution: body.domeResolution || "4K",
-      projectionType: body.projectionType || "fisheye",
-      panoramic360: body.panoramic360 !== undefined ? body.panoramic360 : false,
-      panoramaResolution: body.panoramaResolution || "8K",
-      panoramaFormat: body.panoramaFormat || "equirectangular",
-      stereographicPerspective: body.stereographicPerspective || "little-planet",
-    }
+    // Validate and extract parameters
+    const params: GenerationParams = validateGenerationParams(body)
+    console.log("🔧 Validated parameters:", params)
 
-    console.log("🔧 Processing generation request with parameters:", params)
-
-    // Determine generation type
+    // Check if this is a batch generation request (all 3 types)
+    const isBatchGeneration = body.generateAll === true
     const generationType = body.type || "standard"
-    console.log("🎯 Generation type:", generationType)
 
-    // Build the prompt
-    const prompt = buildPrompt({
-      dataset: params.dataset,
-      scenario: params.scenario,
-      colorScheme: params.colorScheme,
-      seed: params.seed,
-      numSamples: params.numSamples,
-      noiseScale: params.noiseScale,
-      customPrompt: params.customPrompt,
-      panoramic360: generationType === "360",
-      panoramaFormat: params.panoramaFormat,
-    })
+    console.log("🎯 Generation mode:", isBatchGeneration ? "BATCH (All 3 types)" : `SINGLE (${generationType})`)
 
-    console.log("📝 Generated prompt:", prompt.substring(0, 200) + "...")
+    if (isBatchGeneration) {
+      // Generate all 3 types in parallel
+      console.log("🚀 Starting batch generation for all 3 types...")
 
-    // Generate the image
-    const result = await generateWithOpenAI(prompt, generationType)
+      const abortController = new AbortController()
+      const signal = abortController.signal
 
-    console.log("✅ Image generated successfully")
+      // Set timeout for the entire batch operation
+      const timeoutId = setTimeout(() => {
+        abortController.abort()
+        console.log("⏰ Batch generation timed out")
+      }, 180000) // 3 minute timeout for all 3 images
 
-    const response = {
-      success: true,
-      imageUrl: result.imageUrl,
-      prompt: result.prompt,
-      promptLength: prompt.length,
-      provider: "OpenAI DALL-E 3",
-      model: "dall-e-3",
-      quality: "Professional HD",
-      estimatedFileSize: "~1.8MB",
-      parameters: params,
-      generationType: generationType,
+      try {
+        // Build base prompt
+        const basePrompt = buildPrompt({
+          dataset: params.dataset,
+          scenario: params.scenario,
+          colorScheme: params.colorScheme,
+          seed: params.seed,
+          numSamples: params.numSamples,
+          noiseScale: params.noiseScale,
+          customPrompt: params.customPrompt,
+          panoramic360: false,
+          panoramaFormat: params.panoramaFormat,
+        })
+
+        console.log("📝 Base prompt generated:", basePrompt.substring(0, 200) + "...")
+
+        // Generate all 3 types in parallel
+        const [standardResult, domeResult, panoramaResult] = await Promise.all([
+          generateWithOpenAI(basePrompt, "standard", signal),
+          generateWithOpenAI(basePrompt, "dome", signal),
+          generateWithOpenAI(basePrompt, "360", signal),
+        ])
+
+        clearTimeout(timeoutId)
+        console.log("✅ All 3 images generated successfully!")
+
+        const response = {
+          success: true,
+          batchGeneration: true,
+          images: {
+            standard: {
+              imageUrl: standardResult.imageUrl,
+              prompt: standardResult.prompt,
+              aspectRatio: "1:1",
+              format: "Standard Square",
+              resolution: "1024x1024",
+            },
+            dome: {
+              imageUrl: domeResult.imageUrl,
+              prompt: domeResult.prompt,
+              aspectRatio: "1:1",
+              format: "Dome Projection",
+              planetariumOptimized: true,
+              fisheyePerspective: true,
+            },
+            panorama: {
+              imageUrl: panoramaResult.imageUrl,
+              prompt: panoramaResult.prompt,
+              aspectRatio: "1.75:1",
+              format: "Equirectangular Panorama",
+              vrOptimized: true,
+              seamlessWrapping: true,
+            },
+          },
+          provider: "OpenAI DALL-E 3",
+          model: "dall-e-3",
+          quality: "Professional HD",
+          parameters: params,
+          timestamp: new Date().toISOString(),
+        }
+
+        return NextResponse.json(response)
+      } catch (error: any) {
+        clearTimeout(timeoutId)
+        throw error
+      }
+    } else {
+      // Single generation (existing logic)
+      let prompt: string
+
+      if (generationType === "360") {
+        prompt = buildPrompt({
+          dataset: params.dataset,
+          scenario: params.scenario,
+          colorScheme: params.colorScheme,
+          seed: params.seed,
+          numSamples: params.numSamples,
+          noiseScale: params.noiseScale,
+          customPrompt: params.customPrompt,
+          panoramic360: true,
+          panoramaFormat: params.panoramaFormat,
+        })
+      } else {
+        prompt = buildPrompt({
+          dataset: params.dataset,
+          scenario: params.scenario,
+          colorScheme: params.colorScheme,
+          seed: params.seed,
+          numSamples: params.numSamples,
+          noiseScale: params.noiseScale,
+          customPrompt: params.customPrompt,
+          panoramic360: false,
+          panoramaFormat: params.panoramaFormat,
+        })
+      }
+
+      console.log("📝 Generated prompt:", prompt.substring(0, 200) + "...")
+
+      // Generate the single image
+      const result = await generateWithOpenAI(prompt, generationType as "standard" | "dome" | "360")
+
+      console.log("✅ Single image generated successfully")
+
+      const response = {
+        success: true,
+        batchGeneration: false,
+        imageUrl: result.imageUrl,
+        prompt: result.prompt,
+        promptLength: prompt.length,
+        provider: "OpenAI DALL-E 3",
+        model: "dall-e-3",
+        quality: "Professional HD",
+        generationType: generationType,
+        parameters: params,
+        timestamp: new Date().toISOString(),
+      }
+
+      // Add type-specific metadata
+      if (generationType === "360") {
+        Object.assign(response, {
+          aspectRatio: "1.75:1",
+          format: "Equirectangular Panorama",
+          vrOptimized: true,
+          seamlessWrapping: true,
+        })
+      } else if (generationType === "dome") {
+        Object.assign(response, {
+          aspectRatio: "1:1",
+          format: "Dome Projection",
+          planetariumOptimized: true,
+          fisheyePerspective: true,
+        })
+      } else {
+        Object.assign(response, {
+          aspectRatio: "1:1",
+          format: "Standard Square",
+          resolution: "1024x1024",
+        })
+      }
+
+      return NextResponse.json(response)
     }
-
-    return NextResponse.json(response)
   } catch (error: any) {
     console.error("❌ Professional generation failed:", error)
 
-    // Return detailed error information
+    // Handle specific error types
+    const errorMessage = error.message || "Failed to generate professional image"
+    let statusCode = 500
+
+    if (error.message?.includes("Rate limit")) {
+      statusCode = 429
+    } else if (error.message?.includes("Invalid request") || error.message?.includes("Bad request")) {
+      statusCode = 400
+    } else if (error.message?.includes("API key") || error.message?.includes("Invalid API key")) {
+      statusCode = 401
+    } else if (error.message?.includes("cancelled") || error.message?.includes("AbortError")) {
+      statusCode = 499
+    } else if (error.message?.includes("timeout")) {
+      statusCode = 408
+    }
+
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Failed to generate professional image",
+        error: errorMessage,
         details: error.stack || "No stack trace available",
         provider: "OpenAI DALL-E 3",
         timestamp: new Date().toISOString(),
       },
-      { status: 500 },
+      { status: statusCode },
     )
   }
 }
