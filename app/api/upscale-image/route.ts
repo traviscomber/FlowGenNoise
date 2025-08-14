@@ -2,34 +2,46 @@ import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
+    console.log("🔍 Upscale Image request received")
+
     const body = await request.json()
     const { imageUrl, scale = 2 } = body
 
     if (!imageUrl) {
-      return NextResponse.json({ error: "Missing image URL" }, { status: 400 })
+      return NextResponse.json({ success: false, error: "Image URL is required" }, { status: 400 })
     }
 
-    console.log("🔍 Upscaling image:", imageUrl, "Scale:", scale)
+    console.log("📸 Image URL:", imageUrl.substring(0, 100) + "...")
+    console.log("📏 Scale factor:", scale)
 
-    // This is a placeholder for AI upscaling integration
-    // In a real implementation, you would integrate with services like:
-    // - Real-ESRGAN
-    // - Waifu2x
-    // - Topaz Gigapixel AI
-    // - Adobe's Super Resolution
-    // - Or other AI upscaling services
+    // This is a placeholder implementation
+    // In a real implementation, you would:
+    // 1. Fetch the image from the URL
+    // 2. Use an AI upscaling service (like Real-ESRGAN, ESRGAN, or a cloud service)
+    // 3. Process the image and return the upscaled version
 
-    // For now, return the original image with metadata
-    return NextResponse.json({
+    console.log("⚠️ Upscaling service not implemented - returning original image")
+
+    const response = {
       success: true,
       originalUrl: imageUrl,
-      upscaledUrl: imageUrl, // Placeholder - would be the upscaled image URL
+      upscaledUrl: imageUrl, // Placeholder - would be the actual upscaled image URL
       scale: scale,
-      message: "Upscaling service not yet implemented. This is a placeholder endpoint.",
-      suggestedServices: ["Real-ESRGAN", "Waifu2x", "Topaz Gigapixel AI", "Adobe Super Resolution"],
-    })
+      message: "Upscaling service not implemented - returning original image",
+      timestamp: new Date().toISOString(),
+    }
+
+    return NextResponse.json(response)
   } catch (error: any) {
     console.error("❌ Image upscaling failed:", error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Failed to upscale image",
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 },
+    )
   }
 }

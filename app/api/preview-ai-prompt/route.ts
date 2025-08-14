@@ -3,17 +3,17 @@ import { buildPrompt } from "@/lib/ai-prompt"
 
 export async function POST(request: NextRequest) {
   try {
-    console.log("🔍 Preview AI prompt request received")
+    console.log("🔍 Preview AI Prompt request received")
 
     const body = await request.json()
-    console.log("📝 Preview request body:", JSON.stringify(body, null, 2))
+    console.log("📝 Request body:", JSON.stringify(body, null, 2))
 
-    // Safe parameter validation with fallback defaults
+    // Safe parameter extraction with fallback defaults
     const params = {
       dataset: body.dataset || "vietnamese",
       scenario: body.scenario || "trung-sisters",
       colorScheme: body.colorScheme || "metallic",
-      seed: typeof body.seed === "number" ? body.seed : 1234,
+      seed: typeof body.seed === "number" ? body.seed : Math.floor(Math.random() * 10000),
       numSamples: typeof body.numSamples === "number" ? body.numSamples : 4000,
       noiseScale: typeof body.noiseScale === "number" ? body.noiseScale : 0.08,
       customPrompt: body.customPrompt || "",
@@ -21,28 +21,41 @@ export async function POST(request: NextRequest) {
       panoramaFormat: body.panoramaFormat || "equirectangular",
     }
 
-    console.log("🔧 Processing preview with safe parameters:", params)
+    console.log("🔧 Safe parameters:", params)
 
-    // Build the prompt using the same function as generation
+    // Build the prompt
     const prompt = buildPrompt(params)
 
-    console.log("✅ Prompt preview generated successfully")
-    console.log("📏 Prompt length:", prompt.length)
+    console.log("📝 Generated prompt preview:", prompt.substring(0, 200) + "...")
 
-    return NextResponse.json({
+    // Calculate statistics
+    const wordCount = prompt.split(/\s+/).length
+    const charCount = prompt.length
+    const estimatedTokens = Math.ceil(charCount / 4) // Rough estimate
+
+    const response = {
       success: true,
       prompt: prompt,
-      promptLength: prompt.length,
+      statistics: {
+        characters: charCount,
+        words: wordCount,
+        estimatedTokens: estimatedTokens,
+        maxLength: 4000,
+        withinLimit: charCount <= 4000,
+      },
       parameters: params,
       timestamp: new Date().toISOString(),
-    })
+    }
+
+    console.log("✅ Prompt preview generated successfully")
+    return NextResponse.json(response)
   } catch (error: any) {
-    console.error("❌ Preview prompt failed:", error)
+    console.error("❌ Preview generation failed:", error)
 
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Failed to preview prompt",
+        error: error.message || "Failed to generate prompt preview",
         details: error.stack || "No stack trace available",
         timestamp: new Date().toISOString(),
       },

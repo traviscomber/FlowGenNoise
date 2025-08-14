@@ -593,10 +593,10 @@ export function buildPrompt(params: {
     // Add quality descriptors
     basePrompt += "professional quality, ultra-high detail, immersive, cinematic lighting, masterpiece artwork, "
 
-    // Add 360° specific instructions if needed
+    // Add 360° specific instructions if needed - ENHANCED FOR PERFECT SEAMLESS WRAPPING
     if (params.panoramic360 && params.panoramaFormat === "equirectangular") {
       basePrompt +=
-        "SEAMLESS 360° EQUIRECTANGULAR PANORAMA: Left and right edges must connect perfectly, horizontal wraparound, no visible seams, optimized for VR viewing, "
+        "PERFECT SEAMLESS 360° EQUIRECTANGULAR PANORAMA with absolutely flawless horizontal wraparound, the leftmost pixel must connect perfectly with the rightmost pixel, no visible seams or discontinuities, continuous circular environment, optimized for VR viewing, "
     }
 
     // Add final quality tags

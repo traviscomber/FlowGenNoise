@@ -52,18 +52,19 @@ export async function generateWithOpenAI(
 
   if (type === "360") {
     size = "1792x1024"
-    enhancedPrompt = `SEAMLESS 360° EQUIRECTANGULAR PANORAMA: ${prompt}, perfect horizontal wraparound, left and right edges connect seamlessly, no visible seams, optimized for VR viewing`
+    // Enhanced 360° prompt with stronger seamless wrapping instructions
+    enhancedPrompt = `PERFECT SEAMLESS 360° EQUIRECTANGULAR PANORAMA: ${prompt}. CRITICAL REQUIREMENTS: The leftmost edge must connect PERFECTLY with the rightmost edge with absolutely no visible seam, discontinuity, or break in the pattern. The image must wrap around seamlessly in a continuous loop. Ensure horizontal continuity across the entire 360-degree view. The composition should flow naturally from left edge to right edge as if it's one continuous circular environment. No abrupt changes or mismatched elements at the edges. Optimized for VR viewing with flawless wraparound experience.`
   } else if (type === "dome") {
     size = "1024x1024"
-    enhancedPrompt = `DOME PROJECTION: ${prompt}, fisheye perspective, circular composition, radial symmetry, optimized for planetarium dome projection`
+    enhancedPrompt = `DOME PROJECTION OPTIMIZED: ${prompt}, fisheye perspective with perfect circular composition, radial symmetry from center outward, optimized for planetarium dome projection, immersive 360-degree viewing experience, no distortion artifacts`
   } else {
     size = "1024x1024"
-    enhancedPrompt = prompt
+    enhancedPrompt = `STANDARD COMPOSITION: ${prompt}, balanced and centered composition, optimal framing, professional quality`
   }
 
   console.log(`🎨 Generating ${type} image with OpenAI DALL-E 3`)
   console.log(`📏 Size: ${size}`)
-  console.log(`📝 Enhanced prompt: ${enhancedPrompt.substring(0, 200)}...`)
+  console.log(`📝 Enhanced prompt: ${enhancedPrompt.substring(0, 300)}...`)
 
   try {
     const response = await fetch("https://api.openai.com/v1/images/generations", {

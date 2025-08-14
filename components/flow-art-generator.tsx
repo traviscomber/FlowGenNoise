@@ -7,798 +7,753 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Progress } from "@/components/ui/progress"
 import { toast } from "@/hooks/use-toast"
 import {
-  Palette,
   Download,
-  Eye,
-  Shuffle,
+  Palette,
   Settings,
   Sparkles,
-  Globe,
-  Mountain,
-  ImageIcon,
-  Loader2,
-  Edit3,
+  Eye,
+  RefreshCw,
+  Wand2,
+  Play,
   Square,
-  Zap,
+  Globe,
+  CircleDot,
+  Loader2,
+  CheckCircle,
+  XCircle,
 } from "lucide-react"
-import { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios, getDatasetName } from "@/lib/ai-prompt"
+import { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios } from "@/lib/ai-prompt"
 
-interface GenerationParams {
-  dataset: string
-  scenario?: string
-  colorScheme: string
-  seed: number
-  numSamples: number
-  noiseScale: number
-  customPrompt?: string
-  domeProjection?: boolean
-  domeDiameter?: number
-  domeResolution?: string
-  projectionType?: string
-  panoramic360?: boolean
-  panoramaResolution?: string
-  panoramaFormat?: string
-  stereographicPerspective?: string
+interface GeneratedImage {
+  imageUrl: string
+  prompt: string
+  aspectRatio: string
+  format: string
+  resolution?: string
+  vrOptimized?: boolean
+  seamlessWrapping?: boolean
+  planetariumOptimized?: boolean
+  fisheyePerspective?: boolean
+}
+
+interface BatchGenerationResult {
+  success: boolean
+  batchGeneration: boolean
+  images: {
+    standard: GeneratedImage
+    dome: GeneratedImage
+    panorama: GeneratedImage
+  }
+  provider: string
+  model: string
+  quality: string
+  parameters: any
+  timestamp: string
 }
 
 export default function FlowArtGenerator() {
   // State management
-  const [params, setParams] = useState<GenerationParams>({
-    dataset: "vietnamese",
-    scenario: "trung-sisters",
-    colorScheme: "metallic",
-    seed: 1234,
-    numSamples: 4000,
-    noiseScale: 0.08,
-    customPrompt: "",
-    domeProjection: false,
-    domeDiameter: 15,
-    domeResolution: "4K",
-    projectionType: "fisheye",
-    panoramic360: false,
-    panoramaResolution: "8K",
-    panoramaFormat: "equirectangular",
-    stereographicPerspective: "little-planet",
-  })
-
+  const [dataset, setDataset] = useState("vietnamese")
+  const [scenario, setScenario] = useState("trung-sisters")
+  const [colorScheme, setColorScheme] = useState("metallic")
+  const [seed, setSeed] = useState(1234)
+  const [numSamples, setNumSamples] = useState(4000)
+  const [noiseScale, setNoiseScale] = useState(0.08)
+  const [customPrompt, setCustomPrompt] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
-  const [generatedImages, setGeneratedImages] = useState<{
-    standard?: string
-    dome?: string
-    panorama?: string
-  }>({})
-  const [activeTab, setActiveTab] = useState("standard")
-  const [showPromptEditor, setShowPromptEditor] = useState(false)
-  const [previewPrompt, setPreviewPrompt] = useState("")
-  const [isPreviewingPrompt, setIsPreviewingPrompt] = useState(false)
   const [generationProgress, setGenerationProgress] = useState(0)
   const [generationStatus, setGenerationStatus] = useState("")
+  const [activeTab, setActiveTab] = useState("standard")
+
+  // Generated images state
+  const [standardImage, setStandardImage] = useState<GeneratedImage | null>(null)
+  const [domeImage, setDomeImage] = useState<GeneratedImage | null>(null)
+  const [panoramaImage, setPanoramaImage] = useState<GeneratedImage | null>(null)
+
+  // Dialog states
+  const [promptPreview, setPromptPreview] = useState("")
+  const [isPromptDialogOpen, setIsPromptDialogOpen] = useState(false)
 
   // Refs
   const abortControllerRef = useRef<AbortController | null>(null)
 
   // Get available scenarios for current dataset
-  const availableScenarios = getScenarios(params.dataset)
+  const availableScenarios = getScenarios(dataset)
 
-  // Handle parameter changes
-  const updateParam = useCallback((key: keyof GenerationParams, value: any) => {
-    setParams((prev) => {
-      const newParams = { ...prev, [key]: value }
-
-      // Reset scenario if dataset changes and scenario doesn't exist
-      if (key === "dataset") {
-        const scenarios = getScenarios(value)
-        if (!scenarios[prev.scenario || ""]) {
-          newParams.scenario = Object.keys(scenarios)[0] || ""
-        }
-      }
-
-      return newParams
-    })
+  // Reset scenario when dataset changes
+  const handleDatasetChange = useCallback((newDataset: string) => {
+    setDataset(newDataset)
+    const scenarios = getScenarios(newDataset)
+    const firstScenario = Object.keys(scenarios)[0]
+    if (firstScenario) {
+      setScenario(firstScenario)
+    }
   }, [])
 
-  // Randomize parameters
-  const randomizeParams = useCallback(() => {
-    const datasets = Object.keys(CULTURAL_DATASETS)
-    const colorSchemes = Object.keys(COLOR_SCHEMES)
-    const randomDataset = datasets[Math.floor(Math.random() * datasets.length)]
-    const scenarios = getScenarios(randomDataset)
-    const scenarioKeys = Object.keys(scenarios)
-    const randomScenario = scenarioKeys[Math.floor(Math.random() * scenarioKeys.length)]
+  // Generate random parameters
+  const randomizeParameters = useCallback(() => {
+    setSeed(Math.floor(Math.random() * 10000))
+    setNumSamples(Math.floor(Math.random() * 6000) + 2000)
+    setNoiseScale(Math.random() * 0.15 + 0.05)
 
-    setParams((prev) => ({
-      ...prev,
-      dataset: randomDataset,
-      scenario: randomScenario,
-      colorScheme: colorSchemes[Math.floor(Math.random() * colorSchemes.length)],
-      seed: Math.floor(Math.random() * 10000),
-      numSamples: 2000 + Math.floor(Math.random() * 6000),
-      noiseScale: 0.05 + Math.random() * 0.1,
-    }))
+    // Random color scheme
+    const colorKeys = Object.keys(COLOR_SCHEMES)
+    const randomColor = colorKeys[Math.floor(Math.random() * colorKeys.length)]
+    setColorScheme(randomColor)
 
     toast({
       title: "Parameters Randomized",
-      description: `New configuration: ${getDatasetName(randomDataset)} with ${COLOR_SCHEMES[colorSchemes[Math.floor(Math.random() * colorSchemes.length)] as keyof typeof COLOR_SCHEMES]}`,
+      description: "New random values generated for all parameters",
     })
   }, [])
 
   // Preview prompt
-  const previewPromptHandler = useCallback(async () => {
-    setIsPreviewingPrompt(true)
+  const previewPrompt = useCallback(async () => {
     try {
       const response = await fetch("/api/preview-ai-prompt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(params),
+        body: JSON.stringify({
+          dataset,
+          scenario,
+          colorScheme,
+          seed,
+          numSamples,
+          noiseScale,
+          customPrompt,
+          panoramic360: false,
+        }),
       })
-
-      if (!response.ok) {
-        throw new Error("Failed to preview prompt")
-      }
 
       const data = await response.json()
-      setPreviewPrompt(data.prompt)
-      setShowPromptEditor(true)
-    } catch (error: any) {
+
+      if (data.success) {
+        setPromptPreview(data.prompt)
+        setIsPromptDialogOpen(true)
+      } else {
+        toast({
+          title: "Preview Failed",
+          description: data.error || "Failed to generate prompt preview",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error("Preview error:", error)
       toast({
-        title: "Preview Failed",
-        description: error.message,
+        title: "Preview Error",
+        description: "Failed to preview prompt",
         variant: "destructive",
       })
-    } finally {
-      setIsPreviewingPrompt(false)
     }
-  }, [params])
+  }, [dataset, scenario, colorScheme, seed, numSamples, noiseScale, customPrompt])
 
-  // Generate all 3 types of art
-  const generateAllArt = useCallback(async () => {
-    if (isGenerating) {
-      // Cancel current generation
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort()
-        abortControllerRef.current = null
-      }
-      setIsGenerating(false)
-      setGenerationProgress(0)
-      setGenerationStatus("")
-      return
-    }
+  // Main generation function - generates all 3 types
+  const generateAllTypes = useCallback(async () => {
+    if (isGenerating) return
 
     setIsGenerating(true)
     setGenerationProgress(0)
-    setGenerationStatus("Initializing generation...")
+    setGenerationStatus("Preparing generation...")
+
+    // Clear previous images
+    setStandardImage(null)
+    setDomeImage(null)
+    setPanoramaImage(null)
 
     // Create abort controller
     abortControllerRef.current = new AbortController()
 
     try {
-      // Clear previous images
-      setGeneratedImages({})
-
-      // Progress simulation with status updates
-      const progressSteps = [
-        { progress: 10, status: "Preparing prompts..." },
-        { progress: 25, status: "Generating standard artwork..." },
-        { progress: 50, status: "Creating dome projection..." },
-        { progress: 75, status: "Rendering 360° panorama..." },
-        { progress: 90, status: "Finalizing images..." },
-      ]
-
-      let currentStep = 0
-      const progressInterval = setInterval(() => {
-        if (currentStep < progressSteps.length) {
-          setGenerationProgress(progressSteps[currentStep].progress)
-          setGenerationStatus(progressSteps[currentStep].status)
-          currentStep++
-        }
-      }, 2000)
-
-      const requestBody = {
-        ...params,
-        generateAll: true, // Flag to generate all 3 types
-      }
-
-      console.log("🎨 Generating all 3 art types with params:", requestBody)
+      setGenerationStatus("Generating all 3 image types...")
+      setGenerationProgress(20)
 
       const response = await fetch("/api/generate-ai-art", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({
+          dataset,
+          scenario,
+          colorScheme,
+          seed,
+          numSamples,
+          noiseScale,
+          customPrompt,
+          generateAll: true, // This triggers batch generation
+        }),
         signal: abortControllerRef.current.signal,
       })
 
-      clearInterval(progressInterval)
-      setGenerationProgress(100)
-      setGenerationStatus("Complete!")
+      setGenerationProgress(60)
+      setGenerationStatus("Processing results...")
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || `HTTP ${response.status}`)
+      const data: BatchGenerationResult = await response.json()
+
+      if (data.success && data.batchGeneration) {
+        setGenerationProgress(90)
+        setGenerationStatus("Finalizing images...")
+
+        // Set all three images
+        setStandardImage(data.images.standard)
+        setDomeImage(data.images.dome)
+        setPanoramaImage(data.images.panorama)
+
+        setGenerationProgress(100)
+        setGenerationStatus("All images generated successfully!")
+
+        toast({
+          title: "Generation Complete!",
+          description: "All 3 image types generated successfully",
+        })
+
+        // Auto-switch to first generated image
+        setActiveTab("standard")
+      } else {
+        throw new Error(data.error || "Failed to generate images")
       }
-
-      const data = await response.json()
-
-      if (!data.success || !data.images) {
-        throw new Error(data.error || "No images generated")
-      }
-
-      // Update all generated images
-      setGeneratedImages({
-        standard: data.images.standard?.imageUrl,
-        dome: data.images.dome?.imageUrl,
-        panorama: data.images.panorama?.imageUrl,
-      })
-
-      // Switch to standard tab to show results
-      setActiveTab("standard")
-
-      toast({
-        title: "All Artwork Generated Successfully! 🎉",
-        description: "Standard, Dome, and 360° Panorama versions are ready",
-      })
     } catch (error: any) {
+      console.error("Generation error:", error)
+
       if (error.name === "AbortError") {
+        setGenerationStatus("Generation cancelled")
         toast({
           title: "Generation Cancelled",
-          description: "Art generation was cancelled by user",
+          description: "Image generation was cancelled",
         })
       } else {
-        console.error("Generation error:", error)
+        setGenerationStatus("Generation failed")
         toast({
           title: "Generation Failed",
-          description: error.message || "Failed to generate artwork",
+          description: error.message || "Failed to generate images",
           variant: "destructive",
         })
       }
     } finally {
       setIsGenerating(false)
       setGenerationProgress(0)
-      setGenerationStatus("")
       abortControllerRef.current = null
     }
-  }, [params, isGenerating])
+  }, [dataset, scenario, colorScheme, seed, numSamples, noiseScale, customPrompt, isGenerating])
 
-  // Generate single art type
-  const generateSingleArt = useCallback(
+  // Generate single image type
+  const generateSingleType = useCallback(
     async (type: "standard" | "dome" | "360") => {
       if (isGenerating) return
 
       setIsGenerating(true)
       setGenerationProgress(0)
-      setGenerationStatus(`Generating ${type} artwork...`)
+      setGenerationStatus(`Generating ${type} image...`)
 
       // Create abort controller
       abortControllerRef.current = new AbortController()
 
       try {
-        // Progress simulation
-        const progressInterval = setInterval(() => {
-          setGenerationProgress((prev) => {
-            if (prev >= 90) return prev
-            return prev + Math.random() * 10
-          })
-        }, 1000)
-
-        const requestBody = {
-          ...params,
-          type: type,
-          generateAll: false,
-        }
-
-        console.log(`🎨 Generating ${type} art with params:`, requestBody)
+        setGenerationProgress(30)
 
         const response = await fetch("/api/generate-ai-art", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify({
+            dataset,
+            scenario,
+            colorScheme,
+            seed,
+            numSamples,
+            noiseScale,
+            customPrompt,
+            type: type,
+            generateAll: false,
+          }),
           signal: abortControllerRef.current.signal,
         })
 
-        clearInterval(progressInterval)
-        setGenerationProgress(100)
-
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || `HTTP ${response.status}`)
-        }
+        setGenerationProgress(70)
+        setGenerationStatus("Processing image...")
 
         const data = await response.json()
 
-        if (!data.success || !data.imageUrl) {
-          throw new Error(data.error || "No image generated")
-        }
+        if (data.success) {
+          setGenerationProgress(100)
+          setGenerationStatus(`${type} image generated successfully!`)
 
-        // Update generated images
-        setGeneratedImages((prev) => ({
-          ...prev,
-          [type]: data.imageUrl,
-        }))
+          const imageData: GeneratedImage = {
+            imageUrl: data.imageUrl,
+            prompt: data.prompt,
+            aspectRatio: data.aspectRatio || "1:1",
+            format: data.format || "Standard",
+            resolution: data.resolution,
+            vrOptimized: data.vrOptimized,
+            seamlessWrapping: data.seamlessWrapping,
+            planetariumOptimized: data.planetariumOptimized,
+            fisheyePerspective: data.fisheyePerspective,
+          }
 
-        // Switch to the generated tab
-        if (type === "standard") setActiveTab("standard")
-        else if (type === "dome") setActiveTab("dome")
-        else if (type === "360") setActiveTab("panorama")
+          // Set the appropriate image
+          if (type === "standard") {
+            setStandardImage(imageData)
+            setActiveTab("standard")
+          } else if (type === "dome") {
+            setDomeImage(imageData)
+            setActiveTab("dome")
+          } else if (type === "360") {
+            setPanoramaImage(imageData)
+            setActiveTab("panorama")
+          }
 
-        toast({
-          title: "Art Generated Successfully!",
-          description: `${type === "360" ? "360° Panorama" : type === "dome" ? "Dome Projection" : "Standard"} artwork created`,
-        })
-      } catch (error: any) {
-        if (error.name === "AbortError") {
           toast({
-            title: "Generation Cancelled",
-            description: "Art generation was cancelled by user",
+            title: "Generation Complete!",
+            description: `${type} image generated successfully`,
           })
         } else {
-          console.error("Generation error:", error)
+          throw new Error(data.error || "Failed to generate image")
+        }
+      } catch (error: any) {
+        console.error("Generation error:", error)
+
+        if (error.name === "AbortError") {
+          setGenerationStatus("Generation cancelled")
+          toast({
+            title: "Generation Cancelled",
+            description: "Image generation was cancelled",
+          })
+        } else {
+          setGenerationStatus("Generation failed")
           toast({
             title: "Generation Failed",
-            description: error.message || "Failed to generate artwork",
+            description: error.message || "Failed to generate image",
             variant: "destructive",
           })
         }
       } finally {
         setIsGenerating(false)
         setGenerationProgress(0)
-        setGenerationStatus("")
         abortControllerRef.current = null
       }
     },
-    [params, isGenerating],
+    [dataset, scenario, colorScheme, seed, numSamples, noiseScale, customPrompt, isGenerating],
   )
+
+  // Cancel generation
+  const cancelGeneration = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      setIsGenerating(false)
+      setGenerationProgress(0)
+      setGenerationStatus("Cancelling...")
+    }
+  }, [])
 
   // Download image
   const downloadImage = useCallback(async (imageUrl: string, filename: string) => {
     try {
-      const response = await fetch(`/api/download-proxy?url=${encodeURIComponent(imageUrl)}`)
+      const response = await fetch(`/api/download-proxy?url=${encodeURIComponent(imageUrl)}&filename=${filename}`)
 
       if (!response.ok) {
-        throw new Error("Failed to download image")
+        throw new Error("Download failed")
       }
 
       const blob = await response.blob()
-      const url = URL.createObjectURL(blob)
+      const url = window.URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
       a.download = filename
       document.body.appendChild(a)
       a.click()
+      window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
-      URL.revokeObjectURL(url)
 
       toast({
         title: "Download Complete",
-        description: `${filename} has been downloaded`,
+        description: `${filename} downloaded successfully`,
       })
-    } catch (error: any) {
+    } catch (error) {
+      console.error("Download error:", error)
       toast({
         title: "Download Failed",
-        description: error.message,
+        description: "Failed to download image",
         variant: "destructive",
       })
     }
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-2">
-            <Sparkles className="h-8 w-8 text-purple-400" />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              FlowSketch Art Generator
-            </h1>
-            <Sparkles className="h-8 w-8 text-purple-400" />
-          </div>
-          <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-            Professional AI-powered art generation with cultural heritage datasets, 360° panoramas, and dome projections
-          </p>
-          <div className="flex items-center justify-center gap-2">
-            <Badge variant="secondary" className="bg-purple-500/20 text-purple-300">
-              OpenAI DALL-E 3
-            </Badge>
-            <Badge variant="secondary" className="bg-blue-500/20 text-blue-300">
-              Professional Quality
-            </Badge>
-            <Badge variant="secondary" className="bg-green-500/20 text-green-300">
-              Cultural Heritage
-            </Badge>
-          </div>
-        </div>
+    <div className="container mx-auto p-6 space-y-6">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          FlowSketch Art Generator
+        </h1>
+        <p className="text-muted-foreground">
+          Professional AI-powered art generation with Standard, Dome, and 360° Panorama modes
+        </p>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Controls Panel */}
-          <div className="lg:col-span-1 space-y-6">
-            <Card className="bg-slate-800/50 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-slate-100 flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  Generation Parameters
-                </CardTitle>
-                <CardDescription className="text-slate-400">Configure your artwork generation settings</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Dataset Selection */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Controls Panel */}
+        <div className="lg:col-span-1 space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Generation Settings
+              </CardTitle>
+              <CardDescription>Configure your art generation parameters</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Dataset Selection */}
+              <div className="space-y-2">
+                <Label>Cultural Dataset</Label>
+                <Select value={dataset} onValueChange={handleDatasetChange}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(CULTURAL_DATASETS).map(([key, data]) => (
+                      <SelectItem key={key} value={key}>
+                        {data.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Scenario Selection */}
+              <div className="space-y-2">
+                <Label>Scenario</Label>
+                <Select value={scenario} onValueChange={setScenario}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(availableScenarios).map(([key, data]) => (
+                      <SelectItem key={key} value={key}>
+                        {data.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Color Scheme */}
+              <div className="space-y-2">
+                <Label>Color Scheme</Label>
+                <Select value={colorScheme} onValueChange={setColorScheme}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(COLOR_SCHEMES).map(([key, description]) => (
+                      <SelectItem key={key} value={key}>
+                        <div className="flex items-center gap-2">
+                          <Palette className="h-4 w-4" />
+                          {key}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Parameters */}
+              <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-slate-200">Cultural Dataset</Label>
-                  <Select value={params.dataset} onValueChange={(value) => updateParam("dataset", value)}>
-                    <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-slate-800 border-slate-600">
-                      {Object.entries(CULTURAL_DATASETS).map(([key, dataset]) => (
-                        <SelectItem key={key} value={key} className="text-slate-100">
-                          {dataset.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label>Seed: {seed}</Label>
+                  <Slider value={[seed]} onValueChange={(value) => setSeed(value[0])} max={9999} min={1} step={1} />
                 </div>
 
-                {/* Scenario Selection */}
-                {Object.keys(availableScenarios).length > 0 && (
-                  <div className="space-y-2">
-                    <Label className="text-slate-200">Scenario</Label>
-                    <Select value={params.scenario} onValueChange={(value) => updateParam("scenario", value)}>
-                      <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-slate-800 border-slate-600 max-h-72">
-                        {Object.entries(availableScenarios).map(([key, scenario]) => (
-                          <SelectItem key={key} value={key} className="text-slate-100">
-                            {scenario.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
-                {/* Color Scheme */}
                 <div className="space-y-2">
-                  <Label className="text-slate-200">Color Scheme</Label>
-                  <Select value={params.colorScheme} onValueChange={(value) => updateParam("colorScheme", value)}>
-                    <SelectTrigger className="bg-slate-700 border-slate-600 text-slate-100">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-slate-800 border-slate-600 max-h-72">
-                      {Object.entries(COLOR_SCHEMES).map(([key, description]) => (
-                        <SelectItem key={key} value={key} className="text-slate-100">
-                          <div className="flex items-center gap-2">
-                            <Palette className="h-4 w-4" />
-                            {key} - {description.substring(0, 30)}...
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label>Samples: {numSamples}</Label>
+                  <Slider
+                    value={[numSamples]}
+                    onValueChange={(value) => setNumSamples(value[0])}
+                    max={8000}
+                    min={1000}
+                    step={100}
+                  />
                 </div>
 
-                {/* Advanced Parameters */}
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label className="text-slate-200">Seed: {params.seed}</Label>
-                    <Slider
-                      value={[params.seed]}
-                      onValueChange={([value]) => updateParam("seed", value)}
-                      max={9999}
-                      min={1}
-                      step={1}
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="text-slate-200">Samples: {params.numSamples}</Label>
-                    <Slider
-                      value={[params.numSamples]}
-                      onValueChange={([value]) => updateParam("numSamples", value)}
-                      max={8000}
-                      min={1000}
-                      step={100}
-                      className="w-full"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="text-slate-200">Noise Scale: {params.noiseScale.toFixed(3)}</Label>
-                    <Slider
-                      value={[params.noiseScale]}
-                      onValueChange={([value]) => updateParam("noiseScale", value)}
-                      max={0.2}
-                      min={0.01}
-                      step={0.001}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="space-y-3">
-                  {/* Main Generate All Button */}
-                  <Button
-                    onClick={generateAllArt}
-                    disabled={isGenerating}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3"
-                  >
-                    {isGenerating ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Cancel Generation
-                      </>
-                    ) : (
-                      <>
-                        <Zap className="h-4 w-4 mr-2" />
-                        Generate All 3 Types
-                      </>
-                    )}
-                  </Button>
-
-                  {/* Individual Generation Buttons */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <Button
-                      onClick={() => generateSingleArt("standard")}
-                      disabled={isGenerating}
-                      variant="outline"
-                      className="border-slate-600 text-slate-200 hover:bg-slate-700"
-                      size="sm"
-                    >
-                      <Square className="h-3 w-3 mr-1" />
-                      Standard
-                    </Button>
-                    <Button
-                      onClick={() => generateSingleArt("dome")}
-                      disabled={isGenerating}
-                      variant="outline"
-                      className="border-slate-600 text-slate-200 hover:bg-slate-700"
-                      size="sm"
-                    >
-                      <Mountain className="h-3 w-3 mr-1" />
-                      Dome
-                    </Button>
-                    <Button
-                      onClick={() => generateSingleArt("360")}
-                      disabled={isGenerating}
-                      variant="outline"
-                      className="border-slate-600 text-slate-200 hover:bg-slate-700"
-                      size="sm"
-                    >
-                      <Globe className="h-3 w-3 mr-1" />
-                      360°
-                    </Button>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      onClick={randomizeParams}
-                      variant="outline"
-                      className="border-slate-600 text-slate-200 hover:bg-slate-700 bg-transparent"
-                    >
-                      <Shuffle className="h-4 w-4 mr-2" />
-                      Randomize
-                    </Button>
-                    <Button
-                      onClick={previewPromptHandler}
-                      disabled={isPreviewingPrompt}
-                      variant="outline"
-                      className="border-slate-600 text-slate-200 hover:bg-slate-700 bg-transparent"
-                    >
-                      {isPreviewingPrompt ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      ) : (
-                        <Eye className="h-4 w-4 mr-2" />
-                      )}
-                      Preview
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Progress Bar */}
-                {isGenerating && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm text-slate-400">
-                      <span>{generationStatus}</span>
-                      <span>{Math.round(generationProgress)}%</span>
-                    </div>
-                    <Progress value={generationProgress} className="w-full" />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Preview Panel */}
-          <div className="lg:col-span-2">
-            <Card className="bg-slate-800/50 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-slate-100 flex items-center gap-2">
-                  <ImageIcon className="h-5 w-5" />
-                  Generated Artwork
-                </CardTitle>
-                <CardDescription className="text-slate-400">
-                  Professional AI-generated artwork with cultural heritage themes
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 bg-slate-700">
-                    <TabsTrigger value="standard" className="data-[state=active]:bg-slate-600">
-                      <Square className="h-4 w-4 mr-2" />
-                      Standard
-                      {generatedImages.standard && <div className="ml-2 w-2 h-2 bg-green-400 rounded-full" />}
-                    </TabsTrigger>
-                    <TabsTrigger value="dome" className="data-[state=active]:bg-slate-600">
-                      <Mountain className="h-4 w-4 mr-2" />
-                      Dome
-                      {generatedImages.dome && <div className="ml-2 w-2 h-2 bg-green-400 rounded-full" />}
-                    </TabsTrigger>
-                    <TabsTrigger value="panorama" className="data-[state=active]:bg-slate-600">
-                      <Globe className="h-4 w-4 mr-2" />
-                      360° Panorama
-                      {generatedImages.panorama && <div className="ml-2 w-2 h-2 bg-green-400 rounded-full" />}
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="standard" className="mt-4">
-                    <div className="space-y-4">
-                      <AspectRatio ratio={1} className="bg-slate-700 rounded-lg overflow-hidden">
-                        {generatedImages.standard ? (
-                          <img
-                            src={generatedImages.standard || "/placeholder.svg"}
-                            alt="Generated Standard Art"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-400">
-                            <div className="text-center space-y-2">
-                              <Square className="h-12 w-12 mx-auto opacity-50" />
-                              <p>Standard artwork will appear here</p>
-                              <p className="text-sm">1024×1024 resolution</p>
-                            </div>
-                          </div>
-                        )}
-                      </AspectRatio>
-                      {generatedImages.standard && (
-                        <Button
-                          onClick={() => downloadImage(generatedImages.standard!, "flowsketch-standard.jpg")}
-                          className="w-full bg-green-600 hover:bg-green-700"
-                        >
-                          <Download className="h-4 w-4 mr-2" />
-                          Download Standard Art
-                        </Button>
-                      )}
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="dome" className="mt-4">
-                    <div className="space-y-4">
-                      <AspectRatio ratio={1} className="bg-slate-700 rounded-lg overflow-hidden">
-                        {generatedImages.dome ? (
-                          <img
-                            src={generatedImages.dome || "/placeholder.svg"}
-                            alt="Generated Dome Art"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-400">
-                            <div className="text-center space-y-2">
-                              <Mountain className="h-12 w-12 mx-auto opacity-50" />
-                              <p>Dome projection artwork will appear here</p>
-                              <p className="text-sm">Optimized for planetarium display</p>
-                            </div>
-                          </div>
-                        )}
-                      </AspectRatio>
-                      {generatedImages.dome && (
-                        <Button
-                          onClick={() => downloadImage(generatedImages.dome!, "flowsketch-dome.jpg")}
-                          className="w-full bg-green-600 hover:bg-green-700"
-                        >
-                          <Download className="h-4 w-4 mr-2" />
-                          Download Dome Art
-                        </Button>
-                      )}
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="panorama" className="mt-4">
-                    <div className="space-y-4">
-                      <AspectRatio ratio={2} className="bg-slate-700 rounded-lg overflow-hidden">
-                        {generatedImages.panorama ? (
-                          <img
-                            src={generatedImages.panorama || "/placeholder.svg"}
-                            alt="Generated 360° Panorama"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-400">
-                            <div className="text-center space-y-2">
-                              <Globe className="h-12 w-12 mx-auto opacity-50" />
-                              <p>360° panoramic artwork will appear here</p>
-                              <p className="text-sm">2:1 aspect ratio for VR viewing</p>
-                            </div>
-                          </div>
-                        )}
-                      </AspectRatio>
-                      {generatedImages.panorama && (
-                        <Button
-                          onClick={() => downloadImage(generatedImages.panorama!, "flowsketch-360.jpg")}
-                          className="w-full bg-green-600 hover:bg-green-700"
-                        >
-                          <Download className="h-4 w-4 mr-2" />
-                          Download 360° Panorama
-                        </Button>
-                      )}
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Prompt Editor Dialog */}
-        <Dialog open={showPromptEditor} onOpenChange={setShowPromptEditor}>
-          <DialogContent className="max-w-4xl max-h-[80vh] bg-slate-800 border-slate-700">
-            <DialogHeader>
-              <DialogTitle className="text-slate-100 flex items-center gap-2">
-                <Edit3 className="h-5 w-5" />
-                Prompt Editor
-              </DialogTitle>
-              <DialogDescription className="text-slate-400">
-                Preview and edit the AI generation prompt
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <Textarea
-                value={previewPrompt}
-                onChange={(e) => setPreviewPrompt(e.target.value)}
-                className="min-h-[300px] bg-slate-700 border-slate-600 text-slate-100 font-mono text-sm"
-                placeholder="AI generation prompt will appear here..."
-              />
-              <div className="flex justify-between items-center">
-                <div className="text-sm text-slate-400">Characters: {previewPrompt.length} / 4000</div>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => {
-                      setParams((prev) => ({ ...prev, customPrompt: previewPrompt }))
-                      setShowPromptEditor(false)
-                      toast({
-                        title: "Custom Prompt Set",
-                        description: "The edited prompt will be used for generation",
-                      })
-                    }}
-                    className="bg-purple-600 hover:bg-purple-700"
-                  >
-                    Use Custom Prompt
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      setParams((prev) => ({ ...prev, customPrompt: "" }))
-                      setShowPromptEditor(false)
-                      toast({
-                        title: "Reset to Auto",
-                        description: "Switched back to automatic prompt generation",
-                      })
-                    }}
-                    variant="outline"
-                    className="border-slate-600 text-slate-200 hover:bg-slate-700"
-                  >
-                    Reset to Auto
-                  </Button>
+                <div className="space-y-2">
+                  <Label>Noise Scale: {noiseScale.toFixed(3)}</Label>
+                  <Slider
+                    value={[noiseScale]}
+                    onValueChange={(value) => setNoiseScale(value[0])}
+                    max={0.2}
+                    min={0.01}
+                    step={0.001}
+                  />
                 </div>
               </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+
+              {/* Custom Prompt */}
+              <div className="space-y-2">
+                <Label>Custom Prompt (Optional)</Label>
+                <Textarea
+                  placeholder="Enter custom prompt to override automatic generation..."
+                  value={customPrompt}
+                  onChange={(e) => setCustomPrompt(e.target.value)}
+                  rows={3}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2">
+                <Button onClick={generateAllTypes} disabled={isGenerating} className="w-full" size="lg">
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      Generate All 3 Types
+                    </>
+                  )}
+                </Button>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <Button
+                    onClick={() => generateSingleType("standard")}
+                    disabled={isGenerating}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Square className="h-4 w-4 mr-1" />
+                    Standard
+                  </Button>
+                  <Button
+                    onClick={() => generateSingleType("dome")}
+                    disabled={isGenerating}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <CircleDot className="h-4 w-4 mr-1" />
+                    Dome
+                  </Button>
+                  <Button onClick={() => generateSingleType("360")} disabled={isGenerating} variant="outline" size="sm">
+                    <Globe className="h-4 w-4 mr-1" />
+                    360°
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <Button onClick={randomizeParameters} variant="outline" size="sm">
+                    <RefreshCw className="h-4 w-4 mr-1" />
+                    Randomize
+                  </Button>
+                  <Dialog open={isPromptDialogOpen} onOpenChange={setIsPromptDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button onClick={previewPrompt} variant="outline" size="sm">
+                        <Eye className="h-4 w-4 mr-1" />
+                        Preview
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl">
+                      <DialogHeader>
+                        <DialogTitle>Prompt Preview</DialogTitle>
+                        <DialogDescription>Preview the generated prompt before creating your artwork</DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <Textarea
+                          value={promptPreview}
+                          onChange={(e) => setPromptPreview(e.target.value)}
+                          rows={10}
+                          className="font-mono text-sm"
+                        />
+                        <div className="flex justify-between items-center">
+                          <Badge variant="secondary">{promptPreview.length} characters</Badge>
+                          <Button
+                            onClick={() => {
+                              setCustomPrompt(promptPreview)
+                              setIsPromptDialogOpen(false)
+                              toast({
+                                title: "Prompt Applied",
+                                description: "Custom prompt has been set",
+                              })
+                            }}
+                          >
+                            <Wand2 className="h-4 w-4 mr-2" />
+                            Use This Prompt
+                          </Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
+                {isGenerating && (
+                  <Button onClick={cancelGeneration} variant="destructive" size="sm" className="w-full">
+                    <XCircle className="h-4 w-4 mr-2" />
+                    Cancel Generation
+                  </Button>
+                )}
+              </div>
+
+              {/* Progress */}
+              {isGenerating && (
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Progress</span>
+                    <span className="text-sm font-medium">{generationProgress}%</span>
+                  </div>
+                  <Progress value={generationProgress} />
+                  <p className="text-sm text-muted-foreground">{generationStatus}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Results Panel */}
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Play className="h-5 w-5" />
+                Generated Artwork
+              </CardTitle>
+              <CardDescription>View your generated Standard, Dome, and 360° Panorama images</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs value={activeTab} onValueChange={setActiveTab}>
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="standard" className="flex items-center gap-2">
+                    <Square className="h-4 w-4" />
+                    Standard
+                    {standardImage && <CheckCircle className="h-3 w-3 text-green-500" />}
+                  </TabsTrigger>
+                  <TabsTrigger value="dome" className="flex items-center gap-2">
+                    <CircleDot className="h-4 w-4" />
+                    Dome
+                    {domeImage && <CheckCircle className="h-3 w-3 text-green-500" />}
+                  </TabsTrigger>
+                  <TabsTrigger value="panorama" className="flex items-center gap-2">
+                    <Globe className="h-4 w-4" />
+                    360° Panorama
+                    {panoramaImage && <CheckCircle className="h-3 w-3 text-green-500" />}
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="standard" className="space-y-4">
+                  {standardImage ? (
+                    <div className="space-y-4">
+                      <AspectRatio ratio={1}>
+                        <img
+                          src={standardImage.imageUrl || "/placeholder.svg"}
+                          alt="Generated Standard Artwork"
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </AspectRatio>
+                      <div className="flex justify-between items-center">
+                        <div className="space-y-1">
+                          <Badge variant="secondary">{standardImage.format}</Badge>
+                          <p className="text-sm text-muted-foreground">{standardImage.resolution || "1024×1024"}</p>
+                        </div>
+                        <Button
+                          onClick={() => downloadImage(standardImage.imageUrl, "flowsketch-standard.jpg")}
+                          size="sm"
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Download
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="aspect-square bg-muted rounded-lg flex items-center justify-center">
+                      <div className="text-center space-y-2">
+                        <Square className="h-12 w-12 mx-auto text-muted-foreground" />
+                        <p className="text-muted-foreground">No standard image generated yet</p>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="dome" className="space-y-4">
+                  {domeImage ? (
+                    <div className="space-y-4">
+                      <AspectRatio ratio={1}>
+                        <img
+                          src={domeImage.imageUrl || "/placeholder.svg"}
+                          alt="Generated Dome Projection"
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </AspectRatio>
+                      <div className="flex justify-between items-center">
+                        <div className="space-y-1">
+                          <div className="flex gap-2">
+                            <Badge variant="secondary">{domeImage.format}</Badge>
+                            {domeImage.planetariumOptimized && <Badge variant="outline">Planetarium Ready</Badge>}
+                            {domeImage.fisheyePerspective && <Badge variant="outline">Fisheye</Badge>}
+                          </div>
+                          <p className="text-sm text-muted-foreground">1024×1024 • Dome Projection</p>
+                        </div>
+                        <Button onClick={() => downloadImage(domeImage.imageUrl, "flowsketch-dome.jpg")} size="sm">
+                          <Download className="h-4 w-4 mr-2" />
+                          Download
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="aspect-square bg-muted rounded-lg flex items-center justify-center">
+                      <div className="text-center space-y-2">
+                        <CircleDot className="h-12 w-12 mx-auto text-muted-foreground" />
+                        <p className="text-muted-foreground">No dome projection generated yet</p>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="panorama" className="space-y-4">
+                  {panoramaImage ? (
+                    <div className="space-y-4">
+                      <AspectRatio ratio={1.75}>
+                        <img
+                          src={panoramaImage.imageUrl || "/placeholder.svg"}
+                          alt="Generated 360° Panorama"
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </AspectRatio>
+                      <div className="flex justify-between items-center">
+                        <div className="space-y-1">
+                          <div className="flex gap-2">
+                            <Badge variant="secondary">{panoramaImage.format}</Badge>
+                            {panoramaImage.vrOptimized && <Badge variant="outline">VR Ready</Badge>}
+                            {panoramaImage.seamlessWrapping && <Badge variant="outline">Seamless</Badge>}
+                          </div>
+                          <p className="text-sm text-muted-foreground">1792×1024 • Equirectangular</p>
+                        </div>
+                        <Button onClick={() => downloadImage(panoramaImage.imageUrl, "flowsketch-360.jpg")} size="sm">
+                          <Download className="h-4 w-4 mr-2" />
+                          Download
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="aspect-[1.75] bg-muted rounded-lg flex items-center justify-center">
+                      <div className="text-center space-y-2">
+                        <Globe className="h-12 w-12 mx-auto text-muted-foreground" />
+                        <p className="text-muted-foreground">No 360° panorama generated yet</p>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
