@@ -2,73 +2,48 @@ import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
-    console.log("✨ Enhance prompt request received")
-
     const body = await request.json()
     const { prompt, style = "professional" } = body
 
-    if (!prompt || typeof prompt !== "string") {
-      return NextResponse.json({ error: "Missing or invalid prompt parameter" }, { status: 400 })
+    if (!prompt) {
+      return NextResponse.json({ error: "Missing prompt" }, { status: 400 })
     }
 
-    console.log("🎨 Enhancing prompt with style:", style)
-    console.log("📝 Original prompt length:", prompt.length)
+    console.log("🔧 Enhancing prompt with style:", style)
 
     let enhancedPrompt = prompt
 
-    // Enhancement based on style
     switch (style) {
       case "professional":
-        enhancedPrompt = `PROFESSIONAL MASTERPIECE: ${prompt}, ultra-high detail, professional quality, award-winning digital art, museum quality, 8K resolution, HDR, photorealistic`
+        enhancedPrompt = `PROFESSIONAL MASTERPIECE: ${prompt}, ultra-high detail, professional quality, award-winning digital art, 8K resolution, HDR, photorealistic, museum quality`
         break
-
-      case "cinematic":
-        enhancedPrompt = `CINEMATIC MASTERPIECE: ${prompt}, dramatic lighting, cinematic composition, film photography, professional cinematography, epic scale, movie poster quality, Hollywood production value`
-        break
-
       case "artistic":
-        enhancedPrompt = `ARTISTIC MASTERPIECE: ${prompt}, fine art quality, gallery exhibition worthy, artistic composition, creative interpretation, masterful technique, artistic vision, contemporary art style`
+        enhancedPrompt = `ARTISTIC MASTERPIECE: ${prompt}, creative composition, artistic flair, expressive brushwork, gallery-worthy, fine art quality, inspired creativity`
         break
-
+      case "cinematic":
+        enhancedPrompt = `CINEMATIC MASTERPIECE: ${prompt}, dramatic lighting, cinematic composition, movie-quality, epic scale, professional cinematography, blockbuster visual effects`
+        break
       case "fantasy":
-        enhancedPrompt = `FANTASY EPIC: ${prompt}, magical atmosphere, mystical elements, fantasy art style, enchanted realm, otherworldly beauty, mythical quality, legendary artwork`
+        enhancedPrompt = `FANTASY MASTERPIECE: ${prompt}, magical atmosphere, fantastical elements, otherworldly beauty, enchanted realm, mystical quality, legendary artwork`
         break
-
-      case "cultural":
-        enhancedPrompt = `CULTURAL HERITAGE MASTERPIECE: ${prompt}, authentic cultural representation, traditional artistic elements, historical accuracy, cultural significance, heritage preservation, respectful interpretation`
+      case "minimalist":
+        enhancedPrompt = `MINIMALIST MASTERPIECE: ${prompt}, clean composition, elegant simplicity, refined aesthetics, sophisticated design, premium quality`
         break
-
       default:
         enhancedPrompt = `ENHANCED: ${prompt}, high quality, detailed, professional artwork`
     }
 
-    // Ensure prompt doesn't exceed limits
-    if (enhancedPrompt.length > 4000) {
-      enhancedPrompt = enhancedPrompt.substring(0, 3900) + "..."
-    }
-
     console.log("✅ Prompt enhanced successfully")
-    console.log("📏 Enhanced prompt length:", enhancedPrompt.length)
 
     return NextResponse.json({
       success: true,
       originalPrompt: prompt,
       enhancedPrompt: enhancedPrompt,
       style: style,
-      originalLength: prompt.length,
-      enhancedLength: enhancedPrompt.length,
-      timestamp: new Date().toISOString(),
+      enhancement: enhancedPrompt.length - prompt.length,
     })
   } catch (error: any) {
-    console.error("❌ Enhance prompt failed:", error)
-
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || "Failed to enhance prompt",
-        timestamp: new Date().toISOString(),
-      },
-      { status: 500 },
-    )
+    console.error("❌ Prompt enhancement failed:", error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }

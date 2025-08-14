@@ -6,58 +6,74 @@ export async function GET(request: NextRequest) {
     const imageUrl = searchParams.get("url")
 
     if (!imageUrl) {
-      return NextResponse.json({ error: "Missing image URL parameter" }, { status: 400 })
+      return NextResponse.json({ error: "Missing image URL" }, { status: 400 })
     }
 
-    console.log("📥 Download proxy request for:", imageUrl)
+    console.log("📥 Downloading image:", imageUrl)
 
-    // Create AbortController with timeout
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+    const response = await fetch(imageUrl, {
+      headers: {
+        "User-Agent": "FlowSketch-Art-Generator/1.0",
+      },
+    })
 
-    try {
-      const response = await fetch(imageUrl, {
-        signal: controller.signal,
-        headers: {
-          "User-Agent": "FlowSketch-Art-Generator/1.0",
-        },
-      })
-
-      clearTimeout(timeoutId)
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`)
-      }
-
-      const contentType = response.headers.get("content-type") || "image/jpeg"
-      const buffer = await response.arrayBuffer()
-
-      console.log("✅ Image downloaded successfully, size:", buffer.byteLength)
-
-      return new NextResponse(buffer, {
-        headers: {
-          "Content-Type": contentType,
-          "Content-Length": buffer.byteLength.toString(),
-          "Cache-Control": "public, max-age=31536000",
-        },
-      })
-    } catch (fetchError: any) {
-      clearTimeout(timeoutId)
-
-      if (fetchError.name === "AbortError") {
-        throw new Error("Download timeout - image took too long to fetch")
-      }
-      throw fetchError
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status}`)
     }
+
+    const imageBuffer = await response.arrayBuffer()
+    const contentType = response.headers.get("content-type") || "image/png"
+
+    console.log("✅ Image downloaded successfully")
+
+    return new NextResponse(imageBuffer, {
+      headers: {
+        "Content-Type": contentType,
+        "Content-Disposition": "attachment",
+        "Cache-Control": "public, max-age=31536000",
+      },
+    })
   } catch (error: any) {
     console.error("❌ Download proxy failed:", error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
 
-    return NextResponse.json(
-      {
-        error: error.message || "Failed to download image",
-        timestamp: new Date().toISOString(),
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { imageUrl } = body
+
+    if (!imageUrl) {
+      return NextResponse.json({ error: "Missing image URL" }, { status: 400 })
+    }
+
+    console.log("📥 Downloading image via POST:", imageUrl)
+
+    const response = await fetch(imageUrl, {
+      headers: {
+        "User-Agent": "FlowSketch-Art-Generator/1.0",
       },
-      { status: 500 },
-    )
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status}`)
+    }
+
+    const imageBuffer = await response.arrayBuffer()
+    const contentType = response.headers.get("content-type") || "image/png"
+
+    console.log("✅ Image downloaded successfully via POST")
+
+    return new NextResponse(imageBuffer, {
+      headers: {
+        "Content-Type": contentType,
+        "Content-Disposition": "attachment",
+        "Cache-Control": "public, max-age=31536000",
+      },
+    })
+  } catch (error: any) {
+    console.error("❌ Download proxy POST failed:", error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
