@@ -476,6 +476,166 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+  heads: {
+    name: "👤 Heads & Portraits",
+    scenarios: {
+      "hyper-realism": {
+        name: "📸 Hyper-Realistic Portraits",
+        description:
+          "Ultra-realistic human head portraits with photographic precision, every skin pore visible, natural lighting, professional photography quality, detailed facial features, realistic skin textures, natural expressions, museum-quality portrait art, lifelike human faces, anatomical accuracy, professional headshot photography, cinematic portrait lighting, award-winning portrait photography, hyperrealistic digital art mastery.",
+      },
+      "classical-realism": {
+        name: "🎨 Classical Portrait Realism",
+        description:
+          "Classical realistic portrait painting style, traditional oil painting techniques, Renaissance-inspired portraiture, masterful brushwork, classical lighting, traditional portrait composition, academic realism, old master painting techniques, classical portrait art, traditional artistic methods, realistic human features, classical art mastery, museum-quality traditional portraits.",
+      },
+      "stylized-portraits": {
+        name: "✨ Stylized Portrait Art",
+        description:
+          "Stylized portrait art with artistic interpretation, creative visual style, artistic portrait design, contemporary portrait art, modern artistic approach, creative portrait illustration, artistic head studies, stylized human features, contemporary art style, creative portrait composition, artistic interpretation of human faces, modern portrait artistry.",
+      },
+      "geometric-heads": {
+        name: "🔷 Geometric Portrait Abstraction",
+        description:
+          "Geometric abstraction of human heads, angular facial features, cubist-inspired portraits, geometric portrait composition, abstract facial geometry, mathematical portrait art, geometric human forms, angular portrait design, abstract head studies, geometric facial interpretation, mathematical human representation, geometric portrait artistry.",
+      },
+      "surreal-portraits": {
+        name: "🌀 Surreal Portrait Art",
+        description:
+          "Surreal portrait art with dreamlike qualities, fantastical human features, imaginative portrait design, surreal facial transformations, dreamlike portrait composition, fantastical head studies, surreal human interpretation, imaginative portrait artistry, dreamlike facial features, surreal portrait creativity, fantastical human art.",
+      },
+      "abstract-faces": {
+        name: "🎭 Abstract Facial Art",
+        description:
+          "Abstract interpretation of human faces, non-representational portrait art, abstract facial forms, experimental portrait design, abstract human representation, conceptual face art, abstract portrait composition, experimental facial art, abstract head studies, conceptual portrait artistry, abstract human forms, experimental portrait creativity.",
+      },
+      "digital-portraits": {
+        name: "💻 Digital Portrait Art",
+        description:
+          "Digital portrait art with modern techniques, contemporary digital artistry, computer-generated portraits, digital painting techniques, modern portrait technology, digital art mastery, contemporary portrait design, digital human representation, modern artistic methods, digital portrait innovation, contemporary digital creativity.",
+      },
+      "character-heads": {
+        name: "🎪 Character Portrait Design",
+        description:
+          "Character portrait design with unique personalities, expressive character faces, personality-driven portraits, character art design, expressive human features, character development art, personality portrait studies, character design mastery, expressive portrait art, character-based human representation, personality-focused portrait artistry.",
+      },
+      "ethnic-diversity": {
+        name: "🌍 Diverse Cultural Portraits",
+        description:
+          "Diverse cultural portrait representation, multicultural human faces, ethnic diversity in art, global portrait representation, cultural facial features, diverse human beauty, multicultural portrait art, global human representation, cultural portrait studies, diverse ethnic artistry, multicultural human art, global portrait diversity.",
+      },
+      "age-progression": {
+        name: "⏳ Age Progression Studies",
+        description:
+          "Age progression portrait studies, human aging visualization, life stage portraits, temporal human representation, aging process art, generational portrait studies, time-based human art, age-related facial changes, temporal portrait progression, life cycle human representation, aging portrait artistry.",
+      },
+      "emotional-expressions": {
+        name: "😊 Emotional Expression Studies",
+        description:
+          "Emotional expression portrait studies, human facial emotions, expressive portrait art, emotional human representation, facial expression mastery, emotional portrait design, human emotion visualization, expressive facial art, emotional character studies, human feeling representation, emotional portrait artistry.",
+      },
+      "fantasy-creatures": {
+        name: "🧙 Fantasy Humanoid Portraits",
+        description:
+          "Fantasy humanoid portrait art, mythical creature faces, fantastical human-like beings, fantasy character portraits, mythological humanoid art, fantastical creature design, fantasy portrait creativity, mythical being representation, fantastical humanoid studies, fantasy character artistry, mythological portrait art.",
+      },
+      "cyberpunk-heads": {
+        name: "🤖 Cyberpunk Portrait Art",
+        description:
+          "Cyberpunk portrait art with futuristic elements, sci-fi human representation, technological portrait design, futuristic human art, cybernetic portrait studies, sci-fi character faces, technological human enhancement, futuristic portrait artistry, cyberpunk human design, technological portrait creativity, sci-fi human visualization.",
+      },
+      "minimalist-portraits": {
+        name: "⚪ Minimalist Portrait Design",
+        description:
+          "Minimalist portrait design with clean aesthetics, simple portrait composition, minimal human representation, clean portrait artistry, simplified facial features, minimal portrait creativity, clean human art, simplified portrait design, minimal artistic approach, clean portrait mastery, simplified human representation.",
+      },
+      "mega-freak": {
+        name: "👹 Extreme Artistic Distortion",
+        description:
+          "Extreme artistic distortion of human features, highly stylized portrait art, dramatically exaggerated facial characteristics, avant-garde portrait design, experimental human representation, radical artistic interpretation, extreme portrait creativity, dramatically stylized human faces, avant-garde facial art, experimental portrait artistry, radical human visualization, extreme artistic expression.",
+      },
+    },
+  },
+  faces: {
+    name: "😊 Faces & Expressions",
+    scenarios: {
+      "photorealistic-faces": {
+        name: "📷 Photorealistic Facial Art",
+        description:
+          "Photorealistic facial art with incredible detail, lifelike human faces, photographic quality portraits, realistic facial features, natural skin textures, professional portrait photography, hyperrealistic face art, detailed human expressions, photographic portrait mastery, lifelike facial representation, realistic human beauty, photorealistic portrait excellence.",
+      },
+      "portrait-studies": {
+        name: "🎨 Classical Portrait Studies",
+        description:
+          "Classical portrait studies with traditional techniques, academic facial art, classical drawing methods, traditional portrait mastery, academic human representation, classical artistic training, traditional facial studies, academic portrait excellence, classical human art, traditional artistic methods, academic portrait mastery.",
+      },
+      "expressive-faces": {
+        name: "🎭 Expressive Facial Art",
+        description:
+          "Expressive facial art with emotional depth, dramatic human expressions, emotional portrait art, expressive human features, dramatic facial studies, emotional artistic representation, expressive portrait design, dramatic human emotion, emotional facial artistry, expressive human creativity, dramatic portrait excellence.",
+      },
+      "cultural-faces": {
+        name: "🌏 Cultural Facial Heritage",
+        description:
+          "Cultural facial heritage representation, traditional human beauty, ethnic facial characteristics, cultural portrait art, heritage human representation, traditional facial features, cultural human diversity, ethnic portrait studies, heritage facial artistry, cultural human beauty, traditional portrait heritage.",
+      },
+      "artistic-interpretations": {
+        name: "🖼️ Artistic Face Interpretations",
+        description:
+          "Artistic interpretations of human faces, creative facial art, artistic human representation, creative portrait design, artistic facial creativity, interpretive human art, creative face studies, artistic portrait innovation, creative human visualization, artistic facial mastery, interpretive portrait artistry.",
+      },
+      "contemporary-faces": {
+        name: "🆕 Contemporary Facial Art",
+        description:
+          "Contemporary facial art with modern aesthetics, current artistic trends, modern human representation, contemporary portrait design, current facial artistry, modern artistic methods, contemporary human art, current portrait innovation, modern facial creativity, contemporary artistic excellence, current human visualization.",
+      },
+      "dramatic-lighting": {
+        name: "💡 Dramatic Portrait Lighting",
+        description:
+          "Dramatic portrait lighting effects, cinematic facial illumination, professional portrait lighting, dramatic human representation, cinematic face art, professional lighting mastery, dramatic portrait artistry, cinematic human beauty, professional facial lighting, dramatic artistic illumination, cinematic portrait excellence.",
+      },
+      "micro-expressions": {
+        name: "🔍 Micro-Expression Studies",
+        description:
+          "Micro-expression studies in facial art, subtle human emotions, detailed facial analysis, psychological portrait art, subtle expression mastery, detailed emotional representation, psychological human studies, subtle facial artistry, detailed emotion visualization, psychological portrait excellence, subtle human creativity.",
+      },
+      "face-morphology": {
+        name: "🧬 Facial Morphology Studies",
+        description:
+          "Facial morphology studies with scientific accuracy, anatomical face art, structural human representation, morphological portrait studies, anatomical facial accuracy, structural human artistry, morphological face design, anatomical portrait mastery, structural facial creativity, morphological human excellence, anatomical artistic precision.",
+      },
+      "beauty-standards": {
+        name: "💄 Beauty Standard Exploration",
+        description:
+          "Beauty standard exploration in facial art, diverse human beauty, cultural beauty representation, aesthetic facial studies, beauty diversity art, aesthetic human representation, beauty standard artistry, aesthetic portrait design, beauty cultural studies, aesthetic human creativity, beauty artistic excellence.",
+      },
+      "aging-faces": {
+        name: "👴 Aging Process Visualization",
+        description:
+          "Aging process visualization in facial art, temporal human representation, life stage facial studies, aging portrait art, temporal face visualization, life cycle human art, aging facial artistry, temporal portrait design, life stage human creativity, aging artistic representation, temporal facial excellence.",
+      },
+      "gender-studies": {
+        name: "⚧️ Gender Expression Studies",
+        description:
+          "Gender expression studies in facial art, diverse human representation, gender facial characteristics, inclusive portrait art, gender diversity studies, inclusive human artistry, gender expression creativity, diverse facial representation, inclusive portrait design, gender artistic exploration, diverse human excellence.",
+      },
+      "psychological-portraits": {
+        name: "🧠 Psychological Portrait Art",
+        description:
+          "Psychological portrait art with emotional depth, mental state representation, psychological human studies, emotional facial art, mental health awareness art, psychological portrait design, emotional human representation, mental state visualization, psychological artistic expression, emotional portrait excellence, mental health artistry.",
+      },
+      "identity-exploration": {
+        name: "🪪 Identity Exploration Art",
+        description:
+          "Identity exploration through facial art, personal human representation, identity portrait studies, self-expression facial art, personal identity visualization, individual human artistry, identity artistic exploration, personal portrait design, individual facial creativity, identity human excellence, personal artistic expression.",
+      },
+      "extreme-stylization": {
+        name: "🎪 Extreme Facial Stylization",
+        description:
+          "Extreme facial stylization with radical artistic interpretation, highly stylized human features, avant-garde facial art, experimental human representation, radical portrait design, extreme artistic creativity, avant-garde human visualization, experimental facial artistry, radical human excellence, extreme portrait innovation, avant-garde facial mastery.",
+      },
+    },
+  },
 } as const
 
 // Color schemes with professional descriptions - EXPORTED
