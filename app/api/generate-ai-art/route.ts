@@ -3,8 +3,25 @@ import { generateWithOpenAI, validateGenerationParams } from "./utils"
 import { buildPrompt } from "@/lib/ai-prompt"
 
 export async function POST(request: NextRequest) {
+  console.log("🎨 Generation API route called")
+
   try {
-    const body = await request.json()
+    // Parse request body with error handling
+    let body: any
+    try {
+      body = await request.json()
+    } catch (parseError) {
+      console.error("❌ Failed to parse request body:", parseError)
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid JSON in request body",
+          timestamp: new Date().toISOString(),
+        },
+        { status: 400 },
+      )
+    }
+
     console.log("🎨 Generation request received:", {
       dataset: body.dataset,
       scenario: body.scenario,
@@ -17,25 +34,44 @@ export async function POST(request: NextRequest) {
 
     // Build the prompt
     let finalPrompt = ""
-    if (body.prompt && body.prompt.trim()) {
-      finalPrompt = body.prompt.trim()
-    } else {
-      finalPrompt = buildPrompt({
-        dataset: params.dataset,
-        scenario: params.scenario,
-        colorScheme: params.colorScheme,
-        seed: params.seed,
-        numSamples: params.numSamples,
-        noiseScale: params.noiseScale,
-        customPrompt: params.customPrompt,
-        panoramic360: params.panoramic360,
-        panoramaFormat: params.panoramaFormat,
-        projectionType: params.projectionType,
-      })
+    try {
+      if (body.prompt && body.prompt.trim()) {
+        finalPrompt = body.prompt.trim()
+      } else {
+        finalPrompt = buildPrompt({
+          dataset: params.dataset,
+          scenario: params.scenario,
+          colorScheme: params.colorScheme,
+          seed: params.seed,
+          numSamples: params.numSamples,
+          noiseScale: params.noiseScale,
+          customPrompt: params.customPrompt,
+          panoramic360: params.panoramic360,
+          panoramaFormat: params.panoramaFormat,
+          projectionType: params.projectionType,
+        })
+      }
+    } catch (promptError) {
+      console.error("❌ Failed to build prompt:", promptError)
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Failed to generate prompt",
+          timestamp: new Date().toISOString(),
+        },
+        { status: 500 },
+      )
     }
 
     if (!finalPrompt || finalPrompt.length === 0) {
-      throw new Error("Failed to generate prompt")
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Empty prompt generated",
+          timestamp: new Date().toISOString(),
+        },
+        { status: 400 },
+      )
     }
 
     console.log("📝 Final prompt generated:", finalPrompt.substring(0, 200) + "...")
@@ -96,33 +132,46 @@ export async function POST(request: NextRequest) {
     const generationType = body.type || "standard"
     console.log(`🎯 Generating single ${generationType} image...`)
 
-    const result = await generateWithOpenAI(finalPrompt, generationType, params)
+    try {
+      const result = await generateWithOpenAI(finalPrompt, generationType, params)
 
-    console.log(`✅ ${generationType} image generated successfully`)
+      console.log(`✅ ${generationType} image generated successfully`)
 
-    return NextResponse.json({
-      success: true,
-      imageUrl: result.imageUrl,
-      prompt: result.prompt,
-      type: generationType,
-      aspectRatio: generationType === "360" ? "1.75:1" : "1:1",
-      format: generationType === "360" ? "360° Panorama" : generationType === "dome" ? "Dome Projection" : "Standard",
-      resolution: generationType === "360" ? "1792×1024" : "1024×1024",
-      vrOptimized: generationType === "360",
-      seamlessWrapping: generationType === "360" && params.panoramaFormat === "equirectangular",
-      planetariumOptimized: generationType === "dome",
-      projectionType: generationType === "dome" ? params.projectionType : undefined,
-      panoramaFormat: generationType === "360" ? params.panoramaFormat : undefined,
-      parameters: params,
-      timestamp: new Date().toISOString(),
-    })
+      return NextResponse.json({
+        success: true,
+        imageUrl: result.imageUrl,
+        prompt: result.prompt,
+        type: generationType,
+        aspectRatio: generationType === "360" ? "1.75:1" : "1:1",
+        format: generationType === "360" ? "360° Panorama" : generationType === "dome" ? "Dome Projection" : "Standard",
+        resolution: generationType === "360" ? "1792×1024" : "1024×1024",
+        vrOptimized: generationType === "360",
+        seamlessWrapping: generationType === "360" && params.panoramaFormat === "equirectangular",
+        planetariumOptimized: generationType === "dome",
+        projectionType: generationType === "dome" ? params.projectionType : undefined,
+        panoramaFormat: generationType === "360" ? params.panoramaFormat : undefined,
+        parameters: params,
+        timestamp: new Date().toISOString(),
+      })
+    } catch (generationError: any) {
+      console.error(`❌ ${generationType} generation failed:`, generationError)
+      return NextResponse.json(
+        {
+          success: false,
+          error: `${generationType} generation failed: ${generationError.message}`,
+          timestamp: new Date().toISOString(),
+        },
+        { status: 500 },
+      )
+    }
   } catch (error: any) {
     console.error("❌ Generation API error:", error)
 
+    // Ensure we always return valid JSON
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Generation failed",
+        error: error.message || "Unknown generation error",
         timestamp: new Date().toISOString(),
       },
       { status: 500 },

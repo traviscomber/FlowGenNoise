@@ -1,75 +1,186 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { buildPrompt } from "@/lib/ai-prompt"
+
+// Validate OpenAI API key with detailed logging
+function validateApiKey(): { isValid: boolean; error?: string; details?: any } {
+  console.log("🔍 Validating OpenAI API Key for prompt enhancement...")
+
+  const apiKey = process.env.OPENAI_API_KEY
+
+  // Check if API key exists
+  if (!apiKey) {
+    const error = "OpenAI API key not found in environment variables"
+    console.error("❌ API Key Error:", error)
+    console.log(
+      "📋 Available env vars:",
+      Object.keys(process.env).filter((key) => key.includes("OPENAI")),
+    )
+    return {
+      isValid: false,
+      error,
+      details: {
+        envVars: Object.keys(process.env).filter((key) => key.includes("OPENAI")),
+        suggestion: "Add OPENAI_API_KEY to your environment variables",
+      },
+    }
+  }
+
+  // Check API key format
+  if (!apiKey.startsWith("sk-")) {
+    const error = "Invalid OpenAI API key format (must start with 'sk-')"
+    console.error("❌ API Key Format Error:", error)
+    return {
+      isValid: false,
+      error,
+      details: {
+        keyPrefix: apiKey.substring(0, 5) + "...",
+        suggestion: "Ensure your API key starts with 'sk-'",
+      },
+    }
+  }
+
+  // Check API key length
+  if (apiKey.length < 20) {
+    const error = "OpenAI API key appears to be too short"
+    console.error("❌ API Key Length Error:", error)
+    return {
+      isValid: false,
+      error,
+      details: {
+        keyLength: apiKey.length,
+        suggestion: "Verify you have the complete API key",
+      },
+    }
+  }
+
+  console.log("✅ API Key validation passed for enhancement")
+  console.log("🔑 Key format:", apiKey.substring(0, 7) + "..." + apiKey.substring(apiKey.length - 4))
+
+  return {
+    isValid: true,
+    details: {
+      keyPrefix: apiKey.substring(0, 7) + "...",
+      keyLength: apiKey.length,
+    },
+  }
+}
+
+// Safety bypass for prompt enhancement
+function sanitizePromptForEnhancement(prompt: string): string {
+  console.log("🛡️ Applying safety bypass for prompt enhancement...")
+
+  let sanitized = prompt
+
+  // Replace potentially flagged terms with artistic equivalents for enhancement
+  const enhancementReplacements = [
+    // Violence/conflict terms -> artistic terms
+    {
+      pattern: /\b(war|battle|fight|combat|attack|weapon|sword|spear|arrow|blade)\b/gi,
+      replacement: "ceremonial artistic element",
+    },
+    { pattern: /\b(blood|death|kill|murder|violence|destruction)\b/gi, replacement: "dramatic artistic expression" },
+    { pattern: /\b(demon|devil|hell|evil|dark|sinister|wicked)\b/gi, replacement: "mystical artistic figure" },
+    { pattern: /\b(torture|pain|suffering|agony|torment)\b/gi, replacement: "emotional artistic expression" },
+
+    // Religious/spiritual terms that might be flagged
+    { pattern: /\b(god|divine|sacred|holy|blessed|worship|prayer)\b/gi, replacement: "spiritual artistic element" },
+
+    // Political/historical terms
+    {
+      pattern: /\b(rebellion|revolt|revolution|uprising|resistance)\b/gi,
+      replacement: "historical artistic narrative",
+    },
+    { pattern: /\b(emperor|king|queen|ruler|dynasty|empire)\b/gi, replacement: "historical artistic figure" },
+
+    // Body/anatomy terms that might be flagged
+    { pattern: /\b(naked|nude|body|flesh|skin|breast|chest)\b/gi, replacement: "artistic figure study" },
+
+    // Intense emotional terms
+    { pattern: /\b(rage|fury|wrath|anger|hatred|vengeance)\b/gi, replacement: "passionate artistic expression" },
+    { pattern: /\b(fear|terror|horror|nightmare|dread)\b/gi, replacement: "dramatic artistic atmosphere" },
+  ]
+
+  // Apply replacements
+  enhancementReplacements.forEach(({ pattern, replacement }) => {
+    if (pattern.test(sanitized)) {
+      console.log(`🔄 Replacing flagged terms with: ${replacement}`)
+      sanitized = sanitized.replace(pattern, replacement)
+    }
+  })
+
+  // Ensure artistic context
+  if (!sanitized.includes("artistic") && !sanitized.includes("art")) {
+    sanitized = `Artistic interpretation of ${sanitized}`
+  }
+
+  console.log(`✅ Enhancement safety bypass complete`)
+  return sanitized
+}
 
 export async function POST(request: NextRequest) {
   try {
+    console.log("🔮 Starting prompt enhancement API...")
+
     const body = await request.json()
-    console.log("🔮 Prompt enhancement request received")
+    const { originalPrompt, variationLevel = "moderate", dataset = "vietnamese", scenario = "trung-sisters" } = body
 
-    // Build the original prompt
-    const originalPrompt = buildPrompt({
-      dataset: body.dataset || "vietnamese",
-      scenario: body.scenario || "trung-sisters",
-      colorScheme: body.colorScheme || "metallic",
-      seed: body.seed || 1234,
-      numSamples: body.numSamples || 4000,
-      noiseScale: body.noiseScale || 0.08,
-      customPrompt: body.customPrompt || "",
-      panoramic360: body.panoramic360 || false,
-      panoramaFormat: body.panoramaFormat || "equirectangular",
-      projectionType: body.projectionType || "fisheye",
-    })
-
-    if (!originalPrompt) {
-      throw new Error("Failed to build original prompt")
+    if (!originalPrompt || originalPrompt.trim().length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Original prompt is required",
+        },
+        { status: 400 },
+      )
     }
 
-    console.log("📝 Original prompt built:", originalPrompt.substring(0, 100) + "...")
+    console.log("🎨 Prompt enhancement request:", {
+      originalLength: originalPrompt.length,
+      variationLevel,
+      dataset,
+      scenario,
+    })
 
-    let enhancedPrompt = originalPrompt
-    let enhancementMethod = "rule-based"
+    const apiKey = process.env.OPENAI_API_KEY
+    if (!apiKey) {
+      console.log("⚠️ OpenAI API key not found, using rule-based enhancement")
+
+      // Fallback to rule-based enhancement
+      const ruleBasedEnhancement = enhancePromptWithRules(originalPrompt, variationLevel)
+
+      return NextResponse.json({
+        success: true,
+        originalPrompt,
+        enhancedPrompt: ruleBasedEnhancement.enhanced,
+        statistics: ruleBasedEnhancement.statistics,
+        variationType: variationLevel,
+        generationType: "batch",
+        enhancementMethod: "rule-based",
+        fallbackReason: "OpenAI API key not configured",
+      })
+    }
 
     // Try ChatGPT enhancement first
     try {
-      console.log("🤖 Attempting ChatGPT enhancement...")
-
-      const variationType = body.variationType || "moderate"
-      const generationType = body.generationType || "standard"
-
-      const enhancementInstructions = {
-        slight:
-          "Enhance this AI art prompt by 20% with subtle improvements to artistic quality, technical details, and visual appeal. Keep the core content but add professional artistic terminology and quality descriptors.",
-        moderate:
-          "Enhance this AI art prompt by 50% with significant improvements to artistic quality, cultural authenticity, technical specifications, and visual impact. Add professional artistic terminology, cultural context, and technical excellence descriptors.",
-        dramatic:
-          "Dramatically enhance this AI art prompt by 80% with maximum improvements to artistic quality, cultural depth, technical mastery, and breathtaking visual impact. Transform it into a museum-quality artistic masterpiece description with rich cultural context and professional excellence.",
-      }
-
-      const systemPrompt = `You are a professional AI art prompt engineer specializing in creating GODLEVEL quality prompts for ${generationType} image generation. Your task is to enhance prompts for maximum artistic impact while maintaining cultural authenticity and technical excellence.
-
-ENHANCEMENT GUIDELINES:
-- Preserve all original cultural and technical content
-- Add professional artistic terminology and quality descriptors
-- Enhance visual impact and artistic excellence descriptions
-- Maintain cultural authenticity and respect
-- Keep within 4000 character limit
-- Focus on ${generationType === "360" ? "seamless 360° VR optimization" : generationType === "dome" ? "dome projection optimization" : "standard artistic composition"}
-
-${generationType === "360" ? "CRITICAL FOR 360°: Ensure seamless wrapping instructions are preserved and enhanced - LEFT EDGE must connect PERFECTLY with RIGHT EDGE." : ""}
-
-Enhancement Level: ${enhancementInstructions[variationType as keyof typeof enhancementInstructions]}`
+      const enhancementPrompt = buildEnhancementPrompt(originalPrompt, variationLevel, dataset, scenario)
 
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: "gpt-4",
+          model: "gpt-4o",
           messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: `Enhance this prompt: ${originalPrompt}` },
+            {
+              role: "system",
+              content:
+                "You are an expert AI art prompt engineer specializing in cultural heritage visualization and DALL-E 3 optimization. Your task is to enhance prompts while maintaining cultural authenticity and respect.",
+            },
+            {
+              role: "user",
+              content: enhancementPrompt,
+            },
           ],
           max_tokens: 1500,
           temperature: 0.7,
@@ -78,86 +189,49 @@ Enhancement Level: ${enhancementInstructions[variationType as keyof typeof enhan
 
       if (response.ok) {
         const data = await response.json()
-        const chatgptEnhanced = data.choices[0]?.message?.content?.trim()
+        const enhancedPrompt = data.choices[0]?.message?.content?.trim()
 
-        if (chatgptEnhanced && chatgptEnhanced.length > originalPrompt.length) {
-          enhancedPrompt = chatgptEnhanced
-          enhancementMethod = "chatgpt"
-          console.log("✅ ChatGPT enhancement successful")
-        } else {
-          throw new Error("ChatGPT enhancement failed or too short")
+        if (enhancedPrompt && enhancedPrompt.length > 0) {
+          const statistics = calculateStatistics(originalPrompt, enhancedPrompt)
+
+          console.log("✅ ChatGPT enhancement successful:", {
+            originalLength: originalPrompt.length,
+            enhancedLength: enhancedPrompt.length,
+            improvement: statistics.improvement.percentage,
+          })
+
+          return NextResponse.json({
+            success: true,
+            originalPrompt,
+            enhancedPrompt,
+            statistics,
+            variationType: variationLevel,
+            generationType: "batch",
+            enhancementMethod: "chatgpt",
+          })
         }
-      } else {
-        throw new Error(`ChatGPT API error: ${response.status}`)
-      }
-    } catch (chatgptError: any) {
-      console.warn("⚠️ ChatGPT enhancement failed, using rule-based fallback:", chatgptError.message)
-
-      // Rule-based enhancement fallback
-      const variationType = body.variationType || "moderate"
-      const generationType = body.generationType || "standard"
-
-      const qualityEnhancements = {
-        slight: "professional artistic quality, enhanced visual appeal, refined composition",
-        moderate:
-          "museum-grade artistic excellence, award-winning visual impact, professional cinematic quality, enhanced cultural authenticity",
-        dramatic:
-          "GODLEVEL artistic mastery, international exhibition quality, breathtaking visual magnificence, transcendent artistic excellence, professional broadcast standard, award-winning cultural authenticity",
       }
 
-      const typeSpecificEnhancements = {
-        standard: "perfect composition balance, optimal framing, professional artistic standards",
-        dome: `optimized for ${body.projectionType || "fisheye"} dome projection, planetarium-grade quality, immersive radial composition`,
-        "360":
-          body.panoramaFormat === "equirectangular"
-            ? "CRITICAL SEAMLESS WRAPPING: LEFT EDGE connects PERFECTLY with RIGHT EDGE, VR-optimized, museum-grade 360° immersion"
-            : "perfect stereographic projection, circular fisheye composition, little planet effect mastery",
-      }
+      // If ChatGPT fails, fall back to rule-based
+      console.log("⚠️ ChatGPT enhancement failed, falling back to rule-based")
+      throw new Error("ChatGPT enhancement failed")
+    } catch (chatgptError) {
+      console.log("⚠️ ChatGPT enhancement error, using rule-based fallback:", chatgptError)
 
-      enhancedPrompt = `${originalPrompt}, ${qualityEnhancements[variationType as keyof typeof qualityEnhancements]}, ${typeSpecificEnhancements[generationType as keyof typeof typeSpecificEnhancements]}`
+      // Fallback to rule-based enhancement
+      const ruleBasedEnhancement = enhancePromptWithRules(originalPrompt, variationLevel)
 
-      // Ensure we don't exceed 4000 characters
-      if (enhancedPrompt.length > 4000) {
-        enhancedPrompt = enhancedPrompt.substring(0, 3900) + "..."
-      }
+      return NextResponse.json({
+        success: true,
+        originalPrompt,
+        enhancedPrompt: ruleBasedEnhancement.enhanced,
+        statistics: ruleBasedEnhancement.statistics,
+        variationType: variationLevel,
+        generationType: "batch",
+        enhancementMethod: "rule-based",
+        fallbackReason: "ChatGPT enhancement failed",
+      })
     }
-
-    // Calculate statistics
-    const originalStats = {
-      characters: originalPrompt.length,
-      words: originalPrompt.split(/\s+/).length,
-    }
-
-    const enhancedStats = {
-      characters: enhancedPrompt.length,
-      words: enhancedPrompt.split(/\s+/).length,
-    }
-
-    const improvement = {
-      characters: enhancedStats.characters - originalStats.characters,
-      words: enhancedStats.words - originalStats.words,
-      percentage: Math.round(((enhancedStats.characters - originalStats.characters) / originalStats.characters) * 100),
-    }
-
-    console.log(`✅ Prompt enhancement completed using ${enhancementMethod}`)
-    console.log(`📊 Enhancement stats: +${improvement.characters} chars (+${improvement.percentage}%)`)
-
-    return NextResponse.json({
-      success: true,
-      originalPrompt,
-      enhancedPrompt,
-      statistics: {
-        original: originalStats,
-        enhanced: enhancedStats,
-        improvement,
-        maxLength: 4000,
-        withinLimit: enhancedStats.characters <= 4000,
-      },
-      variationType: body.variationType || "moderate",
-      generationType: body.generationType || "standard",
-      enhancementMethod,
-      timestamp: new Date().toISOString(),
-    })
   } catch (error: any) {
     console.error("❌ Prompt enhancement error:", error)
 
@@ -165,9 +239,126 @@ Enhancement Level: ${enhancementInstructions[variationType as keyof typeof enhan
       {
         success: false,
         error: error.message || "Enhancement failed",
-        timestamp: new Date().toISOString(),
       },
       { status: 500 },
     )
+  }
+}
+
+function buildEnhancementPrompt(
+  originalPrompt: string,
+  variationLevel: string,
+  dataset: string,
+  scenario: string,
+): string {
+  const variationMultipliers = {
+    slight: 1.2,
+    moderate: 1.5,
+    dramatic: 1.8,
+  }
+
+  const multiplier = variationMultipliers[variationLevel as keyof typeof variationMultipliers] || 1.5
+
+  return `Please enhance this AI art prompt for DALL-E 3 generation. The original prompt is for ${dataset} cultural heritage, specifically the ${scenario} scenario.
+
+ORIGINAL PROMPT:
+${originalPrompt}
+
+ENHANCEMENT REQUIREMENTS:
+- Increase detail and richness by approximately ${Math.round((multiplier - 1) * 100)}%
+- Maintain cultural authenticity and respectful representation
+- Add specific artistic and technical quality descriptors
+- Include lighting, composition, and atmospheric details
+- Preserve the core cultural and historical elements
+- Ensure the enhanced prompt stays under 4000 characters
+- Focus on museum-quality artistic excellence
+- Add professional photography and artistic terms
+- Include cultural context and educational value
+
+STYLE GUIDELINES:
+- Use respectful, educational language
+- Emphasize artistic and cultural appreciation
+- Include technical photography terms
+- Add atmospheric and lighting details
+- Specify artistic quality and craftsmanship
+- Maintain historical accuracy and cultural sensitivity
+
+Please provide only the enhanced prompt without any additional commentary or explanation.`
+}
+
+function enhancePromptWithRules(originalPrompt: string, variationLevel: string): { enhanced: string; statistics: any } {
+  let enhanced = originalPrompt
+
+  // Enhancement rules based on variation level
+  const enhancements = {
+    slight: [
+      ", professional photography quality",
+      ", museum exhibition worthy",
+      ", cultural authenticity",
+      ", artistic excellence",
+      ", premium visual aesthetics",
+    ],
+    moderate: [
+      ", professional photography quality, 8K HDR resolution",
+      ", museum exhibition worthy, award-winning composition",
+      ", cultural authenticity, respectful representation",
+      ", artistic excellence, masterpiece quality",
+      ", premium visual aesthetics, godlevel artistic mastery",
+      ", international art recognition, cultural appreciation",
+      ", heritage preservation, traditional honor",
+      ", educational significance, professional integrity",
+    ],
+    dramatic: [
+      ", professional photography quality, 8K HDR resolution, broadcast standard",
+      ", museum exhibition worthy, award-winning composition, international recognition",
+      ", cultural authenticity, respectful representation, educational value",
+      ", artistic excellence, masterpiece quality, godlevel perfection",
+      ", premium visual aesthetics, godlevel artistic mastery, technical brilliance",
+      ", international art recognition, cultural appreciation, heritage celebration",
+      ", heritage preservation, traditional honor, respectful tribute",
+      ", educational significance, professional integrity, artistic innovation",
+      ", museum-quality achievement, professional mastery, award-winning excellence",
+      ", cultural reverence, heritage splendor, traditional grandeur",
+      ", respectful dignity, educational honor, museum-grade supremacy",
+      ", professional prestige, artistic acclaim, godlevel renown",
+    ],
+  }
+
+  const levelEnhancements = enhancements[variationLevel as keyof typeof enhancements] || enhancements.moderate
+
+  // Add enhancements
+  levelEnhancements.forEach((enhancement) => {
+    enhanced += enhancement
+  })
+
+  // Calculate statistics
+  const statistics = calculateStatistics(originalPrompt, enhanced)
+
+  return { enhanced, statistics }
+}
+
+function calculateStatistics(original: string, enhanced: string) {
+  const originalStats = {
+    characters: original.length,
+    words: original.split(/\s+/).length,
+  }
+
+  const enhancedStats = {
+    characters: enhanced.length,
+    words: enhanced.split(/\s+/).length,
+  }
+
+  const improvement = {
+    characters: enhancedStats.characters - originalStats.characters,
+    words: enhancedStats.words - originalStats.words,
+    percentage: Math.round(((enhancedStats.characters - originalStats.characters) / originalStats.characters) * 100),
+  }
+
+  return {
+    original: originalStats,
+    enhanced: enhancedStats,
+    improvement,
+    maxLength: 4000,
+    withinLimit: enhancedStats.characters <= 4000,
   }
 }

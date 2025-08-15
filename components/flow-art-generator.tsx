@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef, useEffect } from "react"
+import { useState, useCallback, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -32,6 +32,7 @@ import {
   Clock,
   AlertCircle,
   RefreshCw,
+  Bug,
 } from "lucide-react"
 import { toast } from "sonner"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
@@ -62,19 +63,6 @@ interface PromptEnhancement {
   variationType: string
   generationType: string
   enhancementMethod: string
-  // Add parameters to track what the enhancement was based on
-  enhancementParams: {
-    dataset: string
-    scenario: string
-    colorScheme: string
-    seed: number
-    numSamples: number
-    noiseScale: number
-    panoramic360: boolean
-    panoramaFormat: string
-    projectionType: string
-    variationType: string
-  }
 }
 
 export function FlowArtGenerator() {
@@ -110,118 +98,57 @@ export function FlowArtGenerator() {
   const [results, setResults] = useState<GenerationResult>({ errors: [] })
   const [activeTab, setActiveTab] = useState("standard")
 
+  // Debug state
+  const [apiKeyStatus, setApiKeyStatus] = useState<any>(null)
+  const [isValidatingKey, setIsValidatingKey] = useState(false)
+
   // Refs for cancellation
   const abortControllerRef = useRef<AbortController | null>(null)
 
   // Get available scenarios for current dataset - with null safety
   const availableScenarios = getScenarios(dataset) || {}
-
-  // Check if current enhancement is still valid for current parameters
-  const isEnhancementValid = useCallback(() => {
-    if (!promptEnhancement || !promptEnhancement.enhancementParams) {
-      return false
-    }
-
-    const params = promptEnhancement.enhancementParams
-    return (
-      params.dataset === dataset &&
-      params.scenario === scenario &&
-      params.colorScheme === colorScheme &&
-      params.seed === seed &&
-      params.numSamples === numSamples &&
-      params.noiseScale === noiseScale &&
-      params.panoramic360 === panoramic360 &&
-      params.panoramaFormat === panoramaFormat &&
-      params.projectionType === projectionType &&
-      params.variationType === variationType
-    )
-  }, [
-    promptEnhancement,
-    dataset,
-    scenario,
-    colorScheme,
-    seed,
-    numSamples,
-    noiseScale,
-    panoramic360,
-    panoramaFormat,
-    projectionType,
-    variationType,
-  ])
-
-  // Clear enhancement when parameters change
-  useEffect(() => {
-    if (promptEnhancement && !isEnhancementValid()) {
-      console.log("🔄 Parameters changed, clearing cached enhancement")
-      setPromptEnhancement(null)
-      setCustomPrompt("") // Clear custom prompt when parameters change
-      toast.info("Parameters changed - enhancement cleared")
-    }
-  }, [promptEnhancement, isEnhancementValid])
+  const scenarioEntries = Object.entries(availableScenarios)
 
   // Reset scenario when dataset changes
-  const handleDatasetChange = useCallback(
-    (newDataset: string) => {
-      console.log(`🔄 Dataset changed from ${dataset} to ${newDataset}`)
-      setDataset(newDataset)
-      const scenarios = getScenarios(newDataset) || {}
-      const firstScenario = Object.keys(scenarios)[0]
-      if (firstScenario) {
-        setScenario(firstScenario)
+  const handleDatasetChange = useCallback((newDataset: string) => {
+    setDataset(newDataset)
+    const scenarios = getScenarios(newDataset) || {}
+    const firstScenario = Object.keys(scenarios)[0]
+    if (firstScenario) {
+      setScenario(firstScenario)
+    }
+  }, [])
+
+  // Validate OpenAI API Key
+  const validateApiKey = useCallback(async () => {
+    setIsValidatingKey(true)
+    try {
+      console.log("🔍 Validating OpenAI API key...")
+      const response = await fetch("/api/validate-openai-key")
+      const result = await response.json()
+      setApiKeyStatus(result)
+
+      if (result.success) {
+        toast.success("✅ OpenAI API key is valid and working!")
+      } else {
+        toast.error(`❌ API Key Error: ${result.error}`)
       }
-
-      // Clear enhancement and custom prompt when dataset changes
-      setPromptEnhancement(null)
-      setCustomPrompt("")
-      setEditablePrompt("")
-
-      toast.info(
-        `Dataset changed to ${CULTURAL_DATASETS[newDataset as keyof typeof CULTURAL_DATASETS]?.name || newDataset}`,
-      )
-    },
-    [dataset],
-  )
-
-  // Handle scenario change
-  const handleScenarioChange = useCallback(
-    (newScenario: string) => {
-      console.log(`🔄 Scenario changed from ${scenario} to ${newScenario}`)
-      setScenario(newScenario)
-
-      // Clear enhancement and custom prompt when scenario changes
-      setPromptEnhancement(null)
-      setCustomPrompt("")
-      setEditablePrompt("")
-
-      const scenarioInfo = availableScenarios[newScenario]
-      if (scenarioInfo) {
-        toast.info(`Scenario changed to ${scenarioInfo.name}`)
-      }
-    },
-    [scenario, availableScenarios],
-  )
-
-  // Handle other parameter changes that should clear enhancement
-  const handleParameterChange = useCallback(
-    (paramName: string, newValue: any) => {
-      console.log(`🔄 Parameter ${paramName} changed to ${newValue}`)
-
-      // Clear enhancement when significant parameters change
-      if (promptEnhancement) {
-        setPromptEnhancement(null)
-        setCustomPrompt("")
-        setEditablePrompt("")
-      }
-    },
-    [promptEnhancement],
-  )
+    } catch (error: any) {
+      console.error("API key validation failed:", error)
+      toast.error("Failed to validate API key")
+      setApiKeyStatus({
+        success: false,
+        error: "Validation request failed",
+      })
+    } finally {
+      setIsValidatingKey(false)
+    }
+  }, [])
 
   // Generate random seed
   const randomizeSeed = useCallback(() => {
-    const newSeed = Math.floor(Math.random() * 10000)
-    setSeed(newSeed)
-    handleParameterChange("seed", newSeed)
-  }, [handleParameterChange])
+    setSeed(Math.floor(Math.random() * 10000))
+  }, [])
 
   // Preview and enhance prompt
   const previewAndEnhancePrompt = useCallback(async () => {
@@ -229,9 +156,7 @@ export function FlowArtGenerator() {
     setIsPromptDialogOpen(true)
 
     try {
-      console.log("🔮 Starting prompt enhancement with current parameters")
-
-      // Build base prompt with current parameters
+      // Build base prompt with null safety
       const basePrompt = buildPrompt({
         dataset: dataset || "vietnamese",
         scenario: scenario || "trung-sisters",
@@ -239,7 +164,7 @@ export function FlowArtGenerator() {
         seed: seed || 1234,
         numSamples: numSamples || 4000,
         noiseScale: noiseScale || 0.08,
-        customPrompt: "", // Don't use existing custom prompt for base
+        customPrompt: customPrompt || "",
         panoramic360: panoramic360 || false,
         panoramaFormat: panoramaFormat || "equirectangular",
         projectionType: projectionType || "fisheye",
@@ -249,57 +174,26 @@ export function FlowArtGenerator() {
         throw new Error("Failed to build base prompt")
       }
 
-      console.log(`📝 Base prompt built (${basePrompt.length} chars):`, basePrompt.substring(0, 100) + "...")
       setCurrentPrompt(basePrompt)
       setEditablePrompt(basePrompt)
 
       // Enhance with ChatGPT
-      const enhancementRequest = {
-        dataset: dataset || "vietnamese",
-        scenario: scenario || "trung-sisters",
-        colorScheme: colorScheme || "metallic",
-        seed: seed || 1234,
-        numSamples: numSamples || 4000,
-        noiseScale: noiseScale || 0.08,
-        customPrompt: "", // Don't use existing custom prompt
-        panoramic360: panoramic360 || false,
-        panoramaFormat: panoramaFormat || "equirectangular",
-        projectionType: projectionType || "fisheye",
-        variationType: variationType || "moderate",
-        generationType: panoramic360 ? "360" : projectionType !== "fisheye" ? "dome" : "standard",
-      }
-
-      console.log("🤖 Sending enhancement request to ChatGPT...")
       const response = await fetch("/api/enhance-prompt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(enhancementRequest),
+        body: JSON.stringify({
+          originalPrompt: basePrompt,
+          variationLevel: variationType || "moderate",
+          dataset: dataset || "vietnamese",
+          scenario: scenario || "trung-sisters",
+        }),
       })
 
       if (response.ok) {
         const enhancement = await response.json()
         if (enhancement.success && enhancement.enhancedPrompt) {
-          // Store enhancement with current parameters
-          const enhancementWithParams = {
-            ...enhancement,
-            enhancementParams: {
-              dataset,
-              scenario,
-              colorScheme,
-              seed,
-              numSamples,
-              noiseScale,
-              panoramic360,
-              panoramaFormat,
-              projectionType,
-              variationType,
-            },
-          }
-
-          setPromptEnhancement(enhancementWithParams)
+          setPromptEnhancement(enhancement)
           setEditablePrompt(enhancement.enhancedPrompt)
-
-          console.log(`✅ Enhancement successful (${enhancement.enhancedPrompt.length} chars)`)
           toast.success(
             `Prompt enhanced successfully! Added ${enhancement.statistics?.improvement?.characters || 0} characters.`,
           )
@@ -311,7 +205,7 @@ export function FlowArtGenerator() {
         throw new Error(error.error || "Enhancement request failed")
       }
     } catch (error: any) {
-      console.error("❌ Enhancement error:", error)
+      console.error("Enhancement error:", error)
       toast.error(`Enhancement failed: ${error.message || "Unknown error"}`)
 
       // Fallback to base prompt if enhancement fails
@@ -322,7 +216,7 @@ export function FlowArtGenerator() {
         seed: seed || 1234,
         numSamples: numSamples || 4000,
         noiseScale: noiseScale || 0.08,
-        customPrompt: "",
+        customPrompt: customPrompt || "",
         panoramic360: panoramic360 || false,
         panoramaFormat: panoramaFormat || "equirectangular",
         projectionType: projectionType || "fisheye",
@@ -342,6 +236,7 @@ export function FlowArtGenerator() {
     seed,
     numSamples,
     noiseScale,
+    customPrompt,
     panoramic360,
     panoramaFormat,
     projectionType,
@@ -353,7 +248,6 @@ export function FlowArtGenerator() {
     if (editablePrompt && editablePrompt.trim()) {
       setCustomPrompt(editablePrompt.trim())
       setIsPromptDialogOpen(false)
-      console.log(`✅ Applied enhanced prompt (${editablePrompt.length} chars)`)
       toast.success("Enhanced prompt applied successfully!")
     } else {
       toast.error("No prompt to apply")
@@ -376,14 +270,6 @@ export function FlowArtGenerator() {
     }
   }, [promptEnhancement])
 
-  // Clear custom prompt and enhancement
-  const clearCustomPrompt = useCallback(() => {
-    setCustomPrompt("")
-    setPromptEnhancement(null)
-    setEditablePrompt("")
-    toast.info("Custom prompt cleared - will use auto-generated prompt")
-  }, [])
-
   // Generate all image types
   const generateImages = useCallback(async () => {
     if (isGenerating) return
@@ -393,7 +279,6 @@ export function FlowArtGenerator() {
       let finalPrompt = ""
       if (customPrompt && customPrompt.trim()) {
         finalPrompt = customPrompt.trim()
-        console.log(`🎨 Using custom enhanced prompt (${finalPrompt.length} chars)`)
       } else {
         finalPrompt = buildPrompt({
           dataset: dataset || "vietnamese",
@@ -407,7 +292,6 @@ export function FlowArtGenerator() {
           panoramaFormat: panoramaFormat || "equirectangular",
           projectionType: projectionType || "fisheye",
         })
-        console.log(`🎨 Using auto-generated prompt (${finalPrompt.length} chars)`)
       }
 
       if (!finalPrompt || finalPrompt.length === 0) {
@@ -425,7 +309,6 @@ export function FlowArtGenerator() {
       // Create abort controller for cancellation
       abortControllerRef.current = new AbortController()
 
-      console.log("🚀 Starting image generation...")
       const response = await fetch("/api/generate-ai-art", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -466,21 +349,28 @@ export function FlowArtGenerator() {
         })
 
         const successCount = [safeResult.standard, safeResult.dome, safeResult.panorama360].filter(Boolean).length
-        console.log(`✅ Generated ${successCount}/3 images successfully`)
         toast.success(`Generated ${successCount}/3 images successfully!`)
 
         if (safeResult.errors.length > 0) {
           safeResult.errors.forEach((error: string) => toast.error(error))
         }
       } else {
-        const error = await response.json()
-        throw new Error(error.error || "Generation failed")
+        // Handle non-JSON responses
+        let errorMessage = "Generation failed"
+        try {
+          const error = await response.json()
+          errorMessage = error.error || errorMessage
+        } catch (parseError) {
+          // If response is not JSON, use status text
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        }
+        throw new Error(errorMessage)
       }
     } catch (error: any) {
       if (error.name === "AbortError") {
         toast.info("Generation cancelled")
       } else {
-        console.error("❌ Generation error:", error)
+        console.error("Generation error:", error)
         toast.error(`Generation failed: ${error.message || "Unknown error"}`)
         setGenerationProgress({
           standard: "failed",
@@ -560,13 +450,53 @@ export function FlowArtGenerator() {
     <div className="container mx-auto p-6 space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-          FlowSketch Art Generator
-        </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Generate professional-quality AI art with perfect 360° seamless wrapping, dome projections, and cultural
-          authenticity
-        </p>
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              FlowSketch Art Generator
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-2">
+              Generate professional-quality AI art with perfect 360° seamless wrapping, dome projections, and cultural
+              authenticity
+            </p>
+          </div>
+          <Button
+            onClick={validateApiKey}
+            disabled={isValidatingKey}
+            variant="outline"
+            size="sm"
+            className="gap-2 bg-transparent"
+          >
+            {isValidatingKey ? (
+              <>
+                <RefreshCw className="h-4 w-4 animate-spin" />
+                Validating...
+              </>
+            ) : (
+              <>
+                <Bug className="h-4 w-4" />
+                Debug API Key
+              </>
+            )}
+          </Button>
+        </div>
+
+        {/* API Key Status */}
+        {apiKeyStatus && (
+          <Alert className={apiKeyStatus.success ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
+            <div className="flex items-center gap-2">
+              {apiKeyStatus.success ? (
+                <CheckCircle className="h-4 w-4 text-green-600" />
+              ) : (
+                <XCircle className="h-4 w-4 text-red-600" />
+              )}
+              <AlertDescription className={apiKeyStatus.success ? "text-green-800" : "text-red-800"}>
+                {apiKeyStatus.message || apiKeyStatus.error}
+              </AlertDescription>
+            </div>
+          </Alert>
+        )}
+
         <div className="flex flex-wrap justify-center gap-2">
           <Badge variant="secondary">
             <Sparkles className="h-3 w-3 mr-1" />
@@ -618,12 +548,12 @@ export function FlowArtGenerator() {
 
               <div>
                 <Label htmlFor="scenario">Scenario</Label>
-                <Select value={scenario} onValueChange={handleScenarioChange}>
+                <Select value={scenario} onValueChange={setScenario}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(availableScenarios).map(([key, value]) => (
+                    {scenarioEntries.map(([key, value]) => (
                       <SelectItem key={key} value={key}>
                         {value.name}
                       </SelectItem>
@@ -634,13 +564,7 @@ export function FlowArtGenerator() {
 
               <div>
                 <Label htmlFor="colorScheme">Color Scheme</Label>
-                <Select
-                  value={colorScheme}
-                  onValueChange={(value) => {
-                    setColorScheme(value)
-                    handleParameterChange("colorScheme", value)
-                  }}
-                >
+                <Select value={colorScheme} onValueChange={setColorScheme}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -678,10 +602,7 @@ export function FlowArtGenerator() {
                 <div className="flex gap-2">
                   <Slider
                     value={[seed]}
-                    onValueChange={(value) => {
-                      setSeed(value[0])
-                      handleParameterChange("seed", value[0])
-                    }}
+                    onValueChange={(value) => setSeed(value[0])}
                     max={9999}
                     min={1}
                     step={1}
@@ -696,10 +617,7 @@ export function FlowArtGenerator() {
                 <div className="flex gap-2">
                   <Slider
                     value={[numSamples]}
-                    onValueChange={(value) => {
-                      setNumSamples(value[0])
-                      handleParameterChange("numSamples", value[0])
-                    }}
+                    onValueChange={(value) => setNumSamples(value[0])}
                     max={8000}
                     min={1000}
                     step={500}
@@ -714,10 +632,7 @@ export function FlowArtGenerator() {
                 <div className="flex gap-2">
                   <Slider
                     value={[noiseScale]}
-                    onValueChange={(value) => {
-                      setNoiseScale(value[0])
-                      handleParameterChange("noiseScale", value[0])
-                    }}
+                    onValueChange={(value) => setNoiseScale(value[0])}
                     max={0.2}
                     min={0.01}
                     step={0.01}
@@ -740,13 +655,7 @@ export function FlowArtGenerator() {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="panoramaFormat">360° Format</Label>
-                <Select
-                  value={panoramaFormat}
-                  onValueChange={(value) => {
-                    setPanoramaFormat(value)
-                    handleParameterChange("panoramaFormat", value)
-                  }}
-                >
+                <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -769,13 +678,7 @@ export function FlowArtGenerator() {
 
               <div>
                 <Label htmlFor="projectionType">Dome Projection</Label>
-                <Select
-                  value={projectionType}
-                  onValueChange={(value) => {
-                    setProjectionType(value)
-                    handleParameterChange("projectionType", value)
-                  }}
-                >
+                <Select value={projectionType} onValueChange={setProjectionType}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -822,13 +725,7 @@ export function FlowArtGenerator() {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="variationType">Enhancement Level</Label>
-                <Select
-                  value={variationType}
-                  onValueChange={(value) => {
-                    setVariationType(value)
-                    handleParameterChange("variationType", value)
-                  }}
-                >
+                <Select value={variationType} onValueChange={setVariationType}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -873,36 +770,6 @@ export function FlowArtGenerator() {
                   </>
                 )}
               </Button>
-
-              {/* Enhancement Status */}
-              {promptEnhancement && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Badge variant={isEnhancementValid() ? "default" : "destructive"}>
-                      {isEnhancementValid() ? (
-                        <>
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Enhancement Valid
-                        </>
-                      ) : (
-                        <>
-                          <AlertCircle className="h-3 w-3 mr-1" />
-                          Parameters Changed
-                        </>
-                      )}
-                    </Badge>
-                    <Button variant="ghost" size="sm" onClick={clearCustomPrompt}>
-                      <RefreshCw className="h-4 w-4 mr-1" />
-                      Clear
-                    </Button>
-                  </div>
-                  {!isEnhancementValid() && (
-                    <p className="text-xs text-muted-foreground">
-                      Enhancement was created with different parameters. Re-enhance to update.
-                    </p>
-                  )}
-                </div>
-              )}
             </CardContent>
           </Card>
 
@@ -959,12 +826,7 @@ export function FlowArtGenerator() {
               {customPrompt && (
                 <Alert>
                   <Info className="h-4 w-4" />
-                  <AlertDescription>
-                    Using custom enhanced prompt ({customPrompt.length} characters)
-                    {!isEnhancementValid() && (
-                      <span className="text-orange-600 ml-2">⚠️ Parameters changed since enhancement</span>
-                    )}
-                  </AlertDescription>
+                  <AlertDescription>Using custom enhanced prompt ({customPrompt.length} characters)</AlertDescription>
                 </Alert>
               )}
             </CardContent>
@@ -1183,9 +1045,6 @@ export function FlowArtGenerator() {
                 </Badge>
                 <Badge variant="outline">{promptEnhancement.variationType} variation</Badge>
                 <Badge variant="outline">{promptEnhancement.generationType} generation</Badge>
-                <Badge variant={isEnhancementValid() ? "default" : "destructive"}>
-                  {isEnhancementValid() ? "Current Parameters" : "Parameters Changed"}
-                </Badge>
               </div>
             )}
 
