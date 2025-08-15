@@ -8,36 +8,36 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 export type Database = {
   public: {
     Tables: {
-      gallery_images: {
+      artworks: {
         Row: {
           id: string
-          user_id: string
-          image_url: string
-          metadata: any
-          is_favorite: boolean
-          tags: string[]
           created_at: string
-          updated_at: string
+          user_id: string
+          title: string
+          description: string
+          image_url: string
+          parameters: any
+          mode: string
         }
         Insert: {
           id?: string
-          user_id: string
-          image_url: string
-          metadata: any
-          is_favorite?: boolean
-          tags?: string[]
           created_at?: string
-          updated_at?: string
+          user_id: string
+          title: string
+          description?: string
+          image_url: string
+          parameters: any
+          mode: string
         }
         Update: {
           id?: string
-          user_id?: string
-          image_url?: string
-          metadata?: any
-          is_favorite?: boolean
-          tags?: string[]
           created_at?: string
-          updated_at?: string
+          user_id?: string
+          title?: string
+          description?: string
+          image_url?: string
+          parameters?: any
+          mode?: string
         }
       }
     }

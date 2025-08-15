@@ -1,156 +1,180 @@
 import { type NextRequest, NextResponse } from "next/server"
-import OpenAI from "openai"
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
-// Define detailed scenarios for AI prompt generation
-const DETAILED_SCENARIOS = {
-  none: {
-    name: "Pure Mathematical",
-    objects: [],
-    backgroundColor: "white",
-    ambientColor: "neutral light",
-    density: 0,
-  },
-  enchanted_forest: {
-    name: "Enchanted Forest",
-    objects: [
-      { type: "mystical trees", shapes: ["spiraling branches", "glowing leaves", "twisted trunks"] },
-      { type: "magical creatures", shapes: ["fairy lights", "ethereal wisps", "forest spirits"] },
-      { type: "ancient stones", shapes: ["moss-covered rocks", "runic circles", "crystal formations"] },
-    ],
-    backgroundColor: "deep forest green",
-    ambientColor: "golden sunlight filtering through canopy",
-    density: 0.7,
-  },
-  deep_ocean: {
-    name: "Deep Ocean",
-    objects: [
-      { type: "marine life", shapes: ["flowing jellyfish", "coral formations", "sea anemomas"] },
-      { type: "underwater currents", shapes: ["swirling water", "bubble streams", "kelp forests"] },
-      { type: "bioluminescent organisms", shapes: ["glowing plankton", "light trails", "phosphorescent waves"] },
-    ],
-    backgroundColor: "deep ocean blue",
-    ambientColor: "bioluminescent blue-green glow",
-    density: 0.6,
-  },
-  cosmic_nebula: {
-    name: "Cosmic Nebula",
-    objects: [
-      { type: "stellar formations", shapes: ["star clusters", "gas clouds", "cosmic dust"] },
-      { type: "celestial bodies", shapes: ["distant planets", "asteroid fields", "comet trails"] },
-      { type: "energy phenomena", shapes: ["plasma streams", "magnetic fields", "gravitational waves"] },
-    ],
-    backgroundColor: "deep space black",
-    ambientColor: "cosmic purple and pink nebula glow",
-    density: 0.5,
-  },
-  cyberpunk_city: {
-    name: "Cyberpunk City",
-    objects: [
-      { type: "neon structures", shapes: ["holographic displays", "data streams", "circuit patterns"] },
-      { type: "urban elements", shapes: ["skyscrapers", "flying vehicles", "digital billboards"] },
-      { type: "tech interfaces", shapes: ["glowing terminals", "laser grids", "virtual reality portals"] },
-    ],
-    backgroundColor: "dark urban night",
-    ambientColor: "neon pink and cyan lighting",
-    density: 0.8,
-  },
-  ancient_temple: {
-    name: "Ancient Temple",
-    objects: [
-      { type: "architectural elements", shapes: ["stone pillars", "carved reliefs", "sacred geometries"] },
-      { type: "mystical artifacts", shapes: ["glowing orbs", "ancient symbols", "ritual circles"] },
-      { type: "natural overgrowth", shapes: ["climbing vines", "moss patterns", "weathered stones"] },
-    ],
-    backgroundColor: "warm sandstone",
-    ambientColor: "golden torch light and shadows",
-    density: 0.6,
-  },
-  crystal_cave: {
-    name: "Crystal Cave",
-    objects: [
-      { type: "crystal formations", shapes: ["prismatic clusters", "refracting surfaces", "geometric crystals"] },
-      { type: "mineral deposits", shapes: ["stalactites", "stalagmites", "mineral veins"] },
-      { type: "light phenomena", shapes: ["rainbow refractions", "crystal reflections", "inner glow"] },
-    ],
-    backgroundColor: "deep cave darkness",
-    ambientColor: "prismatic crystal light",
-    density: 0.7,
-  },
-  aurora_borealis: {
-    name: "Aurora Borealis",
-    objects: [
-      { type: "atmospheric phenomena", shapes: ["dancing lights", "magnetic field lines", "particle streams"] },
-      { type: "arctic landscape", shapes: ["ice formations", "snow drifts", "frozen lakes"] },
-      { type: "celestial elements", shapes: ["star fields", "moon phases", "cosmic radiation"] },
-    ],
-    backgroundColor: "arctic night sky",
-    ambientColor: "green and purple aurora light",
-    density: 0.4,
-  },
-  volcanic_landscape: {
-    name: "Volcanic Landscape",
-    objects: [
-      { type: "volcanic features", shapes: ["lava flows", "volcanic rock", "steam vents"] },
-      { type: "thermal phenomena", shapes: ["heat waves", "molten streams", "glowing embers"] },
-      { type: "geological formations", shapes: ["basalt columns", "crater rims", "ash clouds"] },
-    ],
-    backgroundColor: "dark volcanic rock",
-    ambientColor: "orange and red lava glow",
-    density: 0.6,
-  },
-  neural_connections: {
-    // New detailed scenario for Neural Connections
-    name: "Neural Connections",
-    objects: [
-      { type: "neurons", shapes: ["spherical cell bodies", "dendritic branches", "axon terminals"] },
-      { type: "synapses", shapes: ["glowing connection points", "electrical impulses", "neurotransmitter bursts"] },
-      { type: "organic roots", shapes: ["interwoven fibrous structures", "vascular networks", "mycelial patterns"] },
-      { type: "data nodes", shapes: ["glowing data packets", "information streams", "network hubs"] },
-    ],
-    backgroundColor: "deep, ethereal grey-purple",
-    ambientColor: "subtle bioluminescent green and orange glows",
-    density: 0.75,
-  },
-}
+import { generateWithOpenAI, validateGenerationParams } from "./utils"
+import { buildPrompt } from "@/lib/ai-prompt"
 
 export async function POST(request: NextRequest) {
-  try {
-    const { prompt, model = "flux-schnell" } = await request.json()
+  console.log("🎨 Generation API route called")
 
-    if (!prompt) {
-      return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
+  try {
+    // Parse request body with error handling
+    let body: any
+    try {
+      body = await request.json()
+    } catch (parseError) {
+      console.error("❌ Failed to parse request body:", parseError)
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid JSON in request body",
+          timestamp: new Date().toISOString(),
+        },
+        { status: 400 },
+      )
     }
 
-    const response = await fetch("https://api.replicate.com/v1/predictions", {
-      method: "POST",
-      headers: {
-        Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        version: process.env.REPLICATE_MODEL_VERSION,
-        input: {
-          prompt,
-          num_outputs: 1,
-          aspect_ratio: "1:1",
-          output_format: "png",
-          output_quality: 80,
-        },
-      }),
+    console.log("🎨 Generation request received:", {
+      dataset: body.dataset,
+      scenario: body.scenario,
+      generateAll: body.generateAll,
+      type: body.type,
     })
 
-    if (!response.ok) {
-      throw new Error(`Replicate API error: ${response.statusText}`)
+    // Validate and sanitize parameters
+    const params = validateGenerationParams(body)
+
+    // Build the prompt
+    let finalPrompt = ""
+    try {
+      if (body.prompt && body.prompt.trim()) {
+        finalPrompt = body.prompt.trim()
+      } else {
+        finalPrompt = buildPrompt({
+          dataset: params.dataset,
+          scenario: params.scenario,
+          colorScheme: params.colorScheme,
+          seed: params.seed,
+          numSamples: params.numSamples,
+          noiseScale: params.noiseScale,
+          customPrompt: params.customPrompt,
+          panoramic360: params.panoramic360,
+          panoramaFormat: params.panoramaFormat,
+          projectionType: params.projectionType,
+        })
+      }
+    } catch (promptError) {
+      console.error("❌ Failed to build prompt:", promptError)
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Failed to generate prompt",
+          timestamp: new Date().toISOString(),
+        },
+        { status: 500 },
+      )
     }
 
-    const prediction = await response.json()
-    return NextResponse.json({ predictionId: prediction.id })
-  } catch (error) {
-    console.error("Error generating AI art:", error)
-    return NextResponse.json({ error: "Failed to generate AI art" }, { status: 500 })
+    if (!finalPrompt || finalPrompt.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Empty prompt generated",
+          timestamp: new Date().toISOString(),
+        },
+        { status: 400 },
+      )
+    }
+
+    console.log("📝 Final prompt generated:", finalPrompt.substring(0, 200) + "...")
+
+    // Handle batch generation (all 3 types)
+    if (body.generateAll) {
+      console.log("🔄 Starting batch generation for all 3 types...")
+
+      const results: any = { errors: [] }
+
+      // Generate standard image
+      try {
+        console.log("🎯 Generating standard image...")
+        const standardResult = await generateWithOpenAI(finalPrompt, "standard", params)
+        results.standard = standardResult.imageUrl
+        console.log("✅ Standard image generated successfully")
+      } catch (error: any) {
+        console.error("❌ Standard generation failed:", error)
+        results.errors.push(`Standard generation failed: ${error.message}`)
+      }
+
+      // Generate dome projection
+      try {
+        console.log("🎯 Generating dome projection...")
+        const domeResult = await generateWithOpenAI(finalPrompt, "dome", params)
+        results.dome = domeResult.imageUrl
+        console.log("✅ Dome projection generated successfully")
+      } catch (error: any) {
+        console.error("❌ Dome generation failed:", error)
+        results.errors.push(`Dome generation failed: ${error.message}`)
+      }
+
+      // Generate 360° panorama
+      try {
+        console.log("🎯 Generating 360° panorama...")
+        const panoramaResult = await generateWithOpenAI(finalPrompt, "360", params)
+        results.panorama360 = panoramaResult.imageUrl
+        console.log("✅ 360° panorama generated successfully")
+      } catch (error: any) {
+        console.error("❌ 360° generation failed:", error)
+        results.errors.push(`360° generation failed: ${error.message}`)
+      }
+
+      const successCount = [results.standard, results.dome, results.panorama360].filter(Boolean).length
+      console.log(`🎉 Batch generation completed: ${successCount}/3 images generated`)
+
+      return NextResponse.json({
+        success: true,
+        batchGeneration: true,
+        ...results,
+        prompt: finalPrompt,
+        parameters: params,
+        timestamp: new Date().toISOString(),
+      })
+    }
+
+    // Handle single image generation
+    const generationType = body.type || "standard"
+    console.log(`🎯 Generating single ${generationType} image...`)
+
+    try {
+      const result = await generateWithOpenAI(finalPrompt, generationType, params)
+
+      console.log(`✅ ${generationType} image generated successfully`)
+
+      return NextResponse.json({
+        success: true,
+        imageUrl: result.imageUrl,
+        prompt: result.prompt,
+        type: generationType,
+        aspectRatio: generationType === "360" ? "1.75:1" : "1:1",
+        format: generationType === "360" ? "360° Panorama" : generationType === "dome" ? "Dome Projection" : "Standard",
+        resolution: generationType === "360" ? "1792×1024" : "1024×1024",
+        vrOptimized: generationType === "360",
+        seamlessWrapping: generationType === "360" && params.panoramaFormat === "equirectangular",
+        planetariumOptimized: generationType === "dome",
+        projectionType: generationType === "dome" ? params.projectionType : undefined,
+        panoramaFormat: generationType === "360" ? params.panoramaFormat : undefined,
+        parameters: params,
+        timestamp: new Date().toISOString(),
+      })
+    } catch (generationError: any) {
+      console.error(`❌ ${generationType} generation failed:`, generationError)
+      return NextResponse.json(
+        {
+          success: false,
+          error: `${generationType} generation failed: ${generationError.message}`,
+          timestamp: new Date().toISOString(),
+        },
+        { status: 500 },
+      )
+    }
+  } catch (error: any) {
+    console.error("❌ Generation API error:", error)
+
+    // Ensure we always return valid JSON
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Unknown generation error",
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 },
+    )
   }
 }

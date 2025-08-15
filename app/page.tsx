@@ -1,87 +1,82 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Palette, GalleryVerticalIcon as GalleryIcon, Cloud, Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import FlowArtGenerator from "@/components/flow-art-generator"
-import Gallery from "@/components/gallery"
-import CloudSyncComponent from "@/components/cloud-sync"
-import type { GalleryImage } from "@/lib/gallery-storage"
+import { FlowArtGenerator } from "@/components/flow-art-generator"
+import { Dome360Planner } from "@/components/dome-360-planner"
+import { Palette, Globe, Zap, Shield, Star, Sparkles } from "lucide-react"
 
 export default function HomePage() {
-  const { theme, setTheme } = useTheme()
-  const [selectedImageSettings, setSelectedImageSettings] = useState<Partial<GalleryImage["metadata"]> | null>(null)
-
-  const handleImageSelect = (image: GalleryImage) => {
-    setSelectedImageSettings(image.metadata)
-  }
+  const [activeTab, setActiveTab] = useState("generator")
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Palette className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold">FlowSketch</h1>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl">
+              <Sparkles className="h-8 w-8 text-white" />
             </div>
-            <Button variant="outline" size="sm" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              FlowSketch Art Generator
+            </h1>
+          </div>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Professional AI-powered art generation with advanced dome projections and seamless 360° panoramas
+          </p>
+
+          {/* Feature Badges */}
+          <div className="flex flex-wrap justify-center gap-2 mt-6">
+            <Badge variant="secondary" className="px-3 py-1">
+              <Star className="h-3 w-3 mr-1" />
+              GODLEVEL Quality
+            </Badge>
+            <Badge variant="secondary" className="px-3 py-1">
+              <Globe className="h-3 w-3 mr-1" />
+              360° VR Ready
+            </Badge>
+            <Badge variant="secondary" className="px-3 py-1">
+              <Zap className="h-3 w-3 mr-1" />
+              ChatGPT Enhanced
+            </Badge>
+            <Badge variant="secondary" className="px-3 py-1">
+              <Shield className="h-3 w-3 mr-1" />
+              Professional Grade
+            </Badge>
           </div>
         </div>
-      </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Mathematical Art Generator</h2>
-          <p className="text-muted-foreground">
-            Create stunning mathematical visualizations with customizable parameters and AI assistance.
-          </p>
-        </div>
-
-        <Tabs defaultValue="generator" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+        {/* Main Content */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="generator" className="flex items-center gap-2">
               <Palette className="h-4 w-4" />
-              Generator
+              Art Generator
             </TabsTrigger>
-            <TabsTrigger value="gallery" className="flex items-center gap-2">
-              <GalleryIcon className="h-4 w-4" />
-              Gallery
-            </TabsTrigger>
-            <TabsTrigger value="cloud" className="flex items-center gap-2">
-              <Cloud className="h-4 w-4" />
-              Cloud Sync
+            <TabsTrigger value="planner" className="flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              Dome & 360° Planner
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="generator" className="space-y-6">
-            <FlowArtGenerator initialSettings={selectedImageSettings || undefined} />
+          <TabsContent value="generator">
+            <FlowArtGenerator />
           </TabsContent>
 
-          <TabsContent value="gallery" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Image Gallery</CardTitle>
-                <CardDescription>View and manage your generated artwork</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Gallery onImageSelect={handleImageSelect} />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="cloud" className="space-y-6">
-            <div className="flex justify-center">
-              <CloudSyncComponent />
-            </div>
+          <TabsContent value="planner">
+            <Dome360Planner />
           </TabsContent>
         </Tabs>
-      </main>
+
+        {/* Footer */}
+        <div className="text-center mt-16 pt-8 border-t border-border">
+          <p className="text-sm text-muted-foreground">
+            Powered by OpenAI DALL-E 3 • Enhanced with ChatGPT • Professional VR Quality
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

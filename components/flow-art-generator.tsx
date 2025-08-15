@@ -1,809 +1,1104 @@
 "use client"
 
-import type React from "react"
-import type { User as SupabaseUser } from "@supabase/supabase-js"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { Slider } from "@/components/ui/slider"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useToast } from "@/components/ui/use-toast"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import {
-  Loader2,
-  Shuffle,
-  Wand2,
-  Sparkles,
   Download,
-  Cloud,
-  UploadCloud,
-  CheckCircle,
-  Info,
-  RefreshCcw,
-  Mail,
-  Lock,
+  Palette,
+  Settings,
+  Sparkles,
   Eye,
-  EyeOff,
+  Wand2,
+  RotateCcw,
+  Play,
+  Square,
   Zap,
-  ImagePlus,
+  Globe,
+  Mountain,
+  ImageIcon,
+  Info,
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertCircle,
+  RefreshCw,
+  Bug,
 } from "lucide-react"
-import { FlowModel, type FlowArtSettings, DATASETS, SCENARIOS, COLOR_SCHEMES } from "@/lib/flow-model"
-import { GalleryStorage, type GalleryImage } from "@/lib/gallery-storage"
-import { CloudSync, type CloudSyncStatus, type SyncConflict } from "@/lib/cloud-sync"
-import { supabase } from "@/lib/supabase"
-import { ImageCompression } from "@/lib/image-compression"
+import { toast } from "sonner"
+import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
 
-interface FlowArtGeneratorProps {
-  initialSettings?: Partial<FlowArtSettings>
+interface GenerationResult {
+  standard?: string
+  dome?: string
+  panorama360?: string
+  errors: string[]
 }
 
-export function FlowArtGenerator({ initialSettings }: FlowArtGeneratorProps) {
-  const { toast } = useToast()
-  const [settings, setSettings] = useState<FlowArtSettings>(() => FlowModel.validateSettings(initialSettings || {}))
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null)
-  const [generationMode, setGenerationMode] = useState<"svg" | "ai">("svg")
-  const [isLoading, setIsLoading] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [upscaleProgress, setUpscaleProgress] = useState(0)
-  const [upscaling, setUpscaling] = useState(false)
-  const [currentImageId, setCurrentImageId] = useState<string | null>(null)
-  const [cloudSyncStatus, setCloudSyncStatus] = useState<CloudSyncStatus>(CloudSync.getStatus())
-  const [showPassword, setShowPassword] = useState(false)
-  const [authForm, setAuthForm] = useState({ email: "", password: "", displayName: "" })
-  const [authMode, setAuthMode] = useState<"signIn" | "signUp">("signIn")
-  const [authLoading, setAuthLoading] = useState(false)
-  const [authError, setAuthError] = useState<string | null>(null)
-  const [syncConflicts, setSyncConflicts] = useState<SyncConflict[]>([])
-  const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null)
-  const [prompt, setPrompt] = useState("")
+interface GenerationProgress {
+  standard: "idle" | "generating" | "completed" | "failed"
+  dome: "idle" | "generating" | "completed" | "failed"
+  panorama360: "idle" | "generating" | "completed" | "failed"
+}
 
-  const updateSetting = useCallback(<K extends keyof FlowArtSettings>(key: K, value: FlowArtSettings[K]) => {
-    setSettings((prev) => ({ ...prev, [key]: value }))
+interface PromptEnhancement {
+  originalPrompt: string
+  enhancedPrompt: string
+  statistics: {
+    original: { characters: number; words: number }
+    enhanced: { characters: number; words: number }
+    improvement: { characters: number; words: number; percentage: number }
+    maxLength: number
+    withinLimit: boolean
+  }
+  variationType: string
+  generationType: string
+  enhancementMethod: string
+}
+
+export function FlowArtGenerator() {
+  // Core generation parameters
+  const [dataset, setDataset] = useState("vietnamese")
+  const [scenario, setScenario] = useState("trung-sisters")
+  const [colorScheme, setColorScheme] = useState("metallic")
+  const [seed, setSeed] = useState(1234)
+  const [numSamples, setNumSamples] = useState(4000)
+  const [noiseScale, setNoiseScale] = useState(0.08)
+  const [customPrompt, setCustomPrompt] = useState("")
+
+  // 360° and dome projection settings
+  const [panoramic360, setPanoramic360] = useState(false)
+  const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
+  const [projectionType, setProjectionType] = useState("fisheye")
+
+  // Prompt enhancement settings
+  const [variationType, setVariationType] = useState("moderate")
+  const [isPromptDialogOpen, setIsPromptDialogOpen] = useState(false)
+  const [currentPrompt, setCurrentPrompt] = useState("")
+  const [editablePrompt, setEditablePrompt] = useState("")
+  const [promptEnhancement, setPromptEnhancement] = useState<PromptEnhancement | null>(null)
+  const [isEnhancing, setIsEnhancing] = useState(false)
+
+  // Generation state
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [generationProgress, setGenerationProgress] = useState<GenerationProgress>({
+    standard: "idle",
+    dome: "idle",
+    panorama360: "idle",
+  })
+  const [results, setResults] = useState<GenerationResult>({ errors: [] })
+  const [activeTab, setActiveTab] = useState("standard")
+
+  // Debug state
+  const [apiKeyStatus, setApiKeyStatus] = useState<any>(null)
+  const [isValidatingKey, setIsValidatingKey] = useState(false)
+
+  // Refs for cancellation
+  const abortControllerRef = useRef<AbortController | null>(null)
+
+  // Get available scenarios for current dataset - with null safety
+  const availableScenarios = getScenarios(dataset) || {}
+  const scenarioEntries = Object.entries(availableScenarios)
+
+  // Reset scenario when dataset changes
+  const handleDatasetChange = useCallback((newDataset: string) => {
+    setDataset(newDataset)
+    const scenarios = getScenarios(newDataset) || {}
+    const firstScenario = Object.keys(scenarios)[0]
+    if (firstScenario) {
+      setScenario(firstScenario)
+    }
   }, [])
 
-  const randomizeSeed = useCallback(() => {
-    updateSetting("seed", FlowModel.generateSeed())
-  }, [updateSetting])
-
-  const generateArt = useCallback(async () => {
-    setIsGenerating(true)
+  // Validate OpenAI API Key
+  const validateApiKey = useCallback(async () => {
+    setIsValidatingKey(true)
     try {
-      const endpoint = generationMode === "svg" ? "/api/generate-art" : "/api/generate-ai-art"
+      console.log("🔍 Validating OpenAI API key...")
+      const response = await fetch("/api/validate-openai-key")
+      const result = await response.json()
+      setApiKeyStatus(result)
 
-      const response = await fetch(endpoint, {
+      if (result.success) {
+        toast.success("✅ OpenAI API key is valid and working!")
+      } else {
+        toast.error(`❌ API Key Error: ${result.error}`)
+      }
+    } catch (error: any) {
+      console.error("API key validation failed:", error)
+      toast.error("Failed to validate API key")
+      setApiKeyStatus({
+        success: false,
+        error: "Validation request failed",
+      })
+    } finally {
+      setIsValidatingKey(false)
+    }
+  }, [])
+
+  // Generate random seed
+  const randomizeSeed = useCallback(() => {
+    setSeed(Math.floor(Math.random() * 10000))
+  }, [])
+
+  // Preview and enhance prompt
+  const previewAndEnhancePrompt = useCallback(async () => {
+    setIsEnhancing(true)
+    setIsPromptDialogOpen(true)
+
+    try {
+      // Build base prompt with null safety
+      const basePrompt = buildPrompt({
+        dataset: dataset || "vietnamese",
+        scenario: scenario || "trung-sisters",
+        colorScheme: colorScheme || "metallic",
+        seed: seed || 1234,
+        numSamples: numSamples || 4000,
+        noiseScale: noiseScale || 0.08,
+        customPrompt: customPrompt || "",
+        panoramic360: panoramic360 || false,
+        panoramaFormat: panoramaFormat || "equirectangular",
+        projectionType: projectionType || "fisheye",
+      })
+
+      if (!basePrompt || basePrompt.length === 0) {
+        throw new Error("Failed to build base prompt")
+      }
+
+      setCurrentPrompt(basePrompt)
+      setEditablePrompt(basePrompt)
+
+      // Enhance with ChatGPT
+      const response = await fetch("/api/enhance-prompt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings),
+        body: JSON.stringify({
+          originalPrompt: basePrompt,
+          variationLevel: variationType || "moderate",
+          dataset: dataset || "vietnamese",
+          scenario: scenario || "trung-sisters",
+        }),
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to generate art")
-      }
-
-      const data = await response.json()
-      const imageUrl = data.imageUrl || data.output?.[0]
-
-      if (!imageUrl) {
-        throw new Error("No image generated")
-      }
-
-      setGeneratedImage(imageUrl)
-
-      // Save to gallery
-      const imageSize = await ImageCompression.getImageSize(imageUrl)
-      const galleryImage: GalleryImage = {
-        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        imageUrl,
-        metadata: {
-          ...settings,
-          generationMode,
-          createdAt: Date.now(),
-          filename: `flowsketch-${settings.dataset}-${Date.now()}`,
-          fileSize: imageSize.size,
-        },
-        isFavorite: false,
-        tags: [settings.dataset, settings.scenario, settings.colorScheme],
-      }
-
-      GalleryStorage.saveImage(galleryImage)
-
-      // Dispatch event for gallery to update
-      window.dispatchEvent(new CustomEvent("new-image", { detail: imageUrl }))
-
-      toast({
-        title: "Art Generated!",
-        description: `Created ${generationMode.toUpperCase()} artwork with ${settings.samples} samples.`,
-      })
-    } catch (error: any) {
-      console.error("Error generating art:", error)
-      toast({
-        title: "Generation Failed",
-        description: error.message || "Could not generate artwork.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsGenerating(false)
-    }
-  }, [settings, generationMode, toast])
-
-  const handleUpscale = async () => {
-    if (!generatedImage || !currentImageId) return
-
-    setUpscaling(true)
-    setUpscaleProgress(0)
-    toast({
-      title: "Upscaling Image...",
-      description: "This may take a moment. Please do not close the tab.",
-      duration: 5000,
-    })
-
-    try {
-      const imageToUpscale = GalleryStorage.getGallery().find((img) => img.id === currentImageId)
-      if (!imageToUpscale) {
-        throw new Error("Image not found in gallery for upscaling.")
-      }
-
-      const response = await fetch("/api/upscale-image", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ imageUrl: imageToUpscale.imageUrl }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to upscale image.")
-      }
-
-      const { upscaledImageUrl } = await response.json()
-
-      // Update the existing image in gallery with the upscaled URL
-      const updatedImage: GalleryImage = {
-        ...imageToUpscale,
-        imageUrl: upscaledImageUrl,
-        metadata: {
-          ...imageToUpscale.metadata,
-          filename: imageToUpscale.metadata.filename.replace(/\.(svg|png)$/, "-upscaled.png"),
-          fileSize: 0, // Reset, will be updated on re-upload
-        },
-      }
-
-      // Re-upload the upscaled image to cloud if it was cloud-stored
-      if (updatedImage.metadata.cloudStored) {
-        const uploadResult = await CloudSync.uploadImageFullResolution(updatedImage, (p) => setUpscaleProgress(p))
-        if (uploadResult.success && uploadResult.cloudImage) {
-          GalleryStorage.saveImage(uploadResult.cloudImage)
-          toast({
-            title: "Image Upscaled & Synced!",
-            description: "The upscaled image has been saved and synced to the cloud.",
-            variant: "success",
-          })
+      if (response.ok) {
+        const enhancement = await response.json()
+        if (enhancement.success && enhancement.enhancedPrompt) {
+          setPromptEnhancement(enhancement)
+          setEditablePrompt(enhancement.enhancedPrompt)
+          toast.success(
+            `Prompt enhanced successfully! Added ${enhancement.statistics?.improvement?.characters || 0} characters.`,
+          )
         } else {
-          GalleryStorage.saveImage(updatedImage)
-          toast({
-            title: "Image Upscaled!",
-            description: "The upscaled image has been saved to your local gallery.",
-            variant: "success",
-          })
+          throw new Error(enhancement.error || "Enhancement failed")
         }
       } else {
-        GalleryStorage.saveImage(updatedImage)
-        toast({
-          title: "Image Upscaled!",
-          description: "The upscaled image has been saved to your local gallery.",
-          variant: "success",
-        })
+        const error = await response.json()
+        throw new Error(error.error || "Enhancement request failed")
       }
-
-      setGeneratedImage(upscaledImageUrl)
     } catch (error: any) {
-      console.error("Upscaling failed:", error)
-      toast({
-        title: "Upscaling Failed",
-        description: error.message || "An unexpected error occurred during upscaling.",
-        variant: "destructive",
+      console.error("Enhancement error:", error)
+      toast.error(`Enhancement failed: ${error.message || "Unknown error"}`)
+
+      // Fallback to base prompt if enhancement fails
+      const fallbackPrompt = buildPrompt({
+        dataset: dataset || "vietnamese",
+        scenario: scenario || "trung-sisters",
+        colorScheme: colorScheme || "metallic",
+        seed: seed || 1234,
+        numSamples: numSamples || 4000,
+        noiseScale: noiseScale || 0.08,
+        customPrompt: customPrompt || "",
+        panoramic360: panoramic360 || false,
+        panoramaFormat: panoramaFormat || "equirectangular",
+        projectionType: projectionType || "fisheye",
       })
+
+      if (fallbackPrompt) {
+        setCurrentPrompt(fallbackPrompt)
+        setEditablePrompt(fallbackPrompt)
+      }
     } finally {
-      setUpscaling(false)
-      setUpscaleProgress(0)
+      setIsEnhancing(false)
     }
-  }
+  }, [
+    dataset,
+    scenario,
+    colorScheme,
+    seed,
+    numSamples,
+    noiseScale,
+    customPrompt,
+    panoramic360,
+    panoramaFormat,
+    projectionType,
+    variationType,
+  ])
 
-  const handleRandomize = () => {
-    const randomDataset = DATASETS[Math.floor(Math.random() * DATASETS.length)]
-    const randomColorScheme = COLOR_SCHEMES[Math.floor(Math.random() * COLOR_SCHEMES.length)]
-    const randomSeed = Math.floor(Math.random() * 100000)
-    const randomSamples = Math.floor(Math.random() * (2000 - 500 + 1)) + 500 // 500-2000
-    const randomNoise = Number.parseFloat((Math.random() * 0.05).toFixed(3)) // 0-0.05
-
-    setSettings((prev) => ({
-      ...prev,
-      dataset: randomDataset,
-      colorScheme: randomColorScheme,
-      seed: randomSeed,
-      samples: randomSamples,
-      noise: randomNoise,
-      scenario:
-        prev.generationMode === "ai"
-          ? Object.keys(SCENARIOS)[Math.floor(Math.random() * Object.keys(SCENARIOS).length)]
-          : "none",
-    }))
-  }
-
-  const handleAuthSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setAuthLoading(true)
-    setAuthError(null)
-
-    let result: { success: boolean; error?: string }
-
-    if (authMode === "signIn") {
-      result = await CloudSync.signInWithEmail(authForm.email, authForm.password)
+  // Apply enhanced prompt
+  const applyEnhancedPrompt = useCallback(() => {
+    if (editablePrompt && editablePrompt.trim()) {
+      setCustomPrompt(editablePrompt.trim())
+      setIsPromptDialogOpen(false)
+      toast.success("Enhanced prompt applied successfully!")
     } else {
-      result = await CloudSync.signUpWithEmail(authForm.email, authForm.password, authForm.displayName)
+      toast.error("No prompt to apply")
     }
+  }, [editablePrompt])
 
-    if (result.success) {
-      toast({
-        title: `Successfully ${authMode === "signIn" ? "signed in" : "signed up"}!`,
-        description: "Cloud sync is now active.",
-        variant: "success",
-      })
-      // Clear form after successful auth
-      setAuthForm({ email: "", password: "", displayName: "" })
-    } else {
-      setAuthError(result.error || "Authentication failed.")
-      toast({
-        title: "Authentication Failed",
-        description: result.error || "Please check your credentials.",
-        variant: "destructive",
-      })
+  // Reset to original prompt
+  const resetToOriginal = useCallback(() => {
+    if (promptEnhancement && promptEnhancement.originalPrompt) {
+      setEditablePrompt(promptEnhancement.originalPrompt)
+      toast.info("Reset to original prompt")
     }
-    setAuthLoading(false)
-  }
+  }, [promptEnhancement])
 
-  const handleSignOut = async () => {
-    await CloudSync.signOut()
-    toast({
-      title: "Signed Out",
-      description: "Cloud sync has been disabled.",
-      variant: "default",
-    })
-  }
+  // Reset to enhanced prompt
+  const resetToEnhanced = useCallback(() => {
+    if (promptEnhancement && promptEnhancement.enhancedPrompt) {
+      setEditablePrompt(promptEnhancement.enhancedPrompt)
+      toast.info("Reset to enhanced prompt")
+    }
+  }, [promptEnhancement])
 
-  const handleToggleSync = async (checked: boolean) => {
-    if (checked) {
-      const result = await CloudSync.enableSync()
-      if (result.success) {
-        toast({
-          title: "Cloud Sync Enabled",
-          description: "Your gallery will now sync with the cloud.",
-          variant: "success",
-        })
+  // Generate all image types
+  const generateImages = useCallback(async () => {
+    if (isGenerating) return
+
+    try {
+      // Use enhanced prompt if available, otherwise build fresh
+      let finalPrompt = ""
+      if (customPrompt && customPrompt.trim()) {
+        finalPrompt = customPrompt.trim()
       } else {
-        toast({
-          title: "Failed to Enable Sync",
-          description: result.error || "Please try again.",
-          variant: "destructive",
+        finalPrompt = buildPrompt({
+          dataset: dataset || "vietnamese",
+          scenario: scenario || "trung-sisters",
+          colorScheme: colorScheme || "metallic",
+          seed: seed || 1234,
+          numSamples: numSamples || 4000,
+          noiseScale: noiseScale || 0.08,
+          customPrompt: "",
+          panoramic360: panoramic360 || false,
+          panoramaFormat: panoramaFormat || "equirectangular",
+          projectionType: projectionType || "fisheye",
         })
       }
-    } else {
-      await CloudSync.disableSync()
-      toast({
-        title: "Cloud Sync Disabled",
-        description: "Your gallery will no longer sync with the cloud.",
-        variant: "default",
-      })
-    }
-  }
 
-  const handleFullSync = async () => {
-    if (cloudSyncStatus.isSyncing) return
-    toast({
-      title: "Initiating Full Sync...",
-      description: "Comparing local and cloud galleries.",
-      duration: 3000,
-    })
-    const result = await CloudSync.performFullSync()
-    if (result.success) {
-      if (result.conflicts.length > 0) {
-        setSyncConflicts(result.conflicts)
-        toast({
-          title: "Sync Complete with Conflicts",
-          description: `${result.conflicts.length} conflicts found. Please resolve them.`,
-          variant: "warning",
-          duration: 5000,
+      if (!finalPrompt || finalPrompt.length === 0) {
+        throw new Error("Failed to generate prompt")
+      }
+
+      setIsGenerating(true)
+      setResults({ errors: [] })
+      setGenerationProgress({
+        standard: "generating",
+        dome: "generating",
+        panorama360: "generating",
+      })
+
+      // Create abort controller for cancellation
+      abortControllerRef.current = new AbortController()
+
+      const response = await fetch("/api/generate-ai-art", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: finalPrompt,
+          dataset: dataset || "vietnamese",
+          scenario: scenario || "trung-sisters",
+          colorScheme: colorScheme || "metallic",
+          seed: seed || 1234,
+          numSamples: numSamples || 4000,
+          noiseScale: noiseScale || 0.08,
+          panoramic360: panoramic360 || false,
+          panoramaFormat: panoramaFormat || "equirectangular",
+          projectionType: projectionType || "fisheye",
+          generateAll: true,
+        }),
+        signal: abortControllerRef.current.signal,
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+
+        // Ensure result has the expected structure
+        const safeResult = {
+          standard: result.standard || null,
+          dome: result.dome || null,
+          panorama360: result.panorama360 || null,
+          errors: Array.isArray(result.errors) ? result.errors : [],
+        }
+
+        setResults(safeResult)
+
+        // Update progress based on results
+        setGenerationProgress({
+          standard: safeResult.standard ? "completed" : "failed",
+          dome: safeResult.dome ? "completed" : "failed",
+          panorama360: safeResult.panorama360 ? "completed" : "failed",
         })
+
+        const successCount = [safeResult.standard, safeResult.dome, safeResult.panorama360].filter(Boolean).length
+        toast.success(`Generated ${successCount}/3 images successfully!`)
+
+        if (safeResult.errors.length > 0) {
+          safeResult.errors.forEach((error: string) => toast.error(error))
+        }
       } else {
-        toast({
-          title: "Full Sync Complete!",
-          description: "Your gallery is now up-to-date.",
-          variant: "success",
+        // Handle non-JSON responses
+        let errorMessage = "Generation failed"
+        try {
+          const error = await response.json()
+          errorMessage = error.error || errorMessage
+        } catch (parseError) {
+          // If response is not JSON, use status text
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        }
+        throw new Error(errorMessage)
+      }
+    } catch (error: any) {
+      if (error.name === "AbortError") {
+        toast.info("Generation cancelled")
+      } else {
+        console.error("Generation error:", error)
+        toast.error(`Generation failed: ${error.message || "Unknown error"}`)
+        setGenerationProgress({
+          standard: "failed",
+          dome: "failed",
+          panorama360: "failed",
         })
       }
-    } else {
-      toast({
-        title: "Full Sync Failed",
-        description: result.error || "An error occurred during sync.",
-        variant: "destructive",
-      })
+    } finally {
+      setIsGenerating(false)
+      abortControllerRef.current = null
     }
-  }
+  }, [
+    dataset,
+    scenario,
+    colorScheme,
+    seed,
+    numSamples,
+    noiseScale,
+    customPrompt,
+    panoramic360,
+    panoramaFormat,
+    projectionType,
+    isGenerating,
+  ])
 
-  const handleResolveConflict = async (conflict: SyncConflict, resolution: "keep_local" | "keep_cloud") => {
-    await CloudSync.resolveConflict(conflict, resolution)
-    setSyncConflicts((prev) => prev.filter((c) => c.localImage.id !== conflict.localImage.id))
-    toast({
-      title: "Conflict Resolved",
-      description: `Image ${conflict.localImage.metadata.filename} resolved.`,
-      variant: "default",
-    })
-    // After resolving, trigger a re-load of the gallery to reflect changes
-    // This is handled by the CloudSyncService listener, but a manual trigger might be good for immediate UI update
-    // For now, rely on the listener.
-  }
+  // Cancel generation
+  const cancelGeneration = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+  }, [])
 
-  const handleDownloadImage = (imageUrl: string, type: "svg" | "png") => {
-    const link = document.createElement("a")
-    link.href = imageUrl
-    link.download = `flowsketch-art-${Date.now()}.${type}`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
-  const handleAIImageGenerate = async () => {
-    if (!prompt.trim()) {
-      toast({ title: "Prompt required", variant: "destructive" })
+  // Download image
+  const downloadImage = useCallback(async (imageUrl: string, filename: string) => {
+    if (!imageUrl || !filename) {
+      toast.error("Invalid download parameters")
       return
     }
 
-    setIsLoading(true)
     try {
-      const res = await fetch("/api/generate-ai-art", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
-      })
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err?.error || "Failed to generate image")
+      const response = await fetch(`/api/download-proxy?url=${encodeURIComponent(imageUrl)}`)
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = url
+        a.download = filename
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+        toast.success(`Downloaded ${filename}`)
+      } else {
+        throw new Error("Download failed")
       }
+    } catch (error: any) {
+      console.error("Download error:", error)
+      toast.error(`Download failed: ${error.message || "Unknown error"}`)
+    }
+  }, [])
 
-      const { imageUrl } = (await res.json()) as { imageUrl: string }
-      // Bubble the new image up to any listeners (e.g. <Gallery />)
-      window.dispatchEvent(new CustomEvent("new-image", { detail: imageUrl }))
-      setGeneratedImage(imageUrl)
-    } catch (err: any) {
-      toast({ title: err.message ?? "Unknown error", variant: "destructive" })
-    } finally {
-      setIsLoading(false)
+  // Get status icon for generation progress
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "generating":
+        return <Clock className="h-4 w-4 animate-spin text-blue-500" />
+      case "completed":
+        return <CheckCircle className="h-4 w-4 text-green-500" />
+      case "failed":
+        return <XCircle className="h-4 w-4 text-red-500" />
+      default:
+        return <AlertCircle className="h-4 w-4 text-gray-400" />
     }
   }
 
-  /* load the current user once and keep it updated */
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setCurrentUser(data.user ?? null))
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setCurrentUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
-
-  useEffect(() => {
-    const listener = (status: CloudSyncStatus) => {
-      setCloudSyncStatus(status)
-    }
-    CloudSync.addStatusListener(listener)
-    CloudSync.initializeAuth() // Initialize auth state on component mount
-    return () => CloudSync.removeStatusListener(listener)
-  }, [])
-
-  useEffect(() => {
-    // Attempt full sync when authenticated and sync is enabled
-    if (cloudSyncStatus.isAuthenticated && cloudSyncStatus.isEnabled && !cloudSyncStatus.isSyncing) {
-      handleFullSync()
-    }
-  }, [cloudSyncStatus.isAuthenticated, cloudSyncStatus.isEnabled])
-
   return (
-    <TooltipProvider>
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Wand2 className="h-5 w-5" />
-              FlowSketch Generator
-            </CardTitle>
-            <CardDescription>Create mathematical art with customizable parameters</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid gap-4">
-              <div className="space-y-2">
-                <Label>Generation Mode</Label>
-                <Select value={generationMode} onValueChange={(value: "svg" | "ai") => setGenerationMode(value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="svg">SVG Mathematical</SelectItem>
-                    <SelectItem value="ai">AI Generated</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+    <div className="container mx-auto p-6 space-y-8">
+      {/* Header */}
+      <div className="text-center space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              FlowSketch Art Generator
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-2">
+              Generate professional-quality AI art with perfect 360° seamless wrapping, dome projections, and cultural
+              authenticity
+            </p>
+          </div>
+          <Button
+            onClick={validateApiKey}
+            disabled={isValidatingKey}
+            variant="outline"
+            size="sm"
+            className="gap-2 bg-transparent"
+          >
+            {isValidatingKey ? (
+              <>
+                <RefreshCw className="h-4 w-4 animate-spin" />
+                Validating...
+              </>
+            ) : (
+              <>
+                <Bug className="h-4 w-4" />
+                Debug API Key
+              </>
+            )}
+          </Button>
+        </div>
 
-              <div className="space-y-2">
-                <Label>Dataset</Label>
-                <Select value={settings.dataset} onValueChange={(value) => updateSetting("dataset", value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {DATASETS.map((dataset) => (
-                      <SelectItem key={dataset} value={dataset}>
-                        {dataset.charAt(0).toUpperCase() + dataset.slice(1)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Scenario</Label>
-                <Select value={settings.scenario} onValueChange={(value) => updateSetting("scenario", value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(SCENARIOS).map(([key, value]) => (
-                      <SelectItem key={key} value={key}>
-                        {value
-                          .split("-")
-                          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                          .join(" ")}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Color Scheme</Label>
-                <Select value={settings.colorScheme} onValueChange={(value) => updateSetting("colorScheme", value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {COLOR_SCHEMES.map((scheme) => (
-                      <SelectItem key={scheme} value={scheme}>
-                        {scheme.charAt(0).toUpperCase() + scheme.slice(1)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="seed">Seed</Label>
-                  <Button variant="outline" size="sm" onClick={randomizeSeed}>
-                    <Shuffle className="h-4 w-4" />
-                  </Button>
-                </div>
-                <Input
-                  id="seed"
-                  type="number"
-                  value={settings.seed}
-                  onChange={(e) => updateSetting("seed", Number.parseInt(e.target.value) || 1)}
-                  min={1}
-                  max={10000}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Samples: {settings.samples}</Label>
-                <Slider
-                  value={[settings.samples]}
-                  onValueChange={([value]) => updateSetting("samples", value)}
-                  min={10}
-                  max={1000}
-                  step={10}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Noise: {settings.noise.toFixed(2)}</Label>
-                <Slider
-                  value={[settings.noise]}
-                  onValueChange={([value]) => updateSetting("noise", value)}
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="upscale"
-                  checked={settings.upscale}
-                  onCheckedChange={(checked) => updateSetting("upscale", checked)}
-                />
-                <Label htmlFor="upscale">Enable Upscaling</Label>
-              </div>
-            </div>
-
-            <Button onClick={generateArt} disabled={isGenerating} className="w-full">
-              {isGenerating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating...
-                </>
+        {/* API Key Status */}
+        {apiKeyStatus && (
+          <Alert className={apiKeyStatus.success ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
+            <div className="flex items-center gap-2">
+              {apiKeyStatus.success ? (
+                <CheckCircle className="h-4 w-4 text-green-600" />
               ) : (
-                <>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Generate Art
-                </>
+                <XCircle className="h-4 w-4 text-red-600" />
               )}
-            </Button>
-          </CardContent>
-        </Card>
+              <AlertDescription className={apiKeyStatus.success ? "text-green-800" : "text-red-800"}>
+                {apiKeyStatus.message || apiKeyStatus.error}
+              </AlertDescription>
+            </div>
+          </Alert>
+        )}
 
-        {generatedImage && (
+        <div className="flex flex-wrap justify-center gap-2">
+          <Badge variant="secondary">
+            <Sparkles className="h-3 w-3 mr-1" />
+            GODLEVEL Quality
+          </Badge>
+          <Badge variant="secondary">
+            <Globe className="h-3 w-3 mr-1" />
+            360° VR Ready
+          </Badge>
+          <Badge variant="secondary">
+            <Mountain className="h-3 w-3 mr-1" />
+            Dome Projection
+          </Badge>
+          <Badge variant="secondary">
+            <Zap className="h-3 w-3 mr-1" />
+            ChatGPT Enhanced
+          </Badge>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Controls Panel */}
+        <div className="lg:col-span-1 space-y-6">
+          {/* Dataset Selection */}
           <Card>
             <CardHeader>
-              <CardTitle>Generated Artwork</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Palette className="h-5 w-5" />
+                Cultural Dataset
+              </CardTitle>
+              <CardDescription>Choose from authentic cultural heritage collections</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="dataset">Dataset</Label>
+                <Select value={dataset} onValueChange={handleDatasetChange}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(CULTURAL_DATASETS).map(([key, value]) => (
+                      <SelectItem key={key} value={key}>
+                        {value.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="scenario">Scenario</Label>
+                <Select value={scenario} onValueChange={setScenario}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {scenarioEntries.map(([key, value]) => (
+                      <SelectItem key={key} value={key}>
+                        {value.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="colorScheme">Color Scheme</Label>
+                <Select value={colorScheme} onValueChange={setColorScheme}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(COLOR_SCHEMES).map(([key, value]) => (
+                      <SelectItem key={key} value={key}>
+                        <div className="flex flex-col">
+                          <span className="capitalize">{key}</span>
+                          <span className="text-xs text-muted-foreground">{value}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Technical Parameters */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Technical Parameters
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <Label htmlFor="seed">Seed</Label>
+                  <Button variant="ghost" size="sm" onClick={randomizeSeed}>
+                    <RotateCcw className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Slider
+                    value={[seed]}
+                    onValueChange={(value) => setSeed(value[0])}
+                    max={9999}
+                    min={1}
+                    step={1}
+                    className="flex-1"
+                  />
+                  <span className="text-sm text-muted-foreground w-12">{seed}</span>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="numSamples">Data Points</Label>
+                <div className="flex gap-2">
+                  <Slider
+                    value={[numSamples]}
+                    onValueChange={(value) => setNumSamples(value[0])}
+                    max={8000}
+                    min={1000}
+                    step={500}
+                    className="flex-1"
+                  />
+                  <span className="text-sm text-muted-foreground w-12">{numSamples}</span>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="noiseScale">Noise Scale</Label>
+                <div className="flex gap-2">
+                  <Slider
+                    value={[noiseScale]}
+                    onValueChange={(value) => setNoiseScale(value[0])}
+                    max={0.2}
+                    min={0.01}
+                    step={0.01}
+                    className="flex-1"
+                  />
+                  <span className="text-sm text-muted-foreground w-12">{noiseScale.toFixed(2)}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Projection Settings */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Globe className="h-5 w-5" />
+                Projection Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="panoramaFormat">360° Format</Label>
+                <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="equirectangular">
+                      <div className="flex flex-col">
+                        <span>Equirectangular</span>
+                        <span className="text-xs text-muted-foreground">Perfect seamless wrapping for VR</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="stereographic">
+                      <div className="flex flex-col">
+                        <span>Stereographic</span>
+                        <span className="text-xs text-muted-foreground">Little planet fisheye effect</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="projectionType">Dome Projection</Label>
+                <Select value={projectionType} onValueChange={setProjectionType}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fisheye">
+                      <div className="flex flex-col">
+                        <span>Fisheye</span>
+                        <span className="text-xs text-muted-foreground">Standard dome projection</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="tunnel-up">
+                      <div className="flex flex-col">
+                        <span>Tunnel Up</span>
+                        <span className="text-xs text-muted-foreground">Looking up through tunnel</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="tunnel-down">
+                      <div className="flex flex-col">
+                        <span>Tunnel Down</span>
+                        <span className="text-xs text-muted-foreground">Looking down through tunnel</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="little-planet">
+                      <div className="flex flex-col">
+                        <span>Little Planet</span>
+                        <span className="text-xs text-muted-foreground">Curved horizon planet view</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Prompt Enhancement */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Wand2 className="h-5 w-5" />
+                Prompt Enhancement
+              </CardTitle>
+              <CardDescription>Use ChatGPT to enhance your prompts for better results</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="variationType">Enhancement Level</Label>
+                <Select value={variationType} onValueChange={setVariationType}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="slight">
+                      <div className="flex flex-col">
+                        <span>Slight (+20%)</span>
+                        <span className="text-xs text-muted-foreground">Subtle improvements</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="moderate">
+                      <div className="flex flex-col">
+                        <span>Moderate (+50%)</span>
+                        <span className="text-xs text-muted-foreground">Balanced enhancement</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="dramatic">
+                      <div className="flex flex-col">
+                        <span>Dramatic (+80%)</span>
+                        <span className="text-xs text-muted-foreground">Maximum enhancement</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Button
+                onClick={previewAndEnhancePrompt}
+                disabled={isEnhancing}
+                className="w-full bg-transparent"
+                variant="outline"
+              >
+                {isEnhancing ? (
+                  <>
+                    <Clock className="h-4 w-4 mr-2 animate-spin" />
+                    Enhancing...
+                  </>
+                ) : (
+                  <>
+                    <Eye className="h-4 w-4 mr-2" />
+                    Preview & Enhance Prompt
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Generation Controls */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5" />
+                Generate Art
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {isGenerating ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Generating...</span>
+                    <Button variant="outline" size="sm" onClick={cancelGeneration}>
+                      <Square className="h-4 w-4 mr-2" />
+                      Cancel
+                    </Button>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="flex items-center gap-2">
+                        {getStatusIcon(generationProgress.standard)}
+                        Standard
+                      </span>
+                      <span className="text-muted-foreground">{generationProgress.standard}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="flex items-center gap-2">
+                        {getStatusIcon(generationProgress.dome)}
+                        Dome
+                      </span>
+                      <span className="text-muted-foreground">{generationProgress.dome}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="flex items-center gap-2">
+                        {getStatusIcon(generationProgress.panorama360)}
+                        360° Panorama
+                      </span>
+                      <span className="text-muted-foreground">{generationProgress.panorama360}</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Button onClick={generateImages} className="w-full" size="lg">
+                  <Play className="h-4 w-4 mr-2" />
+                  Generate All Images
+                </Button>
+              )}
+
+              {customPrompt && (
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>Using custom enhanced prompt ({customPrompt.length} characters)</AlertDescription>
+                </Alert>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Results Panel */}
+        <div className="lg:col-span-2">
+          <Card className="h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ImageIcon className="h-5 w-5" />
+                Generated Images
+              </CardTitle>
               <CardDescription>
-                {generationMode.toUpperCase()} • {settings.samples} samples • Seed: {settings.seed}
+                Professional-quality AI art with seamless 360° wrapping and dome projection
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="relative">
-                <img
-                  src={generatedImage || "/placeholder.svg"}
-                  alt="Generated artwork"
-                  className="w-full h-auto rounded-lg border"
-                />
-                <div className="absolute bottom-4 right-4 flex gap-2">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        size="icon"
-                        onClick={() => handleDownloadImage(generatedImage, generationMode === "svg" ? "svg" : "png")}
-                      >
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Download Image</TooltipContent>
-                  </Tooltip>
-                  {generationMode === "ai" && !upscaling && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button size="icon" onClick={handleUpscale} disabled={upscaling}>
-                          {upscaling ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="standard" className="flex items-center gap-2">
+                    <ImageIcon className="h-4 w-4" />
+                    Standard
+                    {results.standard && <CheckCircle className="h-3 w-3 text-green-500" />}
+                  </TabsTrigger>
+                  <TabsTrigger value="dome" className="flex items-center gap-2">
+                    <Mountain className="h-4 w-4" />
+                    Dome
+                    {results.dome && <CheckCircle className="h-3 w-3 text-green-500" />}
+                  </TabsTrigger>
+                  <TabsTrigger value="panorama360" className="flex items-center gap-2">
+                    <Globe className="h-4 w-4" />
+                    360° VR
+                    {results.panorama360 && <CheckCircle className="h-3 w-3 text-green-500" />}
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="standard" className="space-y-4">
+                  {results.standard ? (
+                    <div className="space-y-4">
+                      <div className="relative">
+                        <AspectRatio ratio={1}>
+                          <img
+                            src={results.standard || "/placeholder.svg"}
+                            alt="Standard generated art"
+                            className="rounded-lg object-cover w-full h-full"
+                          />
+                        </AspectRatio>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => downloadImage(results.standard!, `flowsketch-standard-${seed}.png`)}
+                          className="flex-1"
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Download Standard
                         </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Upscale to 4K</TooltipContent>
-                    </Tooltip>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-64 border-2 border-dashed border-muted-foreground/25 rounded-lg">
+                      <div className="text-center space-y-2">
+                        <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground/50" />
+                        <p className="text-muted-foreground">Standard image will appear here</p>
+                      </div>
+                    </div>
                   )}
-                </div>
-              </div>
+                </TabsContent>
+
+                <TabsContent value="dome" className="space-y-4">
+                  {results.dome ? (
+                    <div className="space-y-4">
+                      <div className="relative">
+                        <AspectRatio ratio={1}>
+                          <img
+                            src={results.dome || "/placeholder.svg"}
+                            alt="Dome projection art"
+                            className="rounded-lg object-cover w-full h-full"
+                          />
+                        </AspectRatio>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => downloadImage(results.dome!, `flowsketch-dome-${projectionType}-${seed}.png`)}
+                          className="flex-1"
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Download Dome
+                        </Button>
+                      </div>
+                      <Alert>
+                        <Mountain className="h-4 w-4" />
+                        <AlertDescription>
+                          Optimized for {projectionType} dome projection with perfect radial composition
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-64 border-2 border-dashed border-muted-foreground/25 rounded-lg">
+                      <div className="text-center space-y-2">
+                        <Mountain className="h-12 w-12 mx-auto text-muted-foreground/50" />
+                        <p className="text-muted-foreground">Dome projection will appear here</p>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="panorama360" className="space-y-4">
+                  {results.panorama360 ? (
+                    <div className="space-y-4">
+                      <div className="relative">
+                        <AspectRatio ratio={2} className="bg-black rounded-lg overflow-hidden">
+                          <img
+                            src={results.panorama360 || "/placeholder.svg"}
+                            alt="360° panoramic art"
+                            className="w-full h-full object-contain"
+                            style={{ objectPosition: "center" }}
+                          />
+                        </AspectRatio>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() =>
+                            downloadImage(results.panorama360!, `flowsketch-360-${panoramaFormat}-${seed}.png`)
+                          }
+                          className="flex-1"
+                        >
+                          <Download className="h-4 w-4 mr-2" />
+                          Download 360°
+                        </Button>
+                      </div>
+                      <Alert>
+                        <Globe className="h-4 w-4" />
+                        <AlertDescription>
+                          {panoramaFormat === "equirectangular"
+                            ? "Perfect seamless wrapping for VR headsets - left edge connects flawlessly with right edge"
+                            : "Stereographic projection with entire 360° view in circular frame"}
+                        </AlertDescription>
+                      </Alert>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-64 border-2 border-dashed border-muted-foreground/25 rounded-lg">
+                      <div className="text-center space-y-2">
+                        <Globe className="h-12 w-12 mx-auto text-muted-foreground/50" />
+                        <p className="text-muted-foreground">360° panorama will appear here</p>
+                      </div>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
-        )}
+        </div>
+      </div>
 
-        {/* Cloud Sync Section */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Cloud className="h-4 w-4" /> Cloud Sync
-            </CardTitle>
-            <Switch
-              checked={cloudSyncStatus.isEnabled}
-              onCheckedChange={handleToggleSync}
-              disabled={!cloudSyncStatus.isAuthenticated || cloudSyncStatus.isSyncing}
-            />
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground mb-4">
-              {cloudSyncStatus.isAuthenticated
-                ? cloudSyncStatus.isEnabled
-                  ? `Sync enabled. Last sync: ${cloudSyncStatus.lastSync ? new Date(cloudSyncStatus.lastSync).toLocaleString() : "Never"}. Used: ${GalleryStorage.formatFileSize(cloudSyncStatus.storageUsed)} / ${GalleryStorage.formatFileSize(cloudSyncStatus.storageQuota)}`
-                  : "Sync disabled. Enable to backup your gallery."
-                : "Sign in to enable cloud sync and backup your gallery."}
-            </p>
+      {/* Prompt Enhancement Dialog */}
+      <Dialog open={isPromptDialogOpen} onOpenChange={setIsPromptDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Wand2 className="h-5 w-5" />
+              Prompt Enhancement Studio
+            </DialogTitle>
+            <DialogDescription>Preview, edit, and enhance your AI art prompt with ChatGPT assistance</DialogDescription>
+          </DialogHeader>
 
-            {!cloudSyncStatus.isAuthenticated ? (
-              <form onSubmit={handleAuthSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={authForm.email}
-                      onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
-                      required
-                      className="pl-8"
-                    />
+          <div className="space-y-6">
+            {/* Enhancement Statistics */}
+            {promptEnhancement && promptEnhancement.statistics && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {promptEnhancement.statistics.original?.characters || 0}
                   </div>
+                  <div className="text-sm text-muted-foreground">Original Chars</div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={authForm.password}
-                      onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
-                      required
-                      className="pl-8 pr-8"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-0 top-1/2 -translate-y-1/2 h-8 w-8"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </Button>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">
+                    {promptEnhancement.statistics.enhanced?.characters || 0}
                   </div>
+                  <div className="text-sm text-muted-foreground">Enhanced Chars</div>
                 </div>
-                {authMode === "signUp" && (
-                  <div className="space-y-2">
-                    <Label htmlFor="displayName">Display Name (Optional)</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="displayName"
-                        type="text"
-                        placeholder="Your Name"
-                        value={authForm.displayName}
-                        onChange={(e) => setAuthForm({ ...authForm, displayName: e.target.value })}
-                        className="pl-8"
-                      />
-                    </div>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <div className="text-2xl font-bold text-purple-600">
+                    +{promptEnhancement.statistics.improvement?.percentage || 0}%
                   </div>
-                )}
-                {authError && <p className="text-destructive text-sm">{authError}</p>}
-                <Button type="submit" className="w-full" disabled={authLoading}>
-                  {authLoading ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  ) : authMode === "signIn" ? (
-                    "Sign In"
-                  ) : (
-                    "Sign Up"
-                  )}
-                </Button>
-                <Button
-                  type="button"
-                  variant="link"
-                  className="w-full"
-                  onClick={() => setAuthMode(authMode === "signIn" ? "signUp" : "signIn")}
-                >
-                  {authMode === "signIn" ? "Need an account? Sign Up" : "Already have an account? Sign In"}
-                </Button>
-              </form>
-            ) : (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-sm">
-                  <Mail className="h-4 w-4" />
-                  <span>
-                    {cloudSyncStatus.isAuthenticated ? (currentUser?.email ?? "Unknown user") : "Not signed in"}
-                  </span>
+                  <div className="text-sm text-muted-foreground">Improvement</div>
                 </div>
-                <Button
-                  onClick={handleFullSync}
-                  variant="outline"
-                  className="w-full bg-transparent"
-                  disabled={cloudSyncStatus.isSyncing}
-                >
-                  {cloudSyncStatus.isSyncing ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Syncing...
-                    </>
-                  ) : (
-                    <>
-                      <RefreshCcw className="h-4 w-4 mr-2" />
-                      Perform Full Sync
-                    </>
-                  )}
-                </Button>
-                <Button onClick={handleSignOut} variant="destructive" className="w-full">
-                  Sign Out
-                </Button>
+                <div className="text-center p-3 bg-muted rounded-lg">
+                  <div
+                    className={`text-2xl font-bold ${promptEnhancement.statistics.withinLimit ? "text-green-600" : "text-red-600"}`}
+                  >
+                    {promptEnhancement.statistics.enhanced?.characters || 0}/4000
+                  </div>
+                  <div className="text-sm text-muted-foreground">Char Limit</div>
+                </div>
               </div>
             )}
-          </CardContent>
-        </Card>
 
-        {syncConflicts.length > 0 && (
-          <Card className="border-yellow-500 bg-yellow-50/50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-yellow-700">
-                <Info className="h-5 w-5" />
-                Sync Conflicts ({syncConflicts.length})
-              </CardTitle>
-              <CardDescription>
-                Some images have different versions locally and in the cloud. Please choose which version to keep.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {syncConflicts.map((conflict) => (
-                <div key={conflict.localImage.id} className="border p-3 rounded-md space-y-2">
-                  <p className="font-medium text-sm">
-                    {conflict.localImage.metadata.filename} (Conflict Type: {conflict.type.replace("_", " ")})
-                  </p>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <p className="font-semibold">Local Version:</p>
-                      <p>Created: {new Date(conflict.localImage.metadata.createdAt).toLocaleString()}</p>
-                      <p>Size: {GalleryStorage.formatFileSize(conflict.localImage.metadata.fileSize || 0)}</p>
-                    </div>
-                    <div>
-                      <p className="font-semibold">Cloud Version:</p>
-                      <p>Created: {new Date(conflict.cloudImage.metadata.createdAt).toLocaleString()}</p>
-                      <p>Size: {GalleryStorage.formatFileSize(conflict.cloudImage.metadata.fileSize || 0)}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 mt-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleResolveConflict(conflict, "keep_local")}
-                      className="flex-1"
-                    >
-                      <CheckCircle className="h-4 w-4 mr-1" /> Keep Local
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleResolveConflict(conflict, "keep_cloud")}
-                      className="flex-1"
-                    >
-                      <UploadCloud className="h-4 w-4 mr-1" /> Keep Cloud
-                    </Button>
-                  </div>
+            {/* Enhancement Method Badge */}
+            {promptEnhancement && (
+              <div className="flex items-center gap-2">
+                <Badge variant={promptEnhancement.enhancementMethod === "chatgpt" ? "default" : "secondary"}>
+                  {promptEnhancement.enhancementMethod === "chatgpt" ? (
+                    <>
+                      <Zap className="h-3 w-3 mr-1" />
+                      ChatGPT Enhanced
+                    </>
+                  ) : (
+                    <>
+                      <Settings className="h-3 w-3 mr-1" />
+                      Rule-Based Enhanced
+                    </>
+                  )}
+                </Badge>
+                <Badge variant="outline">{promptEnhancement.variationType} variation</Badge>
+                <Badge variant="outline">{promptEnhancement.generationType} generation</Badge>
+              </div>
+            )}
+
+            {/* Prompt Editor */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="prompt-editor" className="text-base font-semibold">
+                  Enhanced Prompt Editor
+                </Label>
+                <div className="flex gap-2">
+                  {promptEnhancement && (
+                    <>
+                      <Button variant="ghost" size="sm" onClick={resetToOriginal}>
+                        Reset to Original
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={resetToEnhanced}>
+                        Reset to Enhanced
+                      </Button>
+                    </>
+                  )}
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-        )}
+              </div>
 
-        {/* AI Image Generation Section */}
-        <Card>
-          <CardContent className="flex flex-col gap-4 p-6 sm:flex-row">
-            <Input
-              placeholder="Describe the artwork you want..."
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              className="flex-1"
-            />
-            <Button onClick={handleAIImageGenerate} disabled={isLoading} className="shrink-0">
-              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImagePlus className="mr-2 h-4 w-4" />}
-              {isLoading ? "Generating…" : "Generate"}
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    </TooltipProvider>
+              <Textarea
+                id="prompt-editor"
+                value={editablePrompt || ""}
+                onChange={(e) => setEditablePrompt(e.target.value)}
+                placeholder="Your enhanced prompt will appear here..."
+                className="min-h-[200px] font-mono text-sm"
+              />
+
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                <span>{(editablePrompt || "").length} characters</span>
+                <span className={(editablePrompt || "").length > 4000 ? "text-red-500" : "text-green-500"}>
+                  {(editablePrompt || "").length <= 4000 ? "Within limit" : "Exceeds 4000 char limit"}
+                </span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-4">
+              <Button onClick={applyEnhancedPrompt} className="flex-1">
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Apply Enhanced Prompt
+              </Button>
+              <Button variant="outline" onClick={() => setIsPromptDialogOpen(false)}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   )
 }
+
+export default FlowArtGenerator
