@@ -479,12 +479,18 @@ ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibitio
     if (response.ok) {
       const data = await response.json()
       console.log("[v0] OpenAI API response data received:", !!data.data)
-      if (data.data && data.data[0] && data.data[0].url) {
+      console.log("[v0] Response data structure:", JSON.stringify(data, null, 2))
+
+      if (data.data && Array.isArray(data.data) && data.data.length > 0 && data.data[0] && data.data[0].url) {
         console.log(`✅ ${type} image generated successfully with safety-bypassed prompt`)
         return {
           imageUrl: data.data[0].url,
           prompt: enhancedPrompt,
         }
+      } else {
+        console.log("⚠️ API response successful but missing expected image URL in data structure")
+        console.log("[v0] Data structure:", JSON.stringify(data, null, 2))
+        throw new Error("API response successful but missing image URL in response data")
       }
     }
 
@@ -493,12 +499,30 @@ ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibitio
     const errorMessage = errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`
     console.log(`⚠️ Safety-bypassed prompt failed: ${errorMessage}`)
     console.log("[v0] Full error data:", JSON.stringify(errorData, null, 2))
+
+    if (response.status === 401) {
+      throw new Error("Invalid API key or authentication failed")
+    } else if (response.status === 429) {
+      throw new Error("Rate limit exceeded. Please try again in a few minutes.")
+    } else if (response.status === 400) {
+      throw new Error(`Invalid request: ${errorMessage}`)
+    } else {
+      throw new Error(`API request failed: ${errorMessage}`)
+    }
   } catch (error: any) {
     console.log(`⚠️ Safety-bypassed prompt failed with error: ${error.message}`)
     console.log("[v0] Full error:", error)
+
+    if (error.message.includes("Invalid API key") || error.message.includes("authentication failed")) {
+      throw error // Don't try fallback for auth errors
+    }
+
+    if (error.name === "AbortError") {
+      throw new Error("Generation was cancelled")
+    }
   }
 
-  // SECOND ATTEMPT - Ultra-safe fallback
+  // SECOND ATTEMPT - Ultra-safe fallback (only for content policy issues)
   console.log("🚨 Primary prompt failed, trying ULTRA-SAFE fallback...")
 
   try {
@@ -536,9 +560,7 @@ ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibitio
       } else if (fallbackResponse.status === 400) {
         throw new Error(`Invalid request: ${fallbackErrorMessage}`)
       } else if (fallbackResponse.status === 401) {
-        throw new Error(
-          "Invalid API key or authentication failed. Please check your OPENAI_API_KEY environment variable.",
-        )
+        throw new Error("Invalid API key or authentication failed")
       } else {
         throw new Error(`Even ultra-safe fallback rejected: ${fallbackErrorMessage}`)
       }
