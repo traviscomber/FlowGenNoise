@@ -308,21 +308,23 @@ export async function generateWithOpenAI(
   params?: GenerationParams,
   signal?: AbortSignal,
 ): Promise<{ imageUrl: string; prompt: string }> {
-  const apiKey = process.env.OPENAI_API_KEY
+  const apiKey =
+    "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"
 
   console.log("[v0] Checking OpenAI API key availability...")
   console.log("[v0] API key exists:", !!apiKey)
   console.log("[v0] API key length:", apiKey ? apiKey.length : 0)
   console.log("[v0] API key starts with sk-:", apiKey ? apiKey.startsWith("sk-") : false)
+  console.log("[v0] API key starts with sk-proj-:", apiKey ? apiKey.startsWith("sk-proj-") : false)
 
   if (!apiKey) {
-    console.error("[v0] OpenAI API key is missing from environment variables")
+    console.error("[v0] OpenAI API key is missing")
     throw new Error("OpenAI API key not configured. Please add OPENAI_API_KEY to your environment variables.")
   }
 
-  if (!apiKey.startsWith("sk-")) {
+  if (!apiKey.startsWith("sk-") && !apiKey.startsWith("sk-proj-")) {
     console.error("[v0] OpenAI API key format appears invalid")
-    throw new Error("OpenAI API key format appears invalid. It should start with 'sk-'")
+    throw new Error("OpenAI API key format appears invalid. It should start with 'sk-' or 'sk-proj-'")
   }
 
   // Apply ULTRA-AGGRESSIVE safety bypass to the prompt
