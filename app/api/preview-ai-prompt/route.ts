@@ -2,61 +2,133 @@ import { type NextRequest, NextResponse } from "next/server"
 import { buildPrompt } from "@/lib/ai-prompt"
 
 export async function POST(request: NextRequest) {
+  console.log("🔍 GODLEVEL Prompt preview API called")
+
   try {
-    console.log("🔍 Preview AI Prompt request received")
-
     const body = await request.json()
-    console.log("📝 Request body:", JSON.stringify(body, null, 2))
+    const {
+      dataset = "vietnamese",
+      scenario = "trung-sisters",
+      colorScheme = "metallic",
+      seed = 1234,
+      numSamples = 4000,
+      noiseScale = 0.08,
+      customPrompt = "",
+      panoramic360 = false,
+      panoramaFormat = "equirectangular",
+      projectionType = "fisheye",
+      useCustomPrompt = false,
+    } = body
 
-    // Safe parameter extraction with fallback defaults
-    const params = {
-      dataset: body.dataset || "vietnamese",
-      scenario: body.scenario || "trung-sisters",
-      colorScheme: body.colorScheme || "metallic",
-      seed: typeof body.seed === "number" ? body.seed : Math.floor(Math.random() * 10000),
-      numSamples: typeof body.numSamples === "number" ? body.numSamples : 4000,
-      noiseScale: typeof body.noiseScale === "number" ? body.noiseScale : 0.08,
-      customPrompt: body.customPrompt || "",
-      panoramic360: body.panoramic360 || false,
-      panoramaFormat: body.panoramaFormat || "equirectangular",
+    console.log("📋 Preview parameters:", {
+      dataset,
+      scenario,
+      colorScheme,
+      useCustomPrompt,
+      customPromptLength: customPrompt.length,
+    })
+
+    let previewPrompt: string
+
+    if (useCustomPrompt && customPrompt.trim()) {
+      // Use custom prompt as-is for preview
+      previewPrompt = customPrompt.trim()
+      console.log("📝 Using custom prompt for preview")
+    } else {
+      // Build GODLEVEL prompt from parameters
+      try {
+        previewPrompt = buildPrompt({
+          dataset,
+          scenario,
+          colorScheme,
+          seed,
+          numSamples,
+          noiseScale,
+          customPrompt: "",
+          panoramic360,
+          panoramaFormat,
+          projectionType,
+        })
+        console.log("📝 Built GODLEVEL prompt from parameters")
+      } catch (buildError) {
+        console.error("❌ Failed to build preview prompt:", buildError)
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Failed to build preview prompt",
+            details: buildError instanceof Error ? buildError.message : "Unknown build error",
+          },
+          { status: 500 },
+        )
+      }
     }
 
-    console.log("🔧 Safe parameters:", params)
+    // Analyze prompt characteristics
+    const promptAnalysis = {
+      length: previewPrompt.length,
+      wordCount: previewPrompt.split(/\s+/).length,
+      hasGodlevelKeywords: /godlevel|museum|masterpiece|award-winning|professional|ultra-detailed/i.test(previewPrompt),
+      hasCulturalTerms: /cultural|heritage|traditional|authentic|respectful/i.test(previewPrompt),
+      hasTechnicalTerms: /8K|resolution|quality|composition|lighting|cinematic/i.test(previewPrompt),
+      maxLength: 4000,
+      utilizationPercentage: Math.round((previewPrompt.length / 4000) * 100),
+    }
 
-    // Build the prompt
-    const prompt = buildPrompt(params)
+    // Provide quality assessment
+    let qualityLevel = "Basic"
+    if (promptAnalysis.hasGodlevelKeywords && promptAnalysis.hasCulturalTerms && promptAnalysis.hasTechnicalTerms) {
+      qualityLevel = "GODLEVEL"
+    } else if (
+      promptAnalysis.hasGodlevelKeywords ||
+      (promptAnalysis.hasCulturalTerms && promptAnalysis.hasTechnicalTerms)
+    ) {
+      qualityLevel = "Professional"
+    } else if (promptAnalysis.hasCulturalTerms || promptAnalysis.hasTechnicalTerms) {
+      qualityLevel = "Enhanced"
+    }
 
-    console.log("📝 Generated prompt preview:", prompt.substring(0, 200) + "...")
+    // Provide suggestions for improvement
+    const suggestions = []
+    if (!promptAnalysis.hasGodlevelKeywords) {
+      suggestions.push("Consider using AI enhancement for GODLEVEL quality descriptors")
+    }
+    if (!promptAnalysis.hasCulturalTerms) {
+      suggestions.push("Add cultural heritage and respectful representation terms")
+    }
+    if (!promptAnalysis.hasTechnicalTerms) {
+      suggestions.push("Include technical photography and quality specifications")
+    }
+    if (promptAnalysis.length < 500) {
+      suggestions.push("Prompt could be more detailed for better results")
+    }
+    if (promptAnalysis.length > 3800) {
+      suggestions.push("Prompt is near character limit - consider optimization")
+    }
 
-    // Calculate statistics
-    const wordCount = prompt.split(/\s+/).length
-    const charCount = prompt.length
-    const estimatedTokens = Math.ceil(charCount / 4) // Rough estimate
+    console.log(`✅ GODLEVEL prompt preview generated - Length: ${promptAnalysis.length}, Quality: ${qualityLevel}`)
 
-    const response = {
+    return NextResponse.json({
       success: true,
-      prompt: prompt,
-      statistics: {
-        characters: charCount,
-        words: wordCount,
-        estimatedTokens: estimatedTokens,
-        maxLength: 4000,
-        withinLimit: charCount <= 4000,
+      prompt: previewPrompt,
+      analysis: promptAnalysis,
+      qualityLevel,
+      suggestions,
+      metadata: {
+        dataset,
+        scenario,
+        colorScheme,
+        useCustomPrompt,
+        timestamp: new Date().toISOString(),
       },
-      parameters: params,
-      timestamp: new Date().toISOString(),
-    }
-
-    console.log("✅ Prompt preview generated successfully")
-    return NextResponse.json(response)
+    })
   } catch (error: any) {
-    console.error("❌ Preview generation failed:", error)
+    console.error("❌ Prompt preview error:", error)
 
     return NextResponse.json(
       {
         success: false,
-        error: error.message || "Failed to generate prompt preview",
-        details: error.stack || "No stack trace available",
+        error: "Failed to generate prompt preview",
+        details: error.message || "Unknown preview error",
         timestamp: new Date().toISOString(),
       },
       { status: 500 },
