@@ -8,6 +8,17 @@ import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { Separator } from "@/components/ui/separator"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/hooks/use-toast"
 import {
   Download,
@@ -21,6 +32,10 @@ import {
   ArrowDown,
   Orbit,
   Palette,
+  Eye,
+  Edit3,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios } from "@/lib/ai-prompt"
 
@@ -43,6 +58,7 @@ export default function Dome360Planner() {
   const [seed, setSeed] = useState(1234)
   const [numSamples, setNumSamples] = useState(4000)
   const [noiseScale, setNoiseScale] = useState(0.08)
+  const [customPrompt, setCustomPrompt] = useState("")
 
   // Projection settings
   const [projectionType, setProjectionType] = useState("fisheye")
@@ -51,6 +67,15 @@ export default function Dome360Planner() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImage, setGeneratedImage] = useState<GeneratedImage | null>(null)
   const [generationType, setGenerationType] = useState<"dome" | "360">("dome")
+
+  // Prompt enhancement state
+  const [isPromptDialogOpen, setIsPromptDialogOpen] = useState(false)
+  const [enhancedPrompt, setEnhancedPrompt] = useState("")
+  const [isEnhancing, setIsEnhancing] = useState(false)
+  const [promptStats, setPromptStats] = useState<any>(null)
+  const [editablePrompt, setEditablePrompt] = useState("")
+  const [variationType, setVariationType] = useState<"slight" | "moderate" | "dramatic">("moderate")
+  const [error, setError] = useState<string | null>(null)
 
   // Get available scenarios for current dataset
   const availableScenarios = getScenarios(dataset)
@@ -63,6 +88,7 @@ export default function Dome360Planner() {
     if (firstScenario) {
       setScenario(firstScenario)
     }
+    setError(null)
   }, [])
 
   // Generate random parameters
@@ -82,17 +108,83 @@ export default function Dome360Planner() {
     setProjectionType(projectionTypes[Math.floor(Math.random() * projectionTypes.length)])
     setPanoramaFormat(panoramaFormats[Math.floor(Math.random() * panoramaFormats.length)])
 
+    setError(null)
     toast({
       title: "Parameters Randomized",
       description: "New random values generated for all parameters",
     })
   }, [])
 
+  // Preview and enhance prompt
+  const previewPrompt = useCallback(async () => {
+    setIsEnhancing(true)
+    setError(null)
+
+    try {
+      const response = await fetch("/api/enhance-prompt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          dataset,
+          scenario,
+          colorScheme,
+          seed,
+          numSamples,
+          noiseScale,
+          customPrompt,
+          panoramic360: generationType === "360",
+          panoramaFormat,
+          projectionType,
+          variationType,
+          generationType,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to enhance prompt: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      if (data.success) {
+        setEnhancedPrompt(data.enhancedPrompt)
+        setEditablePrompt(data.enhancedPrompt)
+        setPromptStats(data.statistics)
+        setIsPromptDialogOpen(true)
+      } else {
+        throw new Error(data.error || "Failed to enhance prompt")
+      }
+    } catch (error: any) {
+      console.error("Prompt enhancement error:", error)
+      setError(error.message || "Failed to enhance prompt")
+      toast({
+        title: "Enhancement Failed",
+        description: error.message || "Failed to enhance prompt",
+        variant: "destructive",
+      })
+    } finally {
+      setIsEnhancing(false)
+    }
+  }, [
+    dataset,
+    scenario,
+    colorScheme,
+    seed,
+    numSamples,
+    noiseScale,
+    customPrompt,
+    generationType,
+    panoramaFormat,
+    projectionType,
+    variationType,
+  ])
+
   // Generate image
   const generateImage = useCallback(async () => {
     if (isGenerating) return
 
     setIsGenerating(true)
+    setError(null)
 
     try {
       const response = await fetch("/api/generate-ai-art", {
@@ -105,6 +197,7 @@ export default function Dome360Planner() {
           seed,
           numSamples,
           noiseScale,
+          customPrompt: editablePrompt || customPrompt,
           type: generationType,
           projectionType,
           panoramaFormat,
@@ -134,6 +227,7 @@ export default function Dome360Planner() {
       }
     } catch (error: any) {
       console.error("Generation error:", error)
+      setError(error.message || "Failed to generate image")
       toast({
         title: "Generation Failed",
         description: error.message || "Failed to generate image",
@@ -149,6 +243,8 @@ export default function Dome360Planner() {
     seed,
     numSamples,
     noiseScale,
+    customPrompt,
+    editablePrompt,
     generationType,
     projectionType,
     panoramaFormat,
@@ -195,8 +291,32 @@ export default function Dome360Planner() {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Dome & 360° Planner
         </h1>
-        <p className="text-muted-foreground">Specialized tool for dome projection and 360° panoramic art generation</p>
+        <p className="text-muted-foreground">
+          Specialized tool for dome projection and 360° panoramic art generation with ChatGPT enhancement
+        </p>
+        <div className="flex justify-center gap-2">
+          <Badge variant="secondary">
+            <CircleDot className="w-3 h-3 mr-1" />
+            Dome Optimized
+          </Badge>
+          <Badge variant="secondary">
+            <Globe className="w-3 h-3 mr-1" />
+            360° VR Ready
+          </Badge>
+          <Badge variant="secondary">
+            <Sparkles className="w-3 h-3 mr-1" />
+            ChatGPT Enhanced
+          </Badge>
+        </div>
       </div>
+
+      {/* Error Alert */}
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Controls Panel */}
@@ -285,8 +405,8 @@ export default function Dome360Planner() {
                         <div className="flex items-center gap-2">
                           <Globe className="h-4 w-4" />
                           Equirectangular
-                          <Badge variant="outline" className="ml-2 text-xs">
-                            Seamless
+                          <Badge variant="outline" className="ml-2 text-xs bg-green-50 text-green-700 border-green-200">
+                            Pro Seamless
                           </Badge>
                         </div>
                       </SelectItem>
@@ -355,6 +475,17 @@ export default function Dome360Planner() {
                 </Select>
               </div>
 
+              {/* Custom Prompt */}
+              <div className="space-y-2">
+                <Label>Custom Prompt (Optional)</Label>
+                <Textarea
+                  placeholder="Enter custom prompt to override automatic generation..."
+                  value={customPrompt}
+                  onChange={(e) => setCustomPrompt(e.target.value)}
+                  rows={3}
+                />
+              </div>
+
               {/* Parameters */}
               <div className="space-y-4 border-t pt-4">
                 <div className="space-y-2">
@@ -383,6 +514,113 @@ export default function Dome360Planner() {
                     step={0.001}
                   />
                 </div>
+              </div>
+
+              {/* Prompt Enhancement Section */}
+              <Separator />
+              <div className="space-y-4">
+                <Label className="text-sm font-semibold flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  ChatGPT Prompt Enhancement
+                </Label>
+
+                <div className="space-y-2">
+                  <Label className="text-sm">Enhancement Level</Label>
+                  <Select
+                    value={variationType}
+                    onValueChange={(value: "slight" | "moderate" | "dramatic") => setVariationType(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="slight">🔹 Slight Enhancement</SelectItem>
+                      <SelectItem value="moderate">🔸 Moderate Enhancement</SelectItem>
+                      <SelectItem value="dramatic">🔶 Dramatic Enhancement</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Dialog open={isPromptDialogOpen} onOpenChange={setIsPromptDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      onClick={previewPrompt}
+                      variant="outline"
+                      className="w-full bg-transparent"
+                      disabled={isEnhancing}
+                    >
+                      {isEnhancing ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Enhancing with ChatGPT...
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="h-4 w-4 mr-2" />
+                          Preview & Enhance Prompt
+                        </>
+                      )}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <Sparkles className="h-5 w-5" />
+                        ChatGPT Enhanced Prompt
+                      </DialogTitle>
+                      <DialogDescription>
+                        Review and edit the ChatGPT-enhanced prompt before generation. The prompt has been optimized for
+                        artistic quality and cultural authenticity.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      {promptStats && (
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <strong>Original:</strong> {promptStats.original.characters} chars,{" "}
+                            {promptStats.original.words} words
+                          </div>
+                          <div>
+                            <strong>Enhanced:</strong> {promptStats.enhanced.characters} chars,{" "}
+                            {promptStats.enhanced.words} words
+                          </div>
+                          <div>
+                            <strong>Enhancement:</strong> {variationType} level
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium flex items-center gap-2">
+                          <Edit3 className="h-4 w-4" />
+                          Enhanced Prompt (Editable)
+                        </Label>
+                        <Textarea
+                          value={editablePrompt}
+                          onChange={(e) => setEditablePrompt(e.target.value)}
+                          rows={12}
+                          className="font-mono text-sm"
+                        />
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm text-muted-foreground">
+                          {editablePrompt.length} / 4000 characters
+                          {editablePrompt.length > 4000 && <span className="text-red-500 ml-2">⚠️ Too long</span>}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button variant="outline" onClick={() => setEditablePrompt(enhancedPrompt)}>
+                            Reset to Enhanced
+                          </Button>
+                          <Button onClick={() => setIsPromptDialogOpen(false)}>
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            Use This Prompt
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
 
               {/* Action Buttons */}
@@ -439,8 +677,8 @@ export default function Dome360Planner() {
               </CardTitle>
               <CardDescription>
                 {generationType === "360"
-                  ? `${panoramaFormat === "equirectangular" ? "Seamless equirectangular" : "Stereographic"} 360° panoramic artwork optimized for VR viewing`
-                  : `${projectionType} projection optimized for planetarium dome display`}
+                  ? `${panoramaFormat === "equirectangular" ? "Seamless equirectangular" : "Stereographic"} 360° panoramic artwork optimized for VR viewing with ChatGPT-enhanced prompts`
+                  : `${projectionType} projection optimized for planetarium dome display with ChatGPT-enhanced prompts`}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -458,7 +696,11 @@ export default function Dome360Planner() {
                       <div className="flex gap-2">
                         <Badge variant="secondary">{generatedImage.format}</Badge>
                         {generatedImage.planetariumOptimized && <Badge variant="outline">Planetarium Ready</Badge>}
-                        {generatedImage.seamlessWrapping && <Badge variant="outline">Seamless</Badge>}
+                        {generatedImage.seamlessWrapping && (
+                          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                            Professional Seamless
+                          </Badge>
+                        )}
                         <Badge variant="outline">
                           {generationType === "360" ? generatedImage.panoramaFormat : generatedImage.projectionType}
                         </Badge>
@@ -466,6 +708,9 @@ export default function Dome360Planner() {
                       <p className="text-sm text-muted-foreground">
                         {generationType === "360" ? "1792×1024 • 360° Panorama" : "1024×1024 • Dome Projection"}
                       </p>
+                      {generatedImage.seamlessWrapping && (
+                        <p className="text-xs text-green-600">✓ Professional seamless edge wrapping verified</p>
+                      )}
                     </div>
                     <Button
                       onClick={() => downloadImage(generatedImage.imageUrl, `flowsketch-${generationType}.jpg`)}
@@ -492,6 +737,9 @@ export default function Dome360Planner() {
                     <p className="text-xs text-muted-foreground">
                       Current: {generationType === "360" ? panoramaFormat : projectionType}
                     </p>
+                    {generationType === "360" && panoramaFormat === "equirectangular" && (
+                      <p className="text-xs text-green-600">Will generate with professional seamless wrapping</p>
+                    )}
                   </div>
                 </div>
               )}
