@@ -221,7 +221,7 @@ function sanitizePromptForSafety(prompt: string): string {
   ]
 
   const randomContext = artisticContexts[Math.floor(Math.random() * artisticContexts.length)]
-  sanitized += `, ${randomContext}`
+  sanitized = `${sanitized}, ${randomContext}`
 
   // ULTRA-COMPREHENSIVE SAFETY DESCRIPTORS
   sanitized +=
@@ -308,7 +308,8 @@ export async function generateWithOpenAI(
   params?: GenerationParams,
   signal?: AbortSignal,
 ): Promise<{ imageUrl: string; prompt: string }> {
-  const apiKey = process.env.OPENAI_API_KEY
+  const apiKey =
+    "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"
 
   console.log("[v0] Checking OpenAI API key availability...")
   console.log("[v0] API key exists:", !!apiKey)
