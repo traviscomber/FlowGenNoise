@@ -355,8 +355,16 @@ export function FlowArtGenerator() {
           safeResult.errors.forEach((error: string) => toast.error(error))
         }
       } else {
-        const error = await response.json()
-        throw new Error(error.error || "Generation failed")
+        // Handle non-JSON responses
+        let errorMessage = "Generation failed"
+        try {
+          const error = await response.json()
+          errorMessage = error.error || errorMessage
+        } catch (parseError) {
+          // If response is not JSON, use status text
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        }
+        throw new Error(errorMessage)
       }
     } catch (error: any) {
       if (error.name === "AbortError") {

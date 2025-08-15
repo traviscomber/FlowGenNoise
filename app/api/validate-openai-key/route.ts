@@ -1,144 +1,112 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    console.log("🔍 Validating OpenAI API Key...")
-
-    const apiKey = process.env.OPENAI_API_KEY
+    console.log("🔍 Validating OpenAI API key...")
 
     // Check if API key exists
+    const apiKey = process.env.OPENAI_API_KEY
     if (!apiKey) {
-      console.error("❌ No OpenAI API key found")
+      console.log("❌ No OpenAI API key found in environment variables")
       return NextResponse.json({
         success: false,
-        error: "OpenAI API key not found in environment variables",
-        message: "Please add OPENAI_API_KEY to your environment variables",
+        error: "OpenAI API key not configured",
+        message: "Please set OPENAI_API_KEY in your environment variables",
         details: {
-          keyFound: false,
-          suggestion: "Add OPENAI_API_KEY=sk-... to your .env.local file",
+          keyExists: false,
+          keyLength: 0,
+          keyFormat: "N/A",
         },
       })
     }
 
-    // Check API key format
-    if (!apiKey.startsWith("sk-")) {
-      console.error("❌ Invalid API key format")
-      return NextResponse.json({
-        success: false,
-        error: "Invalid OpenAI API key format",
-        message: "API key must start with 'sk-'",
-        details: {
-          keyFound: true,
-          validFormat: false,
-          keyPrefix: apiKey.substring(0, 5) + "...",
+    // Basic format validation
+    const keyLength = apiKey.length
+    const keyFormat = apiKey.startsWith("sk-") ? "Valid format" : "Invalid format (should start with 'sk-')"
+    const keyPreview = `${apiKey.substring(0, 7)}...${apiKey.substring(apiKey.length - 4)}`
+
+    console.log(`🔑 API key found: ${keyPreview} (${keyLength} chars)`)
+
+    // Test API key with a simple request
+    try {
+      console.log("🧪 Testing API key with OpenAI API...")
+
+      const response = await fetch("https://api.openai.com/v1/models", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
         },
       })
-    }
 
-    // Check API key length
-    if (apiKey.length < 20) {
-      console.error("❌ API key too short")
-      return NextResponse.json({
-        success: false,
-        error: "OpenAI API key appears to be too short",
-        message: "Please verify you have the complete API key",
-        details: {
-          keyFound: true,
-          validFormat: true,
-          keyLength: apiKey.length,
-        },
-      })
-    }
+      if (response.ok) {
+        const data = await response.json()
+        const hasDALLE3 = data.data?.some((model: any) => model.id === "dall-e-3")
 
-    console.log("🔑 API key format validation passed")
-    console.log("🌐 Testing API connection...")
+        console.log("✅ API key validation successful")
+        console.log(`🎨 DALL-E 3 available: ${hasDALLE3 ? "YES" : "NO"}`)
 
-    // Test actual API connection
-    const response = await fetch("https://api.openai.com/v1/models", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      signal: AbortSignal.timeout(10000), // 10 second timeout
-    })
+        return NextResponse.json({
+          success: true,
+          message: "OpenAI API key is valid and working!",
+          details: {
+            keyExists: true,
+            keyLength,
+            keyFormat,
+            keyPreview,
+            apiAccess: true,
+            dalleAccess: hasDALLE3,
+            modelsCount: data.data?.length || 0,
+          },
+        })
+      } else {
+        const errorData = await response.json().catch(() => ({}))
+        const errorMessage = errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`
 
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error("❌ OpenAI API Error:", response.status, errorText)
+        console.log(`❌ API key validation failed: ${errorMessage}`)
 
-      if (response.status === 401) {
         return NextResponse.json({
           success: false,
-          error: "Invalid OpenAI API key - authentication failed",
-          message: "The API key is not valid or has been revoked",
+          error: "API key validation failed",
+          message: `OpenAI API rejected the key: ${errorMessage}`,
           details: {
-            keyFound: true,
-            validFormat: true,
-            keyLength: apiKey.length,
-            apiAccessible: false,
+            keyExists: true,
+            keyLength,
+            keyFormat,
+            keyPreview,
+            apiAccess: false,
             httpStatus: response.status,
+            errorMessage,
           },
         })
       }
+    } catch (apiError: any) {
+      console.log(`❌ API request failed: ${apiError.message}`)
 
       return NextResponse.json({
         success: false,
-        error: `OpenAI API error: ${response.status}`,
-        message: errorText || "API request failed",
+        error: "API request failed",
+        message: `Failed to connect to OpenAI API: ${apiError.message}`,
         details: {
-          keyFound: true,
-          validFormat: true,
-          keyLength: apiKey.length,
-          apiAccessible: false,
-          httpStatus: response.status,
+          keyExists: true,
+          keyLength,
+          keyFormat,
+          keyPreview,
+          apiAccess: false,
+          connectionError: apiError.message,
         },
       })
     }
-
-    const data = await response.json()
-    const modelsCount = data.data?.length || 0
-    const hasDALLE = data.data?.some((model: any) => model.id.includes("dall-e")) || false
-
-    console.log("✅ OpenAI API validation successful")
-    console.log(`📊 Available models: ${modelsCount}`)
-    console.log(`🎨 DALL-E available: ${hasDALLE}`)
-
-    return NextResponse.json({
-      success: true,
-      message: "OpenAI API key is valid and working correctly",
-      details: {
-        keyFound: true,
-        validFormat: true,
-        keyLength: apiKey.length,
-        keyPrefix: apiKey.substring(0, 7) + "...",
-        apiAccessible: true,
-        modelsAvailable: modelsCount,
-        dalleAvailable: hasDALLE,
-        timestamp: new Date().toISOString(),
-      },
-    })
   } catch (error: any) {
-    console.error("❌ API key validation error:", error)
-
-    if (error.name === "AbortError") {
-      return NextResponse.json({
-        success: false,
-        error: "Request timed out",
-        message: "Could not connect to OpenAI API within 10 seconds",
-        details: {
-          timeout: true,
-        },
-      })
-    }
+    console.error("❌ Validation error:", error)
 
     return NextResponse.json({
       success: false,
-      error: `Validation failed: ${error.message}`,
-      message: "Could not validate API key due to network or server error",
+      error: "Validation failed",
+      message: `Unexpected error during validation: ${error.message}`,
       details: {
-        networkError: true,
-        originalError: error.message,
+        keyExists: false,
+        validationError: error.message,
       },
     })
   }
