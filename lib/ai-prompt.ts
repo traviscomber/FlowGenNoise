@@ -657,12 +657,87 @@ export const CULTURAL_DATASETS = {
     },
   },
   bosch: {
-    name: "🖼️ Bosch",
+    name: "🖼️ Bosch Masterpieces",
     scenarios: {
-      pure: {
-        name: "Bosch-Inspired Surrealism",
+      "pure-mathematical": {
+        name: "🔢 Pure Mathematical Bosch",
         description:
-          "Hieronymus Bosch inspired surreal mathematical art with fantastical creatures, surreal landscapes, medieval artistic style, imaginative mathematics, artistic surrealism, mathematical fantasy, dreamlike imagery.",
+          "Mathematical Bosch-inspired patterns with geometric surrealism, fractal fantastical creatures, algorithmic medieval symbolism, mathematical art excellence, computational surreal heritage, geometric fantasy visualization, mathematical surrealism mapping, algorithmic artistic beauty, digital medieval mastery, mathematical artistic excellence, geometric pattern complexity, computational surreal generation, mathematical visualization excellence, godlevel mathematical Bosch artistry.",
+      },
+      "garden-earthly-delights": {
+        name: "🌺 Garden of Earthly Delights",
+        description:
+          "Hieronymus Bosch's masterpiece Garden of Earthly Delights reimagined with photorealistic detail, the central panel showing nude figures in paradise garden with giant fruits and fantastical creatures, people riding oversized animals through lush landscapes, transparent spheres and crystal formations, exotic birds and hybrid creatures, medieval paradise with surreal elements, detailed human figures in natural poses, realistic skin tones and anatomy, lush garden vegetation with botanical accuracy, crystal-clear water features, fantastical architecture with realistic materials, Bosch's symbolic imagery rendered with documentary precision, surreal paradise with photographic quality, medieval fantasy with contemporary realism, museum-quality Renaissance artistry, godlevel Bosch excellence.",
+      },
+      "haywain-triptych": {
+        name: "🚜 The Haywain Triptych",
+        description:
+          "Bosch's Haywain triptych with photorealistic medieval life, central panel showing people fighting over hay wagon representing worldly vanity, realistic medieval peasants and nobles in period-accurate clothing, detailed medieval landscape with authentic architecture, horse-drawn wagon with realistic craftsmanship, people climbing and falling from hay with natural physics, medieval town in background with architectural accuracy, demons and angels rendered with creature design excellence, realistic fire and smoke effects, authentic medieval weapons and tools, period-accurate social hierarchy depicted, medieval daily life with ethnographic precision, Bosch's moral allegory with documentary realism, godlevel medieval artistry.",
+      },
+      "temptation-st-anthony": {
+        name: "👹 Temptation of St. Anthony",
+        description:
+          "Bosch's Temptation of St. Anthony with cinematic horror realism, hermit saint surrounded by grotesque demons and tempting creatures, realistic medieval monastery ruins with architectural detail, fantastical creatures with professional creature design, hybrid animals with biological plausibility, medieval hermit clothing with textile accuracy, dramatic lighting creating atmospheric mood, realistic fire and supernatural phenomena, detailed landscape with medieval authenticity, demons rendered with special effects quality, religious symbolism with cultural accuracy, medieval spiritual warfare with psychological depth, horror elements with artistic sophistication, godlevel religious artistry.",
+      },
+      "ship-fools": {
+        name: "🚢 Ship of Fools",
+        description:
+          "Bosch's Ship of Fools with maritime realism, medieval boat filled with reveling passengers, realistic wooden ship construction with nautical accuracy, medieval clothing and accessories with period detail, people drinking and making merry with authentic medieval customs, detailed water and river landscape, realistic medieval musical instruments, authentic medieval food and drink, period-accurate social satire, medieval river life with ethnographic precision, boat craftsmanship with historical accuracy, medieval party atmosphere with cultural authenticity, social commentary with realistic human behavior, godlevel medieval maritime artistry.",
+      },
+      "death-miser": {
+        name: "💀 Death and the Miser",
+        description:
+          "Bosch's Death and the Miser with dramatic realism, dying wealthy man in ornate medieval bedroom, realistic medieval interior with period furniture, detailed textiles and luxury objects, skeletal Death figure with anatomical accuracy, angels and demons with creature design excellence, medieval medical practices depicted, realistic candlelight and shadows, authentic medieval wealth display, period-accurate religious imagery, medieval deathbed scene with cultural authenticity, moral allegory with psychological depth, medieval memento mori with artistic sophistication, godlevel medieval mortality artistry.",
+      },
+      "seven-deadly-sins": {
+        name: "😈 Seven Deadly Sins",
+        description:
+          "Bosch's Seven Deadly Sins table with photorealistic medieval scenes, circular composition showing each sin in detailed vignettes, realistic medieval people committing sins with psychological accuracy, authentic medieval settings and architecture, period-accurate clothing and objects, detailed facial expressions showing human nature, medieval daily life with ethnographic precision, moral instruction with artistic excellence, religious symbolism with cultural authenticity, medieval social commentary with realistic human behavior, circular mandala composition with geometric precision, godlevel medieval moral artistry.",
+      },
+      "adoration-magi": {
+        name: "👑 Adoration of the Magi",
+        description:
+          "Bosch's Adoration of the Magi with Renaissance realism, three wise men presenting gifts to infant Jesus, realistic medieval and exotic clothing with textile detail, authentic Middle Eastern and European faces, detailed landscape with architectural accuracy, realistic animals including camels and horses, period-accurate religious iconography, authentic medieval craftsmanship in gifts, detailed facial expressions with emotional depth, biblical scene with historical accuracy, Renaissance painting techniques with oil mastery, religious devotion with artistic sophistication, godlevel religious Renaissance artistry.",
+      },
+      "crowning-thorns": {
+        name: "👑 Crowning with Thorns",
+        description:
+          "Bosch's Crowning with Thorns with dramatic realism, Christ surrounded by tormentors in close-up composition, realistic human faces showing cruelty and suffering, detailed medieval armor and weapons, authentic period clothing and accessories, dramatic lighting emphasizing emotional intensity, realistic blood and wounds with medical accuracy, psychological portraiture with emotional depth, religious passion with artistic sophistication, medieval brutality with historical accuracy, human cruelty depicted with unflinching realism, godlevel religious drama artistry.",
+      },
+      "cure-folly": {
+        name: "🧠 Cure of Folly",
+        description:
+          "Bosch's Cure of Folly with medical realism, medieval surgeon removing 'stone of madness' from patient's head, realistic medieval medical instruments and procedures, authentic period clothing for doctor and patient, detailed medieval interior with medical accuracy, realistic human anatomy and surgical detail, medieval medical practices with historical accuracy, psychological commentary with artistic depth, medical satire with cultural authenticity, medieval healthcare with ethnographic precision, human folly depicted with realistic detail, godlevel medieval medical artistry.",
+      },
+      "ecce-homo": {
+        name: "👤 Ecce Homo",
+        description:
+          "Bosch's Ecce Homo with Renaissance portraiture realism, Christ presented to crowd with emotional intensity, realistic medieval crowd with individual character faces, authentic period architecture and clothing, detailed facial expressions showing human nature, biblical scene with historical accuracy, Renaissance painting techniques with artistic mastery, religious drama with psychological depth, medieval justice system depicted, human mob psychology with realistic behavior, godlevel religious portraiture artistry.",
+      },
+      "hermit-saints": {
+        name: "🙏 Hermit Saints",
+        description:
+          "Bosch's hermit saints with spiritual realism, medieval hermits in wilderness settings, realistic medieval monastic clothing and accessories, authentic landscape with botanical accuracy, detailed cave dwellings and hermitages, realistic medieval religious objects and books, spiritual contemplation with psychological depth, medieval asceticism with cultural authenticity, wilderness survival with historical accuracy, religious devotion with artistic sophistication, medieval spirituality with ethnographic precision, godlevel religious hermit artistry.",
+      },
+      "last-judgment": {
+        name: "⚖️ Last Judgment",
+        description:
+          "Bosch's Last Judgment with apocalyptic realism, Christ as judge with divine authority, realistic angels and demons with creature design excellence, detailed heaven and hell landscapes, authentic medieval religious iconography, dramatic lighting emphasizing divine judgment, realistic human figures in various states, biblical apocalypse with theological accuracy, medieval eschatology with cultural authenticity, divine justice with artistic sophistication, religious terror and hope depicted, godlevel apocalyptic artistry.",
+      },
+      "musical-hell": {
+        name: "🎵 Musical Hell",
+        description:
+          "Bosch's musical hell with surreal realism, demons torturing souls with oversized musical instruments, realistic medieval instruments with acoustic accuracy, detailed torture scenes with artistic sophistication, fantastical creatures with biological plausibility, medieval hell imagery with theological accuracy, musical punishment with creative interpretation, demonic orchestra with creature design excellence, realistic fire and brimstone effects, medieval damnation with cultural authenticity, artistic horror with psychological depth, godlevel infernal musical artistry.",
+      },
+      "tree-man": {
+        name: "🌳 Tree Man",
+        description:
+          "Bosch's Tree Man with surreal biological realism, hybrid creature with tree trunk body and human head, realistic bark texture and botanical detail, human anatomy integrated with plant biology, fantastical creature with biological plausibility, surreal landscape with environmental accuracy, medieval symbolism with artistic interpretation, hybrid biology with scientific speculation, creature design with artistic excellence, surreal anatomy with medical accuracy, fantastical evolution with creative genius, godlevel surreal creature artistry.",
+      },
+      "world-upside-down": {
+        name: "🙃 World Upside Down",
+        description:
+          "Bosch's world upside down with satirical realism, medieval social order reversed with comic accuracy, realistic medieval people in absurd situations, authentic period clothing and objects, detailed medieval settings with architectural accuracy, social satire with cultural authenticity, medieval humor with psychological insight, absurd situations with realistic physics, comic reversal with artistic sophistication, medieval carnival atmosphere with ethnographic precision, human folly with artistic wisdom, godlevel satirical medieval artistry.",
       },
     },
   },
@@ -713,8 +788,16 @@ export function buildPrompt(params: {
   projectionType?: string
 }) {
   try {
+    console.log("[v0] buildPrompt called with params:", {
+      dataset: params.dataset,
+      scenario: params.scenario,
+      colorScheme: params.colorScheme,
+      customPrompt: params.customPrompt ? "PROVIDED" : "NONE",
+    })
+
     // If custom prompt is provided, use it
     if (params.customPrompt && params.customPrompt.trim()) {
+      console.log("[v0] Using custom prompt, skipping scenario logic")
       return params.customPrompt.trim()
     }
 
@@ -743,6 +826,9 @@ export function buildPrompt(params: {
       ].includes(params.dataset)
     ) {
       isMathematicalScenario = true
+      console.log("[v0] Detected mathematical scenario:", params.scenario || params.dataset)
+    } else {
+      console.log("[v0] Detected cultural scenario:", params.scenario, "in dataset:", params.dataset)
     }
 
     // Get scenario description based on dataset with enhanced logic
@@ -755,6 +841,7 @@ export function buildPrompt(params: {
         CULTURAL_DATASETS.heads.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.heads.scenarios]
       scenarioDescription = scenario.description
       basePrompt += `${scenarioDescription}, `
+      console.log("[v0] Using heads scenario:", params.scenario, "- description length:", scenarioDescription.length)
     } else if (
       params.dataset === "faces" &&
       params.scenario &&
@@ -764,6 +851,7 @@ export function buildPrompt(params: {
         CULTURAL_DATASETS.faces.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.faces.scenarios]
       scenarioDescription = scenario.description
       basePrompt += `${scenarioDescription}, `
+      console.log("[v0] Using faces scenario:", params.scenario, "- description length:", scenarioDescription.length)
     } else if (
       params.dataset === "vietnamese" &&
       params.scenario &&
@@ -773,6 +861,12 @@ export function buildPrompt(params: {
         CULTURAL_DATASETS.vietnamese.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.vietnamese.scenarios]
       scenarioDescription = scenario.description
       basePrompt += `${scenarioDescription}, `
+      console.log(
+        "[v0] Using vietnamese scenario:",
+        params.scenario,
+        "- description length:",
+        scenarioDescription.length,
+      )
     } else if (
       params.dataset === "indonesian" &&
       params.scenario &&
@@ -782,6 +876,12 @@ export function buildPrompt(params: {
         CULTURAL_DATASETS.indonesian.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.indonesian.scenarios]
       scenarioDescription = scenario.description
       basePrompt += `${scenarioDescription}, `
+      console.log(
+        "[v0] Using indonesian scenario:",
+        params.scenario,
+        "- description length:",
+        scenarioDescription.length,
+      )
     } else if (
       params.dataset === "thailand" &&
       params.scenario &&
@@ -791,6 +891,7 @@ export function buildPrompt(params: {
         CULTURAL_DATASETS.thailand.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.thailand.scenarios]
       scenarioDescription = scenario.description
       basePrompt += `${scenarioDescription}, `
+      console.log("[v0] Using thailand scenario:", params.scenario, "- description length:", scenarioDescription.length)
     } else if (
       params.dataset === "escher" &&
       params.scenario &&
@@ -800,13 +901,26 @@ export function buildPrompt(params: {
         CULTURAL_DATASETS.escher.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.escher.scenarios]
       scenarioDescription = scenario.description
       basePrompt += `${scenarioDescription}, `
+      console.log("[v0] Using escher scenario:", params.scenario, "- description length:", scenarioDescription.length)
+    } else if (
+      params.dataset === "bosch" &&
+      params.scenario &&
+      CULTURAL_DATASETS.bosch.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.bosch.scenarios]
+    ) {
+      const scenario =
+        CULTURAL_DATASETS.bosch.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.bosch.scenarios]
+      scenarioDescription = scenario.description
+      basePrompt += `${scenarioDescription}, `
+      console.log("[v0] Using bosch scenario:", params.scenario, "- description length:", scenarioDescription.length)
     } else {
       // Mathematical/abstract datasets
       const datasetInfo = CULTURAL_DATASETS[params.dataset as keyof typeof CULTURAL_DATASETS]
       if (datasetInfo && datasetInfo.scenarios.pure) {
         basePrompt += `${datasetInfo.scenarios.pure.description}, `
+        console.log("[v0] Using dataset pure scenario for:", params.dataset)
       } else {
         basePrompt += `Mathematical visualization of ${params.dataset} patterns with godlevel precision, `
+        console.log("[v0] Using fallback mathematical description for:", params.dataset)
       }
     }
 
@@ -814,10 +928,12 @@ export function buildPrompt(params: {
       // 100% ABSTRACT for mathematical scenarios only
       basePrompt +=
         "PURE MATHEMATICAL ABSTRACTION: complete geometric abstraction with no representational elements, pure mathematical visualization, algorithmic beauty generation, computational geometry excellence, mathematical art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, mathematical visualization excellence, geometric pattern complexity, mathematical art generation, computational beauty, "
+      console.log("[v0] Applied PURE MATHEMATICAL ABSTRACTION style")
     } else {
       // NEURALUA ART STYLE for cultural scenarios - more concrete and representational
       basePrompt +=
         "NEURALUA ART STYLE: highly detailed photorealistic rendering with artistic interpretation, maintaining recognizable cultural elements while enhancing with sophisticated artistic techniques, realistic human features with cultural authenticity, traditional clothing and architecture rendered with museum-quality accuracy, natural lighting with cinematic quality, documentary photography meets fine art painting, cultural heritage preservation through artistic excellence, ethnographic accuracy with artistic beauty, realistic proportions with enhanced visual appeal, authentic cultural representation with artistic mastery, "
+      console.log("[v0] Applied NEURALUA ART STYLE for cultural scenario")
     }
 
     // Add color scheme with enhanced descriptions
@@ -826,44 +942,55 @@ export function buildPrompt(params: {
 
     if (isMathematicalScenario) {
       basePrompt += `rendered in ${colorDescription} with abstract color theory mastery and experimental pigment application, `
+      console.log("[v0] Applied mathematical color scheme:", params.colorScheme)
     } else {
       basePrompt += `rendered in ${colorDescription} with natural color harmony and realistic lighting, `
+      console.log("[v0] Applied cultural color scheme:", params.colorScheme)
     }
 
     if (isMathematicalScenario) {
       basePrompt +=
         "painterly brushstrokes with digital precision, texture mapping with organic randomness, layered transparency with depth illusion, gestural mark-making with intentional accidents, color field painting with emotional intensity, abstract composition with hidden narratives, "
+      console.log("[v0] Applied mathematical rendering techniques")
     } else {
       basePrompt +=
         "photorealistic detail with artistic enhancement, natural textures with authentic materials, realistic lighting with atmospheric depth, cultural authenticity with artistic interpretation, documentary quality with fine art aesthetics, "
+      console.log("[v0] Applied cultural rendering techniques")
     }
 
     // Add technical parameters - OPTIMIZED FOR SPACE
     basePrompt += `${params.numSamples || 4000} data points with mathematical precision, noise scale ${params.noiseScale || 0.08} for optimal detail, seed ${params.seed || 1234} for reproducible excellence, `
+    console.log("[v0] Applied technical parameters")
 
     if (isMathematicalScenario) {
       basePrompt +=
         "museum-grade abstract expressionist quality with international avant-garde standards, experimental composition with controlled spontaneity, ultra-high detail with artistic interpretation, award-winning abstract composition with international recognition, 8K HDR with painterly texture, atmospheric lighting with mood enhancement, breathtaking visual impact with psychological depth, "
+      console.log("[v0] Applied mathematical quality enhancements")
     } else {
       basePrompt +=
         "museum-grade photorealistic quality with cultural documentation standards, authentic representation with artistic excellence, ultra-high detail with realistic interpretation, award-winning cultural photography with international recognition, 8K HDR with natural texture, authentic lighting with cultural atmosphere, breathtaking visual impact with cultural significance, "
+      console.log("[v0] Applied cultural quality enhancements")
     }
 
     // Add 360° specific instructions if needed - CRITICAL SEAMLESS WRAPPING
     if (params.panoramic360 && params.panoramaFormat === "equirectangular") {
       basePrompt +=
         "CRITICAL 360° SEAMLESS WRAPPING: LEFT EDGE must connect PERFECTLY with RIGHT EDGE - zero visible seam, continuous environment with flowing transitions, VR-optimized seamless wraparound with immersive experience, "
+      console.log("[v0] Applied equirectangular 360° instructions")
     } else if (params.panoramic360 && params.panoramaFormat === "stereographic") {
       basePrompt +=
         "STEREOGRAPHIC 360°: perfect circular composition with radial flow, entire 360° view in circular frame with center focus and natural distortion, "
+      console.log("[v0] Applied stereographic 360° instructions")
     }
 
     if (isMathematicalScenario) {
       basePrompt +=
         "pure abstract perfection with mathematical beauty, award-winning experimental art with international recognition, contemporary art museum quality with cultural significance, godlevel abstract excellence with transcendent beauty, professional gallery standard with collector appeal, fine art exhibition worthy with artistic innovation, abstract mastery with technical virtuosity, creative genius with experimental vision, ultimate abstract perfection achievement"
+      console.log("[v0] Applied mathematical final touches")
     } else {
       basePrompt +=
         "cultural authenticity with artistic excellence, award-winning documentary art with international recognition, ethnographic museum quality with cultural significance, godlevel realistic excellence with cultural beauty, professional documentation standard with artistic appeal, cultural exhibition worthy with educational value, realistic mastery with technical virtuosity, cultural genius with authentic vision, ultimate cultural perfection achievement"
+      console.log("[v0] Applied cultural final touches")
     }
 
     // Ensure we stay within reasonable limits while preserving critical information
@@ -885,8 +1012,10 @@ export function buildPrompt(params: {
       }
 
       basePrompt = truncated
+      console.log("[v0] Prompt truncated to:", basePrompt.length, "characters")
     }
 
+    console.log("[v0] Final prompt length:", basePrompt.length, "characters")
     return basePrompt
   } catch (error) {
     console.error("Error building prompt:", error)
