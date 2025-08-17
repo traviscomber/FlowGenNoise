@@ -1,4 +1,4 @@
-// Enhanced AI Prompt Generation System with Godlevel Quality
+// Enhanced AI Prompt Generation System with ULTIMATE GODLEVEL Quality
 // Optimized for 1400 base characters with room for ChatGPT enhancement up to 4000 total
 
 export interface PromptParams {
@@ -14,20 +14,195 @@ export interface PromptParams {
   projectionType?: "fisheye" | "tunnel-up" | "tunnel-down" | "little-planet"
 }
 
-// Cultural datasets with detailed scenarios - COMPLETE RESTORATION OF ALL DATASETS
+// Cultural datasets with detailed scenarios - COMPLETE RESTORATION WITH GODLEVEL ENHANCEMENT
 export const CULTURAL_DATASETS = {
+  heads: {
+    name: "👤 Heads & Portraits",
+    scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Mathematical Head",
+        description:
+          "Mathematical head visualization with geometric precision, golden ratio facial proportions, Fibonacci spiral hair patterns, fractal skin texture mapping, algorithmic beauty generation, computational geometry excellence, mathematical art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, mathematical visualization excellence, geometric pattern complexity, mathematical art generation, computational beauty, godlevel mathematical excellence.",
+      },
+      "hyper-realistic": {
+        name: "📸 Hyper-Realistic Portrait",
+        description:
+          "Ultra-photorealistic human head portrait with microscopic skin detail, individual pore visibility, subsurface light scattering, authentic eye moisture and reflection, natural hair strand definition, professional studio lighting with Rembrandt setup, 85mm lens compression, shallow depth of field, museum-quality portraiture, award-winning photographic excellence, commercial photography standard, flawless skin texture mapping, authentic human expression, professional headshot perfection, broadcast television quality, magazine cover worthy, celebrity portrait standard, Hollywood glamour lighting, professional makeup artistry, high-fashion editorial quality, luxury brand campaign worthy, international photography award level, godlevel photorealistic mastery.",
+      },
+      "classical-sculpture": {
+        name: "🏛️ Classical Marble Sculpture",
+        description:
+          "Masterpiece classical marble sculpture head in the tradition of Michelangelo and Bernini, perfect anatomical proportions following golden ratio, sublime chiseled features with divine artistic expression, museum-quality Renaissance craftsmanship, pristine white Carrara marble with subtle veining, dramatic chiaroscuro lighting, sculptural perfection with godlike idealized beauty, Vatican Museum exhibition worthy, Louvre collection standard, classical antiquity reverence, timeless artistic immortality, divine artistic inspiration, sculptural genius manifestation, marble carving virtuosity, Renaissance master technique, artistic heritage preservation, cultural monument significance, eternal beauty captured in stone, godlevel sculptural excellence.",
+      },
+      "cyberpunk-futuristic": {
+        name: "🤖 Cyberpunk Future Head",
+        description:
+          "Ultra-futuristic cyberpunk head with seamless bio-mechanical integration, holographic neural interfaces, neon-lit cybernetic implants, chrome and carbon fiber augmentations, LED circuit patterns under translucent synthetic skin, advanced AI consciousness indicators, quantum processing nodes, neural link connections, dystopian high-tech aesthetics, blade runner atmosphere, ghost in the shell inspiration, matrix-level digital integration, advanced prosthetic artistry, technological singularity visualization, transhumanist evolution, digital consciousness manifestation, cyber-enhanced humanity, futuristic body modification, advanced biotechnology integration, godlevel cyberpunk artistry, sci-fi masterpiece quality.",
+      },
+      "fantasy-ethereal": {
+        name: "🧚 Fantasy Ethereal Being",
+        description:
+          "Ethereal fantasy being head with otherworldly beauty, luminescent skin with magical aura, mystical facial markings that glow with inner light, flowing hair that defies gravity with particle effects, eyes that hold galaxies and ancient wisdom, delicate pointed ears with intricate jewelry, crown of living flowers and crystals, magical energy emanating from features, fairy tale princess perfection, elven nobility and grace, mythical creature elegance, fantasy art masterpiece, magical realism perfection, enchanted forest spirit, celestial being manifestation, divine feminine energy, mystical creature artistry, legendary beauty incarnate, godlevel fantasy excellence.",
+      },
+      "horror-grotesque": {
+        name: "👹 Horror Grotesque",
+        description:
+          "Masterfully crafted horror grotesque head with artistic terror excellence, professional special effects makeup artistry, intricate prosthetic work with museum-quality craftsmanship, dramatic lighting for maximum atmospheric impact, cinematic horror movie standard, award-winning creature design, practical effects mastery, gothic horror aesthetic, dark fantasy artistry, theatrical makeup excellence, professional monster design, horror film industry standard, creature feature quality, dark artistic expression, gothic masterpiece, professional horror artistry, cinematic terror excellence, special effects virtuosity, horror genre mastery, godlevel grotesque artistry.",
+      },
+      "anime-manga": {
+        name: "🎌 Anime Manga Style",
+        description:
+          "Perfect anime manga style head with flawless cel-shading technique, large expressive eyes with multiple highlight layers, perfectly styled hair with dynamic flow and shine, smooth gradient skin tones, professional anime studio quality, Studio Ghibli level artistry, manga illustration perfection, Japanese animation excellence, otaku culture celebration, kawaii aesthetic mastery, anime character design perfection, professional voice actor worthy, anime convention showcase quality, manga artist virtuosity, Japanese pop culture excellence, animation industry standard, godlevel anime artistry.",
+      },
+      "abstract-geometric": {
+        name: "🔺 Abstract Geometric",
+        description:
+          "Revolutionary abstract geometric head composition with mathematical precision, golden ratio proportions, complex polygonal faceting, prismatic color theory application, cubist influence with modern digital artistry, algorithmic beauty generation, computational geometry excellence, mathematical art perfection, geometric abstraction mastery, digital art innovation, contemporary art museum worthy, modern art gallery exhibition standard, avant-garde artistic expression, geometric pattern complexity, mathematical visualization excellence, algorithmic art generation, digital geometry mastery, godlevel abstract excellence.",
+      },
+      "oil-painting-classical": {
+        name: "🎨 Classical Oil Painting",
+        description:
+          "Museum-quality classical oil painting head in the tradition of Leonardo da Vinci and Rembrandt, masterful brushwork with visible texture, rich impasto technique, luminous glazing layers, chiaroscuro lighting mastery, Renaissance painting excellence, old master technique perfection, classical portraiture tradition, oil painting virtuosity, fine art museum collection worthy, art history significance, painting technique mastery, classical art education standard, traditional painting excellence, artistic heritage preservation, fine art auction house quality, godlevel painting mastery.",
+      },
+      "watercolor-impressionist": {
+        name: "🌸 Watercolor Impressionist",
+        description:
+          "Exquisite watercolor impressionist head with fluid brushwork, transparent color layering, wet-on-wet technique mastery, soft edge blending, luminous color harmony, impressionist light capture, plein air painting quality, French impressionist tradition, watercolor medium mastery, artistic spontaneity, color theory excellence, painting technique virtuosity, fine art gallery worthy, watercolor society exhibition standard, impressionist movement homage, artistic expression freedom, godlevel watercolor excellence.",
+      },
+      "digital-art-modern": {
+        name: "💻 Digital Art Modern",
+        description:
+          "Cutting-edge digital art head with advanced rendering techniques, photorealistic digital painting, professional digital artistry, concept art industry standard, video game character quality, digital illustration mastery, computer graphics excellence, digital painting virtuosity, modern art movement, contemporary digital expression, technology-enhanced creativity, digital medium mastery, professional concept artist quality, entertainment industry standard, digital art innovation, godlevel digital excellence.",
+      },
+      "steampunk-victorian": {
+        name: "⚙️ Steampunk Victorian",
+        description:
+          "Elaborate steampunk Victorian head with brass and copper mechanical augmentations, intricate clockwork mechanisms, steam-powered prosthetics, Victorian era fashion elements, leather and brass accessories, mechanical monocle with gears, steam vents and pressure gauges, industrial revolution aesthetics, retro-futuristic design, alternate history visualization, steampunk subculture celebration, Victorian gothic elements, mechanical artistry, industrial design excellence, period costume accuracy, godlevel steampunk artistry.",
+      },
+      "tribal-cultural": {
+        name: "🪶 Tribal Cultural",
+        description:
+          "Respectful tribal cultural head representation with authentic traditional face painting, ceremonial markings with cultural significance, traditional jewelry and adornments, feathers and natural materials, cultural heritage celebration, indigenous artistry honor, traditional craftsmanship respect, cultural authenticity preservation, ethnographic accuracy, anthropological significance, cultural education value, traditional art forms celebration, indigenous culture respect, cultural diversity appreciation, heritage preservation importance, godlevel cultural artistry.",
+      },
+      "zombie-undead": {
+        name: "🧟 Zombie Undead",
+        description:
+          "Professional zombie undead head with award-winning special effects makeup, realistic decay and decomposition artistry, professional prosthetic application, cinematic horror quality, walking dead television standard, zombie apocalypse authenticity, horror movie industry excellence, special effects mastery, creature design perfection, horror genre expertise, practical effects artistry, makeup artist virtuosity, horror film quality, godlevel zombie artistry.",
+      },
+      "alien-extraterrestrial": {
+        name: "👽 Alien Extraterrestrial",
+        description:
+          "Scientifically plausible alien extraterrestrial head with evolutionary biology consideration, xenobiology speculation, advanced civilization indicators, non-human intelligence manifestation, interstellar species design, science fiction authenticity, speculative evolution artistry, astrobiology inspiration, cosmic perspective, alien culture visualization, extraterrestrial intelligence, space exploration wonder, scientific imagination, sci-fi genre excellence, godlevel alien artistry.",
+      },
+      "mega-freak-extreme": {
+        name: "🎪 Mega Freak Extreme",
+        description:
+          "Extreme artistic interpretation with radical creative distortion, surreal proportions and impossible anatomy, psychedelic color explosions, reality-bending visual effects, artistic freedom maximization, creative boundary pushing, experimental art excellence, avant-garde expression, artistic rebellion, creative chaos mastery, visual shock artistry, extreme artistic vision, boundary-breaking creativity, artistic revolution, godlevel freak artistry.",
+      },
+    },
+  },
+  faces: {
+    name: "😊 Faces & Expressions",
+    scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Mathematical Expression",
+        description:
+          "Mathematical facial expression with geometric emotion mapping, algorithmic smile curves, fractal eye patterns, mathematical beauty ratios, computational expression analysis, geometric emotion visualization, mathematical art perfection, algorithmic facial geometry, digital expression mastery, mathematical emotion excellence, geometric pattern complexity, computational beauty generation, mathematical visualization excellence, godlevel mathematical expression.",
+      },
+      "joy-ecstatic": {
+        name: "😄 Ecstatic Joy",
+        description:
+          "Pure ecstatic joy facial expression with genuine Duchenne smile, crinkled eyes radiating happiness, natural laugh lines, spontaneous emotional authenticity, infectious positive energy, life celebration manifestation, happiness psychology perfection, emotional intelligence visualization, positive psychology embodiment, joy therapy effectiveness, happiness research validation, emotional wellness representation, mental health positivity, psychological well-being, emotional healing power, godlevel joy expression.",
+      },
+      "melancholy-contemplative": {
+        name: "😔 Melancholy Contemplation",
+        description:
+          "Profound melancholy contemplative expression with philosophical depth, introspective gaze into infinite distance, subtle emotional complexity, existential questioning manifestation, poetic sadness beauty, romantic era emotional depth, artistic melancholy tradition, emotional intelligence sophistication, psychological complexity, human condition reflection, emotional authenticity, contemplative wisdom, philosophical introspection, emotional maturity, godlevel melancholy artistry.",
+      },
+      "fierce-warrior": {
+        name: "😤 Fierce Warrior",
+        description:
+          "Fierce warrior expression with determined battle readiness, steely resolve in focused eyes, jaw set with unwavering determination, noble courage manifestation, heroic spirit embodiment, warrior code honor, battle-tested strength, leadership authority, protective instinct, courage under fire, heroic determination, warrior tradition respect, martial arts discipline, combat readiness, godlevel warrior expression.",
+      },
+      "serene-meditation": {
+        name: "😌 Serene Meditation",
+        description:
+          "Perfect serene meditation expression with inner peace radiance, closed eyes in deep contemplation, facial muscles completely relaxed, spiritual enlightenment glow, mindfulness practice perfection, Buddhist meditation tradition, zen philosophy embodiment, spiritual awakening manifestation, consciousness expansion, inner harmony achievement, meditation mastery, spiritual development, enlightenment pursuit, godlevel serenity expression.",
+      },
+      "mischievous-playful": {
+        name: "😏 Mischievous Playful",
+        description:
+          "Delightfully mischievous playful expression with twinkling eyes full of secrets, subtle smirk suggesting hidden knowledge, playful energy radiating, childhood wonder preservation, innocent troublemaking, creative mischief, playful intelligence, humor appreciation, wit and cleverness, social playfulness, creative expression, joyful rebellion, playful wisdom, godlevel mischief expression.",
+      },
+      "wise-ancient": {
+        name: "👴 Ancient Wisdom",
+        description:
+          "Ancient wisdom expression with eyes holding centuries of knowledge, deep wrinkles mapping life experience, serene acceptance of mortality, philosophical understanding, elder wisdom tradition, generational knowledge transfer, life experience accumulation, wisdom literature embodiment, sage advice manifestation, elder respect culture, wisdom tradition honor, life lesson integration, godlevel wisdom expression.",
+      },
+      "innocent-childlike": {
+        name: "👶 Innocent Childlike",
+        description:
+          "Pure innocent childlike expression with wonder-filled eyes, natural curiosity manifestation, untainted by world cynicism, genuine emotional openness, childhood magic preservation, innocence protection, pure heart expression, natural joy, unconditioned love, authentic emotion, childhood development, innocent wisdom, pure spirit, godlevel innocence expression.",
+      },
+      "mysterious-enigmatic": {
+        name: "🎭 Mysterious Enigmatic",
+        description:
+          "Captivating mysterious enigmatic expression with secrets hidden behind knowing eyes, subtle smile suggesting untold stories, magnetic charisma, psychological complexity, human mystery celebration, enigmatic personality, mysterious allure, psychological depth, complex character, intriguing personality, mysterious charm, enigmatic wisdom, godlevel mystery expression.",
+      },
+      "passionate-intense": {
+        name: "🔥 Passionate Intensity",
+        description:
+          "Burning passionate intensity expression with fire in focused eyes, emotional depth beyond words, creative passion manifestation, artistic inspiration embodiment, passionate dedication, intense commitment, emotional authenticity, passionate pursuit, creative fire, artistic passion, intense dedication, passionate excellence, godlevel passion expression.",
+      },
+      "compassionate-loving": {
+        name: "💝 Compassionate Love",
+        description:
+          "Infinite compassionate love expression with unconditional acceptance radiating, maternal/paternal protective instinct, healing energy emanation, empathetic understanding, compassionate service, loving kindness, emotional healing, therapeutic presence, compassionate care, loving support, emotional nurturing, godlevel compassion expression.",
+      },
+      "determined-focused": {
+        name: "🎯 Determined Focus",
+        description:
+          "Laser-focused determination expression with unwavering concentration, goal-oriented intensity, success mindset manifestation, achievement psychology, performance excellence, focused attention, determined pursuit, goal achievement, success psychology, performance optimization, focused excellence, godlevel determination expression.",
+      },
+      "surprised-amazed": {
+        name: "😲 Surprised Amazement",
+        description:
+          "Genuine surprised amazement expression with wide eyes full of wonder, mouth slightly agape in awe, natural surprise reaction, wonder preservation, amazement psychology, surprise emotion, wonder experience, awe inspiration, amazement authenticity, surprise psychology, godlevel amazement expression.",
+      },
+      "confident-powerful": {
+        name: "💪 Confident Power",
+        description:
+          "Radiating confident power expression with self-assured presence, leadership authority, personal empowerment, confidence psychology, self-esteem manifestation, personal power, leadership presence, confident authority, empowerment psychology, self-confidence, godlevel confidence expression.",
+      },
+      "dreamy-ethereal": {
+        name: "☁️ Dreamy Ethereal",
+        description:
+          "Dreamy ethereal expression with eyes gazing into otherworldly realms, soft focus suggesting dream state, mystical consciousness, dream psychology, ethereal beauty, dreamy atmosphere, mystical experience, ethereal presence, dream state, godlevel ethereal expression.",
+      },
+      "artistic-creative": {
+        name: "🎨 Artistic Creative",
+        description:
+          "Pure artistic creative expression with inspiration flowing through features, creative genius manifestation, artistic vision embodiment, creative process visualization, artistic inspiration, creative excellence, artistic mastery, creative genius, artistic vision, godlevel creative expression.",
+      },
+    },
+  },
   vietnamese: {
     name: "🇻🇳 Vietnamese Heritage",
     scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Mathematical Vietnamese",
+        description:
+          "Mathematical Vietnamese cultural patterns with geometric temple architecture, fractal dragon motifs, algorithmic traditional patterns, mathematical art excellence, computational Vietnamese heritage, geometric cultural visualization, mathematical tradition mapping, algorithmic cultural beauty, digital heritage mastery, mathematical cultural excellence, geometric pattern complexity, computational cultural generation, mathematical visualization excellence, godlevel mathematical Vietnamese artistry.",
+      },
       "trung-sisters": {
         name: "⚔️ Hai Bà Trưng - Trung Sisters",
         description:
-          "Legendary Vietnamese heroines Hai Bà Trưng (Trung Sisters), ancient warriors who led rebellion against Chinese rule in 40 AD, riding war elephants, traditional Vietnamese armor, heroic legends, national independence symbols, ancient Vietnamese military traditions, cultural heroes, patriotic spirit, historical valor, bronze weapons, traditional Vietnamese battle formations, ancient citadels, heroic sacrifice for freedom.",
+          "Legendary Vietnamese heroines Hai Bà Trưng living as ancient warrior queens in 40 AD, daily life in traditional Vietnamese villages with thatched-roof houses on stilts, rice farming communities along Red River delta, women warriors training with bronze spears and shields, riding war elephants through bamboo forests, leading village councils under banyan trees, traditional Vietnamese communal houses (đình) where villagers gather for ceremonies, ancient Vietnamese citadels with wooden watchtowers, daily rituals of ancestor worship at family altars, traditional Vietnamese clothing with silk áo dài and conical hats, village markets with clay pottery and bronze tools, fishing boats on rivers with traditional nets, heroic legends incarnate with national independence symbols, cultural heroes embodying patriotic spirit with historical valor beyond measure, museum-quality historical accuracy, UNESCO cultural heritage significance, Vietnamese national pride manifestation, godlevel heroic excellence.",
       },
       "temple-of-literature": {
         name: "🏛️ Temple of Literature - First University",
         description:
-          "Vietnam's first university (1070 AD), dedicated to Confucius and literature. Traditional Vietnamese architecture with ancient courtyards, red-tiled roofs, ornate gates, stone stelae of doctorate holders, peaceful gardens with lotus ponds, ancient trees, traditional lanterns, and scholarly atmosphere. Confucian educational heritage with traditional Vietnamese academic traditions.",
+          "Vietnam's first university (1070 AD) where scholars live and study Confucian classics, daily life of students in traditional dormitories with wooden beds and study desks, morning rituals of bowing to Confucius statue, scholars practicing calligraphy with brush and ink on rice paper, traditional Vietnamese academic robes and scholar hats, students reciting classical texts in courtyards, teachers conducting lessons under ancient trees, examination halls where students take imperial tests, library pavilions with ancient scrolls and books, scholars debating philosophy in peaceful gardens, traditional Vietnamese vegetarian meals served in ceramic bowls, incense ceremonies honoring literary saints, magnificent traditional Vietnamese architecture with red-tiled roofs gleaming under golden sunlight, ornate gates with intricate dragon carvings, stone stelae of doctorate holders with calligraphy mastery, peaceful gardens with sacred lotus ponds reflecting ancient wisdom, centuries-old trees providing spiritual shade, traditional lanterns casting mystical light, scholarly atmosphere permeating every stone, Confucian educational heritage with traditional Vietnamese academic excellence, godlevel architectural mastery.",
       },
       "jade-emperor-pagoda": {
         name: "🏮 Jade Emperor Pagoda - Taoist Temple",
@@ -119,6 +294,11 @@ export const CULTURAL_DATASETS = {
   indonesian: {
     name: "🇮🇩 Indonesian Heritage",
     scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Mathematical Indonesian",
+        description:
+          "Mathematical Indonesian cultural patterns with geometric batik designs, fractal temple architecture, algorithmic traditional motifs, mathematical art excellence, computational Indonesian heritage, geometric cultural visualization, mathematical tradition mapping, algorithmic cultural beauty, digital heritage mastery, mathematical cultural excellence, geometric pattern complexity, computational cultural generation, mathematical visualization excellence, godlevel mathematical Indonesian artistry.",
+      },
       garuda: {
         name: "🦅 Garuda Wisnu Kencana",
         description:
@@ -155,9 +335,9 @@ export const CULTURAL_DATASETS = {
           "North Sumatran Batak culture, traditional houses with distinctive roofs, cultural ceremonies, traditional textiles, Indonesian tribal heritage, architectural elements, Lake Toba region, traditional music.",
       },
       dayak: {
-        name: "🌿 Dayak Culture",
+        name: "🌿 Dayak Longhouse Communities",
         description:
-          "Bornean Dayak indigenous culture, traditional longhouses, cultural ceremonies, traditional crafts, Indonesian tribal art, forest heritage, cultural traditions, river communities, traditional tattoos.",
+          "Bornean Dayak indigenous people living in traditional longhouses (rumah panjang) that house entire extended families, daily life in communal wooden structures raised on stilts above jungle floor, families sharing common verandas while maintaining private apartments, traditional hunting with blowpipes and poison darts in dense rainforest, women weaving rattan baskets and traditional textiles, men carving wooden masks and totems for spiritual ceremonies, children learning traditional stories and jungle survival skills, communal cooking areas with wood fires and clay pots, traditional fishing in jungle rivers with handmade nets, shamanic healing ceremonies with traditional medicines from forest plants, traditional tattoos marking life achievements and spiritual protection, village councils making decisions under longhouse roof, traditional music with wooden drums and bamboo instruments, Indonesian tribal heritage, forest heritage, cultural traditions, river communities, traditional tattoos, godlevel Dayak cultural excellence.",
       },
       acehnese: {
         name: "🕌 Acehnese Heritage",
@@ -170,9 +350,9 @@ export const CULTURAL_DATASETS = {
           "West Sumatran Minangkabau culture, distinctive traditional houses with horn-shaped roofs, cultural ceremonies, Indonesian matriarchal society, architectural heritage, traditional crafts, Padang culture.",
       },
       "balinese-tribe": {
-        name: "🌺 Balinese Traditions",
+        name: "🌺 Balinese Village Life",
         description:
-          "Balinese Hindu culture, temple ceremonies, traditional dances, cultural festivals, Indonesian island heritage, spiritual traditions, artistic expressions, rice terraces, temple architecture.",
+          "Balinese Hindu villagers living in traditional family compounds (puri) with multiple pavilions around central courtyard, daily life begins with morning offerings (canang sari) of flowers and incense at family temple, women weaving traditional textiles on wooden looms, men carving intricate stone sculptures for temples, children learning traditional Balinese dance in village pavilions, rice farmers working terraced fields (subak) with traditional irrigation systems, village ceremonies with gamelan orchestras playing bronze instruments, traditional Balinese houses with thatched roofs and carved wooden doors, daily temple visits wearing traditional white clothing and colorful sashes, village markets selling tropical fruits, spices, and handmade crafts, traditional cooking in clay pots over wood fires, family meals served on banana leaves, evening prayers at village temples with flickering oil lamps, Balinese Hindu culture, temple ceremonies, traditional dances, cultural festivals, Indonesian island heritage, spiritual traditions, artistic expressions, rice terraces, temple architecture, godlevel Balinese cultural excellence.",
       },
       papuans: {
         name: "🪶 Papuan Heritage",
@@ -224,6 +404,11 @@ export const CULTURAL_DATASETS = {
   thailand: {
     name: "🇹🇭 Thailand Heritage",
     scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Mathematical Thai",
+        description:
+          "Mathematical Thai cultural patterns with geometric temple architecture, fractal naga serpent designs, algorithmic traditional motifs, mathematical art excellence, computational Thai heritage, geometric cultural visualization, mathematical tradition mapping, algorithmic cultural beauty, digital heritage mastery, mathematical cultural excellence, geometric pattern complexity, computational cultural generation, mathematical visualization excellence, godlevel mathematical Thai artistry.",
+      },
       garuda: {
         name: "🦅 Garuda - Divine Eagle",
         description:
@@ -240,14 +425,14 @@ export const CULTURAL_DATASETS = {
           "Erawan, the three-headed white elephant from Thai mythology, mount of Indra, majestic and powerful, traditional Thai artistic representation, mythical creature, spiritual significance, royal symbolism.",
       },
       karen: {
-        name: "🏔️ Karen Hill Tribe",
+        name: "🏔️ Karen Hill Tribe Village Life",
         description:
-          "Karen hill tribe people in traditional dress, mountainous landscape, traditional lifestyle, ethnic minority culture, handwoven textiles, traditional jewelry, cultural heritage of northern Thailand, long-neck traditions.",
+          "Karen hill tribe people living in traditional bamboo houses on mountain slopes, daily life begins with tending terraced vegetable gardens and rice fields, women weaving traditional textiles on backstrap looms with intricate patterns, men hunting wild boar and deer in mountain forests with traditional crossbows, children helping with daily chores like collecting firewood and water from mountain streams, traditional Karen clothing with hand-embroidered tunics and silver jewelry, village elders teaching traditional stories and customs around evening fires, traditional animist ceremonies honoring mountain spirits and ancestors, communal meals of rice, vegetables, and forest herbs served in bamboo containers, traditional medicine using mountain plants and herbs, village councils meeting in traditional community houses, seasonal festivals celebrating rice harvest and mountain spirits, mountainous landscape, traditional lifestyle, ethnic minority culture, handwoven textiles, traditional jewelry, cultural heritage of northern Thailand, long-neck traditions, godlevel Karen cultural excellence.",
       },
       hmong: {
-        name: "🎭 Hmong Mountain People",
+        name: "🎭 Hmong Mountain Village Life",
         description:
-          "Hmong ethnic group in traditional colorful clothing, intricate embroidery, silver jewelry, mountain villages, traditional lifestyle, cultural ceremonies, northern Thailand heritage, traditional crafts.",
+          "Hmong ethnic families living in traditional wooden houses in mountain villages, daily life centered around intricate needlework and silver jewelry making, women creating elaborate embroidered clothing with geometric patterns passed down through generations, men farming mountain slopes with traditional slash-and-burn agriculture, children learning traditional songs and stories in Hmong language, traditional New Year celebrations with colorful costumes and courtship rituals, shamanic healing ceremonies with traditional drums and spiritual chants, village markets where families trade handmade textiles and silver ornaments, traditional cooking with mountain herbs and vegetables in clay pots, extended families living in clan groups with shared responsibilities, traditional music with bamboo pipes and mouth harps, seasonal migration following agricultural cycles, Hmong ethnic group in traditional colorful clothing, intricate embroidery, silver jewelry, mountain villages, traditional lifestyle, cultural ceremonies, northern Thailand heritage, traditional crafts, godlevel Hmong cultural excellence.",
       },
       ayutthaya: {
         name: "🏛️ Ayutthaya Ancient Capital",
@@ -309,15 +494,20 @@ export const CULTURAL_DATASETS = {
   escher: {
     name: "🎨 Escher Inspired",
     scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Mathematical Escher",
+        description:
+          "Mathematical Escher-inspired patterns with geometric precision, impossible mathematical objects, fractal tessellations, algorithmic optical illusions, computational geometry excellence, mathematical art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, mathematical visualization excellence, geometric pattern complexity, mathematical art generation, computational beauty, godlevel mathematical Escher excellence.",
+      },
       "impossible-stairs": {
         name: "♾️ Impossible Staircases",
         description:
-          "M.C. Escher inspired impossible staircases with paradoxical architecture, people walking up and down simultaneously, optical illusion with black and white geometric patterns, mind-bending perspective. Mathematical precision in impossible architectural structures with visual paradoxes.",
+          "M.C. Escher inspired impossible staircases with paradoxical architecture defying physics laws, people walking up and down simultaneously in perpetual motion, mind-bending optical illusion with precise black and white geometric patterns, mathematical impossibility made visually compelling, architectural paradox with perfect geometric precision, visual mathematics embodiment, perspective manipulation mastery, impossible object visualization, mathematical art perfection, geometric illusion excellence, optical paradox mastery, visual impossibility achievement, godlevel Escher artistry.",
       },
       tessellations: {
         name: "🔷 Tessellation Patterns",
         description:
-          "Intricate Escher-style tessellations with interlocking geometric shapes, mathematical precision, repeating patterns that transform seamlessly, artistic geometry with visual mathematics. Perfect tessellation symmetry with geometric precision and mathematical beauty.",
+          "Intricate Escher-style tessellations with mathematically perfect interlocking geometric shapes, infinite pattern repetition with seamless transitions, artistic geometry with visual mathematics perfection, tessellation symmetry with geometric precision and mathematical beauty beyond comprehension, pattern mathematics visualization, geometric art mastery, mathematical precision excellence, infinite pattern complexity, geometric harmony perfection, tessellation virtuosity, godlevel geometric excellence.",
       },
       metamorphosis: {
         name: "🦋 Metamorphosis Sequences",
@@ -342,7 +532,7 @@ export const CULTURAL_DATASETS = {
       pure: {
         name: "Pure Mathematical Spirals",
         description:
-          "Mathematical spiral patterns with Fibonacci sequences, golden ratio spirals, logarithmic spirals, Archimedean spirals, hyperbolic spirals, mathematical precision, geometric beauty, natural spiral formations, mathematical elegance.",
+          "Mathematical spiral patterns with Fibonacci sequences perfection, golden ratio spirals with divine proportions, logarithmic spirals found in nature's design, Archimedean spirals with perfect mathematical precision, hyperbolic spirals with infinite complexity, mathematical elegance embodiment, geometric beauty transcendence, natural spiral formations with cosmic significance, mathematical harmony with universal patterns, spiral mathematics mastery, geometric perfection achievement, mathematical art excellence, godlevel spiral mastery.",
       },
     },
   },
@@ -478,35 +668,38 @@ export const CULTURAL_DATASETS = {
   },
 } as const
 
-// Color schemes with professional descriptions - EXPORTED
 export const COLOR_SCHEMES = {
-  plasma: "vibrant plasma colors with electric blues, magentas, and cyans",
-  quantum: "quantum field colors with particle physics inspired hues",
-  cosmic: "cosmic nebula colors with deep purples, blues, and stellar whites",
-  thermal: "thermal imaging colors from cool blues to hot reds and whites",
-  spectral: "full electromagnetic spectrum from infrared to ultraviolet",
-  crystalline: "crystal formation colors with prismatic refractions",
-  bioluminescent: "bioluminescent colors like deep sea creatures",
-  aurora: "aurora borealis colors with greens, purples, and blues",
-  metallic: "metallic colors with gold, silver, copper, and bronze",
-  prismatic: "prismatic light dispersion with rainbow spectrums",
-  monochromatic: "single hue variations from light to dark",
-  infrared: "infrared heat signature colors",
-  lava: "volcanic lava colors with reds, oranges, and blacks",
-  futuristic: "futuristic neon colors with electric accents",
-  forest: "forest colors with greens, browns, and earth tones",
-  ocean: "ocean depths colors with blues, teals, and aquas",
-  sunset: "sunset colors with oranges, pinks, and purples",
-  arctic: "arctic colors with whites, blues, and ice tones",
-  neon: "bright neon colors with electric intensity",
-  vintage: "vintage sepia and aged colors",
-  toxic: "toxic waste colors with sickly greens and yellows",
-  ember: "glowing ember colors with reds and oranges",
-  lunar: "lunar surface colors with grays and whites",
-  tidal: "tidal pool colors with blues, greens, and sandy tones",
+  plasma: "vibrant plasma colors with electric blues, magentas, and cyans creating electromagnetic field visualization",
+  quantum: "quantum field colors with particle physics inspired hues showing subatomic energy states",
+  cosmic: "cosmic nebula colors with deep purples, blues, and stellar whites capturing universe majesty",
+  thermal: "thermal imaging colors from cool blues to hot reds and whites showing energy distribution",
+  spectral: "full electromagnetic spectrum from infrared to ultraviolet revealing hidden light frequencies",
+  crystalline: "crystal formation colors with prismatic refractions creating rainbow light dispersion",
+  bioluminescent: "bioluminescent colors like deep sea creatures with natural light generation",
+  aurora: "aurora borealis colors with greens, purples, and blues dancing across polar skies",
+  metallic: "metallic colors with gold, silver, copper, and bronze showing precious metal luster",
+  prismatic: "prismatic light dispersion with rainbow spectrums creating optical phenomena",
+  monochromatic: "single hue variations from light to dark showing tonal perfection",
+  infrared: "infrared heat signature colors revealing thermal energy patterns",
+  lava: "volcanic lava colors with reds, oranges, and blacks showing molten earth power",
+  futuristic: "futuristic neon colors with electric accents creating cyberpunk atmosphere",
+  forest: "forest colors with greens, browns, and earth tones celebrating natural harmony",
+  ocean: "ocean depths colors with blues, teals, and aquas showing marine beauty",
+  sunset: "sunset colors with oranges, pinks, and purples capturing golden hour magic",
+  arctic: "arctic colors with whites, blues, and ice tones showing polar beauty",
+  neon: "bright neon colors with electric intensity creating urban nightlife energy",
+  vintage: "vintage sepia and aged colors with nostalgic warmth and historical charm",
+  toxic: "toxic waste colors with sickly greens and yellows creating hazardous atmosphere",
+  ember: "glowing ember colors with reds and oranges showing fire's dying beauty",
+  lunar: "lunar surface colors with grays and whites capturing moon's mysterious beauty",
+  tidal: "tidal pool colors with blues, greens, and sandy tones showing coastal life",
+  holographic: "holographic colors with iridescent shifts and rainbow interference patterns",
+  galactic: "galactic colors with deep space purples, stellar blues, and cosmic dust golds",
+  ethereal: "ethereal colors with translucent pastels and ghostly luminescence",
+  volcanic: "volcanic colors with molten oranges, ash grays, and sulfur yellows",
+  crystalline_ice: "crystalline ice colors with pure whites, arctic blues, and frozen clarity",
 } as const
 
-// Build comprehensive prompt for AI generation with GODLEVEL quality - OPTIMIZED FOR 4000 CHAR LIMIT
 export function buildPrompt(params: {
   dataset: string
   scenario?: string
@@ -525,11 +718,53 @@ export function buildPrompt(params: {
       return params.customPrompt.trim()
     }
 
-    let basePrompt = "GODLEVEL MASTERPIECE: "
+    let basePrompt = "ULTIMATE GODLEVEL MASTERPIECE: "
     let scenarioDescription = ""
+    let isMathematicalScenario = false
 
-    // Get scenario description based on dataset
     if (
+      params.scenario === "pure-mathematical" ||
+      params.scenario === "pure" ||
+      [
+        "spirals",
+        "fractal",
+        "mandelbrot",
+        "julia",
+        "lorenz",
+        "hyperbolic",
+        "gaussian",
+        "cellular",
+        "voronoi",
+        "perlin",
+        "diffusion",
+        "wave",
+        "8bit",
+        "bosch",
+      ].includes(params.dataset)
+    ) {
+      isMathematicalScenario = true
+    }
+
+    // Get scenario description based on dataset with enhanced logic
+    if (
+      params.dataset === "heads" &&
+      params.scenario &&
+      CULTURAL_DATASETS.heads.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.heads.scenarios]
+    ) {
+      const scenario =
+        CULTURAL_DATASETS.heads.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.heads.scenarios]
+      scenarioDescription = scenario.description
+      basePrompt += `${scenarioDescription}, `
+    } else if (
+      params.dataset === "faces" &&
+      params.scenario &&
+      CULTURAL_DATASETS.faces.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.faces.scenarios]
+    ) {
+      const scenario =
+        CULTURAL_DATASETS.faces.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.faces.scenarios]
+      scenarioDescription = scenario.description
+      basePrompt += `${scenarioDescription}, `
+    } else if (
       params.dataset === "vietnamese" &&
       params.scenario &&
       CULTURAL_DATASETS.vietnamese.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.vietnamese.scenarios]
@@ -571,45 +806,69 @@ export function buildPrompt(params: {
       if (datasetInfo && datasetInfo.scenarios.pure) {
         basePrompt += `${datasetInfo.scenarios.pure.description}, `
       } else {
-        basePrompt += `Mathematical visualization of ${params.dataset} patterns, `
+        basePrompt += `Mathematical visualization of ${params.dataset} patterns with godlevel precision, `
       }
     }
 
+    if (isMathematicalScenario) {
+      // 100% ABSTRACT for mathematical scenarios only
+      basePrompt +=
+        "PURE MATHEMATICAL ABSTRACTION: complete geometric abstraction with no representational elements, pure mathematical visualization, algorithmic beauty generation, computational geometry excellence, mathematical art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, mathematical visualization excellence, geometric pattern complexity, mathematical art generation, computational beauty, "
+    } else {
+      // NEURALUA ART STYLE for cultural scenarios - more concrete and representational
+      basePrompt +=
+        "NEURALUA ART STYLE: highly detailed photorealistic rendering with artistic interpretation, maintaining recognizable cultural elements while enhancing with sophisticated artistic techniques, realistic human features with cultural authenticity, traditional clothing and architecture rendered with museum-quality accuracy, natural lighting with cinematic quality, documentary photography meets fine art painting, cultural heritage preservation through artistic excellence, ethnographic accuracy with artistic beauty, realistic proportions with enhanced visual appeal, authentic cultural representation with artistic mastery, "
+    }
+
     // Add color scheme with enhanced descriptions
-    const colorDescription = COLOR_SCHEMES[params.colorScheme as keyof typeof COLOR_SCHEMES] || "vibrant colors"
-    basePrompt += `rendered in ${colorDescription} with professional color grading, `
+    const colorDescription =
+      COLOR_SCHEMES[params.colorScheme as keyof typeof COLOR_SCHEMES] || "vibrant colors with professional excellence"
+
+    if (isMathematicalScenario) {
+      basePrompt += `rendered in ${colorDescription} with abstract color theory mastery and experimental pigment application, `
+    } else {
+      basePrompt += `rendered in ${colorDescription} with natural color harmony and realistic lighting, `
+    }
+
+    if (isMathematicalScenario) {
+      basePrompt +=
+        "painterly brushstrokes with digital precision, texture mapping with organic randomness, layered transparency with depth illusion, gestural mark-making with intentional accidents, color field painting with emotional intensity, abstract composition with hidden narratives, "
+    } else {
+      basePrompt +=
+        "photorealistic detail with artistic enhancement, natural textures with authentic materials, realistic lighting with atmospheric depth, cultural authenticity with artistic interpretation, documentary quality with fine art aesthetics, "
+    }
 
     // Add technical parameters - OPTIMIZED FOR SPACE
-    basePrompt += `${params.numSamples || 4000} data points, noise scale ${params.noiseScale || 0.08}, seed ${params.seed || 1234}, `
+    basePrompt += `${params.numSamples || 4000} data points with mathematical precision, noise scale ${params.noiseScale || 0.08} for optimal detail, seed ${params.seed || 1234} for reproducible excellence, `
 
-    // Add godlevel quality descriptors - CONDENSED
-    basePrompt +=
-      "museum-grade professional quality, award-winning composition, ultra-high definition, cinematic lighting, breathtaking visual impact, "
+    if (isMathematicalScenario) {
+      basePrompt +=
+        "museum-grade abstract expressionist quality with international avant-garde standards, experimental composition with controlled spontaneity, ultra-high detail with artistic interpretation, award-winning abstract composition with international recognition, 8K HDR with painterly texture, atmospheric lighting with mood enhancement, breathtaking visual impact with psychological depth, "
+    } else {
+      basePrompt +=
+        "museum-grade photorealistic quality with cultural documentation standards, authentic representation with artistic excellence, ultra-high detail with realistic interpretation, award-winning cultural photography with international recognition, 8K HDR with natural texture, authentic lighting with cultural atmosphere, breathtaking visual impact with cultural significance, "
+    }
 
     // Add 360° specific instructions if needed - CRITICAL SEAMLESS WRAPPING
     if (params.panoramic360 && params.panoramaFormat === "equirectangular") {
       basePrompt +=
-        "CRITICAL 360° SEAMLESS WRAPPING: LEFT EDGE must connect PERFECTLY with RIGHT EDGE - zero visible seam, continuous circular environment, professional cylindrical projection, VR-optimized seamless wraparound, "
+        "CRITICAL 360° SEAMLESS WRAPPING: LEFT EDGE must connect PERFECTLY with RIGHT EDGE - zero visible seam, continuous environment with flowing transitions, VR-optimized seamless wraparound with immersive experience, "
     } else if (params.panoramic360 && params.panoramaFormat === "stereographic") {
       basePrompt +=
-        "STEREOGRAPHIC 360°: perfect circular fisheye distortion, entire 360° view in circular frame, center focus with radial distortion, "
+        "STEREOGRAPHIC 360°: perfect circular composition with radial flow, entire 360° view in circular frame with center focus and natural distortion, "
     }
 
-    // Add final quality tags - CONDENSED
-    basePrompt +=
-      "8K HDR, photorealistic detail, award-winning digital art, museum exhibition quality, godlevel artistic excellence, professional broadcast standard"
+    if (isMathematicalScenario) {
+      basePrompt +=
+        "pure abstract perfection with mathematical beauty, award-winning experimental art with international recognition, contemporary art museum quality with cultural significance, godlevel abstract excellence with transcendent beauty, professional gallery standard with collector appeal, fine art exhibition worthy with artistic innovation, abstract mastery with technical virtuosity, creative genius with experimental vision, ultimate abstract perfection achievement"
+    } else {
+      basePrompt +=
+        "cultural authenticity with artistic excellence, award-winning documentary art with international recognition, ethnographic museum quality with cultural significance, godlevel realistic excellence with cultural beauty, professional documentation standard with artistic appeal, cultural exhibition worthy with educational value, realistic mastery with technical virtuosity, cultural genius with authentic vision, ultimate cultural perfection achievement"
+    }
 
     // Ensure we stay within reasonable limits while preserving critical information
     if (basePrompt.length > 1800) {
       // Intelligently truncate while preserving key elements
-      const criticalPhrases = [
-        "LEFT EDGE must connect PERFECTLY with RIGHT EDGE",
-        "seamless",
-        "godlevel",
-        "museum-grade",
-        "professional",
-      ]
-
       let truncated = basePrompt.substring(0, 1700)
       const lastComma = truncated.lastIndexOf(",")
       if (lastComma > 1500) {
@@ -622,7 +881,7 @@ export function buildPrompt(params: {
         params.panoramaFormat === "equirectangular" &&
         !truncated.includes("LEFT EDGE must connect PERFECTLY")
       ) {
-        truncated += ", CRITICAL: LEFT EDGE must connect PERFECTLY with RIGHT EDGE - zero seam"
+        truncated += ", CRITICAL: LEFT EDGE must connect PERFECTLY with RIGHT EDGE - zero seam, godlevel excellence"
       }
 
       basePrompt = truncated
@@ -631,8 +890,7 @@ export function buildPrompt(params: {
     return basePrompt
   } catch (error) {
     console.error("Error building prompt:", error)
-    // Return a safe fallback with godlevel quality
-    return "GODLEVEL MASTERPIECE: Beautiful mathematical art with cosmic colors, museum-grade professional quality, ultra-high detail, award-winning composition, 8K HDR, photorealistic excellence, premium digital art"
+    return "ULTIMATE GODLEVEL MASTERPIECE: Beautiful mathematical art with cosmic colors, ultra-high detail with artistic interpretation, award-winning composition with international recognition, 8K HDR with natural texture, excellence with artistic mastery, premium art with godlevel perfection"
   }
 }
 
