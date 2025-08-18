@@ -741,6 +741,86 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+  whiterabbit: {
+    name: "🐰 White Rabbit Gallery - Hooligan",
+    scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Mathematical Hooligan",
+        description:
+          "Mathematical hooligan visualization with geometric rebellion patterns, algorithmic chaos theory, fractal disorder mathematics, mathematical anarchy equations, computational disruption algorithms, geometric protest formations, mathematical resistance calculations, algorithmic social disorder, digital rebellion geometry, mathematical chaos mastery, geometric disruption excellence, computational anarchy perfection, mathematical disorder visualization, algorithmic rebellion artistry, godlevel mathematical hooligan excellence.",
+      },
+      "port-city-rebels": {
+        name: "🏙️ 19th Century Port City Rebels",
+        description:
+          "Authentic 19th-century Chinese port city hooligans with weathered faces marked by hard maritime life, traditional queue hairstyles mixed with rebellious elements, worn cotton clothing with Western influences, opium den atmosphere with smoky haze, colonial architecture backdrop, rickshaw pullers and dock workers, traditional Chinese medicine shops, foreign concession tensions, cultural collision dynamics, historical authenticity with documentary precision, period-accurate clothing and architecture, maritime trade culture, colonial resistance spirit, cultural identity struggle, historical social outcasts, godlevel historical realism with NEURALUA artistic excellence.",
+      },
+      "political-dissidents": {
+        name: "✊ Modern Political Dissidents",
+        description:
+          "Contemporary Chinese political dissidents with determined expressions of quiet resistance, subtle protest symbols hidden in clothing, underground meeting spaces with dim lighting, surveillance camera awareness, coded communication methods, digital resistance tools, social media activism, censorship circumvention creativity, peaceful protest dignity, intellectual courage manifestation, democratic ideals pursuit, human rights advocacy, freedom of expression struggle, civil disobedience artistry, resistance culture documentation, godlevel political realism with NEURALUA documentary style.",
+      },
+      "tiger-carousel-playground": {
+        name: "🎠 Tiger Carousel Dark Playground",
+        description:
+          "Surreal playground scene with menacing carousel tigers with glowing pink neon eyes, broken springers scattered across cracked asphalt, politicians' caricature faces painted on carousel horses, blood-red paint dripping from playground equipment, lenticular double vision effects creating ghostly overlays, glitch distortions in the carnival atmosphere, dark playfulness with sinister undertones, abandoned amusement park decay, childhood innocence corrupted, political satire through playground metaphors, social disorder visualization, quarrels and commotion energy, outsider rebellion spirit, godlevel surreal playground artistry with NEURALUA dark aesthetic.",
+      },
+      "social-outcasts-gathering": {
+        name: "👥 Social Outcasts Underground Gathering",
+        description:
+          "Underground gathering of social outcasts in dimly lit basement space, diverse group of rebels and misfits sharing stories, graffiti-covered walls with political messages, cigarette smoke creating atmospheric haze, makeshift furniture from discarded materials, punk aesthetic mixed with traditional Chinese elements, leather jackets with cultural patches, defiant expressions of solidarity, alternative lifestyle celebration, counterculture community bonds, social rejection transformation into strength, underground music scene, artistic rebellion manifestation, godlevel social realism with NEURALUA underground aesthetic.",
+      },
+      "surveillance-resistance": {
+        name: "📹 Surveillance State Resistance",
+        description:
+          "High-tech surveillance resistance scene with facial recognition evasion techniques, LED masks disrupting camera systems, mirror fragments creating visual confusion, pink neon lighting interfering with digital tracking, glitch effects representing system failures, hooded figures moving through urban landscape, CCTV cameras with spray-painted lenses, digital privacy protection methods, technological civil disobedience, cyberpunk resistance aesthetics, privacy rights activism, digital freedom fighting, surveillance capitalism critique, technological dystopia resistance, godlevel cyberpunk realism with NEURALUA tech-noir style.",
+      },
+      "cultural-identity-crisis": {
+        name: "🎭 Cultural Identity Crisis",
+        description:
+          "Complex cultural identity crisis visualization with traditional Chinese opera masks cracking to reveal modern faces, Western and Eastern clothing elements clashing, generational conflict through family portraits, language barriers represented through fragmented text, cultural assimilation struggles, heritage preservation battles, identity fragmentation through mirror effects, traditional values versus modern pressures, cultural authenticity questions, diaspora experience documentation, multicultural tension exploration, identity politics complexity, cultural belonging search, godlevel cultural realism with NEURALUA identity exploration aesthetic.",
+      },
+      "street-art-rebellion": {
+        name: "🎨 Street Art Rebellion",
+        description:
+          "Vibrant street art rebellion scene with large-scale murals depicting hooligan themes, spray paint cans and stencils scattered around, artists in action creating political commentary, pink neon graffiti glowing against brick walls, caricatures of authority figures being painted over, painterly brushstrokes mixed with urban textures, artistic vandalism as social commentary, public space reclamation, guerrilla art tactics, street culture authenticity, urban artistic expression, creative civil disobedience, artistic freedom manifestation, godlevel street art realism with NEURALUA urban aesthetic.",
+      },
+      "nightclub-underground": {
+        name: "🌃 Underground Nightclub Scene",
+        description:
+          "Pulsating underground nightclub filled with social misfits and rebels, pink neon lighting creating dramatic shadows, DJ booth with political slogans, dance floor packed with diverse outcasts, smoke machines creating atmospheric haze, alternative fashion statements, punk and goth aesthetics mixed with Chinese elements, underground music scene energy, nightlife as escape from social pressure, creative expression through dance and fashion, subculture community celebration, nighttime rebellion spirit, godlevel nightclub realism with NEURALUA underground party aesthetic.",
+      },
+      "protest-art-installation": {
+        name: "📢 Protest Art Installation",
+        description:
+          "Powerful protest art installation with interactive elements challenging social norms, visitors becoming part of the political statement, mixed media combining traditional and digital art, projection mapping creating dynamic visual effects, audience participation in social commentary, institutional critique through artistic intervention, gallery space transformation into protest venue, art as activism platform, creative resistance documentation, social change catalyst, artistic civil disobedience, cultural institution disruption, godlevel installation art with NEURALUA participatory aesthetic.",
+      },
+      "generational-conflict": {
+        name: "👴👦 Generational Hooligan Conflict",
+        description:
+          "Intense generational conflict scene with elderly traditional figures confronting young rebels, family dinner table tension with political arguments, traditional Chinese values clashing with modern rebellion, clothing styles representing different eras, facial expressions showing disappointment and defiance, cultural expectations versus individual freedom, family honor versus personal authenticity, intergenerational trauma exploration, social change through family dynamics, traditional authority questioning, cultural evolution documentation, godlevel family drama realism with NEURALUA generational tension aesthetic.",
+      },
+      "digital-age-hooliganism": {
+        name: "💻 Digital Age Hooliganism",
+        description:
+          "Modern digital age hooliganism with hackers and cyber-activists, computer screens displaying coded messages, VPN software and encryption tools, social media manipulation tactics, meme warfare and viral content creation, digital protest organization, online anonymity protection, cyber-resistance against digital authoritarianism, keyboard warriors and digital dissidents, internet freedom fighting, technological civil disobedience, digital rights activism, online community building, godlevel cyber-realism with NEURALUA digital resistance aesthetic.",
+      },
+      "economic-inequality-protest": {
+        name: "💰 Economic Inequality Protest",
+        description:
+          "Economic inequality protest scene with stark wealth disparity visualization, luxury cars parked next to homeless encampments, designer clothing contrasted with worn work uniforms, corporate buildings towering over street vendors, economic justice signs and banners, class struggle documentation, wealth gap artistic representation, social economic critique, labor rights activism, economic democracy demands, financial system resistance, economic hooligan spirit, godlevel social documentary with NEURALUA economic justice aesthetic.",
+      },
+      "artistic-censorship-battle": {
+        name: "🎭 Artistic Censorship Battle",
+        description:
+          "Artistic censorship battle with artists defending creative freedom, gallery walls with covered artworks, censorship stamps and redacted documents, artistic expression under threat, creative resistance against cultural control, underground art exhibitions, artistic integrity defense, cultural freedom fighting, creative civil disobedience, artistic hooligan spirit, censorship resistance documentation, cultural democracy advocacy, artistic rights activism, godlevel artistic freedom realism with NEURALUA censorship resistance aesthetic.",
+      },
+      "social-media-rebellion": {
+        name: "📱 Social Media Rebellion",
+        description:
+          "Social media rebellion with viral protest content, smartphone screens showing banned hashtags, creative censorship circumvention, meme-based political commentary, digital activism coordination, online community organizing, social media platform resistance, algorithmic manipulation awareness, digital rights advocacy, online freedom fighting, cyber-activism documentation, social media hooligan tactics, digital civil disobedience, godlevel digital activism realism with NEURALUA social media aesthetic.",
+      },
+    },
+  },
 } as const
 
 export const COLOR_SCHEMES = {
@@ -912,6 +992,21 @@ export function buildPrompt(params: {
       scenarioDescription = scenario.description
       basePrompt += `${scenarioDescription}, `
       console.log("[v0] Using bosch scenario:", params.scenario, "- description length:", scenarioDescription.length)
+    } else if (
+      params.dataset === "whiterabbit" &&
+      params.scenario &&
+      CULTURAL_DATASETS.whiterabbit.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.whiterabbit.scenarios]
+    ) {
+      const scenario =
+        CULTURAL_DATASETS.whiterabbit.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.whiterabbit.scenarios]
+      scenarioDescription = scenario.description
+      basePrompt += `${scenarioDescription}, `
+      console.log(
+        "[v0] Using whiterabbit scenario:",
+        params.scenario,
+        "- description length:",
+        scenarioDescription.length,
+      )
     } else {
       // Mathematical/abstract datasets
       const datasetInfo = CULTURAL_DATASETS[params.dataset as keyof typeof CULTURAL_DATASETS]
