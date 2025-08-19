@@ -24,6 +24,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Mathematical head visualization with geometric precision, golden ratio facial proportions, Fibonacci spiral hair patterns, fractal skin texture mapping, algorithmic beauty generation, computational geometry excellence, mathematical art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, mathematical visualization excellence, geometric pattern complexity, mathematical art generation, computational beauty, godlevel mathematical excellence.",
       },
+      "origami-world": {
+        name: "📄 Origami Paper Head",
+        description:
+          "Intricate origami paper head sculpture with visible fold lines and creases, delicate paper texture showing traditional Japanese folding techniques, complex geometric paper construction with multiple layers, warm lighting creating shadows between paper folds, traditional washi paper with subtle patterns, masterful origami artistry with precise angular features, paper portrait with dimensional depth, origami craftsmanship excellence, traditional paper folding mastery, Japanese paper art heritage, handcrafted paper sculpture, artistic paper engineering, godlevel origami portrait excellence.",
+      },
       "hyper-realistic": {
         name: "📸 Hyper-Realistic Portrait",
         description:
@@ -109,6 +114,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Mathematical facial expression with geometric emotion mapping, algorithmic smile curves, fractal eye patterns, mathematical beauty ratios, computational expression analysis, geometric emotion visualization, mathematical art perfection, algorithmic facial geometry, digital expression mastery, mathematical emotion excellence, geometric pattern complexity, computational beauty generation, mathematical visualization excellence, godlevel mathematical expression.",
       },
+      "origami-world": {
+        name: "📄 Origami Paper Expression",
+        description:
+          "Expressive origami paper face with emotional depth created through strategic paper folds, traditional Japanese paper folding techniques showing joy or contemplation, visible crease patterns forming facial features, warm lighting highlighting paper texture and dimensional shadows, delicate washi paper construction with subtle color variations, masterful origami emotion capture, paper sculpture expressing human feelings, traditional paper art with contemporary emotional resonance, handcrafted paper expression, artistic paper engineering mastery, godlevel origami emotional excellence.",
+      },
       "joy-ecstatic": {
         name: "😄 Ecstatic Joy",
         description:
@@ -193,6 +203,11 @@ export const CULTURAL_DATASETS = {
         name: "🔢 Pure Mathematical Vietnamese",
         description:
           "Mathematical Vietnamese cultural patterns with geometric temple architecture, fractal dragon motifs, algorithmic traditional patterns, mathematical art excellence, computational Vietnamese heritage, geometric cultural visualization, mathematical tradition mapping, algorithmic cultural beauty, digital heritage mastery, mathematical cultural excellence, geometric pattern complexity, computational cultural generation, mathematical visualization excellence, godlevel mathematical Vietnamese artistry.",
+      },
+      "origami-world": {
+        name: "📄 Origami Vietnamese Village",
+        description:
+          "Intricate origami Vietnamese village diorama with paper-folded traditional houses on stilts, delicate paper rice terraces cascading down miniature mountains, origami Vietnamese people in traditional áo dài clothing, paper-crafted temples with curved roofs and dragon decorations, tiny origami boats on paper rivers, handmade paper lotus flowers in temple ponds, warm lighting from paper lanterns creating cozy village atmosphere, visible fold lines showing masterful paper engineering, traditional Vietnamese architecture rendered in precise origami techniques, cultural authenticity preserved through paper art mastery, godlevel Vietnamese origami excellence.",
       },
       "trung-sisters": {
         name: "⚔️ Hai Bà Trưng - Trung Sisters",
@@ -298,6 +313,11 @@ export const CULTURAL_DATASETS = {
         name: "🔢 Pure Mathematical Indonesian",
         description:
           "Mathematical Indonesian cultural patterns with geometric batik designs, fractal temple architecture, algorithmic traditional motifs, mathematical art excellence, computational Indonesian heritage, geometric cultural visualization, mathematical tradition mapping, algorithmic cultural beauty, digital heritage mastery, mathematical cultural excellence, geometric pattern complexity, computational cultural generation, mathematical visualization excellence, godlevel mathematical Indonesian artistry.",
+      },
+      "origami-world": {
+        name: "📄 Origami Indonesian Archipelago",
+        description:
+          "Magnificent origami Indonesian island village with paper-folded traditional houses featuring distinctive curved roofs, delicate origami Borobudur temple with intricate paper stupas, paper-crafted wayang kulit shadow puppets with detailed cutout patterns, origami gamelan orchestra with miniature paper instruments, handmade paper batik patterns showing traditional Indonesian motifs, tiny origami people in traditional Indonesian clothing, paper-folded tropical vegetation and palm trees, warm lighting creating atmospheric shadows between paper layers, visible fold lines showing masterful paper engineering, Indonesian cultural authenticity preserved through origami artistry, godlevel Indonesian origami excellence.",
       },
       garuda: {
         name: "🦅 Garuda Wisnu Kencana",
@@ -409,6 +429,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Mathematical Thai cultural patterns with geometric temple architecture, fractal naga serpent designs, algorithmic traditional motifs, mathematical art excellence, computational Thai heritage, geometric cultural visualization, mathematical tradition mapping, algorithmic cultural beauty, digital heritage mastery, mathematical cultural excellence, geometric pattern complexity, computational cultural generation, mathematical visualization excellence, godlevel mathematical Thai artistry.",
       },
+      "origami-world": {
+        name: "📄 Origami Thai Temple Complex",
+        description:
+          "Elaborate origami Thai temple complex with paper-folded golden stupas and intricate spires, delicate origami Thai monks in saffron robes, paper-crafted traditional Thai architecture with curved rooflines, origami naga serpents guarding temple entrances, handmade paper lotus flowers floating in temple ponds, tiny origami Thai people in traditional clothing, paper-folded tropical gardens with palm trees, warm golden lighting from paper lanterns creating sacred atmosphere, visible fold lines showing masterful paper engineering, Thai Buddhist cultural authenticity preserved through origami mastery, godlevel Thai origami excellence.",
+      },
       garuda: {
         name: "🦅 Garuda - Divine Eagle",
         description:
@@ -499,6 +524,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Mathematical Escher-inspired patterns with geometric precision, impossible mathematical objects, fractal tessellations, algorithmic optical illusions, computational geometry excellence, mathematical art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, mathematical visualization excellence, geometric pattern complexity, mathematical art generation, computational beauty, godlevel mathematical Escher excellence.",
       },
+      "origami-world": {
+        name: "📄 Origami Impossible Architecture",
+        description:
+          "Mind-bending origami impossible architecture with paper-folded paradoxical structures, Escher-inspired origami staircases that fold back on themselves, paper tessellations creating optical illusions through strategic folding, impossible origami geometry with mathematical precision, paper-crafted architectural paradoxes, visible fold lines creating additional visual complexity, warm lighting emphasizing dimensional paper shadows, masterful origami engineering defying spatial logic, traditional Japanese paper folding techniques applied to impossible geometries, paper sculpture mathematics, godlevel impossible origami excellence.",
+      },
       "impossible-stairs": {
         name: "♾️ Impossible Staircases",
         description:
@@ -529,6 +559,11 @@ export const CULTURAL_DATASETS = {
   spirals: {
     name: "🌀 Spirals",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Spiral Garden",
+        description:
+          "Mesmerizing origami spiral garden with paper-folded spiral patterns creating three-dimensional mathematical beauty, delicate paper spirals following Fibonacci sequences, origami flowers arranged in golden ratio spirals, paper-crafted spiral staircases and pathways, handmade paper trees with spiral branch patterns, warm lighting creating spiral shadows, visible fold lines emphasizing spiral geometry, masterful origami engineering showing natural spiral mathematics, traditional Japanese paper folding techniques applied to spiral forms, paper sculpture spiral mastery, godlevel spiral origami excellence.",
+      },
       pure: {
         name: "Pure Mathematical Spirals",
         description:
@@ -539,6 +574,11 @@ export const CULTURAL_DATASETS = {
   fractal: {
     name: "🔺 Fractal",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Fractal Forest",
+        description:
+          "Intricate origami fractal forest with paper-folded trees showing self-similar branching patterns, delicate paper leaves arranged in fractal geometries, origami fractals creating infinite detail through recursive paper folding, handmade paper structures with mathematical precision, warm lighting revealing fractal shadows and depth, visible fold lines emphasizing fractal complexity, masterful origami engineering showing natural fractal mathematics, traditional Japanese paper folding techniques applied to fractal forms, paper sculpture fractal mastery, godlevel fractal origami excellence.",
+      },
       pure: {
         name: "Pure Fractal Geometry",
         description:
@@ -549,6 +589,11 @@ export const CULTURAL_DATASETS = {
   mandelbrot: {
     name: "🔢 Mandelbrot",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Mandelbrot Landscape",
+        description:
+          "Complex origami Mandelbrot landscape with paper-folded mathematical patterns, delicate paper structures showing infinite detail, origami interpretation of complex number mathematics, handmade paper fractals with recursive folding patterns, warm lighting revealing mathematical beauty through paper shadows, visible fold lines creating additional complexity layers, masterful origami engineering translating mathematical concepts into paper art, traditional Japanese paper folding techniques applied to mathematical visualization, paper sculpture mathematics mastery, godlevel mathematical origami excellence.",
+      },
       pure: {
         name: "Mandelbrot Set Visualization",
         description:
@@ -559,6 +604,11 @@ export const CULTURAL_DATASETS = {
   julia: {
     name: "🎭 Julia",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Julia Set Garden",
+        description:
+          "Elegant origami Julia set garden with paper-folded mathematical patterns creating beautiful landscapes, delicate paper structures showing chaotic attractors, origami interpretation of complex dynamics, handmade paper fractals with artistic precision, warm lighting revealing mathematical beauty through dimensional paper shadows, visible fold lines adding visual complexity, masterful origami engineering translating mathematical chaos into paper harmony, traditional Japanese paper folding techniques applied to Julia set visualization, paper sculpture mathematical artistry, godlevel Julia origami excellence.",
+      },
       pure: {
         name: "Julia Set Fractals",
         description:
@@ -569,6 +619,11 @@ export const CULTURAL_DATASETS = {
   lorenz: {
     name: "🦋 Lorenz",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Butterfly Effect",
+        description:
+          "Delicate origami butterfly effect visualization with paper-folded chaotic patterns, intricate paper butterflies showing sensitive dependence, origami interpretation of chaos theory, handmade paper structures demonstrating nonlinear dynamics, warm lighting creating atmospheric chaos visualization, visible fold lines emphasizing butterfly wing patterns, masterful origami engineering showing mathematical chaos beauty, traditional Japanese paper folding techniques applied to chaos theory, paper sculpture chaos mastery, godlevel chaos origami excellence.",
+      },
       pure: {
         name: "Lorenz Attractor Chaos",
         description:
@@ -579,6 +634,11 @@ export const CULTURAL_DATASETS = {
   hyperbolic: {
     name: "🌐 Hyperbolic",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Hyperbolic Space",
+        description:
+          "Mind-bending origami hyperbolic space with paper-folded curved geometries, delicate paper structures showing non-Euclidean mathematics, origami interpretation of hyperbolic tessellations, handmade paper demonstrating curved space concepts, warm lighting revealing geometric complexity through paper shadows, visible fold lines emphasizing hyperbolic curvature, masterful origami engineering translating advanced geometry into paper art, traditional Japanese paper folding techniques applied to hyperbolic geometry, paper sculpture geometric mastery, godlevel hyperbolic origami excellence.",
+      },
       pure: {
         name: "Hyperbolic Geometry",
         description:
@@ -589,6 +649,11 @@ export const CULTURAL_DATASETS = {
   gaussian: {
     name: "📊 Gaussian",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Statistical Landscape",
+        description:
+          "Elegant origami statistical landscape with paper-folded bell curves and probability distributions, delicate paper structures showing Gaussian mathematics, origami interpretation of statistical beauty, handmade paper graphs with dimensional depth, warm lighting revealing statistical patterns through paper shadows, visible fold lines creating data visualization art, masterful origami engineering translating statistics into paper sculpture, traditional Japanese paper folding techniques applied to mathematical probability, paper sculpture statistical mastery, godlevel statistical origami excellence.",
+      },
       pure: {
         name: "Gaussian Distributions",
         description:
@@ -599,6 +664,11 @@ export const CULTURAL_DATASETS = {
   cellular: {
     name: "🔬 Cellular",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Cellular Automata",
+        description:
+          "Fascinating origami cellular automata with paper-folded emergent patterns, delicate paper cells showing computational evolution, origami interpretation of Conway's Game of Life, handmade paper structures demonstrating emergent behavior, warm lighting revealing pattern emergence through paper shadows, visible fold lines creating cellular grid systems, masterful origami engineering showing computational beauty, traditional Japanese paper folding techniques applied to algorithmic art, paper sculpture computational mastery, godlevel cellular origami excellence.",
+      },
       pure: {
         name: "Cellular Automata",
         description:
@@ -609,6 +679,11 @@ export const CULTURAL_DATASETS = {
   voronoi: {
     name: "🕸️ Voronoi",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Voronoi Cells",
+        description:
+          "Intricate origami Voronoi diagram with paper-folded spatial partitions, delicate paper cells showing proximity patterns, origami interpretation of computational geometry, handmade paper structures demonstrating natural tessellations, warm lighting revealing geometric relationships through paper shadows, visible fold lines emphasizing cell boundaries, masterful origami engineering translating spatial mathematics into paper art, traditional Japanese paper folding techniques applied to Voronoi patterns, paper sculpture geometric mastery, godlevel Voronoi origami excellence.",
+      },
       pure: {
         name: "Voronoi Diagrams",
         description:
@@ -619,6 +694,11 @@ export const CULTURAL_DATASETS = {
   perlin: {
     name: "🌊 Perlin",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Noise Landscape",
+        description:
+          "Organic origami noise landscape with paper-folded natural randomness patterns, delicate paper terrain showing Perlin noise mathematics, origami interpretation of procedural generation, handmade paper structures demonstrating algorithmic textures, warm lighting revealing natural randomness through paper shadows, visible fold lines creating organic texture patterns, masterful origami engineering translating computational noise into paper art, traditional Japanese paper folding techniques applied to procedural patterns, paper sculpture algorithmic mastery, godlevel noise origami excellence.",
+      },
       pure: {
         name: "Perlin Noise Patterns",
         description:
@@ -629,6 +709,11 @@ export const CULTURAL_DATASETS = {
   diffusion: {
     name: "⚗️ Reaction-Diffusion",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Reaction Patterns",
+        description:
+          "Dynamic origami reaction-diffusion patterns with paper-folded chemical-inspired designs, delicate paper structures showing Turing patterns, origami interpretation of self-organization, handmade paper demonstrating pattern formation mathematics, warm lighting revealing biological patterns through paper shadows, visible fold lines emphasizing reaction boundaries, masterful origami engineering translating chemical patterns into paper art, traditional Japanese paper folding techniques applied to biological mathematics, paper sculpture pattern mastery, godlevel reaction origami excellence.",
+      },
       pure: {
         name: "Reaction-Diffusion Systems",
         description:
@@ -639,6 +724,11 @@ export const CULTURAL_DATASETS = {
   wave: {
     name: "〰️ Wave",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Wave Interference",
+        description:
+          "Flowing origami wave interference patterns with paper-folded harmonic oscillations, delicate paper waves showing mathematical frequency, origami interpretation of wave equations, handmade paper structures demonstrating wave dynamics, warm lighting revealing wave patterns through paper shadows, visible fold lines creating wave interference effects, masterful origami engineering translating acoustic mathematics into paper art, traditional Japanese paper folding techniques applied to wave visualization, paper sculpture harmonic mastery, godlevel wave origami excellence.",
+      },
       pure: {
         name: "Wave Interference",
         description:
@@ -649,6 +739,11 @@ export const CULTURAL_DATASETS = {
   "8bit": {
     name: "🎮 8bit",
     scenarios: {
+      "origami-world": {
+        name: "📄 Origami Pixel World",
+        description:
+          "Nostalgic origami pixel world with paper-folded 8-bit aesthetic, delicate paper squares creating pixelated patterns, origami interpretation of retro gaming, handmade paper structures showing digital nostalgia, warm lighting revealing pixel art through paper shadows, visible fold lines emphasizing geometric pixel boundaries, masterful origami engineering translating digital art into paper craft, traditional Japanese paper folding techniques applied to pixel art, paper sculpture digital mastery, godlevel pixel origami excellence.",
+      },
       pure: {
         name: "8-bit Pixel Art",
         description:
@@ -663,6 +758,11 @@ export const CULTURAL_DATASETS = {
         name: "🔢 Pure Mathematical Bosch",
         description:
           "Mathematical Bosch-inspired patterns with geometric surrealism, fractal fantastical creatures, algorithmic medieval symbolism, mathematical art excellence, computational surreal heritage, geometric fantasy visualization, mathematical surrealism mapping, algorithmic artistic beauty, digital medieval mastery, mathematical artistic excellence, geometric pattern complexity, computational surreal generation, mathematical visualization excellence, godlevel mathematical Bosch artistry.",
+      },
+      "origami-world": {
+        name: "📄 Origami Garden of Delights",
+        description:
+          "Surreal origami Garden of Earthly Delights with paper-folded fantastical creatures and impossible beings, delicate paper paradise with origami hybrid animals, handmade paper figures in various poses, origami interpretation of Bosch's surreal vision, paper-crafted medieval symbolism with contemporary precision, warm lighting creating mysterious shadows between paper layers, visible fold lines adding to the surreal complexity, masterful origami engineering translating Renaissance surrealism into paper art, traditional Japanese paper folding techniques applied to medieval fantasy, paper sculpture surreal mastery, godlevel Bosch origami excellence.",
       },
       "garden-earthly-delights": {
         name: "🌺 Garden of Earthly Delights",
@@ -748,6 +848,11 @@ export const CULTURAL_DATASETS = {
         name: "🔢 Pure Mathematical Hooligan",
         description:
           "Mathematical hooligan visualization with geometric rebellion patterns, algorithmic chaos theory, fractal disorder mathematics, mathematical anarchy equations, computational disruption algorithms, geometric protest formations, mathematical resistance calculations, algorithmic social disorder, digital rebellion geometry, mathematical chaos mastery, geometric disruption excellence, computational anarchy perfection, mathematical disorder visualization, algorithmic rebellion artistry, godlevel mathematical hooligan excellence.",
+      },
+      "origami-world": {
+        name: "📄 Origami Hooligan Rebellion",
+        description:
+          "Rebellious origami hooligan scene with paper-folded protest figures and social outcasts, delicate paper tigers with glowing eyes made from translucent paper, origami carousel with political caricature faces, handmade paper playground equipment showing social decay, paper-crafted neon effects using colored translucent materials, warm lighting creating dramatic shadows of rebellion, visible fold lines emphasizing the rough, rebellious aesthetic, masterful origami engineering translating social commentary into paper art, traditional Japanese paper folding techniques applied to contemporary social themes, paper sculpture rebellion mastery, godlevel hooligan origami excellence.",
       },
       "port-city-rebels": {
         name: "🏙️ 19th Century Port City Rebels",
