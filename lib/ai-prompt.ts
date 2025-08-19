@@ -104,6 +104,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Extreme artistic interpretation with radical creative distortion, surreal proportions and impossible anatomy, psychedelic color explosions, reality-bending visual effects, artistic freedom maximization, creative boundary pushing, experimental art excellence, avant-garde expression, artistic rebellion, creative chaos mastery, visual shock artistry, extreme artistic vision, boundary-breaking creativity, artistic revolution, godlevel freak artistry.",
       },
+      "animal-transport": {
+        name: "🐘 Elephant Caravan Portrait",
+        description:
+          "Majestic portrait of a mahout (elephant rider) atop a decorated Indian elephant, intricate traditional headwrap and ceremonial clothing, weathered face showing years of partnership with the gentle giant, ornate elephant decorations with golden bells and colorful textiles, realistic skin texture and facial hair detail, warm golden hour lighting, traditional Indian elephant caravan culture, authentic mahout-elephant bond, professional portrait photography quality, cultural heritage celebration, godlevel portrait excellence with animal transport authenticity.",
+      },
     },
   },
   faces: {
@@ -193,6 +198,11 @@ export const CULTURAL_DATASETS = {
         name: "🎨 Artistic Creative",
         description:
           "Pure artistic creative expression with inspiration flowing through features, creative genius manifestation, artistic vision embodiment, creative process visualization, artistic inspiration, creative excellence, artistic mastery, creative genius, artistic vision, godlevel creative expression.",
+      },
+      "animal-transport": {
+        name: "🐪 Camel Rider's Joy",
+        description:
+          "Joyful expression of a Bedouin camel rider crossing desert dunes, genuine smile radiating adventure and freedom, traditional keffiyeh headwrap flowing in desert wind, sun-weathered face showing desert wisdom, eyes sparkling with nomadic spirit, realistic facial expressions of desert travel joy, authentic Middle Eastern features, camel caravan culture celebration, desert nomad lifestyle, traditional Bedouin heritage, godlevel joyful expression with authentic desert transport culture.",
       },
     },
   },
@@ -303,6 +313,11 @@ export const CULTURAL_DATASETS = {
         name: "👒 Non La - Conical Hat Craft",
         description:
           "Traditional Vietnamese conical hat (non la) making, palm leaf weaving, traditional craftsmanship, cultural symbol, artisan skills, rural Vietnamese traditions, traditional headwear, cultural identity symbol.",
+      },
+      "animal-transport": {
+        name: "🐃 Water Buffalo Rice Farming",
+        description:
+          "Vietnamese farmer guiding water buffalo through flooded rice paddies, traditional conical hat (nón lá) and rolled-up pants, gentle giant buffalo with massive horns and patient demeanor, muddy rice fields reflecting morning sky, traditional Vietnamese agricultural partnership between human and animal, farmer's weathered hands holding wooden plow, authentic rural Vietnamese lifestyle, water buffalo as essential farming companion, traditional rice cultivation methods, peaceful countryside atmosphere, Vietnamese agricultural heritage, godlevel authentic Vietnamese farming excellence.",
       },
     },
   },
@@ -419,6 +434,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Various Indonesian temples, Hindu-Buddhist architecture, spiritual sites, cultural monuments, Indonesian religious heritage, traditional architecture, temple complexes, spiritual ceremonies.",
       },
+      "animal-transport": {
+        name: "🐅 Sumatran Tiger Guardian",
+        description:
+          "Mystical Indonesian shaman riding a majestic Sumatran tiger through dense rainforest, traditional Indonesian ceremonial clothing with batik patterns, tiger's powerful muscles rippling under orange and black stripes, ancient spiritual bond between human and sacred animal, jungle setting with tropical vegetation, traditional Indonesian animistic beliefs, shamanic journey through forest spirits, tiger as spiritual guardian and transport, Indonesian folklore and mythology, mystical forest atmosphere, godlevel Indonesian spiritual animal transport excellence.",
+      },
     },
   },
   thailand: {
@@ -514,6 +534,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Thai floating markets, vendors in traditional boats, tropical fruits and vegetables, canal life, traditional commerce, cultural authenticity, vibrant market atmosphere, water-based trading.",
       },
+      "animal-transport": {
+        name: "🐘 Royal Thai Elephant Procession",
+        description:
+          "Ornate Thai royal elephant procession with mahout in traditional Thai silk clothing, elephant decorated with golden howdah (seat) and ceremonial regalia, intricate Thai artistic decorations covering elephant's body, traditional Thai royal ceremony atmosphere, mahout wearing traditional Thai headdress, elephant's gentle eyes showing intelligence and training, authentic Thai elephant culture, royal procession grandeur, traditional Thai craftsmanship in decorations, cultural significance of elephants in Thai society, godlevel Thai royal elephant transport excellence.",
+      },
     },
   },
   escher: {
@@ -554,6 +579,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Escher's Relativity-inspired impossible architecture with multiple gravity directions, staircases going in all directions, people walking on walls and ceilings, architectural paradox with geometric precision, mind-bending spatial relationships.",
       },
+      "animal-transport": {
+        name: "🦅 Impossible Flying Fish Transport",
+        description:
+          "Escher-inspired impossible transportation with people riding giant flying fish through paradoxical architecture, fish swimming through air while people walk on water below, mind-bending perspective with multiple gravity directions, impossible animal transport defying physics laws, geometric precision in impossible animal anatomy, mathematical impossibility made visually compelling, optical illusion with perfect artistic execution, surreal animal transportation paradox, Escher-style tessellation patterns on fish scales, godlevel impossible animal transport artistry.",
+      },
     },
   },
   spirals: {
@@ -568,6 +598,11 @@ export const CULTURAL_DATASETS = {
         name: "Pure Mathematical Spirals",
         description:
           "Mathematical spiral patterns with Fibonacci sequences perfection, golden ratio spirals with divine proportions, logarithmic spirals found in nature's design, Archimedean spirals with perfect mathematical precision, hyperbolic spirals with infinite complexity, mathematical elegance embodiment, geometric beauty transcendence, natural spiral formations with cosmic significance, mathematical harmony with universal patterns, spiral mathematics mastery, geometric perfection achievement, mathematical art excellence, godlevel spiral mastery.",
+      },
+      "animal-transport": {
+        name: "🐌 Giant Spiral Shell Snail Ride",
+        description:
+          "Fantastical transportation on giant spiral shell snails with riders sitting in natural spiral chambers, snail shells following perfect Fibonacci spiral patterns, mathematical precision in shell geometry, riders following spiral pathways on snail's back, golden ratio spirals in shell construction, natural spiral mathematics embodied in living transport, spiral slime trails creating geometric patterns, mathematical beauty in biological spiral forms, spiral animal transport with geometric perfection, godlevel spiral animal transport excellence.",
       },
     },
   },
@@ -584,6 +619,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Fractal geometry patterns with self-similar structures, infinite complexity, recursive patterns, mathematical fractals, geometric iterations, fractal dimensions, mathematical beauty, infinite detail, natural fractal formations.",
       },
+      "animal-transport": {
+        name: "🦌 Fractal Antler Deer Transport",
+        description:
+          "Magical transportation on deer with fractal antler patterns, antlers showing infinite self-similar branching structures, riders navigating through fractal forest on deer back, mathematical precision in antler geometry, fractal patterns repeating at multiple scales, deer moving through fractal landscape with recursive tree patterns, natural fractal mathematics in animal anatomy, fractal animal transport with infinite detail, mathematical beauty in biological fractal forms, godlevel fractal animal transport excellence.",
+      },
     },
   },
   mandelbrot: {
@@ -598,6 +638,11 @@ export const CULTURAL_DATASETS = {
         name: "Mandelbrot Set Visualization",
         description:
           "Mandelbrot set visualizations with complex number iterations, fractal boundaries, mathematical complexity, infinite detail, chaotic dynamics, mathematical art, computational beauty, complex plane mathematics.",
+      },
+      "animal-transport": {
+        name: "🐙 Mandelbrot Octopus Submarine",
+        description:
+          "Underwater transportation on giant octopus with tentacles showing Mandelbrot set patterns, octopus tentacles creating complex mathematical curves, riders in bio-luminescent underwater vehicle, tentacle patterns following complex number iterations, mathematical precision in octopus anatomy, underwater transport through mathematical seascape, complex dynamics in tentacle movement, Mandelbrot mathematics embodied in living sea creature, mathematical beauty in cephalopod transport, godlevel Mandelbrot animal transport excellence.",
       },
     },
   },
@@ -614,6 +659,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Julia set fractals with complex dynamics, mathematical iterations, fractal art, chaotic attractors, mathematical beauty, computational geometry, infinite patterns, complex number mathematics.",
       },
+      "animal-transport": {
+        name: "🦋 Julia Set Butterfly Swarm",
+        description:
+          "Ethereal transportation on swarm of butterflies with Julia set wing patterns, butterfly wings showing chaotic attractor mathematics, riders floating on cloud of mathematical butterflies, wing patterns following complex dynamics, Julia set fractals in butterfly wing designs, chaotic beauty in butterfly swarm transport, mathematical precision in wing geometry, butterfly migration following Julia set trajectories, mathematical chaos embodied in living transport, godlevel Julia animal transport excellence.",
+      },
     },
   },
   lorenz: {
@@ -628,6 +678,11 @@ export const CULTURAL_DATASETS = {
         name: "Lorenz Attractor Chaos",
         description:
           "Lorenz attractor patterns with chaos theory visualization, butterfly effect, strange attractors, dynamical systems, mathematical chaos, nonlinear dynamics, chaotic beauty, sensitive dependence.",
+      },
+      "animal-transport": {
+        name: "🦋 Chaos Butterfly Migration",
+        description:
+          "Transportation following butterfly migration patterns showing Lorenz attractor chaos, butterflies creating chaotic flight paths with sensitive dependence, riders following unpredictable butterfly swarm transport, butterfly effect visualization in migration routes, chaotic dynamics in animal movement, mathematical chaos embodied in butterfly behavior, sensitive dependence in transport trajectories, chaos theory demonstrated through butterfly transport, mathematical beauty in chaotic animal movement, godlevel chaos animal transport excellence.",
       },
     },
   },
@@ -644,6 +699,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Hyperbolic geometry patterns with non-Euclidean geometry, curved space visualizations, hyperbolic tessellations, mathematical geometry, geometric art, spatial mathematics, curved space beauty.",
       },
+      "animal-transport": {
+        name: "🐢 Hyperbolic Turtle Shell Transport",
+        description:
+          "Transportation on giant turtle with hyperbolic shell geometry, turtle shell showing non-Euclidean curved space patterns, riders navigating hyperbolic space on turtle back, shell patterns following hyperbolic tessellations, mathematical precision in curved shell geometry, hyperbolic animal transport through curved spacetime, non-Euclidean mathematics in turtle anatomy, geometric beauty in hyperbolic shell patterns, mathematical transport through curved space, godlevel hyperbolic animal transport excellence.",
+      },
     },
   },
   gaussian: {
@@ -658,6 +718,11 @@ export const CULTURAL_DATASETS = {
         name: "Gaussian Distributions",
         description:
           "Gaussian distributions with statistical visualizations, probability curves, normal distributions, mathematical statistics, data visualization, statistical beauty, mathematical probability, bell curves.",
+      },
+      "animal-transport": {
+        name: "🐧 Gaussian Penguin Colony March",
+        description:
+          "Transportation following penguin colony migration showing Gaussian distribution patterns, penguins arranged in bell curve formations during march, riders following statistical animal behavior, penguin movement creating probability distribution patterns, mathematical precision in colony organization, statistical beauty in animal group behavior, Gaussian mathematics embodied in penguin transport, probability patterns in animal migration, mathematical statistics in biological transport, godlevel Gaussian animal transport excellence.",
       },
     },
   },
@@ -674,6 +739,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Cellular automata patterns with Conway's Game of Life, emergent behavior, computational patterns, rule-based systems, mathematical emergence, algorithmic art, computational beauty, emergent complexity.",
       },
+      "animal-transport": {
+        name: "🐝 Cellular Automata Bee Swarm",
+        description:
+          "Transportation on bee swarm following cellular automata patterns, bees creating emergent behavior through simple rules, riders navigating on living cellular automata transport, bee colony showing computational emergence, mathematical precision in swarm intelligence, cellular patterns in bee behavior, emergent transport through bee colony, computational beauty in biological systems, mathematical emergence in animal transport, godlevel cellular animal transport excellence.",
+      },
     },
   },
   voronoi: {
@@ -688,6 +758,11 @@ export const CULTURAL_DATASETS = {
         name: "Voronoi Diagrams",
         description:
           "Voronoi diagrams with spatial partitioning, geometric tessellations, proximity patterns, computational geometry, mathematical partitions, geometric art, spatial mathematics, natural patterns.",
+      },
+      "animal-transport": {
+        name: "🦒 Voronoi Giraffe Pattern Transport",
+        description:
+          "Transportation on giraffe with coat patterns showing Voronoi diagram tessellations, giraffe spots creating natural spatial partitioning, riders navigating Voronoi pattern landscape on giraffe back, mathematical precision in giraffe spot geometry, Voronoi mathematics embodied in animal markings, geometric beauty in natural animal patterns, spatial partitioning in biological transport, mathematical tessellations in giraffe anatomy, natural Voronoi patterns in animal transport, godlevel Voronoi animal transport excellence.",
       },
     },
   },
@@ -704,6 +779,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Perlin noise patterns with procedural generation, natural randomness, algorithmic textures, computational noise, mathematical randomness, procedural art, algorithmic beauty, natural textures.",
       },
+      "animal-transport": {
+        name: "🐋 Perlin Noise Whale Song Transport",
+        description:
+          "Transportation on whale following Perlin noise patterns in ocean currents, whale song creating natural randomness in navigation, riders following procedural whale migration routes, whale movement showing organic noise patterns, mathematical precision in natural whale behavior, Perlin noise embodied in whale transport, algorithmic beauty in biological navigation, procedural patterns in animal transport, natural randomness in whale migration, godlevel Perlin animal transport excellence.",
+      },
     },
   },
   diffusion: {
@@ -718,6 +798,11 @@ export const CULTURAL_DATASETS = {
         name: "Reaction-Diffusion Systems",
         description:
           "Reaction-diffusion systems with pattern formation, chemical patterns, Turing patterns, mathematical biology, emergent patterns, natural mathematics, biological computation, self-organization.",
+      },
+      "animal-transport": {
+        name: "🐆 Reaction-Diffusion Leopard Spots",
+        description:
+          "Transportation on leopard with coat patterns showing reaction-diffusion mathematics, leopard spots created by Turing pattern formation, riders navigating pattern formation landscape on leopard back, mathematical precision in spot development, reaction-diffusion embodied in animal markings, biological pattern formation in transport, mathematical chemistry in leopard anatomy, Turing patterns in animal transport, natural mathematics in biological systems, godlevel reaction-diffusion animal transport excellence.",
       },
     },
   },
@@ -734,6 +819,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Wave interference patterns with harmonic oscillations, wave equations, frequency visualizations, mathematical waves, acoustic patterns, wave mathematics, harmonic beauty, wave dynamics.",
       },
+      "animal-transport": {
+        name: "🐬 Wave Interference Dolphin Pod",
+        description:
+          "Transportation on dolphin pod creating wave interference patterns, dolphins jumping in harmonic wave formations, riders following wave mathematics on dolphin transport, dolphin echolocation showing wave interference, mathematical precision in dolphin wave behavior, wave dynamics embodied in dolphin transport, acoustic beauty in biological wave systems, harmonic patterns in animal transport, wave mathematics in dolphin navigation, godlevel wave animal transport excellence.",
+      },
     },
   },
   "8bit": {
@@ -748,6 +838,11 @@ export const CULTURAL_DATASETS = {
         name: "8-bit Pixel Art",
         description:
           "8-bit pixel art patterns with retro gaming aesthetics, pixelated mathematical visualizations, digital art, computational graphics, nostalgic computing, pixel mathematics, digital beauty, retro aesthetics.",
+      },
+      "animal-transport": {
+        name: "🐴 8-bit Pixel Horse Transport",
+        description:
+          "Retro 8-bit pixel art transportation on blocky pixel horse, horse rendered in classic video game style, riders in pixelated medieval armor, nostalgic gaming aesthetic with limited color palette, pixel art animation frames showing horse gallop, retro gaming transport with authentic 8-bit limitations, digital nostalgia in animal transport, classic arcade game style, pixel perfect horse anatomy, godlevel 8-bit animal transport excellence.",
       },
     },
   },
@@ -839,6 +934,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Bosch's world upside down with satirical realism, medieval social order reversed with comic accuracy, realistic medieval people in absurd situations, authentic period clothing and objects, detailed medieval settings with architectural accuracy, social satire with cultural authenticity, medieval humor with psychological insight, absurd situations with realistic physics, comic reversal with artistic sophistication, medieval carnival atmosphere with ethnographic precision, human folly with artistic wisdom, godlevel satirical medieval artistry.",
       },
+      "animal-transport": {
+        name: "🦄 Bosch Fantastical Beast Transport",
+        description:
+          "Surreal transportation on Hieronymus Bosch-inspired hybrid creatures, fantastical beasts with multiple animal parts combined, riders on impossible animals with bird wings, fish tails, and mammal bodies, medieval surrealism with creature design excellence, Bosch-style hybrid anatomy with biological plausibility, fantastical animal transport through surreal landscape, medieval bestiary creatures with artistic sophistication, impossible animal combinations with Renaissance artistry, surreal creature transport with cultural authenticity, godlevel Bosch animal transport excellence.",
+      },
     },
   },
   whiterabbit: {
@@ -923,6 +1023,11 @@ export const CULTURAL_DATASETS = {
         name: "📱 Social Media Rebellion",
         description:
           "Social media rebellion with viral protest content, smartphone screens showing banned hashtags, creative censorship circumvention, meme-based political commentary, digital activism coordination, online community organizing, social media platform resistance, algorithmic manipulation awareness, digital rights advocacy, online freedom fighting, cyber-activism documentation, social media hooligan tactics, digital civil disobedience, godlevel digital activism realism with NEURALUA social media aesthetic.",
+      },
+      "animal-transport": {
+        name: "🐅 Hooligan Tiger Motorcycle Gang",
+        description:
+          "Rebellious Chinese hooligans riding tigers like motorcycles through neon-lit urban streets, tigers with leather jackets and punk accessories, riders with traditional Chinese punk aesthetics mixed with hooligan culture, tigers navigating through pink neon-lit alleyways, urban rebellion with traditional Chinese elements, hooligan culture meets animal transport, tigers as symbols of defiance and nonconformity, Chinese street culture with animal companions, rebellious transport through marginalized communities, godlevel hooligan animal transport excellence.",
       },
     },
   },
