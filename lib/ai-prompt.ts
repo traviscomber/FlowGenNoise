@@ -127,6 +127,16 @@ export const CULTURAL_DATASETS = {
         description:
           "Iconic LEGO minifigure head with classic cylindrical shape and distinctive facial features, smooth plastic surface with precise molded details, authentic LEGO yellow skin tone with subtle texture variations, characteristic dot-matrix eyes and simple curved smile, Danish design excellence with modular construction philosophy, systematic creativity embodied in minimalist facial expression, precision-molded plastic with engineering perfection, childhood imagination catalyst with infinite possibility potential, modular human representation with universal appeal, LEGO brick aesthetic with constructive play heritage, Danish toy craftsmanship with global cultural impact, godlevel LEGO minifigure excellence.",
       },
+      "escapism-magic": {
+        name: "🎭 Escapist Portrait Illusion",
+        description:
+          "Masterful portrait illusion where the subject's face becomes a gateway to alternate realities, eyes that reflect impossible worlds and distant galaxies, facial features that shift between dimensions when viewed from different angles, portrait magic requiring precise understanding of human perception psychology, optical illusion mastery where the viewer questions reality itself, escapist artistry that transports consciousness beyond physical limitations, intricate challenge of creating believable impossibility through portraiture, magical realism where human features become portals to dream realms, portrait as escape mechanism from mundane existence, godlevel escapist portrait excellence.",
+      },
+      vitro: {
+        name: "⛪ Vatican Stained Glass Portrait",
+        description:
+          "Magnificent stained glass portrait in Vatican cathedral style with luminous colored glass fragments forming human features, divine light streaming through translucent glass creating ethereal facial illumination, masterful lead came construction outlining portrait elements with Gothic precision, jewel-toned glass pieces in sapphire blues, ruby reds, and emerald greens forming realistic skin tones, traditional Vatican glasswork techniques with contemporary portrait artistry, sacred geometry patterns integrated into facial structure, cathedral light effects transforming portrait into spiritual revelation, medieval craftsmanship excellence with divine artistic inspiration, stained glass mastery worthy of papal commission, godlevel Vatican vitro portrait excellence.",
+      },
     },
   },
   faces: {
@@ -226,6 +236,16 @@ export const CULTURAL_DATASETS = {
         name: "🧱 LEGO Expression Variations",
         description:
           "Classic LEGO minifigure facial expressions with interchangeable emotion designs, modular expression system with snap-on face plates, Danish precision in emotional communication through minimal design elements, systematic approach to human emotion representation, constructive play psychology with expression-building possibilities, LEGO facial design evolution from simple dots to complex expressions, modular emotion engineering with childhood development support, precision-molded happiness, surprise, and determination expressions, Danish toy philosophy of creative emotional expression, LEGO face printing technology with micro-detail precision, godlevel LEGO expression excellence.",
+      },
+      "escapism-magic": {
+        name: "🌟 Magical Expression Transformation",
+        description:
+          "Enchanted facial expressions that transform reality through emotional magic, smiles that literally brighten the surrounding environment with golden light, tears that crystallize into precious gems before touching ground, laughter that creates floating musical notes and rainbow particles, magical challenge of expressing emotions that manifest physical phenomena, escapist artistry where human feelings become supernatural forces, intricate illusion requiring mastery of both emotional psychology and visual magic, expressions that serve as spells casting viewers into alternate emotional states, face as magical instrument for reality transformation, godlevel magical expression excellence.",
+      },
+      vitro: {
+        name: "⛪ Sacred Expression Windows",
+        description:
+          "Divine facial expressions rendered in Vatican-style stained glass with emotional states captured through luminous colored glass, joy expressed through golden amber glass with radiant light effects, sorrow depicted in deep blue glass with silver tear patterns, anger manifested in ruby red glass with flame-like lead came designs, serenity shown through pale green glass with peaceful light diffusion, traditional cathedral glasswork techniques applied to human emotion visualization, sacred geometry patterns enhancing emotional expression, divine light transforming glass expressions into spiritual experiences, medieval craftsmanship with emotional depth, godlevel Vatican vitro expression excellence.",
       },
     },
   },
@@ -346,6 +366,16 @@ export const CULTURAL_DATASETS = {
         name: "🧱 LEGO Vietnamese Village",
         description:
           "Modular LEGO Vietnamese village with brick-built traditional houses on stilts, LEGO minifigure farmers in conical hats working plastic rice terraces, Danish construction system applied to Vietnamese architectural heritage, systematic building approach to cultural representation, LEGO temple complexes with modular pagoda roofs, precision-built Vietnamese cultural elements using standard LEGO bricks, constructive play celebrating Vietnamese traditions, modular approach to cultural education through building, LEGO Vietnamese minifigures with authentic cultural accessories, Danish toy craftsmanship honoring Vietnamese heritage, godlevel LEGO Vietnamese cultural excellence.",
+      },
+      "escapism-magic": {
+        name: "🏮 Vietnamese Lantern Portal Magic",
+        description:
+          "Mystical Vietnamese lantern festival where paper lanterns become portals to ancestral spirit realm, floating lanterns that carry wishes directly to deceased family members, magical challenge of creating believable spiritual transportation through traditional Vietnamese paper craft, escapist artistry where cultural celebration transcends physical boundaries, intricate illusion requiring deep understanding of Vietnamese spiritual beliefs and lantern-making techniques, lantern magic that allows living to commune with ancestors, traditional Vietnamese escapism through spiritual portal creation, cultural magic where festival becomes gateway between worlds, godlevel Vietnamese portal magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Vietnamese Cathedral Glass",
+        description:
+          "Magnificent Vietnamese cathedral stained glass windows depicting traditional cultural scenes in Vatican artistic style, luminous glass panels showing Vietnamese rice terraces in emerald and gold glass, traditional áo dài clothing rendered in flowing colored glass with intricate lead came patterns, Vietnamese temple architecture translated into Gothic stained glass design, lotus flowers crafted from translucent pink and white glass with divine light effects, traditional Vietnamese dragons in sapphire and ruby glass with medieval European craftsmanship, cultural fusion of Vietnamese heritage with Vatican glasswork mastery, sacred light illuminating Vietnamese spiritual traditions, godlevel Vietnamese vitro cultural excellence.",
       },
     },
   },
@@ -472,6 +502,16 @@ export const CULTURAL_DATASETS = {
         description:
           "Modular LEGO Indonesian island chain with brick-built traditional houses featuring curved roofs, LEGO Borobudur temple constructed from thousands of precision-molded bricks, Danish engineering applied to Indonesian architectural complexity, systematic building approach to cultural monument recreation, LEGO gamelan orchestra with minifigure musicians, modular batik patterns created through LEGO mosaic techniques, constructive play celebrating Indonesian diversity, precision-built temple stupas using advanced LEGO building techniques, LEGO Indonesian minifigures with traditional cultural accessories, Danish toy craftsmanship honoring Indonesian heritage, godlevel LEGO Indonesian cultural excellence.",
       },
+      "escapism-magic": {
+        name: "🎭 Wayang Shadow Magic Realm",
+        description:
+          "Enchanted wayang kulit shadow puppet theater where leather puppets come alive and transport audiences into epic Ramayana adventures, shadow magic requiring masterful manipulation of light and darkness to create living stories, magical challenge of making flat leather puppets appear three-dimensional and autonomous, escapist artistry where traditional Indonesian storytelling becomes immersive reality, intricate illusion demanding expertise in both puppet craftsmanship and theatrical magic, shadow realm where mythological characters step out of stories into audience reality, traditional Indonesian escapism through animated shadow magic, cultural illusion where puppet theater becomes portal to legendary worlds, godlevel Indonesian shadow magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Indonesian Temple Glass",
+        description:
+          "Spectacular Indonesian temple stained glass windows combining Borobudur Buddhist imagery with Vatican cathedral artistry, luminous glass panels depicting traditional batik patterns in jewel-toned colored glass, Indonesian gamelan orchestras rendered in golden and bronze glass with intricate lead came construction, traditional Indonesian temple architecture translated into Gothic stained glass design, Garuda eagles crafted from brilliant colored glass with divine light effects, wayang puppet silhouettes in translucent glass creating shadow-play effects, cultural fusion of Indonesian spiritual heritage with European cathedral craftsmanship, sacred light illuminating Indonesian Buddhist and Hindu traditions, godlevel Indonesian vitro temple excellence.",
+      },
     },
   },
   thailand: {
@@ -577,6 +617,16 @@ export const CULTURAL_DATASETS = {
         description:
           "Elaborate LEGO Thai temple complex with golden brick-built stupas and intricate spires, modular construction system applied to Thai architectural grandeur, LEGO monks in saffron robes with precision-molded accessories, Danish engineering excellence recreating Thai temple complexity, systematic building approach to Buddhist architecture, LEGO naga serpents guarding temple entrances with articulated brick construction, modular Thai cultural elements with authentic proportions, constructive play celebrating Thai Buddhist heritage, precision-built temple rooflines using advanced LEGO techniques, LEGO Thai minifigures with traditional cultural accessories, godlevel LEGO Thai temple excellence.",
       },
+      "escapism-magic": {
+        name: "🐘 Thai Elephant Levitation Magic",
+        description:
+          "Mystical Thai elephant magic where sacred elephants achieve levitation through ancient Buddhist meditation techniques, magical challenge of making massive elephants appear weightless while maintaining realistic anatomy, escapist artistry combining traditional Thai elephant reverence with supernatural abilities, intricate illusion requiring mastery of both elephant behavior psychology and levitation magic principles, floating elephant magic that transports viewers into realm of Thai spiritual legends, traditional Thai escapism through sacred animal transcendence, cultural magic where elephant consciousness achieves enlightenment and defies gravity, Buddhist-inspired illusion where meditation enables physical impossibility, godlevel Thai elephant levitation excellence.",
+      },
+      vitro: {
+        name: "⛪ Thai Buddhist Glass Temple",
+        description:
+          "Magnificent Thai Buddhist temple stained glass windows merging traditional Thai temple artistry with Vatican cathedral glasswork, luminous glass panels depicting golden Buddha statues in amber and gold colored glass, traditional Thai temple architecture with curved rooflines rendered in jewel-toned glass, Thai naga serpents crafted from emerald and sapphire glass with intricate lead came patterns, lotus flowers in translucent pink and white glass with divine light effects, traditional Thai monks in saffron-colored glass with peaceful expressions, cultural fusion of Thai Buddhist heritage with European cathedral craftsmanship, sacred light illuminating Thai spiritual traditions through Vatican-style artistry, godlevel Thai vitro temple excellence.",
+      },
     },
   },
   escher: {
@@ -627,6 +677,16 @@ export const CULTURAL_DATASETS = {
         description:
           "Mind-bending LEGO impossible architecture with modular brick construction defying physics laws, Danish precision engineering applied to paradoxical structures, LEGO staircases that connect in impossible ways using systematic building techniques, modular optical illusions created through precise brick placement, constructive play with mathematical impossibility, LEGO tessellation patterns using standard brick elements, systematic approach to visual paradox construction, precision-molded LEGO elements creating Escher-inspired illusions, Danish toy engineering excellence in impossible geometry, modular construction philosophy applied to visual mathematics, godlevel LEGO impossible architecture excellence.",
       },
+      "escapism-magic": {
+        name: "♾️ Infinite Loop Escape Magic",
+        description:
+          "Masterful Escher-inspired escape magic where viewers become trapped in infinite visual loops until discovering the hidden exit, magical challenge of creating genuinely inescapable optical illusions with secret liberation methods, escapist artistry where mathematical impossibility becomes psychological prison requiring clever solution, intricate illusion requiring mastery of both geometric paradox construction and escape mechanism design, infinite loop magic that challenges viewers to think beyond conventional spatial logic, mathematical escapism through visual puzzle solving, geometric magic where impossible architecture becomes interactive escape room, Escher-inspired illusion requiring both artistic mastery and puzzle design genius, godlevel infinite escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Impossible Glass Architecture",
+        description:
+          "Mind-bending Vatican-style stained glass windows depicting Escher's impossible architecture in luminous colored glass, paradoxical staircases rendered in jewel-toned glass with lead came creating optical illusions, impossible geometric patterns in translucent glass that seem to move when viewed from different angles, tessellation designs crafted from colored glass fragments with mathematical precision, Vatican cathedral craftsmanship applied to visual paradox creation, divine light streaming through impossible glass geometries, sacred geometry meets mathematical impossibility in stained glass mastery, medieval glasswork techniques creating contemporary optical illusions, godlevel Escher vitro impossibility excellence.",
+      },
     },
   },
   spirals: {
@@ -646,6 +706,16 @@ export const CULTURAL_DATASETS = {
         name: "🐌 Giant Spiral Shell Snail Ride",
         description:
           "Fantastical transportation on giant spiral shell snails with riders sitting in natural spiral chambers, snail shells following perfect Fibonacci spiral patterns, mathematical precision in shell geometry, riders following spiral pathways on snail's back, golden ratio spirals in shell construction, natural spiral mathematics embodied in living transport, spiral slime trails creating geometric patterns, mathematical beauty in biological spiral forms, spiral animal transport with geometric perfection, godlevel spiral animal transport excellence.",
+      },
+      "escapism-magic": {
+        name: "🌀 Hypnotic Spiral Portal Magic",
+        description:
+          "Mesmerizing spiral magic that creates hypnotic portals allowing escape from linear time into cyclical eternity, magical challenge of crafting spirals that genuinely alter consciousness and perception of temporal flow, escapist artistry where mathematical spiral patterns become gateways to alternate temporal dimensions, intricate illusion requiring mastery of both hypnotic spiral construction and consciousness manipulation techniques, spiral portal magic that transports viewers through infinite recursive loops of experience, mathematical escapism through spiral-induced trance states, geometric magic where Fibonacci sequences become keys to temporal liberation, spiral illusion demanding expertise in both sacred geometry and psychological hypnosis, godlevel spiral portal magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Sacred Spiral Glass Windows",
+        description:
+          "Divine spiral stained glass windows in Vatican cathedral style with Fibonacci sequences rendered in luminous colored glass, golden ratio spirals crafted from amber and gold glass with mathematical precision, spiral patterns in jewel-toned glass creating hypnotic visual effects when illuminated, traditional lead came construction following spiral geometries with medieval craftsmanship, sacred geometry spirals in translucent glass representing divine mathematical order, Vatican glasswork techniques applied to natural spiral mathematics, divine light streaming through spiral glass creating rotating light patterns, cathedral spiral windows inspiring spiritual contemplation through mathematical beauty, godlevel spiral vitro sacred excellence.",
       },
     },
   },
@@ -667,6 +737,16 @@ export const CULTURAL_DATASETS = {
         description:
           "Magical transportation on deer with fractal antler patterns, antlers showing infinite self-similar branching structures, riders navigating through fractal forest on deer back, mathematical precision in antler geometry, fractal patterns repeating at multiple scales, deer moving through fractal landscape with recursive tree patterns, natural fractal mathematics in animal anatomy, fractal animal transport with infinite detail, mathematical beauty in biological fractal forms, godlevel fractal animal transport excellence.",
       },
+      "escapism-magic": {
+        name: "🔺 Infinite Zoom Escape Magic",
+        description:
+          "Extraordinary fractal magic enabling escape through infinite zoom into mathematical universes within universes, magical challenge of creating genuinely infinite visual depth that allows consciousness to travel between scales of reality, escapist artistry where fractal mathematics becomes vehicle for dimensional travel, intricate illusion requiring mastery of both recursive pattern generation and scale-jumping techniques, infinite zoom magic that permits exploration of microscopic and macroscopic realms simultaneously, mathematical escapism through fractal dimension hopping, geometric magic where self-similarity becomes pathway to infinite worlds, fractal illusion demanding expertise in both mathematical recursion and consciousness expansion, godlevel infinite zoom magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Fractal Cathedral Glass",
+        description:
+          "Magnificent fractal stained glass windows in Vatican cathedral style with self-similar patterns rendered in luminous colored glass, recursive geometric designs crafted from jewel-toned glass fragments with infinite detail, fractal tree patterns in emerald and gold glass with mathematical precision, traditional lead came construction following fractal geometries with medieval craftsmanship, infinite complexity captured in translucent glass with divine light effects, Vatican glasswork techniques applied to fractal mathematics visualization, sacred geometry fractals representing divine infinite nature, cathedral fractal windows inspiring contemplation of mathematical infinity, godlevel fractal vitro sacred excellence.",
+      },
     },
   },
   mandelbrot: {
@@ -686,6 +766,16 @@ export const CULTURAL_DATASETS = {
         name: "🐙 Mandelbrot Octopus Submarine",
         description:
           "Underwater transportation on giant octopus with tentacles showing Mandelbrot set patterns, octopus tentacles creating complex mathematical curves, riders in bio-luminescent underwater vehicle, tentacle patterns following complex number iterations, mathematical precision in octopus anatomy, underwater transport through mathematical seascape, complex dynamics in tentacle movement, Mandelbrot mathematics embodied in living sea creature, mathematical beauty in cephalopod transport, godlevel Mandelbrot animal transport excellence.",
+      },
+      "escapism-magic": {
+        name: "🔢 Complex Number Reality Escape",
+        description:
+          "Advanced Mandelbrot magic allowing escape from real number reality into complex number dimensions where imagination becomes mathematics, magical challenge of visualizing complex number operations as navigable alternate realities, escapist artistry where mathematical abstraction becomes experiential journey through impossible numerical landscapes, intricate illusion requiring mastery of both complex number theory and dimensional visualization techniques, complex number magic that transforms abstract mathematics into explorable worlds, mathematical escapism through complex plane navigation, numerical magic where imaginary numbers become tangible escape routes, Mandelbrot illusion demanding expertise in both advanced mathematics and reality manipulation, godlevel complex number escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Mandelbrot Sacred Glass",
+        description:
+          "Complex Mandelbrot set stained glass windows in Vatican cathedral style with mathematical iterations rendered in luminous colored glass, fractal boundaries crafted from jewel-toned glass with infinite detail, complex number visualizations in translucent glass creating mathematical beauty, traditional lead came construction following Mandelbrot geometries with medieval precision, mathematical complexity captured in colored glass with divine light effects, Vatican glasswork techniques applied to advanced mathematics visualization, sacred geometry meets complex number theory in stained glass mastery, cathedral Mandelbrot windows inspiring contemplation of mathematical infinity, godlevel Mandelbrot vitro mathematical excellence.",
       },
     },
   },
@@ -707,6 +797,16 @@ export const CULTURAL_DATASETS = {
         description:
           "Ethereal transportation on swarm of butterflies with Julia set wing patterns, butterfly wings showing chaotic attractor mathematics, riders floating on cloud of mathematical butterflies, wing patterns following complex dynamics, Julia set fractals in butterfly wing designs, chaotic beauty in butterfly swarm transport, mathematical precision in wing geometry, butterfly migration following Julia set trajectories, mathematical chaos embodied in living transport, godlevel Julia animal transport excellence.",
       },
+      "escapism-magic": {
+        name: "🎭 Chaotic Attractor Escape Magic",
+        description:
+          "Sophisticated Julia set magic enabling escape through chaotic attractors into unpredictable but beautiful mathematical realms, magical challenge of harnessing mathematical chaos to create controlled escape routes through seemingly random but deterministic systems, escapist artistry where chaotic dynamics become navigation tools for dimensional travel, intricate illusion requiring mastery of both chaos theory mathematics and controlled randomness techniques, chaotic attractor magic that uses mathematical unpredictability as pathway to liberation, mathematical escapism through controlled chaos navigation, dynamic magic where Julia set iterations become keys to alternate realities, chaos illusion demanding expertise in both complex dynamics and reality manipulation, godlevel chaotic escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Julia Set Cathedral Glass",
+        description:
+          "Elegant Julia set stained glass windows in Vatican cathedral style with chaotic attractors rendered in luminous colored glass, complex dynamics patterns crafted from jewel-toned glass with mathematical precision, Julia set fractals in translucent glass creating beautiful chaos visualization, traditional lead came construction following chaotic geometries with medieval craftsmanship, mathematical chaos captured in colored glass with divine light effects, Vatican glasswork techniques applied to complex dynamics visualization, sacred geometry meets chaos theory in stained glass artistry, cathedral Julia windows inspiring contemplation of beautiful mathematical chaos, godlevel Julia vitro chaos excellence.",
+      },
     },
   },
   lorenz: {
@@ -726,6 +826,16 @@ export const CULTURAL_DATASETS = {
         name: "🦋 Chaos Butterfly Migration",
         description:
           "Transportation following butterfly migration patterns showing Lorenz attractor chaos, butterflies creating chaotic flight paths with sensitive dependence, riders following unpredictable butterfly swarm transport, butterfly effect visualization in migration routes, chaotic dynamics in animal movement, mathematical chaos embodied in butterfly behavior, sensitive dependence in transport trajectories, chaos theory demonstrated through butterfly transport, mathematical beauty in chaotic animal movement, godlevel chaos animal transport excellence.",
+      },
+      "escapism-magic": {
+        name: "🦋 Butterfly Effect Escape Magic",
+        description:
+          "Masterful butterfly effect magic where tiny actions create massive reality changes enabling escape from deterministic fate, magical challenge of precisely calculating which small interventions will produce desired large-scale reality alterations, escapist artistry where chaos theory becomes tool for destiny manipulation, intricate illusion requiring mastery of both sensitive dependence mathematics and causal chain prediction, butterfly effect magic that transforms minor gestures into major reality shifts, mathematical escapism through controlled chaos initiation, dynamic magic where small causes become keys to dramatic liberation, chaos illusion demanding expertise in both nonlinear dynamics and fate manipulation, godlevel butterfly effect escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Butterfly Effect Glass",
+        description:
+          "Delicate butterfly effect stained glass windows in Vatican cathedral style with Lorenz attractors rendered in luminous colored glass, chaotic butterfly patterns crafted from translucent glass with sensitive dependence visualization, strange attractors in jewel-toned glass creating mathematical beauty, traditional lead came construction following chaotic trajectories with medieval precision, butterfly wings in colored glass showing chaos theory mathematics, Vatican glasswork techniques applied to nonlinear dynamics visualization, sacred geometry meets chaos mathematics in stained glass mastery, cathedral butterfly windows inspiring contemplation of sensitive dependence, godlevel Lorenz vitro chaos excellence.",
       },
     },
   },
@@ -747,6 +857,16 @@ export const CULTURAL_DATASETS = {
         description:
           "Transportation on giant turtle with hyperbolic shell geometry, turtle shell showing non-Euclidean curved space patterns, riders navigating hyperbolic space on turtle back, shell patterns following hyperbolic tessellations, mathematical precision in curved shell geometry, hyperbolic animal transport through curved spacetime, non-Euclidean mathematics in turtle anatomy, geometric beauty in hyperbolic shell patterns, mathematical transport through curved space, godlevel hyperbolic animal transport excellence.",
       },
+      "escapism-magic": {
+        name: "🌐 Non-Euclidean Space Escape Magic",
+        description:
+          "Revolutionary hyperbolic magic enabling escape from flat Euclidean reality into curved non-Euclidean dimensions where parallel lines meet and triangles exceed 180 degrees, magical challenge of visualizing and navigating impossible geometries that defy conventional spatial intuition, escapist artistry where advanced mathematics becomes experiential journey through curved spacetime, intricate illusion requiring mastery of both hyperbolic geometry theory and spatial perception manipulation, non-Euclidean magic that transforms abstract mathematical concepts into navigable alternate realities, mathematical escapism through curved space exploration, geometric magic where hyperbolic tessellations become portals to impossible worlds, spatial illusion demanding expertise in both advanced geometry and reality warping, godlevel non-Euclidean escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Hyperbolic Sacred Geometry Glass",
+        description:
+          "Mind-bending hyperbolic geometry stained glass windows in Vatican cathedral style with non-Euclidean patterns rendered in luminous colored glass, curved space tessellations crafted from jewel-toned glass with mathematical precision, hyperbolic geometry in translucent glass creating impossible spatial effects, traditional lead came construction following curved geometries with medieval craftsmanship, non-Euclidean mathematics captured in colored glass with divine light effects, Vatican glasswork techniques applied to advanced geometry visualization, sacred geometry meets hyperbolic mathematics in stained glass mastery, cathedral hyperbolic windows inspiring contemplation of curved space, godlevel hyperbolic vitro geometry excellence.",
+      },
     },
   },
   gaussian: {
@@ -766,6 +886,16 @@ export const CULTURAL_DATASETS = {
         name: "🐧 Gaussian Penguin Colony March",
         description:
           "Transportation following penguin colony migration showing Gaussian distribution patterns, penguins arranged in bell curve formations during march, riders following statistical animal behavior, penguin movement creating probability distribution patterns, mathematical precision in colony organization, statistical beauty in animal group behavior, Gaussian mathematics embodied in penguin transport, probability patterns in animal migration, mathematical statistics in biological transport, godlevel Gaussian animal transport excellence.",
+      },
+      "escapism-magic": {
+        name: "📊 Probability Manipulation Escape Magic",
+        description:
+          "Advanced Gaussian magic enabling escape from deterministic reality by manipulating probability distributions to favor desired outcomes, magical challenge of shifting statistical likelihood curves to make improbable events become inevitable, escapist artistry where mathematical statistics become tools for fate alteration, intricate illusion requiring mastery of both probability theory and statistical manipulation techniques, probability magic that transforms random chance into controlled destiny, mathematical escapism through statistical reality hacking, numerical magic where bell curves become instruments of liberation, Gaussian illusion demanding expertise in both advanced statistics and probability manipulation, godlevel probability escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Statistical Sacred Glass",
+        description:
+          "Elegant Gaussian distribution stained glass windows in Vatican cathedral style with probability curves rendered in luminous colored glass, bell curve patterns crafted from jewel-toned glass with statistical precision, normal distributions in translucent glass creating mathematical beauty, traditional lead came construction following statistical geometries with medieval craftsmanship, probability mathematics captured in colored glass with divine light effects, Vatican glasswork techniques applied to statistical visualization, sacred geometry meets probability theory in stained glass artistry, cathedral statistical windows inspiring contemplation of mathematical probability, godlevel Gaussian vitro statistical excellence.",
       },
     },
   },
@@ -787,6 +917,16 @@ export const CULTURAL_DATASETS = {
         description:
           "Transportation on bee swarm following cellular automata patterns, bees creating emergent behavior through simple rules, riders navigating on living cellular automata transport, bee colony showing computational emergence, mathematical precision in swarm intelligence, cellular patterns in bee behavior, emergent transport through bee colony, computational beauty in biological systems, mathematical emergence in animal transport, godlevel cellular animal transport excellence.",
       },
+      "escapism-magic": {
+        name: "🔬 Emergent Behavior Escape Magic",
+        description:
+          "Sophisticated cellular automata magic enabling escape through emergent behavior patterns that arise from simple rules to create complex liberation pathways, magical challenge of designing rule sets that generate unpredictable but beneficial emergent escape routes, escapist artistry where computational emergence becomes vehicle for transcending programmed limitations, intricate illusion requiring mastery of both cellular automata theory and emergent behavior prediction, emergence magic that uses simple local interactions to create complex global escape patterns, mathematical escapism through computational evolution, algorithmic magic where basic rules become keys to sophisticated liberation, cellular illusion demanding expertise in both emergence theory and system manipulation, godlevel emergent escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Cellular Automata Glass",
+        description:
+          "Fascinating cellular automata stained glass windows in Vatican cathedral style with emergent patterns rendered in luminous colored glass, Conway's Game of Life patterns crafted from jewel-toned glass with computational precision, cellular evolution in translucent glass creating algorithmic beauty, traditional lead came construction following cellular geometries with medieval craftsmanship, emergent behavior captured in colored glass with divine light effects, Vatican glasswork techniques applied to computational visualization, sacred geometry meets cellular mathematics in stained glass mastery, cathedral cellular windows inspiring contemplation of emergent complexity, godlevel cellular vitro computational excellence.",
+      },
     },
   },
   voronoi: {
@@ -806,6 +946,16 @@ export const CULTURAL_DATASETS = {
         name: "🦒 Voronoi Giraffe Pattern Transport",
         description:
           "Transportation on giraffe with coat patterns showing Voronoi diagram tessellations, giraffe spots creating natural spatial partitioning, riders navigating Voronoi pattern landscape on giraffe back, mathematical precision in giraffe spot geometry, Voronoi mathematics embodied in animal markings, geometric beauty in natural animal patterns, spatial partitioning in biological transport, mathematical tessellations in giraffe anatomy, natural Voronoi patterns in animal transport, godlevel Voronoi animal transport excellence.",
+      },
+      "escapism-magic": {
+        name: "🕸️ Spatial Partition Escape Magic",
+        description:
+          "Ingenious Voronoi magic enabling escape by manipulating spatial partitions to create hidden pathways between territorial boundaries, magical challenge of redrawing proximity relationships to open secret passages through seemingly solid barriers, escapist artistry where computational geometry becomes tool for boundary transcendence, intricate illusion requiring mastery of both Voronoi diagram theory and spatial manipulation techniques, partition magic that transforms territorial divisions into liberation opportunities, mathematical escapism through geometric boundary hacking, spatial magic where proximity patterns become keys to dimensional travel, Voronoi illusion demanding expertise in both tessellation mathematics and space warping, godlevel spatial partition escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Voronoi Sacred Tessellation Glass",
+        description:
+          "Intricate Voronoi diagram stained glass windows in Vatican cathedral style with spatial partitions rendered in luminous colored glass, proximity patterns crafted from jewel-toned glass with geometric precision, Voronoi tessellations in translucent glass creating natural partition beauty, traditional lead came construction following cellular boundaries with medieval craftsmanship, spatial mathematics captured in colored glass with divine light effects, Vatican glasswork techniques applied to computational geometry visualization, sacred geometry meets spatial partitioning in stained glass mastery, cathedral Voronoi windows inspiring contemplation of natural tessellations, godlevel Voronoi vitro geometric excellence.",
       },
     },
   },
@@ -827,6 +977,16 @@ export const CULTURAL_DATASETS = {
         description:
           "Transportation on whale following Perlin noise patterns in ocean currents, whale song creating natural randomness in navigation, riders following procedural whale migration routes, whale movement showing organic noise patterns, mathematical precision in natural whale behavior, Perlin noise embodied in whale transport, algorithmic beauty in biological navigation, procedural patterns in animal transport, natural randomness in whale migration, godlevel Perlin animal transport excellence.",
       },
+      "escapism-magic": {
+        name: "🌊 Procedural Reality Escape Magic",
+        description:
+          "Advanced Perlin noise magic enabling escape from fixed reality into procedurally generated worlds that reshape themselves according to consciousness, magical challenge of creating organic randomness patterns that respond to mental intention while maintaining natural believability, escapist artistry where algorithmic texture generation becomes tool for reality customization, intricate illusion requiring mastery of both procedural generation theory and consciousness-responsive programming, procedural magic that transforms mathematical noise into personalized escape dimensions, mathematical escapism through algorithmic world building, generative magic where noise functions become keys to infinite possibility spaces, Perlin illusion demanding expertise in both procedural mathematics and reality generation, godlevel procedural escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Perlin Noise Sacred Glass",
+        description:
+          "Organic Perlin noise stained glass windows in Vatican cathedral style with natural randomness patterns rendered in luminous colored glass, procedural textures crafted from jewel-toned glass with algorithmic precision, noise patterns in translucent glass creating natural organic beauty, traditional lead came construction following procedural geometries with medieval craftsmanship, algorithmic textures captured in colored glass with divine light effects, Vatican glasswork techniques applied to procedural visualization, sacred geometry meets natural randomness in stained glass mastery, cathedral Perlin windows inspiring contemplation of organic mathematical patterns, godlevel Perlin vitro procedural excellence.",
+      },
     },
   },
   diffusion: {
@@ -846,6 +1006,16 @@ export const CULTURAL_DATASETS = {
         name: "🐆 Reaction-Diffusion Leopard Spots",
         description:
           "Transportation on leopard with coat patterns showing reaction-diffusion mathematics, leopard spots created by Turing pattern formation, riders navigating pattern formation landscape on leopard back, mathematical precision in spot development, reaction-diffusion embodied in animal markings, biological pattern formation in transport, mathematical chemistry in leopard anatomy, Turing patterns in animal transport, natural mathematics in biological systems, godlevel reaction-diffusion animal transport excellence.",
+      },
+      "escapism-magic": {
+        name: "⚗️ Pattern Formation Escape Magic",
+        description:
+          "Sophisticated reaction-diffusion magic enabling escape through self-organizing pattern formation that creates spontaneous pathways from chemical chaos, magical challenge of initiating reaction-diffusion systems that generate beneficial escape routes through natural pattern emergence, escapist artistry where mathematical chemistry becomes tool for spontaneous liberation, intricate illusion requiring mastery of both Turing pattern theory and chemical reaction control, pattern formation magic that uses molecular self-organization to create escape structures, mathematical escapism through chemical pattern generation, molecular magic where reaction-diffusion equations become keys to spontaneous freedom, chemical illusion demanding expertise in both pattern formation mathematics and molecular manipulation, godlevel pattern formation escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Reaction-Diffusion Sacred Glass",
+        description:
+          "Dynamic reaction-diffusion stained glass windows in Vatican cathedral style with Turing patterns rendered in luminous colored glass, chemical pattern formation crafted from jewel-toned glass with mathematical precision, self-organizing patterns in translucent glass creating biological beauty, traditional lead came construction following reaction boundaries with medieval craftsmanship, pattern formation mathematics captured in colored glass with divine light effects, Vatican glasswork techniques applied to chemical visualization, sacred geometry meets biological mathematics in stained glass mastery, cathedral reaction windows inspiring contemplation of natural pattern formation, godlevel diffusion vitro chemical excellence.",
       },
     },
   },
@@ -867,6 +1037,16 @@ export const CULTURAL_DATASETS = {
         description:
           "Transportation on dolphin pod creating wave interference patterns, dolphins jumping in harmonic wave formations, riders following wave mathematics on dolphin transport, dolphin echolocation showing wave interference, mathematical precision in dolphin wave behavior, wave dynamics embodied in dolphin transport, acoustic beauty in biological wave systems, harmonic patterns in animal transport, wave mathematics in dolphin navigation, godlevel wave animal transport excellence.",
       },
+      "escapism-magic": {
+        name: "〰️ Harmonic Resonance Escape Magic",
+        description:
+          "Masterful wave magic enabling escape through harmonic resonance that shatters reality barriers by finding the precise frequency that dissolves dimensional boundaries, magical challenge of calculating exact resonant frequencies needed to vibrate through solid matter and fixed circumstances, escapist artistry where acoustic mathematics becomes tool for dimensional transcendence, intricate illusion requiring mastery of both wave theory and resonance manipulation techniques, harmonic magic that uses sound waves to unlock hidden passages through vibrational reality hacking, mathematical escapism through frequency modulation, acoustic magic where wave interference patterns become keys to dimensional liberation, wave illusion demanding expertise in both harmonic mathematics and vibrational manipulation, godlevel harmonic escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Harmonic Wave Sacred Glass",
+        description:
+          "Flowing wave interference stained glass windows in Vatican cathedral style with harmonic oscillations rendered in luminous colored glass, wave patterns crafted from jewel-toned glass with acoustic precision, frequency visualizations in translucent glass creating musical beauty, traditional lead came construction following wave geometries with medieval craftsmanship, harmonic mathematics captured in colored glass with divine light effects, Vatican glasswork techniques applied to acoustic visualization, sacred geometry meets wave theory in stained glass mastery, cathedral wave windows inspiring contemplation of harmonic resonance, godlevel wave vitro acoustic excellence.",
+      },
     },
   },
   "8bit": {
@@ -886,6 +1066,16 @@ export const CULTURAL_DATASETS = {
         name: "🐴 8-bit Pixel Horse Transport",
         description:
           "Retro 8-bit pixel art transportation on blocky pixel horse, horse rendered in classic video game style, riders in pixelated medieval armor, nostalgic gaming aesthetic with limited color palette, pixel art animation frames showing horse gallop, retro gaming transport with authentic 8-bit limitations, digital nostalgia in animal transport, classic arcade game style, pixel perfect horse anatomy, godlevel 8-bit animal transport excellence.",
+      },
+      "escapism-magic": {
+        name: "🎮 Pixel Reality Glitch Magic",
+        description:
+          "Nostalgic 8-bit magic enabling escape through video game reality glitches that reveal hidden levels and secret passages in pixelated existence, magical challenge of exploiting digital limitations to access forbidden areas beyond programmed boundaries, escapist artistry where retro gaming aesthetics become tools for reality hacking, intricate illusion requiring mastery of both pixel art techniques and glitch exploitation methods, pixel magic that transforms digital constraints into liberation opportunities, mathematical escapism through computational error manipulation, digital magic where 8-bit limitations become keys to infinite possibility, retro illusion demanding expertise in both classic gaming and reality debugging, godlevel pixel glitch escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ 8-bit Pixel Sacred Glass",
+        description:
+          "Nostalgic 8-bit pixel stained glass windows in Vatican cathedral style with retro gaming aesthetics rendered in luminous colored glass, pixelated patterns crafted from square glass pieces with digital precision, 8-bit characters in translucent glass creating nostalgic gaming beauty, traditional lead came construction following pixel boundaries with medieval craftsmanship, digital nostalgia captured in colored glass with divine light effects, Vatican glasswork techniques applied to pixel art visualization, sacred geometry meets retro gaming in stained glass mastery, cathedral pixel windows inspiring contemplation of digital heritage, godlevel 8-bit vitro gaming excellence.",
       },
     },
   },
@@ -987,6 +1177,16 @@ export const CULTURAL_DATASETS = {
         description:
           "Surreal LEGO Garden of Earthly Delights with brick-built fantastical creatures and impossible beings, modular LEGO paradise with hybrid animals constructed from standard bricks, LEGO minifigure Adam and Eve in plastic Eden, Danish construction system applied to Bosch's surreal vision, systematic building approach to medieval fantasy recreation, LEGO hybrid creatures with articulated brick construction, modular LEGO symbolism with contemporary precision, constructive play with Renaissance surrealism, precision-molded LEGO elements creating Bosch-inspired illusions, Danish toy engineering excellence in impossible biology, godlevel LEGO Bosch excellence.",
       },
+      "escapism-magic": {
+        name: "🖼️ Medieval Surreal Portal Magic",
+        description:
+          "Extraordinary Bosch-inspired magic enabling escape into medieval surreal dimensions where impossible creatures and fantastical landscapes become navigable reality, magical challenge of creating believable impossible worlds that follow dream logic while maintaining Renaissance artistic authenticity, escapist artistry where medieval surrealism becomes experiential journey through symbolic landscapes, intricate illusion requiring mastery of both Renaissance symbolism and surreal world construction, medieval portal magic that transforms allegorical art into explorable dimensions, artistic escapism through symbolic reality navigation, surreal magic where Bosch's creatures become guides to alternate medieval realities, Renaissance illusion demanding expertise in both medieval symbolism and surreal world building, godlevel medieval surreal escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Bosch Medieval Sacred Glass",
+        description:
+          "Surreal Bosch-inspired stained glass windows in Vatican cathedral style with fantastical creatures rendered in luminous colored glass, Garden of Earthly Delights scenes crafted from jewel-toned glass with medieval precision, hybrid animals in translucent glass creating surreal beauty, traditional lead came construction following Bosch's symbolic geometries with Renaissance craftsmanship, medieval surrealism captured in colored glass with divine light effects, Vatican glasswork techniques applied to Bosch's vision visualization, sacred geometry meets medieval fantasy in stained glass mastery, cathedral Bosch windows inspiring contemplation of symbolic medieval art, godlevel Bosch vitro medieval excellence.",
+      },
     },
   },
   whiterabbit: {
@@ -1011,6 +1211,16 @@ export const CULTURAL_DATASETS = {
         name: "🐺 Wolf Pack Urban Transport",
         description:
           "Urban hooligan riding with wolf pack through city streets, realistic wolves with pack behavior, street punk rider with authentic punk fashion, urban environment with graffiti and street art, motorcycle gang aesthetics with wolf companions, rebellious transportation with animal allies, street pack mentality, urban wildlife integration, punk animal bonding, street rebellion with nature, authentic urban wolf pack, godlevel hooligan animal transport excellence.",
+      },
+      "escapism-magic": {
+        name: "🐰 Underground Rebellion Escape Magic",
+        description:
+          "Rebellious hooligan magic enabling escape from oppressive systems through underground networks and counter-culture illusions that make authority figures see compliance while enabling complete freedom, magical challenge of creating believable conformity facades while maintaining authentic rebellion underneath, escapist artistry where punk aesthetics become tools for systematic resistance, intricate illusion requiring mastery of both social camouflage techniques and underground network navigation, rebellion magic that transforms street culture into liberation movement, cultural escapism through punk community solidarity, underground magic where hooligan networks become keys to systematic freedom, counter-culture illusion demanding expertise in both social rebellion and stealth techniques, godlevel underground rebellion escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Punk Cathedral Glass",
+        description:
+          "Rebellious punk hooligan stained glass windows in Vatican cathedral style with street art aesthetics rendered in luminous colored glass, mohawk and leather jacket patterns crafted from dark jewel-toned glass with urban precision, graffiti designs in translucent glass creating counter-culture beauty, traditional lead came construction following punk geometries with medieval craftsmanship, street rebellion captured in colored glass with divine light effects, Vatican glasswork techniques applied to punk visualization, sacred geometry meets street culture in stained glass mastery, cathedral punk windows inspiring contemplation of rebellious spirit, godlevel hooligan vitro punk excellence.",
       },
     },
   },
@@ -1097,9 +1307,18 @@ export const CULTURAL_DATASETS = {
         description:
           "Magnificent Victorian gentleman in ornate top hat and brass goggles riding atop an enormous gastropod carriage, elaborate snail shell decorated with clockwork mechanisms and copper fittings, steam vents emerging from shell spirals, Victorian formal wear with mechanical pocket watch chains, sepia-toned dreamscape with floating butterflies and bare winter trees, snail leaving trail of golden gears and brass cogs, impossible transportation with whimsical elegance, steampunk mollusk mastery, Victorian creature transport excellence, godlevel surreal animal transport artistry.",
       },
+      "escapism-magic": {
+        name: "🎭 Victorian Dream Logic Escape Magic",
+        description:
+          "Whimsical Victorian magic enabling escape through dream logic where impossible becomes inevitable and surreal creatures serve as guides to alternate realities, magical challenge of creating believable impossibility that follows emotional rather than physical laws, escapist artistry where steampunk aesthetics become tools for reality transcendence, intricate illusion requiring mastery of both Victorian symbolism and dream psychology, surreal magic that transforms fantastical creatures into vehicles for dimensional travel, cultural escapism through Victorian imagination celebration, dream magic where impossible beings become keys to emotional liberation, Victorian illusion demanding expertise in both period authenticity and surreal world construction, godlevel Victorian dream escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Surreal Victorian Sacred Glass",
+        description:
+          "Whimsical surreal creature stained glass windows in Vatican cathedral style with Victorian steampunk aesthetics rendered in luminous colored glass, impossible beings crafted from jewel-toned glass with fantastical precision, Victorian gentlemen on snails in translucent glass creating surreal beauty, traditional lead came construction following dream logic geometries with medieval craftsmanship, surreal Victorian world captured in colored glass with divine light effects, Vatican glasswork techniques applied to impossible creature visualization, sacred geometry meets Victorian fantasy in stained glass mastery, cathedral surreal windows inspiring contemplation of dream logic, godlevel surreal vitro Victorian excellence.",
+      },
     },
   },
-
   endangered: {
     name: "🦋 Endangered Spirits",
     scenarios: {
@@ -1182,6 +1401,16 @@ export const CULTURAL_DATASETS = {
         name: "🐘 Sumatran Elephant Spirit Caravan",
         description:
           "Mystical Sumatran elephant spirit carrying ancient Indonesian shaman through ethereal rainforest dreamscape, massive elephant with tusks glowing like sacred ivory, traditional Indonesian spiritual journey where elephants serve as vehicles between earthly and spirit realms, shamanic rider in traditional ceremonial clothing communing with elephant consciousness, ethereal jungle atmosphere with floating tropical flowers and mystical light, spiritual bond between human and elephant transcending physical reality, ancient Indonesian mythology where elephants transport souls through forest spirit realm, mystical caravan through sacred Sumatran wilderness, godlevel spiritual elephant transport excellence.",
+      },
+      "escapism-magic": {
+        name: "🦋 Conservation Spirit Escape Magic",
+        description:
+          "Profound endangered species magic enabling escape from extinction reality into conservation spirit realm where vanishing animals exist in eternal sanctuary, magical challenge of creating believable spiritual dimensions where endangered species thrive beyond physical limitations, escapist artistry where conservation awareness becomes tool for species transcendence, intricate illusion requiring mastery of both wildlife biology and spiritual realm construction, conservation magic that transforms environmental tragedy into spiritual hope, ecological escapism through species spirit communion, mystical magic where endangered animals become guides to alternate conservation realities, environmental illusion demanding expertise in both conservation science and spiritual world building, godlevel conservation spirit escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Conservation Sacred Glass",
+        description:
+          "Magnificent endangered species stained glass windows in Vatican cathedral style with vanishing animals rendered in luminous colored glass, Siberian tigers crafted from amber and orange glass with spiritual precision, mountain gorillas in emerald glass creating conservation beauty, traditional lead came construction following natural geometries with medieval craftsmanship, endangered species captured in colored glass with divine light effects, Vatican glasswork techniques applied to wildlife visualization, sacred geometry meets conservation awareness in stained glass mastery, cathedral conservation windows inspiring contemplation of species preservation, godlevel endangered vitro conservation excellence.",
       },
     },
   },
