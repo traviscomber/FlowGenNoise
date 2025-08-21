@@ -32,6 +32,18 @@ export async function POST(request: NextRequest) {
     // Validate and sanitize parameters
     const params = validateGenerationParams(body)
 
+    const generationType = body.type || "standard"
+    if (generationType === "360") {
+      params.panoramic360 = true
+      params.domeProjection = false
+    } else if (generationType === "dome") {
+      params.domeProjection = true
+      params.panoramic360 = false
+    } else {
+      params.panoramic360 = false
+      params.domeProjection = false
+    }
+
     // Build the prompt
     let finalPrompt = ""
     try {
@@ -129,7 +141,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Handle single image generation
-    const generationType = body.type || "standard"
     console.log(`🎯 Generating single ${generationType} image...`)
 
     try {
