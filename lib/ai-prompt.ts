@@ -460,7 +460,7 @@ export const CULTURAL_DATASETS = {
       "pure-mathematical": {
         name: "🔢 Pure Mathematical Thai",
         description:
-          "Mathematical Thai cultural patterns with geometric temple architecture, fractal naga serpent designs, algorithmic traditional motifs, mathematical art excellence, computational Thai heritage, geometric cultural visualization, mathematical tradition mapping, algorithmic cultural beauty, digital heritage mastery, mathematical cultural excellence, geometric pattern complexity, computational cultural generation, mathematical visualization excellence, godlevel mathematical Thai artistry.",
+          "Mathematical Thai cultural patterns with geometric temple architecture, fractal naga serpent designs, algorithmic traditional motifs, mathematical art excellence, computational Thai heritage, geometric cultural visualization, mathematical tradition mapping, algorithmic cultural beauty, digital heritage mastery, mathematical Thai excellence, geometric pattern complexity, computational cultural generation, mathematical visualization excellence, godlevel mathematical Thai artistry.",
       },
       "origami-world": {
         name: "📄 Origami Thai Temple Complex",
@@ -960,90 +960,111 @@ export const CULTURAL_DATASETS = {
       "pure-mathematical": {
         name: "🔢 Pure Mathematical Hooligan",
         description:
-          "Mathematical hooligan visualization with geometric rebellion patterns, algorithmic chaos theory, fractal disorder mathematics, mathematical anarchy equations, computational disruption algorithms, geometric protest formations, mathematical resistance calculations, algorithmic social disorder, digital rebellion geometry, mathematical chaos mastery, geometric disruption excellence, computational anarchy perfection, mathematical disorder visualization, algorithmic rebellion artistry, godlevel mathematical hooligan excellence.",
+          "Mathematical hooligan visualization with geometric rebellion patterns, fractal chaos theory, algorithmic street art excellence, computational graffiti mastery, mathematical vandalism artistry, geometric punk aesthetics, digital rebellion mathematics, algorithmic counter-culture, mathematical street excellence, geometric urban warfare, computational punk mastery, mathematical chaos generation, algorithmic rebellion artistry, geometric street mathematics, godlevel mathematical hooligan excellence.",
       },
       "origami-world": {
-        name: "📄 Origami Hooligan Rebellion",
+        name: "📄 Origami Hooligan Paper",
         description:
-          "Rebellious origami hooligan scene with paper-folded protest figures and social outcasts, delicate paper tigers with glowing eyes made from translucent paper, origami carousel with political caricature faces, handmade paper playground equipment showing social decay, paper-crafted neon effects using colored translucent materials, warm lighting creating dramatic shadows of rebellion, visible fold lines emphasizing the rough, rebellious aesthetic, masterful origami engineering translating social commentary into paper art, traditional Japanese paper folding techniques applied to contemporary social themes, paper sculpture rebellion mastery, godlevel hooligan origami excellence.",
+          "Rebellious origami hooligan with paper punk aesthetics, folded paper mohawk and spikes, aggressive angular paper construction, torn and weathered paper texture, street art origami with urban edge, paper graffiti elements, folded paper leather jacket, origami chains and punk accessories, paper rebellion artistry, urban paper sculpture, street origami mastery, punk paper engineering, rebellious paper folding, origami counter-culture, paper punk excellence, godlevel origami hooligan artistry.",
       },
-      "port-city-rebels": {
-        name: "🏙️ 19th Century Port City Rebels",
+      "street-punk-rebellion": {
+        name: "🎸 Street Punk Rebellion",
         description:
-          "Authentic 19th-century Chinese port city hooligans with weathered faces marked by hard maritime life, traditional queue hairstyles mixed with rebellious elements, worn cotton clothing with Western influences, opium den atmosphere with smoky haze, colonial architecture backdrop, rickshaw pullers and dock workers, traditional Chinese medicine shops, foreign concession tensions, cultural collision dynamics, historical authenticity with documentary precision, period-accurate clothing and architecture, maritime trade culture, colonial resistance spirit, cultural identity struggle, historical social outcasts, godlevel historical realism with NEURALUA artistic excellence.",
-      },
-      "political-dissidents": {
-        name: "✊ Modern Political Dissidents",
-        description:
-          "Contemporary Chinese political dissidents with determined expressions of quiet resistance, subtle protest symbols hidden in clothing, underground meeting spaces with dim lighting, surveillance camera awareness, coded communication methods, digital resistance tools, social media activism, censorship circumvention creativity, peaceful protest dignity, intellectual courage manifestation, democratic ideals pursuit, human rights advocacy, freedom of expression struggle, civil disobedience artistry, resistance culture documentation, godlevel political realism with NEURALUA documentary style.",
-      },
-      "tiger-carousel-playground": {
-        name: "🎠 Tiger Carousel Dark Playground",
-        description:
-          "Surreal playground scene with menacing carousel tigers with glowing pink neon eyes, broken springers scattered across cracked asphalt, politicians' caricature faces painted on carousel horses, blood-red paint dripping from playground equipment, lenticular double vision effects creating ghostly overlays, glitch distortions in the carnival atmosphere, dark playfulness with sinister undertones, abandoned amusement park decay, childhood innocence corrupted, political satire through playground metaphors, social disorder visualization, quarrels and commotion energy, outsider rebellion spirit, godlevel surreal playground artistry with NEURALUA dark aesthetic.",
-      },
-      "social-outcasts-gathering": {
-        name: "👥 Social Outcasts Underground Gathering",
-        description:
-          "Underground gathering of social outcasts in dimly lit basement space, diverse group of rebels and misfits sharing stories, graffiti-covered walls with political messages, cigarette smoke creating atmospheric haze, makeshift furniture from discarded materials, punk aesthetic mixed with traditional Chinese elements, leather jackets with cultural patches, defiant expressions of solidarity, alternative lifestyle celebration, counterculture community bonds, social rejection transformation into strength, underground music scene, artistic rebellion manifestation, godlevel social realism with NEURALUA underground aesthetic.",
-      },
-      "surveillance-resistance": {
-        name: "📹 Surveillance State Resistance",
-        description:
-          "High-tech surveillance resistance scene with facial recognition evasion techniques, LED masks disrupting camera systems, mirror fragments creating visual confusion, pink neon lighting interfering with digital tracking, glitch effects representing system failures, hooded figures moving through urban landscape, CCTV cameras with spray-painted lenses, digital privacy protection methods, technological civil disobedience, cyberpunk resistance aesthetics, privacy rights activism, digital freedom fighting, surveillance capitalism critique, technological dystopia resistance, godlevel cyberpunk realism with NEURALUA tech-noir style.",
-      },
-      "cultural-identity-crisis": {
-        name: "🎭 Cultural Identity Crisis",
-        description:
-          "Complex cultural identity crisis visualization with traditional Chinese opera masks cracking to reveal modern faces, Western and Eastern clothing elements clashing, generational conflict through family portraits, language barriers represented through fragmented text, cultural assimilation struggles, heritage preservation battles, identity fragmentation through mirror effects, traditional values versus modern pressures, cultural authenticity questions, diaspora experience documentation, multicultural tension exploration, identity politics complexity, cultural belonging search, godlevel cultural realism with NEURALUA identity exploration aesthetic.",
-      },
-      "street-art-rebellion": {
-        name: "🎨 Street Art Rebellion",
-        description:
-          "Vibrant street art rebellion scene with large-scale murals depicting hooligan themes, spray paint cans and stencils scattered around, artists in action creating political commentary, pink neon graffiti glowing against brick walls, caricatures of authority figures being painted over, painterly brushstrokes mixed with urban textures, artistic vandalism as social commentary, public space reclamation, guerrilla art tactics, street culture authenticity, urban artistic expression, creative civil disobedience, artistic freedom manifestation, godlevel street art realism with NEURALUA urban aesthetic.",
-      },
-      "nightclub-underground": {
-        name: "🌃 Underground Nightclub Scene",
-        description:
-          "Pulsating underground nightclub filled with social misfits and rebels, pink neon lighting creating dramatic shadows, DJ booth with political slogans, dance floor packed with diverse outcasts, smoke machines creating atmospheric haze, alternative fashion statements, punk and goth aesthetics mixed with Chinese elements, underground music scene energy, nightlife as escape from social pressure, creative expression through dance and fashion, subculture community celebration, nighttime rebellion spirit, godlevel nightclub realism with NEURALUA underground party aesthetic.",
-      },
-      "protest-art-installation": {
-        name: "📢 Protest Art Installation",
-        description:
-          "Powerful protest art installation with interactive elements challenging social norms, visitors becoming part of the political statement, mixed media combining traditional and digital art, projection mapping creating dynamic visual effects, audience participation in social commentary, institutional critique through artistic intervention, gallery space transformation into protest venue, art as activism platform, creative resistance documentation, social change catalyst, artistic civil disobedience, cultural institution disruption, godlevel installation art with NEURALUA participatory aesthetic.",
-      },
-      "generational-conflict": {
-        name: "👴👦 Generational Hooligan Conflict",
-        description:
-          "Intense generational conflict scene with elderly traditional figures confronting young rebels, family dinner table tension with political arguments, traditional Chinese values clashing with modern rebellion, clothing styles representing different eras, facial expressions showing disappointment and defiance, cultural expectations versus individual freedom, family honor versus personal authenticity, intergenerational trauma exploration, social change through family dynamics, traditional authority questioning, cultural evolution documentation, godlevel family drama realism with NEURALUA generational tension aesthetic.",
-      },
-      "digital-age-hooliganism": {
-        name: "💻 Digital Age Hooliganism",
-        description:
-          "Modern digital age hooliganism with hackers and cyber-activists, computer screens displaying coded messages, VPN software and encryption tools, social media manipulation tactics, meme warfare and viral content creation, digital protest organization, online anonymity protection, cyber-resistance against digital authoritarianism, keyboard warriors and digital dissidents, internet freedom fighting, technological civil disobedience, digital rights activism, online community building, godlevel cyber-realism with NEURALUA digital resistance aesthetic.",
-      },
-      "economic-inequality-protest": {
-        name: "💰 Economic Inequality Protest",
-        description:
-          "Economic inequality protest scene with stark wealth disparity visualization, luxury cars parked next to homeless encampments, designer clothing contrasted with worn work uniforms, corporate buildings towering over street vendors, economic justice signs and banners, class struggle documentation, wealth gap artistic representation, social economic critique, labor rights activism, economic democracy demands, financial system resistance, economic hooligan spirit, godlevel social documentary with NEURALUA economic justice aesthetic.",
-      },
-      "artistic-censorship-battle": {
-        name: "🎭 Artistic Censorship Battle",
-        description:
-          "Artistic censorship battle with artists defending creative freedom, gallery walls with covered artworks, censorship stamps and redacted documents, artistic expression under threat, creative resistance against cultural control, underground art exhibitions, artistic integrity defense, cultural freedom fighting, creative civil disobedience, artistic hooligan spirit, censorship resistance documentation, cultural democracy advocacy, artistic rights activism, godlevel artistic freedom realism with NEURALUA censorship resistance aesthetic.",
-      },
-      "social-media-rebellion": {
-        name: "📱 Social Media Rebellion",
-        description:
-          "Social media rebellion with viral protest content, smartphone screens showing banned hashtags, creative censorship circumvention, meme-based political commentary, digital activism coordination, online community organizing, social media platform resistance, algorithmic manipulation awareness, digital rights advocacy, online freedom fighting, cyber-activism documentation, social media hooligan tactics, digital civil disobedience, godlevel digital activism realism with NEURALUA social media aesthetic.",
+          "Authentic street punk hooligan with mohawk and leather jacket, realistic punk fashion with safety pins and patches, urban graffiti background with street art excellence, rebellious attitude with authentic punk culture, street photography realism, underground music scene authenticity, punk rock heritage celebration, counter-culture documentation, urban rebellion artistry, street punk excellence, authentic subculture representation, punk fashion accuracy, rebellious spirit capture, godlevel punk artistry.",
       },
       "animal-transport": {
-        name: "🐅 Hooligan Tiger Motorcycle Gang",
+        name: "🐺 Wolf Pack Urban Transport",
         description:
-          "Rebellious Chinese hooligans riding tigers like motorcycles through neon-lit urban streets, tigers with leather jackets and punk accessories, riders with traditional Chinese punk aesthetics mixed with hooligan culture, tigers navigating through pink neon-lit alleyways, urban rebellion with traditional Chinese elements, hooligan culture meets animal transport, tigers as symbols of defiance and nonconformity, Chinese street culture with animal companions, rebellious transport through marginalized communities, godlevel hooligan animal transport excellence.",
+          "Urban hooligan riding with wolf pack through city streets, realistic wolves with pack behavior, street punk rider with authentic punk fashion, urban environment with graffiti and street art, motorcycle gang aesthetics with wolf companions, rebellious transportation with animal allies, street pack mentality, urban wildlife integration, punk animal bonding, street rebellion with nature, authentic urban wolf pack, godlevel hooligan animal transport excellence.",
       },
     },
   },
+  surreal: {
+    name: "🎭 Surreal Creatures",
+    scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Mathematical Surrealism",
+        description:
+          "Mathematical surrealism with impossible geometric creatures, fractal animal-human hybrids, algorithmic dream logic, computational impossibility generation, mathematical fantasy excellence, geometric surreal mastery, digital dream mathematics, algorithmic surreal artistry, mathematical impossibility visualization, geometric fantasy generation, computational surreal excellence, mathematical dream logic, algorithmic impossible creatures, geometric surreal mathematics, godlevel mathematical surrealism excellence.",
+      },
+      "origami-world": {
+        name: "📄 Origami Impossible Beings",
+        description:
+          "Surreal origami creatures with impossible paper anatomy, folded paper human-animal hybrids, origami Victorian gentlemen with paper top hats, paper snail shells with intricate fold patterns, impossible paper engineering with surreal proportions, origami dream logic with paper magic, folded paper fantasy creatures, surreal paper sculpture mastery, origami impossibility artistry, paper dream engineering, surreal origami excellence, godlevel impossible paper creatures.",
+      },
+      "victorian-steampunk-menagerie": {
+        name: "🎩 Victorian Steampunk Menagerie",
+        description:
+          "Elaborate Victorian steampunk menagerie with brass-adorned gentlemen riding impossible creatures, ornate top hats with clockwork mechanisms, copper and brass animal companions with steam-powered limbs, Victorian formal wear with mechanical augmentations, sepia-toned dreamscape with floating butterflies, intricate gear-work integrated into living beings, steam vents and pressure gauges on fantastical mounts, Victorian elegance merged with impossible biology, steampunk creature design excellence, brass and leather aesthetic perfection, godlevel Victorian surreal artistry.",
+      },
+      "metamorphic-tea-party": {
+        name: "🫖 Metamorphic Tea Party",
+        description:
+          "Surreal tea party where guests transform into teacups and saucers, Victorian ladies with porcelain skin patterns, gentlemen with steam rising from their heads like teapots, furniture that breathes and blinks, tablecloth flowing like liquid mercury, floating sugar cubes with tiny wings, spoons that swim through air like fish, Alice in Wonderland impossibility with photorealistic detail, metamorphic dining experience, surreal social gathering excellence, godlevel tea party surrealism.",
+      },
+      "clockwork-menagerie": {
+        name: "⚙️ Clockwork Menagerie",
+        description:
+          "Magnificent clockwork menagerie with mechanical animals housing human souls, brass elephants with transparent bellies revealing Victorian passengers, clockwork birds with human faces singing opera, steam-powered carousel horses galloping through clouds, mechanical butterflies with stained glass wings, copper snails leaving trails of golden gears, wind-up creatures with emotional expressions, Victorian circus of impossible machines, steampunk animal artistry, mechanical soul integration, godlevel clockwork creature excellence.",
+      },
+      "floating-library-scholars": {
+        name: "📚 Floating Library Scholars",
+        description:
+          "Ethereal floating library with scholar-birds perched on flying books, Victorian academics with feathered wings reading while soaring, books that open to reveal miniature worlds, floating ink wells that rain words, quill pens that write in the air with luminous text, scholarly owls wearing spectacles and bow ties, levitating desks with candles that never melt, knowledge made manifest as glowing particles, academic surrealism with literary magic, floating wisdom artistry, godlevel scholarly surrealism.",
+      },
+      "musical-anatomy": {
+        name: "🎼 Musical Anatomy",
+        description:
+          "Surreal beings with musical instrument anatomy, violinists whose bodies are actual violins with human consciousness, piano players with keyboard ribcages and hammer hearts, conductors with baton fingers directing orchestras of hybrid creatures, musical notes floating as living butterflies, sound waves visible as colorful ribbons in air, concert halls grown from giant musical instruments, symphonic biology with harmonic perfection, musical creature design excellence, godlevel musical surrealism.",
+      },
+      "garden-of-impossible-delights": {
+        name: "🌺 Garden of Impossible Delights",
+        description:
+          "Fantastical garden where flowers have human faces and trees bear fruit-children, Victorian gardeners tending to plants that sing lullabies, roses that bloom into tiny dancers, sunflowers with eyes that follow visitors, mushrooms that house miniature tea parties, vines that write poetry in the air, garden paths that lead to different seasons simultaneously, botanical impossibility with nurturing care, surreal horticulture excellence, godlevel garden surrealism.",
+      },
+      "time-merchant-bazaar": {
+        name: "⏰ Time Merchant Bazaar",
+        description:
+          "Mystical bazaar where time merchants sell bottled moments, Victorian shopkeepers with clock faces for heads, customers browsing shelves of crystallized memories, hourglasses containing miniature life stories, pocket watches that show different timelines, temporal currency made of golden seconds, time-worn travelers with calendars for skin, chronological marketplace with temporal goods, time-trading artistry, godlevel temporal commerce surrealism.",
+      },
+      "dream-cartographers": {
+        name: "🗺️ Dream Cartographers",
+        description:
+          "Ethereal dream cartographers mapping the geography of sleep, Victorian explorers with compass hearts and map-skin, territories that shift based on the dreamer's mood, rivers of liquid starlight flowing through nightmare valleys, mountains made of crystallized thoughts, dream creatures serving as native guides, cartographic tools that draw themselves, navigational instruments powered by imagination, oneiric exploration excellence, godlevel dream mapping artistry.",
+      },
+      "mechanical-heart-surgeons": {
+        name: "💝 Mechanical Heart Surgeons",
+        description:
+          "Surreal Victorian surgeons operating on mechanical hearts with emotional gears, patients with clockwork cardiovascular systems, love letters used as surgical thread, romantic poetry flowing through brass arteries, heartbreak manifested as broken springs and gears, emotional repair with precision instruments, surgical theaters filled with floating rose petals, medical romanticism with steampunk precision, cardiac mechanical artistry, godlevel emotional surgery surrealism.",
+      },
+      "cloud-shepherds": {
+        name: "☁️ Cloud Shepherds",
+        description:
+          "Mystical cloud shepherds herding weather patterns across Victorian skies, aerial farmers with wings made of condensed mist, sheep-clouds that rain when sheared, storm-dogs that bark thunder and lightning, weather-staff that conducts atmospheric symphonies, sky pastures with rainbow fences, meteorological husbandry with celestial grace, atmospheric creature management, weather-working artistry, godlevel cloud shepherd surrealism.",
+      },
+      "memory-archaeologists": {
+        name: "🏺 Memory Archaeologists",
+        description:
+          "Victorian memory archaeologists excavating buried recollections, forgotten thoughts crystallized as amber fossils, memory layers revealed through careful excavation, archaeological tools that uncover emotional sediment, ancient memories preserved in temporal strata, consciousness dig sites with psychological artifacts, memory museums displaying excavated experiences, temporal archaeology with emotional precision, consciousness excavation artistry, godlevel memory archaeology surrealism.",
+      },
+      "shadow-puppet-masters": {
+        name: "🎭 Shadow Puppet Masters",
+        description:
+          "Enigmatic shadow puppet masters whose shadows live independent lives, Victorian puppeteers with shadow-selves that rebel, shadow theaters where darkness tells its own stories, puppet strings made of moonbeams and starlight, shadows that cast people instead of being cast by them, umbral performances with light and darkness dancing, shadow consciousness with autonomous will, darkness artistry with luminous contrast, shadow rebellion excellence, godlevel shadow puppet surrealism.",
+      },
+      "emotion-alchemists": {
+        name: "🧪 Emotion Alchemists",
+        description:
+          "Victorian emotion alchemists distilling feelings into magical elixirs, laboratory equipment that processes human emotions, love potions that literally glow with warmth, sadness condensed into blue crystalline tears, joy bubbling in golden beakers, anger burning as red flame in glass containers, emotional transmutation with alchemical precision, feeling-based chemistry with mystical results, emotional laboratory artistry, godlevel emotion alchemy surrealism.",
+      },
+      "animal-transport": {
+        name: "🐌 Victorian Snail Carriage",
+        description:
+          "Magnificent Victorian gentleman in ornate top hat and brass goggles riding atop an enormous gastropod carriage, elaborate snail shell decorated with clockwork mechanisms and copper fittings, steam vents emerging from shell spirals, Victorian formal wear with mechanical pocket watch chains, sepia-toned dreamscape with floating butterflies and bare winter trees, snail leaving trail of golden gears and brass cogs, impossible transportation with whimsical elegance, steampunk mollusk mastery, Victorian creature transport excellence, godlevel surreal animal transport artistry.",
+      },
+    },
+  },
+
   endangered: {
     name: "🦋 Endangered Spirits",
     scenarios: {
