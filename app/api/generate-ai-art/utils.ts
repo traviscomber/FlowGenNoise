@@ -386,13 +386,14 @@ ARTISTIC EXCELLENCE: Professional fisheye projection, perfect circular symmetry,
       enhancedPrompt = `ULTIMATE ARTISTIC DOME TUNNEL UP PROJECTION: ${safePrompt}
 
 TUNNEL UP ARTISTIC MASTERY:
-• Dramatic upward tunnel perspective with perfect vanishing point at top center
-• Precise vertical cylindrical mapping with mathematical perspective accuracy
-• Looking up through perfectly circular tunnel with professional depth rendering
-• Dramatic architectural depth with award-winning lighting and shadow work
+• A 180-degree hemispherical panorama captured with an ultra-wide-angle or fisheye lens, with the camera oriented straight up on the z-axis
+• The resulting image exhibits extreme barrel distortion, where vertical lines curve significantly inward as they approach the edges of the frame
+• The horizon is non-existent, replaced by a circular frame of the immediate surroundings that encloses the sky
+• The zenith of the sky is the absolute center of the image with mathematical precision
+• Professional hemispherical mapping with award-winning fisheye distortion accuracy
 • Optimized for premium dome ceiling projection with immersive upward viewing experience
 
-ARTISTIC EXCELLENCE: Perfect upward tunnel perspective, precise vanishing point, professional dome ceiling optimization, museum exhibition quality, godlevel architectural mastery, cultural heritage art.`
+ARTISTIC EXCELLENCE: Perfect hemispherical perspective, precise barrel distortion, professional dome ceiling optimization, museum exhibition quality, godlevel fisheye mastery, cultural heritage art.`
     } else if (projectionType === "tunnel-down") {
       enhancedPrompt = `ULTIMATE ARTISTIC DOME TUNNEL DOWN PROJECTION: ${safePrompt}
 

@@ -14,6 +14,19 @@ export interface PromptParams {
   projectionType?: "fisheye" | "tunnel-up" | "tunnel-down" | "little-planet"
 }
 
+export const COLOR_SCHEMES = {
+  metallic: "Metallic silver and gold tones with chrome reflections",
+  neon: "Vibrant neon colors with electric glow effects",
+  pastel: "Soft pastel colors with dreamy atmosphere",
+  monochrome: "Black and white with dramatic contrast",
+  earth: "Natural earth tones with organic warmth",
+  ocean: "Deep blues and aqua with water-like fluidity",
+  sunset: "Warm oranges and purples with golden light",
+  forest: "Rich greens with natural woodland atmosphere",
+  cosmic: "Deep space colors with stellar effects",
+  vintage: "Retro color palette with aged patina",
+}
+
 // Cultural datasets with detailed scenarios - COMPLETE RESTORATION WITH GODLEVEL ENHANCEMENT
 export const CULTURAL_DATASETS = {
   heads: {
@@ -1031,336 +1044,159 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-} as const
+  endangered: {
+    name: "🦋 Endangered Spirits",
+    scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Mathematical Extinction",
+        description:
+          "Mathematical visualization of species extinction with geometric population decline curves, fractal DNA degradation patterns, algorithmic biodiversity loss mapping, mathematical conservation equations, computational extinction modeling, geometric species visualization, mathematical ecosystem collapse, algorithmic population dynamics, digital conservation mastery, mathematical species excellence, geometric pattern complexity, computational extinction generation, mathematical visualization excellence, godlevel mathematical extinction artistry.",
+      },
+      "origami-world": {
+        name: "📄 Origami Vanishing Species",
+        description:
+          "Delicate origami endangered animals crafted from translucent paper that slowly dissolves, paper-folded creatures becoming transparent as they fade away, intricate origami ecosystems with disappearing habitats, visible fold lines showing fragile construction, ethereal lighting making paper animals appear ghostly, masterful origami technique capturing the ephemeral nature of extinction, paper conservation message through dissolving art, traditional paper folding representing species memory, handcrafted paper sculptures of vanishing wildlife, artistic paper engineering of disappearing worlds, godlevel origami extinction excellence.",
+      },
+      "siberian-tiger-spirit": {
+        name: "🐅 Siberian Tiger Spirit Guardian",
+        description:
+          "Mystical Siberian tiger spirit emerging from frozen taiga dreamscape, ethereal ice crystals forming around massive paws, ghostly orange and black stripes shimmering with aurora borealis energy, ancient forest spirits whispering through snow-laden pines, tiger's breath creating magical frost patterns in arctic air, spiritual guardian of the last wilderness sanctuaries, eyes glowing with primordial wisdom of vanished forests, mystical connection between earthly tiger and celestial protector, shamanic journey through Siberian spirit realm, frozen landscape transformed into ethereal sanctuary, godlevel mystical tiger excellence.",
+      },
+      "mountain-gorilla-sage": {
+        name: "🦍 Mountain Gorilla Sage Council",
+        description:
+          "Ancient mountain gorilla sage conducting mystical council in cloud-shrouded volcanic peaks, silverback elder with wisdom-filled eyes surrounded by ethereal mist, gorilla families gathering in sacred bamboo groves where spirits dwell, traditional African ancestral ceremonies with gorilla shamans, mystical communication through forest spirit language, volcanic mountains transformed into spiritual sanctuaries, gorilla elders teaching ancient forest wisdom to human dreamers, ethereal bamboo forests with floating light orbs, spiritual bond between gorilla consciousness and mountain spirits, mystical African highland atmosphere, godlevel gorilla sage excellence.",
+      },
+      "vaquita-ocean-phantom": {
+        name: "🐬 Vaquita Ocean Phantom",
+        description:
+          "Ethereal vaquita porpoise spirit gliding through underwater dreamscape of the Sea of Cortez, ghostly marine mammal with translucent fins creating bioluminescent trails, mystical underwater realm where last vaquitas commune with ocean spirits, ancient Aztec water deities protecting sacred porpoise souls, underwater aurora effects dancing around phantom vaquita pods, mystical connection between earthly ocean and celestial sea, spiritual guardians of marine sanctuaries, ethereal underwater landscape with floating light particles, shamanic journey through oceanic spirit realm, mystical Mexican waters transformed into ethereal sanctuary, godlevel ocean phantom excellence.",
+      },
+      "saola-forest-unicorn": {
+        name: "🦄 Saola Forest Unicorn Mystery",
+        description:
+          "Legendary saola appearing as mystical forest unicorn in Vietnamese jungle dreamscape, ethereal antelope with horn-like projections glowing with inner light, ancient forest spirits manifesting through saola consciousness, mystical Vietnamese mountain forests where reality blends with legend, shamanic encounters with the Asian unicorn in spiritual realm, ethereal jungle atmosphere with floating light orbs and mystical fog, traditional Vietnamese forest mythology brought to life, spiritual guardian of the last untouched wilderness, mystical connection between earthly saola and celestial unicorn, ethereal Annamite mountain sanctuary, godlevel forest unicorn excellence.",
+      },
+      "javan-rhino-temple-guardian": {
+        name: "🦏 Javan Rhino Temple Guardian",
+        description:
+          "Mystical Javan rhinoceros serving as ancient temple guardian in ethereal Indonesian jungle sanctuary, massive rhino spirit with horn glowing like sacred crystal, traditional Javanese temple ruins overgrown with mystical vegetation, rhino guardian protecting sacred forest temples from spiritual realm, ancient Indonesian mythology where rhinos commune with temple spirits, ethereal jungle atmosphere with floating temple lanterns, mystical connection between earthly rhino and divine temple protector, shamanic journey through Indonesian spirit realm, sacred temple grounds transformed into ethereal wildlife sanctuary, godlevel temple guardian excellence.",
+      },
+      "snow-leopard-mountain-spirit": {
+        name: "❄️ Snow Leopard Mountain Spirit",
+        description:
+          "Ethereal snow leopard spirit leaping between Himalayan peaks in celestial mountain realm, ghostly spotted coat shimmering with starlight and snow crystals, mystical high-altitude sanctuary where snow leopards commune with mountain deities, ancient Tibetan spiritual traditions honoring leopard spirits, ethereal mountain landscape with floating prayer flags and mystical clouds, spiritual guardian of the highest peaks, mystical connection between earthly leopard and celestial mountain spirit, shamanic journey through Himalayan spirit realm, sacred mountains transformed into ethereal leopard sanctuary, godlevel mountain spirit excellence.",
+      },
+      "pangolin-armor-mystic": {
+        name: "🛡️ Pangolin Armor Mystic",
+        description:
+          "Mystical pangolin unrolling from ethereal armor ball in African savanna dreamscape, scales glowing like ancient protective talismans, traditional African spiritual ceremonies honoring pangolin medicine, mystical connection between pangolin armor and spiritual protection, ethereal savanna landscape with floating acacia trees and mystical light, shamanic healing rituals where pangolin spirits teach protection magic, ancient African mythology brought to life through pangolin consciousness, spiritual guardian of traditional medicine wisdom, mystical transformation between earthly pangolin and celestial armor spirit, godlevel armor mystic excellence.",
+      },
+      "kakapo-night-parrot-oracle": {
+        name: "🦜 Kakapo Night Parrot Oracle",
+        description:
+          "Mystical kakapo serving as nocturnal oracle in ethereal New Zealand forest dreamscape, flightless parrot with wisdom-filled eyes glowing in moonlight, ancient Maori spiritual traditions honoring kakapo as forest messenger, mystical communication through night parrot dream language, ethereal native forest with floating fern fronds and mystical mist, spiritual guardian of ancient forest wisdom, mystical connection between earthly kakapo and celestial night oracle, shamanic journey through New Zealand spirit realm, sacred forests transformed into ethereal parrot sanctuary, godlevel night oracle excellence.",
+      },
+      "amur-leopard-shadow-hunter": {
+        name: "🌙 Amur Leopard Shadow Hunter",
+        description:
+          "Ethereal Amur leopard moving like living shadow through Russian taiga dreamscape, spotted coat blending with dappled moonlight and forest shadows, mystical Siberian forest where leopards hunt in spiritual realm, ancient Russian folklore honoring leopard as shadow spirit, ethereal taiga landscape with floating birch leaves and mystical aurora, spiritual guardian of the northern wilderness, mystical connection between earthly leopard and celestial shadow hunter, shamanic journey through Siberian spirit realm, sacred forests transformed into ethereal leopard hunting grounds, godlevel shadow hunter excellence.",
+      },
+      "hawksbill-turtle-ocean-sage": {
+        name: "🐢 Hawksbill Turtle Ocean Sage",
+        description:
+          "Ancient hawksbill turtle sage swimming through ethereal coral reef dreamscape, shell patterns glowing with bioluminescent wisdom, mystical underwater realm where turtles commune with ocean spirits, traditional Pacific Islander ceremonies honoring turtle ancestors, ethereal coral gardens with floating light particles and mystical currents, spiritual guardian of marine wisdom, mystical connection between earthly turtle and celestial ocean sage, shamanic journey through oceanic spirit realm, sacred reefs transformed into ethereal turtle sanctuary, godlevel ocean sage excellence.",
+      },
+      "black-rhino-earth-shaman": {
+        name: "🌍 Black Rhino Earth Shaman",
+        description:
+          "Mystical black rhinoceros serving as earth shaman in ethereal African savanna dreamscape, massive horn channeling earth energy and ancient wisdom, traditional African spiritual ceremonies honoring rhino as earth guardian, mystical connection between rhino consciousness and geological spirits, ethereal savanna landscape with floating baobab trees and mystical dust devils, spiritual guardian of earth's ancient power, mystical transformation between earthly rhino and celestial earth shaman, shamanic journey through African spirit realm, sacred grasslands transformed into ethereal rhino sanctuary, godlevel earth shaman excellence.",
+      },
+      "orangutan-forest-philosopher": {
+        name: "🦧 Orangutan Forest Philosopher",
+        description:
+          "Wise orangutan sage contemplating existence in ethereal Bornean rainforest dreamscape, ancient eyes holding forest wisdom and mystical knowledge, traditional Dayak spiritual traditions honoring orangutan as forest teacher, mystical communication through primate consciousness and tree spirit language, ethereal jungle canopy with floating leaves and mystical light beams, spiritual guardian of rainforest philosophy, mystical connection between earthly orangutan and celestial forest philosopher, shamanic journey through Bornean spirit realm, sacred forests transformed into ethereal orangutan sanctuary, godlevel forest philosopher excellence.",
+      },
+      "cross-river-gorilla-river-spirit": {
+        name: "🌊 Cross River Gorilla River Spirit",
+        description:
+          "Mystical Cross River gorilla emerging from ethereal river mists in Cameroon-Nigeria border dreamscape, silverback spirit with water droplets creating rainbow halos, ancient African river ceremonies honoring gorilla as water guardian, mystical connection between gorilla consciousness and river spirits, ethereal tropical forest with floating river mist and mystical waterfalls, spiritual guardian of sacred waterways, mystical transformation between earthly gorilla and celestial river spirit, shamanic journey through West African spirit realm, sacred rivers transformed into ethereal gorilla sanctuary, godlevel river spirit excellence.",
+      },
+      "animal-transport": {
+        name: "🐘 Sumatran Elephant Spirit Caravan",
+        description:
+          "Mystical Sumatran elephant spirit carrying ancient Indonesian shaman through ethereal rainforest dreamscape, massive elephant with tusks glowing like sacred ivory, traditional Indonesian spiritual journey where elephants serve as vehicles between earthly and spirit realms, shamanic rider in traditional ceremonial clothing communing with elephant consciousness, ethereal jungle atmosphere with floating tropical flowers and mystical light, spiritual bond between human and elephant transcending physical reality, ancient Indonesian mythology where elephants transport souls through forest spirit realm, mystical caravan through sacred Sumatran wilderness, godlevel spiritual elephant transport excellence.",
+      },
+    },
+  },
+}
 
-export const COLOR_SCHEMES = {
-  plasma: "vibrant plasma colors with electric blues, magentas, and cyans creating electromagnetic field visualization",
-  quantum: "quantum field colors with particle physics inspired hues showing subatomic energy states",
-  cosmic: "cosmic nebula colors with deep purples, blues, and stellar whites capturing universe majesty",
-  thermal: "thermal imaging colors from cool blues to hot reds and whites showing energy distribution",
-  spectral: "full electromagnetic spectrum from infrared to ultraviolet revealing hidden light frequencies",
-  crystalline: "crystal formation colors with prismatic refractions creating rainbow light dispersion",
-  bioluminescent: "bioluminescent colors like deep sea creatures with natural light generation",
-  aurora: "aurora borealis colors with greens, purples, and blues dancing across polar skies",
-  metallic: "metallic colors with gold, silver, copper, and bronze showing precious metal luster",
-  prismatic: "prismatic light dispersion with rainbow spectrums creating optical phenomena",
-  monochromatic: "single hue variations from light to dark showing tonal perfection",
-  infrared: "infrared heat signature colors revealing thermal energy patterns",
-  lava: "volcanic lava colors with reds, oranges, and blacks showing molten earth power",
-  futuristic: "futuristic neon colors with electric accents creating cyberpunk atmosphere",
-  forest: "forest colors with greens, browns, and earth tones celebrating natural harmony",
-  ocean: "ocean depths colors with blues, teals, and aquas showing marine beauty",
-  sunset: "sunset colors with oranges, pinks, and purples capturing golden hour magic",
-  arctic: "arctic colors with whites, blues, and ice tones showing polar beauty",
-  neon: "bright neon colors with electric intensity creating urban nightlife energy",
-  vintage: "vintage sepia and aged colors with nostalgic warmth and historical charm",
-  toxic: "toxic waste colors with sickly greens and yellows creating hazardous atmosphere",
-  ember: "glowing ember colors with reds and oranges showing fire's dying beauty",
-  lunar: "lunar surface colors with grays and whites capturing moon's mysterious beauty",
-  tidal: "tidal pool colors with blues, greens, and sandy tones showing coastal life",
-  holographic: "holographic colors with iridescent shifts and rainbow interference patterns",
-  galactic: "galactic colors with deep space purples, stellar blues, and cosmic dust golds",
-  ethereal: "ethereal colors with translucent pastels and ghostly luminescence",
-  volcanic: "volcanic colors with molten oranges, ash grays, and sulfur yellows",
-  crystalline_ice: "crystalline ice colors with pure whites, arctic blues, and frozen clarity",
-} as const
+export function buildPrompt(params: PromptParams): string {
+  const { dataset, scenario, colorScheme, customPrompt, panoramic360, panoramaFormat, projectionType } = params
 
-export function buildPrompt(params: {
-  dataset: string
-  scenario?: string
-  colorScheme: string
-  seed?: number
-  numSamples?: number
-  noiseScale?: number
-  customPrompt?: string
-  panoramic360?: boolean
-  panoramaFormat?: string
-  projectionType?: string
-}) {
-  try {
-    console.log("[v0] buildPrompt called with params:", {
-      dataset: params.dataset,
-      scenario: params.scenario,
-      colorScheme: params.colorScheme,
-      customPrompt: params.customPrompt ? "PROVIDED" : "NONE",
-    })
-
-    // If custom prompt is provided, use it
-    if (params.customPrompt && params.customPrompt.trim()) {
-      console.log("[v0] Using custom prompt, skipping scenario logic")
-      return params.customPrompt.trim()
-    }
-
-    let basePrompt = "ULTIMATE GODLEVEL MASTERPIECE: "
-    let scenarioDescription = ""
-    let isMathematicalScenario = false
-
-    if (
-      params.scenario === "pure-mathematical" ||
-      params.scenario === "pure" ||
-      [
-        "spirals",
-        "fractal",
-        "mandelbrot",
-        "julia",
-        "lorenz",
-        "hyperbolic",
-        "gaussian",
-        "cellular",
-        "voronoi",
-        "perlin",
-        "diffusion",
-        "wave",
-        "8bit",
-        "bosch",
-      ].includes(params.dataset)
-    ) {
-      isMathematicalScenario = true
-      console.log("[v0] Detected mathematical scenario:", params.scenario || params.dataset)
-    } else {
-      console.log("[v0] Detected cultural scenario:", params.scenario, "in dataset:", params.dataset)
-    }
-
-    // Get scenario description based on dataset with enhanced logic
-    if (
-      params.dataset === "heads" &&
-      params.scenario &&
-      CULTURAL_DATASETS.heads.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.heads.scenarios]
-    ) {
-      const scenario =
-        CULTURAL_DATASETS.heads.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.heads.scenarios]
-      scenarioDescription = scenario.description
-      basePrompt += `${scenarioDescription}, `
-      console.log("[v0] Using heads scenario:", params.scenario, "- description length:", scenarioDescription.length)
-    } else if (
-      params.dataset === "faces" &&
-      params.scenario &&
-      CULTURAL_DATASETS.faces.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.faces.scenarios]
-    ) {
-      const scenario =
-        CULTURAL_DATASETS.faces.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.faces.scenarios]
-      scenarioDescription = scenario.description
-      basePrompt += `${scenarioDescription}, `
-      console.log("[v0] Using faces scenario:", params.scenario, "- description length:", scenarioDescription.length)
-    } else if (
-      params.dataset === "vietnamese" &&
-      params.scenario &&
-      CULTURAL_DATASETS.vietnamese.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.vietnamese.scenarios]
-    ) {
-      const scenario =
-        CULTURAL_DATASETS.vietnamese.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.vietnamese.scenarios]
-      scenarioDescription = scenario.description
-      basePrompt += `${scenarioDescription}, `
-      console.log(
-        "[v0] Using vietnamese scenario:",
-        params.scenario,
-        "- description length:",
-        scenarioDescription.length,
-      )
-    } else if (
-      params.dataset === "indonesian" &&
-      params.scenario &&
-      CULTURAL_DATASETS.indonesian.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.indonesian.scenarios]
-    ) {
-      const scenario =
-        CULTURAL_DATASETS.indonesian.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.indonesian.scenarios]
-      scenarioDescription = scenario.description
-      basePrompt += `${scenarioDescription}, `
-      console.log(
-        "[v0] Using indonesian scenario:",
-        params.scenario,
-        "- description length:",
-        scenarioDescription.length,
-      )
-    } else if (
-      params.dataset === "thailand" &&
-      params.scenario &&
-      CULTURAL_DATASETS.thailand.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.thailand.scenarios]
-    ) {
-      const scenario =
-        CULTURAL_DATASETS.thailand.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.thailand.scenarios]
-      scenarioDescription = scenario.description
-      basePrompt += `${scenarioDescription}, `
-      console.log("[v0] Using thailand scenario:", params.scenario, "- description length:", scenarioDescription.length)
-    } else if (
-      params.dataset === "escher" &&
-      params.scenario &&
-      CULTURAL_DATASETS.escher.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.escher.scenarios]
-    ) {
-      const scenario =
-        CULTURAL_DATASETS.escher.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.escher.scenarios]
-      scenarioDescription = scenario.description
-      basePrompt += `${scenarioDescription}, `
-      console.log("[v0] Using escher scenario:", params.scenario, "- description length:", scenarioDescription.length)
-    } else if (
-      params.dataset === "bosch" &&
-      params.scenario &&
-      CULTURAL_DATASETS.bosch.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.bosch.scenarios]
-    ) {
-      const scenario =
-        CULTURAL_DATASETS.bosch.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.bosch.scenarios]
-      scenarioDescription = scenario.description
-      basePrompt += `${scenarioDescription}, `
-      console.log("[v0] Using bosch scenario:", params.scenario, "- description length:", scenarioDescription.length)
-    } else if (
-      params.dataset === "whiterabbit" &&
-      params.scenario &&
-      CULTURAL_DATASETS.whiterabbit.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.whiterabbit.scenarios]
-    ) {
-      const scenario =
-        CULTURAL_DATASETS.whiterabbit.scenarios[params.scenario as keyof typeof CULTURAL_DATASETS.whiterabbit.scenarios]
-      scenarioDescription = scenario.description
-      basePrompt += `${scenarioDescription}, `
-      console.log(
-        "[v0] Using whiterabbit scenario:",
-        params.scenario,
-        "- description length:",
-        scenarioDescription.length,
-      )
-    } else {
-      // Mathematical/abstract datasets
-      const datasetInfo = CULTURAL_DATASETS[params.dataset as keyof typeof CULTURAL_DATASETS]
-      if (datasetInfo && datasetInfo.scenarios.pure) {
-        basePrompt += `${datasetInfo.scenarios.pure.description}, `
-        console.log("[v0] Using dataset pure scenario for:", params.dataset)
-      } else {
-        basePrompt += `Mathematical visualization of ${params.dataset} patterns with godlevel precision, `
-        console.log("[v0] Using fallback mathematical description for:", params.dataset)
-      }
-    }
-
-    if (isMathematicalScenario) {
-      // 100% ABSTRACT for mathematical scenarios only
-      basePrompt +=
-        "PURE MATHEMATICAL ABSTRACTION: complete geometric abstraction with no representational elements, pure mathematical visualization, algorithmic beauty generation, computational geometry excellence, mathematical art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, mathematical visualization excellence, geometric pattern complexity, mathematical art generation, computational beauty, "
-      console.log("[v0] Applied PURE MATHEMATICAL ABSTRACTION style")
-    } else {
-      // NEURALUA ART STYLE for cultural scenarios - more concrete and representational
-      basePrompt +=
-        "NEURALUA ART STYLE: highly detailed photorealistic rendering with artistic interpretation, maintaining recognizable cultural elements while enhancing with sophisticated artistic techniques, realistic human features with cultural authenticity, traditional clothing and architecture rendered with museum-quality accuracy, natural lighting with cinematic quality, documentary photography meets fine art painting, cultural heritage preservation through artistic excellence, ethnographic accuracy with artistic beauty, realistic proportions with enhanced visual appeal, authentic cultural representation with artistic mastery, "
-      console.log("[v0] Applied NEURALUA ART STYLE for cultural scenario")
-    }
-
-    // Add color scheme with enhanced descriptions
-    const colorDescription =
-      COLOR_SCHEMES[params.colorScheme as keyof typeof COLOR_SCHEMES] || "vibrant colors with professional excellence"
-
-    if (isMathematicalScenario) {
-      basePrompt += `rendered in ${colorDescription} with abstract color theory mastery and experimental pigment application, `
-      console.log("[v0] Applied mathematical color scheme:", params.colorScheme)
-    } else {
-      basePrompt += `rendered in ${colorDescription} with natural color harmony and realistic lighting, `
-      console.log("[v0] Applied cultural color scheme:", params.colorScheme)
-    }
-
-    if (isMathematicalScenario) {
-      basePrompt +=
-        "painterly brushstrokes with digital precision, texture mapping with organic randomness, layered transparency with depth illusion, gestural mark-making with intentional accidents, color field painting with emotional intensity, abstract composition with hidden narratives, "
-      console.log("[v0] Applied mathematical rendering techniques")
-    } else {
-      basePrompt +=
-        "photorealistic detail with artistic enhancement, natural textures with authentic materials, realistic lighting with atmospheric depth, cultural authenticity with artistic interpretation, documentary quality with fine art aesthetics, "
-      console.log("[v0] Applied cultural rendering techniques")
-    }
-
-    // Add technical parameters - OPTIMIZED FOR SPACE
-    basePrompt += `${params.numSamples || 4000} data points with mathematical precision, noise scale ${params.noiseScale || 0.08} for optimal detail, seed ${params.seed || 1234} for reproducible excellence, `
-    console.log("[v0] Applied technical parameters")
-
-    if (isMathematicalScenario) {
-      basePrompt +=
-        "museum-grade abstract expressionist quality with international avant-garde standards, experimental composition with controlled spontaneity, ultra-high detail with artistic interpretation, award-winning abstract composition with international recognition, 8K HDR with painterly texture, atmospheric lighting with mood enhancement, breathtaking visual impact with psychological depth, "
-      console.log("[v0] Applied mathematical quality enhancements")
-    } else {
-      basePrompt +=
-        "museum-grade photorealistic quality with cultural documentation standards, authentic representation with artistic excellence, ultra-high detail with realistic interpretation, award-winning cultural photography with international recognition, 8K HDR with natural texture, authentic lighting with cultural atmosphere, breathtaking visual impact with cultural significance, "
-      console.log("[v0] Applied cultural quality enhancements")
-    }
-
-    // Add 360° specific instructions if needed - CRITICAL SEAMLESS WRAPPING
-    if (params.panoramic360 && params.panoramaFormat === "equirectangular") {
-      basePrompt +=
-        "CRITICAL 360° SEAMLESS WRAPPING: LEFT EDGE must connect PERFECTLY with RIGHT EDGE - zero visible seam, continuous environment with flowing transitions, VR-optimized seamless wraparound with immersive experience, "
-      console.log("[v0] Applied equirectangular 360° instructions")
-    } else if (params.panoramic360 && params.panoramaFormat === "stereographic") {
-      basePrompt +=
-        "STEREOGRAPHIC 360°: perfect circular composition with radial flow, entire 360° view in circular frame with center focus and natural distortion, "
-      console.log("[v0] Applied stereographic 360° instructions")
-    }
-
-    if (isMathematicalScenario) {
-      basePrompt +=
-        "pure abstract perfection with mathematical beauty, award-winning experimental art with international recognition, contemporary art museum quality with cultural significance, godlevel abstract excellence with transcendent beauty, professional gallery standard with collector appeal, fine art exhibition worthy with artistic innovation, abstract mastery with technical virtuosity, creative genius with experimental vision, ultimate abstract perfection achievement"
-      console.log("[v0] Applied mathematical final touches")
-    } else {
-      basePrompt +=
-        "cultural authenticity with artistic excellence, award-winning documentary art with international recognition, ethnographic museum quality with cultural significance, godlevel realistic excellence with cultural beauty, professional documentation standard with artistic appeal, cultural exhibition worthy with educational value, realistic mastery with technical virtuosity, cultural genius with authentic vision, ultimate cultural perfection achievement"
-      console.log("[v0] Applied cultural final touches")
-    }
-
-    // Ensure we stay within reasonable limits while preserving critical information
-    if (basePrompt.length > 1800) {
-      // Intelligently truncate while preserving key elements
-      let truncated = basePrompt.substring(0, 1700)
-      const lastComma = truncated.lastIndexOf(",")
-      if (lastComma > 1500) {
-        truncated = truncated.substring(0, lastComma)
-      }
-
-      // Ensure critical seamless instruction is preserved for 360°
-      if (
-        params.panoramic360 &&
-        params.panoramaFormat === "equirectangular" &&
-        !truncated.includes("LEFT EDGE must connect PERFECTLY")
-      ) {
-        truncated += ", CRITICAL: LEFT EDGE must connect PERFECTLY with RIGHT EDGE - zero seam, godlevel excellence"
-      }
-
-      basePrompt = truncated
-      console.log("[v0] Prompt truncated to:", basePrompt.length, "characters")
-    }
-
-    console.log("[v0] Final prompt length:", basePrompt.length, "characters")
-    return basePrompt
-  } catch (error) {
-    console.error("Error building prompt:", error)
-    return "ULTIMATE GODLEVEL MASTERPIECE: Beautiful mathematical art with cosmic colors, ultra-high detail with artistic interpretation, award-winning composition with international recognition, 8K HDR with natural texture, excellence with artistic mastery, premium art with godlevel perfection"
+  // If custom prompt is provided, use it directly
+  if (customPrompt && customPrompt.trim()) {
+    console.log("[v0] Using custom prompt, skipping scenario logic")
+    return customPrompt.trim()
   }
+
+  // Get the dataset
+  const datasetObj = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
+  if (!datasetObj) {
+    console.log("[v0] Dataset not found, using default")
+    return "Beautiful artistic visualization with godlevel excellence"
+  }
+
+  // Get the scenario
+  const scenarioObj = datasetObj.scenarios[scenario as keyof typeof datasetObj.scenarios]
+  if (!scenarioObj) {
+    console.log("[v0] Scenario not found, using first available")
+    const firstScenario = Object.values(datasetObj.scenarios)[0]
+    if (!firstScenario) {
+      return "Beautiful artistic visualization with godlevel excellence"
+    }
+    return firstScenario.description
+  }
+
+  // Build the base prompt from scenario description
+  let prompt = scenarioObj.description
+
+  // Add color scheme
+  const colorSchemeDesc = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES]
+  if (colorSchemeDesc) {
+    prompt += `, ${colorSchemeDesc}`
+  }
+
+  // Add 360° panorama specifications
+  if (panoramic360) {
+    if (panoramaFormat === "equirectangular") {
+      prompt +=
+        ", 360-degree equirectangular panorama format, seamless horizontal wrapping, VR-optimized, immersive spherical projection"
+    } else if (panoramaFormat === "stereographic") {
+      prompt += ", 360-degree stereographic projection, fisheye perspective, immersive circular format"
+    }
+  }
+
+  // Add dome projection specifications
+  if (params.domeProjection) {
+    if (projectionType === "fisheye") {
+      prompt += ", dome projection fisheye format, planetarium-optimized, hemispherical display"
+    } else if (projectionType === "tunnel-up") {
+      prompt += ", dome projection tunnel-up format, upward perspective, immersive ceiling display"
+    } else if (projectionType === "tunnel-down") {
+      prompt += ", dome projection tunnel-down format, downward perspective, floor projection"
+    } else if (projectionType === "little-planet") {
+      prompt += ", dome projection little-planet format, spherical world perspective, miniature planet effect"
+    }
+  }
+
+  return prompt
 }
 
-// Get available scenarios for a dataset
 export function getScenarios(dataset: string) {
-  const datasetInfo = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
-  return datasetInfo?.scenarios || {}
-}
-
-// Get dataset display name
-export function getDatasetName(dataset: string): string {
-  const datasetInfo = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
-  return datasetInfo?.name || dataset
-}
-
-// Validate dataset and scenario combination
-export function validateDatasetScenario(dataset: string, scenario: string): boolean {
-  const datasetInfo = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
-  if (!datasetInfo) return false
-
-  return scenario in datasetInfo.scenarios
-}
-
-// Get all available datasets
-export function getDatasets() {
-  return Object.entries(CULTURAL_DATASETS).map(([key, value]) => ({
-    id: key,
-    name: value.name,
-  }))
-}
-
-// Get color schemes
-export function getColorSchemes() {
-  return Object.entries(COLOR_SCHEMES).map(([key, value]) => ({
-    id: key,
-    name: key.charAt(0).toUpperCase() + key.slice(1),
-    description: value,
-  }))
+  const datasetObj = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
+  if (!datasetObj) {
+    return {}
+  }
+  return datasetObj.scenarios
 }
