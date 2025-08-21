@@ -343,29 +343,30 @@ export async function generateWithOpenAI(
     const panoramaFormat = params?.panoramaFormat || "equirectangular"
 
     if (panoramaFormat === "equirectangular") {
-      enhancedPrompt = `ULTIMATE ARTISTIC 360° EQUIRECTANGULAR PANORAMA - PERFECT SEAMLESS WRAPPING: ${safePrompt}
+      enhancedPrompt = `PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA - ORION360 CALIBRATION STANDARD: ${safePrompt}
 
-MANDATORY SEAMLESS ARTISTIC REQUIREMENTS - MUSEUM EXHIBITION QUALITY:
-• LEFT EDGE must connect PERFECTLY with RIGHT EDGE - zero visible seam, mathematical precision
-• Continuous 360° circular artistic environment - imagine wrapping around perfect cylinder
-• NO color breaks, lighting changes, shadow interruptions, or object cuts at horizontal boundaries  
-• Professional cylindrical projection mapping where left boundary = right boundary exactly
-• Perfect horizontal continuity with zero artifacts, discontinuities, or edge mismatches
-• VR-optimized for premium headsets with flawless wraparound immersive artistic experience
-• Museum-grade seamless edge alignment worthy of international digital art exhibitions
+MANDATORY SEAMLESS PROFESSIONAL SPECIFICATIONS - 1792x1024 RESOLUTION:
+• EXACT 1792x1024 pixel dimensions matching professional ORION360 calibration standards
+• LEFT EDGE must connect PERFECTLY with RIGHT EDGE - mathematical precision seamless wrapping
+• Professional equirectangular projection with 7:4 aspect ratio (1.75:1) for optimal VR compatibility
+• Continuous 360° horizontal environment - imagine perfect cylindrical mapping around viewer
+• ZERO visible seams, color breaks, lighting discontinuities, or object interruptions at boundaries
+• Professional seamless edge alignment worthy of ORION360 calibration test patterns
+• VR-optimized for premium headsets with flawless wraparound immersive experience
+• Museum-grade seamless wrapping with broadcast-quality edge continuity
 
-ARTISTIC EXCELLENCE: Equirectangular 2:1 aspect ratio, seamless horizontal wrapping, professional VR quality, award-winning immersive art, broadcast standard, godlevel artistic mastery with perfect edge continuity, cultural heritage visualization, educational artistic content.`
+TECHNICAL EXCELLENCE: 1792x1024 equirectangular format, professional seamless horizontal wrapping, ORION360 calibration quality, VR-optimized, broadcast standard, godlevel artistic mastery with perfect edge continuity, cultural heritage visualization, educational artistic content.`
     } else if (panoramaFormat === "stereographic") {
-      enhancedPrompt = `ULTIMATE ARTISTIC STEREOGRAPHIC 360° PROJECTION: ${safePrompt}
+      enhancedPrompt = `PROFESSIONAL STEREOGRAPHIC 360° PROJECTION - 1792x1024 FORMAT: ${safePrompt}
 
-STEREOGRAPHIC ARTISTIC MASTERY:
-• Premium stereographic projection with perfect circular distortion
+STEREOGRAPHIC PROFESSIONAL MASTERY:
+• Premium stereographic projection with perfect circular distortion at 1792x1024 resolution
 • Entire 360° artistic view compressed into flawless circular frame with mathematical precision
 • Center focus with expertly calculated radial distortion increasing toward edges
 • Professional stereographic mapping with award-winning technical execution
 • Museum-quality fisheye lens effect with godlevel artistic precision
 
-ARTISTIC EXCELLENCE: Perfect circular composition, professional stereographic projection, award-winning fisheye distortion, museum exhibition quality, godlevel dome mastery, cultural heritage art.`
+TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, professional stereographic projection, award-winning fisheye distortion, museum exhibition quality, godlevel dome mastery, cultural heritage art.`
     }
   } else if (type === "dome") {
     size = "1024x1024"
