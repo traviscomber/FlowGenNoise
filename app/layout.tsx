@@ -3,14 +3,14 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "FlowSketch Art Generator",
   description: "Professional AI-powered art generation with dome and 360° panorama support",
-  generator: "v0.app",
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
