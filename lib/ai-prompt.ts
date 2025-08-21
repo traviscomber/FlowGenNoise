@@ -122,6 +122,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Majestic portrait of a mahout (elephant rider) atop a decorated Indian elephant, intricate traditional headwrap and ceremonial clothing, weathered face showing years of partnership with the gentle giant, ornate elephant decorations with golden bells and colorful textiles, realistic skin texture and facial hair detail, warm golden hour lighting, traditional Indian elephant caravan culture, authentic mahout-elephant bond, professional portrait photography quality, cultural heritage celebration, godlevel portrait excellence with animal transport authenticity.",
       },
+      "lego-vision": {
+        name: "🧱 LEGO Minifigure Head",
+        description:
+          "Iconic LEGO minifigure head with classic cylindrical shape and distinctive facial features, smooth plastic surface with precise molded details, authentic LEGO yellow skin tone with subtle texture variations, characteristic dot-matrix eyes and simple curved smile, Danish design excellence with modular construction philosophy, systematic creativity embodied in minimalist facial expression, precision-molded plastic with engineering perfection, childhood imagination catalyst with infinite possibility potential, modular human representation with universal appeal, LEGO brick aesthetic with constructive play heritage, Danish toy craftsmanship with global cultural impact, godlevel LEGO minifigure excellence.",
+      },
     },
   },
   faces: {
@@ -216,6 +221,11 @@ export const CULTURAL_DATASETS = {
         name: "🐪 Camel Rider's Joy",
         description:
           "Joyful expression of a Bedouin camel rider crossing desert dunes, genuine smile radiating adventure and freedom, traditional keffiyeh headwrap flowing in desert wind, sun-weathered face showing desert wisdom, eyes sparkling with nomadic spirit, realistic facial expressions of desert travel joy, authentic Middle Eastern features, camel caravan culture celebration, desert nomad lifestyle, traditional Bedouin heritage, godlevel joyful expression with authentic desert transport culture.",
+      },
+      "lego-vision": {
+        name: "🧱 LEGO Expression Variations",
+        description:
+          "Classic LEGO minifigure facial expressions with interchangeable emotion designs, modular expression system with snap-on face plates, Danish precision in emotional communication through minimal design elements, systematic approach to human emotion representation, constructive play psychology with expression-building possibilities, LEGO facial design evolution from simple dots to complex expressions, modular emotion engineering with childhood development support, precision-molded happiness, surprise, and determination expressions, Danish toy philosophy of creative emotional expression, LEGO face printing technology with micro-detail precision, godlevel LEGO expression excellence.",
       },
     },
   },
@@ -331,6 +341,11 @@ export const CULTURAL_DATASETS = {
         name: "🐃 Water Buffalo Rice Farming",
         description:
           "Vietnamese farmer guiding water buffalo through flooded rice paddies, traditional conical hat (nón lá) and rolled-up pants, gentle giant buffalo with massive horns and patient demeanor, muddy rice fields reflecting morning sky, traditional Vietnamese agricultural partnership between human and animal, farmer's weathered hands holding wooden plow, authentic rural Vietnamese lifestyle, water buffalo as essential farming companion, traditional rice cultivation methods, peaceful countryside atmosphere, Vietnamese agricultural heritage, godlevel authentic Vietnamese farming excellence.",
+      },
+      "lego-vision": {
+        name: "🧱 LEGO Vietnamese Village",
+        description:
+          "Modular LEGO Vietnamese village with brick-built traditional houses on stilts, LEGO minifigure farmers in conical hats working plastic rice terraces, Danish construction system applied to Vietnamese architectural heritage, systematic building approach to cultural representation, LEGO temple complexes with modular pagoda roofs, precision-built Vietnamese cultural elements using standard LEGO bricks, constructive play celebrating Vietnamese traditions, modular approach to cultural education through building, LEGO Vietnamese minifigures with authentic cultural accessories, Danish toy craftsmanship honoring Vietnamese heritage, godlevel LEGO Vietnamese cultural excellence.",
       },
     },
   },
@@ -452,6 +467,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Mystical Indonesian shaman riding a majestic Sumatran tiger through dense rainforest, traditional Indonesian ceremonial clothing with batik patterns, tiger's powerful muscles rippling under orange and black stripes, ancient spiritual bond between human and sacred animal, jungle setting with tropical vegetation, traditional Indonesian animistic beliefs, shamanic journey through forest spirits, tiger as spiritual guardian and transport, Indonesian folklore and mythology, mystical forest atmosphere, godlevel Indonesian spiritual animal transport excellence.",
       },
+      "lego-vision": {
+        name: "🧱 LEGO Indonesian Archipelago",
+        description:
+          "Modular LEGO Indonesian island chain with brick-built traditional houses featuring curved roofs, LEGO Borobudur temple constructed from thousands of precision-molded bricks, Danish engineering applied to Indonesian architectural complexity, systematic building approach to cultural monument recreation, LEGO gamelan orchestra with minifigure musicians, modular batik patterns created through LEGO mosaic techniques, constructive play celebrating Indonesian diversity, precision-built temple stupas using advanced LEGO building techniques, LEGO Indonesian minifigures with traditional cultural accessories, Danish toy craftsmanship honoring Indonesian heritage, godlevel LEGO Indonesian cultural excellence.",
+      },
     },
   },
   thailand: {
@@ -552,6 +572,11 @@ export const CULTURAL_DATASETS = {
         description:
           "Ornate Thai royal elephant procession with mahout in traditional Thai silk clothing, elephant decorated with golden howdah (seat) and ceremonial regalia, intricate Thai artistic decorations covering elephant's body, traditional Thai royal ceremony atmosphere, mahout wearing traditional Thai headdress, elephant's gentle eyes showing intelligence and training, authentic Thai elephant culture, royal procession grandeur, traditional Thai craftsmanship in decorations, cultural significance of elephants in Thai society, godlevel Thai royal elephant transport excellence.",
       },
+      "lego-vision": {
+        name: "🧱 LEGO Thai Temple Complex",
+        description:
+          "Elaborate LEGO Thai temple complex with golden brick-built stupas and intricate spires, modular construction system applied to Thai architectural grandeur, LEGO monks in saffron robes with precision-molded accessories, Danish engineering excellence recreating Thai temple complexity, systematic building approach to Buddhist architecture, LEGO naga serpents guarding temple entrances with articulated brick construction, modular Thai cultural elements with authentic proportions, constructive play celebrating Thai Buddhist heritage, precision-built temple rooflines using advanced LEGO techniques, LEGO Thai minifigures with traditional cultural accessories, godlevel LEGO Thai temple excellence.",
+      },
     },
   },
   escher: {
@@ -596,6 +621,11 @@ export const CULTURAL_DATASETS = {
         name: "🦅 Impossible Flying Fish Transport",
         description:
           "Escher-inspired impossible transportation with people riding giant flying fish through paradoxical architecture, fish swimming through air while people walk on water below, mind-bending perspective with multiple gravity directions, impossible animal transport defying physics laws, geometric precision in impossible animal anatomy, mathematical impossibility made visually compelling, optical illusion with perfect artistic execution, surreal animal transportation paradox, Escher-style tessellation patterns on fish scales, godlevel impossible animal transport artistry.",
+      },
+      "lego-vision": {
+        name: "🧱 LEGO Impossible Architecture",
+        description:
+          "Mind-bending LEGO impossible architecture with modular brick construction defying physics laws, Danish precision engineering applied to paradoxical structures, LEGO staircases that connect in impossible ways using systematic building techniques, modular optical illusions created through precise brick placement, constructive play with mathematical impossibility, LEGO tessellation patterns using standard brick elements, systematic approach to visual paradox construction, precision-molded LEGO elements creating Escher-inspired illusions, Danish toy engineering excellence in impossible geometry, modular construction philosophy applied to visual mathematics, godlevel LEGO impossible architecture excellence.",
       },
     },
   },
@@ -951,6 +981,11 @@ export const CULTURAL_DATASETS = {
         name: "🦄 Bosch Fantastical Beast Transport",
         description:
           "Surreal transportation on Hieronymus Bosch-inspired hybrid creatures, fantastical beasts with multiple animal parts combined, riders on impossible animals with bird wings, fish tails, and mammal bodies, medieval surrealism with creature design excellence, Bosch-style hybrid anatomy with biological plausibility, fantastical animal transport through surreal landscape, medieval bestiary creatures with artistic sophistication, impossible animal combinations with Renaissance artistry, surreal creature transport with cultural authenticity, godlevel Bosch animal transport excellence.",
+      },
+      "lego-vision": {
+        name: "🧱 LEGO Garden of Delights",
+        description:
+          "Surreal LEGO Garden of Earthly Delights with brick-built fantastical creatures and impossible beings, modular LEGO paradise with hybrid animals constructed from standard bricks, LEGO minifigure Adam and Eve in plastic Eden, Danish construction system applied to Bosch's surreal vision, systematic building approach to medieval fantasy recreation, LEGO hybrid creatures with articulated brick construction, modular LEGO symbolism with contemporary precision, constructive play with Renaissance surrealism, precision-molded LEGO elements creating Bosch-inspired illusions, Danish toy engineering excellence in impossible biology, godlevel LEGO Bosch excellence.",
       },
     },
   },
