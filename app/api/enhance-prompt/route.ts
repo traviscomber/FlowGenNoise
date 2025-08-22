@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { buildPrompt } from "@/lib/ai-prompt"
 
 // Validate OpenAI API key with detailed logging
 function validateApiKey(): { isValid: boolean; error?: string; details?: any } {
@@ -121,39 +122,93 @@ export async function POST(request: NextRequest) {
     console.log("🔮 Starting prompt enhancement API...")
 
     const body = await request.json()
-    const { originalPrompt, variationLevel = "moderate", dataset = "vietnamese", scenario = "trung-sisters" } = body
+    const {
+      originalPrompt,
+      variationLevel = "moderate",
+      dataset = "vietnamese",
+      scenario = "trung-sisters",
+      colorScheme = "metallic",
+      seed = 1234,
+      numSamples = 4000,
+      noiseScale = 0.08,
+      customPrompt = "",
+      panoramic360 = false,
+      panoramaFormat = "equirectangular",
+      projectionType = "fisheye",
+      generationType = "batch",
+      domeProjection = false,
+    } = body
 
-    if (!originalPrompt || originalPrompt.trim().length === 0) {
+    let promptToEnhance = originalPrompt
+
+    // If no custom prompt provided or if we want to use current selections, build fresh prompt
+    if (!customPrompt || customPrompt.trim().length === 0) {
+      console.log("🔄 Building fresh prompt from current user selections...")
+
+      try {
+        promptToEnhance = buildPrompt({
+          dataset,
+          scenario,
+          colorScheme,
+          seed,
+          numSamples,
+          noiseScale,
+          customPrompt: "", // Don't use custom prompt when rebuilding
+          panoramic360,
+          panoramaFormat,
+          projectionType,
+          domeProjection: generationType === "dome",
+        })
+
+        console.log("✅ Fresh prompt built from current selections:", {
+          dataset,
+          scenario,
+          colorScheme,
+          projectionType: generationType === "dome" ? projectionType : panoramaFormat,
+          promptLength: promptToEnhance.length,
+        })
+      } catch (buildError) {
+        console.error("❌ Error building fresh prompt, using original:", buildError)
+        // Fall back to original prompt if build fails
+      }
+    } else {
+      console.log("📝 Using provided custom prompt for enhancement")
+      promptToEnhance = customPrompt
+    }
+
+    if (!promptToEnhance || promptToEnhance.trim().length === 0) {
       return NextResponse.json(
         {
           success: false,
-          error: "Original prompt is required",
+          error: "No prompt available for enhancement",
         },
         { status: 400 },
       )
     }
 
     console.log("🎨 Prompt enhancement request:", {
-      originalLength: originalPrompt.length,
+      promptLength: promptToEnhance.length,
       variationLevel,
       dataset,
       scenario,
+      colorScheme,
+      generationType,
+      usingFreshPrompt: !customPrompt || customPrompt.trim().length === 0,
     })
 
     const apiKey = process.env.OPENAI_API_KEY
     if (!apiKey) {
       console.log("⚠️ OpenAI API key not found, using rule-based enhancement")
 
-      // Fallback to rule-based enhancement
-      const ruleBasedEnhancement = enhancePromptWithRules(originalPrompt, variationLevel)
+      const ruleBasedEnhancement = enhancePromptWithRules(promptToEnhance, variationLevel)
 
       return NextResponse.json({
         success: true,
-        originalPrompt,
+        originalPrompt: promptToEnhance,
         enhancedPrompt: ruleBasedEnhancement.enhanced,
         statistics: ruleBasedEnhancement.statistics,
         variationType: variationLevel,
-        generationType: "batch",
+        generationType,
         enhancementMethod: "rule-based",
         fallbackReason: "OpenAI API key not configured",
       })
@@ -161,7 +216,7 @@ export async function POST(request: NextRequest) {
 
     // Try ChatGPT enhancement first
     try {
-      const enhancementPrompt = buildEnhancementPrompt(originalPrompt, variationLevel, dataset, scenario)
+      const enhancementPrompt = buildEnhancementPrompt(promptToEnhance, variationLevel, dataset, scenario)
 
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
@@ -192,21 +247,21 @@ export async function POST(request: NextRequest) {
         const enhancedPrompt = data.choices[0]?.message?.content?.trim()
 
         if (enhancedPrompt && enhancedPrompt.length > 0) {
-          const statistics = calculateStatistics(originalPrompt, enhancedPrompt)
+          const statistics = calculateStatistics(promptToEnhance, enhancedPrompt)
 
           console.log("✅ ChatGPT enhancement successful:", {
-            originalLength: originalPrompt.length,
+            originalLength: promptToEnhance.length,
             enhancedLength: enhancedPrompt.length,
             improvement: statistics.improvement.percentage,
           })
 
           return NextResponse.json({
             success: true,
-            originalPrompt,
+            originalPrompt: promptToEnhance,
             enhancedPrompt,
             statistics,
             variationType: variationLevel,
-            generationType: "batch",
+            generationType,
             enhancementMethod: "chatgpt",
           })
         }
@@ -218,16 +273,15 @@ export async function POST(request: NextRequest) {
     } catch (chatgptError) {
       console.log("⚠️ ChatGPT enhancement error, using rule-based fallback:", chatgptError)
 
-      // Fallback to rule-based enhancement
-      const ruleBasedEnhancement = enhancePromptWithRules(originalPrompt, variationLevel)
+      const ruleBasedEnhancement = enhancePromptWithRules(promptToEnhance, variationLevel)
 
       return NextResponse.json({
         success: true,
-        originalPrompt,
+        originalPrompt: promptToEnhance,
         enhancedPrompt: ruleBasedEnhancement.enhanced,
         statistics: ruleBasedEnhancement.statistics,
         variationType: variationLevel,
-        generationType: "batch",
+        generationType,
         enhancementMethod: "rule-based",
         fallbackReason: "ChatGPT enhancement failed",
       })
