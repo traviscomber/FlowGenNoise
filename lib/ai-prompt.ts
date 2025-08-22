@@ -1280,7 +1280,7 @@ export const CULTURAL_DATASETS = {
       vitro: {
         name: "⛪ Bosch Medieval Sacred Glass",
         description:
-          "Surreal Bosch-inspired stained glass windows in Vatican cathedral style with fantastical creatures rendered in luminous colored glass, Garden of Earthly Delights scenes crafted from jewel-toned glass with medieval precision, hybrid animals in translucent glass creating surreal beauty, traditional lead came construction following Bosch's symbolic geometries with Renaissance craftsmanship, medieval surrealism captured in colored glass with divine light effects, Vatican glasswork techniques applied to Bosch's vision visualization, sacred geometry meets medieval fantasy in stained glass mastery, cathedral Bosch windows inspiring contemplation of symbolic medieval art, godlevel Bosch vitro medieval excellence.",
+          "Surreal Bosch-inspired stained glass windows in Vatican cathedral style with fantastical creatures rendered in luminous colored glass, Garden of Earthly Delights scenes crafted from jewel-toned glass with medieval precision, hybrid animals in translucent glass creating surreal beauty, traditional lead came construction following dream logic geometries with medieval craftsmanship, medieval surrealism captured in colored glass with divine light effects, Vatican glasswork techniques applied to Bosch's vision visualization, sacred geometry meets medieval fantasy in stained glass mastery, cathedral surreal windows inspiring contemplation of symbolic medieval art, godlevel Bosch vitro medieval excellence.",
       },
       crypto: {
         name: "₿ Medieval Crypto Alchemy",
@@ -1526,6 +1526,106 @@ export const CULTURAL_DATASETS = {
         name: "₿ Conservation Crypto Funding",
         description:
           "Endangered species conservation funded through cryptocurrency donations and blockchain-secured wildlife protection programs, mystical animals whose survival depends on crypto mining operations that fund habitat preservation, spiritual guardians of nature accepting Bitcoin offerings for species protection, blockchain-verified conservation efforts with transparent endangered species funding, cryptocurrency generated through eco-friendly mining that directly supports wildlife sanctuaries, digital currency flowing through traditional conservation ceremonies, NFT collections of endangered species generating conservation funding, blockchain-secured anti-poaching operations, cryptocurrency as modern conservation tool with spiritual significance, endangered species crypto with mystical conservation power, godlevel conservation crypto excellence.",
+      },
+    },
+  },
+  luxury: {
+    name: "💎 Luxury Brands Collection",
+    scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Mathematical Luxury Precision",
+        description:
+          "Mathematical luxury visualization with golden ratio proportions defining premium brand aesthetics, Fibonacci spiral patterns in haute couture design, algorithmic perfection in luxury product geometry, computational elegance with mathematical beauty generation, geometric luxury abstraction mastery, digital precision worthy of Swiss watchmaking, mathematical art excellence meeting luxury brand standards, algorithmic luxury generation, computational beauty with premium quality, geometric pattern complexity in luxury design, mathematical visualization excellence for high-end markets, godlevel mathematical luxury excellence.",
+      },
+      "origami-world": {
+        name: "📄 Origami Luxury Craftsmanship",
+        description:
+          "Exquisite origami luxury item with intricate paper folding techniques representing premium craftsmanship, delicate washi paper with gold leaf accents, complex geometric construction worthy of luxury packaging, traditional Japanese artistry meeting modern luxury aesthetics, masterful origami precision with luxury brand attention to detail, paper sculpture representing artisanal excellence, handcrafted luxury with dimensional depth, origami mastery embodying luxury brand values, traditional paper art with premium materials, Japanese heritage luxury, godlevel origami luxury excellence.",
+      },
+      "hyper-realistic": {
+        name: "📸 Ultra-Luxury Product Photography",
+        description:
+          "Museum-quality luxury product photography with microscopic detail precision, professional studio lighting showcasing premium materials, flawless surface reflections on precious metals and gemstones, authentic texture mapping of exotic leathers and rare fabrics, commercial photography excellence for luxury brand campaigns, award-winning product visualization, high-fashion editorial quality, luxury brand advertising standard, premium product showcase perfection, international luxury market worthy, celebrity endorsement quality, godlevel luxury photography excellence.",
+      },
+      "fashion-haute-couture": {
+        name: "👗 Haute Couture Fashion",
+        description:
+          "Parisian haute couture fashion masterpiece with hand-sewn beadwork and embroidery, exclusive designer creation with museum-quality craftsmanship, runway-worthy luxury fashion with precious materials, couture atelier excellence with hundreds of hours of handwork, fashion week Paris standard, luxury fashion house heritage, artisanal fashion craftsmanship, exclusive haute couture techniques, fashion industry pinnacle achievement, luxury fashion artistry, godlevel haute couture excellence.",
+      },
+      "jewelry-precious": {
+        name: "💍 Precious Jewelry Artistry",
+        description:
+          "Exquisite precious jewelry with flawless diamond cutting and rare gemstone selection, master jeweler craftsmanship with platinum and 24k gold settings, luxury jewelry house heritage with centuries of expertise, precious stone clarity and fire optimization, jewelry artistry worthy of royal collections, luxury auction house quality, fine jewelry investment grade, precious metal mastery with gemological excellence, luxury jewelry brand prestige, godlevel precious jewelry excellence.",
+      },
+      "automotive-luxury": {
+        name: "🏎️ Luxury Automotive Excellence",
+        description:
+          "Ultra-luxury automotive masterpiece with handcrafted interior details, exotic materials including carbon fiber and rare wood veneers, precision engineering with Swiss watch-level attention to detail, luxury automotive brand heritage with racing pedigree, bespoke customization with artisanal craftsmanship, automotive design excellence with aerodynamic perfection, luxury car collector quality, automotive artistry with performance mastery, premium automotive luxury, godlevel automotive excellence.",
+      },
+      "hospitality-luxury": {
+        name: "🏨 Luxury Hospitality Experience",
+        description:
+          "Five-star luxury hospitality experience with palatial architecture and opulent interior design, premium service excellence with white-glove attention to detail, luxury hotel brand prestige with international recognition, hospitality artistry with cultural sophistication, luxury travel destination worthy, premium guest experience with personalized service, luxury hospitality industry standard, exclusive resort quality, hospitality excellence with luxury amenities, godlevel luxury hospitality excellence.",
+      },
+      "timepiece-luxury": {
+        name: "⌚ Swiss Luxury Timepieces",
+        description:
+          "Swiss luxury timepiece with mechanical movement complexity and artisanal finishing, haute horlogerie craftsmanship with hand-engraved details, luxury watch brand heritage with centuries of innovation, precision timekeeping with astronomical accuracy, luxury timepiece investment quality, Swiss watchmaking excellence with traditional techniques, horological artistry with mechanical mastery, luxury watch collector grade, timepiece luxury with heritage prestige, godlevel Swiss timepiece excellence.",
+      },
+      "spirits-luxury": {
+        name: "🥃 Premium Spirits Collection",
+        description:
+          "Ultra-premium spirits with aged perfection and artisanal distillation, luxury spirits brand heritage with traditional craftsmanship, rare vintage quality with collector investment potential, premium spirits artistry with flavor complexity, luxury spirits industry excellence, artisanal distillery mastery with heritage techniques, premium spirits collection worthy, luxury beverage craftsmanship, spirits connoisseur quality, godlevel premium spirits excellence.",
+      },
+      "cosmetics-luxury": {
+        name: "💄 Luxury Beauty Artistry",
+        description:
+          "Luxury cosmetics with premium formulations and rare ingredients, beauty brand prestige with scientific innovation, luxury beauty industry excellence with artisanal quality, premium cosmetics with luxury packaging design, beauty artistry with professional makeup quality, luxury beauty brand heritage, cosmetics luxury with skin care mastery, beauty industry premium standard, luxury beauty collection worthy, godlevel luxury cosmetics excellence.",
+      },
+      "real-estate-luxury": {
+        name: "🏰 Luxury Real Estate",
+        description:
+          "Ultra-luxury real estate with architectural masterpiece design and premium location prestige, luxury property with artisanal craftsmanship and rare materials, real estate investment excellence with heritage value, luxury home design with custom details, premium real estate with landscape artistry, luxury property market pinnacle, architectural excellence with luxury amenities, real estate luxury with cultural significance, property investment grade, godlevel luxury real estate excellence.",
+      },
+      "art-luxury": {
+        name: "🎨 Luxury Art Collection",
+        description:
+          "Museum-quality luxury art collection with investment-grade masterpieces, art market excellence with blue-chip artist representation, luxury art gallery standard with curatorial expertise, fine art investment with cultural significance, art collection prestige with historical importance, luxury art market leadership, fine art mastery with artistic heritage, art collector quality with museum provenance, luxury art industry excellence, godlevel luxury art collection excellence.",
+      },
+      "travel-luxury": {
+        name: "✈️ Luxury Travel Experience",
+        description:
+          "Ultra-luxury travel experience with private jet and yacht access, luxury travel brand prestige with exclusive destinations, premium travel service with personalized itineraries, luxury hospitality with cultural immersion, travel excellence with VIP treatment, luxury travel industry standard, exclusive travel experiences with heritage access, premium travel quality with artisanal local experiences, luxury travel collection worthy, godlevel luxury travel excellence.",
+      },
+      "technology-luxury": {
+        name: "📱 Luxury Technology Innovation",
+        description:
+          "Luxury technology with premium materials and artisanal craftsmanship, high-tech luxury brand innovation with exclusive features, technology excellence with luxury design aesthetics, premium tech with handcrafted details, luxury technology industry leadership, tech artistry with precious material integration, luxury tech collection worthy, technology luxury with heritage craftsmanship, premium technology excellence, godlevel luxury technology excellence.",
+      },
+      "animal-transport": {
+        name: "🐎 Luxury Equestrian Heritage",
+        description:
+          "Aristocratic equestrian scene with thoroughbred horses and luxury riding equipment, premium leather saddles with hand-stitched craftsmanship, luxury equestrian brand heritage with centuries of tradition, equestrian artistry with Olympic-level excellence, luxury horse breeding with bloodline prestige, equestrian luxury with cultural sophistication, premium equestrian equipment with artisanal quality, luxury equestrian lifestyle with heritage elegance, equestrian excellence with luxury amenities, godlevel luxury equestrian excellence.",
+      },
+      "lego-vision": {
+        name: "🧱 LEGO Luxury Brand Building",
+        description:
+          "Sophisticated LEGO construction representing luxury brand architecture with modular precision, Danish design philosophy applied to luxury brand visualization, systematic creativity building premium brand experiences, LEGO brick luxury with engineering excellence, modular luxury construction with infinite customization potential, precision-molded luxury representation with constructive play heritage, luxury brand building blocks with systematic design thinking, LEGO luxury craftsmanship with Danish quality standards, modular luxury excellence with creative construction mastery, godlevel LEGO luxury brand excellence.",
+      },
+      "escapism-magic": {
+        name: "🎭 Luxury Escapism Illusion",
+        description:
+          "Masterful luxury escapism where premium brands become gateways to exclusive worlds, luxury products that transform reality through sophisticated illusion techniques, escapist artistry requiring deep understanding of luxury consumer psychology, magical realism where luxury items become portals to aspirational lifestyles, luxury brand magic that transports consciousness to elevated social status, intricate challenge of creating believable luxury transformation through visual storytelling, premium escapism that elevates mundane existence to luxury lifestyle fantasy, luxury as escape mechanism from ordinary reality, godlevel luxury escapism excellence.",
+      },
+      vitro: {
+        name: "⛪ Luxury Stained Glass Artistry",
+        description:
+          "Magnificent luxury stained glass with Vatican-level craftsmanship showcasing premium brand imagery, luminous colored glass fragments forming luxury product silhouettes, divine light streaming through translucent luxury brand representations, masterful lead came construction outlining luxury elements with Gothic precision, jewel-toned glass pieces creating luxury brand color palettes, traditional Vatican glasswork techniques applied to luxury brand visualization, sacred geometry patterns integrated into luxury product design, cathedral light effects transforming luxury brands into spiritual experiences, godlevel luxury vitro excellence.",
+      },
+      crypto: {
+        name: "₿ Luxury Blockchain Assets",
+        description:
+          "Revolutionary luxury blockchain where premium brands are tokenized as exclusive NFT collections, luxury products with blockchain provenance and authenticity verification, crypto-luxury marketplace with decentralized ownership of premium assets, luxury brand smart contracts enabling exclusive access to high-end experiences, blockchain luxury with proof-of-ownership for rare collectibles, cryptocurrency-powered luxury commerce with global accessibility, digital luxury assets with real-world premium product backing, luxury brand DAOs governing exclusive community access, godlevel luxury blockchain excellence.",
       },
     },
   },
