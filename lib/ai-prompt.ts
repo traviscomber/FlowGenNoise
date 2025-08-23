@@ -1542,150 +1542,70 @@ export const CULTURAL_DATASETS = {
         description:
           "Exquisite origami luxury item with intricate paper folding techniques representing premium craftsmanship, delicate washi paper with gold leaf accents, complex geometric construction worthy of luxury packaging, traditional Japanese artistry meeting modern luxury aesthetics, masterful origami precision with luxury brand attention to detail, paper sculpture representing artisanal excellence, handcrafted luxury with dimensional depth, origami mastery embodying luxury brand values, traditional paper art with premium materials, Japanese heritage luxury, godlevel origami luxury excellence.",
       },
-      "hyper-realistic": {
-        name: "📸 Ultra-Luxury Product Photography",
-        description:
-          "Museum-quality luxury product photography with microscopic detail precision, professional studio lighting showcasing premium materials, flawless surface reflections on precious metals and gemstones, authentic texture mapping of exotic leathers and rare fabrics, commercial photography excellence for luxury brand campaigns, award-winning product visualization, high-fashion editorial quality, luxury brand advertising standard, premium product showcase perfection, international luxury market worthy, celebrity endorsement quality, godlevel luxury photography excellence.",
-      },
-      "fashion-haute-couture": {
-        name: "👗 Haute Couture Fashion",
-        description:
-          "Parisian haute couture fashion masterpiece with hand-sewn beadwork and embroidery, exclusive designer creation with museum-quality craftsmanship, runway-worthy luxury fashion with precious materials, couture atelier excellence with hundreds of hours of handwork, fashion week Paris standard, luxury fashion house heritage, artisanal fashion craftsmanship, exclusive haute couture techniques, fashion industry pinnacle achievement, luxury fashion artistry, godlevel haute couture excellence.",
-      },
-      "jewelry-precious": {
-        name: "💍 Precious Jewelry Artistry",
-        description:
-          "Exquisite precious jewelry with flawless diamond cutting and rare gemstone selection, master jeweler craftsmanship with platinum and 24k gold settings, luxury jewelry house heritage with centuries of expertise, precious stone clarity and fire optimization, jewelry artistry worthy of royal collections, luxury auction house quality, fine jewelry investment grade, precious metal mastery with gemological excellence, luxury jewelry brand prestige, godlevel precious jewelry excellence.",
-      },
-      "automotive-luxury": {
-        name: "🏎️ Luxury Automotive Excellence",
-        description:
-          "Ultra-luxury automotive masterpiece with handcrafted interior details, exotic materials including carbon fiber and rare wood veneers, precision engineering with Swiss watch-level attention to detail, luxury automotive brand heritage with racing pedigree, bespoke customization with artisanal craftsmanship, automotive design excellence with aerodynamic perfection, luxury car collector quality, automotive artistry with performance mastery, premium automotive luxury, godlevel automotive excellence.",
-      },
-      "hospitality-luxury": {
-        name: "🏨 Luxury Hospitality Experience",
-        description:
-          "Five-star luxury hospitality experience with palatial architecture and opulent interior design, premium service excellence with white-glove attention to detail, luxury hotel brand prestige with international recognition, hospitality artistry with cultural sophistication, luxury travel destination worthy, premium guest experience with personalized service, luxury hospitality industry standard, exclusive resort quality, hospitality excellence with luxury amenities, godlevel luxury hospitality excellence.",
-      },
-      "timepiece-luxury": {
-        name: "⌚ Swiss Luxury Timepieces",
-        description:
-          "Swiss luxury timepiece with mechanical movement complexity and artisanal finishing, haute horlogerie craftsmanship with hand-engraved details, luxury watch brand heritage with centuries of innovation, precision timekeeping with astronomical accuracy, luxury timepiece investment quality, Swiss watchmaking excellence with traditional techniques, horological artistry with mechanical mastery, luxury watch collector grade, timepiece luxury with heritage prestige, godlevel Swiss timepiece excellence.",
-      },
-      "spirits-luxury": {
-        name: "🥃 Premium Spirits Collection",
-        description:
-          "Ultra-premium spirits with aged perfection and artisanal distillation, luxury spirits brand heritage with traditional craftsmanship, rare vintage quality with collector investment potential, premium spirits artistry with flavor complexity, luxury spirits industry excellence, artisanal distillery mastery with heritage techniques, premium spirits collection worthy, luxury beverage craftsmanship, spirits connoisseur quality, godlevel premium spirits excellence.",
-      },
-      "cosmetics-luxury": {
-        name: "💄 Luxury Beauty Artistry",
-        description:
-          "Luxury cosmetics with premium formulations and rare ingredients, beauty brand prestige with scientific innovation, luxury beauty industry excellence with artisanal quality, premium cosmetics with luxury packaging design, beauty artistry with professional makeup quality, luxury beauty brand heritage, cosmetics luxury with skin care mastery, beauty industry premium standard, luxury beauty collection worthy, godlevel luxury cosmetics excellence.",
-      },
-      "real-estate-luxury": {
-        name: "🏰 Luxury Real Estate",
-        description:
-          "Ultra-luxury real estate with architectural masterpiece design and premium location prestige, luxury property with artisanal craftsmanship and rare materials, real estate investment excellence with heritage value, luxury home design with custom details, premium real estate with landscape artistry, luxury property market pinnacle, architectural excellence with luxury amenities, real estate luxury with cultural significance, property investment grade, godlevel luxury real estate excellence.",
-      },
-      "art-luxury": {
-        name: "🎨 Luxury Art Collection",
-        description:
-          "Museum-quality luxury art collection with investment-grade masterpieces, art market excellence with blue-chip artist representation, luxury art gallery standard with curatorial expertise, fine art investment with cultural significance, art collection prestige with historical importance, luxury art market leadership, fine art mastery with artistic heritage, art collector quality with museum provenance, luxury art industry excellence, godlevel luxury art collection excellence.",
-      },
-      "travel-luxury": {
-        name: "✈️ Luxury Travel Experience",
-        description:
-          "Ultra-luxury travel experience with private jet and yacht access, luxury travel brand prestige with exclusive destinations, premium travel service with personalized itineraries, luxury hospitality with cultural immersion, travel excellence with VIP treatment, luxury travel industry standard, exclusive travel experiences with heritage access, premium travel quality with artisanal local experiences, luxury travel collection worthy, godlevel luxury travel excellence.",
-      },
-      "technology-luxury": {
-        name: "📱 Luxury Technology Innovation",
-        description:
-          "Luxury technology with premium materials and artisanal craftsmanship, high-tech luxury brand innovation with exclusive features, technology excellence with luxury design aesthetics, premium tech with handcrafted details, luxury technology industry leadership, tech artistry with precious material integration, luxury tech collection worthy, technology luxury with heritage craftsmanship, premium technology excellence, godlevel luxury technology excellence.",
-      },
       "animal-transport": {
-        name: "🐎 Luxury Equestrian Heritage",
+        name: "🦢 Luxury Swan Constellation Transport",
         description:
-          "Aristocratic equestrian scene with thoroughbred horses and luxury riding equipment, premium leather saddles with hand-stitched craftsmanship, luxury equestrian brand heritage with centuries of tradition, equestrian artistry with Olympic-level excellence, luxury horse breeding with bloodline prestige, equestrian luxury with cultural sophistication, premium equestrian equipment with artisanal quality, luxury equestrian lifestyle with heritage elegance, equestrian excellence with luxury amenities, godlevel luxury equestrian excellence.",
+          "Ethereal transportation on constellation of luxury swans with diamond-crystalline feather patterns following mathematical precision, swan formations creating geometric luxury patterns in celestial navigation, riders floating through premium dimensional spaces on swan-back luxury transport, mathematical elegance in swan wing geometry with golden ratio proportions, luxury constellation mathematics embodied in living transport, premium celestial navigation through mathematical swan formations, algorithmic beauty in luxury animal transport, computational swan geometry with infinite luxury detail, mathematical precision in premium constellation transport, godlevel luxury swan transport excellence.",
       },
-      "lego-vision": {
-        name: "🧱 LEGO Luxury Brand Building",
+      "louis-vuitton-monogram": {
+        name: "👜 LV Monogram Mathematical Infinity",
         description:
-          "Sophisticated LEGO construction representing luxury brand architecture with modular precision, Danish design philosophy applied to luxury brand visualization, systematic creativity building premium brand experiences, LEGO brick luxury with engineering excellence, modular luxury construction with infinite customization potential, precision-molded luxury representation with constructive play heritage, luxury brand building blocks with systematic design thinking, LEGO luxury craftsmanship with Danish quality standards, modular luxury excellence with creative construction mastery, godlevel LEGO luxury brand excellence.",
+          "Louis Vuitton monogram patterns with French luxury craftsmanship excellence, iconic LV symbols and quatrefoil flowers creating premium leather goods geometry, luxury travel heritage mathematics with golden ratio proportions in monogram design, artisanal leather craftsmanship meeting algorithmic pattern precision, premium French luxury with computational elegance in monogram infinity, traditional malletier expertise with mathematical beauty generation, luxury travel trunk heritage with geometric pattern mastery, LV monogram recursion achieving infinite luxury depth through French artisanal excellence, computational Louis Vuitton craftsmanship with premium leather mathematics, godlevel Louis Vuitton luxury excellence.",
+      },
+      "hermes-equestrian-geometry": {
+        name: "🐎 Hermès Equestrian Mathematical Dynamics",
+        description:
+          "Hermès equestrian heritage with silk scarf mathematics, iconic horse motifs and Birkin bag geometry creating premium artisanal patterns, luxury French leather craftsmanship with algorithmic elegance in equestrian design, traditional saddlery expertise meeting mathematical precision in luxury goods, premium Hermès orange with computational beauty in silk scarf patterns, artisanal leather craftsmanship with geometric luxury mastery, equestrian heritage mathematics with golden ratio proportions, Hermès silk printing excellence with algorithmic pattern generation, luxury French artisanal tradition with mathematical equestrian beauty, godlevel Hermès luxury craftsmanship excellence.",
+      },
+      "rolex-precision-chronometry": {
+        name: "⌚ Rolex Chronometric Mathematical Perfection",
+        description:
+          "Rolex Swiss chronometric precision with luxury timepiece mathematics, iconic crown logo and Oyster case geometry creating premium watchmaking patterns, Swiss precision engineering with algorithmic excellence in chronometer design, traditional watchmaking craftsmanship meeting mathematical precision in luxury timepieces, premium Swiss quality with computational elegance in chronometric calculations, artisanal watchmaking expertise with geometric luxury mastery, Swiss chronometer heritage mathematics with golden ratio proportions, Rolex precision engineering excellence with algorithmic time generation, luxury Swiss watchmaking tradition with mathematical chronometric beauty, godlevel Rolex Swiss precision excellence.",
+      },
+      "chanel-geometric-elegance": {
+        name: "💄 Chanel Geometric Mathematical Elegance",
+        description:
+          "Chanel quilted pattern mathematics with French haute couture elegance, iconic camellia flowers and little black dress geometry creating premium fashion patterns, luxury French fashion heritage with algorithmic beauty in quilted design, traditional Coco Chanel elegance meeting mathematical precision in luxury fashion, premium French couture with computational elegance in quilted patterns, artisanal fashion craftsmanship with geometric luxury mastery, French fashion heritage mathematics with golden ratio proportions, Chanel elegance excellence with algorithmic pattern generation, luxury French haute couture tradition with mathematical fashion beauty, godlevel Chanel French elegance excellence.",
+      },
+      "ferrari-aerodynamic-mathematics": {
+        name: "🏎️ Ferrari Aerodynamic Mathematical Dynamics",
+        description:
+          "Ferrari Italian racing heritage with luxury velocity mathematics, iconic prancing horse logo and Ferrari red geometry creating premium automotive patterns, Italian racing excellence with algorithmic beauty in aerodynamic design, traditional Maranello craftsmanship meeting mathematical precision in luxury supercars, premium Ferrari red with computational elegance in racing patterns, artisanal Italian automotive expertise with geometric luxury mastery, Italian racing heritage mathematics with golden ratio proportions, Ferrari performance excellence with algorithmic speed generation, luxury Italian racing tradition with mathematical automotive beauty, godlevel Ferrari Italian racing excellence.",
+      },
+      "cartier-crystalline-geometry": {
+        name: "💎 Cartier Crystalline Mathematical Structures",
+        description:
+          "Cartier panther motif mathematics with luxury jewelry elegance, iconic panther designs and Art Deco geometry creating premium gemstone patterns, French jewelry heritage with algorithmic beauty in crystalline design, traditional royal jeweler craftsmanship meeting mathematical precision in luxury gems, premium Cartier red with computational elegance in jewelry patterns, artisanal French jewelry expertise with geometric luxury mastery, royal jewelry heritage mathematics with golden ratio proportions, Cartier excellence with algorithmic gem generation, luxury French jewelry tradition with mathematical crystalline beauty, godlevel Cartier French jewelry excellence.",
+      },
+      "gucci-pattern-mathematics": {
+        name: "🐍 Gucci Pattern Mathematical Recursion",
+        description:
+          "Gucci Italian fashion heritage with luxury pattern mathematics, iconic flora patterns and bamboo handle geometry creating premium fashion patterns, Italian luxury craftsmanship with algorithmic beauty in fashion design, traditional Florentine artisanal expertise meeting mathematical precision in luxury goods, premium Gucci green-red-green with computational elegance in pattern recursion, artisanal Italian fashion expertise with geometric luxury mastery, Italian fashion heritage mathematics with golden ratio proportions, Gucci excellence with algorithmic pattern generation, luxury Italian fashion tradition with mathematical pattern beauty, godlevel Gucci Italian fashion excellence.",
+      },
+      "tiffany-azure-mathematics": {
+        name: "💍 Tiffany Azure Mathematical Brilliance",
+        description:
+          "Tiffany robin's egg blue mathematics with luxury jewelry elegance, iconic Tiffany blue and engagement ring geometry creating premium gemstone patterns, American luxury jewelry heritage with algorithmic beauty in azure design, traditional New York jeweler craftsmanship meeting mathematical precision in luxury diamonds, premium Tiffany blue with computational elegance in jewelry patterns, artisanal American jewelry expertise with geometric luxury mastery, New York jewelry heritage mathematics with golden ratio proportions, Tiffany excellence with algorithmic brilliance generation, luxury American jewelry tradition with mathematical azure beauty, godlevel Tiffany American luxury excellence.",
       },
       "escapism-magic": {
-        name: "🎭 Luxury Escapism Illusion",
+        name: "💎 Luxury Dimensional Escape Mathematics",
         description:
-          "Masterful luxury escapism where premium brands become gateways to exclusive worlds, luxury products that transform reality through sophisticated illusion techniques, escapist artistry requiring deep understanding of luxury consumer psychology, magical realism where luxury items become portals to aspirational lifestyles, luxury brand magic that transports consciousness to elevated social status, intricate challenge of creating believable luxury transformation through visual storytelling, premium escapism that elevates mundane existence to luxury lifestyle fantasy, luxury as escape mechanism from ordinary reality, godlevel luxury escapism excellence.",
+          "Advanced luxury mathematics enabling escape through premium dimensional portals into algorithmic wealth universes where computational elegance becomes experiential luxury journey, magical challenge of visualizing luxury algorithms as navigable premium realities through mathematical wealth dimensions, escapist artistry where luxury mathematics becomes vehicle for dimensional travel through computational elegance portals, intricate illusion requiring mastery of both premium algorithmic theory and luxury dimensional visualization techniques, luxury escape magic that transforms abstract wealth mathematics into explorable premium worlds, mathematical escapism through luxury dimension navigation with computational elegance mastery, dimensional magic where luxury algorithms become keys to premium alternate realities, luxury illusion demanding expertise in both advanced wealth mathematics and premium reality manipulation, godlevel luxury escape mathematical excellence.",
       },
       vitro: {
-        name: "⛪ Luxury Stained Glass Artistry",
+        name: "⛪ Luxury Cathedral Glass Mathematics",
         description:
-          "Magnificent luxury stained glass with Vatican-level craftsmanship showcasing premium brand imagery, luminous colored glass fragments forming luxury product silhouettes, divine light streaming through translucent luxury brand representations, masterful lead came construction outlining luxury elements with Gothic precision, jewel-toned glass pieces creating luxury brand color palettes, traditional Vatican glasswork techniques applied to luxury brand visualization, sacred geometry patterns integrated into luxury product design, cathedral light effects transforming luxury brands into spiritual experiences, godlevel luxury vitro excellence.",
+          "Magnificent luxury stained glass windows in Vatican cathedral style with premium mathematical patterns rendered in luminous luxury colored glass, algorithmic luxury designs crafted from jewel-toned glass with computational elegance precision, luxury geometric patterns in translucent glass creating mathematical premium beauty, traditional lead came construction following luxury mathematics geometries with premium craftsmanship precision, mathematical luxury complexity captured in colored glass with divine premium light effects, Vatican glasswork techniques applied to luxury mathematics visualization excellence, sacred geometry meets premium luxury theory in stained glass computational mastery, cathedral luxury windows inspiring contemplation of mathematical premium infinity, godlevel luxury vitro mathematical excellence.",
       },
       crypto: {
-        name: "₿ Luxury Blockchain Assets",
+        name: "₿ Luxury Cryptocurrency Mathematical Networks",
         description:
-          "Revolutionary luxury blockchain where premium brands are tokenized as exclusive NFT collections, luxury products with blockchain provenance and authenticity verification, crypto-luxury marketplace with decentralized ownership of premium assets, luxury brand smart contracts enabling exclusive access to high-end experiences, blockchain luxury with proof-of-ownership for rare collectibles, cryptocurrency-powered luxury commerce with global accessibility, digital luxury assets with real-world premium product backing, luxury brand DAOs governing exclusive community access, godlevel luxury blockchain excellence.",
+          "Premium cryptocurrency networks with luxury blockchain mathematics following algorithmic wealth generation excellence, luxury Bitcoin mining operations with computational elegance in premium crypto patterns, cryptocurrency luxury algorithms with mathematical precision generating premium blockchain beauty, luxury crypto mathematics with algorithmic elegance creating infinite wealth pattern depth, premium cryptocurrency networks with golden ratio proportions in luxury blockchain geometric design, computational crypto excellence with mathematical luxury precision, algorithmic wealth geometry with luxury cryptocurrency mathematical mastery, mathematical blockchain patterns with premium crypto computational elegance, luxury cryptocurrency algorithms with infinite mathematical wealth beauty, godlevel luxury crypto mathematical excellence.",
       },
-      "lvmh-empire": {
-        name: "👑 LVMH Empire Excellence",
+      lego: {
+        name: "🧱 Luxury LEGO Mathematical Construction",
         description:
-          "Bernard Arnault's LVMH luxury conglomerate with Louis Vuitton heritage craftsmanship, Moët & Chandon champagne excellence with centuries of tradition, Christian Dior haute couture with Parisian sophistication, Hennessy cognac mastery with artisanal distillation, Tiffany & Co. jewelry with American luxury heritage, Bulgari Italian excellence with Roman inspiration, TAG Heuer Swiss precision with racing heritage, Sephora beauty retail innovation, LVMH luxury portfolio with global market dominance, Bernard Arnault vision with luxury empire mastery, godlevel LVMH excellence.",
-      },
-      "top-50-luxury": {
-        name: "🏆 Top 50 Global Luxury Brands",
-        description:
-          "Elite luxury brand constellation featuring Hermès leather mastery, Chanel timeless elegance with Coco's revolutionary vision, Rolex Swiss precision with crown excellence, Ferrari automotive passion with Italian racing heritage, Cartier jewelry royalty with French sophistication, Gucci Italian luxury with creative innovation, Prada minimalist luxury with intellectual sophistication, Burberry British heritage with trench coat mastery, Versace bold luxury with Medusa power, Armani Italian elegance with tailoring perfection, global luxury brand leadership with market dominance, godlevel top 50 luxury excellence.",
-      },
-      "luxury-innovation": {
-        name: "💡 Luxury Brand Innovation",
-        description:
-          "Revolutionary luxury brand innovation with cutting-edge marketing strategies, premium brand digital transformation with exclusive customer experiences, luxury brand storytelling with heritage authenticity, innovative luxury retail concepts with immersive brand environments, luxury brand collaboration with artistic partnerships, premium brand sustainability with ethical luxury practices, luxury brand personalization with bespoke customer journeys, innovative luxury packaging with unboxing experiences, luxury brand community building with exclusive access, godlevel luxury innovation excellence.",
-      },
-      "luxury-marketing": {
-        name: "📈 Luxury Marketing Mastery",
-        description:
-          "Strategic luxury marketing with aspirational brand positioning, premium brand communication with sophisticated messaging, luxury brand influence with celebrity partnerships, exclusive luxury events with VIP experiences, luxury brand social media with curated content excellence, premium brand advertising with artistic campaigns, luxury brand public relations with media mastery, exclusive luxury collaborations with limited editions, luxury brand loyalty programs with privileged access, godlevel luxury marketing excellence.",
-      },
-      "louis-vuitton": {
-        name: "👜 Louis Vuitton Mastery",
-        description:
-          "Louis Vuitton heritage craftsmanship with iconic monogram canvas and Damier patterns, French luxury maison excellence with trunk-making tradition since 1854, LV artisanal leather goods with hand-stitched perfection, Parisian luxury fashion house with global prestige, Louis Vuitton travel heritage with luxury luggage mastery, LV collaboration artistry with contemporary artists, French luxury excellence with timeless elegance, Louis Vuitton brand prestige with cultural sophistication, LV luxury innovation with traditional craftsmanship, godlevel Louis Vuitton excellence.",
-      },
-      "hermes-paris": {
-        name: "🐎 Hermès Artisanal Excellence",
-        description:
-          "Hermès Parisian luxury with equestrian heritage and Birkin bag mastery, French artisanal craftsmanship with hand-stitched leather perfection, Hermès silk scarves with artistic collaboration excellence, luxury maison tradition with family heritage since 1837, Hermès Kelly bag prestige with waiting list exclusivity, French luxury leather goods with saddle-making origins, Hermès orange box luxury with unboxing ceremony, artisanal excellence with traditional techniques, Hermès luxury lifestyle with sophisticated elegance, godlevel Hermès artisanal excellence.",
-      },
-      "rolex-precision": {
-        name: "⌚ Rolex Swiss Mastery",
-        description:
-          "Rolex Swiss precision with crown excellence and perpetual movement mastery, luxury timepiece heritage with Oyster case innovation, Rolex Submariner diving excellence with professional tool watch legacy, Swiss watchmaking precision with chronometer certification, Rolex Daytona racing heritage with motorsport excellence, luxury watch investment with collector prestige, Rolex GMT-Master travel companion with dual time zones, Swiss luxury timepiece with eternal reliability, Rolex brand prestige with crown symbolism, godlevel Rolex Swiss excellence.",
-      },
-      "chanel-elegance": {
-        name: "💄 Chanel Timeless Revolution",
-        description:
-          "Chanel timeless elegance with Coco's revolutionary vision and little black dress mastery, French luxury fashion with quilted bag perfection, Chanel No. 5 fragrance excellence with olfactory artistry, Parisian haute couture with tweed suit sophistication, Chanel jewelry with camellia flower symbolism, French luxury beauty with makeup artistry, Chanel fashion revolution with women's liberation, luxury brand heritage with Gabrielle's legacy, Chanel sophistication with Parisian chic, godlevel Chanel timeless excellence.",
-      },
-      "ferrari-passion": {
-        name: "🏎️ Ferrari Racing Passion",
-        description:
-          "Ferrari Italian passion with prancing horse excellence and Maranello racing heritage, automotive artistry with V12 engine symphony, Ferrari Formula 1 dominance with Scuderia racing legacy, Italian luxury sports car with aerodynamic perfection, Ferrari red passion with Rosso Corsa tradition, luxury automotive collector with investment prestige, Ferrari craftsmanship with hand-assembled precision, Italian design excellence with performance mastery, Ferrari lifestyle with exclusive ownership, godlevel Ferrari racing excellence.",
-      },
-      "cartier-royalty": {
-        name: "💎 Cartier Royal Jewelry",
-        description:
-          "Cartier jewelry royalty with French sophistication and panther symbolism, luxury jewelry maison with royal patronage heritage, Cartier Love bracelet with romantic symbolism, French jewelry artistry with precious stone mastery, Cartier Trinity ring with three-gold perfection, luxury watch excellence with Santos aviation heritage, Cartier high jewelry with red box prestige, French luxury craftsmanship with Place Vendôme elegance, Cartier royal heritage with crown jeweler legacy, godlevel Cartier royal excellence.",
-      },
-      "gucci-innovation": {
-        name: "🐍 Gucci Creative Innovation",
-        description:
-          "Gucci Italian luxury with creative innovation and double-G symbolism, Florentine craftsmanship with leather goods mastery, Gucci fashion revolution with Alessandro Michele's artistic vision, Italian luxury brand with bamboo handle heritage, Gucci Dionysus bag with mythological inspiration, luxury fashion with maximalist aesthetic, Gucci horsebit loafer with equestrian elegance, Italian design excellence with contemporary artistry, Gucci brand renaissance with cultural relevance, godlevel Gucci creative excellence.",
-      },
-      "tiffany-american": {
-        name: "💍 Tiffany American Luxury",
-        description:
-          "Tiffany & Co. American luxury with robin's egg blue excellence and diamond mastery, New York jewelry heritage with Fifth Avenue prestige, Tiffany engagement ring with six-prong setting perfection, American luxury jewelry with Breakfast at Tiffany's cultural icon, Tiffany silver excellence with sterling craftsmanship, luxury jewelry artistry with gemological expertise, Tiffany blue box with gift-giving tradition, American jewelry innovation with design excellence, Tiffany luxury heritage with cultural sophistication, godlevel Tiffany American excellence.",
+          "Premium LEGO luxury construction with mathematical precision in algorithmic building excellence, luxury modular mathematics with computational elegance in premium LEGO geometric patterns, mathematical LEGO luxury with algorithmic construction beauty creating infinite premium building depth, luxury LEGO algorithms with mathematical precision generating premium modular patterns, premium LEGO mathematics with golden ratio proportions in luxury construction geometric design, computational LEGO excellence with mathematical luxury building mastery, algorithmic modular geometry with luxury LEGO mathematical precision, mathematical construction patterns with premium LEGO computational elegance, luxury LEGO building algorithms with infinite mathematical construction beauty, godlevel luxury LEGO mathematical excellence.",
       },
     },
   },
