@@ -1647,6 +1647,46 @@ export const CULTURAL_DATASETS = {
         description:
           "Strategic luxury marketing with aspirational brand positioning, premium brand communication with sophisticated messaging, luxury brand influence with celebrity partnerships, exclusive luxury events with VIP experiences, luxury brand social media with curated content excellence, premium brand advertising with artistic campaigns, luxury brand public relations with media mastery, exclusive luxury collaborations with limited editions, luxury brand loyalty programs with privileged access, godlevel luxury marketing excellence.",
       },
+      "louis-vuitton": {
+        name: "👜 Louis Vuitton Mastery",
+        description:
+          "Louis Vuitton heritage craftsmanship with iconic monogram canvas and Damier patterns, French luxury maison excellence with trunk-making tradition since 1854, LV artisanal leather goods with hand-stitched perfection, Parisian luxury fashion house with global prestige, Louis Vuitton travel heritage with luxury luggage mastery, LV collaboration artistry with contemporary artists, French luxury excellence with timeless elegance, Louis Vuitton brand prestige with cultural sophistication, LV luxury innovation with traditional craftsmanship, godlevel Louis Vuitton excellence.",
+      },
+      "hermes-paris": {
+        name: "🐎 Hermès Artisanal Excellence",
+        description:
+          "Hermès Parisian luxury with equestrian heritage and Birkin bag mastery, French artisanal craftsmanship with hand-stitched leather perfection, Hermès silk scarves with artistic collaboration excellence, luxury maison tradition with family heritage since 1837, Hermès Kelly bag prestige with waiting list exclusivity, French luxury leather goods with saddle-making origins, Hermès orange box luxury with unboxing ceremony, artisanal excellence with traditional techniques, Hermès luxury lifestyle with sophisticated elegance, godlevel Hermès artisanal excellence.",
+      },
+      "rolex-precision": {
+        name: "⌚ Rolex Swiss Mastery",
+        description:
+          "Rolex Swiss precision with crown excellence and perpetual movement mastery, luxury timepiece heritage with Oyster case innovation, Rolex Submariner diving excellence with professional tool watch legacy, Swiss watchmaking precision with chronometer certification, Rolex Daytona racing heritage with motorsport excellence, luxury watch investment with collector prestige, Rolex GMT-Master travel companion with dual time zones, Swiss luxury timepiece with eternal reliability, Rolex brand prestige with crown symbolism, godlevel Rolex Swiss excellence.",
+      },
+      "chanel-elegance": {
+        name: "💄 Chanel Timeless Revolution",
+        description:
+          "Chanel timeless elegance with Coco's revolutionary vision and little black dress mastery, French luxury fashion with quilted bag perfection, Chanel No. 5 fragrance excellence with olfactory artistry, Parisian haute couture with tweed suit sophistication, Chanel jewelry with camellia flower symbolism, French luxury beauty with makeup artistry, Chanel fashion revolution with women's liberation, luxury brand heritage with Gabrielle's legacy, Chanel sophistication with Parisian chic, godlevel Chanel timeless excellence.",
+      },
+      "ferrari-passion": {
+        name: "🏎️ Ferrari Racing Passion",
+        description:
+          "Ferrari Italian passion with prancing horse excellence and Maranello racing heritage, automotive artistry with V12 engine symphony, Ferrari Formula 1 dominance with Scuderia racing legacy, Italian luxury sports car with aerodynamic perfection, Ferrari red passion with Rosso Corsa tradition, luxury automotive collector with investment prestige, Ferrari craftsmanship with hand-assembled precision, Italian design excellence with performance mastery, Ferrari lifestyle with exclusive ownership, godlevel Ferrari racing excellence.",
+      },
+      "cartier-royalty": {
+        name: "💎 Cartier Royal Jewelry",
+        description:
+          "Cartier jewelry royalty with French sophistication and panther symbolism, luxury jewelry maison with royal patronage heritage, Cartier Love bracelet with romantic symbolism, French jewelry artistry with precious stone mastery, Cartier Trinity ring with three-gold perfection, luxury watch excellence with Santos aviation heritage, Cartier high jewelry with red box prestige, French luxury craftsmanship with Place Vendôme elegance, Cartier royal heritage with crown jeweler legacy, godlevel Cartier royal excellence.",
+      },
+      "gucci-innovation": {
+        name: "🐍 Gucci Creative Innovation",
+        description:
+          "Gucci Italian luxury with creative innovation and double-G symbolism, Florentine craftsmanship with leather goods mastery, Gucci fashion revolution with Alessandro Michele's artistic vision, Italian luxury brand with bamboo handle heritage, Gucci Dionysus bag with mythological inspiration, luxury fashion with maximalist aesthetic, Gucci horsebit loafer with equestrian elegance, Italian design excellence with contemporary artistry, Gucci brand renaissance with cultural relevance, godlevel Gucci creative excellence.",
+      },
+      "tiffany-american": {
+        name: "💍 Tiffany American Luxury",
+        description:
+          "Tiffany & Co. American luxury with robin's egg blue excellence and diamond mastery, New York jewelry heritage with Fifth Avenue prestige, Tiffany engagement ring with six-prong setting perfection, American luxury jewelry with Breakfast at Tiffany's cultural icon, Tiffany silver excellence with sterling craftsmanship, luxury jewelry artistry with gemological expertise, Tiffany blue box with gift-giving tradition, American jewelry innovation with design excellence, Tiffany luxury heritage with cultural sophistication, godlevel Tiffany American excellence.",
+      },
     },
   },
 }
