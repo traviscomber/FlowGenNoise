@@ -34,7 +34,7 @@ import {
   RefreshCw,
   Bug,
 } from "lucide-react"
-import { toast } from "sonner"
+import { useToast } from "@/hooks/use-toast"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
 
 interface GenerationResult {
@@ -109,6 +109,9 @@ export function FlowArtGenerator() {
   const availableScenarios = getScenarios(dataset) || {}
   const scenarioEntries = Object.entries(availableScenarios)
 
+  // Toast hook
+  const { toast } = useToast()
+
   // Reset scenario when dataset changes
   const handleDatasetChange = useCallback((newDataset: string) => {
     setDataset(newDataset)
@@ -129,13 +132,13 @@ export function FlowArtGenerator() {
       setApiKeyStatus(result)
 
       if (result.success) {
-        toast.success("✅ OpenAI API key is valid and working!")
+        toast({ title: "✅ OpenAI API key is valid and working!", variant: "success" })
       } else {
-        toast.error(`❌ API Key Error: ${result.error}`)
+        toast({ title: `❌ API Key Error: ${result.error}`, variant: "error" })
       }
     } catch (error: any) {
       console.error("API key validation failed:", error)
-      toast.error("Failed to validate API key")
+      toast({ title: "Failed to validate API key", variant: "error" })
       setApiKeyStatus({
         success: false,
         error: "Validation request failed",
@@ -194,9 +197,10 @@ export function FlowArtGenerator() {
         if (enhancement.success && enhancement.enhancedPrompt) {
           setPromptEnhancement(enhancement)
           setEditablePrompt(enhancement.enhancedPrompt)
-          toast.success(
-            `Prompt enhanced successfully! Added ${enhancement.statistics?.improvement?.characters || 0} characters.`,
-          )
+          toast({
+            title: `Prompt enhanced successfully! Added ${enhancement.statistics?.improvement?.characters || 0} characters.`,
+            variant: "success",
+          })
         } else {
           throw new Error(enhancement.error || "Enhancement failed")
         }
@@ -206,7 +210,7 @@ export function FlowArtGenerator() {
       }
     } catch (error: any) {
       console.error("Enhancement error:", error)
-      toast.error(`Enhancement failed: ${error.message || "Unknown error"}`)
+      toast({ title: `Enhancement failed: ${error.message || "Unknown error"}`, variant: "error" })
 
       // Fallback to base prompt if enhancement fails
       const fallbackPrompt = buildPrompt({
@@ -248,9 +252,9 @@ export function FlowArtGenerator() {
     if (editablePrompt && editablePrompt.trim()) {
       setCustomPrompt(editablePrompt.trim())
       setIsPromptDialogOpen(false)
-      toast.success("Enhanced prompt applied successfully!")
+      toast({ title: "Enhanced prompt applied successfully!", variant: "success" })
     } else {
-      toast.error("No prompt to apply")
+      toast({ title: "No prompt to apply", variant: "error" })
     }
   }, [editablePrompt])
 
@@ -258,7 +262,7 @@ export function FlowArtGenerator() {
   const resetToOriginal = useCallback(() => {
     if (promptEnhancement && promptEnhancement.originalPrompt) {
       setEditablePrompt(promptEnhancement.originalPrompt)
-      toast.info("Reset to original prompt")
+      toast({ title: "Reset to original prompt", variant: "info" })
     }
   }, [promptEnhancement])
 
@@ -266,7 +270,7 @@ export function FlowArtGenerator() {
   const resetToEnhanced = useCallback(() => {
     if (promptEnhancement && promptEnhancement.enhancedPrompt) {
       setEditablePrompt(promptEnhancement.enhancedPrompt)
-      toast.info("Reset to enhanced prompt")
+      toast({ title: "Reset to enhanced prompt", variant: "info" })
     }
   }, [promptEnhancement])
 
@@ -349,11 +353,13 @@ export function FlowArtGenerator() {
         })
 
         const successCount = [safeResult.standard, safeResult.dome, safeResult.panorama360].filter(Boolean).length
-        toast.success(`Generated ${successCount}/3 images successfully!`)
+        toast({
+          title: `Generated ${successCount}/3 images successfully!`,
+          description: "Your artwork has been generated successfully",
+          variant: "success",
+        })
 
-        if (safeResult.errors.length > 0) {
-          safeResult.errors.forEach((error: string) => toast.error(error))
-        }
+        safeResult.errors.forEach((error: string) => toast({ title: error, variant: "error" }))
       } else {
         // Handle non-JSON responses
         let errorMessage = "Generation failed"
@@ -368,10 +374,14 @@ export function FlowArtGenerator() {
       }
     } catch (error: any) {
       if (error.name === "AbortError") {
-        toast.info("Generation cancelled")
+        toast({ title: "Generation cancelled", variant: "info" })
       } else {
         console.error("Generation error:", error)
-        toast.error(`Generation failed: ${error.message || "Unknown error"}`)
+        toast({
+          title: "Generation Failed",
+          description: error.message || "Failed to generate artwork",
+          variant: "destructive",
+        })
         setGenerationProgress({
           standard: "failed",
           dome: "failed",
@@ -406,7 +416,7 @@ export function FlowArtGenerator() {
   // Download image
   const downloadImage = useCallback(async (imageUrl: string, filename: string) => {
     if (!imageUrl || !filename) {
-      toast.error("Invalid download parameters")
+      toast({ title: "Invalid download parameters", variant: "error" })
       return
     }
 
@@ -422,13 +432,13 @@ export function FlowArtGenerator() {
         a.click()
         document.body.removeChild(a)
         URL.revokeObjectURL(url)
-        toast.success(`Downloaded ${filename}`)
+        toast({ title: `Downloaded ${filename}`, variant: "success" })
       } else {
         throw new Error("Download failed")
       }
     } catch (error: any) {
       console.error("Download error:", error)
-      toast.error(`Download failed: ${error.message || "Unknown error"}`)
+      toast({ title: `Download failed: ${error.message || "Unknown error"}`, variant: "error" })
     }
   }, [])
 
