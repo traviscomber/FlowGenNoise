@@ -33,9 +33,9 @@ export const CULTURAL_DATASETS = {
     name: "👤 Heads & Portraits",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Head",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical head visualization with geometric precision, golden ratio facial proportions, Fibonacci spiral hair patterns, fractal skin texture mapping, algorithmic beauty generation, computational geometry excellence, mathematical art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, mathematical visualization excellence, geometric pattern complexity, mathematical art generation, computational beauty, godlevel mathematical excellence.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Paper Head",
@@ -148,9 +148,9 @@ export const CULTURAL_DATASETS = {
     name: "😊 Faces & Expressions",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Expression",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical facial expression with geometric emotion mapping, algorithmic smile curves, fractal eye patterns, mathematical beauty ratios, computational expression analysis, geometric emotion visualization, mathematical art perfection, algorithmic facial geometry, digital expression mastery, mathematical emotion excellence, geometric pattern complexity, computational beauty generation, mathematical visualization excellence, godlevel mathematical expression.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Paper Expression",
@@ -263,9 +263,9 @@ export const CULTURAL_DATASETS = {
     name: "🇻🇳 Vietnamese Heritage",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Vietnamese",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical Vietnamese cultural patterns with geometric temple architecture, fractal dragon motifs, algorithmic traditional patterns, mathematical art excellence, computational Vietnamese heritage, geometric cultural visualization, mathematical tradition mapping, algorithmic cultural beauty, digital heritage mastery, mathematical cultural excellence, geometric pattern complexity, computational cultural generation, mathematical visualization excellence, godlevel mathematical Vietnamese artistry.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Vietnamese Village",
@@ -398,9 +398,9 @@ export const CULTURAL_DATASETS = {
     name: "🇮🇩 Indonesian Heritage",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Indonesian",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical Indonesian cultural patterns with geometric batik designs, fractal temple architecture, algorithmic traditional motifs, mathematical art excellence, computational Indonesian heritage, geometric cultural visualization, mathematical tradition mapping, algorithmic cultural beauty, digital heritage mastery, mathematical cultural excellence, geometric pattern complexity, computational cultural generation, mathematical visualization excellence, godlevel mathematical Indonesian artistry.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Indonesian Archipelago",
@@ -538,9 +538,9 @@ export const CULTURAL_DATASETS = {
     name: "🇹🇭 Thailand Heritage",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Thai",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical Thai cultural patterns with geometric temple architecture, fractal naga serpent designs, algorithmic traditional motifs, mathematical art excellence, computational Thai heritage, geometric cultural visualization, mathematical tradition mapping, algorithmic cultural beauty, digital heritage mastery, mathematical Thai excellence, geometric pattern complexity, computational cultural generation, mathematical visualization excellence, godlevel mathematical Thai artistry.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Thai Temple Complex",
@@ -658,9 +658,9 @@ export const CULTURAL_DATASETS = {
     name: "🎨 Escher Inspired",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Escher",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical Escher-inspired patterns with geometric precision, impossible mathematical objects, fractal tessellations, algorithmic optical illusions, computational geometry excellence, mathematical art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, mathematical visualization excellence, geometric pattern complexity, mathematical art generation, computational beauty, godlevel mathematical Escher excellence.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Impossible Architecture",
@@ -728,9 +728,9 @@ export const CULTURAL_DATASETS = {
           "Mesmerizing origami spiral garden with paper-folded spiral patterns creating three-dimensional mathematical beauty, delicate paper spirals following Fibonacci sequences, origami flowers arranged in golden ratio spirals, paper-crafted spiral staircases and pathways, handmade paper trees with spiral branch patterns, warm lighting creating spiral shadows, visible fold lines emphasizing spiral geometry, masterful origami engineering showing natural spiral mathematics, traditional Japanese paper folding techniques applied to spiral forms, paper sculpture spiral mastery, godlevel spiral origami excellence.",
       },
       pure: {
-        name: "Pure Mathematical Spirals",
+        name: "Pure Abstract Patterns",
         description:
-          "Mathematical spiral patterns with Fibonacci sequences perfection, golden ratio spirals with divine proportions, logarithmic spirals found in nature's design, Archimedean spirals with perfect mathematical precision, hyperbolic spirals with infinite complexity, mathematical elegance embodiment, geometric beauty transcendence, natural spiral formations with cosmic significance, mathematical harmony with universal patterns, spiral mathematics mastery, geometric perfection achievement, mathematical art excellence, godlevel spiral mastery.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🐌 Giant Spiral Shell Snail Ride",
@@ -763,9 +763,9 @@ export const CULTURAL_DATASETS = {
           "Intricate origami fractal forest with paper-folded trees showing self-similar branching patterns, delicate paper leaves arranged in fractal geometries, origami fractals creating infinite detail through recursive paper folding, handmade paper structures with mathematical precision, warm lighting revealing fractal shadows and depth, visible fold lines emphasizing fractal complexity, masterful origami engineering showing natural fractal mathematics, traditional Japanese paper folding techniques applied to fractal forms, paper sculpture fractal mastery, godlevel fractal origami excellence.",
       },
       pure: {
-        name: "Pure Fractal Geometry",
+        name: "Pure Abstract Patterns",
         description:
-          "Fractal geometry patterns with self-similar structures, infinite complexity, recursive patterns, mathematical fractals, geometric iterations, fractal dimensions, mathematical beauty, infinite detail, natural fractal formations.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🦌 Fractal Antler Deer Transport",
@@ -798,9 +798,9 @@ export const CULTURAL_DATASETS = {
           "Complex origami Mandelbrot landscape with paper-folded mathematical patterns, delicate paper structures showing infinite detail, origami interpretation of complex number mathematics, handmade paper fractals with recursive folding patterns, warm lighting revealing mathematical beauty through paper shadows, visible fold lines creating additional complexity layers, masterful origami engineering translating mathematical concepts into paper art, traditional Japanese paper folding techniques applied to mathematical visualization, paper sculpture mathematics mastery, godlevel mathematical origami excellence.",
       },
       pure: {
-        name: "Mandelbrot Set Visualization",
+        name: "Pure Abstract Patterns",
         description:
-          "Mandelbrot set visualizations with complex number iterations, fractal boundaries, mathematical complexity, infinite detail, chaotic dynamics, mathematical art, computational beauty, complex plane mathematics.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🐙 Mandelbrot Octopus Submarine",
@@ -833,9 +833,9 @@ export const CULTURAL_DATASETS = {
           "Elegant origami Julia set garden with paper-folded mathematical patterns creating beautiful landscapes, delicate paper structures showing chaotic attractors, origami interpretation of complex dynamics, handmade paper fractals with artistic precision, warm lighting revealing mathematical beauty through dimensional paper shadows, visible fold lines adding visual complexity, masterful origami engineering translating mathematical chaos into paper harmony, traditional Japanese paper folding techniques applied to Julia set visualization, paper sculpture mathematical artistry, godlevel Julia origami excellence.",
       },
       pure: {
-        name: "Julia Set Fractals",
+        name: "Pure Abstract Patterns",
         description:
-          "Julia set fractals with complex dynamics, mathematical iterations, fractal art, chaotic attractors, mathematical beauty, computational geometry, infinite patterns, complex number mathematics.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🦋 Julia Set Butterfly Swarm",
@@ -868,9 +868,9 @@ export const CULTURAL_DATASETS = {
           "Delicate origami butterfly effect visualization with paper-folded chaotic patterns, intricate paper butterflies showing sensitive dependence, origami interpretation of chaos theory, handmade paper structures demonstrating nonlinear dynamics, warm lighting creating atmospheric chaos visualization, visible fold lines emphasizing butterfly wing patterns, masterful origami engineering showing mathematical chaos beauty, traditional Japanese paper folding techniques applied to chaos theory, paper sculpture chaos mastery, godlevel chaos origami excellence.",
       },
       pure: {
-        name: "Lorenz Attractor Chaos",
+        name: "Pure Abstract Patterns",
         description:
-          "Lorenz attractor patterns with chaos theory visualization, butterfly effect, strange attractors, dynamical systems, mathematical chaos, nonlinear dynamics, chaotic beauty, sensitive dependence.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🦋 Chaos Butterfly Migration",
@@ -903,9 +903,9 @@ export const CULTURAL_DATASETS = {
           "Mind-bending origami hyperbolic space with paper-folded curved geometries, delicate paper structures showing non-Euclidean mathematics, origami interpretation of hyperbolic tessellations, handmade paper demonstrating curved space concepts, warm lighting revealing geometric complexity through paper shadows, visible fold lines emphasizing hyperbolic curvature, masterful origami engineering translating advanced geometry into paper art, traditional Japanese paper folding techniques applied to hyperbolic geometry, paper sculpture geometric mastery, godlevel hyperbolic origami excellence.",
       },
       pure: {
-        name: "Hyperbolic Geometry",
+        name: "Pure Abstract Patterns",
         description:
-          "Hyperbolic geometry patterns with non-Euclidean geometry, curved space visualizations, hyperbolic tessellations, mathematical geometry, geometric art, spatial mathematics, curved space beauty.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🐢 Hyperbolic Turtle Shell Transport",
@@ -938,9 +938,9 @@ export const CULTURAL_DATASETS = {
           "Elegant origami statistical landscape with paper-folded bell curves and probability distributions, delicate paper structures showing Gaussian mathematics, origami interpretation of statistical beauty, handmade paper graphs with dimensional depth, warm lighting revealing statistical patterns through paper shadows, visible fold lines creating data visualization art, masterful origami engineering translating statistics into paper sculpture, traditional Japanese paper folding techniques applied to mathematical probability, paper sculpture statistical mastery, godlevel statistical origami excellence.",
       },
       pure: {
-        name: "Gaussian Distributions",
+        name: "Pure Abstract Patterns",
         description:
-          "Gaussian distributions with statistical visualizations, probability curves, normal distributions, mathematical statistics, data visualization, statistical beauty, mathematical probability, bell curves.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🐧 Gaussian Penguin Colony March",
@@ -973,9 +973,9 @@ export const CULTURAL_DATASETS = {
           "Fascinating origami cellular automata with paper-folded emergent patterns, delicate paper cells showing computational evolution, origami interpretation of Conway's Game of Life, handmade paper structures demonstrating emergent behavior, warm lighting revealing pattern emergence through paper shadows, visible fold lines creating cellular grid systems, masterful origami engineering showing computational beauty, traditional Japanese paper folding techniques applied to algorithmic art, paper sculpture computational mastery, godlevel cellular origami excellence.",
       },
       pure: {
-        name: "Cellular Automata",
+        name: "Pure Abstract Patterns",
         description:
-          "Cellular automata patterns with Conway's Game of Life, emergent behavior, computational patterns, rule-based systems, mathematical emergence, algorithmic art, computational beauty, emergent complexity.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🐝 Cellular Automata Bee Swarm",
@@ -1008,9 +1008,9 @@ export const CULTURAL_DATASETS = {
           "Intricate origami Voronoi diagram with paper-folded spatial partitions, delicate paper cells showing proximity patterns, origami interpretation of computational geometry, handmade paper structures demonstrating natural tessellations, warm lighting revealing geometric relationships through paper shadows, visible fold lines emphasizing cell boundaries, masterful origami engineering translating spatial mathematics into paper art, traditional Japanese paper folding techniques applied to Voronoi patterns, paper sculpture geometric mastery, godlevel Voronoi origami excellence.",
       },
       pure: {
-        name: "Voronoi Diagrams",
+        name: "Pure Abstract Patterns",
         description:
-          "Voronoi diagrams with spatial partitioning, geometric tessellations, proximity patterns, computational geometry, mathematical partitions, geometric art, spatial mathematics, natural patterns.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🦒 Voronoi Giraffe Pattern Transport",
@@ -1043,9 +1043,9 @@ export const CULTURAL_DATASETS = {
           "Organic origami noise landscape with paper-folded natural randomness patterns, delicate paper terrain showing Perlin noise mathematics, origami interpretation of procedural generation, handmade paper structures demonstrating algorithmic textures, warm lighting revealing natural randomness through paper shadows, visible fold lines creating organic texture patterns, masterful origami engineering translating computational noise into paper art, traditional Japanese paper folding techniques applied to procedural patterns, paper sculpture algorithmic mastery, godlevel noise origami excellence.",
       },
       pure: {
-        name: "Perlin Noise Patterns",
+        name: "Pure Abstract Patterns",
         description:
-          "Perlin noise patterns with procedural generation, natural randomness, algorithmic textures, computational noise, mathematical randomness, procedural art, algorithmic beauty, natural textures.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🐋 Perlin Noise Whale Song Transport",
@@ -1078,9 +1078,9 @@ export const CULTURAL_DATASETS = {
           "Dynamic origami reaction-diffusion patterns with paper-folded chemical-inspired designs, delicate paper structures showing Turing patterns, origami interpretation of self-organization, handmade paper demonstrating pattern formation mathematics, warm lighting revealing biological patterns through paper shadows, visible fold lines emphasizing reaction boundaries, masterful origami engineering translating chemical patterns into paper art, traditional Japanese paper folding techniques applied to biological mathematics, paper sculpture pattern mastery, godlevel reaction origami excellence.",
       },
       pure: {
-        name: "Reaction-Diffusion Systems",
+        name: "Pure Abstract Patterns",
         description:
-          "Reaction-diffusion systems with pattern formation, chemical patterns, Turing patterns, mathematical biology, emergent patterns, natural mathematics, biological computation, self-organization.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🐆 Reaction-Diffusion Leopard Spots",
@@ -1113,9 +1113,9 @@ export const CULTURAL_DATASETS = {
           "Flowing origami wave interference patterns with paper-folded harmonic oscillations, delicate paper waves showing mathematical frequency, origami interpretation of wave equations, handmade paper structures demonstrating wave dynamics, warm lighting revealing wave patterns through paper shadows, visible fold lines creating wave interference effects, masterful origami engineering translating acoustic mathematics into paper art, traditional Japanese paper folding techniques applied to wave visualization, paper sculpture harmonic mastery, godlevel wave origami excellence.",
       },
       pure: {
-        name: "Wave Interference",
+        name: "Pure Abstract Patterns",
         description:
-          "Wave interference patterns with harmonic oscillations, wave equations, frequency visualizations, mathematical waves, acoustic patterns, wave mathematics, harmonic beauty, wave dynamics.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🐬 Wave Interference Dolphin Pod",
@@ -1148,9 +1148,9 @@ export const CULTURAL_DATASETS = {
           "Nostalgic origami pixel world with paper-folded 8-bit aesthetic, delicate paper squares creating pixelated patterns, origami interpretation of retro gaming, handmade paper structures showing digital nostalgia, warm lighting revealing pixel art through paper shadows, visible fold lines emphasizing geometric pixel boundaries, masterful origami engineering translating digital art into paper craft, traditional Japanese paper folding techniques applied to pixel art, paper sculpture digital mastery, godlevel pixel origami excellence.",
       },
       pure: {
-        name: "8-bit Pixel Art",
+        name: "Pure Abstract Patterns",
         description:
-          "8-bit pixel art patterns with retro gaming aesthetics, pixelated mathematical visualizations, digital art, computational graphics, nostalgic computing, pixel mathematics, digital beauty, retro aesthetics.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "animal-transport": {
         name: "🐴 8-bit Pixel Horse Transport",
@@ -1178,9 +1178,9 @@ export const CULTURAL_DATASETS = {
     name: "🖼️ Bosch Masterpieces",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Bosch",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical Bosch-inspired patterns with geometric surrealism, fractal fantastical creatures, algorithmic medieval symbolism, mathematical art excellence, computational surreal heritage, geometric fantasy visualization, mathematical surrealism mapping, algorithmic artistic beauty, digital medieval mastery, mathematical artistic excellence, geometric pattern complexity, computational surreal generation, mathematical visualization excellence, godlevel mathematical Bosch artistry.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Garden of Delights",
@@ -1293,9 +1293,9 @@ export const CULTURAL_DATASETS = {
     name: "🐰 White Rabbit Gallery - Hooligan",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Hooligan",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical hooligan visualization with geometric rebellion patterns, fractal chaos theory, algorithmic street art excellence, computational graffiti mastery, mathematical vandalism artistry, geometric punk aesthetics, digital rebellion mathematics, algorithmic counter-culture, mathematical street excellence, geometric urban warfare, computational punk mastery, mathematical chaos generation, algorithmic rebellion artistry, geometric street mathematics, godlevel mathematical hooligan excellence.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Hooligan Paper",
@@ -1333,9 +1333,9 @@ export const CULTURAL_DATASETS = {
     name: "🎭 Surreal Creatures",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Surrealism",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical surrealism with impossible geometric creatures, fractal animal-human hybrids, algorithmic dream logic, computational impossibility generation, mathematical fantasy excellence, geometric surreal mastery, digital dream mathematics, algorithmic surreal artistry, mathematical impossibility visualization, geometric fantasy generation, computational surreal excellence, mathematical dream logic, algorithmic impossible creatures, geometric surreal mathematics, godlevel mathematical surrealism excellence.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Impossible Beings",
@@ -1433,9 +1433,9 @@ export const CULTURAL_DATASETS = {
     name: "🦋 Endangered Spirits",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Extinction",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical visualization of species extinction with geometric population decline curves, fractal DNA degradation patterns, algorithmic biodiversity loss mapping, mathematical conservation equations, computational extinction modeling, geometric species visualization, mathematical ecosystem collapse, algorithmic population dynamics, digital conservation mastery, mathematical species excellence, geometric pattern complexity, computational extinction generation, mathematical visualization excellence, godlevel mathematical extinction artistry.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Vanishing Species",
@@ -1538,9 +1538,9 @@ export const CULTURAL_DATASETS = {
     name: "💎 Luxury Brand Collections",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Luxury",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical luxury patterns with geometric precision, algorithmic beauty optimization, computational elegance excellence, mathematical luxury visualization, geometric luxury abstraction mastery, digital luxury mastery, algorithmic luxury generation, mathematical luxury excellence, geometric luxury complexity, mathematical luxury generation, computational luxury beauty, godlevel mathematical luxury excellence.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Luxury Pavilion",
@@ -1623,9 +1623,9 @@ export const CULTURAL_DATASETS = {
     name: "🌿 Organic Couture Fusion",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Botanical",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical botanical couture with algorithmic leaf patterns, fractal petal geometries, Fibonacci spiral fashion construction, golden ratio organic proportions, computational flora excellence, geometric nature visualization, mathematical organic beauty, algorithmic botanical artistry, digital organic mastery, mathematical fashion excellence, geometric botanical complexity, computational couture generation, mathematical organic visualization excellence, godlevel mathematical botanical artistry.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Botanical Couture",
@@ -1724,9 +1724,9 @@ export const CULTURAL_DATASETS = {
     name: "🎮 Gaming Industry",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Mathematical Gaming",
+        name: "🔢 Pure Abstract Patterns",
         description:
-          "Mathematical gaming visualization with algorithmic precision, game theory mathematics with Nash equilibrium calculations, procedural generation algorithms with infinite complexity, mathematical game mechanics with computational excellence, algorithmic beauty in gaming systems, geometric pattern complexity in game design, mathematical visualization excellence in interactive entertainment, computational geometry mastery in gaming environments, digital mathematics perfection, algorithmic art generation in gaming contexts, mathematical gaming excellence with godlevel computational precision.",
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
         name: "📄 Origami Gaming Console",
