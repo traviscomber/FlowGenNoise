@@ -308,7 +308,11 @@ export async function generateWithOpenAI(
   params?: GenerationParams,
   signal?: AbortSignal,
 ): Promise<{ imageUrl: string; prompt: string }> {
-  const apiKey = process.env.OPENAI_API_KEY
+  let apiKey = process.env.OPENAI_API_KEY
+
+  if (!apiKey) {
+    apiKey = process.env.OPENAI_KEY
+  }
 
   console.log("[v0] Checking OpenAI API key availability...")
   console.log("[v0] API key exists:", !!apiKey)
@@ -317,7 +321,16 @@ export async function generateWithOpenAI(
   console.log("[v0] API key starts with sk-proj-:", apiKey?.startsWith("sk-proj-") || false)
 
   if (!apiKey) {
-    throw new Error("OpenAI API key not configured. Please add a valid OPENAI_API_KEY environment variable.")
+    console.error(
+      "[v0] Environment variables available:",
+      Object.keys(process.env).filter((key) => key.includes("OPENAI")),
+    )
+    throw new Error(
+      "OpenAI API key not configured. Please add a valid OPENAI_API_KEY environment variable. Available OpenAI-related env vars: " +
+        Object.keys(process.env)
+          .filter((key) => key.includes("OPENAI"))
+          .join(", "),
+    )
   }
 
   // Validate API key format

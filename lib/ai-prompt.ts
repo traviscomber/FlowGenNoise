@@ -278,9 +278,9 @@ export const CULTURAL_DATASETS = {
           "Legendary Vietnamese heroines Hai Bà Trưng living as ancient warrior queens in 40 AD, daily life in traditional Vietnamese villages with thatched-roof houses on stilts, rice farming communities along Red River delta, women warriors training with bronze spears and shields, riding war elephants through bamboo forests, leading village councils under banyan trees, traditional Vietnamese communal houses (đình) where villagers gather for ceremonies, ancient Vietnamese citadels with wooden watchtowers, daily rituals of ancestor worship at family altars, traditional Vietnamese clothing with silk áo dài and conical hats, village markets with clay pottery and bronze tools, fishing boats on rivers with traditional nets, heroic legends incarnate with national independence symbols, cultural heroes embodying patriotic spirit with historical valor beyond measure, museum-quality historical accuracy, UNESCO cultural heritage significance, Vietnamese national pride manifestation, godlevel heroic excellence.",
       },
       "temple-of-literature": {
-        name: "🏛️ Temple of Literature - First University",
+        name: "📚 Temple of Literature",
         description:
-          "Vietnam's first university (1070 AD) where scholars live and study Confucian classics, daily life of students in traditional dormitories with wooden beds and study desks, morning rituals of bowing to Confucius statue, scholars practicing calligraphy with brush and ink on rice paper, traditional Vietnamese academic robes and scholar hats, students reciting classical texts in courtyards, teachers conducting lessons under ancient trees, examination halls where students take imperial tests, library pavilions with ancient scrolls and books, scholars debating philosophy in peaceful gardens, traditional Vietnamese vegetarian meals served in ceramic bowls, incense ceremonies honoring literary saints, magnificent traditional Vietnamese architecture with red-tiled roofs gleaming under golden sunlight, ornate gates with intricate dragon carvings, stone stelae of doctorate holders with calligraphy mastery, peaceful gardens with sacred lotus ponds reflecting ancient wisdom, centuries-old trees providing spiritual shade, traditional lanterns casting mystical light, scholarly atmosphere permeating every stone, Confucian educational heritage with traditional Vietnamese academic excellence, godlevel architectural mastery.",
+          "Vietnam's first university (1070 AD) where scholars live and study in peaceful contemplation, daily life of students in traditional dormitories with wooden beds and study desks, morning rituals of bowing to Confucius statue, scholars practicing meditation with brush movements in flowing gestures, traditional Vietnamese academic robes and scholar hats, students in quiet reflection in courtyards, teachers conducting lessons under ancient trees, examination halls where students demonstrate knowledge through gestures, library pavilions with ancient scrolls and manuscripts, scholars debating philosophy in peaceful gardens, traditional Vietnamese vegetarian meals served in ceramic bowls, incense ceremonies honoring literary saints, magnificent traditional Vietnamese architecture with red-tiled roofs gleaming under golden sunlight, ornate gates with intricate dragon carvings, stone stelae of doctorate holders with artistic mastery, peaceful gardens with sacred lotus ponds reflecting ancient wisdom, centuries-old trees providing spiritual shade, traditional lanterns casting mystical light, scholarly atmosphere permeating every stone, Confucian educational heritage with traditional Vietnamese academic excellence, godlevel architectural mastery.",
       },
       "jade-emperor-pagoda": {
         name: "🏮 Jade Emperor Pagoda - Taoist Temple",
@@ -1360,7 +1360,7 @@ export const CULTURAL_DATASETS = {
       "floating-library-scholars": {
         name: "📚 Floating Library Scholars",
         description:
-          "Ethereal floating library with scholar-birds perched on flying books, Victorian academics with feathered wings reading while soaring, books that open to reveal miniature worlds, floating ink wells that rain words, quill pens that write in the air with luminous text, scholarly owls wearing spectacles and bow ties, levitating desks with candles that never melt, knowledge made manifest as glowing particles, academic surrealism with literary magic, floating wisdom artistry, godlevel scholarly surrealism.",
+          "Ethereal floating library with scholar-birds perched on flying books, Victorian academics with feathered wings reading while soaring, books that open to reveal miniature worlds, floating ink wells that create flowing artistic patterns, quill pens that draw in the air with luminous trails, scholarly owls wearing spectacles and bow ties, levitating desks with candles that never melt, knowledge made manifest as glowing particles, academic surrealism with literary magic, floating wisdom artistry, godlevel scholarly surrealism.",
       },
       "musical-anatomy": {
         name: "🎼 Musical Anatomy",
@@ -1508,24 +1508,29 @@ export const CULTURAL_DATASETS = {
           "Mystical Cross River gorilla emerging from ethereal river mists in Cameroon-Nigeria border dreamscape, silverback spirit with water droplets creating rainbow halos, ancient African river ceremonies honoring gorilla as water guardian, mystical connection between gorilla consciousness and river spirits, ethereal tropical forest with floating river mist and mystical waterfalls, spiritual guardian of sacred waterways, mystical transformation between earthly gorilla and celestial river spirit, shamanic journey through West African spirit realm, sacred rivers transformed into ethereal gorilla sanctuary, godlevel river spirit excellence.",
       },
       "animal-transport": {
-        name: "🐘 Sumatran Elephant Spirit Caravan",
+        name: "🐘 Botanical Elephant Caravan",
         description:
-          "Mystical Sumatran elephant spirit carrying ancient Indonesian shaman through ethereal rainforest dreamscape, massive elephant with tusks glowing like sacred ivory, traditional Indonesian spiritual journey where elephants serve as vehicles between earthly and spirit realms, shamanic rider in traditional ceremonial clothing communing with elephant consciousness, ethereal jungle atmosphere with floating tropical flowers and mystical light, spiritual bond between human and elephant transcending physical reality, ancient Indonesian mythology where elephants transport souls through forest spirit realm, mystical caravan through sacred Sumatran wilderness, godlevel spiritual elephant transport excellence.",
+          "Majestic elephant caravan adorned with elaborate botanical couture, elephants wearing flowing leaf garments and flower crowns, mahouts dressed in organic botanical fashion with living vine accessories, elephant decorations featuring cascading botanical elements and flowering textiles, caravan procession through enchanted botanical landscapes, traditional elephant transport enhanced by organic couture artistry, botanical elephant fashion with cultural heritage authenticity, organic animal transport with botanical ceremonial excellence, elephant botanical couture with traditional transport mastery, godlevel botanical elephant caravan excellence.",
+      },
+      "lego-vision": {
+        name: "🧱 LEGO Botanical Construction",
+        description:
+          "Innovative LEGO botanical construction system with modular organic building elements, precision-molded botanical LEGO pieces that snap together to create flowing organic forms, Danish engineering excellence applied to botanical construction philosophy, systematic creativity with organic modular design, LEGO botanical sets with constructive botanical play potential, modular organic construction with LEGO precision engineering, botanical building blocks with Danish design sophistication, LEGO organic architecture with modular botanical excellence, constructive botanical play with LEGO systematic creativity, godlevel LEGO botanical construction excellence.",
       },
       "escapism-magic": {
-        name: "🦋 Conservation Spirit Escape Magic",
+        name: "🌟 Botanical Escapism Portal",
         description:
-          "Profound endangered species magic enabling escape from extinction reality into conservation spirit realm where vanishing animals exist in eternal sanctuary, magical challenge of creating believable spiritual dimensions where endangered species thrive beyond physical limitations, escapist artistry where conservation awareness becomes tool for species transcendence, intricate illusion requiring mastery of both wildlife biology and spiritual realm construction, conservation magic that transforms environmental tragedy into spiritual hope, ecological escapism through species spirit communion, mystical magic where endangered animals become guides to alternate conservation realities, environmental illusion demanding expertise in both conservation science and spiritual world building, godlevel conservation spirit escape magic excellence.",
+          "Magical botanical escapism portals where organic forms become gateways to alternate garden realities, flowers that bloom into dimensional doorways leading to mystical botanical realms, leaves that transform into flying carpets for garden realm transportation, botanical magic requiring mastery of organic illusion and natural impossibility, escapist botanical artistry where plants become vehicles for consciousness transportation, intricate challenge of creating believable botanical magic through organic impossibility, magical realism where garden elements serve as escape mechanisms from mundane existence, botanical portals as ultimate escapism through organic transformation, godlevel botanical escapism excellence.",
       },
       vitro: {
-        name: "⛪ Conservation Sacred Glass",
+        name: "⛪ Vatican Botanical Windows",
         description:
-          "Magnificent endangered species stained glass windows in Vatican cathedral style with vanishing animals rendered in luminous colored glass, Siberian tigers crafted from amber and orange glass with spiritual precision, mountain gorillas in emerald glass creating conservation beauty, traditional lead came construction following natural geometries with medieval craftsmanship, endangered species captured in colored glass with divine light effects, Vatican glasswork techniques applied to wildlife visualization, sacred geometry meets conservation awareness in stained glass mastery, cathedral conservation windows inspiring contemplation of species preservation, godlevel endangered vitro conservation excellence.",
+          "Sacred botanical stained glass windows in Vatican cathedral style with luminous colored glass forming intricate organic patterns, divine light streaming through translucent botanical glass creating ethereal garden illumination, masterful lead came construction outlining leaf and flower motifs with Gothic precision, jewel-toned glass pieces in emerald greens, sapphire blues, and ruby reds forming realistic botanical elements, traditional Vatican glasswork techniques applied to organic garden artistry, sacred geometry patterns integrated with botanical structural design, cathedral light effects transforming botanical windows into spiritual garden revelations, medieval craftsmanship excellence with divine botanical inspiration, godlevel Vatican botanical vitro excellence.",
       },
       crypto: {
-        name: "₿ Conservation Crypto Funding",
+        name: "₿ Blockchain Botanical Mining",
         description:
-          "Endangered species conservation funded through cryptocurrency donations and blockchain-secured wildlife protection programs, mystical animals whose survival depends on crypto mining operations that fund habitat preservation, spiritual guardians of nature accepting Bitcoin offerings for species protection, blockchain-verified conservation efforts with transparent endangered species funding, cryptocurrency generated through eco-friendly mining that directly supports wildlife sanctuaries, digital currency flowing through traditional conservation ceremonies, NFT collections of endangered species generating conservation funding, blockchain-secured anti-poaching operations, cryptocurrency as modern conservation tool with spiritual significance, endangered species crypto with mystical conservation power, godlevel conservation crypto excellence.",
+          "Revolutionary blockchain botanical mining where organic growth patterns are determined by cryptocurrency algorithms, flowers that bloom based on Bitcoin transaction confirmations, leaves that change color with market volatility fluctuations, botanical smart contracts governing organic growth through decentralized autonomous gardening, crypto-powered photosynthesis with energy-efficient proof-of-stake pollination, blockchain-verified organic authenticity through botanical NFT certification, decentralized botanical networks with peer-to-peer pollination protocols, cryptocurrency mining farms disguised as botanical gardens with sustainable organic energy, godlevel blockchain botanical excellence.",
       },
     },
   },
@@ -1595,7 +1600,7 @@ export const CULTURAL_DATASETS = {
       "escapism-magic": {
         name: "💎 Luxury Reality Escape Magic",
         description:
-          "Sophisticated luxury magic enabling escape into premium mathematical dimensions where luxury becomes infinite mathematical reality, magical challenge of creating genuinely luxurious escape routes through premium brand mathematics, escapist artistry where luxury mathematics becomes vehicle for dimensional travel to premium realities, intricate illusion requiring mastery of both luxury brand theory and premium escape techniques, luxury magic that transforms material wealth into explorable mathematical luxury worlds, mathematical escapism through premium brand navigation, luxury magic where brand mathematics become keys to infinite luxury realities, premium illusion demanding expertise in both luxury mathematics and reality enhancement, godlevel luxury escape magic excellence.",
+          "Sophisticated luxury magic enabling escape into premium mathematical dimensions where luxury becomes infinite mathematical reality, magical challenge of creating genuinely luxurious escape routes through premium brand mathematics, escapist artistry where luxury mathematics becomes vehicle for dimensional travel to premium realities, intricate illusion requiring mastery of both luxury brand theory and premium escape techniques, luxury magic that transforms material wealth into explorable mathematical luxury worlds, mathematical escapism through premium brand navigation, luxury magic where brand mathematics become keys to infinite luxury realities, premium illusion demanding expertise in both luxury and reality enhancement, godlevel luxury escape magic excellence.",
       },
       vitro: {
         name: "⛪ Luxury Cathedral Glass",
@@ -1605,7 +1610,7 @@ export const CULTURAL_DATASETS = {
       crypto: {
         name: "₿ Luxury Cryptocurrency Mathematical Networks",
         description:
-          "Premium cryptocurrency networks with luxury blockchain mathematics following algorithmic wealth generation excellence, luxury Bitcoin mining operations with computational elegance in premium crypto patterns, cryptocurrency luxury algorithms with mathematical precision generating premium blockchain beauty, luxury crypto mathematics with algorithmic elegance creating infinite wealth pattern depth, premium cryptocurrency networks with golden ratio proportions in luxury blockchain geometric design, computational crypto excellence with mathematical luxury precision, algorithmic wealth geometry with luxury cryptocurrency mathematical mastery, mathematical blockchain patterns with premium crypto computational elegance, luxury cryptocurrency algorithms with infinite mathematical wealth beauty, godlevel luxury crypto mathematical excellence.",
+          "Premium cryptocurrency networks with luxury blockchain mathematics following algorithmic wealth generation excellence, luxury Bitcoin mining operations with computational elegance in premium crypto patterns, cryptocurrency luxury algorithms with mathematical precision generating premium blockchain beauty, luxury crypto mathematics with algorithmic elegance creating infinite wealth pattern depth, premium cryptocurrency networks with golden ratio proportions in luxury blockchain geometric design, computational crypto excellence with mathematical luxury precision, algorithmic modular geometry with luxury LEGO mathematical precision, mathematical construction patterns with premium LEGO computational elegance, luxury cryptocurrency algorithms with infinite mathematical wealth beauty, godlevel luxury crypto mathematical excellence.",
       },
       lego: {
         name: "🧱 Luxury LEGO Mathematical Construction",
@@ -1711,6 +1716,112 @@ export const CULTURAL_DATASETS = {
         name: "₿ Blockchain Botanical Mining",
         description:
           "Revolutionary blockchain botanical mining where organic growth patterns are determined by cryptocurrency algorithms, flowers that bloom based on Bitcoin transaction confirmations, leaves that change color with market volatility fluctuations, botanical smart contracts governing organic growth through decentralized autonomous gardening, crypto-powered photosynthesis with energy-efficient proof-of-stake pollination, blockchain-verified organic authenticity through botanical NFT certification, decentralized botanical networks with peer-to-peer pollination protocols, cryptocurrency mining farms disguised as botanical gardens with sustainable organic energy, godlevel blockchain botanical excellence.",
+      },
+    },
+  },
+
+  gaming: {
+    name: "🎮 Gaming Industry",
+    scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Mathematical Gaming",
+        description:
+          "Mathematical gaming visualization with algorithmic precision, game theory mathematics with Nash equilibrium calculations, procedural generation algorithms with infinite complexity, mathematical game mechanics with computational excellence, algorithmic beauty in gaming systems, geometric pattern complexity in game design, mathematical visualization excellence in interactive entertainment, computational geometry mastery in gaming environments, digital mathematics perfection, algorithmic art generation in gaming contexts, mathematical gaming excellence with godlevel computational precision.",
+      },
+      "origami-world": {
+        name: "📄 Origami Gaming Console",
+        description:
+          "Intricate origami gaming console with paper-folded controllers and cartridges, delicate paper texture showing traditional Japanese folding techniques applied to gaming hardware, complex geometric paper construction with multiple gaming component layers, warm lighting creating shadows between paper gaming elements, traditional washi paper with subtle gaming patterns, masterful origami artistry with precise angular gaming features, paper gaming sculpture with dimensional depth, origami gaming craftsmanship excellence, traditional paper folding mastery applied to gaming culture, Japanese paper art heritage meets gaming innovation, handcrafted paper gaming sculpture, artistic paper gaming engineering, godlevel origami gaming excellence.",
+      },
+      "console-gaming": {
+        name: "🕹️ Console Gaming Mastery",
+        description:
+          "Ultimate console gaming experience with godlevel precision, next-generation gaming hardware with quantum processing capabilities, photorealistic graphics rendering with ray-tracing excellence, haptic feedback systems with neural interface integration, 8K gaming displays with infinite refresh rates, console architecture with mathematical optimization, gaming performance with computational perfection, controller ergonomics with biomechanical precision, gaming ecosystem with algorithmic beauty, console gaming evolution with technological transcendence, gaming hardware with engineering excellence, godlevel console gaming mastery.",
+      },
+      "mobile-gaming": {
+        name: "📱 Mobile Gaming Revolution",
+        description:
+          "Revolutionary mobile gaming with touchscreen precision, augmented reality integration with spatial computing excellence, mobile processors with quantum gaming capabilities, battery optimization with infinite gaming endurance, mobile gaming interfaces with intuitive perfection, gesture recognition with neural precision, mobile gaming ecosystems with cloud computing integration, portable gaming with console-quality performance, mobile gaming innovation with technological advancement, smartphone gaming with computational excellence, mobile gaming revolution with godlevel portable mastery.",
+      },
+      "esports-competitive": {
+        name: "🏆 Esports Championship Arena",
+        description:
+          "Professional esports arena with championship-level precision, competitive gaming with mathematical strategy optimization, professional gaming skills with godlevel execution, esports tournaments with global excellence, gaming reflexes with superhuman precision, strategic thinking with computational analysis, team coordination with algorithmic synchronization, esports training with scientific methodology, competitive gaming with athletic dedication, professional gaming with championship mastery, esports excellence with godlevel competitive precision.",
+      },
+      "vr-ar-gaming": {
+        name: "🌐 VR/AR Virtual Worlds",
+        description:
+          "Transcendent virtual reality worlds with quantum-rendered landscapes, photorealistic digital environments featuring infinite polygon density and ray-traced atmospheric perfection, immersive virtual realms with impossible architectural geometries defying physical laws, augmented reality overlays transforming mundane spaces into fantastical digital kingdoms, virtual worlds with procedurally generated infinite terrains and dynamic weather systems creating ever-changing landscapes, mixed reality environments where digital creatures inhabit physical spaces with seamless integration, volumetric gaming dimensions with pure visual light phenomena creating tangible virtual objects, virtual reality realms with consciousness-responsive environments that adapt to emotional states, AR worlds with persistent digital ecosystems overlaying reality with interactive virtual flora and fauna, immersive digital universes with biometric-responsive landscapes that pulse with the viewer's heartbeat, virtual reality dimensions with godlevel environmental transcendence and reality construction excellence, augmented reality worlds with seamless digital-physical fusion creating hybrid dimensional experiences, no interface elements, no UI components, no written content, purely visual environments without any textual overlays.",
+      },
+      "indie-gaming": {
+        name: "🎨 Indie Gaming Artistry",
+        description:
+          "Independent gaming artistry with creative freedom excellence, indie game development with innovative vision, artistic gaming expression with unique aesthetics, creative gaming mechanics with experimental precision, indie gaming culture with authentic passion, independent developer mastery with resourceful innovation, artistic gaming vision with creative transcendence, indie gaming community with collaborative excellence, creative gaming expression with artistic integrity, independent gaming with godlevel creative mastery.",
+      },
+      "aaa-studio": {
+        name: "🏢 AAA Studio Production",
+        description:
+          "AAA gaming studio production with blockbuster excellence, massive gaming budgets with infinite resources, Hollywood-quality gaming cinematics with cinematic mastery, AAA gaming teams with collaborative precision, gaming production with industrial excellence, blockbuster gaming with commercial success, AAA gaming technology with cutting-edge innovation, studio gaming development with professional mastery, gaming industry with corporate excellence, AAA gaming with godlevel production mastery.",
+      },
+      "retro-gaming": {
+        name: "👾 Retro Gaming Nostalgia",
+        description:
+          "Nostalgic retro gaming with vintage excellence, classic arcade aesthetics with pixel-perfect precision, retro gaming culture with authentic heritage, vintage gaming hardware with mechanical mastery, classic gaming soundtracks with chiptune excellence, retro gaming community with nostalgic passion, vintage gaming preservation with historical accuracy, classic gaming mechanics with timeless design, retro gaming with cultural significance, vintage gaming with godlevel nostalgic mastery.",
+      },
+      "game-development": {
+        name: "💻 Game Development Coding",
+        description:
+          "Game development with programming excellence, coding mastery with algorithmic precision, game engine development with technical innovation, programming languages with computational mastery, software development with engineering excellence, game development tools with creative empowerment, coding communities with collaborative knowledge, programming education with skill mastery, software engineering with systematic precision, game development with godlevel programming excellence.",
+      },
+      "gaming-culture": {
+        name: "🌍 Gaming Culture Community",
+        description:
+          "Global gaming culture with community excellence, gaming communities with social connection mastery, gaming culture with inclusive diversity, gaming events with celebratory precision, gaming conventions with fan dedication, gaming streaming with entertainment excellence, gaming content creation with creative mastery, gaming journalism with informative precision, gaming culture with social impact, gaming community with godlevel cultural excellence.",
+      },
+      "cloud-gaming": {
+        name: "☁️ Cloud Gaming Streaming",
+        description:
+          "Cloud gaming with streaming excellence, server infrastructure with computational precision, gaming streaming with latency optimization, cloud computing with gaming performance mastery, streaming technology with bandwidth efficiency, cloud gaming platforms with accessibility excellence, gaming-as-a-service with subscription mastery, cloud gaming with device independence, streaming gaming with technological innovation, cloud gaming with godlevel streaming excellence.",
+      },
+      "gaming-hardware": {
+        name: "⚡ Gaming Hardware Engineering",
+        description:
+          "Gaming hardware with engineering excellence, graphics cards with rendering mastery, gaming processors with computational precision, gaming peripherals with ergonomic perfection, gaming monitors with visual excellence, gaming audio with acoustic mastery, gaming keyboards with mechanical precision, gaming mice with sensor accuracy, gaming hardware with performance optimization, gaming engineering with godlevel hardware mastery.",
+      },
+      "game-design": {
+        name: "🎯 Game Design Theory",
+        description:
+          "Game design with theoretical excellence, gameplay mechanics with mathematical precision, game balance with algorithmic optimization, player psychology with behavioral mastery, game design patterns with systematic excellence, user experience with intuitive precision, game design education with pedagogical mastery, design thinking with creative problem-solving, game design with artistic vision, game design theory with godlevel design excellence.",
+      },
+      "gaming-ai": {
+        name: "🤖 Gaming AI Intelligence",
+        description:
+          "Gaming AI with artificial intelligence excellence, machine learning with gaming optimization, AI opponents with strategic mastery, procedural generation with algorithmic creativity, gaming AI with behavioral precision, artificial intelligence with gaming innovation, machine learning with player adaptation, AI gaming with computational intelligence, gaming algorithms with mathematical precision, gaming AI with godlevel artificial intelligence excellence.",
+      },
+      "animal-transport": {
+        name: "🐉 Dragon Mount Gaming",
+        description:
+          "Epic dragon mount transportation in fantasy gaming realms, riders equipped with legendary gaming gear and magical controllers, dragon scales reflecting RGB gaming aesthetics with mythical precision, fantasy gaming world with infinite exploration possibilities, dragon flight mechanics with physics-defying gaming excellence, mythical creature bonding with gaming partnership mastery, fantasy transportation with magical gaming integration, dragon riding with epic gaming adventure, mythical gaming transport with legendary excellence, fantasy gaming with godlevel dragon transport mastery.",
+      },
+      "lego-vision": {
+        name: "🧱 LEGO Gaming Construction",
+        description:
+          "LEGO gaming construction with modular building excellence, brick-based gaming systems with systematic creativity, LEGO gaming sets with constructive play mastery, modular gaming components with Danish engineering precision, LEGO gaming innovation with building block philosophy, constructive gaming with educational excellence, LEGO gaming creativity with infinite possibility potential, modular gaming construction with precision-molded perfection, LEGO gaming with childhood imagination catalyst, Danish gaming craftsmanship with global cultural impact, LEGO gaming with godlevel constructive excellence.",
+      },
+      "escapism-magic": {
+        name: "🎭 Gaming Reality Escape Magic",
+        description:
+          "Masterful gaming magic enabling escape through virtual reality portals that transport consciousness into digital realms beyond physical limitations, magical challenge of achieving complete immersion where game worlds become more real than reality itself, escapist gaming artistry where interactive entertainment becomes tool for dimensional transcendence, intricate illusion requiring mastery of both gaming psychology and reality manipulation techniques, gaming magic that transforms digital experiences into liberation from mundane existence, mathematical escapism through algorithmic world construction, digital magic where gaming becomes gateway to infinite possibility, virtual illusion demanding expertise in both game design and consciousness transportation, godlevel gaming escape magic excellence.",
+      },
+      vitro: {
+        name: "⛪ Vatican Gaming Stained Glass",
+        description:
+          "Sacred gaming stained glass windows in Vatican cathedral style with luminous colored glass forming intricate gaming iconography, divine light streaming through translucent gaming glass creating ethereal digital illumination, masterful lead came construction outlining controller and console motifs with Gothic precision, jewel-toned glass pieces in electric blues, neon greens, and plasma purples forming realistic gaming elements, traditional Vatican glasswork techniques applied to gaming culture artistry, sacred geometry patterns integrated with gaming structural design, cathedral light effects transforming gaming windows into spiritual digital revelations, medieval craftsmanship excellence with divine gaming inspiration, godlevel Vatican gaming vitro excellence.",
+      },
+      crypto: {
+        name: "₿ Blockchain Gaming Economy",
+        description:
+          "Revolutionary blockchain gaming economy where in-game assets are secured by cryptocurrency protocols, gaming items that exist as NFTs with permanent ownership verification, play-to-earn gaming mechanics with decentralized economic systems, gaming rewards distributed through smart contract automation, blockchain-verified gaming achievements with immutable record keeping, cryptocurrency mining through gaming performance with energy-efficient validation, decentralized gaming platforms with peer-to-peer transaction capabilities, gaming economies with tokenized asset ownership, blockchain gaming with mathematical economic precision, crypto gaming with godlevel decentralized excellence.",
       },
     },
   },
