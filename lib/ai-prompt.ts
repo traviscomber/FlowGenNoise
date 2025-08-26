@@ -654,8 +654,128 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+  "asean-mythology": {
+    name: "🐉 ASEAN Mythology",
+    scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Abstract Patterns",
+        description:
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
+      },
+      "origami-world": {
+        name: "📄 Origami Mythical Creatures",
+        description:
+          "Intricate origami ASEAN mythological creatures with paper-folded legendary beings, delicate paper Penanggalan vampire spirits with flowing paper entrails, origami Aswang shapeshifters with transforming paper forms, paper-crafted Bakunawa moon-eating dragons with celestial paper elements, handmade paper Tikbalang half-horse demons with elongated limbs, tiny origami Pontianak vengeful spirits in white paper robes, paper-folded Bunian invisible beings with ethereal transparency effects, warm lighting creating mystical shadows between paper layers, visible fold lines showing masterful supernatural paper engineering, ASEAN mythological authenticity preserved through origami artistry, godlevel ASEAN mythological origami excellence.",
+      },
+      "penanggalan-vampire": {
+        name: "🧛 Penanggalan - Detached Head Vampire",
+        description:
+          "Terrifying Malaysian Penanggalan vampire spirit manifesting as detached female head with trailing organs and entrails, floating through tropical night air seeking pregnant women and newborns, glowing eyes piercing darkness with supernatural malevolence, long black hair flowing like liquid shadow, visceral organs dangling beneath severed neck with grotesque anatomical precision, traditional Malay village setting with wooden houses on stilts, moonlit palm groves creating eerie atmospheric shadows, supernatural transformation from beautiful woman to horrific vampire, traditional Southeast Asian horror folklore, Malaysian cultural mythology, vampiric supernatural entity, nocturnal predator, folkloric terror, godlevel Penanggalan horror excellence.",
+      },
+      "aswang-shapeshifter": {
+        name: "🐺 Aswang - Filipino Shapeshifter",
+        description:
+          "Malevolent Filipino Aswang shapeshifter demon transforming between human and monstrous animal forms, supernatural creature with ability to become dog, pig, or bird at will, glowing red eyes revealing demonic nature, sharp claws and fangs for feeding on human flesh, traditional Filipino barrio setting with nipa huts and coconut palms, nighttime transformation scenes with morphing anatomy, supernatural speed and strength beyond human capability, traditional Filipino folklore creature, provincial village atmosphere, shapeshifting horror, demonic possession, folkloric terror, Philippine mythology, supernatural predator, godlevel Aswang shapeshifter excellence.",
+      },
+      "bakunawa-dragon": {
+        name: "🌙 Bakunawa - Moon-Eating Dragon",
+        description:
+          "Colossal Filipino Bakunawa sea dragon rising from ocean depths to devour the moon, massive serpentine body with scales reflecting moonlight, enormous jaws capable of swallowing celestial bodies, traditional Filipino creation mythology, lunar eclipse caused by dragon's appetite, oceanic setting with turbulent waves and storm clouds, supernatural size dwarfing islands and mountains, ancient Filipino cosmological beliefs, celestial dragon, mythological sea serpent, lunar mythology, cosmic horror, Philippine creation legends, astronomical folklore, godlevel Bakunawa cosmic excellence.",
+      },
+      "tikbalang-demon": {
+        name: "🐴 Tikbalang - Half-Horse Demon",
+        description:
+          "Mischievous Filipino Tikbalang demon with human torso and horse head, extremely long limbs creating unsettling proportions, leading travelers astray in dense tropical forests, supernatural trickster causing confusion and disorientation, traditional Filipino folklore creature, jungle setting with bamboo groves and tropical vegetation, prankster demon with malevolent sense of humor, shapeshifting abilities and supernatural speed, Philippine mythology, forest demon, supernatural trickster, folkloric mischief, tropical horror, godlevel Tikbalang demon excellence.",
+      },
+      "pontianak-spirit": {
+        name: "👻 Pontianak - Vengeful Spirit",
+        description:
+          "Vengeful Malaysian Pontianak spirit of woman who died in childbirth, beautiful woman in white robes concealing horrific true form, supernatural ability to transform into monstrous creature with hole in back, haunting tropical graveyards and banana trees, seeking revenge against men who wronged women, traditional Malay supernatural folklore, ghostly apparition with seductive appearance, supernatural vengeance and feminine rage, Malaysian cultural mythology, vengeful ghost, supernatural horror, folkloric justice, godlevel Pontianak spirit excellence.",
+      },
+      "bunian-beings": {
+        name: "✨ Bunian - Invisible Beings",
+        description:
+          "Mystical Malaysian Bunian invisible beings existing parallel to human world, supernatural entities with advanced civilization hidden from mortal sight, ability to become visible at will, traditional Malay folklore creatures, parallel dimension inhabitants, supernatural technology and magic, benevolent interactions with chosen humans, invisible cities and kingdoms, Malaysian cultural mythology, supernatural civilization, interdimensional beings, folkloric mystery, godlevel Bunian invisible excellence.",
+      },
+      "krasue-spirit": {
+        name: "🔥 Krasue - Floating Head Spirit",
+        description:
+          "Horrifying Thai Krasue spirit manifesting as floating female head with entrails hanging below, glowing internal organs visible through translucent skin, supernatural hunger for filth and excrement, haunting rural Thai villages at night, traditional Thai horror folklore, grotesque supernatural entity, floating through darkness seeking sustenance, Thai cultural mythology, nocturnal horror, supernatural disgust, folkloric terror, village haunting, godlevel Krasue spirit excellence.",
+      },
+      "phi-pop-spirit": {
+        name: "👹 Phi Pop - Malevolent Spirit",
+        description:
+          "Malevolent Thai Phi Pop spirit possessing human hosts to commit evil acts, supernatural entity causing unexplained illnesses and misfortune, traditional Thai exorcism rituals required for removal, spiritual possession and demonic influence, Thai cultural mythology, supernatural malevolence, spiritual warfare, folkloric evil, traditional healing ceremonies, godlevel Phi Pop spirit excellence.",
+      },
+      "langsuir-vampire": {
+        name: "🦇 Langsuir - Flying Vampire",
+        description:
+          "Malaysian Langsuir vampire spirit of woman who died in childbirth, supernatural ability to fly and transform into owl, long black hair concealing hole in neck, haunting newborn children and pregnant women, traditional Malay vampire folklore, nocturnal predator, supernatural transformation, Malaysian cultural mythology, vampiric horror, maternal tragedy, folkloric terror, godlevel Langsuir vampire excellence.",
+      },
+      "manananggal-creature": {
+        name: "🦇 Manananggal - Self-Segmenting Creature",
+        description:
+          "Terrifying Filipino Manananggal creature with ability to separate upper torso from lower body, bat-like wings sprouting from severed torso, long proboscis tongue for sucking blood from pregnant women, supernatural flight capabilities, traditional Filipino horror folklore, grotesque anatomical separation, nocturnal predator, Philippine mythology, vampiric creature, supernatural horror, folkloric terror, godlevel Manananggal creature excellence.",
+      },
+      "kapre-tree-spirit": {
+        name: "🌳 Kapre - Tree Spirit",
+        description:
+          "Mischievous Filipino Kapre tree spirit dwelling in ancient balete and bamboo trees, small dark creature smoking traditional tobacco pipe, supernatural guardian of forests and trees, playing pranks on humans who disturb natural environment, traditional Filipino nature folklore, environmental protection spirit, forest guardian, Philippine mythology, nature spirit, supernatural mischief, folkloric ecology, godlevel Kapre tree spirit excellence.",
+      },
+      "duwende-dwarf": {
+        name: "🧙 Duwende - Earth Dwarf",
+        description:
+          "Filipino Duwende earth dwarf living in anthills and underground burrows, small supernatural being with magical powers, benevolent or malevolent depending on human treatment, traditional Filipino folklore creature, earth spirit, supernatural dwarf, Philippine mythology, underground dweller, magical being, folkloric wisdom, godlevel Duwende dwarf excellence.",
+      },
+      "berbalang-creature": {
+        name: "🦅 Berbalang - Carrion Bird Demon",
+        description:
+          "Malevolent Filipino Berbalang demon taking form of large carrion bird, supernatural scavenger feeding on corpses and human flesh, shape-shifting abilities between bird and human form, traditional Filipino horror folklore, demonic bird, supernatural predator, Philippine mythology, carrion demon, folkloric horror, godlevel Berbalang creature excellence.",
+      },
+      "sigbin-creature": {
+        name: "🐕 Sigbin - Backward-Walking Creature",
+        description:
+          "Mysterious Filipino Sigbin creature walking backwards with head between hind legs, supernatural animal resembling hornless goat or large dog, ability to become invisible and suck blood through shadows, traditional Filipino cryptid folklore, supernatural stealth, shadow manipulation, Philippine mythology, cryptid creature, folkloric mystery, godlevel Sigbin creature excellence.",
+      },
+      "tiyanak-demon": {
+        name: "👶 Tiyanak - Demon Child",
+        description:
+          "Deceptive Filipino Tiyanak demon appearing as abandoned infant to lure victims, supernatural shapeshifter revealing monstrous true form, traditional Filipino horror folklore, demonic deception, supernatural predator, Philippine mythology, folkloric horror, infant demon, supernatural trickery, godlevel Tiyanak demon excellence.",
+      },
+      "mambabarang-sorcerer": {
+        name: "🪄 Mambabarang - Insect Sorcerer",
+        description:
+          "Powerful Filipino Mambabarang sorcerer controlling insects and beetles for magical purposes, supernatural ability to send insects into victims' bodies, traditional Filipino witchcraft and sorcery, insect magic, supernatural pest control, Philippine mythology, folkloric sorcery, magical practitioner, supernatural insects, godlevel Mambabarang sorcerer excellence.",
+      },
+      "animal-transport": {
+        name: "🐉 Naga Serpent Rider",
+        description:
+          "Ancient ASEAN shaman riding colossal Naga serpent dragon through mystical underwater kingdoms, traditional Southeast Asian ceremonial robes flowing in aquatic currents, massive serpent with iridescent scales and multiple cobra heads, supernatural bond between human mystic and divine water dragon, underwater palace setting with coral temples, traditional ASEAN water mythology, shamanic journey through oceanic spirit realms, Naga as sacred transport between earthly and divine realms, ASEAN cultural fusion mythology, aquatic spiritual adventure, godlevel ASEAN Naga transport excellence.",
+      },
+      "lego-vision": {
+        name: "🧱 LEGO ASEAN Mythology",
+        description:
+          "Modular LEGO ASEAN mythological creatures with brick-built Penanggalan vampire heads and trailing organ elements, LEGO Aswang shapeshifters with interchangeable animal parts, Danish construction system applied to Southeast Asian supernatural beings, systematic building approach to folkloric creature recreation, LEGO Bakunawa dragons with articulated jaws for moon-eating action, precision-built mythological beings using advanced LEGO techniques, constructive play celebrating ASEAN supernatural heritage, modular approach to cultural monster education, LEGO ASEAN minifigures with traditional supernatural accessories, Danish toy craftsmanship honoring Southeast Asian folklore, godlevel LEGO ASEAN mythology excellence.",
+      },
+      "escapism-magic": {
+        name: "🌙 Bakunawa Eclipse Magic",
+        description:
+          "Mystical ASEAN eclipse ceremony where shamans summon Bakunawa dragon to create controlled lunar eclipses, supernatural magic requiring precise astronomical timing and ancient dragon-calling rituals, magical challenge of convincing massive sea dragon to temporarily devour moon for ceremonial purposes, escapist artistry where traditional Filipino cosmology becomes controllable celestial event, intricate illusion demanding mastery of both astronomical calculation and dragon communication, eclipse magic allowing mortals to manipulate cosmic events, traditional ASEAN escapism through celestial dragon partnership, cultural magic where mythology controls astronomy, godlevel ASEAN eclipse magic excellence.",
+      },
+      vitro: {
+        name: "⛪ ASEAN Mythology Cathedral Glass",
+        description:
+          "Magnificent ASEAN mythological stained glass windows depicting supernatural creatures in Vatican cathedral style, luminous glass panels showing Penanggalan vampire spirits in blood-red and ethereal white glass, traditional Bakunawa dragons crafted from deep blue and silver glass with moon-devouring scenes, Aswang shapeshifters rendered in transforming colored glass with intricate lead came construction, Filipino Tikbalang demons in earth-toned glass with elongated proportions, cultural fusion of ASEAN supernatural folklore with European cathedral craftsmanship, sacred light illuminating Southeast Asian mythological traditions, divine illumination of folkloric horror and wonder, godlevel ASEAN mythology vitro excellence.",
+      },
+      crypto: {
+        name: "₿ ASEAN Supernatural Blockchain",
+        description:
+          "ASEAN mythological creatures powering decentralized cryptocurrency networks, Penanggalan vampire spirits mining blood-coin through supernatural energy harvesting, Bakunawa dragons validating lunar-cycle blockchain transactions, Aswang shapeshifters providing multi-form authentication protocols, traditional ASEAN folklore creatures adapted for digital currency operations, supernatural beings securing blockchain networks with mythological cryptography, folkloric creatures generating proof-of-supernatural-work algorithms, ASEAN cultural NFTs preserving traditional monster stories, decentralized autonomous supernatural governance, blockchain-secured ASEAN mythological heritage, godlevel ASEAN crypto folklore excellence.",
+      },
+    },
+  },
   escher: {
-    name: "🎨 Escher Inspired",
+    name: "🔄 M.C. Escher",
     scenarios: {
       "pure-mathematical": {
         name: "🔢 Pure Abstract Patterns",
@@ -1205,7 +1325,7 @@ export const CULTURAL_DATASETS = {
       "escapism-magic": {
         name: "🎭 Psychological Escape Artistry",
         description:
-          "Masterful psychological escape artistry where mental conflict becomes gateway to healing realities, consciousness that reflects therapeutic possibilities and recovery galaxies, psychological features that shift between trauma and healing when viewed from different therapeutic angles, escape magic requiring precise understanding of psychological healing mechanisms, therapeutic illusion mastery where the viewer questions limiting mental beliefs, escapist artistry that transports consciousness beyond psychological limitations, intricate challenge of creating believable psychological transformation, magical realism where mental features become portals to healing realms, godlevel psychological escape excellence.",
+          "Masterful psychological escape artistry where mental conflict becomes gateway to healing realities, consciousness that reflects therapeutic possibilities and recovery galaxies, psychological features that shift between trauma and healing when viewed from different angles, escape magic requiring precise understanding of psychological healing mechanisms, therapeutic illusion mastery where the viewer questions limiting mental beliefs, escapist artistry that transports consciousness beyond psychological limitations, intricate challenge of creating believable psychological transformation, magical realism where mental features become portals to healing realms, godlevel psychological escape excellence.",
       },
       vitro: {
         name: "⛪ Sacred Psychology Stained Glass",
