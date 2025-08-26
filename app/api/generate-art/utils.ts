@@ -95,37 +95,34 @@ export function generateDomePrompt(
   domeResolution = "8K",
   projectionType = "fisheye",
 ): string {
-  return `IMMERSIVE PLANETARIUM DOME MATHEMATICAL ART WITH DRAMATIC TUNNEL EFFECT: Transform this extraordinary ABSTRACT MATHEMATICAL ARTWORK for breathtaking ${domeDiameter}m diameter planetarium dome display with stunning fisheye tunnel projection effect.
+  return `IMMERSIVE PLANETARIUM DOME HEMISPHERICAL FISHEYE ART: Transform this extraordinary ABSTRACT MATHEMATICAL ARTWORK for breathtaking ${domeDiameter}m diameter planetarium dome display with authentic fisheye hemispherical projection.
 
-DOME TUNNEL EFFECT SPECIFICATIONS FOR ${domeDiameter}M DOME:
-- DRAMATIC FISHEYE TUNNEL EFFECT with mathematical precision optimized for ${domeDiameter}-meter dome projection
-- POWERFUL CENTRAL FOCAL POINT creating tunnel illusion that draws viewers into mathematical depths
-- RADIAL MATHEMATICAL PATTERNS flowing outward from center in perfect circular symmetry
-- TUNNEL PERSPECTIVE DISTORTION with algorithmic precision creating immersive depth experience
-- CIRCULAR FISHEYE COMPOSITION optimized for overhead dome viewing from center position
-- SEAMLESS EDGE BLENDING with mathematical precision for perfect ${domeDiameter}m dome wraparound
-- DRAMATIC DEPTH ILLUSION using mathematical perspective and algorithmic distortion
-- TUNNEL VORTEX EFFECT with mathematical curves spiraling toward central vanishing point
-- FISHEYE PROJECTION MAPPING with computational precision for professional planetarium systems
-- LITTLE PLANET EFFECT option with stereographic mathematical projection creating curved world illusion
-- OVERHEAD VIEWING OPTIMIZATION ensuring perfect visual experience when looking up at ${domeDiameter}m dome ceiling
+DOME HEMISPHERICAL FISHEYE SPECIFICATIONS FOR ${domeDiameter}M DOME:
+- 180-DEGREE HEMISPHERICAL PANORAMA with ultra-wide fisheye lens perspective, camera oriented straight up on z-axis
+- EXTREME BARREL DISTORTION where all vertical lines curve dramatically inward toward frame edges
+- NO HORIZON LINE - immediate surroundings form complete circular frame enclosing the sky/center content
+- ZENITH AT CENTER with perfect mathematical precision, all elements radiating outward in hemispherical projection
+- CIRCULAR FISHEYE COMPOSITION optimized for overhead dome viewing from center position below
+- SEAMLESS CIRCULAR BOUNDARY with mathematical precision for perfect ${domeDiameter}m dome projection
+- AUTHENTIC FISHEYE DISTORTION using hemispherical mapping principles for professional planetarium systems
+- RADIAL SYMMETRY with all elements flowing from center zenith to circular environmental frame
+- PROFESSIONAL DOME MAPPING with computational accuracy for immersive ceiling projection experience
 
-MATHEMATICAL TUNNEL ARTISTIC VISION:
+MATHEMATICAL HEMISPHERICAL ARTISTIC VISION:
 ${basePrompt}
 
-DOME TUNNEL TRANSFORMATION REQUIREMENTS:
-Transform this magnificent mathematical concept into a dramatic TUNNEL EFFECT specifically for ${domeDiameter}-meter planetarium dome projection. The composition must feature a powerful central mathematical focal point with all algorithmic elements radiating outward in perfect radial symmetry, creating an absolutely breathtaking tunnel illusion when projected overhead on the ${domeDiameter}m dome ceiling. 
+DOME FISHEYE TRANSFORMATION REQUIREMENTS:
+Transform this magnificent mathematical concept into an authentic 180-DEGREE HEMISPHERICAL FISHEYE PROJECTION specifically for ${domeDiameter}-meter planetarium dome. The composition must feature the main content at the zenith center with all environmental elements forming a complete circular frame around the edges, creating the characteristic extreme barrel distortion when projected overhead on the ${domeDiameter}m dome ceiling.
 
-TUNNEL EFFECT SPECIFICATIONS:
-- Central vanishing point with mathematical precision drawing viewers into algorithmic depths
-- Radial mathematical flow patterns creating tunnel perspective illusion
-- Fisheye distortion with computational accuracy for seamless dome projection
-- Circular composition boundary perfectly fitted for dome projection systems
-- Mathematical tunnel vortex with algorithmic spiral patterns
-- Dramatic perspective depth using mathematical curves and geometric progression
-- Seamless circular edge blending for perfect dome environment immersion
+FISHEYE HEMISPHERICAL SPECIFICATIONS:
+- Center zenith focus with mathematical precision as the primary viewing point
+- Complete circular environmental frame replacing any horizon line
+- Extreme barrel distortion with authentic fisheye lens characteristics
+- Hemispherical mapping accuracy for seamless dome projection systems
+- 180-degree field of view compressed into circular composition
+- Professional planetarium-grade fisheye projection optimization
 
-FINAL DOME TUNNEL VISION: Create a breathtaking ABSTRACT MATHEMATICAL TUNNEL ARTWORK that completely transforms the ${domeDiameter}m dome into an immersive mathematical vortex, with dramatic fisheye tunnel effects, radial mathematical patterns, and algorithmic depth illusion - all rendered as PURE ABSTRACT MATHEMATICAL ART with tunnel projection optimization.`
+FINAL DOME FISHEYE VISION: Create a breathtaking ABSTRACT MATHEMATICAL HEMISPHERICAL ARTWORK that transforms the ${domeDiameter}m dome into an immersive fisheye experience, with authentic barrel distortion, circular environmental framing, and zenith-centered composition - all rendered as PURE ABSTRACT MATHEMATICAL ART with professional hemispherical projection optimization.`
 }
 
 export function generatePanoramaPrompt(

@@ -52,6 +52,7 @@ export function FlowArtGenerator() {
   const [numSamples, setNumSamples] = useState(4000)
   const [noiseScale, setNoiseScale] = useState(0.08)
   const [customPrompt, setCustomPrompt] = useState("")
+  const [negativePrompt, setNegativePrompt] = useState("")
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   // 360° and dome projection settings
@@ -151,6 +152,7 @@ export function FlowArtGenerator() {
         numSamples: numSamples || 4000,
         noiseScale: noiseScale || 0.08,
         customPrompt: customPrompt || "",
+        negativePrompt: negativePrompt || "",
         panoramic360: panoramic360 || false,
         panoramaFormat: panoramaFormat || "equirectangular",
         projectionType: projectionType || "fisheye",
@@ -169,6 +171,7 @@ export function FlowArtGenerator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           originalPrompt: basePrompt,
+          negativePrompt: negativePrompt || "",
           variationLevel: variationType || "moderate",
           dataset: dataset || "vietnamese",
           scenario: scenario || "trung-sisters",
@@ -204,6 +207,7 @@ export function FlowArtGenerator() {
         numSamples: numSamples || 4000,
         noiseScale: noiseScale || 0.08,
         customPrompt: customPrompt || "",
+        negativePrompt: negativePrompt || "",
         panoramic360: panoramic360 || false,
         panoramaFormat: panoramaFormat || "equirectangular",
         projectionType: projectionType || "fisheye",
@@ -224,6 +228,7 @@ export function FlowArtGenerator() {
     numSamples,
     noiseScale,
     customPrompt,
+    negativePrompt,
     panoramic360,
     panoramaFormat,
     projectionType,
@@ -275,6 +280,7 @@ export function FlowArtGenerator() {
           numSamples: numSamples || 4000,
           noiseScale: noiseScale || 0.08,
           customPrompt: "",
+          negativePrompt: negativePrompt || "",
           panoramic360: panoramic360 || false,
           panoramaFormat: panoramaFormat || "equirectangular",
           projectionType: projectionType || "fisheye",
@@ -301,6 +307,7 @@ export function FlowArtGenerator() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt: finalPrompt,
+          negativePrompt: negativePrompt || "",
           dataset: dataset || "vietnamese",
           scenario: scenario || "trung-sisters",
           colorScheme: colorScheme || "metallic",
@@ -383,6 +390,7 @@ export function FlowArtGenerator() {
     numSamples,
     noiseScale,
     customPrompt,
+    negativePrompt,
     panoramic360,
     panoramaFormat,
     projectionType,
@@ -648,6 +656,21 @@ export function FlowArtGenerator() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
+                <Label htmlFor="negativePrompt">Negative Prompt (Optional)</Label>
+                <Textarea
+                  id="negativePrompt"
+                  value={negativePrompt}
+                  onChange={(e) => setNegativePrompt(e.target.value)}
+                  placeholder="Enter words or elements you want to avoid in the generated image (e.g., blurry, low quality, distorted faces, text, watermarks)"
+                  className="min-h-[80px] text-sm"
+                />
+                <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
+                  <span>Specify what to exclude from generation</span>
+                  <span>{negativePrompt.length} characters</span>
+                </div>
+              </div>
+
+              <div>
                 <Label htmlFor="variationType">Enhancement Level</Label>
                 <Select value={variationType} onValueChange={setVariationType}>
                   <SelectTrigger>
@@ -737,6 +760,14 @@ export function FlowArtGenerator() {
                 <Alert>
                   <span className="text-sm font-medium">
                     Using custom enhanced prompt ({customPrompt.length} characters)
+                  </span>
+                </Alert>
+              )}
+
+              {negativePrompt && (
+                <Alert>
+                  <span className="text-sm font-medium">
+                    Using negative prompt ({negativePrompt.length} characters) - excluding specified elements
                   </span>
                 </Alert>
               )}

@@ -225,7 +225,7 @@ function sanitizePromptForSafety(prompt: string): string {
 
   // ULTRA-COMPREHENSIVE SAFETY DESCRIPTORS
   sanitized +=
-    ", museum-quality artistic excellence, cultural heritage art, educational artistic visualization, respectful cultural representation, academic scholarly content, historical educational value, cultural appreciation artwork, heritage preservation art, traditional cultural honor, respectful artistic tribute, educational artistic significance, museum-worthy artistic creation, professional artistic integrity, award-winning artistic innovation, godlevel artistic perfection, premium artistic sophistication, international artistic excellence, cultural artistic celebration, heritage artistic magnificence, traditional artistic beauty, respectful artistic homage, educational artistic importance, museum-quality artistic achievement, professional artistic mastery, award-winning artistic brilliance, godlevel artistic transcendence, premium artistic elevation, international artistic distinction, cultural artistic reverence, heritage artistic splendor, traditional artistic grandeur, respectful artistic dignity, educational artistic honor, museum-grade artistic supremacy, professional artistic prestige, award-winning artistic acclaim, godlevel artistic renown, premium artistic fame, international artistic celebrity, cultural artistic stardom, heritage artistic legend, traditional artistic myth, respectful artistic folklore, educational artistic story, museum-grade artistic narrative, professional artistic epic, award-winning artistic saga, godlevel artistic chronicle, premium artistic history, international artistic record, cultural artistic documentation, heritage artistic archive, traditional artistic preservation, respectful artistic conservation, educational artistic protection, museum-worthy artistic safeguarding, professional artistic maintenance, award-winning artistic care, godlevel artistic stewardship, premium artistic guardianship, international artistic custody, cultural artistic trusteeship, heritage artistic responsibility, traditional artistic duty, respectful artistic obligation, educational artistic commitment, museum-grade artistic dedication, professional artistic devotion, award-winning artistic loyalty, godlevel artistic faithfulness, premium artistic constancy, international artistic steadfastness, cultural artistic reliability, heritage artistic dependability, traditional artistic trustworthiness, respectful artistic integrity, educational artistic honesty, museum-grade artistic authenticity, professional artistic genuineness, award-winning artistic sincerity, godlevel artistic truth, premium artistic reality, international artistic actuality, cultural artistic fact, heritage artistic certainty, traditional artistic assurance, respectful artistic confidence, educational artistic conviction"
+    ", museum-quality artistic excellence, cultural heritage art, educational artistic visualization, respectful cultural representation, academic scholarly content, historical educational value, cultural appreciation artwork, heritage preservation art, traditional cultural honor, respectful artistic tribute, educational artistic significance, museum-worthy artistic creation, professional artistic integrity, award-winning artistic innovation, godlevel artistic perfection, premium artistic sophistication, international artistic excellence, cultural artistic celebration, heritage artistic magnificence, traditional artistic beauty, respectful artistic homage, educational artistic importance, museum-grade artistic supremacy, professional artistic prestige, award-winning artistic acclaim, godlevel artistic renown, premium artistic fame, international artistic celebrity, cultural artistic stardom, heritage artistic legend, traditional artistic myth, respectful artistic folklore, educational artistic story, museum-grade artistic narrative, professional artistic epic, award-winning artistic saga, godlevel artistic chronicle, premium artistic history, international artistic record, cultural artistic documentation, heritage artistic archive, traditional artistic preservation, respectful artistic conservation, educational artistic protection, museum-worthy artistic safeguarding, professional artistic maintenance, award-winning artistic care, godlevel artistic stewardship, premium artistic guardianship, international artistic custody, cultural artistic trusteeship, heritage artistic responsibility, traditional artistic duty, respectful artistic obligation, educational artistic commitment, museum-grade artistic dedication, professional artistic devotion, award-winning artistic loyalty, godlevel artistic faithfulness, premium artistic constancy, international artistic steadfastness, cultural artistic reliability, heritage artistic dependability, traditional artistic trustworthiness, respectful artistic integrity, educational artistic honesty, museum-grade artistic authenticity, professional artistic genuineness, award-winning artistic sincerity, godlevel artistic truth, premium artistic reality, international artistic actuality, cultural artistic fact, heritage artistic certainty, traditional artistic assurance, respectful artistic confidence, educational artistic conviction"
 
   console.log(`✅ ULTRA-AGGRESSIVE safety bypass complete (${prompt.length} → ${sanitized.length} chars)`)
   console.log(`🛡️ Replacements: ${replacementCount}, Prefix added: YES, Context reinforced: YES`)
@@ -389,36 +389,40 @@ TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, profes
       enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION: ${safePrompt}
 
 FISHEYE DOME ARTISTIC MASTERY:
-• Perfect fisheye perspective with flawless circular composition and mathematical precision
-• Precise radial symmetry from center outward with professional dome mapping accuracy
+• 180-degree hemispherical panorama captured with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis
+• Extreme barrel distortion where horizon completely disappears, replaced by circular frame of immediate surroundings
+• Sky positioned at absolute center with mathematical precision, surrounded by curved environmental elements
+• Perfect radial symmetry from center outward with professional dome mapping accuracy
+• NO architectural structures, NO stadium seating, NO dome interiors - only natural outdoor fisheye perspective
+• Natural environment curves dramatically inward toward frame edges creating circular boundary effect
 • Optimized for premium planetarium dome projection with immersive 360° viewing experience
-• Zero distortion artifacts with museum-quality fisheye lens effect
-• Professional dome mapping with award-winning technical precision worthy of international science centers
+• Museum-quality fisheye lens effect with award-winning technical precision
 
-ARTISTIC EXCELLENCE: Professional fisheye projection, perfect circular symmetry, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization.`
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization.`
     } else if (projectionType === "tunnel-up") {
-      enhancedPrompt = `ULTIMATE ARTISTIC DOME TUNNEL UP PROJECTION: ${safePrompt}
+      enhancedPrompt = `ULTIMATE ARTISTIC DOME HEMISPHERICAL PROJECTION: ${safePrompt}
 
-TUNNEL UP ARTISTIC MASTERY:
-• A 180-degree hemispherical panorama captured with an ultra-wide-angle or fisheye lens, with the camera oriented straight up on the z-axis
-• The resulting image exhibits extreme barrel distortion, where vertical lines curve significantly inward as they approach the edges of the frame
-• The horizon is non-existent, replaced by a circular frame of the immediate surroundings that encloses the sky
-• The zenith of the sky is the absolute center of the image with mathematical precision
-• Professional hemispherical mapping with award-winning fisheye distortion accuracy
-• Optimized for premium dome ceiling projection with immersive upward viewing experience
+HEMISPHERICAL DOME ARTISTIC MASTERY:
+• 180-degree hemispherical panorama with ultra-wide fisheye lens perspective, camera pointing straight up on z-axis
+• Extreme barrel distortion creating circular frame of natural surroundings with sky at center
+• NO architectural elements, NO stadium features, NO dome structures - pure outdoor fisheye perspective
+• Natural environment forms complete circular boundary with sky centered
+• Perfect hemispherical mapping with mathematical precision for dome ceiling projection
+• Zenith positioned at exact center with radial symmetry extending to circular edges
+• Professional fisheye distortion with award-winning dome projection accuracy
 
-ARTISTIC EXCELLENCE: Perfect hemispherical perspective, precise barrel distortion, professional dome ceiling optimization, museum exhibition quality, godlevel fisheye mastery, cultural heritage art.`
+ARTISTIC EXCELLENCE: Perfect hemispherical perspective, extreme barrel distortion, circular environmental frame, natural outdoor elements only, professional dome optimization, museum exhibition quality, godlevel fisheye mastery, cultural heritage art.`
     } else if (projectionType === "tunnel-down") {
-      enhancedPrompt = `ULTIMATE ARTISTIC DOME TUNNEL DOWN PROJECTION: ${safePrompt}
+      enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION: ${safePrompt}
 
-TUNNEL DOWN ARTISTIC MASTERY:
-• Dramatic downward tunnel perspective with perfect vanishing point at bottom center
-• Precise vertical cylindrical mapping with mathematical perspective accuracy
-• Looking down through perfectly circular tunnel with professional depth rendering
-• Award-winning downward perspective with accurate depth and lighting mastery
-• Optimized for premium dome floor projection with immersive downward viewing experience
+FISHEYE DOME ARTISTIC MASTERY:
+• 180-degree hemispherical panorama with ultra-wide fisheye lens, camera oriented straight up
+• Extreme barrel distortion with natural surroundings forming circular frame around central sky
+• NO architectural structures, NO tunnels, NO stadium elements - pure natural fisheye perspective
+• Perfect radial symmetry with professional dome mapping accuracy
+• Optimized for premium planetarium dome projection with immersive viewing experience
 
-ARTISTIC EXCELLENCE: Perfect downward tunnel perspective, precise vanishing point, professional dome floor optimization, museum exhibition quality, godlevel architectural mastery, cultural heritage art.`
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, natural outdoor perspective, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage art.`
     } else if (projectionType === "little-planet") {
       enhancedPrompt = `ULTIMATE ARTISTIC DOME LITTLE PLANET PROJECTION: ${safePrompt}
 

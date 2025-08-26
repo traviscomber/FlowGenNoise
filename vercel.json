@@ -1,0 +1,15 @@
+{
+  "functions": {
+    "app/api/*/route.js": {
+      "maxDuration": 60
+    }
+  },
+  "images": {
+    "domains": [
+      "oaidalleapiprodscus.blob.core.windows.net",
+      "cdn.openai.com",
+      "images.unsplash.com",
+      "via.placeholder.com"
+    ]
+  }
+}
