@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Alert } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
 
@@ -90,6 +90,10 @@ export function FlowArtGenerator() {
 
   // Toast hook
   const { toast } = useToast()
+
+  const refreshSite = useCallback(() => {
+    window.location.reload()
+  }, [])
 
   // Reset scenario when dataset changes
   const handleDatasetChange = useCallback((newDataset: string) => {
@@ -435,22 +439,8 @@ export function FlowArtGenerator() {
               authenticity
             </p>
           </div>
-          <button onClick={validateApiKey} disabled={isValidatingKey} className="gap-2 bg-transparent">
-            {isValidatingKey ? <>⟳ Validating...</> : <>Debug API Key</>}
-          </button>
+          <div className="flex gap-2"></div>
         </div>
-
-        {/* API Key Status */}
-        {apiKeyStatus && (
-          <Alert className={apiKeyStatus.success ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
-            <div className="flex items-center gap-2">
-              {apiKeyStatus.success ? "✅" : "❌"}
-              <AlertDescription className={apiKeyStatus.success ? "text-green-800" : "text-red-800"}>
-                {apiKeyStatus.message || apiKeyStatus.error}
-              </AlertDescription>
-            </div>
-          </Alert>
-        )}
 
         <div className="flex flex-wrap justify-center gap-2">
           <Badge variant="secondary">GODLEVEL Quality</Badge>
@@ -686,13 +676,21 @@ export function FlowArtGenerator() {
                 </Select>
               </div>
 
-              <button
-                onClick={previewAndEnhancePrompt}
-                disabled={isEnhancing}
-                className="px-3 py-2 text-sm bg-secondary hover:bg-secondary/80 rounded-md disabled:opacity-50"
-              >
-                {isEnhancing ? "⟳" : "✨"} {isEnhancing ? "Enhancing..." : "Enhance"}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={previewAndEnhancePrompt}
+                  disabled={isEnhancing}
+                  className="flex-1 px-3 py-2 text-sm bg-secondary hover:bg-secondary/80 rounded-md disabled:opacity-50"
+                >
+                  {isEnhancing ? "⟳" : "✨"} {isEnhancing ? "Enhancing..." : "Enhance"}
+                </button>
+                <button
+                  onClick={refreshSite}
+                  className="px-3 py-2 text-sm bg-secondary hover:bg-secondary/80 rounded-md"
+                >
+                  🔄
+                </button>
+              </div>
             </CardContent>
           </Card>
 
