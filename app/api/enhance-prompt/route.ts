@@ -141,9 +141,13 @@ export async function POST(request: NextRequest) {
 
     let promptToEnhance = originalPrompt
 
-    // If no custom prompt provided or if we want to use current selections, build fresh prompt
-    if (!customPrompt || customPrompt.trim().length === 0) {
-      console.log("🔄 Building fresh prompt from current user selections...")
+    // If user has custom text in the prompt field, enhance that specific text
+    if (originalPrompt && originalPrompt.trim().length > 0) {
+      console.log("📝 Using user's custom input text for enhancement")
+      promptToEnhance = originalPrompt
+    } else {
+      // Only build fresh prompt from scenarios when no custom input exists
+      console.log("🔄 No custom input found, building fresh prompt from current selections...")
 
       try {
         promptToEnhance = buildPrompt({
@@ -168,12 +172,15 @@ export async function POST(request: NextRequest) {
           promptLength: promptToEnhance.length,
         })
       } catch (buildError) {
-        console.error("❌ Error building fresh prompt, using original:", buildError)
-        // Fall back to original prompt if build fails
+        console.error("❌ Error building fresh prompt:", buildError)
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Failed to build prompt from selections",
+          },
+          { status: 400 },
+        )
       }
-    } else {
-      console.log("📝 Using provided custom prompt for enhancement")
-      promptToEnhance = customPrompt
     }
 
     if (!promptToEnhance || promptToEnhance.trim().length === 0) {
@@ -193,7 +200,7 @@ export async function POST(request: NextRequest) {
       scenario,
       colorScheme,
       generationType,
-      usingFreshPrompt: !customPrompt || customPrompt.trim().length === 0,
+      usingFreshPrompt: originalPrompt.trim().length === 0,
     })
 
     const apiKey = process.env.OPENAI_API_KEY

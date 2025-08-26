@@ -445,7 +445,7 @@ export const CULTURAL_DATASETS = {
       dayak: {
         name: "🌿 Dayak Longhouse Communities",
         description:
-          "Bornean Dayak indigenous people living in traditional longhouses (rumah panjang) that house entire extended families, daily life in communal wooden structures raised on stilts above jungle floor, families sharing common verandas while maintaining private apartments, traditional hunting with blowpipes and poison darts in dense rainforest, women weaving rattan baskets and traditional textiles, men carving wooden masks and totems for spiritual ceremonies, children learning traditional stories and jungle survival skills, communal cooking areas with wood fires and clay pots, traditional fishing in jungle rivers with handmade nets, shamanic healing ceremonies with traditional medicines from forest plants, traditional tattoos marking life achievements and spiritual protection, village councils making decisions under longhouse roof, traditional music with wooden drums and bamboo instruments, Indonesian tribal heritage, forest heritage, cultural traditions, river communities, traditional tattoos, godlevel Dayak cultural excellence.",
+          "Bornean Dayak indigenous people living in traditional longhouses (rumah panjang) that house entire extended families, daily life in communal wooden structures raised on stilts above jungle floor, families sharing common verandas while maintaining private apartments, traditional hunting with blowpipes and poison darts in dense rainforest, women weaving rattan baskets and traditional textiles, men carving wooden masks and totems for spiritual ceremonies, children learning traditional stories and jungle survival skills, communal cooking areas with wood fires and clay pots, traditional fishing in jungle rivers with handmade nets, shamanic healing ceremonies with traditional medicines from forest plants, traditional tattoos marking life achievements and spiritual protection, village councils making decisions under longhouse roof, traditional music with wooden drums and bamboo instruments, seasonal migration following agricultural cycles, Indonesian tribal heritage, forest heritage, cultural traditions, river communities, traditional tattoos, godlevel Dayak cultural excellence.",
       },
       acehnese: {
         name: "🕌 Acehnese Heritage",
@@ -780,7 +780,7 @@ export const CULTURAL_DATASETS = {
       vitro: {
         name: "⛪ Fractal Cathedral Glass",
         description:
-          "Magnificent fractal stained glass windows in Vatican cathedral style with self-similar patterns rendered in luminous colored glass, recursive geometric designs crafted from jewel-toned glass fragments with infinite detail, fractal tree patterns in emerald and gold glass with mathematical precision, traditional lead came construction following fractal geometries with medieval craftsmanship, infinite complexity captured in translucent glass with divine light effects, Vatican glasswork techniques applied to fractal mathematics visualization, sacred geometry fractals representing divine infinite nature, cathedral fractal windows inspiring contemplation of mathematical infinity, godlevel fractal vitro sacred excellence.",
+          "Complex fractal set stained glass windows in Vatican cathedral style with mathematical iterations rendered in luminous colored glass, fractal boundaries crafted from jewel-toned glass with infinite detail, complex number visualizations in translucent glass creating mathematical beauty, traditional lead came construction following fractal geometries with medieval precision, infinite complexity captured in translucent glass with divine light effects, Vatican glasswork techniques applied to fractal mathematics visualization, sacred geometry fractals representing divine infinite nature, cathedral fractal windows inspiring contemplation of mathematical infinity, godlevel fractal vitro mathematical excellence.",
       },
       crypto: {
         name: "₿ Fractal Blockchain Networks",
@@ -885,7 +885,7 @@ export const CULTURAL_DATASETS = {
       vitro: {
         name: "⛪ Butterfly Effect Glass",
         description:
-          "Delicate butterfly effect stained glass windows in Vatican cathedral style with Lorenz attractors rendered in luminous colored glass, chaotic butterfly patterns crafted from translucent glass with sensitive dependence visualization, strange attractors in jewel-toned glass creating mathematical beauty, traditional lead came construction following chaotic trajectories with medieval precision, butterfly wings in colored glass showing chaos theory mathematics, Vatican glasswork techniques applied to nonlinear dynamics visualization, sacred geometry meets chaos mathematics in stained glass mastery, cathedral butterfly windows inspiring contemplation of sensitive dependence, godlevel Lorenz vitro chaos excellence.",
+          "Delicate butterfly effect stained glass windows in Vatican cathedral style with Lorenz attractors rendered in luminous colored glass, chaotic butterfly patterns crafted from translucent glass with sensitive dependence visualization, strange attractors in jewel-toned glass creating mathematical beauty, traditional lead came construction following chaotic trajectories with medieval craftsmanship, butterfly wings in colored glass showing chaos theory mathematics, Vatican glasswork techniques applied to nonlinear dynamics visualization, sacred geometry meets chaos mathematics in stained glass mastery, cathedral butterfly windows inspiring contemplation of sensitive dependence, godlevel Lorenz vitro chaos excellence.",
       },
       crypto: {
         name: "₿ Butterfly Effect Crypto Markets",
@@ -1065,7 +1065,7 @@ export const CULTURAL_DATASETS = {
       crypto: {
         name: "₿ Procedural Crypto Generation",
         description:
-          "Cryptocurrency systems using Perlin noise for procedural blockchain generation, Bitcoin mining with organic randomness algorithms, blockchain validation through natural noise patterns, cryptocurrency security using procedural randomness generation, crypto market analysis with organic noise filtering, decentralized finance with natural algorithmic beauty, blockchain consensus through procedural validation patterns, cryptocurrency wallet addresses generated through organic noise, procedural crypto algorithms with natural mathematical elegance, organic blockchain generation with algorithmic precision, godlevel Perlin crypto procedural excellence.",
+          "Cryptocurrency systems using Perlin noise for procedural blockchain generation, Bitcoin mining with organic randomness algorithms, blockchain validation through natural noise patterns, cryptocurrency market dynamics following chemical reaction models, blockchain security through pattern formation algorithms, crypto transaction flows creating biological-inspired patterns, decentralized finance with self-organizing market structures, blockchain consensus through procedural validation patterns, cryptocurrency trading algorithms based on statistical distributions, statistical crypto analysis with mathematical precision, godlevel Perlin crypto procedural excellence.",
       },
     },
   },
@@ -1104,624 +1104,139 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-  wave: {
-    name: "〰️ Wave",
-    scenarios: {
-      "origami-world": {
-        name: "📄 Origami Wave Interference",
-        description:
-          "Flowing origami wave interference patterns with paper-folded harmonic oscillations, delicate paper waves showing mathematical frequency, origami interpretation of wave equations, handmade paper structures demonstrating wave dynamics, warm lighting revealing wave patterns through paper shadows, visible fold lines creating wave interference effects, masterful origami engineering translating acoustic mathematics into paper art, traditional Japanese paper folding techniques applied to wave visualization, paper sculpture harmonic mastery, godlevel wave origami excellence.",
-      },
-      pure: {
-        name: "Pure Abstract Patterns",
-        description:
-          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
-      },
-      "animal-transport": {
-        name: "🐬 Wave Interference Dolphin Pod",
-        description:
-          "Transportation on dolphin pod creating wave interference patterns, dolphins jumping in harmonic wave formations, riders following wave mathematics on dolphin transport, dolphin echolocation showing wave interference, mathematical precision in dolphin wave behavior, wave dynamics embodied in dolphin transport, acoustic beauty in biological wave systems, harmonic patterns in animal transport, wave mathematics in dolphin navigation, godlevel wave animal transport excellence.",
-      },
-      "escapism-magic": {
-        name: "〰️ Harmonic Resonance Escape Magic",
-        description:
-          "Masterful wave magic enabling escape through harmonic resonance that shatters reality barriers by finding the precise frequency that dissolves dimensional boundaries, magical challenge of calculating exact resonant frequencies needed to vibrate through solid matter and fixed circumstances, escapist artistry where acoustic mathematics becomes tool for dimensional transcendence, intricate illusion requiring mastery of both wave theory and resonance manipulation techniques, harmonic magic that uses sound waves to unlock hidden passages through vibrational reality hacking, mathematical escapism through frequency modulation, acoustic magic where wave interference patterns become keys to dimensional liberation, wave illusion demanding expertise in both harmonic mathematics and vibrational manipulation, godlevel harmonic escape magic excellence.",
-      },
-      vitro: {
-        name: "⛪ Harmonic Wave Sacred Glass",
-        description:
-          "Flowing wave interference stained glass windows in Vatican cathedral style with harmonic oscillations rendered in luminous colored glass, wave patterns crafted from jewel-toned glass with acoustic precision, frequency visualizations in translucent glass creating musical beauty, traditional lead came construction following wave geometries with medieval craftsmanship, harmonic mathematics captured in colored glass with divine light effects, Vatican glasswork techniques applied to acoustic visualization, sacred geometry meets wave theory in stained glass mastery, cathedral wave windows inspiring contemplation of harmonic resonance, godlevel wave vitro acoustic excellence.",
-      },
-      crypto: {
-        name: "₿ Harmonic Crypto Resonance",
-        description:
-          "Cryptocurrency networks operating through harmonic wave resonance, blockchain validation using acoustic mathematics, Bitcoin mining with frequency optimization algorithms, cryptocurrency transactions creating wave interference patterns, blockchain security through harmonic encryption, crypto market analysis using wave theory mathematics, decentralized finance with resonant frequency optimization, blockchain consensus through harmonic validation, cryptocurrency trading with acoustic pattern recognition, harmonic crypto waves with mathematical precision, godlevel harmonic crypto resonance excellence.",
-      },
-    },
-  },
-  "8bit": {
-    name: "🎮 8bit",
-    scenarios: {
-      "origami-world": {
-        name: "📄 Origami Pixel World",
-        description:
-          "Nostalgic origami pixel world with paper-folded 8-bit aesthetic, delicate paper squares creating pixelated patterns, origami interpretation of retro gaming, handmade paper structures showing digital nostalgia, warm lighting revealing pixel art through paper shadows, visible fold lines emphasizing geometric pixel boundaries, masterful origami engineering translating digital art into paper craft, traditional Japanese paper folding techniques applied to pixel art, paper sculpture digital mastery, godlevel pixel origami excellence.",
-      },
-      pure: {
-        name: "Pure Abstract Patterns",
-        description:
-          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
-      },
-      "animal-transport": {
-        name: "🐴 8-bit Pixel Horse Transport",
-        description:
-          "Retro 8-bit pixel art transportation on blocky pixel horse, horse rendered in classic video game style, riders in pixelated medieval armor, nostalgic gaming aesthetic with limited color palette, pixel art animation frames showing horse gallop, retro gaming transport with authentic 8-bit limitations, digital nostalgia in animal transport, classic arcade game style, pixel perfect horse anatomy, godlevel 8-bit animal transport excellence.",
-      },
-      "escapism-magic": {
-        name: "🎮 Pixel Reality Glitch Magic",
-        description:
-          "Nostalgic 8-bit magic enabling escape through video game reality glitches that reveal hidden levels and secret passages in pixelated existence, magical challenge of exploiting digital limitations to access forbidden areas beyond programmed boundaries, escapist artistry where retro gaming aesthetics become tools for reality hacking, intricate illusion requiring mastery of both pixel art techniques and glitch exploitation methods, pixel magic that transforms digital constraints into liberation opportunities, mathematical escapism through computational error manipulation, digital magic where 8-bit limitations become keys to infinite possibility, retro illusion demanding expertise in both classic gaming and reality debugging, godlevel pixel glitch escape magic excellence.",
-      },
-      vitro: {
-        name: "⛪ 8-bit Pixel Sacred Glass",
-        description:
-          "Nostalgic 8-bit pixel stained glass windows in Vatican cathedral style with retro gaming aesthetics rendered in luminous colored glass, pixelated patterns crafted from square glass pieces with digital precision, 8-bit characters in translucent glass creating nostalgic gaming beauty, traditional lead came construction following pixel boundaries with medieval craftsmanship, digital nostalgia captured in colored glass with divine light effects, Vatican glasswork techniques applied to pixel art visualization, sacred geometry meets retro gaming in stained glass mastery, cathedral pixel windows inspiring contemplation of digital heritage, godlevel 8-bit vitro gaming excellence.",
-      },
-      crypto: {
-        name: "₿ Retro Crypto Gaming",
-        description:
-          "8-bit cryptocurrency gaming with pixelated blockchain aesthetics, retro Bitcoin mining through classic arcade game mechanics, cryptocurrency transactions displayed in nostalgic pixel art style, blockchain validation using vintage computing algorithms, crypto wallets designed as retro gaming interfaces, decentralized finance with 8-bit gaming economics, blockchain consensus through classic arcade game theory, cryptocurrency trading as retro gaming experience, pixel art crypto visualization with nostalgic charm, retro gaming crypto with authentic 8-bit limitations, godlevel 8-bit crypto gaming excellence.",
-      },
-    },
-  },
-  bosch: {
-    name: "🖼️ Bosch Masterpieces",
+  mindconflict: {
+    name: "🧠 Mind Conflict & Internal Struggles",
     scenarios: {
       "pure-mathematical": {
-        name: "🔢 Pure Abstract Patterns",
+        name: "🔢 Cognitive Dissonance Algorithms",
         description:
-          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
+          "Abstract algorithmic visualization of cognitive dissonance with conflicting geometric patterns intersecting at impossible angles, mathematical paradox representation through contradictory spiral formations, neural pathway conflicts rendered as competing algorithmic sequences, psychological tension manifested through geometric impossibilities, mental contradiction patterns with recursive loop structures, consciousness fragmentation through mathematical precision, algorithmic beauty emerging from psychological chaos, computational representation of internal mental warfare, geometric abstraction of thought pattern conflicts, godlevel cognitive dissonance excellence.",
       },
       "origami-world": {
-        name: "📄 Origami Garden of Delights",
+        name: "📄 Folded Consciousness Paper",
         description:
-          "Surreal origami Garden of Earthly Delights with paper-folded fantastical creatures and impossible beings, delicate paper paradise with origami hybrid animals, handmade paper figures in various poses, origami interpretation of Bosch's surreal vision, paper-crafted medieval symbolism with contemporary precision, warm lighting creating mysterious shadows between paper layers, visible fold lines adding to the surreal complexity, masterful origami engineering translating Renaissance surrealism into paper art, traditional Japanese paper folding techniques applied to medieval fantasy, paper sculpture surreal mastery, godlevel Bosch origami excellence.",
+          "Intricate origami representation of fractured consciousness with paper folds creating multiple personality layers, delicate paper construction showing mental compartmentalization through geometric folding techniques, traditional Japanese paper artistry depicting psychological complexity, origami brain structure with visible fold lines representing neural pathway conflicts, paper sculpture of internal dialogue with multiple origami figures emerging from central consciousness, folded paper reality where each crease represents a different aspect of mental struggle, origami metamorphosis showing psychological transformation, godlevel origami consciousness excellence.",
       },
-      "garden-earthly-delights": {
-        name: "🌺 Garden of Earthly Delights",
+      "hyper-realistic": {
+        name: "📸 Psychological Portrait Reality",
         description:
-          "Hieronymus Bosch's masterpiece Garden of Earthly Delights reimagined with photorealistic detail, the central panel showing nude figures in paradise garden with giant fruits and fantastical creatures, people riding oversized animals through lush landscapes, transparent spheres and crystal formations, exotic birds and hybrid creatures, medieval paradise with surreal elements, detailed human figures in natural poses, realistic skin tones and anatomy, lush garden vegetation with botanical accuracy, crystal-clear water features, fantastical architecture with realistic materials, Bosch's symbolic imagery rendered with documentary precision, surreal paradise with photographic quality, medieval fantasy with contemporary realism, museum-quality Renaissance artistry, godlevel Bosch excellence.",
+          "Ultra-photorealistic portrait capturing the exact moment of internal psychological conflict, microscopic facial detail revealing micro-expressions of mental struggle, authentic eye moisture reflecting internal tears of confusion, professional psychological documentation photography, clinical precision in capturing mental state transitions, therapeutic session quality emotional authenticity, psychological assessment level facial analysis, mental health awareness campaign worthy, documentary photography excellence capturing human psychological complexity, broadcast quality mental health representation, godlevel psychological realism excellence.",
       },
-      "haywain-triptych": {
-        name: "🚜 The Haywain Triptych",
+      "classical-sculpture": {
+        name: "🏛️ Tormented Marble Psyche",
         description:
-          "Bosch's Haywain triptych with photorealistic medieval life, central panel showing people fighting over hay wagon representing worldly vanity, realistic medieval peasants and nobles in period-accurate clothing, detailed medieval landscape with authentic architecture, horse-drawn wagon with realistic craftsmanship, people climbing and falling from hay with natural physics, medieval town in background with architectural accuracy, demons and angels rendered with creature design excellence, realistic fire and smoke effects, authentic medieval weapons and tools, period-accurate social hierarchy depicted, medieval daily life with ethnographic precision, Bosch's moral allegory with documentary realism, godlevel medieval artistry.",
+          "Masterpiece classical marble sculpture depicting psychological torment in the tradition of Bernini's emotional intensity, perfect anatomical representation of mental anguish through facial expression, sublime chiseled features showing internal conflict with divine artistic precision, museum-quality Renaissance craftsmanship capturing psychological complexity, pristine marble with dramatic chiaroscuro lighting emphasizing mental struggle, sculptural perfection representing the eternal human condition of internal conflict, Vatican Museum worthy psychological artistry, classical antiquity approach to mental health representation, godlevel psychological sculpture excellence.",
       },
-      "temptation-st-anthony": {
-        name: "👹 Temptation of St. Anthony",
+      "cyberpunk-futuristic": {
+        name: "🤖 Neural Interface Malfunction",
         description:
-          "Bosch's Temptation of St. Anthony with cinematic horror realism, hermit saint surrounded by grotesque demons and tempting creatures, realistic medieval monastery ruins with architectural detail, fantastical creatures with professional creature design, hybrid animals with biological plausibility, medieval hermit clothing with textile accuracy, dramatic lighting creating atmospheric mood, realistic fire and supernatural phenomena, detailed landscape with medieval authenticity, demons rendered with special effects quality, religious symbolism with cultural accuracy, medieval spiritual warfare with psychological depth, horror elements with artistic sophistication, godlevel religious artistry.",
+          "Ultra-futuristic cyberpunk visualization of neural interface conflicts with malfunctioning bio-mechanical brain implants, holographic neural pathways showing system errors and psychological glitches, neon-lit cybernetic synapses sparking with mental conflict electricity, chrome neural processors overheating from psychological stress, LED circuit patterns under synthetic skin flickering with emotional instability, advanced AI consciousness experiencing existential crisis, quantum processing nodes struggling with identity fragmentation, neural link connections shorting out from mental overload, godlevel cyberpunk psychology excellence.",
       },
-      "ship-fools": {
-        name: "🚢 Ship of Fools",
+      "fantasy-ethereal": {
+        name: "🧚 Ethereal Soul Fragmentation",
         description:
-          "Bosch's Ship of Fools with maritime realism, medieval boat filled with reveling passengers, realistic wooden ship construction with nautical accuracy, medieval clothing and accessories with period detail, people drinking and making merry with authentic medieval customs, detailed water and river landscape, realistic medieval musical instruments, authentic medieval food and drink, period-accurate social satire, medieval river life with ethnographic precision, boat craftsmanship with historical accuracy, medieval party atmosphere with cultural authenticity, social commentary with realistic human behavior, godlevel medieval maritime artistry.",
+          "Ethereal fantasy representation of soul fragmentation with luminescent spirit energy splitting into multiple conflicting essences, mystical aura showing psychological division through color spectrum separation, magical facial markings that shift and change representing unstable mental states, flowing ethereal hair containing trapped memories and conflicting emotions, eyes holding multiple galaxies representing different aspects of personality, delicate features morphing between different psychological states, crown of thorns and flowers representing pleasure-pain psychological duality, godlevel ethereal psychology excellence.",
       },
-      "death-miser": {
-        name: "💀 Death and the Miser",
+      "horror-grotesque": {
+        name: "👹 Psychological Horror Manifestation",
         description:
-          "Bosch's Death and the Miser with dramatic realism, dying wealthy man in ornate medieval bedroom, realistic medieval interior with period furniture, detailed textiles and luxury objects, skeletal Death figure with anatomical accuracy, angels and demons with creature design excellence, medieval medical practices depicted, realistic candlelight and shadows, authentic medieval wealth display, period-accurate religious imagery, medieval deathbed scene with cultural authenticity, moral allegory with psychological depth, medieval memento mori with artistic sophistication, godlevel medieval mortality artistry.",
+          "Masterfully crafted psychological horror representation with internal demons made visible through professional special effects artistry, intricate prosthetic work showing mental illness stigma transformation into empowerment, dramatic lighting emphasizing the beauty within psychological struggle, cinematic quality mental health awareness through horror aesthetics, award-winning creature design representing internal psychological monsters, practical effects mastery showing mind-body connection in psychological distress, gothic horror approach to mental health destigmatization, godlevel psychological horror excellence.",
       },
-      "seven-deadly-sins": {
-        name: "😈 Seven Deadly Sins",
+      "anime-manga": {
+        name: "🎌 Manga Internal Dialogue",
         description:
-          "Bosch's Seven Deadly Sins table with photorealistic medieval scenes, circular composition showing each sin in detailed vignettes, realistic medieval people committing sins with psychological accuracy, authentic medieval settings and architecture, period-accurate clothing and objects, detailed facial expressions showing human nature, medieval daily life with ethnographic precision, moral instruction with artistic excellence, religious symbolism with cultural authenticity, medieval social commentary with realistic human behavior, circular mandala composition with geometric precision, godlevel medieval moral artistry.",
+          "Perfect anime manga style representation of internal psychological dialogue with multiple chibi versions of the same character representing different aspects of personality, large expressive eyes showing conflicting emotions simultaneously, manga speech bubbles containing contradictory thoughts, professional anime studio quality psychological storytelling, Studio Ghibli level emotional depth, manga illustration techniques for representing internal monologue, Japanese animation excellence in psychological character development, otaku culture approach to mental health awareness, godlevel anime psychology excellence.",
       },
-      "adoration-magi": {
-        name: "👑 Adoration of the Magi",
+      "abstract-geometric": {
+        name: "🔺 Fragmented Identity Geometry",
         description:
-          "Bosch's Adoration of the Magi with Renaissance realism, three wise men presenting gifts to infant Jesus, realistic medieval and exotic clothing with textile detail, authentic Middle Eastern and European faces, detailed landscape with architectural accuracy, realistic animals including camels and horses, period-accurate religious iconography, authentic medieval craftsmanship in gifts, detailed facial expressions with emotional depth, biblical scene with historical accuracy, Renaissance painting techniques with oil mastery, religious devotion with artistic sophistication, godlevel religious Renaissance artistry.",
+          "Revolutionary abstract geometric representation of fragmented identity with mathematical precision, golden ratio proportions applied to psychological division patterns, complex polygonal faceting representing multiple personality aspects, prismatic color theory showing emotional spectrum conflicts, cubist influence depicting simultaneous psychological perspectives, algorithmic beauty generation from mental chaos, computational geometry excellence in psychological visualization, mathematical art representing identity crisis, geometric abstraction of personality disorders, godlevel abstract psychology excellence.",
       },
-      "crowning-thorns": {
-        name: "👑 Crowning with Thorns",
+      "oil-painting-classical": {
+        name: "🎨 Classical Psychological Portraiture",
         description:
-          "Bosch's Crowning with Thorns with dramatic realism, Christ surrounded by tormentors in close-up composition, realistic human faces showing cruelty and suffering, detailed medieval armor and weapons, authentic period clothing and accessories, dramatic lighting emphasizing emotional intensity, realistic blood and wounds with medical accuracy, psychological portraiture with emotional depth, religious passion with artistic sophistication, medieval brutality with historical accuracy, human cruelty depicted with unflinching realism, godlevel religious drama artistry.",
+          "Museum-quality classical oil painting depicting psychological complexity in the tradition of Caravaggio's emotional intensity, masterful brushwork capturing subtle psychological nuances, rich impasto technique showing textural emotional depth, luminous glazing layers representing psychological transparency and opacity, chiaroscuro lighting mastery emphasizing internal light and shadow conflicts, Renaissance painting excellence applied to modern psychological understanding, old master technique perfection in mental health representation, godlevel classical psychology painting excellence.",
       },
-      "cure-folly": {
-        name: "🧠 Cure of Folly",
+      "watercolor-impressionist": {
+        name: "🌸 Emotional Watercolor Flow",
         description:
-          "Bosch's Cure of Folly with medical realism, medieval surgeon removing 'stone of madness' from patient's head, realistic medieval medical instruments and procedures, authentic period clothing for doctor and patient, detailed medieval interior with medical accuracy, realistic human anatomy and surgical detail, medieval medical practices with historical accuracy, psychological commentary with artistic depth, medical satire with cultural authenticity, medieval healthcare with ethnographic precision, human folly depicted with realistic detail, godlevel medieval medical artistry.",
+          "Exquisite watercolor impressionist representation of emotional flow and psychological fluidity, transparent color layering showing emotional complexity, wet-on-wet technique mastery representing unconscious mind bleeding into conscious thought, soft edge blending depicting psychological boundary dissolution, luminous color harmony representing emotional spectrum integration, impressionist light capture showing psychological illumination moments, French impressionist tradition applied to mental health awareness, godlevel watercolor psychology excellence.",
       },
-      "ecce-homo": {
-        name: "👤 Ecce Homo",
+      "digital-art-modern": {
+        name: "💻 Digital Consciousness Glitch",
         description:
-          "Bosch's Ecce Homo with Renaissance portraiture realism, Christ presented to crowd with emotional intensity, realistic medieval crowd with individual character faces, authentic period architecture and clothing, detailed facial expressions showing human nature, biblical scene with historical accuracy, Renaissance painting techniques with artistic mastery, religious drama with psychological depth, medieval justice system depicted, human mob psychology with realistic behavior, godlevel religious portraiture artistry.",
+          "Cutting-edge digital art representation of consciousness glitches with advanced rendering techniques, photorealistic digital painting of psychological fragmentation, professional digital artistry depicting mental health in the digital age, concept art industry standard psychological visualization, video game character quality emotional depth, digital illustration mastery of internal conflict, computer graphics excellence in psychological representation, digital painting virtuosity showing mind-technology interface conflicts, godlevel digital psychology excellence.",
       },
-      "hermit-saints": {
-        name: "🙏 Hermit Saints",
+      "steampunk-victorian": {
+        name: "⚙️ Victorian Psychological Machinery",
         description:
-          "Bosch's hermit saints with spiritual realism, medieval hermits in wilderness settings, realistic medieval monastic clothing and accessories, authentic landscape with botanical accuracy, detailed cave dwellings and hermitages, realistic medieval religious objects and books, spiritual contemplation with psychological depth, medieval asceticism with cultural authenticity, wilderness survival with historical accuracy, religious devotion with artistic sophistication, medieval spirituality with ethnographic precision, godlevel religious hermit artistry.",
+          "Elaborate steampunk Victorian representation of psychological machinery with brass and copper mechanical mind augmentations, intricate clockwork mechanisms representing thought processes, steam-powered emotional regulation devices, Victorian era approach to mental health through mechanical metaphors, leather and brass psychological apparatus, mechanical monocle revealing internal psychological gears, steam vents releasing psychological pressure, industrial revolution aesthetics applied to mental health understanding, godlevel steampunk psychology excellence.",
       },
-      "last-judgment": {
-        name: "⚖️ Last Judgment",
+      "tribal-cultural": {
+        name: "🪶 Shamanic Soul Healing",
         description:
-          "Bosch's Last Judgment with apocalyptic realism, Christ as judge with divine authority, realistic angels and demons with creature design excellence, detailed heaven and hell landscapes, authentic medieval religious iconography, dramatic lighting emphasizing divine judgment, realistic human figures in various states, biblical apocalypse with theological accuracy, medieval eschatology with cultural authenticity, divine justice with artistic sophistication, religious terror and hope depicted, godlevel apocalyptic artistry.",
+          "Respectful tribal cultural representation of shamanic soul healing practices with authentic traditional face painting representing psychological transformation, ceremonial markings showing mental health journey, traditional healing jewelry and spiritual adornments, feathers and natural materials used in psychological cleansing rituals, cultural heritage approach to mental wellness, indigenous wisdom in psychological healing, traditional craftsmanship representing soul repair, cultural authenticity in mental health practices, godlevel cultural psychology excellence.",
       },
-      "musical-hell": {
-        name: "🎵 Musical Hell",
+      "zombie-undead": {
+        name: "🧟 Psychological Death and Rebirth",
         description:
-          "Bosch's musical hell with surreal realism, demons torturing souls with oversized musical instruments, realistic medieval instruments with acoustic accuracy, detailed torture scenes with artistic sophistication, fantastical creatures with biological plausibility, medieval hell imagery with theological accuracy, musical punishment with creative interpretation, demonic orchestra with creature design excellence, realistic fire and brimstone effects, medieval damnation with cultural authenticity, artistic horror with psychological depth, godlevel infernal musical artistry.",
+          "Professional representation of psychological death and rebirth with award-winning special effects showing mental transformation, realistic decay representing old psychological patterns dying away, professional prosthetic application showing psychological metamorphosis, cinematic quality mental health transformation, psychological resurrection through therapeutic process, horror movie aesthetics applied to mental health recovery, special effects mastery showing psychological healing, godlevel psychological transformation excellence.",
       },
-      "tree-man": {
-        name: "🌳 Tree Man",
+      "alien-extraterrestrial": {
+        name: "👽 Cosmic Consciousness Expansion",
         description:
-          "Bosch's Tree Man with surreal biological realism, hybrid creature with tree trunk body and human head, realistic bark texture and botanical detail, human anatomy integrated with plant biology, fantastical creature with biological plausibility, surreal landscape with environmental accuracy, medieval symbolism with artistic interpretation, hybrid biology with scientific speculation, creature design with artistic excellence, surreal anatomy with medical accuracy, fantastical evolution with creative genius, godlevel surreal creature artistry.",
+          "Scientifically plausible representation of cosmic consciousness expansion with evolutionary psychology consideration, xenopsychology speculation showing advanced mental states, non-human intelligence perspective on psychological conflicts, interstellar consciousness design transcending earthly mental limitations, science fiction approach to psychological evolution, speculative psychology artistry, astrobiology inspiration for consciousness studies, cosmic perspective on mental health, extraterrestrial wisdom in psychological healing, godlevel cosmic psychology excellence.",
       },
-      "world-upside-down": {
-        name: "🙃 World Upside Down",
+      "mega-freak-extreme": {
+        name: "🎪 Extreme Psychological Liberation",
         description:
-          "Bosch's world upside down with satirical realism, medieval social order reversed with comic accuracy, realistic medieval people in absurd situations, authentic period clothing and objects, detailed medieval settings with architectural accuracy, social satire with cultural authenticity, medieval humor with psychological insight, absurd situations with realistic physics, comic reversal with artistic sophistication, medieval carnival atmosphere with ethnographic precision, human folly with artistic wisdom, godlevel satirical medieval artistry.",
+          "Extreme artistic interpretation of psychological liberation with radical creative expression of mental freedom, surreal proportions representing psychological boundary breaking, psychedelic color explosions showing emotional release, reality-bending visual effects depicting consciousness expansion, artistic freedom maximization in psychological expression, creative boundary pushing in mental health representation, experimental art excellence in psychological healing, avant-garde approach to mental wellness, godlevel extreme psychology excellence.",
       },
       "animal-transport": {
-        name: "🦄 Bosch Fantastical Beast Transport",
+        name: "🐘 Psychological Journey Caravan",
         description:
-          "Surreal transportation on Hieronymus Bosch-inspired hybrid creatures, fantastical beasts with multiple animal parts combined, riders on impossible animals with bird wings, fish tails, and mammal bodies, medieval surrealism with creature design excellence, Bosch-style hybrid anatomy with biological plausibility, fantastical animal transport through surreal landscape, medieval bestiary creatures with artistic sophistication, impossible animal combinations with Renaissance artistry, surreal creature transport with cultural authenticity, godlevel Bosch animal transport excellence.",
+          "Majestic representation of psychological journey as spiritual caravan with wise guide leading through mental landscapes, intricate traditional wisdom clothing representing psychological protection, weathered face showing years of psychological experience, ornate decorations with therapeutic symbols and healing colors, realistic emotional texture and spiritual depth, warm therapeutic lighting, traditional psychological healing culture, authentic therapist-client bond, professional therapeutic journey quality, mental health heritage celebration, godlevel psychological journey excellence.",
       },
       "lego-vision": {
-        name: "🧱 LEGO Garden of Delights",
+        name: "🧱 Modular Mind Construction",
         description:
-          "Surreal LEGO Garden of Earthly Delights with brick-built fantastical creatures and impossible beings, modular LEGO paradise with hybrid animals constructed from standard bricks, LEGO minifigure Adam and Eve in plastic Eden, Danish construction system applied to Bosch's surreal vision, systematic building approach to medieval fantasy recreation, LEGO hybrid creatures with articulated brick construction, modular LEGO symbolism with contemporary precision, constructive play with Renaissance surrealism, precision-molded LEGO elements creating Bosch-inspired illusions, Danish toy engineering excellence in impossible biology, godlevel LEGO Bosch excellence.",
+          "Iconic LEGO representation of modular mind construction with systematic psychological building blocks, smooth mental surface with precise therapeutic details, authentic psychological foundation with systematic healing variations, characteristic therapeutic elements and constructive mental smile, Danish design excellence applied to psychological architecture, systematic creativity embodied in mental health construction, precision-molded psychological building with therapeutic perfection, childhood trauma healing catalyst with infinite recovery potential, modular psychological representation with universal healing appeal, godlevel LEGO psychology excellence.",
       },
       "escapism-magic": {
-        name: "🖼️ Medieval Surreal Portal Magic",
+        name: "🎭 Psychological Escape Artistry",
         description:
-          "Extraordinary Bosch-inspired magic enabling escape into medieval surreal dimensions where impossible creatures and fantastical landscapes become navigable reality, magical challenge of creating believable impossible worlds that follow dream logic while maintaining Renaissance artistic authenticity, escapist artistry where medieval surrealism becomes experiential journey through symbolic landscapes, intricate illusion requiring mastery of both Renaissance symbolism and surreal world construction, medieval portal magic that transforms allegorical art into explorable dimensions, artistic escapism through symbolic reality navigation, surreal magic where Bosch's creatures become guides to alternate medieval realities, Renaissance illusion demanding expertise in both medieval symbolism and surreal world building, godlevel medieval surreal escape magic excellence.",
+          "Masterful psychological escape artistry where mental conflict becomes gateway to healing realities, consciousness that reflects therapeutic possibilities and recovery galaxies, psychological features that shift between trauma and healing when viewed from different therapeutic angles, escape magic requiring precise understanding of psychological healing mechanisms, therapeutic illusion mastery where the viewer questions limiting mental beliefs, escapist artistry that transports consciousness beyond psychological limitations, intricate challenge of creating believable psychological transformation, magical realism where mental features become portals to healing realms, godlevel psychological escape excellence.",
       },
       vitro: {
-        name: "⛪ Bosch Medieval Sacred Glass",
+        name: "⛪ Sacred Psychology Stained Glass",
         description:
-          "Surreal Bosch-inspired stained glass windows in Vatican cathedral style with fantastical creatures rendered in luminous colored glass, Garden of Earthly Delights scenes crafted from jewel-toned glass with medieval precision, hybrid animals in translucent glass creating surreal beauty, traditional lead came construction following dream logic geometries with medieval craftsmanship, medieval surrealism captured in colored glass with divine light effects, Vatican glasswork techniques applied to Bosch's vision visualization, sacred geometry meets medieval fantasy in stained glass mastery, cathedral surreal windows inspiring contemplation of symbolic medieval art, godlevel Bosch vitro medieval excellence.",
+          "Magnificent stained glass representation of sacred psychology in cathedral style with luminous colored glass fragments forming psychological healing patterns, divine therapeutic light streaming through translucent consciousness creating ethereal mental illumination, masterful lead construction outlining psychological elements with Gothic precision, jewel-toned glass pieces forming realistic emotional healing tones, traditional sacred techniques with contemporary psychological artistry, sacred geometry patterns integrated with mental health structure, cathedral light effects transforming psychology into spiritual revelation, godlevel sacred psychology excellence.",
       },
       crypto: {
-        name: "₿ Medieval Crypto Alchemy",
+        name: "₿ Blockchain Mental Health Mining",
         description:
-          "Hieronymus Bosch-inspired cryptocurrency alchemy with fantastical digital creatures mining Bitcoin through medieval magical processes, alchemical laboratories where traditional gold transmutation meets blockchain validation, surreal hybrid beings operating crypto mining equipment with Renaissance artistic detail, medieval symbolism merged with modern cryptocurrency concepts, fantastical creatures serving as blockchain validators in impossible architectural settings, crypto wallet security through medieval magical protection spells, decentralized finance operating through Bosch's surreal economic systems, blockchain consensus achieved through medieval guild cooperation, cryptocurrency as modern philosopher's stone, godlevel Bosch crypto alchemy excellence.",
+          "Revolutionary blockchain representation of mental health where psychological features are constructed from therapeutic mining algorithms, consciousness that displays real-time healing transactions with recovery rate calculations, psychological geometry determined by proof-of-work consensus mechanisms, mental health pixels mined through therapeutic power with energy-efficient validation, decentralized psychological identity verification through healing recognition smart contracts, therapy wallet addresses encoded in mental structure, digital wellness flowing through neural pathways like synaptic lightning, godlevel blockchain psychology excellence.",
       },
-    },
-  },
-  whiterabbit: {
-    name: "🐰 White Rabbit Gallery - Hooligan",
-    scenarios: {
-      "pure-mathematical": {
-        name: "🔢 Pure Abstract Patterns",
+      "existential-crisis": {
+        name: "🌌 Existential Crisis Manifestation",
         description:
-          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
+          "Profound existential crisis visualization with cosmic void representing meaninglessness anxiety, infinite space showing psychological insignificance fears, stellar formations creating questions about purpose and identity, nebular consciousness clouds representing uncertainty about existence, galactic spiral patterns showing life's cyclical nature questioning, black hole center representing fear of non-existence, cosmic scale emphasizing human psychological fragility, astronomical beauty emerging from existential dread, universal perspective on individual mental struggle, godlevel existential psychology excellence.",
       },
-      "origami-world": {
-        name: "📄 Origami Hooligan Paper",
+      "temporal-displacement": {
+        name: "⏰ Time Perception Disorder",
         description:
-          "Rebellious origami hooligan with paper punk aesthetics, folded paper mohawk and spikes, aggressive angular paper construction, torn and weathered paper texture, street art origami with urban edge, paper graffiti elements, folded paper leather jacket, origami chains and punk accessories, paper rebellion artistry, urban paper sculpture, street origami mastery, punk paper engineering, rebellious paper folding, origami counter-culture, paper punk excellence, godlevel origami hooligan artistry.",
+          "Surreal temporal displacement showing psychological time distortion with multiple clock faces displaying different emotional time zones, chronological confusion manifested through overlapping temporal layers, past trauma bleeding into present consciousness, future anxiety creating temporal paradoxes, memory fragments scattered across time dimensions, psychological age regression and progression simultaneously, temporal healing where past wounds transform through present awareness, time-based therapy visualization, chronological identity fragmentation, godlevel temporal psychology excellence.",
       },
-      "street-punk-rebellion": {
-        name: "🎸 Street Punk Rebellion",
+      "shadow-integration": {
+        name: "🌗 Jungian Shadow Work",
         description:
-          "Authentic street punk hooligan with mohawk and leather jacket, realistic punk fashion with safety pins and patches, urban graffiti background with street art excellence, rebellious attitude with authentic punk culture, street photography realism, underground music scene authenticity, punk rock heritage celebration, counter-culture documentation, urban rebellion artistry, street punk excellence, authentic subculture representation, punk fashion accuracy, rebellious spirit capture, godlevel punk artistry.",
-      },
-      "animal-transport": {
-        name: "🐺 Wolf Pack Urban Transport",
-        description:
-          "Urban hooligan riding with wolf pack through city streets, realistic wolves with pack behavior, street punk rider with authentic punk fashion, urban environment with graffiti and street art, motorcycle gang aesthetics with wolf companions, rebellious transportation with animal allies, street pack mentality, urban wildlife integration, punk animal bonding, street rebellion with nature, authentic urban wolf pack, godlevel hooligan animal transport excellence.",
-      },
-      "escapism-magic": {
-        name: "🐰 Underground Rebellion Escape Magic",
-        description:
-          "Rebellious hooligan magic enabling escape from oppressive systems through underground networks and counter-culture illusions that make authority figures see compliance while enabling complete freedom, magical challenge of creating believable conformity facades while maintaining authentic rebellion underneath, escapist artistry where punk aesthetics become tools for systematic resistance, intricate illusion requiring mastery of both social camouflage techniques and underground network navigation, rebellion magic that transforms street culture into liberation movement, cultural escapism through punk community solidarity, underground magic where hooligan networks become keys to systematic freedom, counter-culture illusion demanding expertise in both social rebellion and stealth techniques, godlevel underground rebellion escape magic excellence.",
-      },
-      vitro: {
-        name: "⛪ Punk Cathedral Glass",
-        description:
-          "Rebellious punk hooligan stained glass windows in Vatican cathedral style with street art aesthetics rendered in luminous colored glass, mohawk and leather jacket patterns crafted from dark jewel-toned glass with urban precision, graffiti designs in translucent glass creating counter-culture beauty, traditional lead came construction following punk geometries with medieval craftsmanship, street rebellion captured in colored glass with divine light effects, Vatican glasswork techniques applied to punk visualization, sacred geometry meets street culture in stained glass mastery, cathedral punk windows inspiring contemplation of rebellious spirit, godlevel hooligan vitro punk excellence.",
-      },
-      crypto: {
-        name: "₿ Punk Crypto Rebellion",
-        description:
-          "Underground punk cryptocurrency rebellion against traditional financial systems, street art graffiti displaying Bitcoin addresses and blockchain manifestos, punk rock energy channeled into decentralized finance revolution, cryptocurrency mining powered by underground music venues, crypto wallets hidden in punk fashion accessories and safety pins, blockchain validation through punk community consensus, decentralized autonomous punk organizations funding counter-culture movements, cryptocurrency as tool for financial system rebellion, punk aesthetic crypto interfaces with authentic street credibility, underground crypto networks with rebellious spirit, godlevel punk crypto rebellion excellence.",
-      },
-    },
-  },
-  surreal: {
-    name: "🎭 Surreal Creatures",
-    scenarios: {
-      "pure-mathematical": {
-        name: "🔢 Pure Abstract Patterns",
-        description:
-          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
-      },
-      "origami-world": {
-        name: "📄 Origami Impossible Beings",
-        description:
-          "Surreal origami creatures with impossible paper anatomy, folded paper human-animal hybrids, origami Victorian gentlemen with paper top hats, paper snail shells with intricate fold patterns, impossible paper engineering with surreal proportions, origami dream logic with paper magic, folded paper fantasy creatures, surreal paper sculpture mastery, origami impossibility artistry, paper dream engineering, surreal origami excellence, godlevel impossible paper creatures.",
-      },
-      "victorian-steampunk-menagerie": {
-        name: "🎩 Victorian Steampunk Menagerie",
-        description:
-          "Elaborate Victorian steampunk menagerie with brass-adorned gentlemen riding impossible creatures, ornate top hats with clockwork mechanisms, copper and brass animal companions with steam-powered limbs, Victorian formal wear with mechanical augmentations, sepia-toned dreamscape with floating butterflies, intricate gear-work integrated into living beings, steam vents and pressure gauges on fantastical mounts, Victorian elegance merged with impossible biology, steampunk creature design excellence, brass and leather aesthetic perfection, godlevel Victorian surreal artistry.",
-      },
-      "metamorphic-tea-party": {
-        name: "🫖 Metamorphic Tea Party",
-        description:
-          "Surreal tea party where guests transform into teacups and saucers, Victorian ladies with porcelain skin patterns, gentlemen with steam rising from their heads like teapots, furniture that breathes and blinks, tablecloth flowing like liquid mercury, floating sugar cubes with tiny wings, spoons that swim through air like fish, Alice in Wonderland impossibility with photorealistic detail, metamorphic dining experience, surreal social gathering excellence, godlevel tea party surrealism.",
-      },
-      "clockwork-menagerie": {
-        name: "⚙️ Clockwork Menagerie",
-        description:
-          "Magnificent clockwork menagerie with mechanical animals housing human souls, brass elephants with transparent bellies revealing Victorian passengers, clockwork birds with human faces singing opera, steam-powered carousel horses galloping through clouds, mechanical butterflies with stained glass wings, copper snails leaving trails of golden gears, wind-up creatures with emotional expressions, Victorian circus of impossible machines, steampunk animal artistry, mechanical soul integration, godlevel clockwork creature excellence.",
-      },
-      "floating-library-scholars": {
-        name: "📚 Floating Library Scholars",
-        description:
-          "Ethereal floating library with scholar-birds perched on flying books, Victorian academics with feathered wings reading while soaring, books that open to reveal miniature worlds, floating ink wells that create flowing artistic patterns, quill pens that draw in the air with luminous trails, scholarly owls wearing spectacles and bow ties, levitating desks with candles that never melt, knowledge made manifest as glowing particles, academic surrealism with literary magic, floating wisdom artistry, godlevel scholarly surrealism.",
-      },
-      "musical-anatomy": {
-        name: "🎼 Musical Anatomy",
-        description:
-          "Surreal beings with musical instrument anatomy, violinists whose bodies are actual violins with human consciousness, piano players with keyboard ribcages and hammer hearts, conductors with baton fingers directing orchestras of hybrid creatures, musical notes floating as living butterflies, sound waves visible as colorful ribbons in air, concert halls grown from giant musical instruments, symphonic biology with harmonic perfection, musical creature design excellence, godlevel musical surrealism.",
-      },
-      "garden-of-impossible-delights": {
-        name: "🌺 Garden of Impossible Delights",
-        description:
-          "Fantastical garden where flowers have human faces and trees bear fruit-children, Victorian gardeners tending to plants that sing lullabies, roses that bloom into tiny dancers, sunflowers with eyes that follow visitors, mushrooms that house miniature tea parties, vines that write poetry in the air, garden paths that lead to different seasons simultaneously, botanical impossibility with nurturing care, surreal horticulture excellence, godlevel garden surrealism.",
-      },
-      "time-merchant-bazaar": {
-        name: "⏰ Time Merchant Bazaar",
-        description:
-          "Mystical bazaar where time merchants sell bottled moments, Victorian shopkeepers with clock faces for heads, customers browsing shelves of crystallized memories, hourglasses containing miniature life stories, pocket watches that show different timelines, temporal currency made of golden seconds, time-worn travelers with calendars for skin, chronological marketplace with temporal goods, time-trading artistry, godlevel temporal commerce surrealism.",
-      },
-      "dream-cartographers": {
-        name: "🗺️ Dream Cartographers",
-        description:
-          "Ethereal dream cartographers mapping the geography of sleep, Victorian explorers with compass hearts and map-skin, territories that shift based on the dreamer's mood, rivers of liquid starlight flowing through nightmare valleys, mountains made of crystallized thoughts, dream creatures serving as native guides, cartographic tools that draw themselves, navigational instruments powered by imagination, oneiric exploration excellence, godlevel dream mapping artistry.",
-      },
-      "mechanical-heart-surgeons": {
-        name: "💝 Mechanical Heart Surgeons",
-        description:
-          "Surreal Victorian surgeons operating on mechanical hearts with emotional gears, patients with clockwork cardiovascular systems, love letters used as surgical thread, romantic poetry flowing through brass arteries, heartbreak manifested as broken springs and gears, emotional repair with precision instruments, surgical theaters filled with floating rose petals, medical romanticism with steampunk precision, cardiac mechanical artistry, godlevel emotional surgery surrealism.",
-      },
-      "cloud-shepherds": {
-        name: "☁️ Cloud Shepherds",
-        description:
-          "Mystical cloud shepherds herding weather patterns across Victorian skies, aerial farmers with wings made of condensed mist, sheep-clouds that rain when sheared, storm-dogs that bark thunder and lightning, weather-staff that conducts atmospheric symphonies, sky pastures with rainbow fences, meteorological husbandry with celestial grace, atmospheric creature management, weather-working artistry, godlevel cloud shepherd surrealism.",
-      },
-      "memory-archaeologists": {
-        name: "🏺 Memory Archaeologists",
-        description:
-          "Victorian memory archaeologists excavating buried recollections, forgotten thoughts crystallized as amber fossils, memory layers revealed through careful excavation, archaeological tools that uncover emotional sediment, ancient memories preserved in temporal strata, consciousness dig sites with psychological artifacts, memory museums displaying excavated experiences, temporal archaeology with emotional precision, consciousness excavation artistry, godlevel memory archaeology surrealism.",
-      },
-      "shadow-puppet-masters": {
-        name: "🎭 Shadow Puppet Masters",
-        description:
-          "Enigmatic shadow puppet masters whose shadows live independent lives, Victorian puppeteers with shadow-selves that rebel, shadow theaters where darkness tells its own stories, puppet strings made of moonbeams and starlight, shadows that cast people instead of being cast by them, umbral performances with light and darkness dancing, shadow consciousness with autonomous will, darkness artistry with luminous contrast, shadow rebellion excellence, godlevel shadow puppet surrealism.",
-      },
-      "emotion-alchemists": {
-        name: "🧪 Emotion Alchemists",
-        description:
-          "Victorian emotion alchemists distilling feelings into magical elixirs, laboratory equipment that processes human emotions, love potions that literally glow with warmth, sadness condensed into blue crystalline tears, joy bubbling in golden beakers, anger burning as red flame in glass containers, emotional transmutation with alchemical precision, feeling-based chemistry with mystical results, emotional laboratory artistry, godlevel emotion alchemy surrealism.",
-      },
-      "animal-transport": {
-        name: "🐌 Victorian Snail Carriage",
-        description:
-          "Magnificent Victorian gentleman in ornate top hat and brass goggles riding atop an enormous gastropod carriage, elaborate snail shell decorated with clockwork mechanisms and copper fittings, steam vents emerging from shell spirals, Victorian formal wear with mechanical pocket watch chains, sepia-toned dreamscape with floating butterflies and bare winter trees, snail leaving trail of golden gears and brass cogs, impossible transportation with whimsical elegance, steampunk mollusk mastery, Victorian creature transport excellence, godlevel surreal animal transport artistry.",
-      },
-      "escapism-magic": {
-        name: "🎭 Victorian Dream Logic Escape Magic",
-        description:
-          "Whimsical Victorian magic enabling escape through dream logic where impossible becomes inevitable and surreal creatures serve as guides to alternate realities, magical challenge of creating believable impossibility that follows emotional rather than physical laws, escapist artistry where steampunk aesthetics become tools for reality transcendence, intricate illusion requiring mastery of both Victorian symbolism and dream psychology, surreal magic that transforms fantastical creatures into vehicles for dimensional travel, cultural escapism through Victorian imagination celebration, dream magic where impossible beings become keys to emotional liberation, Victorian illusion demanding expertise in both period authenticity and surreal world construction, godlevel Victorian dream escape magic excellence.",
-      },
-      vitro: {
-        name: "⛪ Surreal Victorian Sacred Glass",
-        description:
-          "Whimsical surreal creature stained glass windows in Vatican cathedral style with Victorian steampunk aesthetics rendered in luminous colored glass, impossible beings crafted from jewel-toned glass with fantastical precision, Victorian gentlemen on snails in translucent glass creating surreal beauty, traditional lead came construction following dream logic geometries with medieval craftsmanship, surreal Victorian world captured in colored glass with divine light effects, Vatican glasswork techniques applied to impossible creature visualization, sacred geometry meets Victorian fantasy in stained glass mastery, cathedral surreal windows inspiring contemplation of dream logic, godlevel surreal vitro Victorian excellence.",
-      },
-      crypto: {
-        name: "₿ Surreal Crypto Metamorphosis",
-        description:
-          "Victorian gentlemen transforming into living cryptocurrency wallets with steampunk mechanical precision, impossible beings mining Bitcoin through dream logic algorithms, surreal creatures whose anatomy consists of blockchain validation nodes, cryptocurrency transactions flowing through fantastical animal-human hybrids, steampunk crypto mining equipment integrated into impossible biological forms, surreal financial metamorphosis where money becomes living creatures, blockchain consensus achieved through surreal creature communication, cryptocurrency as surreal art medium with Victorian elegance, impossible crypto economics with dream logic mathematics, surreal digital currency with fantastical precision, godlevel surreal crypto metamorphosis excellence.",
-      },
-    },
-  },
-  endangered: {
-    name: "🦋 Endangered Spirits",
-    scenarios: {
-      "pure-mathematical": {
-        name: "🔢 Pure Abstract Patterns",
-        description:
-          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
-      },
-      "origami-world": {
-        name: "📄 Origami Vanishing Species",
-        description:
-          "Delicate origami endangered animals crafted from translucent paper that slowly dissolves, paper-folded creatures becoming transparent as they fade away, intricate origami ecosystems with disappearing habitats, visible fold lines showing fragile construction, ethereal lighting making paper animals appear ghostly, masterful origami technique capturing the ephemeral nature of extinction, paper conservation message through dissolving art, traditional paper folding representing species memory, handcrafted paper sculptures of vanishing wildlife, artistic paper engineering of disappearing worlds, godlevel origami extinction excellence.",
-      },
-      "siberian-tiger-spirit": {
-        name: "🐅 Siberian Tiger Spirit Guardian",
-        description:
-          "Mystical Siberian tiger spirit emerging from frozen taiga dreamscape, ethereal ice crystals forming around massive paws, ghostly orange and black stripes shimmering with aurora borealis energy, ancient forest spirits whispering through snow-laden pines, tiger's breath creating magical frost patterns in arctic air, spiritual guardian of the last wilderness sanctuaries, eyes glowing with primordial wisdom of vanished forests, mystical connection between earthly tiger and celestial protector, shamanic journey through Siberian spirit realm, frozen landscape transformed into ethereal sanctuary, godlevel mystical tiger excellence.",
-      },
-      "mountain-gorilla-sage": {
-        name: "🦍 Mountain Gorilla Sage Council",
-        description:
-          "Ancient mountain gorilla sage conducting mystical council in cloud-shrouded volcanic peaks, silverback elder with wisdom-filled eyes surrounded by ethereal mist, gorilla families gathering in sacred bamboo groves where spirits dwell, traditional African ancestral ceremonies with gorilla shamans, mystical communication through forest spirit language, volcanic mountains transformed into spiritual sanctuaries, gorilla elders teaching ancient forest wisdom to human dreamers, ethereal bamboo forests with floating light orbs, spiritual bond between gorilla consciousness and mountain spirits, mystical African highland atmosphere, godlevel gorilla sage excellence.",
-      },
-      "vaquita-ocean-phantom": {
-        name: "🐬 Vaquita Ocean Phantom",
-        description:
-          "Ethereal vaquita porpoise spirit gliding through underwater dreamscape of the Sea of Cortez, ghostly marine mammal with translucent fins creating bioluminescent trails, mystical underwater realm where last vaquitas commune with ocean spirits, ancient Aztec water deities protecting sacred porpoise souls, underwater aurora effects dancing around phantom vaquita pods, mystical connection between earthly ocean and celestial sea, spiritual guardians of marine sanctuaries, ethereal underwater landscape with floating light particles, shamanic journey through oceanic spirit realm, mystical Mexican waters transformed into ethereal sanctuary, godlevel ocean phantom excellence.",
-      },
-      "saola-forest-unicorn": {
-        name: "🦄 Saola Forest Unicorn Mystery",
-        description:
-          "Legendary saola appearing as mystical forest unicorn in Vietnamese jungle dreamscape, ethereal antelope with horn-like projections glowing with inner light, ancient forest spirits manifesting through saola consciousness, mystical Vietnamese mountain forests where reality blends with legend, shamanic encounters with the Asian unicorn in spiritual realm, ethereal jungle atmosphere with floating light orbs and mystical fog, traditional Vietnamese forest mythology brought to life, spiritual guardian of the last untouched wilderness, mystical connection between earthly saola and celestial unicorn, ethereal Annamite mountain sanctuary, godlevel forest unicorn excellence.",
-      },
-      "javan-rhino-temple-guardian": {
-        name: "🦏 Javan Rhino Temple Guardian",
-        description:
-          "Mystical Javan rhinoceros serving as ancient temple guardian in ethereal Indonesian jungle sanctuary, massive rhino spirit with horn glowing like sacred crystal, traditional Javanese temple ruins overgrown with mystical vegetation, rhino guardian protecting sacred forest temples from spiritual realm, ancient Indonesian mythology where rhinos commune with temple spirits, ethereal jungle atmosphere with floating temple lanterns, mystical connection between earthly rhino and divine temple protector, shamanic journey through Indonesian spirit realm, sacred temple grounds transformed into ethereal wildlife sanctuary, godlevel temple guardian excellence.",
-      },
-      "snow-leopard-mountain-spirit": {
-        name: "❄️ Snow Leopard Mountain Spirit",
-        description:
-          "Ethereal snow leopard spirit leaping between Himalayan peaks in celestial mountain realm, ghostly spotted coat shimmering with starlight and snow crystals, mystical high-altitude sanctuary where snow leopards commune with mountain deities, ancient Tibetan spiritual traditions honoring leopard spirits, ethereal mountain landscape with floating prayer flags and mystical clouds, spiritual guardian of the highest peaks, mystical connection between earthly leopard and celestial mountain spirit, shamanic journey through Himalayan spirit realm, sacred mountains transformed into ethereal leopard sanctuary, godlevel mountain spirit excellence.",
-      },
-      "pangolin-armor-mystic": {
-        name: "🛡️ Pangolin Armor Mystic",
-        description:
-          "Mystical pangolin unrolling from ethereal armor ball in African savanna dreamscape, scales glowing like ancient protective talismans, traditional African spiritual ceremonies honoring pangolin medicine, mystical connection between pangolin armor and spiritual protection, ethereal savanna landscape with floating acacia trees and mystical light, shamanic healing rituals where pangolin spirits teach protection magic, ancient African mythology brought to life through pangolin consciousness, spiritual guardian of traditional medicine wisdom, mystical transformation between earthly pangolin and celestial armor spirit, godlevel armor mystic excellence.",
-      },
-      "kakapo-night-parrot-oracle": {
-        name: "🦜 Kakapo Night Parrot Oracle",
-        description:
-          "Mystical kakapo serving as nocturnal oracle in ethereal New Zealand forest dreamscape, flightless parrot with wisdom-filled eyes glowing in moonlight, ancient Maori spiritual traditions honoring kakapo as forest messenger, mystical communication through night parrot dream language, ethereal native forest with floating fern fronds and mystical mist, spiritual guardian of ancient forest wisdom, mystical connection between earthly kakapo and celestial night oracle, shamanic journey through New Zealand spirit realm, sacred forests transformed into ethereal parrot sanctuary, godlevel night oracle excellence.",
-      },
-      "amur-leopard-shadow-hunter": {
-        name: "🌙 Amur Leopard Shadow Hunter",
-        description:
-          "Ethereal Amur leopard moving like living shadow through Russian taiga dreamscape, spotted coat blending with dappled moonlight and forest shadows, mystical Siberian forest where leopards hunt in spiritual realm, ancient Russian folklore honoring leopard as shadow spirit, ethereal taiga landscape with floating birch leaves and mystical aurora, spiritual guardian of the northern wilderness, mystical connection between earthly leopard and celestial shadow hunter, shamanic journey through Siberian spirit realm, sacred forests transformed into ethereal leopard hunting grounds, godlevel shadow hunter excellence.",
-      },
-      "hawksbill-turtle-ocean-sage": {
-        name: "🐢 Hawksbill Turtle Ocean Sage",
-        description:
-          "Ancient hawksbill turtle sage swimming through ethereal coral reef dreamscape, shell patterns glowing with bioluminescent wisdom, mystical underwater realm where turtles commune with ocean spirits, traditional Pacific Islander ceremonies honoring turtle ancestors, ethereal coral gardens with floating light particles and mystical currents, spiritual guardian of marine wisdom, mystical connection between earthly turtle and celestial ocean sage, shamanic journey through oceanic spirit realm, sacred reefs transformed into ethereal turtle sanctuary, godlevel ocean sage excellence.",
-      },
-      "black-rhino-earth-shaman": {
-        name: "🌍 Black Rhino Earth Shaman",
-        description:
-          "Mystical black rhinoceros serving as earth shaman in ethereal African savanna dreamscape, massive horn channeling earth energy and ancient wisdom, traditional African spiritual ceremonies honoring rhino as earth guardian, mystical connection between rhino consciousness and geological spirits, ethereal savanna landscape with floating baobab trees and mystical dust devils, spiritual guardian of earth's ancient power, mystical transformation between earthly rhino and celestial earth shaman, shamanic journey through African spirit realm, sacred grasslands transformed into ethereal rhino sanctuary, godlevel earth shaman excellence.",
-      },
-      "orangutan-forest-philosopher": {
-        name: "🦧 Orangutan Forest Philosopher",
-        description:
-          "Wise orangutan sage contemplating existence in ethereal Bornean rainforest dreamscape, ancient eyes holding forest wisdom and mystical knowledge, traditional Dayak spiritual traditions honoring orangutan as forest teacher, mystical communication through primate consciousness and tree spirit language, ethereal jungle canopy with floating leaves and mystical light beams, spiritual guardian of rainforest philosophy, mystical connection between earthly orangutan and celestial forest philosopher, shamanic journey through Bornean spirit realm, sacred forests transformed into ethereal orangutan sanctuary, godlevel forest philosopher excellence.",
-      },
-      "cross-river-gorilla-river-spirit": {
-        name: "🌊 Cross River Gorilla River Spirit",
-        description:
-          "Mystical Cross River gorilla emerging from ethereal river mists in Cameroon-Nigeria border dreamscape, silverback spirit with water droplets creating rainbow halos, ancient African river ceremonies honoring gorilla as water guardian, mystical connection between gorilla consciousness and river spirits, ethereal tropical forest with floating river mist and mystical waterfalls, spiritual guardian of sacred waterways, mystical transformation between earthly gorilla and celestial river spirit, shamanic journey through West African spirit realm, sacred rivers transformed into ethereal gorilla sanctuary, godlevel river spirit excellence.",
-      },
-      "animal-transport": {
-        name: "🐘 Botanical Elephant Caravan",
-        description:
-          "Majestic elephant caravan adorned with elaborate botanical couture, elephants wearing flowing leaf garments and flower crowns, mahouts dressed in organic botanical fashion with living vine accessories, elephant decorations featuring cascading botanical elements and flowering textiles, caravan procession through enchanted botanical landscapes, traditional elephant transport enhanced by organic couture artistry, botanical elephant fashion with cultural heritage authenticity, organic animal transport with botanical ceremonial excellence, elephant botanical couture with traditional transport mastery, godlevel botanical elephant caravan excellence.",
-      },
-      "lego-vision": {
-        name: "🧱 LEGO Botanical Construction",
-        description:
-          "Innovative LEGO botanical construction system with modular organic building elements, precision-molded botanical LEGO pieces that snap together to create flowing organic forms, Danish engineering excellence applied to botanical construction philosophy, systematic creativity with organic modular design, LEGO botanical sets with constructive botanical play potential, modular organic construction with LEGO precision engineering, botanical building blocks with Danish design sophistication, LEGO organic architecture with modular botanical excellence, constructive botanical play with LEGO systematic creativity, godlevel LEGO botanical construction excellence.",
-      },
-      "escapism-magic": {
-        name: "🌟 Botanical Escapism Portal",
-        description:
-          "Magical botanical escapism portals where organic forms become gateways to alternate garden realities, flowers that bloom into dimensional doorways leading to mystical botanical realms, leaves that transform into flying carpets for garden realm transportation, botanical magic requiring mastery of organic illusion and natural impossibility, escapist botanical artistry where plants become vehicles for consciousness transportation, intricate challenge of creating believable botanical magic through organic impossibility, magical realism where garden elements serve as escape mechanisms from mundane existence, botanical portals as ultimate escapism through organic transformation, godlevel botanical escapism excellence.",
-      },
-      vitro: {
-        name: "⛪ Vatican Botanical Windows",
-        description:
-          "Sacred botanical stained glass windows in Vatican cathedral style with luminous colored glass forming intricate organic patterns, divine light streaming through translucent botanical glass creating ethereal garden illumination, masterful lead came construction outlining leaf and flower motifs with Gothic precision, jewel-toned glass pieces in emerald greens, sapphire blues, and ruby reds forming realistic botanical elements, traditional Vatican glasswork techniques applied to organic garden artistry, sacred geometry patterns integrated with botanical structural design, cathedral light effects transforming botanical windows into spiritual garden revelations, medieval craftsmanship excellence with divine botanical inspiration, godlevel Vatican botanical vitro excellence.",
-      },
-      crypto: {
-        name: "₿ Blockchain Botanical Mining",
-        description:
-          "Revolutionary blockchain botanical mining where organic growth patterns are determined by cryptocurrency algorithms, flowers that bloom based on Bitcoin transaction confirmations, leaves that change color with market volatility fluctuations, botanical smart contracts governing organic growth through decentralized autonomous gardening, crypto-powered photosynthesis with energy-efficient proof-of-stake pollination, blockchain-verified organic authenticity through botanical NFT certification, decentralized botanical networks with peer-to-peer pollination protocols, cryptocurrency mining farms disguised as botanical gardens with sustainable organic energy, godlevel blockchain botanical excellence.",
-      },
-    },
-  },
-  luxury: {
-    name: "💎 Luxury Brand Collections",
-    scenarios: {
-      "pure-mathematical": {
-        name: "🔢 Pure Abstract Patterns",
-        description:
-          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
-      },
-      "origami-world": {
-        name: "📄 Origami Luxury Pavilion",
-        description:
-          "Exquisite origami luxury pavilion with paper-folded premium brand architectures, delicate paper structures showing luxury geometric patterns, origami interpretation of luxury brand mathematics, handmade paper luxury with artistic precision, warm lighting revealing luxury beauty through dimensional paper shadows, visible fold lines creating luxury complexity layers, masterful origami engineering translating luxury concepts into paper artistry, traditional Japanese paper folding techniques applied to luxury visualization, paper sculpture luxury mastery, godlevel luxury origami excellence.",
-      },
-      "louis-vuitton-monogram": {
-        name: "👜 LV Infinite Monogram Matrix",
-        description:
-          "Louis Vuitton monogram patterns with infinite mathematical recursion, LV logos creating fractal tessellations with French luxury precision, monogram canvas showing self-similar luxury patterns at multiple scales, mathematical elegance in luxury leather goods geometry, algorithmic beauty in travel trunk construction, computational luxury with artisanal French craftsmanship excellence, infinite detail in luxury pattern mathematics, geometric luxury abstraction with Parisian sophistication, luxury mathematics embodied in premium leather artistry, godlevel Louis Vuitton mathematical excellence.",
-      },
-      "hermes-equestrian-geometry": {
-        name: "🐎 Hermès Silk Scarf Mathematics",
-        description:
-          "Hermès silk scarves with equestrian mathematical patterns, horse motifs creating geometric luxury tessellations, silk weaving showing infinite mathematical complexity, French luxury craftsmanship with algorithmic beauty optimization, equestrian geometry with premium artisanal precision, mathematical elegance in luxury silk construction, computational beauty in scarf pattern mathematics, infinite detail in luxury textile geometry, Hermès mathematical artistry with godlevel craftsmanship excellence, luxury equestrian mathematics perfection.",
-      },
-      "rolex-precision-mechanics": {
-        name: "⌚ Rolex Infinite Precision Matrix",
-        description:
-          "Rolex mechanical movements with infinite mathematical precision, Swiss watchmaking showing algorithmic beauty in gear mathematics, crown logo creating fractal luxury patterns, timepiece mechanics with computational elegance excellence, mathematical luxury in precision engineering, infinite detail in luxury chronometer construction, algorithmic beauty in Swiss luxury craftsmanship, geometric luxury abstraction in mechanical movements, luxury time mathematics with godlevel Swiss precision excellence.",
-      },
-      "chanel-quilted-algorithms": {
-        name: "👗 Chanel Quilted Mathematics",
-        description:
-          "Chanel quilted patterns with mathematical tessellation precision, camellia flowers creating fractal luxury geometries, quilted leather showing infinite mathematical complexity, French luxury mathematics with algorithmic beauty optimization, geometric elegance in luxury fashion construction, computational beauty in quilted pattern mathematics, infinite detail in luxury textile geometry, Chanel mathematical artistry with premium craftsmanship excellence, luxury fashion mathematics with godlevel French elegance.",
-      },
-      "ferrari-aerodynamic-equations": {
-        name: "🏎️ Ferrari Mathematical Velocity",
-        description:
-          "Ferrari aerodynamics with mathematical fluid dynamics precision, prancing horse logo creating fractal speed patterns, Italian engineering showing algorithmic beauty in velocity mathematics, racing mathematics with computational elegance excellence, mathematical luxury in performance engineering, infinite detail in luxury automotive construction, algorithmic beauty in Italian luxury craftsmanship, geometric luxury abstraction in aerodynamic design, luxury speed mathematics with godlevel Italian precision excellence.",
-      },
-      "cartier-geometric-panthers": {
-        name: "🐆 Cartier Panther Mathematics",
-        description:
-          "Cartier panther motifs with mathematical predator geometry, jewelry patterns creating fractal luxury tessellations, precious stones showing infinite mathematical complexity, French luxury mathematics with algorithmic beauty optimization, geometric elegance in luxury jewelry construction, computational beauty in panther pattern mathematics, infinite detail in luxury gemstone geometry, Cartier mathematical artistry with premium craftsmanship excellence, luxury jewelry mathematics with godlevel French precision.",
-      },
-      "gucci-flora-fractals": {
-        name: "🌺 Gucci Flora Fractal Gardens",
-        description:
-          "Gucci flora patterns with fractal botanical mathematics, Italian luxury showing algorithmic beauty in floral geometry, double G logos creating infinite mathematical recursion, luxury fashion mathematics with computational elegance excellence, mathematical beauty in Italian craftsmanship precision, infinite detail in luxury pattern construction, algorithmic artistry in flora mathematics, geometric luxury abstraction with Italian sophistication, luxury botanical mathematics with godlevel Italian excellence.",
-      },
-      "tiffany-diamond-crystallography": {
-        name: "💎 Tiffany Diamond Mathematics",
-        description:
-          "Tiffany diamond cuts with crystallographic mathematical precision, robin's egg blue creating fractal luxury patterns, diamond geometry showing infinite mathematical complexity, American luxury mathematics with algorithmic beauty optimization, geometric elegance in luxury jewelry construction, computational beauty in diamond cutting mathematics, infinite detail in luxury crystallography, Tiffany mathematical artistry with premium craftsmanship excellence, luxury diamond mathematics with godlevel American precision.",
-      },
-      "animal-transport": {
-        name: "🦢 Luxury Swan Yacht Transport",
-        description:
-          "Ethereal transportation on luxury swan yacht with mathematical elegance, swan necks creating fractal luxury curves, premium yacht construction with algorithmic beauty optimization, luxury marine transport showing infinite mathematical complexity, swan geometry with computational elegance excellence, mathematical luxury in yacht engineering precision, infinite detail in luxury marine construction, algorithmic beauty in swan transport mathematics, geometric luxury abstraction with premium craftsmanship, luxury swan mathematics with godlevel elegance excellence.",
-      },
-      "lego-vision": {
-        name: "🧱 LEGO Luxury Architecture",
-        description:
-          "Premium LEGO luxury architecture with modular mathematical precision, Danish engineering excellence applied to luxury construction, LEGO luxury buildings with algorithmic beauty optimization, modular luxury showing infinite mathematical complexity, constructive luxury with computational elegance excellence, mathematical precision in LEGO luxury engineering, infinite detail in modular luxury construction, algorithmic beauty in LEGO luxury mathematics, geometric luxury abstraction with Danish craftsmanship, luxury LEGO mathematics with godlevel modular excellence.",
-      },
-      "escapism-magic": {
-        name: "💎 Luxury Reality Escape Magic",
-        description:
-          "Sophisticated luxury magic enabling escape into premium mathematical dimensions where luxury becomes infinite mathematical reality, magical challenge of creating genuinely luxurious escape routes through premium brand mathematics, escapist artistry where luxury mathematics becomes vehicle for dimensional travel to premium realities, intricate illusion requiring mastery of both luxury brand theory and premium escape techniques, luxury magic that transforms material wealth into explorable mathematical luxury worlds, mathematical escapism through premium brand navigation, luxury magic where brand mathematics become keys to infinite luxury realities, premium illusion demanding expertise in both luxury and reality enhancement, godlevel luxury escape magic excellence.",
-      },
-      vitro: {
-        name: "⛪ Luxury Cathedral Glass",
-        description:
-          "Magnificent luxury brand stained glass windows in Vatican cathedral style with premium patterns rendered in luminous colored glass, luxury logos crafted from jewel-toned glass with infinite mathematical detail, premium brand geometries in translucent glass creating luxury beauty visualization, traditional lead came construction following luxury mathematics with premium craftsmanship precision, mathematical luxury complexity captured in colored glass with divine premium light effects, Vatican glasswork techniques applied to luxury mathematics visualization excellence, sacred geometry meets premium luxury theory in stained glass computational mastery, cathedral luxury windows inspiring contemplation of mathematical premium infinity, godlevel luxury vitro mathematical excellence.",
-      },
-      crypto: {
-        name: "₿ Luxury Cryptocurrency Mathematical Networks",
-        description:
-          "Premium cryptocurrency networks with luxury blockchain mathematics following algorithmic wealth generation excellence, luxury Bitcoin mining operations with computational elegance in premium crypto patterns, cryptocurrency luxury algorithms with mathematical precision generating premium blockchain beauty, luxury crypto mathematics with algorithmic elegance creating infinite wealth pattern depth, premium cryptocurrency networks with golden ratio proportions in luxury blockchain geometric design, computational crypto excellence with mathematical luxury precision, algorithmic modular geometry with luxury LEGO mathematical precision, mathematical construction patterns with premium LEGO computational elegance, luxury cryptocurrency algorithms with infinite mathematical wealth beauty, godlevel luxury crypto mathematical excellence.",
-      },
-      lego: {
-        name: "🧱 Luxury LEGO Mathematical Construction",
-        description:
-          "Premium LEGO luxury construction with mathematical precision in algorithmic building excellence, luxury modular mathematics with computational elegance in premium LEGO geometric patterns, mathematical LEGO luxury with algorithmic construction beauty creating infinite premium building depth, luxury LEGO algorithms with mathematical precision generating premium modular patterns, premium LEGO mathematics with golden ratio proportions in luxury construction geometric design, computational LEGO excellence with mathematical luxury building mastery, algorithmic modular geometry with luxury LEGO mathematical precision, mathematical construction patterns with premium LEGO computational elegance, luxury LEGO building algorithms with infinite mathematical construction beauty, godlevel luxury LEGO mathematical excellence.",
-      },
-    },
-  },
-  "organic-couture": {
-    name: "🌿 Organic Couture Fusion",
-    scenarios: {
-      "pure-mathematical": {
-        name: "🔢 Pure Abstract Patterns",
-        description:
-          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
-      },
-      "origami-world": {
-        name: "📄 Origami Botanical Couture",
-        description:
-          "Intricate origami botanical couture with paper-folded leaf dresses and petal accessories, delicate paper flower crowns with visible crease patterns, flowing paper garments mimicking organic growth, traditional Japanese paper folding techniques creating wearable botanical art, complex geometric paper construction with natural movement, warm lighting highlighting paper texture and dimensional shadows, masterful origami fashion with botanical precision, paper couture with organic authenticity, traditional paper art with contemporary fashion innovation, handcrafted paper botanical excellence, artistic paper engineering mastery, godlevel origami botanical couture excellence.",
-      },
-      "flowing-leaf-gowns": {
-        name: "🍃 Flowing Leaf Gown Elegance",
-        description:
-          "Ethereal flowing leaf gowns with organic fabric that moves like living foliage, garments constructed from interconnected leaf patterns that cascade and flow with natural grace, botanical couture where fashion becomes living art, fabric textures mimicking actual leaf surfaces with intricate vein patterns, flowing movement that defies gravity like wind-blown petals, organic fashion engineering with botanical authenticity, nature-inspired haute couture with mathematical precision, leaf-like fabric construction with godlevel organic excellence, botanical fashion mastery with flowing elegance, organic couture artistry with natural movement perfection, godlevel flowing botanical excellence.",
-      },
-      "vintage-bicycle-botanical": {
-        name: "🚲 Vintage Bicycle Garden Fusion",
-        description:
-          "Magnificent fusion of vintage penny-farthing bicycles with elaborate botanical elements, ornate Victorian-era transportation adorned with flowing organic forms, mechanical precision merged with natural growth patterns, brass and copper bicycle components intertwined with living vines and flowering branches, vintage industrial craftsmanship enhanced by botanical artistry, steampunk mechanical excellence with organic garden integration, antique transportation as canvas for botanical couture, vintage engineering precision with natural organic flow, mechanical heritage with botanical future vision, godlevel vintage botanical fusion excellence.",
-      },
-      "mechanical-flora-hybrid": {
-        name: "⚙️ Mechanical Flora Hybrid",
-        description:
-          "Revolutionary mechanical flora hybrid where gears and pistons grow like organic plant structures, steam-powered botanical mechanisms with brass leaf springs and copper flower pistons, industrial revolution meets botanical evolution, mechanical engineering principles applied to organic growth patterns, clockwork flowers that bloom with mechanical precision, steam-driven botanical artistry with Victorian industrial aesthetics, mechanical garden where technology becomes nature, industrial botanical fusion with engineering excellence, mechanical organic hybrid with steampunk botanical mastery, godlevel mechanical flora excellence.",
-      },
-      "ethereal-garden-couture": {
-        name: "🌸 Ethereal Garden Couture",
-        description:
-          "Otherworldly ethereal garden couture with gossamer fabrics that shimmer like morning dew, garments that seem to grow from the earth itself with organic construction, botanical fashion that captures the essence of secret gardens, ethereal beauty with mystical garden atmosphere, couture that embodies the spirit of enchanted botanical realms, fashion as living garden art with ethereal elegance, organic couture with mystical garden authenticity, botanical fashion with ethereal garden mastery, garden couture artistry with otherworldly beauty, godlevel ethereal garden excellence.",
-      },
-      "sculptural-botanical-forms": {
-        name: "🎭 Sculptural Botanical Forms",
-        description:
-          "Avant-garde sculptural botanical forms where fashion becomes three-dimensional botanical art, architectural garments with structural botanical elements, sculptural fashion construction with organic architectural principles, botanical couture as wearable sculpture with artistic excellence, fashion architecture with botanical structural integrity, sculptural organic forms with couture precision, architectural botanical fashion with artistic mastery, sculptural couture with botanical architectural excellence, organic sculpture fashion with artistic innovation, godlevel sculptural botanical excellence.",
-      },
-      "vintage-transportation-garden": {
-        name: "🚂 Vintage Transportation Garden",
-        description:
-          "Nostalgic vintage transportation merged with lush garden elements, antique trains and carriages overgrown with botanical splendor, vintage vehicles as mobile gardens with organic integration, historical transportation enhanced by botanical artistry, vintage mechanical precision with organic garden growth, antique transport as botanical art canvas, vintage engineering with garden transformation, historical vehicles with botanical renaissance, vintage transportation botanical fusion with heritage excellence, godlevel vintage garden transportation excellence.",
-      },
-      "organic-architecture-fashion": {
-        name: "🏛️ Organic Architecture Fashion",
-        description:
-          "Groundbreaking organic architecture fashion where buildings become wearable art, architectural elements transformed into botanical couture, structural engineering principles applied to organic fashion design, architectural fashion with botanical structural integrity, building-inspired couture with organic architectural excellence, fashion architecture with botanical precision, architectural organic fusion with couture mastery, building-fashion hybrid with botanical architectural artistry, organic architectural couture with structural excellence, godlevel organic architecture fashion excellence.",
-      },
-      "botanical-steampunk-elegance": {
-        name: "🌺 Botanical Steampunk Elegance",
-        description:
-          "Sophisticated botanical steampunk elegance with brass botanical mechanisms and copper flower gears, Victorian industrial aesthetics enhanced by organic botanical elements, steampunk fashion with botanical mechanical precision, elegant industrial botanical fusion with Victorian sophistication, mechanical botanical artistry with steampunk elegance, botanical steampunk couture with industrial organic excellence, Victorian botanical mechanical fashion with elegant precision, steampunk organic fusion with botanical elegance mastery, godlevel botanical steampunk excellence.",
-      },
-      "flowing-organic-sculptures": {
-        name: "🌊 Flowing Organic Sculptures",
-        description:
-          "Dynamic flowing organic sculptures that capture movement in botanical form, sculptural fashion with organic flow dynamics, flowing botanical artistry with sculptural precision, organic sculpture fashion with dynamic movement excellence, flowing couture with botanical sculptural mastery, dynamic organic forms with flowing sculptural artistry, botanical flow sculpture with organic movement precision, flowing organic fashion with sculptural botanical excellence, dynamic botanical sculpture with flowing organic mastery, godlevel flowing organic sculptural excellence.",
-      },
-      "garden-party-haute-couture": {
-        name: "🎩 Garden Party Haute Couture",
-        description:
-          "Exquisite garden party haute couture with botanical elegance and social sophistication, high fashion botanical artistry with garden party refinement, elegant botanical couture with social garden excellence, garden party fashion with botanical haute couture mastery, sophisticated botanical elegance with garden party precision, haute couture botanical artistry with garden social excellence, elegant garden fashion with botanical haute couture sophistication, garden party botanical couture with elegant social mastery, godlevel garden party haute couture excellence.",
-      },
-      "nature-technology-fusion": {
-        name: "🔬 Nature Technology Fusion",
-        description:
-          "Cutting-edge nature technology fusion where organic forms merge with advanced technological elements, biotechnology fashion with organic technological integration, nature-tech hybrid couture with scientific precision, technological organic fusion with biotechnology excellence, nature technology artistry with scientific organic mastery, bio-tech fashion with organic technological sophistication, technological nature fusion with scientific botanical excellence, organic technology couture with biotechnology precision, godlevel nature technology fusion excellence.",
-      },
-      "mystical-botanical-realms": {
-        name: "✨ Mystical Botanical Realms",
-        description:
-          "Enchanted mystical botanical realms where fashion transcends reality into magical organic dimensions, mystical botanical couture with otherworldly organic excellence, magical botanical fashion with mystical realm authenticity, enchanted organic couture with mystical botanical mastery, mystical realm fashion with botanical magical precision, magical botanical artistry with mystical organic excellence, enchanted botanical couture with mystical realm sophistication, mystical organic fashion with botanical magical mastery, godlevel mystical botanical realm excellence.",
-      },
-      "animal-transport": {
-        name: "🐘 Botanical Elephant Caravan",
-        description:
-          "Majestic elephant caravan adorned with elaborate botanical couture, elephants wearing flowing leaf garments and flower crowns, mahouts dressed in organic botanical fashion with living vine accessories, elephant decorations featuring cascading botanical elements and flowering textiles, caravan procession through enchanted botanical landscapes, traditional elephant transport enhanced by organic couture artistry, botanical elephant fashion with cultural heritage authenticity, organic animal transport with botanical ceremonial excellence, elephant botanical couture with traditional transport mastery, godlevel botanical elephant caravan excellence.",
-      },
-      "lego-vision": {
-        name: "🧱 LEGO Botanical Construction",
-        description:
-          "Innovative LEGO botanical construction system with modular organic building elements, precision-molded botanical LEGO pieces that snap together to create flowing organic forms, Danish engineering excellence applied to botanical construction philosophy, systematic creativity with organic modular design, LEGO botanical sets with constructive botanical play potential, modular organic construction with LEGO precision engineering, botanical building blocks with Danish design sophistication, LEGO organic architecture with modular botanical excellence, constructive botanical play with LEGO systematic creativity, godlevel LEGO botanical construction excellence.",
-      },
-      "escapism-magic": {
-        name: "🌟 Botanical Escapism Portal",
-        description:
-          "Magical botanical escapism portals where organic forms become gateways to alternate garden realities, flowers that bloom into dimensional doorways leading to mystical botanical realms, leaves that transform into flying carpets for garden realm transportation, botanical magic requiring mastery of organic illusion and natural impossibility, escapist botanical artistry where plants become vehicles for consciousness transportation, intricate challenge of creating believable botanical magic through organic impossibility, magical realism where garden elements serve as escape mechanisms from mundane existence, botanical portals as ultimate escapism through organic transformation, godlevel botanical escapism excellence.",
-      },
-      vitro: {
-        name: "⛪ Vatican Botanical Windows",
-        description:
-          "Sacred botanical stained glass windows in Vatican cathedral style with luminous colored glass forming intricate organic patterns, divine light streaming through translucent botanical glass creating ethereal garden illumination, masterful lead came construction outlining leaf and flower motifs with Gothic precision, jewel-toned glass pieces in emerald greens, sapphire blues, and ruby reds forming realistic botanical elements, traditional Vatican glasswork techniques applied to organic garden artistry, sacred geometry patterns integrated with botanical structural design, cathedral light effects transforming botanical windows into spiritual garden revelations, medieval craftsmanship excellence with divine botanical inspiration, godlevel Vatican botanical vitro excellence.",
-      },
-      crypto: {
-        name: "₿ Blockchain Botanical Mining",
-        description:
-          "Revolutionary blockchain botanical mining where organic growth patterns are determined by cryptocurrency algorithms, flowers that bloom based on Bitcoin transaction confirmations, leaves that change color with market volatility fluctuations, botanical smart contracts governing organic growth through decentralized autonomous gardening, crypto-powered photosynthesis with energy-efficient proof-of-stake pollination, blockchain-verified organic authenticity through botanical NFT certification, decentralized botanical networks with peer-to-peer pollination protocols, cryptocurrency mining farms disguised as botanical gardens with sustainable organic energy, godlevel blockchain botanical excellence.",
+          "Masterful Jungian shadow integration with dark psychological aspects emerging from unconscious depths, shadow self confrontation through mirror imagery, psychological projection withdrawal creating authentic self-awareness, anima-animus integration showing gender psychology balance, collective unconscious symbols manifesting in personal psychological landscape, archetypal imagery supporting individuation process, therapeutic shadow work visualization, depth psychology artistry, psychological wholeness through shadow acceptance, godlevel Jungian psychology excellence.",
       },
     },
   },
 
-  gaming: {
-    name: "🎮 Gaming Industry",
+  fx: {
+    name: "🌀 FX Substance Effects",
     scenarios: {
       "pure-mathematical": {
         name: "🔢 Pure Abstract Patterns",
@@ -1729,99 +1244,193 @@ export const CULTURAL_DATASETS = {
           "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
       },
       "origami-world": {
-        name: "📄 Origami Gaming Console",
+        name: "📄 Origami Perception Shift",
         description:
-          "Intricate origami gaming console with paper-folded controllers and cartridges, delicate paper texture showing traditional Japanese folding techniques applied to gaming hardware, complex geometric paper construction with multiple gaming component layers, warm lighting creating shadows between paper gaming elements, traditional washi paper with subtle gaming patterns, masterful origami artistry with precise angular gaming features, paper gaming sculpture with dimensional depth, origami gaming craftsmanship excellence, traditional paper folding mastery applied to gaming culture, Japanese paper art heritage meets gaming innovation, handcrafted paper gaming sculpture, artistic paper gaming engineering, godlevel origami gaming excellence.",
+          "Reality folding into origami paper dimensions with crisp geometric edges, perception layers unfolding like traditional Japanese paper art, dimensional reality creases revealing hidden geometric structures, consciousness folding through paper-thin reality barriers, origami universe construction with precise angular transformations, paper reality manipulation with delicate fold precision, dimensional origami mastery with consciousness expansion, reality paper engineering excellence, perceptual origami artistry, godlevel dimensional folding excellence.",
       },
-      "console-gaming": {
-        name: "🕹️ Console Gaming Mastery",
+      "psychedelic-fractals": {
+        name: "🌈 Psychedelic Fractal Visions",
         description:
-          "Ultimate console gaming experience with godlevel precision, next-generation gaming hardware with quantum processing capabilities, photorealistic graphics rendering with ray-tracing excellence, haptic feedback systems with neural interface integration, 8K gaming displays with infinite refresh rates, console architecture with mathematical optimization, gaming performance with computational perfection, controller ergonomics with biomechanical precision, gaming ecosystem with algorithmic beauty, console gaming evolution with technological transcendence, gaming hardware with engineering excellence, godlevel console gaming mastery.",
+          "Infinite recursive fractal patterns expanding through consciousness dimensions, kaleidoscopic geometric explosions with mathematical precision, self-similar pattern generation cascading through visual cortex, Mandelbrot set manifestations in organic flowing forms, fractal consciousness expansion with infinite detail complexity, psychedelic geometry optimization with sacred pattern recognition, visual recursion mastery through dimensional awareness, consciousness fractal navigation excellence, infinite pattern complexity generation, godlevel psychedelic fractal excellence.",
       },
-      "mobile-gaming": {
-        name: "📱 Mobile Gaming Revolution",
+      "synesthetic-symphony": {
+        name: "🎵 Synesthetic Color Symphony",
         description:
-          "Revolutionary mobile gaming with touchscreen precision, augmented reality integration with spatial computing excellence, mobile processors with quantum gaming capabilities, battery optimization with infinite gaming endurance, mobile gaming interfaces with intuitive perfection, gesture recognition with neural precision, mobile gaming ecosystems with cloud computing integration, portable gaming with console-quality performance, mobile gaming innovation with technological advancement, smartphone gaming with computational excellence, mobile gaming revolution with godlevel portable mastery.",
+          "Visual sound waves materializing as flowing color ribbons, chromesthetic perception enhancement with musical color translation, auditory-visual synesthesia manifestation through geometric sound patterns, frequency visualization as liquid color cascades, sonic color spectrum translation with harmonic visual resonance, musical geometry materialization through enhanced perception, sound-color fusion artistry with synesthetic precision, auditory rainbow generation excellence, chromesthetic consciousness expansion, godlevel synesthetic symphony excellence.",
       },
-      "esports-competitive": {
-        name: "🏆 Esports Championship Arena",
+      "temporal-distortion": {
+        name: "⏰ Temporal Perception Distortion",
         description:
-          "Professional esports arena with championship-level precision, competitive gaming with mathematical strategy optimization, professional gaming skills with godlevel execution, esports tournaments with global excellence, gaming reflexes with superhuman precision, strategic thinking with computational analysis, team coordination with algorithmic synchronization, esports training with scientific methodology, competitive gaming with athletic dedication, professional gaming with championship mastery, esports excellence with godlevel competitive precision.",
+          "Reality flowing in slow-motion liquid streams with temporal elasticity, chronesthetic perception alteration revealing hidden time layers, temporal consciousness expansion through dilated awareness states, reality time-lapse acceleration with enhanced detail perception, chronological dimension manipulation through consciousness alteration, temporal flow visualization with liquid time streams, time perception enhancement through expanded awareness, chronesthetic reality navigation excellence, temporal dimension mastery, godlevel temporal distortion excellence.",
       },
-      "vr-ar-gaming": {
-        name: "🌐 VR/AR Virtual Worlds",
+      "geometric-hallucinations": {
+        name: "📐 Sacred Geometric Hallucinations",
         description:
-          "Transcendent virtual reality worlds with quantum-rendered landscapes, photorealistic digital environments featuring infinite polygon density and ray-traced atmospheric perfection, immersive virtual realms with impossible architectural geometries defying physical laws, augmented reality overlays transforming mundane spaces into fantastical digital kingdoms, virtual worlds with procedurally generated infinite terrains and dynamic weather systems creating ever-changing landscapes, mixed reality environments where digital creatures inhabit physical spaces with seamless integration, volumetric gaming dimensions with pure visual light phenomena creating tangible virtual objects, virtual reality realms with consciousness-responsive environments that adapt to emotional states, AR worlds with persistent digital ecosystems overlaying reality with interactive virtual flora and fauna, immersive digital universes with biometric-responsive landscapes that pulse with the viewer's heartbeat, virtual reality dimensions with godlevel environmental transcendence and reality construction excellence, augmented reality worlds with seamless digital-physical fusion creating hybrid dimensional experiences, no interface elements, no UI components, no written content, purely visual environments without any textual overlays.",
+          "Sacred geometry manifestation through enhanced pattern recognition, platonic solid consciousness integration with dimensional awareness, geometric hallucination precision with mathematical sacred patterns, reality geometric overlay enhancement through expanded perception, sacred pattern recognition amplification with divine geometry visualization, geometric consciousness expansion through platonic dimension access, sacred geometry perception enhancement excellence, divine pattern recognition mastery, geometric consciousness navigation, godlevel sacred geometry excellence.",
       },
-      "indie-gaming": {
-        name: "🎨 Indie Gaming Artistry",
+      "morphing-reality": {
+        name: "🌊 Morphing Reality Waves",
         description:
-          "Independent gaming artistry with creative freedom excellence, indie game development with innovative vision, artistic gaming expression with unique aesthetics, creative gaming mechanics with experimental precision, indie gaming culture with authentic passion, independent developer mastery with resourceful innovation, artistic gaming vision with creative transcendence, indie gaming community with collaborative excellence, creative gaming expression with artistic integrity, independent gaming with godlevel creative mastery.",
+          "Reality surface liquefaction with organic flowing transformations, morphological perception enhancement through fluid reality navigation, dimensional plasticity visualization with consciousness-responsive environment adaptation, reality malleability perception through enhanced awareness states, morphing dimension navigation with liquid reality mastery, fluid consciousness interaction with responsive environment adaptation, reality transformation artistry through enhanced perception, morphological awareness excellence, liquid reality navigation mastery, godlevel morphing reality excellence.",
       },
-      "aaa-studio": {
-        name: "🏢 AAA Studio Production",
+      "enhanced-patterns": {
+        name: "🔍 Enhanced Pattern Recognition",
         description:
-          "AAA gaming studio production with blockbuster excellence, massive gaming budgets with infinite resources, Hollywood-quality gaming cinematics with cinematic mastery, AAA gaming teams with collaborative precision, gaming production with industrial excellence, blockbuster gaming with commercial success, AAA gaming technology with cutting-edge innovation, studio gaming development with professional mastery, gaming industry with corporate excellence, AAA gaming with godlevel production mastery.",
+          "Microscopic pattern amplification revealing hidden universal connections, enhanced detail perception with fractal pattern recognition amplification, consciousness pattern detection enhancement through expanded awareness, reality pattern overlay visualization with enhanced cognitive processing, pattern recognition amplification excellence through consciousness expansion, detail enhancement mastery with microscopic awareness, pattern consciousness navigation through enhanced perception, cognitive pattern processing excellence, awareness amplification mastery, godlevel pattern recognition excellence.",
       },
-      "retro-gaming": {
-        name: "👾 Retro Gaming Nostalgia",
+      "chromatic-saturation": {
+        name: "🎨 Chromatic Saturation Enhancement",
         description:
-          "Nostalgic retro gaming with vintage excellence, classic arcade aesthetics with pixel-perfect precision, retro gaming culture with authentic heritage, vintage gaming hardware with mechanical mastery, classic gaming soundtracks with chiptune excellence, retro gaming community with nostalgic passion, vintage gaming preservation with historical accuracy, classic gaming mechanics with timeless design, retro gaming with cultural significance, vintage gaming with godlevel nostalgic mastery.",
+          "Color intensity amplification beyond normal spectrum perception, chromatic consciousness expansion with enhanced color dimension access, saturation enhancement excellence through expanded visual processing, color dimension navigation with enhanced chromatic awareness, spectral perception amplification through consciousness color expansion, chromatic reality enhancement with saturated dimension access, color consciousness mastery through enhanced perception, chromatic dimension navigation excellence, saturated awareness amplification, godlevel chromatic enhancement excellence.",
       },
-      "game-development": {
-        name: "💻 Game Development Coding",
+      "depth-perception-shift": {
+        name: "🏔️ Depth Perception Transformation",
         description:
-          "Game development with programming excellence, coding mastery with algorithmic precision, game engine development with technical innovation, programming languages with computational mastery, software development with engineering excellence, game development tools with creative empowerment, coding communities with collaborative knowledge, programming education with skill mastery, software engineering with systematic precision, game development with godlevel programming excellence.",
+          "Dimensional depth enhancement with layered reality perception, spatial consciousness expansion through enhanced dimensional awareness, depth dimension navigation with expanded spatial processing, reality layer visualization through enhanced depth perception, dimensional awareness amplification with spatial consciousness expansion, depth consciousness mastery through enhanced perception, spatial dimension navigation excellence, dimensional awareness enhancement mastery, depth perception amplification excellence, godlevel depth transformation excellence.",
       },
-      "gaming-culture": {
-        name: "🌍 Gaming Culture Community",
+      "energy-field-vision": {
+        name: "⚡ Energy Field Visualization",
         description:
-          "Global gaming culture with community excellence, gaming communities with social connection mastery, gaming culture with inclusive diversity, gaming events with celebratory precision, gaming conventions with fan dedication, gaming streaming with entertainment excellence, gaming content creation with creative mastery, gaming journalism with informative precision, gaming culture with social impact, gaming community with godlevel cultural excellence.",
+          "Electromagnetic aura visualization with enhanced energy perception, bioelectric field detection through expanded consciousness awareness, energy pattern recognition amplification with electromagnetic sensitivity enhancement, aura dimension navigation through enhanced energy perception, electromagnetic consciousness expansion with energy field visualization, bioelectric awareness amplification through enhanced perception, energy consciousness mastery with electromagnetic navigation, energy field perception excellence, electromagnetic awareness enhancement, godlevel energy vision excellence.",
       },
-      "cloud-gaming": {
-        name: "☁️ Cloud Gaming Streaming",
+      "holographic-reality": {
+        name: "🌐 Holographic Reality Perception",
         description:
-          "Cloud gaming with streaming excellence, server infrastructure with computational precision, gaming streaming with latency optimization, cloud computing with gaming performance mastery, streaming technology with bandwidth efficiency, cloud gaming platforms with accessibility excellence, gaming-as-a-service with subscription mastery, cloud gaming with device independence, streaming gaming with technological innovation, cloud gaming with godlevel streaming excellence.",
+          "Reality hologram recognition with dimensional layer awareness, holographic consciousness expansion through enhanced dimensional perception, reality projection visualization with holographic dimension navigation, dimensional hologram mastery through expanded awareness, holographic reality navigation with consciousness dimension access, reality projection consciousness through enhanced perception, holographic dimension mastery excellence, dimensional projection awareness amplification, holographic consciousness navigation, godlevel holographic reality excellence.",
       },
-      "gaming-hardware": {
-        name: "⚡ Gaming Hardware Engineering",
+      "crystalline-structures": {
+        name: "💎 Crystalline Structure Visions",
         description:
-          "Gaming hardware with engineering excellence, graphics cards with rendering mastery, gaming processors with computational precision, gaming peripherals with ergonomic perfection, gaming monitors with visual excellence, gaming audio with acoustic mastery, gaming keyboards with mechanical precision, gaming mice with sensor accuracy, gaming hardware with performance optimization, gaming engineering with godlevel hardware mastery.",
+          "Molecular crystal lattice visualization with enhanced structural perception, crystalline consciousness expansion through geometric crystal navigation, crystal structure recognition amplification with molecular awareness enhancement, crystalline dimension navigation through enhanced structural consciousness, crystal lattice perception mastery with molecular visualization excellence, crystalline awareness amplification through enhanced perception, crystal consciousness navigation with structural mastery, crystalline dimension excellence, molecular structure visualization mastery, godlevel crystalline structure excellence.",
       },
-      "game-design": {
-        name: "🎯 Game Design Theory",
+      "flowing-consciousness": {
+        name: "🌊 Flowing Consciousness Streams",
         description:
-          "Game design with theoretical excellence, gameplay mechanics with mathematical precision, game balance with algorithmic optimization, player psychology with behavioral mastery, game design patterns with systematic excellence, user experience with intuitive precision, game design education with pedagogical mastery, design thinking with creative problem-solving, game design with artistic vision, game design theory with godlevel design excellence.",
+          "Consciousness stream visualization with liquid awareness flow, mental flow state enhancement through expanded consciousness navigation, awareness stream mastery with flowing consciousness dimension access, consciousness flow visualization excellence through enhanced mental navigation, flowing awareness amplification with stream consciousness mastery, mental flow dimension navigation through enhanced consciousness, consciousness stream excellence with flowing awareness mastery, mental dimension navigation amplification, flowing consciousness mastery, godlevel consciousness flow excellence.",
       },
-      "gaming-ai": {
-        name: "🤖 Gaming AI Intelligence",
+      "dimensional-portals": {
+        name: "🌀 Dimensional Portal Visions",
         description:
-          "Gaming AI with artificial intelligence excellence, machine learning with gaming optimization, AI opponents with strategic mastery, procedural generation with algorithmic creativity, gaming AI with behavioral precision, artificial intelligence with gaming innovation, machine learning with player adaptation, AI gaming with computational intelligence, gaming algorithms with mathematical precision, gaming AI with godlevel artificial intelligence excellence.",
+          "Reality portal visualization with dimensional gateway perception, interdimensional consciousness navigation through enhanced portal awareness, dimensional gateway mastery with reality portal visualization excellence, portal dimension navigation through expanded consciousness, interdimensional awareness amplification with portal consciousness mastery, dimensional portal excellence through enhanced perception, reality gateway navigation with dimensional mastery, portal consciousness amplification excellence, dimensional gateway mastery, godlevel dimensional portal excellence.",
       },
-      "animal-transport": {
-        name: "🐉 Dragon Mount Gaming",
+      lego: {
+        name: "🧱 LEGO Modular Construction",
         description:
-          "Epic dragon mount transportation in fantasy gaming realms, riders equipped with legendary gaming gear and magical controllers, dragon scales reflecting RGB gaming aesthetics with mythical precision, fantasy gaming world with infinite exploration possibilities, dragon flight mechanics with physics-defying gaming excellence, mythical creature bonding with gaming partnership mastery, fantasy transportation with magical gaming integration, dragon riding with epic gaming adventure, mythical gaming transport with legendary excellence, fantasy gaming with godlevel dragon transport mastery.",
-      },
-      "lego-vision": {
-        name: "🧱 LEGO Gaming Construction",
-        description:
-          "LEGO gaming construction with modular building excellence, brick-based gaming systems with systematic creativity, LEGO gaming sets with constructive play mastery, modular gaming components with Danish engineering precision, LEGO gaming innovation with building block philosophy, constructive gaming with educational excellence, LEGO gaming creativity with infinite possibility potential, modular gaming construction with precision-molded perfection, LEGO gaming with childhood imagination catalyst, Danish gaming craftsmanship with global cultural impact, LEGO gaming with godlevel constructive excellence.",
+          "Substance effect visualization through modular LEGO construction methodology, consciousness building blocks with systematic creative assembly, enhanced perception rendered as interlocking modular components, reality construction through Danish engineering precision with consciousness expansion blocks, awareness amplification via systematic modular construction excellence, perception enhancement through LEGO architectural consciousness building, modular awareness construction with systematic creative precision, consciousness LEGO mastery through enhanced perception building, godlevel LEGO consciousness construction excellence.",
       },
       "escapism-magic": {
-        name: "🎭 Gaming Reality Escape Magic",
+        name: "✨ Escapism Magic Illusion",
         description:
-          "Masterful gaming magic enabling escape through virtual reality portals that transport consciousness into digital realms beyond physical limitations, magical challenge of achieving complete immersion where game worlds become more real than reality itself, escapist gaming artistry where interactive entertainment becomes tool for dimensional transcendence, intricate illusion requiring mastery of both gaming psychology and reality manipulation techniques, gaming magic that transforms digital experiences into liberation from mundane existence, mathematical escapism through algorithmic world construction, digital magic where gaming becomes gateway to infinite possibility, virtual illusion demanding expertise in both game design and consciousness transportation, godlevel gaming escape magic excellence.",
+          "Reality escape artistry through consciousness illusion mastery, magical perception transformation with enhanced awareness escape techniques, illusion consciousness navigation through reality transcendence mastery, magical awareness amplification with escapism dimension access, consciousness escape excellence through magical illusion navigation, reality transcendence mastery with magical awareness enhancement, escapism consciousness amplification through illusion mastery, magical dimension navigation excellence, consciousness escape artistry mastery, godlevel escapism magic excellence.",
       },
       vitro: {
-        name: "⛪ Vatican Gaming Stained Glass",
+        name: "🪟 Vitro Stained Glass Perception",
         description:
-          "Sacred gaming stained glass windows in Vatican cathedral style with luminous colored glass forming intricate gaming iconography, divine light streaming through translucent gaming glass creating ethereal digital illumination, masterful lead came construction outlining controller and console motifs with Gothic precision, jewel-toned glass pieces in electric blues, neon greens, and plasma purples forming realistic gaming elements, traditional Vatican glasswork techniques applied to gaming culture artistry, sacred geometry patterns integrated with gaming structural design, cathedral light effects transforming gaming windows into spiritual digital revelations, medieval craftsmanship excellence with divine gaming inspiration, godlevel Vatican gaming vitro excellence.",
+          "Consciousness filtered through luminous stained glass perception, reality viewed through cathedral vitro enhancement with divine light consciousness filtering, awareness amplification through colored glass dimension navigation, vitro consciousness mastery with stained glass perception excellence, luminous awareness enhancement through cathedral glass consciousness, stained glass reality navigation with divine light filtering, vitro dimension mastery through enhanced glass perception, cathedral consciousness amplification excellence, luminous vitro awareness mastery, godlevel vitro consciousness excellence.",
       },
       crypto: {
-        name: "₿ Blockchain Gaming Economy",
+        name: "₿ Crypto Blockchain Consciousness",
         description:
-          "Revolutionary blockchain gaming economy where in-game assets are secured by cryptocurrency protocols, gaming items that exist as NFTs with permanent ownership verification, play-to-earn gaming mechanics with decentralized economic systems, gaming rewards distributed through smart contract automation, blockchain-verified gaming achievements with immutable record keeping, cryptocurrency mining through gaming performance with energy-efficient validation, decentralized gaming platforms with peer-to-peer transaction capabilities, gaming economies with tokenized asset ownership, blockchain gaming with mathematical economic precision, crypto gaming with godlevel decentralized excellence.",
+          "Consciousness blockchain visualization with decentralized awareness networks, crypto perception enhancement through distributed consciousness mining, blockchain awareness amplification with cryptocurrency consciousness navigation, decentralized perception mastery through crypto consciousness networks, blockchain dimension navigation with cryptocurrency awareness enhancement, crypto consciousness mining excellence through distributed perception, decentralized awareness mastery with blockchain consciousness, cryptocurrency perception amplification excellence, blockchain consciousness navigation mastery, godlevel crypto consciousness excellence.",
+      },
+    },
+  },
+
+  celebrities: {
+    name: "🌟 Celebrities & Icons",
+    description: "Stylish people and celebrity portraits with neuralia godlevel artistic excellence",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel celebrity portrait excellence with infinite algorithmic beauty optimization, featuring iconic pop star with bold styling and recognizable features, computational elegance transcending dimensional boundaries through mathematical precision and star charisma.",
+      },
+      "origami-world": {
+        description:
+          "Celebrity origami excellence with godlevel paper-folding mastery, infinite geometric transformations of legendary Hollywood actress with platinum waves and classic beauty, dimensional origami artistry capturing timeless glamour through computational paper-craft sophistication.",
+      },
+      "animal-transport": {
+        description:
+          "Celebrity animal companion excellence featuring avant-garde pop artist with exotic styling and creature companions, godlevel interspecies artistic harmony, infinite creature-celebrity fusion through dimensional animal artistry and computational companion sophistication.",
+      },
+      "musicians-collage": {
+        description:
+          "Godlevel musical celebrity excellence featuring legendary rock musician with theatrical makeup and iconic stage persona, infinite sonic-visual fusion artistry, computational rhythm-color synchronization through dimensional musical portrait mastery and algorithmic sound-image transcendence.",
+      },
+      "hollywood-glamour": {
+        description:
+          "Godlevel cinematic celebrity excellence featuring classic film actress with elegant styling and sophisticated grace, timeless silver-screen beauty with refined accessories, infinite dimensional artistry, computational glamour optimization through algorithmic star-power enhancement.",
+      },
+      "sports-legends": {
+        description:
+          "Godlevel athletic celebrity excellence featuring legendary basketball player with iconic expressions and championship energy, tennis champion with powerful stance, infinite kinetic energy visualization, computational movement-art fusion through dimensional sports portraiture.",
+      },
+      "fashion-icons": {
+        description:
+          "Godlevel fashion celebrity excellence featuring revolutionary designer with signature styling and timeless elegance, fashion mogul with distinctive accessories and refined aesthetic, infinite style-dimensional artistry, computational couture visualization through algorithmic fashion-portrait mastery.",
+      },
+      "tech-visionaries": {
+        description:
+          "Godlevel technology celebrity excellence featuring innovative tech entrepreneur with minimalist styling and visionary presence, space industry pioneer with distinctive features, infinite digital-dimensional artistry, computational innovation visualization through algorithmic tech-portrait mastery.",
+      },
+      "social-influencers": {
+        description:
+          "Godlevel social media celebrity excellence featuring reality TV star with glamorous contouring and sleek styling, beauty mogul with bold makeup and trendsetting aesthetic, infinite viral-dimensional artistry, computational influence visualization through algorithmic social-portrait mastery.",
+      },
+      "comedy-legends": {
+        description:
+          "Godlevel comedic celebrity excellence featuring beloved comedian with expressive features and animated gestures, physical comedy master with rubber-face expressions, infinite humor-dimensional artistry, computational laughter visualization through algorithmic comedy-portrait mastery.",
+      },
+      "artistic-masters": {
+        description:
+          "Godlevel artistic celebrity excellence featuring pop art pioneer with signature styling and iconic imagery, surrealist painter with distinctive features and cultural symbols, infinite creative-dimensional artistry, computational inspiration visualization through algorithmic art-portrait mastery.",
+      },
+      "political-figures": {
+        description:
+          "Godlevel political celebrity excellence featuring charismatic president with distinctive smile and leadership presence, wartime leader with iconic accessories and authoritative demeanor, infinite leadership-dimensional artistry, computational authority visualization through algorithmic political-portrait mastery.",
+      },
+      "business-moguls": {
+        description:
+          "Godlevel business celebrity excellence featuring investment legend with grandfatherly appearance and wisdom, media mogul with warm presence and elegant styling, infinite entrepreneurial-dimensional artistry, computational success visualization through algorithmic business-portrait mastery.",
+      },
+      "cultural-icons": {
+        description:
+          "Godlevel cultural celebrity excellence featuring rock and roll king with signature hairstyle and performance energy, pop music legend with iconic accessories and dance moves, infinite heritage-dimensional artistry, computational tradition visualization through algorithmic cultural-portrait mastery.",
+      },
+      "reality-stars": {
+        description:
+          "Godlevel reality celebrity excellence featuring socialite heiress with signature styling and glamorous aesthetic, celebrity chef with intense expressions and professional attire, infinite drama-dimensional artistry, computational personality visualization through algorithmic reality-portrait mastery.",
+      },
+      "streaming-creators": {
+        description:
+          "Godlevel digital celebrity excellence featuring gaming content creator with distinctive styling and setup, philanthropist YouTuber with energetic expressions and colorful branding, infinite content-dimensional artistry, computational engagement visualization through algorithmic streaming-portrait mastery.",
+      },
+      "vintage-legends": {
+        description:
+          "Godlevel classic celebrity excellence featuring rebellious actor with leather styling and iconic hair, Hollywood beauty with striking eyes and luxury jewelry, infinite timeless-dimensional artistry, computational nostalgia visualization through algorithmic vintage-portrait mastery.",
+      },
+      "international-stars": {
+        description:
+          "Godlevel global celebrity excellence featuring martial arts action star with athletic poses and charismatic smile, Spanish actress with elegant styling and natural beauty, infinite multicultural-dimensional artistry, computational diversity visualization through algorithmic international-portrait mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel celebrity LEGO excellence featuring blocky versions of genius scientist with wild hair, ancient queen with golden headdress, infinite modular-dimensional artistry, computational brick-portrait mastery through algorithmic celebrity-construction optimization.",
+      },
+      playmobil: {
+        description:
+          "Godlevel celebrity Playmobil excellence featuring miniature versions of military emperor with uniform and hat, royal monarch with crown and ceremonial robes, infinite toy-dimensional artistry, computational figure-portrait mastery through algorithmic celebrity-play optimization.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel celebrity magical excellence featuring master illusionist with mysterious expressions and top hat, escape artist with dramatic chains and performance poses, infinite illusion-dimensional artistry, computational enchantment visualization through algorithmic celebrity-magic mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel celebrity stained-glass excellence featuring beloved princess with compassionate expression in luminous glass, peace activist musician with iconic eyewear and serene presence, infinite luminous-dimensional artistry, computational light-portrait mastery through algorithmic celebrity-vitro optimization.",
+      },
+      crypto: {
+        description:
+          "Godlevel celebrity blockchain excellence featuring tech billionaire with cryptocurrency influence and futuristic aesthetic, social media mogul with metaverse vision and digital presence, infinite digital-currency artistry, computational NFT-portrait mastery through algorithmic celebrity-crypto optimization.",
       },
     },
   },

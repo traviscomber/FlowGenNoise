@@ -12,28 +12,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import {
-  Download,
-  Palette,
-  Settings,
-  Sparkles,
-  Eye,
-  Wand2,
-  RotateCcw,
-  Play,
-  Square,
-  Zap,
-  Globe,
-  Mountain,
-  ImageIcon,
-  Info,
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertCircle,
-  RefreshCw,
-  Bug,
-} from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
 
@@ -74,6 +52,7 @@ export function FlowArtGenerator() {
   const [numSamples, setNumSamples] = useState(4000)
   const [noiseScale, setNoiseScale] = useState(0.08)
   const [customPrompt, setCustomPrompt] = useState("")
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
   // 360° and dome projection settings
   const [panoramic360, setPanoramic360] = useState(false)
@@ -442,20 +421,6 @@ export function FlowArtGenerator() {
     }
   }, [])
 
-  // Get status icon for generation progress
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "generating":
-        return <Clock className="h-4 w-4 animate-spin text-blue-500" />
-      case "completed":
-        return <CheckCircle className="h-4 w-4 text-green-500" />
-      case "failed":
-        return <XCircle className="h-4 w-4 text-red-500" />
-      default:
-        return <AlertCircle className="h-4 w-4 text-gray-400" />
-    }
-  }
-
   return (
     <div className="container mx-auto p-6 space-y-8">
       {/* Header */}
@@ -470,36 +435,16 @@ export function FlowArtGenerator() {
               authenticity
             </p>
           </div>
-          <Button
-            onClick={validateApiKey}
-            disabled={isValidatingKey}
-            variant="outline"
-            size="sm"
-            className="gap-2 bg-transparent"
-          >
-            {isValidatingKey ? (
-              <>
-                <RefreshCw className="h-4 w-4 animate-spin" />
-                Validating...
-              </>
-            ) : (
-              <>
-                <Bug className="h-4 w-4" />
-                Debug API Key
-              </>
-            )}
-          </Button>
+          <button onClick={validateApiKey} disabled={isValidatingKey} className="gap-2 bg-transparent">
+            {isValidatingKey ? <>⟳ Validating...</> : <>Debug API Key</>}
+          </button>
         </div>
 
         {/* API Key Status */}
         {apiKeyStatus && (
           <Alert className={apiKeyStatus.success ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
             <div className="flex items-center gap-2">
-              {apiKeyStatus.success ? (
-                <CheckCircle className="h-4 w-4 text-green-600" />
-              ) : (
-                <XCircle className="h-4 w-4 text-red-600" />
-              )}
+              {apiKeyStatus.success ? "✅" : "❌"}
               <AlertDescription className={apiKeyStatus.success ? "text-green-800" : "text-red-800"}>
                 {apiKeyStatus.message || apiKeyStatus.error}
               </AlertDescription>
@@ -508,22 +453,10 @@ export function FlowArtGenerator() {
         )}
 
         <div className="flex flex-wrap justify-center gap-2">
-          <Badge variant="secondary">
-            <Sparkles className="h-3 w-3 mr-1" />
-            GODLEVEL Quality
-          </Badge>
-          <Badge variant="secondary">
-            <Globe className="h-3 w-3 mr-1" />
-            360° VR Ready
-          </Badge>
-          <Badge variant="secondary">
-            <Mountain className="h-3 w-3 mr-1" />
-            Dome Projection
-          </Badge>
-          <Badge variant="secondary">
-            <Zap className="h-3 w-3 mr-1" />
-            ChatGPT Enhanced
-          </Badge>
+          <Badge variant="secondary">GODLEVEL Quality</Badge>
+          <Badge variant="secondary">360° VR Ready</Badge>
+          <Badge variant="secondary">Dome Projection</Badge>
+          <Badge variant="secondary">ChatGPT Enhanced</Badge>
         </div>
       </div>
 
@@ -533,10 +466,7 @@ export function FlowArtGenerator() {
           {/* Dataset Selection */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Palette className="h-5 w-5" />
-                Cultural Dataset
-              </CardTitle>
+              <CardTitle className="flex items-center gap-2">Cultural Dataset</CardTitle>
               <CardDescription>Choose from authentic cultural heritage collections</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -563,9 +493,12 @@ export function FlowArtGenerator() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {scenarioEntries.map(([key, value]) => (
+                    {scenarioEntries.map(([key]) => (
                       <SelectItem key={key} value={key}>
-                        {value.name}
+                        {key
+                          .split("-")
+                          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(" ")}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -596,17 +529,14 @@ export function FlowArtGenerator() {
           {/* Technical Parameters */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                Technical Parameters
-              </CardTitle>
+              <CardTitle className="flex items-center gap-2">Technical Parameters</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <Label htmlFor="seed">Seed</Label>
                   <Button variant="ghost" size="sm" onClick={randomizeSeed}>
-                    <RotateCcw className="h-4 w-4" />
+                    ⟲
                   </Button>
                 </div>
                 <div className="flex gap-2">
@@ -657,10 +587,7 @@ export function FlowArtGenerator() {
           {/* Projection Settings */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="h-5 w-5" />
-                Projection Settings
-              </CardTitle>
+              <CardTitle className="flex items-center gap-2">Projection Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -726,10 +653,7 @@ export function FlowArtGenerator() {
           {/* Prompt Enhancement */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Wand2 className="h-5 w-5" />
-                Prompt Enhancement
-              </CardTitle>
+              <CardTitle className="flex items-center gap-2">Prompt Enhancement</CardTitle>
               <CardDescription>Use ChatGPT to enhance your prompts for better results</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -762,34 +686,20 @@ export function FlowArtGenerator() {
                 </Select>
               </div>
 
-              <Button
+              <button
                 onClick={previewAndEnhancePrompt}
                 disabled={isEnhancing}
-                className="w-full bg-transparent"
-                variant="outline"
+                className="px-3 py-2 text-sm bg-secondary hover:bg-secondary/80 rounded-md disabled:opacity-50"
               >
-                {isEnhancing ? (
-                  <>
-                    <Clock className="h-4 w-4 mr-2 animate-spin" />
-                    Enhancing...
-                  </>
-                ) : (
-                  <>
-                    <Eye className="h-4 w-4 mr-2" />
-                    Preview & Enhance Prompt
-                  </>
-                )}
-              </Button>
+                {isEnhancing ? "⟳" : "✨"} {isEnhancing ? "Enhancing..." : "Enhance"}
+              </button>
             </CardContent>
           </Card>
 
           {/* Generation Controls */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5" />
-                Generate Art
-              </CardTitle>
+              <CardTitle className="flex items-center gap-2">Generate Art</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {isGenerating ? (
@@ -797,46 +707,39 @@ export function FlowArtGenerator() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Generating...</span>
                     <Button variant="outline" size="sm" onClick={cancelGeneration}>
-                      <Square className="h-4 w-4 mr-2" />
-                      Cancel
+                      ⟲ Cancel
                     </Button>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2">
-                        {getStatusIcon(generationProgress.standard)}
-                        Standard
-                      </span>
+                      <span className="flex items-center gap-2">Standard</span>
                       <span className="text-muted-foreground">{generationProgress.standard}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2">
-                        {getStatusIcon(generationProgress.dome)}
-                        Dome
-                      </span>
+                      <span className="flex items-center gap-2">Dome</span>
                       <span className="text-muted-foreground">{generationProgress.dome}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2">
-                        {getStatusIcon(generationProgress.panorama360)}
-                        360° Panorama
-                      </span>
+                      <span className="flex items-center gap-2">360° Panorama</span>
                       <span className="text-muted-foreground">{generationProgress.panorama360}</span>
                     </div>
                   </div>
                 </div>
               ) : (
-                <Button onClick={generateImages} className="w-full" size="lg">
-                  <Play className="h-4 w-4 mr-2" />
-                  Generate All Images
-                </Button>
+                <button
+                  onClick={generateImages}
+                  className="w-full py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 font-medium"
+                >
+                  🎨 Generate Art
+                </button>
               )}
 
               {customPrompt && (
                 <Alert>
-                  <Info className="h-4 w-4" />
-                  <AlertDescription>Using custom enhanced prompt ({customPrompt.length} characters)</AlertDescription>
+                  <span className="text-sm font-medium">
+                    Using custom enhanced prompt ({customPrompt.length} characters)
+                  </span>
                 </Alert>
               )}
             </CardContent>
@@ -847,10 +750,7 @@ export function FlowArtGenerator() {
         <div className="lg:col-span-2">
           <Card className="h-full">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ImageIcon className="h-5 w-5" />
-                Generated Images
-              </CardTitle>
+              <CardTitle className="flex items-center gap-2">Generated Images</CardTitle>
               <CardDescription>
                 Professional-quality AI art with seamless 360° wrapping and dome projection
               </CardDescription>
@@ -859,19 +759,16 @@ export function FlowArtGenerator() {
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="standard" className="flex items-center gap-2">
-                    <ImageIcon className="h-4 w-4" />
                     Standard
-                    {results.standard && <CheckCircle className="h-3 w-3 text-green-500" />}
+                    {results.standard && "✓"}
                   </TabsTrigger>
                   <TabsTrigger value="dome" className="flex items-center gap-2">
-                    <Mountain className="h-4 w-4" />
                     Dome
-                    {results.dome && <CheckCircle className="h-3 w-3 text-green-500" />}
+                    {results.dome && "✓"}
                   </TabsTrigger>
                   <TabsTrigger value="panorama360" className="flex items-center gap-2">
-                    <Globe className="h-4 w-4" />
                     360° VR
-                    {results.panorama360 && <CheckCircle className="h-3 w-3 text-green-500" />}
+                    {results.panorama360 && "✓"}
                   </TabsTrigger>
                 </TabsList>
 
@@ -888,20 +785,18 @@ export function FlowArtGenerator() {
                         </AspectRatio>
                       </div>
                       <div className="flex gap-2">
-                        <Button
+                        <button
                           onClick={() => downloadImage(results.standard!, `flowsketch-standard-${seed}.png`)}
-                          className="flex-1"
+                          className="px-4 py-2 bg-secondary hover:bg-secondary/80 rounded-md text-sm"
                         >
-                          <Download className="h-4 w-4 mr-2" />
-                          Download Standard
-                        </Button>
+                          ⬇ Download Standard
+                        </button>
                       </div>
                     </div>
                   ) : (
                     <div className="flex items-center justify-center h-64 border-2 border-dashed border-muted-foreground/25 rounded-lg">
                       <div className="text-center space-y-2">
-                        <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground/50" />
-                        <p className="text-muted-foreground">Standard image will appear here</p>
+                        <span className="text-muted-foreground">Standard image will appear here</span>
                       </div>
                     </div>
                   )}
@@ -920,26 +815,23 @@ export function FlowArtGenerator() {
                         </AspectRatio>
                       </div>
                       <div className="flex gap-2">
-                        <Button
+                        <button
                           onClick={() => downloadImage(results.dome!, `flowsketch-dome-${projectionType}-${seed}.png`)}
-                          className="flex-1"
+                          className="px-4 py-2 bg-secondary hover:bg-secondary/80 rounded-md text-sm"
                         >
-                          <Download className="h-4 w-4 mr-2" />
-                          Download Dome
-                        </Button>
+                          ⬇ Download Dome
+                        </button>
                       </div>
                       <Alert>
-                        <Mountain className="h-4 w-4" />
-                        <AlertDescription>
+                        <span className="text-sm font-medium">
                           Optimized for {projectionType} dome projection with perfect radial composition
-                        </AlertDescription>
+                        </span>
                       </Alert>
                     </div>
                   ) : (
                     <div className="flex items-center justify-center h-64 border-2 border-dashed border-muted-foreground/25 rounded-lg">
                       <div className="text-center space-y-2">
-                        <Mountain className="h-12 w-12 mx-auto text-muted-foreground/50" />
-                        <p className="text-muted-foreground">Dome projection will appear here</p>
+                        <span className="text-muted-foreground">Dome projection will appear here</span>
                       </div>
                     </div>
                   )}
@@ -959,30 +851,27 @@ export function FlowArtGenerator() {
                         </AspectRatio>
                       </div>
                       <div className="flex gap-2">
-                        <Button
+                        <button
                           onClick={() =>
                             downloadImage(results.panorama360!, `flowsketch-360-${panoramaFormat}-${seed}.png`)
                           }
-                          className="flex-1"
+                          className="px-4 py-2 bg-secondary hover:bg-secondary/80 rounded-md text-sm"
                         >
-                          <Download className="h-4 w-4 mr-2" />
-                          Download 360°
-                        </Button>
+                          ⬇ Download 360°
+                        </button>
                       </div>
                       <Alert>
-                        <Globe className="h-4 w-4" />
-                        <AlertDescription>
+                        <span className="text-sm font-medium">
                           {panoramaFormat === "equirectangular"
                             ? "Perfect seamless wrapping for VR headsets - left edge connects flawlessly with right edge"
                             : "Stereographic projection with entire 360° view in circular frame"}
-                        </AlertDescription>
+                        </span>
                       </Alert>
                     </div>
                   ) : (
                     <div className="flex items-center justify-center h-64 border-2 border-dashed border-muted-foreground/25 rounded-lg">
                       <div className="text-center space-y-2">
-                        <Globe className="h-12 w-12 mx-auto text-muted-foreground/50" />
-                        <p className="text-muted-foreground">360° panorama will appear here</p>
+                        <span className="text-muted-foreground">360° panorama will appear here</span>
                       </div>
                     </div>
                   )}
@@ -997,10 +886,7 @@ export function FlowArtGenerator() {
       <Dialog open={isPromptDialogOpen} onOpenChange={setIsPromptDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Wand2 className="h-5 w-5" />
-              Prompt Enhancement Studio
-            </DialogTitle>
+            <DialogTitle className="flex items-center gap-2">Prompt Enhancement Studio</DialogTitle>
             <DialogDescription>Preview, edit, and enhance your AI art prompt with ChatGPT assistance</DialogDescription>
           </DialogHeader>
 
@@ -1021,7 +907,9 @@ export function FlowArtGenerator() {
                   <div className="text-sm text-muted-foreground">Enhanced Chars</div>
                 </div>
                 <div className="text-center p-3 bg-muted rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">
+                  <div
+                    className={`text-2xl font-bold ${promptEnhancement.statistics.withinLimit ? "text-green-600" : "text-red-600"}`}
+                  >
                     +{promptEnhancement.statistics.improvement?.percentage || 0}%
                   </div>
                   <div className="text-sm text-muted-foreground">Improvement</div>
@@ -1041,17 +929,7 @@ export function FlowArtGenerator() {
             {promptEnhancement && (
               <div className="flex items-center gap-2">
                 <Badge variant={promptEnhancement.enhancementMethod === "chatgpt" ? "default" : "secondary"}>
-                  {promptEnhancement.enhancementMethod === "chatgpt" ? (
-                    <>
-                      <Zap className="h-3 w-3 mr-1" />
-                      ChatGPT Enhanced
-                    </>
-                  ) : (
-                    <>
-                      <Settings className="h-3 w-3 mr-1" />
-                      Rule-Based Enhanced
-                    </>
-                  )}
+                  {promptEnhancement.enhancementMethod === "chatgpt" ? <>ChatGPT Enhanced</> : <>Rule-Based Enhanced</>}
                 </Badge>
                 <Badge variant="outline">{promptEnhancement.variationType} variation</Badge>
                 <Badge variant="outline">{promptEnhancement.generationType} generation</Badge>
@@ -1067,12 +945,12 @@ export function FlowArtGenerator() {
                 <div className="flex gap-2">
                   {promptEnhancement && (
                     <>
-                      <Button variant="ghost" size="sm" onClick={resetToOriginal}>
+                      <button variant="ghost" size="sm" onClick={resetToOriginal}>
                         Reset to Original
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={resetToEnhanced}>
+                      </button>
+                      <button variant="ghost" size="sm" onClick={resetToEnhanced}>
                         Reset to Enhanced
-                      </Button>
+                      </button>
                     </>
                   )}
                 </div>
@@ -1096,13 +974,15 @@ export function FlowArtGenerator() {
 
             {/* Action Buttons */}
             <div className="flex gap-3 pt-4">
-              <Button onClick={applyEnhancedPrompt} className="flex-1">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Apply Enhanced Prompt
-              </Button>
-              <Button variant="outline" onClick={() => setIsPromptDialogOpen(false)}>
+              <button
+                onClick={applyEnhancedPrompt}
+                className="flex-1 px-3 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 font-medium"
+              >
+                ✓ Apply Enhanced Prompt
+              </button>
+              <button variant="outline" onClick={() => setIsPromptDialogOpen(false)}>
                 Cancel
-              </Button>
+              </button>
             </div>
           </div>
         </DialogContent>
