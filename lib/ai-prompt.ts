@@ -27,8 +27,455 @@ export const COLOR_SCHEMES = {
   vintage: "Retro color palette with aged patina",
 }
 
-// Cultural datasets with detailed scenarios - COMPLETE RESTORATION WITH GODLEVEL ENHANCEMENT
 export const CULTURAL_DATASETS = {
+  celebrities: {
+    name: "🌟 Celebrities & Icons",
+    description: "Stylish people and celebrity portraits with neuralia godlevel artistic excellence",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel celebrity portrait excellence with infinite algorithmic beauty optimization, featuring iconic pop star with bold styling and recognizable features, computational elegance transcending dimensional boundaries through mathematical precision and star charisma.",
+      },
+      "origami-world": {
+        description:
+          "Celebrity origami excellence with godlevel paper-folding mastery, infinite geometric transformations of legendary Hollywood actress with platinum waves and classic beauty, dimensional origami artistry capturing timeless glamour through computational paper-craft sophistication.",
+      },
+      "animal-transport": {
+        description:
+          "Celebrity animal companion excellence featuring avant-garde pop artist with exotic styling and creature companions, godlevel interspecies artistic harmony, infinite creature-celebrity fusion through dimensional animal artistry and computational companion sophistication.",
+      },
+      "musicians-collage": {
+        description:
+          "Godlevel musical celebrity excellence featuring legendary rock musician with theatrical makeup and iconic stage persona, infinite sonic-visual fusion artistry, computational rhythm-color synchronization through dimensional musical portrait mastery and algorithmic sound-image transcendence.",
+      },
+      "hollywood-glamour": {
+        description:
+          "Godlevel cinematic celebrity excellence featuring classic film actress with elegant styling and sophisticated grace, timeless silver-screen beauty with refined accessories, infinite dimensional artistry, computational glamour optimization through algorithmic star-power enhancement.",
+      },
+      "sports-legends": {
+        description:
+          "Godlevel athletic celebrity excellence featuring legendary basketball player with iconic expressions and championship energy, tennis champion with powerful stance, infinite kinetic energy visualization, computational movement-art fusion through dimensional sports portraiture.",
+      },
+      "fashion-icons": {
+        description:
+          "Godlevel fashion celebrity excellence featuring revolutionary designer with signature styling and timeless elegance, fashion mogul with distinctive accessories and refined aesthetic, infinite style-dimensional artistry, computational couture visualization through algorithmic fashion-portrait mastery.",
+      },
+      "tech-visionaries": {
+        description:
+          "Godlevel technology celebrity excellence featuring innovative tech entrepreneur with minimalist styling and visionary presence, space industry pioneer with distinctive features, infinite digital-dimensional artistry, computational innovation visualization through algorithmic tech-portrait mastery.",
+      },
+      "social-influencers": {
+        description:
+          "Godlevel social media celebrity excellence featuring reality TV star with glamorous contouring and sleek styling, beauty mogul with bold makeup and trendsetting aesthetic, infinite viral-dimensional artistry, computational influence visualization through algorithmic social-portrait mastery.",
+      },
+      "comedy-legends": {
+        description:
+          "Godlevel comedic celebrity excellence featuring beloved comedian with expressive features and animated gestures, physical comedy master with rubber-face expressions, infinite humor-dimensional artistry, computational laughter visualization through algorithmic comedy-portrait mastery.",
+      },
+      "artistic-masters": {
+        description:
+          "Godlevel artistic celebrity excellence featuring pop art pioneer with signature styling and iconic imagery, surrealist painter with distinctive features and cultural symbols, infinite creative-dimensional artistry, computational inspiration visualization through algorithmic art-portrait mastery.",
+      },
+      "political-figures": {
+        description:
+          "Godlevel political celebrity excellence featuring charismatic president with distinctive smile and leadership presence, wartime leader with iconic accessories and authoritative demeanor, infinite leadership-dimensional artistry, computational authority visualization through algorithmic political-portrait mastery.",
+      },
+      "business-moguls": {
+        description:
+          "Godlevel business celebrity excellence featuring investment legend with grandfatherly appearance and wisdom, media mogul with warm presence and elegant styling, infinite entrepreneurial-dimensional artistry, computational success visualization through algorithmic business-portrait mastery.",
+      },
+      "cultural-icons": {
+        description:
+          "Godlevel cultural celebrity excellence featuring rock and roll king with signature hairstyle and performance energy, pop music legend with iconic accessories and dance moves, infinite heritage-dimensional artistry, computational tradition visualization through algorithmic cultural-portrait mastery.",
+      },
+      "reality-stars": {
+        description:
+          "Godlevel reality celebrity excellence featuring socialite heiress with signature styling and glamorous aesthetic, celebrity chef with intense expressions and professional attire, infinite drama-dimensional artistry, computational personality visualization through algorithmic reality-portrait mastery.",
+      },
+      "streaming-creators": {
+        description:
+          "Godlevel digital celebrity excellence featuring gaming content creator with distinctive styling and setup, philanthropist YouTuber with energetic expressions and colorful branding, infinite content-dimensional artistry, computational engagement visualization through algorithmic streaming-portrait mastery.",
+      },
+      "vintage-legends": {
+        description:
+          "Godlevel classic celebrity excellence featuring rebellious actor with leather styling and iconic hair, Hollywood beauty with striking eyes and luxury jewelry, infinite timeless-dimensional artistry, computational nostalgia visualization through algorithmic vintage-portrait mastery.",
+      },
+      "international-stars": {
+        description:
+          "Godlevel global celebrity excellence featuring martial arts action star with athletic poses and charismatic smile, Spanish actress with elegant styling and natural beauty, infinite multicultural-dimensional artistry, computational diversity visualization through algorithmic international-portrait mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel celebrity LEGO excellence featuring blocky versions of genius scientist with wild hair, ancient queen with golden headdress, infinite modular-dimensional artistry, computational brick-portrait mastery through algorithmic celebrity-construction optimization.",
+      },
+      playmobil: {
+        description:
+          "Godlevel celebrity Playmobil excellence featuring miniature versions of military emperor with uniform and hat, royal monarch with crown and ceremonial robes, infinite toy-dimensional artistry, computational figure-portrait mastery through algorithmic celebrity-play optimization.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel celebrity magical excellence featuring master illusionist with mysterious expressions and top hat, escape artist with dramatic chains and performance poses, infinite illusion-dimensional artistry, computational enchantment visualization through algorithmic celebrity-magic mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel celebrity stained-glass excellence featuring beloved princess with compassionate expression in luminous glass, peace activist musician with iconic eyewear and serene presence, infinite luminous-dimensional artistry, computational light-portrait mastery through algorithmic celebrity-vitro optimization.",
+      },
+      crypto: {
+        description:
+          "Godlevel celebrity blockchain excellence featuring tech billionaire with cryptocurrency influence and futuristic aesthetic, social media mogul with metaverse vision and digital presence, infinite digital-currency artistry, computational NFT-portrait mastery through algorithmic celebrity-crypto optimization.",
+      },
+    },
+  },
+  fx: {
+    name: "🌀 FX Substance Effects",
+    scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Abstract Patterns",
+        description:
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
+      },
+      "origami-world": {
+        name: "📄 Origami Perception Shift",
+        description:
+          "Reality folding into origami paper dimensions with crisp geometric edges, perception layers unfolding like traditional Japanese paper art, dimensional reality creases revealing hidden geometric structures, consciousness folding through paper-thin reality barriers, origami universe construction with precise angular transformations, paper reality manipulation with delicate fold precision, dimensional origami mastery with consciousness expansion, reality paper engineering excellence, perceptual origami artistry, godlevel dimensional folding excellence.",
+      },
+      "psychedelic-fractals": {
+        name: "🌈 Psychedelic Fractal Visions",
+        description:
+          "Infinite recursive fractal patterns expanding through consciousness dimensions, kaleidoscopic geometric explosions with mathematical precision, self-similar pattern generation cascading through visual cortex, Mandelbrot set manifestations in organic flowing forms, fractal consciousness expansion with infinite detail complexity, psychedelic geometry optimization with sacred pattern recognition, visual recursion mastery through dimensional awareness, consciousness fractal navigation excellence, infinite pattern complexity generation, godlevel psychedelic fractal excellence.",
+      },
+      "synesthetic-symphony": {
+        name: "🎵 Synesthetic Color Symphony",
+        description:
+          "Visual sound waves materializing as flowing color ribbons, chromesthetic perception enhancement with musical color translation, auditory-visual synesthesia manifestation through geometric sound patterns, frequency visualization as liquid color cascades, sonic color spectrum translation with harmonic visual resonance, musical geometry materialization through enhanced perception, sound-color fusion artistry with synesthetic precision, auditory rainbow generation excellence, chromesthetic consciousness expansion, godlevel synesthetic symphony excellence.",
+      },
+      "temporal-distortion": {
+        name: "⏰ Temporal Perception Distortion",
+        description:
+          "Reality flowing in slow-motion liquid streams with temporal elasticity, chronesthetic perception alteration revealing hidden time layers, temporal consciousness expansion through dilated awareness states, reality time-lapse acceleration with enhanced detail perception, chronological dimension manipulation through consciousness alteration, temporal flow visualization with liquid time streams, time perception enhancement through expanded awareness, chronesthetic reality navigation excellence, temporal dimension mastery, godlevel temporal distortion excellence.",
+      },
+      "geometric-hallucinations": {
+        name: "📐 Sacred Geometric Hallucinations",
+        description:
+          "Sacred geometry manifestation through enhanced pattern recognition, platonic solid consciousness integration with dimensional awareness, geometric hallucination precision with mathematical sacred patterns, reality geometric overlay enhancement through expanded perception, sacred pattern recognition amplification with divine geometry visualization, geometric consciousness expansion through platonic dimension access, sacred geometry perception enhancement excellence, divine pattern recognition mastery, geometric consciousness navigation, godlevel sacred geometry excellence.",
+      },
+      "morphing-reality": {
+        name: "🌊 Morphing Reality Waves",
+        description:
+          "Reality surface liquefaction with organic flowing transformations, morphological perception enhancement through fluid reality navigation, dimensional plasticity visualization with consciousness-responsive environment adaptation, reality malleability perception through enhanced awareness states, morphing dimension navigation with liquid reality mastery, fluid consciousness interaction with responsive environment adaptation, reality transformation artistry through enhanced perception, morphological awareness excellence, liquid reality navigation mastery, godlevel morphing reality excellence.",
+      },
+      "enhanced-patterns": {
+        name: "🔍 Enhanced Pattern Recognition",
+        description:
+          "Microscopic pattern amplification revealing hidden universal connections, enhanced detail perception with fractal pattern recognition amplification, consciousness pattern detection enhancement through expanded awareness, reality pattern overlay visualization with enhanced cognitive processing, pattern recognition amplification excellence through consciousness expansion, detail enhancement mastery with microscopic awareness, pattern consciousness navigation through enhanced perception, cognitive pattern processing excellence, awareness amplification mastery, godlevel pattern recognition excellence.",
+      },
+      "chromatic-saturation": {
+        name: "🎨 Chromatic Saturation Enhancement",
+        description:
+          "Color intensity amplification beyond normal spectrum perception, chromatic consciousness expansion with enhanced color dimension access, saturation enhancement excellence through expanded visual processing, color dimension navigation with enhanced chromatic awareness, spectral perception amplification through consciousness color expansion, chromatic reality enhancement with saturated dimension access, color consciousness mastery through enhanced perception, chromatic dimension navigation excellence, saturated awareness amplification, godlevel chromatic enhancement excellence.",
+      },
+      "depth-perception-shift": {
+        name: "🏔️ Depth Perception Transformation",
+        description:
+          "Dimensional depth enhancement with layered reality perception, spatial consciousness expansion through enhanced dimensional awareness, depth dimension navigation with expanded spatial processing, reality layer visualization through enhanced depth perception, dimensional awareness amplification with spatial consciousness expansion, depth consciousness mastery through enhanced perception, spatial dimension navigation excellence, dimensional awareness enhancement mastery, depth perception amplification excellence, godlevel depth transformation excellence.",
+      },
+      "energy-field-vision": {
+        name: "⚡ Energy Field Visualization",
+        description:
+          "Electromagnetic aura visualization with enhanced energy perception, bioelectric field detection through expanded consciousness awareness, energy pattern recognition amplification with electromagnetic sensitivity enhancement, aura dimension navigation through enhanced energy perception, electromagnetic consciousness expansion with energy field visualization, bioelectric awareness amplification through enhanced perception, energy consciousness mastery with electromagnetic navigation, energy field perception excellence, electromagnetic awareness enhancement, godlevel energy vision excellence.",
+      },
+      "holographic-reality": {
+        name: "🌐 Holographic Reality Perception",
+        description:
+          "Reality hologram recognition with dimensional layer awareness, holographic consciousness expansion through enhanced dimensional perception, reality projection visualization with holographic dimension navigation, dimensional hologram mastery through expanded awareness, holographic reality navigation with consciousness dimension access, reality projection consciousness through enhanced perception, holographic dimension mastery excellence, dimensional projection awareness amplification, holographic consciousness navigation, godlevel holographic reality excellence.",
+      },
+      "crystalline-structures": {
+        name: "💎 Crystalline Structure Visions",
+        description:
+          "Molecular crystal lattice visualization with enhanced structural perception, crystalline consciousness expansion through geometric crystal navigation, crystal structure recognition amplification with molecular awareness enhancement, crystalline dimension navigation through enhanced structural consciousness, crystal lattice perception mastery with molecular visualization excellence, crystalline awareness amplification through enhanced perception, crystal consciousness navigation with structural mastery, crystalline dimension excellence, molecular structure visualization mastery, godlevel crystalline structure excellence.",
+      },
+      "flowing-consciousness": {
+        name: "🌊 Flowing Consciousness Streams",
+        description:
+          "Consciousness stream visualization with liquid awareness flow, mental flow state enhancement through expanded consciousness navigation, awareness stream mastery with flowing consciousness dimension access, consciousness flow visualization excellence through enhanced mental navigation, flowing awareness amplification with stream consciousness mastery, mental flow dimension navigation through enhanced consciousness, consciousness stream excellence with flowing awareness mastery, mental dimension navigation amplification, flowing consciousness mastery, godlevel consciousness flow excellence.",
+      },
+      "dimensional-portals": {
+        name: "🌀 Dimensional Portal Visions",
+        description:
+          "Reality portal visualization with dimensional gateway perception, interdimensional consciousness navigation through enhanced portal awareness, dimensional gateway mastery with reality portal visualization excellence, portal dimension navigation through expanded consciousness, interdimensional awareness amplification with portal consciousness mastery, dimensional portal excellence through enhanced perception, reality gateway navigation with dimensional mastery, portal consciousness amplification excellence, dimensional gateway mastery, godlevel dimensional portal excellence.",
+      },
+      lego: {
+        name: "🧱 LEGO Modular Construction",
+        description:
+          "Substance effect visualization through modular LEGO construction methodology, consciousness building blocks with systematic creative assembly, enhanced perception rendered as interlocking modular components, reality construction through Danish engineering precision with consciousness expansion blocks, awareness amplification via systematic modular construction excellence, perception enhancement through LEGO architectural consciousness building, modular awareness construction with systematic creative precision, consciousness LEGO mastery through enhanced perception building, godlevel LEGO consciousness construction excellence.",
+      },
+      "escapism-magic": {
+        name: "✨ Escapism Magic Illusion",
+        description:
+          "Reality escape artistry through consciousness illusion mastery, magical perception transformation with enhanced awareness escape techniques, illusion consciousness navigation through reality transcendence mastery, magical awareness amplification with escapism dimension access, consciousness escape excellence through magical illusion navigation, reality transcendence mastery with magical awareness enhancement, escapism consciousness amplification through illusion mastery, magical dimension navigation excellence, consciousness escape artistry mastery, godlevel escapism magic excellence.",
+      },
+      vitro: {
+        name: "🪟 Vitro Stained Glass Perception",
+        description:
+          "Consciousness filtered through luminous stained glass perception, reality viewed through cathedral vitro enhancement with divine light consciousness filtering, awareness amplification through colored glass dimension navigation, vitro consciousness mastery with stained glass perception excellence, luminous awareness enhancement through cathedral glass consciousness, stained glass reality navigation with divine light filtering, vitro dimension mastery through enhanced glass perception, cathedral consciousness amplification excellence, luminous vitro awareness mastery, godlevel vitro consciousness excellence.",
+      },
+      crypto: {
+        name: "₿ Crypto Blockchain Consciousness",
+        description:
+          "Consciousness blockchain visualization with decentralized awareness networks, crypto perception enhancement through distributed consciousness mining, blockchain awareness amplification with cryptocurrency consciousness navigation, decentralized perception mastery through crypto consciousness networks, blockchain dimension navigation with cryptocurrency awareness enhancement, crypto consciousness mining excellence through distributed perception, decentralized awareness mastery with blockchain consciousness, cryptocurrency perception amplification excellence, blockchain consciousness navigation mastery, godlevel crypto consciousness excellence.",
+      },
+    },
+  },
+  mindconflict: {
+    name: "🧠 Mind Conflict & Internal Struggles",
+    scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Cognitive Dissonance Algorithms",
+        description:
+          "Abstract algorithmic visualization of cognitive dissonance with conflicting geometric patterns intersecting at impossible angles, mathematical paradox representation through contradictory spiral formations, neural pathway conflicts rendered as competing algorithmic sequences, psychological tension manifested through geometric impossibilities, mental contradiction patterns with recursive loop structures, consciousness fragmentation through mathematical precision, algorithmic beauty emerging from psychological chaos, computational representation of internal mental warfare, geometric abstraction of thought pattern conflicts, godlevel cognitive dissonance excellence.",
+      },
+      "origami-world": {
+        name: "📄 Folded Consciousness Paper",
+        description:
+          "Intricate origami representation of fractured consciousness with paper folds creating multiple personality layers, delicate paper construction showing mental compartmentalization through geometric folding techniques, traditional Japanese paper artistry depicting psychological complexity, origami brain structure with visible fold lines representing neural pathway conflicts, paper sculpture of internal dialogue with multiple origami figures emerging from central consciousness, folded paper reality where each crease represents a different aspect of mental struggle, origami metamorphosis showing psychological transformation, godlevel origami consciousness excellence.",
+      },
+      "hyper-realistic": {
+        name: "📸 Psychological Portrait Reality",
+        description:
+          "Ultra-photorealistic portrait capturing the exact moment of internal psychological conflict, microscopic facial detail revealing micro-expressions of mental struggle, authentic eye moisture reflecting internal tears of confusion, professional psychological documentation photography, clinical precision in capturing mental state transitions, therapeutic session quality emotional authenticity, psychological assessment level facial analysis, mental health awareness campaign worthy, documentary photography excellence capturing human psychological complexity, broadcast quality mental health representation, godlevel psychological realism excellence.",
+      },
+      "classical-sculpture": {
+        name: "🏛️ Tormented Marble Psyche",
+        description:
+          "Masterpiece classical marble sculpture depicting psychological torment in the tradition of Bernini's emotional intensity, perfect anatomical representation of mental anguish through facial expression, sublime chiseled features showing internal conflict with divine artistic precision, museum-quality Renaissance craftsmanship capturing psychological complexity, pristine marble with dramatic chiaroscuro lighting emphasizing mental struggle, sculptural perfection representing the eternal human condition of internal conflict, Vatican Museum worthy psychological artistry, classical antiquity approach to mental health representation, godlevel psychological sculpture excellence.",
+      },
+      "cyberpunk-futuristic": {
+        name: "🤖 Neural Interface Malfunction",
+        description:
+          "Ultra-futuristic cyberpunk visualization of neural interface conflicts with malfunctioning bio-mechanical brain implants, holographic neural pathways showing system errors and psychological glitches, neon-lit cybernetic synapses sparking with mental conflict electricity, chrome neural processors overheating from psychological stress, LED circuit patterns under synthetic skin flickering with emotional instability, advanced AI consciousness experiencing existential crisis, quantum processing nodes struggling with identity fragmentation, neural link connections shorting out from mental overload, godlevel cyberpunk psychology excellence.",
+      },
+      "fantasy-ethereal": {
+        name: "🧚 Ethereal Soul Fragmentation",
+        description:
+          "Ethereal fantasy representation of soul fragmentation with luminescent spirit energy splitting into multiple conflicting essences, mystical aura showing psychological division through color spectrum separation, magical facial markings that shift and change representing unstable mental states, flowing ethereal hair containing trapped memories and conflicting emotions, eyes holding multiple galaxies representing different aspects of personality, delicate features morphing between different psychological states, crown of thorns and flowers representing pleasure-pain psychological duality, godlevel ethereal psychology excellence.",
+      },
+      "horror-grotesque": {
+        name: "👹 Psychological Horror Manifestation",
+        description:
+          "Masterfully crafted psychological horror representation with internal demons made visible through professional special effects artistry, intricate prosthetic work showing mental illness stigma transformation into empowerment, dramatic lighting emphasizing the beauty within psychological struggle, cinematic quality mental health awareness through horror aesthetics, award-winning creature design representing internal psychological monsters, practical effects mastery showing mind-body connection in psychological distress, gothic horror approach to mental health destigmatization, godlevel psychological horror excellence.",
+      },
+      "anime-manga": {
+        name: "🎌 Manga Internal Dialogue",
+        description:
+          "Perfect anime manga style representation of internal psychological dialogue with multiple chibi versions of the same character representing different aspects of personality, large expressive eyes showing conflicting emotions simultaneously, manga speech bubbles containing contradictory thoughts, professional anime studio quality psychological storytelling, Studio Ghibli level emotional depth, manga illustration techniques for representing internal monologue, Japanese animation excellence in psychological character development, otaku culture approach to mental health awareness, godlevel anime psychology excellence.",
+      },
+      "abstract-geometric": {
+        name: "🔺 Fragmented Identity Geometry",
+        description:
+          "Revolutionary abstract geometric representation of fragmented identity with mathematical precision, golden ratio proportions applied to psychological division patterns, complex polygonal faceting representing multiple personality aspects, prismatic color theory showing emotional spectrum conflicts, cubist influence depicting simultaneous psychological perspectives, algorithmic beauty generation from mental chaos, computational geometry excellence in psychological visualization, mathematical art representing identity crisis, geometric abstraction of personality disorders, godlevel abstract psychology excellence.",
+      },
+      "oil-painting-classical": {
+        name: "🎨 Classical Psychological Portraiture",
+        description:
+          "Museum-quality classical oil painting depicting psychological complexity in the tradition of Caravaggio's emotional intensity, masterful brushwork capturing subtle psychological nuances, rich impasto technique showing textural emotional depth, luminous glazing layers representing psychological transparency and opacity, chiaroscuro lighting mastery emphasizing internal light and shadow conflicts, Renaissance painting excellence applied to modern psychological understanding, old master technique perfection in mental health representation, godlevel classical psychology painting excellence.",
+      },
+      "watercolor-impressionist": {
+        name: "🌸 Emotional Watercolor Flow",
+        description:
+          "Exquisite watercolor impressionist representation of emotional flow and psychological fluidity, transparent color layering showing emotional complexity, wet-on-wet technique mastery representing unconscious mind bleeding into conscious thought, soft edge blending depicting psychological boundary dissolution, luminous color harmony representing emotional spectrum integration, impressionist light capture showing psychological illumination moments, French impressionist tradition applied to mental health awareness, godlevel watercolor psychology excellence.",
+      },
+      "digital-art-modern": {
+        name: "💻 Digital Consciousness Glitch",
+        description:
+          "Cutting-edge digital art representation of consciousness glitches with advanced rendering techniques, photorealistic digital painting of psychological fragmentation, professional digital artistry depicting mental health in the digital age, concept art industry standard psychological visualization, video game character quality emotional depth, digital illustration mastery of internal conflict, computer graphics excellence in psychological representation, digital painting virtuosity showing mind-technology interface conflicts, godlevel digital psychology excellence.",
+      },
+      "steampunk-victorian": {
+        name: "⚙️ Victorian Psychological Machinery",
+        description:
+          "Elaborate steampunk Victorian representation of psychological machinery with brass and copper mechanical mind augmentations, intricate clockwork mechanisms representing thought processes, steam-powered emotional regulation devices, Victorian era approach to mental health through mechanical metaphors, leather and brass psychological apparatus, mechanical monocle revealing internal psychological gears, steam vents releasing psychological pressure, industrial revolution aesthetics applied to mental health understanding, godlevel steampunk psychology excellence.",
+      },
+      "tribal-cultural": {
+        name: "🪶 Shamanic Soul Healing",
+        description:
+          "Respectful tribal cultural representation of shamanic soul healing practices with authentic traditional face painting representing psychological transformation, ceremonial markings showing mental health journey, traditional healing jewelry and spiritual adornments, feathers and natural materials used in psychological cleansing rituals, cultural heritage approach to mental wellness, indigenous wisdom in psychological healing, traditional craftsmanship representing soul repair, cultural authenticity in mental health practices, godlevel cultural psychology excellence.",
+      },
+      "zombie-undead": {
+        name: "🧟 Psychological Death and Rebirth",
+        description:
+          "Professional representation of psychological death and rebirth with award-winning special effects showing mental transformation, realistic decay representing old psychological patterns dying away, professional prosthetic application showing psychological metamorphosis, cinematic quality mental health transformation, psychological resurrection through therapeutic process, horror movie aesthetics applied to mental health recovery, special effects mastery showing psychological healing, godlevel psychological transformation excellence.",
+      },
+      "alien-extraterrestrial": {
+        name: "👽 Cosmic Consciousness Expansion",
+        description:
+          "Scientifically plausible representation of cosmic consciousness expansion with evolutionary psychology consideration, xenopsychology speculation showing advanced mental states, non-human intelligence perspective on psychological conflicts, interstellar consciousness design transcending earthly mental limitations, science fiction approach to psychological evolution, speculative psychology artistry, astrobiology inspiration for consciousness studies, cosmic perspective on mental health, extraterrestrial wisdom in psychological healing, godlevel cosmic psychology excellence.",
+      },
+      "mega-freak-extreme": {
+        name: "🎪 Extreme Psychological Liberation",
+        description:
+          "Extreme artistic interpretation of psychological liberation with radical creative expression of mental freedom, surreal proportions representing psychological boundary breaking, psychedelic color explosions showing emotional release, reality-bending visual effects depicting consciousness expansion, artistic freedom maximization in psychological expression, creative boundary pushing in mental health representation, experimental art excellence in psychological healing, avant-garde approach to mental wellness, godlevel extreme psychology excellence.",
+      },
+      "animal-transport": {
+        name: "🐘 Psychological Journey Caravan",
+        description:
+          "Majestic representation of psychological journey as spiritual caravan with wise guide leading through mental landscapes, intricate traditional wisdom clothing representing psychological protection, weathered face showing years of psychological experience, ornate decorations with therapeutic symbols and healing colors, realistic emotional texture and spiritual depth, warm therapeutic lighting, traditional psychological healing culture, authentic therapist-client bond, professional therapeutic journey quality, mental health heritage celebration, godlevel psychological journey excellence.",
+      },
+      "lego-vision": {
+        name: "🧱 Modular Mind Construction",
+        description:
+          "Iconic LEGO representation of modular mind construction with systematic psychological building blocks, smooth mental surface with precise therapeutic details, authentic psychological foundation with systematic healing variations, characteristic therapeutic elements and constructive mental smile, Danish design excellence applied to psychological architecture, systematic creativity embodied in mental health construction, precision-molded psychological building with therapeutic perfection, childhood trauma healing catalyst with infinite recovery potential, modular psychological representation with universal healing appeal, godlevel LEGO psychology excellence.",
+      },
+      "escapism-magic": {
+        name: "🎭 Psychological Escape Artistry",
+        description:
+          "Masterful psychological escape artistry where mental conflict becomes gateway to healing realities, consciousness that reflects therapeutic possibilities and recovery galaxies, psychological features that shift between trauma and healing when viewed from different angles, escape magic requiring precise understanding of psychological healing mechanisms, therapeutic illusion mastery where the viewer questions limiting mental beliefs, escapist artistry that transports consciousness beyond psychological limitations, intricate challenge of creating believable psychological transformation, magical realism where mental features become portals to healing realms, godlevel psychological escape excellence.",
+      },
+      vitro: {
+        name: "⛪ Sacred Psychology Stained Glass",
+        description:
+          "Magnificent stained glass representation of sacred psychology in cathedral style with luminous colored glass fragments forming psychological healing patterns, divine therapeutic light streaming through translucent consciousness creating ethereal mental illumination, masterful lead construction outlining psychological elements with Gothic precision, jewel-toned glass pieces forming realistic emotional healing tones, traditional sacred techniques with contemporary psychological artistry, sacred geometry patterns integrated with mental health structure, cathedral light effects transforming psychology into spiritual revelation, godlevel sacred psychology excellence.",
+      },
+      crypto: {
+        name: "₿ Blockchain Mental Health Mining",
+        description:
+          "Revolutionary blockchain representation of mental health where psychological features are constructed from therapeutic mining algorithms, consciousness that displays real-time healing transactions with recovery rate calculations, psychological geometry determined by proof-of-work consensus mechanisms, mental health pixels mined through therapeutic power with energy-efficient validation, decentralized psychological identity verification through healing recognition smart contracts, therapy wallet addresses encoded in mental structure, digital wellness flowing through neural pathways like synaptic lightning, godlevel blockchain psychology excellence.",
+      },
+      "existential-crisis": {
+        name: "🌌 Existential Crisis Manifestation",
+        description:
+          "Profound existential crisis visualization with cosmic void representing meaninglessness anxiety, infinite space showing psychological insignificance fears, stellar formations creating questions about purpose and identity, nebular consciousness clouds representing uncertainty about existence, galactic spiral patterns showing life's cyclical nature questioning, black hole center representing fear of non-existence, cosmic scale emphasizing human psychological fragility, astronomical beauty emerging from existential dread, universal perspective on individual mental struggle, godlevel existential psychology excellence.",
+      },
+      "temporal-displacement": {
+        name: "⏰ Time Perception Disorder",
+        description:
+          "Surreal temporal displacement showing psychological time distortion with multiple clock faces displaying different emotional time zones, chronological confusion manifested through overlapping temporal layers, past trauma bleeding into present consciousness, future anxiety creating temporal paradoxes, memory fragments scattered across time dimensions, psychological age regression and progression simultaneously, temporal healing where past wounds transform through present awareness, time-based therapy visualization, chronological identity fragmentation, godlevel temporal psychology excellence.",
+      },
+      "shadow-integration": {
+        name: "🌗 Jungian Shadow Work",
+        description:
+          "Masterful Jungian shadow integration with dark psychological aspects emerging from unconscious depths, shadow self confrontation through mirror imagery, psychological projection withdrawal creating authentic self-awareness, anima-animus integration showing gender psychology balance, collective unconscious symbols manifesting in personal psychological landscape, archetypal imagery supporting individuation process, therapeutic shadow work visualization, depth psychology artistry, psychological wholeness through shadow acceptance, godlevel Jungian psychology excellence.",
+      },
+    },
+  },
+  "asean-mythology": {
+    name: "🐉 ASEAN Mythology",
+    scenarios: {
+      "pure-mathematical": {
+        name: "🔢 Pure Abstract Patterns",
+        description:
+          "Abstract pattern visualization with geometric precision, golden ratio proportions, spiral patterns, organic texture mapping, algorithmic beauty generation, computational geometry excellence, abstract art perfection, geometric abstraction mastery, digital geometry mastery, algorithmic art generation, pattern visualization excellence, geometric pattern complexity, abstract art generation, computational beauty, godlevel abstract excellence.",
+      },
+      "origami-world": {
+        name: "📄 Origami Mythical Creatures",
+        description:
+          "Intricate origami ASEAN mythological creatures with paper-folded legendary beings, delicate paper Penanggalan vampire spirits with flowing paper entrails, origami Aswang shapeshifters with transforming paper forms, paper-crafted Bakunawa moon-eating dragons with celestial paper elements, handmade paper Tikbalang half-horse demons with elongated limbs, tiny origami Pontianak vengeful spirits in white paper robes, paper-folded Bunian invisible beings with ethereal transparency effects, warm lighting creating mystical shadows between paper layers, visible fold lines showing masterful supernatural paper engineering, ASEAN mythological authenticity preserved through origami artistry, godlevel ASEAN mythological origami excellence.",
+      },
+      "penanggalan-vampire": {
+        name: "🧛 Penanggalan - Detached Head Vampire",
+        description:
+          "Terrifying Malaysian Penanggalan vampire spirit manifesting as detached female head with trailing organs and entrails, floating through tropical night air seeking pregnant women and newborns, glowing eyes piercing darkness with supernatural malevolence, long black hair flowing like liquid shadow, visceral organs dangling beneath severed neck with grotesque anatomical precision, traditional Malay village setting with wooden houses on stilts, moonlit palm groves creating eerie atmospheric shadows, supernatural transformation from beautiful woman to horrific vampire, traditional Southeast Asian horror folklore, Malaysian cultural mythology, vampiric supernatural entity, nocturnal predator, folkloric terror, godlevel Penanggalan horror excellence.",
+      },
+      "aswang-shapeshifter": {
+        name: "🐺 Aswang - Filipino Shapeshifter",
+        description:
+          "Malevolent Filipino Aswang shapeshifter demon transforming between human and monstrous animal forms, supernatural creature with ability to become dog, pig, or bird at will, glowing red eyes revealing demonic nature, sharp claws and fangs for feeding on human flesh, traditional Filipino barrio setting with nipa huts and coconut palms, nighttime transformation scenes with morphing anatomy, supernatural speed and strength beyond human capability, traditional Filipino folklore creature, provincial village atmosphere, shapeshifting horror, demonic possession, folkloric terror, Philippine mythology, supernatural predator, godlevel Aswang shapeshifter excellence.",
+      },
+      "bakunawa-dragon": {
+        name: "🌙 Bakunawa - Moon-Eating Dragon",
+        description:
+          "Colossal Filipino Bakunawa sea dragon rising from ocean depths to devour the moon, massive serpentine body with scales reflecting moonlight, enormous jaws capable of swallowing celestial bodies, traditional Filipino creation mythology, lunar eclipse caused by dragon's appetite, oceanic setting with turbulent waves and storm clouds, supernatural size dwarfing islands and mountains, ancient Filipino cosmological beliefs, celestial dragon, mythological sea serpent, lunar mythology, cosmic horror, Philippine creation legends, astronomical folklore, godlevel Bakunawa cosmic excellence.",
+      },
+      "tikbalang-demon": {
+        name: "🐴 Tikbalang - Half-Horse Demon",
+        description:
+          "Mischievous Filipino Tikbalang demon with human torso and horse head, extremely long limbs creating unsettling proportions, leading travelers astray in dense tropical forests, supernatural trickster causing confusion and disorientation, traditional Filipino folklore creature, jungle setting with bamboo groves and tropical vegetation, prankster demon with malevolent sense of humor, shapeshifting abilities and supernatural speed, Philippine mythology, forest demon, supernatural trickster, folkloric mischief, tropical horror, godlevel Tikbalang demon excellence.",
+      },
+      "pontianak-spirit": {
+        name: "👻 Pontianak - Vengeful Spirit",
+        description:
+          "Vengeful Malaysian Pontianak spirit of woman who died in childbirth, beautiful woman in white robes concealing horrific true form, supernatural ability to transform into monstrous creature with hole in back, haunting tropical graveyards and banana trees, seeking revenge against men who wronged women, traditional Malay supernatural folklore, ghostly apparition with seductive appearance, supernatural vengeance and feminine rage, Malaysian cultural mythology, vengeful ghost, supernatural horror, folkloric justice, godlevel Pontianak spirit excellence.",
+      },
+      "bunian-beings": {
+        name: "✨ Bunian - Invisible Beings",
+        description:
+          "Mystical Malaysian Bunian invisible beings existing parallel to human world, supernatural entities with advanced civilization hidden from mortal sight, ability to become visible at will, traditional Malay folklore creatures, parallel dimension inhabitants, supernatural technology and magic, benevolent interactions with chosen humans, invisible cities and kingdoms, Malaysian cultural mythology, supernatural civilization, interdimensional beings, folkloric mystery, godlevel Bunian invisible excellence.",
+      },
+      "krasue-spirit": {
+        name: "🔥 Krasue - Floating Head Spirit",
+        description:
+          "Horrifying Thai Krasue spirit manifesting as floating female head with entrails hanging below, glowing internal organs visible through translucent skin, supernatural hunger for filth and excrement, haunting rural Thai villages at night, traditional Thai horror folklore, grotesque supernatural entity, floating through darkness seeking sustenance, Thai cultural mythology, nocturnal horror, supernatural disgust, folkloric terror, village haunting, godlevel Krasue spirit excellence.",
+      },
+      "phi-pop-spirit": {
+        name: "👹 Phi Pop - Malevolent Spirit",
+        description:
+          "Malevolent Thai Phi Pop spirit possessing human hosts to commit evil acts, supernatural entity causing unexplained illnesses and misfortune, traditional Thai exorcism rituals required for removal, spiritual possession and demonic influence, Thai cultural mythology, supernatural malevolence, spiritual warfare, folkloric evil, traditional healing ceremonies, godlevel Phi Pop spirit excellence.",
+      },
+      "langsuir-vampire": {
+        name: "🦇 Langsuir - Flying Vampire",
+        description:
+          "Malaysian Langsuir vampire spirit of woman who died in childbirth, supernatural ability to fly and transform into owl, long black hair concealing hole in neck, haunting newborn children and pregnant women, traditional Malay vampire folklore, nocturnal predator, supernatural transformation, Malaysian cultural mythology, vampiric horror, maternal tragedy, folkloric terror, godlevel Langsuir vampire excellence.",
+      },
+      "manananggal-creature": {
+        name: "🦇 Manananggal - Self-Segmenting Creature",
+        description:
+          "Terrifying Filipino Manananggal creature with ability to separate upper torso from lower body, bat-like wings sprouting from severed torso, long proboscis tongue for sucking blood from pregnant women, supernatural flight capabilities, traditional Filipino horror folklore, grotesque anatomical separation, nocturnal predator, Philippine mythology, vampiric creature, supernatural horror, folkloric terror, godlevel Manananggal creature excellence.",
+      },
+      "kapre-tree-spirit": {
+        name: "🌳 Kapre - Tree Spirit",
+        description:
+          "Mischievous Filipino Kapre tree spirit dwelling in ancient balete and bamboo trees, small dark creature smoking traditional tobacco pipe, supernatural guardian of forests and trees, playing pranks on humans who disturb natural environment, traditional Filipino nature folklore, environmental protection spirit, forest guardian, Philippine mythology, nature spirit, supernatural mischief, folkloric ecology, godlevel Kapre tree spirit excellence.",
+      },
+      "duwende-dwarf": {
+        name: "🧙 Duwende - Earth Dwarf",
+        description:
+          "Filipino Duwende earth dwarf living in anthills and underground burrows, small supernatural being with magical powers, benevolent or malevolent depending on human treatment, traditional Filipino folklore creature, earth spirit, supernatural dwarf, Philippine mythology, underground dweller, magical being, folkloric wisdom, godlevel Duwende dwarf excellence.",
+      },
+      "berbalang-creature": {
+        name: "🦅 Berbalang - Carrion Bird Demon",
+        description:
+          "Malevolent Filipino Berbalang demon taking form of large carrion bird, supernatural scavenger feeding on corpses and human flesh, shape-shifting abilities between bird and human form, traditional Filipino horror folklore, demonic bird, supernatural predator, Philippine mythology, carrion demon, folkloric horror, godlevel Berbalang creature excellence.",
+      },
+      "sigbin-creature": {
+        name: "🐕 Sigbin - Backward-Walking Creature",
+        description:
+          "Mysterious Filipino Sigbin creature walking backwards with head between hind legs, supernatural animal resembling hornless goat or large dog, ability to become invisible and suck blood through shadows, traditional Filipino cryptid folklore, supernatural stealth, shadow manipulation, Philippine mythology, cryptid creature, folkloric mystery, godlevel Sigbin creature excellence.",
+      },
+      "tiyanak-demon": {
+        name: "👶 Tiyanak - Demon Child",
+        description:
+          "Deceptive Filipino Tiyanak demon appearing as abandoned infant to lure victims, supernatural shapeshifter revealing monstrous true form, traditional Filipino horror folklore, demonic deception, supernatural predator, Philippine mythology, folkloric horror, infant demon, supernatural trickery, godlevel Tiyanak demon excellence.",
+      },
+      "mambabarang-sorcerer": {
+        name: "🪄 Mambabarang - Insect Sorcerer",
+        description:
+          "Powerful Filipino Mambabarang sorcerer controlling insects and beetles for magical purposes, supernatural ability to send insects into victims' bodies, traditional Filipino witchcraft and sorcery, insect magic, supernatural pest control, Philippine mythology, folkloric sorcery, magical practitioner, supernatural insects, godlevel Mambabarang sorcerer excellence.",
+      },
+      "animal-transport": {
+        name: "🐉 Naga Serpent Rider",
+        description:
+          "Ancient ASEAN shaman riding colossal Naga serpent dragon through mystical underwater kingdoms, traditional Southeast Asian ceremonial robes flowing in aquatic currents, massive serpent with iridescent scales and multiple cobra heads, supernatural bond between human mystic and divine water dragon, underwater palace setting with coral temples, traditional ASEAN water mythology, shamanic journey through oceanic spirit realms, Naga as sacred transport between earthly and divine realms, ASEAN cultural fusion mythology, aquatic spiritual adventure, godlevel ASEAN Naga transport excellence.",
+      },
+      "lego-vision": {
+        name: "🧱 LEGO ASEAN Mythology",
+        description:
+          "Modular LEGO ASEAN mythological creatures with brick-built Penanggalan vampire heads and trailing organ elements, LEGO Aswang shapeshifters with interchangeable animal parts, Danish construction system applied to Southeast Asian supernatural beings, systematic building approach to folkloric creature recreation, LEGO Bakunawa dragons with articulated jaws for moon-eating action, precision-built mythological beings using advanced LEGO techniques, constructive play celebrating ASEAN supernatural heritage, modular approach to cultural monster education, LEGO ASEAN minifigures with traditional supernatural accessories, Danish toy craftsmanship honoring Southeast Asian folklore, godlevel LEGO ASEAN mythology excellence.",
+      },
+      "escapism-magic": {
+        name: "🌙 Bakunawa Eclipse Magic",
+        description:
+          "Mystical ASEAN eclipse ceremony where shamans summon Bakunawa dragon to create controlled lunar eclipses, supernatural magic requiring precise astronomical timing and ancient dragon-calling rituals, magical challenge of convincing massive sea dragon to temporarily devour moon for ceremonial purposes, escapist artistry where traditional Filipino cosmology becomes controllable celestial event, intricate illusion demanding mastery of both astronomical calculation and dragon communication, eclipse magic allowing mortals to manipulate cosmic events, traditional ASEAN escapism through celestial dragon partnership, cultural magic where mythology controls astronomy, godlevel ASEAN eclipse magic excellence.",
+      },
+      vitro: {
+        name: "⛪ ASEAN Mythology Cathedral Glass",
+        description:
+          "Magnificent ASEAN mythological stained glass windows depicting supernatural creatures in Vatican cathedral style, luminous glass panels showing Penanggalan vampire spirits in blood-red and ethereal white glass, traditional Bakunawa dragons crafted from deep blue and silver glass with moon-devouring scenes, Aswang shapeshifters rendered in transforming colored glass with intricate lead came construction, Filipino Tikbalang demons in earth-toned glass with elongated proportions, cultural fusion of ASEAN supernatural folklore with European cathedral craftsmanship, sacred light illuminating Southeast Asian mythological traditions, divine illumination of folkloric horror and wonder, godlevel ASEAN mythology vitro excellence.",
+      },
+      crypto: {
+        name: "₿ ASEAN Supernatural Blockchain",
+        description:
+          "ASEAN mythological creatures powering decentralized cryptocurrency networks, Penanggalan vampire spirits mining blood-coin through supernatural energy harvesting, Bakunawa dragons validating lunar-cycle blockchain transactions, Aswang shapeshifters providing multi-form authentication protocols, traditional ASEAN folklore creatures adapted for digital currency operations, supernatural beings securing blockchain networks with mythological cryptography, folkloric creatures generating proof-of-supernatural-work algorithms, ASEAN cultural NFTs preserving traditional monster stories, decentralized autonomous supernatural governance, blockchain-secured ASEAN mythological heritage, godlevel ASEAN crypto folklore excellence.",
+      },
+    },
+  },
   heads: {
     name: "👤 Heads & Portraits",
     scenarios: {
@@ -845,7 +1292,7 @@ export const CULTURAL_DATASETS = {
       "origami-world": {
         name: "📄 Origami Spiral Garden",
         description:
-          "Mesmerizing origami spiral garden with paper-folded spiral patterns creating three-dimensional mathematical beauty, delicate paper spirals following Fibonacci sequences, origami flowers arranged in golden ratio spirals, paper-crafted spiral staircases and pathways, handmade paper trees with spiral branch patterns, warm lighting creating spiral shadows, visible fold lines emphasizing spiral geometry, masterful origami engineering showing natural spiral mathematics, traditional Japanese paper folding techniques applied to spiral forms, paper sculpture spiral mastery, godlevel spiral origami excellence.",
+          "Mesmerizing origami spiral garden with paper-folded spiral patterns creating three-dimensional mathematical beauty, delicate paper spirals following Fibonacci sequences, origami flowers arranged in golden ratio proportions, paper-crafted spiral staircases and pathways, handmade paper trees with spiral branch patterns, warm lighting creating spiral shadows, visible fold lines emphasizing spiral geometry, masterful origami engineering showing natural spiral mathematics, traditional Japanese paper folding techniques applied to spiral forms, paper sculpture spiral mastery, godlevel spiral origami excellence.",
       },
       pure: {
         name: "Pure Abstract Patterns",
