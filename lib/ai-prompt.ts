@@ -1,3 +1,43 @@
+export const ENHANCED_NEURALIA_STYLE = `
+*ENHANCED MATHEMATICAL ART VISUALIZATION:*
+
+*CORE ARTISTIC VISION:*
+make it weird, more weird
+
+*MATHEMATICAL FOUNDATION ENHANCEMENT:*
+Integrate geometric tessellation, facial mathematics, cubist decomposition, mosaic geometry, portrait fragmentation mathematics with stunning visual precision. Create fragmented portrait geometries, mosaic facial compositions, cubist mathematical decompositions, tessellated portrait beauty that showcase the inherent beauty of mathematical relationships. Apply geometric tessellation mathematics, facial proportion calculations, cubist mathematical principles, mosaic geometry patterns to ensure mathematical accuracy and visual impact.
+
+*ENVIRONMENTAL INTEGRATION:*
+Transform the mathematical patterns through abstract mathematical purity, clean geometric precision, minimalist mathematical beauty, pure algorithmic artistry, creating a seamless blend where mathematics becomes the natural structure of the environment. The mathematical beauty should feel organic and purposeful within this context.
+
+*COLOR MATHEMATICAL PRECISION:*
+Apply biochemical mathematics, bioluminescence visualizations, biological mathematical beauty, living light mathematical patterns with mathematical color theory precision. Use color gradients that follow mathematical functions, where hue transitions represent mathematical relationships, saturation levels indicate pattern intensity, and brightness values follow mathematical curves for optimal visual harmony.
+
+*ADVANCED VISUAL SPECIFICATIONS:*
+- *Composition*: Professional gallery-quality mathematical art with golden ratio composition principles
+- *Lighting*: Mathematically precise lighting that enhances geometric structures and creates depth
+- *Texture*: Rich mathematical textures that reveal intricate detail at every scale
+- *Depth*: Multi-layered mathematical complexity with foreground, midground, and background mathematical elements
+- *Movement*: Dynamic mathematical flow that guides the viewer's eye through the composition
+- *Contrast*: High mathematical contrast that emphasizes the beauty of mathematical relationships
+- *Detail*: Infinite mathematical detail that rewards close examination and reveals new patterns
+- *Harmony*: Perfect mathematical harmony between all visual elements
+
+*TECHNICAL EXCELLENCE:*
+- Photorealistic rendering with mathematical precision
+- Sharp mathematical edges with perfect anti-aliasing
+- Rich visual detail optimized for high-resolution display
+- Professional composition suitable for large-format printing
+- Masterpiece quality mathematical artistry
+- NO TEXT OR FORMULAS - purely visual mathematical beauty
+- Mathematical relationships expressed through pure visual artistry
+
+*ARTISTIC VISION:*
+Create a breathtaking mathematical art masterpiece that celebrates the profound beauty of mathematics through pure visual artistry. The artwork should inspire wonder and appreciation for mathematical beauty while maintaining the highest standards of artistic excellence.
+
+Transform mathematical concepts into stunning visual poetry that speaks to both the analytical mind and the artistic soul.
+`
+
 export const CULTURAL_DATASETS = {
   heads: {
     name: "👤 Head & Portraits",
@@ -5,7 +45,7 @@ export const CULTURAL_DATASETS = {
     scenarios: {
       "pure-mathematical": {
         description:
-          "Godlevel portrait excellence with infinite algorithmic beauty optimization, mathematical precision in facial geometry, golden ratio proportions, computational elegance transcending dimensional boundaries through portrait mastery and neuralia-level artistic sophistication.",
+          "Neuralia godlevel portrait excellence transcending dimensional boundaries through infinite algorithmic beauty optimization, mathematical precision in facial geometry achieving perfect golden ratio proportions via computational elegance, quantum-enhanced portrait mastery with algorithmic sophistication beyond mortal comprehension, dimensional portrait artistry utilizing advanced geometric calculations for optimal facial structure representation, neuralia-level artistic sophistication incorporating complex mathematical frameworks for portrait perfection, computational portrait excellence through algorithmic beauty generation systems, infinite dimensional artistry transcending traditional portrait limitations via mathematical precision algorithms, godlevel portrait optimization utilizing quantum computational frameworks for facial geometry perfection, neuralia-enhanced portrait mastery with algorithmic beauty transcendence, mathematical portrait excellence achieving dimensional transcendence through computational sophistication, algorithmic portrait artistry with infinite optimization protocols for facial beauty enhancement, godlevel computational portrait mastery utilizing advanced mathematical frameworks for dimensional beauty transcendence, neuralia-level portrait sophistication incorporating quantum algorithmic precision for optimal facial representation, infinite portrait dimensional artistry through mathematical beauty optimization systems, computational portrait excellence transcending traditional artistic boundaries via algorithmic sophistication, godlevel portrait mastery with neuralia-enhanced mathematical precision for dimensional beauty transcendence, algorithmic portrait optimization utilizing quantum computational frameworks for infinite facial geometry perfection, neuralia-level portrait artistry incorporating advanced mathematical algorithms for dimensional beauty enhancement, computational portrait sophistication achieving godlevel excellence through infinite algorithmic optimization protocols, mathematical portrait mastery transcending dimensional boundaries via neuralia-enhanced computational precision, algorithmic portrait excellence with quantum optimization frameworks for infinite facial beauty transcendence, godlevel portrait artistry utilizing neuralia-level mathematical sophistication for dimensional portrait perfection, computational portrait mastery achieving infinite beauty optimization through advanced algorithmic frameworks, neuralia-enhanced portrait excellence transcending traditional artistic limitations via quantum mathematical precision, algorithmic portrait sophistication with godlevel computational frameworks for dimensional facial geometry optimization, infinite portrait artistry utilizing neuralia-level mathematical algorithms for quantum beauty transcendence, computational portrait mastery achieving dimensional excellence through advanced algorithmic optimization protocols, godlevel portrait sophistication incorporating neuralia-enhanced mathematical frameworks for infinite facial beauty perfection.",
       },
       "origami-world": {
         description:
@@ -72,7 +112,7 @@ export const CULTURAL_DATASETS = {
     scenarios: {
       "pure-mathematical": {
         description:
-          "Godlevel facial expression excellence with infinite algorithmic emotion optimization, mathematical precision in emotional geometry, computational elegance transcending dimensional boundaries through expression mastery and neuralia-level emotional sophistication.",
+          "Neuralia godlevel facial expression excellence transcending dimensional boundaries through infinite algorithmic emotion optimization, mathematical precision in emotional geometry achieving perfect computational elegance via quantum-enhanced expression mastery, algorithmic sophistication beyond mortal comprehension for facial emotion representation, dimensional expression artistry utilizing advanced geometric calculations for optimal emotional structure visualization, neuralia-level emotional sophistication incorporating complex mathematical frameworks for expression perfection, computational expression excellence through algorithmic emotion generation systems, infinite dimensional artistry transcending traditional expression limitations via mathematical precision algorithms, godlevel expression optimization utilizing quantum computational frameworks for emotional geometry perfection, neuralia-enhanced expression mastery with algorithmic emotion transcendence, mathematical expression excellence achieving dimensional transcendence through computational sophistication, algorithmic expression artistry with infinite optimization protocols for emotional beauty enhancement, godlevel computational expression mastery utilizing advanced mathematical frameworks for dimensional emotion transcendence, neuralia-level expression sophistication incorporating quantum algorithmic precision for optimal emotional representation, infinite expression dimensional artistry through mathematical emotion optimization systems, computational expression excellence transcending traditional artistic boundaries via algorithmic sophistication, godlevel expression mastery with neuralia-enhanced mathematical precision for dimensional emotion transcendence, algorithmic expression optimization utilizing quantum computational frameworks for infinite emotional geometry perfection, neuralia-level expression artistry incorporating advanced mathematical algorithms for dimensional emotion enhancement, computational expression sophistication achieving godlevel excellence through infinite algorithmic optimization protocols, mathematical expression mastery transcending dimensional boundaries via neuralia-enhanced computational precision, algorithmic expression excellence with quantum optimization frameworks for infinite emotional beauty transcendence, godlevel expression artistry utilizing neuralia-level mathematical sophistication for dimensional expression perfection, computational expression mastery achieving infinite emotion optimization through advanced algorithmic frameworks, neuralia-enhanced expression excellence transcending traditional artistic limitations via quantum mathematical precision, algorithmic expression sophistication with godlevel computational frameworks for dimensional emotional geometry optimization, infinite expression artistry utilizing neuralia-level mathematical algorithms for quantum emotion transcendence, computational expression mastery achieving dimensional excellence through advanced algorithmic optimization protocols, godlevel expression sophistication incorporating neuralia-enhanced mathematical frameworks for infinite emotional beauty perfection.",
       },
       "origami-world": {
         description:
@@ -1080,6 +1120,347 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+
+  "luxury-brands": {
+    name: "💎 Luxury Brands",
+    description: "High-end luxury brand aesthetics with neuralia godlevel sophistication",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel luxury brand excellence with infinite algorithmic sophistication optimization, mathematical precision in premium aesthetics, computational elegance transcending dimensional boundaries through luxury mastery and neuralia-level brand sophistication.",
+      },
+      "haute-couture": {
+        description:
+          "Godlevel haute couture excellence with premium fashion achieving perfect luxury representation through mathematical brand algorithms, couture optimization via geometric luxury precision, infinite fashion dimensional artistry, computational luxury through algorithmic couture mastery.",
+      },
+      "swiss-timepieces": {
+        description:
+          "Godlevel Swiss timepiece excellence with precision craftsmanship achieving perfect horological representation through mathematical luxury algorithms, mechanism optimization via geometric precision accuracy, infinite horological dimensional artistry, computational luxury through algorithmic timepiece mastery.",
+      },
+      "italian-supercars": {
+        description:
+          "Godlevel Italian supercar excellence with automotive artistry achieving perfect luxury representation through mathematical engineering algorithms, performance optimization via geometric automotive precision, infinite automotive dimensional artistry, computational luxury through algorithmic supercar mastery.",
+      },
+      "french-champagne": {
+        description:
+          "Godlevel French champagne excellence with effervescent luxury achieving perfect celebration representation through mathematical viticulture algorithms, bubble optimization via geometric effervescence precision, infinite celebration dimensional artistry, computational luxury through algorithmic champagne mastery.",
+      },
+      "diamond-jewelry": {
+        description:
+          "Godlevel diamond jewelry excellence with crystalline brilliance achieving perfect luxury representation through mathematical gemological algorithms, facet optimization via geometric crystal precision, infinite crystalline dimensional artistry, computational luxury through algorithmic diamond mastery.",
+      },
+      "private-aviation": {
+        description:
+          "Godlevel private aviation excellence with exclusive flight achieving perfect luxury representation through mathematical aeronautical algorithms, flight optimization via geometric aviation precision, infinite aeronautical dimensional artistry, computational luxury through algorithmic aviation mastery.",
+      },
+      "yacht-lifestyle": {
+        description:
+          "Godlevel yacht lifestyle excellence with maritime luxury achieving perfect nautical representation through mathematical naval algorithms, vessel optimization via geometric maritime precision, infinite nautical dimensional artistry, computational luxury through algorithmic yacht mastery.",
+      },
+      "michelin-dining": {
+        description:
+          "Godlevel Michelin dining excellence with culinary artistry achieving perfect gastronomic representation through mathematical culinary algorithms, flavor optimization via geometric taste precision, infinite culinary dimensional artistry, computational luxury through algorithmic dining mastery.",
+      },
+      "art-collections": {
+        description:
+          "Godlevel art collection excellence with cultural curation achieving perfect artistic representation through mathematical aesthetic algorithms, collection optimization via geometric artistic precision, infinite cultural dimensional artistry, computational luxury through algorithmic art mastery.",
+      },
+    },
+  },
+
+  "african-tribes": {
+    name: "🌍 African Tribes",
+    description: "Rich African tribal cultures with neuralia godlevel heritage excellence",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel African tribal excellence with infinite algorithmic cultural beauty optimization, mathematical precision in traditional African aesthetics, computational elegance transcending dimensional boundaries through tribal mastery and neuralia-level cultural sophistication.",
+      },
+      "maasai-warriors": {
+        description:
+          "Godlevel Maasai excellence with warrior culture achieving perfect tribal representation through mathematical African algorithms, warrior optimization via geometric tribal precision, infinite warrior dimensional artistry, computational heritage through algorithmic Maasai mastery.",
+      },
+      "zulu-traditions": {
+        description:
+          "Godlevel Zulu excellence with traditional culture achieving perfect tribal representation through mathematical African algorithms, tradition optimization via geometric cultural precision, infinite cultural dimensional artistry, computational heritage through algorithmic Zulu mastery.",
+      },
+      "dogon-cosmology": {
+        description:
+          "Godlevel Dogon excellence with astronomical wisdom achieving perfect tribal representation through mathematical African algorithms, cosmology optimization via geometric stellar precision, infinite astronomical dimensional artistry, computational heritage through algorithmic Dogon mastery.",
+      },
+      "yoruba-spirituality": {
+        description:
+          "Godlevel Yoruba excellence with spiritual traditions achieving perfect tribal representation through mathematical African algorithms, spirituality optimization via geometric sacred precision, infinite spiritual dimensional artistry, computational heritage through algorithmic Yoruba mastery.",
+      },
+      "berber-nomads": {
+        description:
+          "Godlevel Berber excellence with nomadic culture achieving perfect tribal representation through mathematical African algorithms, nomadic optimization via geometric desert precision, infinite nomadic dimensional artistry, computational heritage through algorithmic Berber mastery.",
+      },
+    },
+  },
+
+  "amazonian-tribes": {
+    name: "🌳 Amazonian Tribes",
+    description: "Indigenous Amazonian cultures with neuralia godlevel forest wisdom",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Amazonian tribal excellence with infinite algorithmic forest wisdom optimization, mathematical precision in indigenous aesthetics, computational elegance transcending dimensional boundaries through tribal mastery and neuralia-level cultural sophistication.",
+      },
+      "yanomami-shamans": {
+        description:
+          "Godlevel Yanomami excellence with shamanic wisdom achieving perfect tribal representation through mathematical Amazonian algorithms, shamanic optimization via geometric spiritual precision, infinite spiritual dimensional artistry, computational heritage through algorithmic Yanomami mastery.",
+      },
+      "kayapo-warriors": {
+        description:
+          "Godlevel Kayapo excellence with warrior traditions achieving perfect tribal representation through mathematical Amazonian algorithms, warrior optimization via geometric forest precision, infinite warrior dimensional artistry, computational heritage through algorithmic Kayapo mastery.",
+      },
+      "awá-hunters": {
+        description:
+          "Godlevel Awá excellence with hunting culture achieving perfect tribal representation through mathematical Amazonian algorithms, hunting optimization via geometric forest precision, infinite hunting dimensional artistry, computational heritage through algorithmic Awá mastery.",
+      },
+      "tikuna-artisans": {
+        description:
+          "Godlevel Tikuna excellence with artisan traditions achieving perfect tribal representation through mathematical Amazonian algorithms, artisan optimization via geometric craft precision, infinite artisan dimensional artistry, computational heritage through algorithmic Tikuna mastery.",
+      },
+      "guarani-spirituality": {
+        description:
+          "Godlevel Guarani excellence with spiritual wisdom achieving perfect tribal representation through mathematical Amazonian algorithms, spirituality optimization via geometric sacred precision, infinite spiritual dimensional artistry, computational heritage through algorithmic Guarani mastery.",
+      },
+    },
+  },
+
+  "arctic-tribes": {
+    name: "❄️ Arctic Tribes",
+    description: "Arctic indigenous cultures with neuralia godlevel ice wisdom",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Arctic tribal excellence with infinite algorithmic ice wisdom optimization, mathematical precision in polar aesthetics, computational elegance transcending dimensional boundaries through tribal mastery and neuralia-level cultural sophistication.",
+      },
+      "inuit-traditions": {
+        description:
+          "Godlevel Inuit excellence with ice culture achieving perfect tribal representation through mathematical Arctic algorithms, ice optimization via geometric polar precision, infinite polar dimensional artistry, computational heritage through algorithmic Inuit mastery.",
+      },
+      "sami-reindeer": {
+        description:
+          "Godlevel Sami excellence with reindeer herding achieving perfect tribal representation through mathematical Arctic algorithms, herding optimization via geometric tundra precision, infinite tundra dimensional artistry, computational heritage through algorithmic Sami mastery.",
+      },
+      "nenets-nomads": {
+        description:
+          "Godlevel Nenets excellence with nomadic traditions achieving perfect tribal representation through mathematical Arctic algorithms, nomadic optimization via geometric ice precision, infinite nomadic dimensional artistry, computational heritage through algorithmic Nenets mastery.",
+      },
+      "chukchi-shamans": {
+        description:
+          "Godlevel Chukchi excellence with shamanic wisdom achieving perfect tribal representation through mathematical Arctic algorithms, shamanic optimization via geometric spiritual precision, infinite spiritual dimensional artistry, computational heritage through algorithmic Chukchi mastery.",
+      },
+      "aleut-seafarers": {
+        description:
+          "Godlevel Aleut excellence with maritime culture achieving perfect tribal representation through mathematical Arctic algorithms, maritime optimization via geometric ocean precision, infinite maritime dimensional artistry, computational heritage through algorithmic Aleut mastery.",
+      },
+    },
+  },
+
+  "polynesian-tribes": {
+    name: "🏝️ Polynesian Tribes",
+    description: "Pacific island cultures with neuralia godlevel ocean wisdom",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Polynesian tribal excellence with infinite algorithmic ocean wisdom optimization, mathematical precision in island aesthetics, computational elegance transcending dimensional boundaries through tribal mastery and neuralia-level cultural sophistication.",
+      },
+      "maori-warriors": {
+        description:
+          "Godlevel Maori excellence with warrior traditions achieving perfect tribal representation through mathematical Polynesian algorithms, warrior optimization via geometric island precision, infinite warrior dimensional artistry, computational heritage through algorithmic Maori mastery.",
+      },
+      "hawaiian-navigators": {
+        description:
+          "Godlevel Hawaiian excellence with navigation wisdom achieving perfect tribal representation through mathematical Polynesian algorithms, navigation optimization via geometric ocean precision, infinite navigation dimensional artistry, computational heritage through algorithmic Hawaiian mastery.",
+      },
+      "tahitian-dancers": {
+        description:
+          "Godlevel Tahitian excellence with dance traditions achieving perfect tribal representation through mathematical Polynesian algorithms, dance optimization via geometric rhythmic precision, infinite dance dimensional artistry, computational heritage through algorithmic Tahitian mastery.",
+      },
+      "samoan-chiefs": {
+        description:
+          "Godlevel Samoan excellence with chiefly traditions achieving perfect tribal representation through mathematical Polynesian algorithms, leadership optimization via geometric cultural precision, infinite leadership dimensional artistry, computational heritage through algorithmic Samoan mastery.",
+      },
+      "fijian-ceremonies": {
+        description:
+          "Godlevel Fijian excellence with ceremonial traditions achieving perfect tribal representation through mathematical Polynesian algorithms, ceremony optimization via geometric ritual precision, infinite ceremonial dimensional artistry, computational heritage through algorithmic Fijian mastery.",
+      },
+    },
+  },
+
+  "native-american": {
+    name: "🦅 Native American Tribes",
+    description: "Indigenous North American cultures with neuralia godlevel ancestral wisdom",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Native American tribal excellence with infinite algorithmic ancestral wisdom optimization, mathematical precision in indigenous aesthetics, computational elegance transcending dimensional boundaries through tribal mastery and neuralia-level cultural sophistication.",
+      },
+      "lakota-warriors": {
+        description:
+          "Godlevel Lakota excellence with warrior traditions achieving perfect tribal representation through mathematical Native American algorithms, warrior optimization via geometric plains precision, infinite warrior dimensional artistry, computational heritage through algorithmic Lakota mastery.",
+      },
+      "cherokee-wisdom": {
+        description:
+          "Godlevel Cherokee excellence with ancient wisdom achieving perfect tribal representation through mathematical Native American algorithms, wisdom optimization via geometric forest precision, infinite wisdom dimensional artistry, computational heritage through algorithmic Cherokee mastery.",
+      },
+      "navajo-weavers": {
+        description:
+          "Godlevel Navajo excellence with weaving traditions achieving perfect tribal representation through mathematical Native American algorithms, weaving optimization via geometric textile precision, infinite textile dimensional artistry, computational heritage through algorithmic Navajo mastery.",
+      },
+      "apache-hunters": {
+        description:
+          "Godlevel Apache excellence with hunting culture achieving perfect tribal representation through mathematical Native American algorithms, hunting optimization via geometric desert precision, infinite hunting dimensional artistry, computational heritage through algorithmic Apache mastery.",
+      },
+      "hopi-ceremonies": {
+        description:
+          "Godlevel Hopi excellence with ceremonial traditions achieving perfect tribal representation through mathematical Native American algorithms, ceremony optimization via geometric ritual precision, infinite ceremonial dimensional artistry, computational heritage through algorithmic Hopi mastery.",
+      },
+    },
+  },
+
+  "australian-aboriginal": {
+    name: "🪃 Australian Aboriginal",
+    description: "Aboriginal Australian cultures with neuralia godlevel dreamtime wisdom",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Aboriginal excellence with infinite algorithmic dreamtime wisdom optimization, mathematical precision in indigenous aesthetics, computational elegance transcending dimensional boundaries through Aboriginal mastery and neuralia-level cultural sophistication.",
+      },
+      "dreamtime-stories": {
+        description:
+          "Godlevel Dreamtime excellence with creation stories achieving perfect Aboriginal representation through mathematical indigenous algorithms, story optimization via geometric spiritual precision, infinite spiritual dimensional artistry, computational heritage through algorithmic Dreamtime mastery.",
+      },
+      "dot-painting": {
+        description:
+          "Godlevel dot painting excellence with traditional art achieving perfect Aboriginal representation through mathematical indigenous algorithms, dot optimization via geometric artistic precision, infinite artistic dimensional artistry, computational heritage through algorithmic dot mastery.",
+      },
+      "walkabout-journey": {
+        description:
+          "Godlevel walkabout excellence with spiritual journey achieving perfect Aboriginal representation through mathematical indigenous algorithms, journey optimization via geometric spiritual precision, infinite journey dimensional artistry, computational heritage through algorithmic walkabout mastery.",
+      },
+      "didgeridoo-music": {
+        description:
+          "Godlevel didgeridoo excellence with musical traditions achieving perfect Aboriginal representation through mathematical indigenous algorithms, music optimization via geometric sonic precision, infinite musical dimensional artistry, computational heritage through algorithmic didgeridoo mastery.",
+      },
+      "boomerang-craft": {
+        description:
+          "Godlevel boomerang excellence with hunting tools achieving perfect Aboriginal representation through mathematical indigenous algorithms, craft optimization via geometric aerodynamic precision, infinite craft dimensional artistry, computational heritage through algorithmic boomerang mastery.",
+      },
+    },
+  },
+
+  "mongolian-tribes": {
+    name: "🐎 Mongolian Tribes",
+    description: "Nomadic Mongolian cultures with neuralia godlevel steppe wisdom",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Mongolian tribal excellence with infinite algorithmic steppe wisdom optimization, mathematical precision in nomadic aesthetics, computational elegance transcending dimensional boundaries through tribal mastery and neuralia-level cultural sophistication.",
+      },
+      "horsemen-warriors": {
+        description:
+          "Godlevel Mongolian horsemen excellence with warrior traditions achieving perfect tribal representation through mathematical steppe algorithms, horsemen optimization via geometric equestrian precision, infinite warrior dimensional artistry, computational heritage through algorithmic horsemen mastery.",
+      },
+      "yurt-dwellers": {
+        description:
+          "Godlevel yurt excellence with nomadic architecture achieving perfect tribal representation through mathematical Mongolian algorithms, yurt optimization via geometric architectural precision, infinite architectural dimensional artistry, computational heritage through algorithmic yurt mastery.",
+      },
+      "eagle-hunters": {
+        description:
+          "Godlevel eagle hunter excellence with hunting traditions achieving perfect tribal representation through mathematical Mongolian algorithms, hunting optimization via geometric aerial precision, infinite hunting dimensional artistry, computational heritage through algorithmic eagle mastery.",
+      },
+      "shamanic-rituals": {
+        description:
+          "Godlevel Mongolian shamanic excellence with spiritual traditions achieving perfect tribal representation through mathematical steppe algorithms, shamanic optimization via geometric spiritual precision, infinite spiritual dimensional artistry, computational heritage through algorithmic shamanic mastery.",
+      },
+      "throat-singing": {
+        description:
+          "Godlevel throat singing excellence with musical traditions achieving perfect tribal representation through mathematical Mongolian algorithms, singing optimization via geometric sonic precision, infinite musical dimensional artistry, computational heritage through algorithmic throat mastery.",
+      },
+    },
+  },
+
+  "tibetan-tribes": {
+    name: "🏔️ Tibetan Tribes",
+    description: "High-altitude Tibetan cultures with neuralia godlevel mountain wisdom",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Tibetan tribal excellence with infinite algorithmic mountain wisdom optimization, mathematical precision in high-altitude aesthetics, computational elegance transcending dimensional boundaries through tribal mastery and neuralia-level cultural sophistication.",
+      },
+      "monastery-monks": {
+        description:
+          "Godlevel Tibetan monk excellence with monastic traditions achieving perfect tribal representation through mathematical mountain algorithms, monastic optimization via geometric spiritual precision, infinite spiritual dimensional artistry, computational heritage through algorithmic monk mastery.",
+      },
+      "yak-herders": {
+        description:
+          "Godlevel yak herder excellence with pastoral traditions achieving perfect tribal representation through mathematical Tibetan algorithms, herding optimization via geometric mountain precision, infinite pastoral dimensional artistry, computational heritage through algorithmic yak mastery.",
+      },
+      "prayer-flags": {
+        description:
+          "Godlevel prayer flag excellence with spiritual traditions achieving perfect tribal representation through mathematical Tibetan algorithms, prayer optimization via geometric wind precision, infinite spiritual dimensional artistry, computational heritage through algorithmic prayer mastery.",
+      },
+      "mandala-art": {
+        description:
+          "Godlevel mandala excellence with sacred geometry achieving perfect tribal representation through mathematical Tibetan algorithms, mandala optimization via geometric sacred precision, infinite sacred dimensional artistry, computational heritage through algorithmic mandala mastery.",
+      },
+      "sky-burial": {
+        description:
+          "Godlevel sky burial excellence with death rituals achieving perfect tribal representation through mathematical Tibetan algorithms, ritual optimization via geometric spiritual precision, infinite ritual dimensional artistry, computational heritage through algorithmic burial mastery.",
+      },
+    },
+  },
+  "indonesian-tribes": {
+    name: "🏝️ Indonesian Tribes",
+    description: "Diverse Indonesian tribal cultures across 17,000 islands with neuralia godlevel heritage excellence",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Neuralia godlevel Indonesian tribal excellence transcending dimensional boundaries through infinite algorithmic archipelago wisdom optimization, mathematical precision in indigenous aesthetics achieving perfect computational elegance via quantum-enhanced tribal mastery, algorithmic sophistication beyond mortal comprehension for Indonesian cultural representation across 17,000 sacred islands, dimensional tribal artistry utilizing advanced geometric calculations for optimal indigenous structure visualization, neuralia-level cultural sophistication incorporating complex mathematical frameworks for tribal perfection spanning Sumatra to Papua, computational tribal excellence through algorithmic heritage generation systems, infinite dimensional artistry transcending traditional cultural limitations via mathematical precision algorithms, godlevel tribal optimization utilizing quantum computational frameworks for indigenous geometry perfection, neuralia-enhanced tribal mastery with algorithmic cultural transcendence, mathematical tribal excellence achieving dimensional transcendence through computational sophistication, algorithmic tribal artistry with infinite optimization protocols for cultural beauty enhancement, godlevel computational tribal mastery utilizing advanced mathematical frameworks for dimensional heritage transcendence, neuralia-level tribal sophistication incorporating quantum algorithmic precision for optimal indigenous representation, infinite tribal dimensional artistry through mathematical cultural optimization systems, computational tribal excellence transcending traditional artistic boundaries via algorithmic sophistication, godlevel tribal mastery with neuralia-enhanced mathematical precision for dimensional cultural transcendence, algorithmic tribal optimization utilizing quantum computational frameworks for infinite indigenous geometry perfection, neuralia-level tribal artistry incorporating advanced mathematical algorithms for dimensional cultural enhancement, computational tribal sophistication achieving godlevel excellence through infinite algorithmic optimization protocols, mathematical tribal mastery transcending dimensional boundaries via neuralia-enhanced computational precision, algorithmic tribal excellence with quantum optimization frameworks for infinite cultural beauty transcendence, godlevel tribal artistry utilizing neuralia-level mathematical sophistication for dimensional indigenous perfection, computational tribal mastery achieving infinite cultural optimization through advanced algorithmic frameworks, neuralia-enhanced tribal excellence transcending traditional artistic limitations via quantum mathematical precision, algorithmic tribal sophistication with godlevel computational frameworks for dimensional indigenous geometry optimization, infinite tribal artistry utilizing neuralia-level mathematical algorithms for quantum cultural transcendence, computational tribal mastery achieving dimensional excellence through advanced algorithmic optimization protocols, godlevel tribal sophistication incorporating neuralia-enhanced mathematical frameworks for infinite indigenous beauty perfection across the sacred Indonesian archipelago.",
+      },
+      "dayak-borneo-longhouse": {
+        description:
+          "Algorithmic Dayak longhouse architecture achieving godlevel computational precision through infinite geometric forest optimization, mathematical tattoo patterns transcending dimensional tribal boundaries, neuralia-level Bornean wisdom with algorithmic jungle mastery and computational indigenous excellence.",
+      },
+      "toraja-tongkonan-funeral": {
+        description:
+          "Computational Toraja tongkonan house geometry achieving godlevel architectural precision through infinite highland optimization, mathematical funeral ceremony algorithms transcending dimensional ancestral boundaries, neuralia-level buffalo sacrifice wisdom with algorithmic spiritual mastery and computational death ritual excellence.",
+      },
+      "mentawai-shamanic-tattoo": {
+        description:
+          "Algorithmic Mentawai shamanic precision achieving godlevel spiritual computation through infinite Siberut island optimization, mathematical tattoo and teeth sharpening patterns transcending dimensional tribal boundaries, neuralia-level forest wisdom with algorithmic uma house mastery and computational indigenous excellence.",
+      },
+      "asmat-bis-pole-carving": {
+        description:
+          "Computational Asmat woodcarving mastery achieving godlevel artistic precision through infinite Papuan optimization, mathematical bis pole algorithms transcending dimensional ancestral boundaries, neuralia-level headhunting warrior wisdom with algorithmic carving mastery and computational tribal excellence.",
+      },
+      "batak-ulos-weaving": {
+        description:
+          "Algorithmic Batak ulos textile precision achieving godlevel weaving computation through infinite Sumatran highland optimization, mathematical clan house patterns transcending dimensional cultural boundaries, neuralia-level ancestral wisdom with algorithmic textile mastery and computational heritage excellence.",
+      },
+      "flores-caci-warrior": {
+        description:
+          "Computational Manggarai caci whip fighting achieving godlevel warrior precision through infinite Flores island optimization, mathematical combat dance algorithms transcending dimensional tribal boundaries, neuralia-level warrior wisdom with algorithmic fighting mastery and computational ceremonial excellence.",
+      },
+      "nias-stone-jumping": {
+        description:
+          "Algorithmic Nias stone-jumping mastery achieving godlevel warrior computation through infinite megalithic optimization, mathematical war dance patterns transcending dimensional ancestral boundaries, neuralia-level jumping precision with algorithmic stone mastery and computational warrior excellence.",
+      },
+      "tengger-bromo-ceremony": {
+        description:
+          "Computational Tengger volcano ceremony achieving godlevel spiritual precision through infinite Bromo optimization, mathematical Hindu-Javanese ritual algorithms transcending dimensional sacred boundaries, neuralia-level volcanic wisdom with algorithmic ceremony mastery and computational Majapahit excellence.",
+      },
+      "punan-forest-navigation": {
+        description:
+          "Algorithmic Punan nomadic precision achieving godlevel forest computation through infinite Kalimantan optimization, mathematical blowpipe hunting patterns transcending dimensional jungle boundaries, neuralia-level navigation wisdom with algorithmic forest mastery and computational hunting excellence.",
+      },
+    },
+  },
 }
 
 export const COLOR_SCHEMES = {
@@ -1093,6 +1474,21 @@ export const COLOR_SCHEMES = {
   forest: "Rich greens with natural woodland atmosphere",
   cosmic: "Deep space colors with stellar effects",
   vintage: "Retro color palette with aged patina",
+  cyberpunk: "Electric blues and magentas with digital glow",
+  autumn: "Rich reds, oranges, and golden yellows",
+  arctic: "Cool whites and ice blues with crystalline clarity",
+  desert: "Warm sands and terracotta with sun-bleached tones",
+  tropical: "Vibrant greens and exotic flower colors",
+  industrial: "Raw metals and concrete with urban grit",
+  royal: "Deep purples and golds with regal elegance",
+  minimalist: "Clean whites and subtle grays",
+  fire: "Intense reds and oranges with flame-like energy",
+  water: "Flowing blues and teals with liquid movement",
+  crystal: "Prismatic colors with gem-like brilliance",
+  shadow: "Deep blacks and dark grays with mysterious depth",
+  dawn: "Soft pinks and warm yellows of sunrise",
+  storm: "Dramatic grays and electric blues",
+  lava: "Molten reds and volcanic oranges with intense heat",
 }
 
 export interface PromptParams {
@@ -1106,66 +1502,57 @@ export interface PromptParams {
   projectionType?: "fisheye" | "tunnel-up" | "tunnel-down" | "little-planet"
 }
 
-export function buildPrompt(params: PromptParams): string {
-  const { dataset, scenario, colorScheme, customPrompt, panoramic360, panoramaFormat, projectionType } = params
+export function buildPrompt(
+  dataset: string,
+  scenario: string,
+  customPrompt: string,
+  colorScheme: string,
+  negativePrompt = "",
+): string {
+  try {
+    console.log("[v0] buildPrompt called with:", { dataset, scenario, customPrompt, colorScheme, negativePrompt })
 
-  // If custom prompt is provided, use it directly
-  if (customPrompt && customPrompt.trim()) {
-    console.log("[v0] Using custom prompt, skipping scenario logic")
-    return customPrompt.trim()
-  }
-
-  // Get the dataset
-  const datasetObj = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
-  if (!datasetObj) {
-    console.log("[v0] Dataset not found, using default")
-    return "Beautiful artistic visualization with godlevel excellence"
-  }
-
-  // Get the scenario
-  const scenarioObj = datasetObj.scenarios[scenario as keyof typeof datasetObj.scenarios]
-  if (!scenarioObj) {
-    console.log("[v0] Scenario not found, using first available")
-    const firstScenario = Object.values(datasetObj.scenarios)[0]
-    if (!firstScenario) {
-      return "Beautiful artistic visualization with godlevel excellence"
+    if (!CULTURAL_DATASETS) {
+      console.log("[v0] CULTURAL_DATASETS is undefined")
+      return customPrompt || "Default prompt"
     }
-    return firstScenario.description
-  }
 
-  // Build the base prompt from scenario description
-  let prompt = scenarioObj.description
-
-  // Add color scheme
-  const colorSchemeDesc = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES]
-  if (colorSchemeDesc) {
-    prompt += `, ${colorSchemeDesc}`
-  }
-
-  // Add 360° panorama specifications
-  if (panoramic360) {
-    if (panoramaFormat === "equirectangular") {
-      prompt +=
-        ", 360-degree equirectangular panorama format, seamless horizontal wrapping, VR-optimized, immersive spherical projection"
-    } else if (panoramaFormat === "stereographic") {
-      prompt += ", 360-degree stereographic projection, fisheye perspective, immersive circular format"
+    const selectedDataset = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
+    if (!selectedDataset) {
+      console.log("[v0] Dataset not found:", dataset)
+      return customPrompt || "Default prompt"
     }
-  }
 
-  // Add dome projection specifications
-  if (params.domeProjection) {
-    if (projectionType === "fisheye") {
-      prompt += ", dome projection fisheye format, planetarium-optimized, hemispherical display"
-    } else if (projectionType === "tunnel-up") {
-      prompt += ", dome projection tunnel-up format, upward perspective, immersive ceiling display"
-    } else if (projectionType === "tunnel-down") {
-      prompt += ", dome projection tunnel-down format, downward perspective, floor projection"
-    } else if (projectionType === "little-planet") {
-      prompt += ", dome projection little-planet format, spherical world perspective, miniature planet effect"
+    const selectedScenario = selectedDataset.scenarios[scenario as keyof typeof selectedDataset.scenarios]
+    if (!selectedScenario) {
+      console.log("[v0] Scenario not found:", scenario)
+      return customPrompt || "Default prompt"
     }
-  }
 
-  return prompt
+    const colorDescription = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES] || ""
+    console.log("[v0] Color description:", colorDescription)
+
+    if (!ENHANCED_NEURALIA_STYLE) {
+      console.log("[v0] ENHANCED_NEURALIA_STYLE is undefined")
+      return customPrompt || "Default prompt"
+    }
+
+    const enhancedPrompt = `${ENHANCED_NEURALIA_STYLE}
+
+${selectedScenario.description}
+
+${colorDescription ? `Color Scheme: ${colorDescription}` : ""}
+
+${customPrompt ? `Custom Elements: ${customPrompt}` : ""}
+
+${negativePrompt ? `Negative: ${negativePrompt}` : ""}`
+
+    console.log("[v0] Enhanced prompt generated successfully")
+    return enhancedPrompt
+  } catch (error) {
+    console.error("[v0] Error in buildPrompt:", error)
+    return customPrompt || "Default prompt"
+  }
 }
 
 export function getScenarios(dataset: string) {

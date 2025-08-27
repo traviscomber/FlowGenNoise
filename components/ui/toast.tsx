@@ -3,7 +3,7 @@
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps, cn } from "@/lib/utils"
-import { X } from "lucide-react"
+// import { X } from 'lucide-react'
 
 const ToastProvider = ToastPrimitives.Provider
 
@@ -73,7 +73,7 @@ const ToastClose = React.forwardRef<
     toast-close=""
     {...props}
   >
-    <X className="h-4 w-4" />
+    <span className="h-4 w-4">✕</span>
   </ToastPrimitives.Close>
 ))
 ToastClose.displayName = ToastPrimitives.Close.displayName
