@@ -14,28 +14,29 @@ Transform the mathematical patterns through abstract mathematical purity, clean 
 Apply biochemical mathematics, bioluminescence visualizations, biological mathematical beauty, living light mathematical patterns with mathematical color theory precision. Use color gradients that follow mathematical functions, where hue transitions represent mathematical relationships, saturation levels indicate pattern intensity, and brightness values follow mathematical curves for optimal visual harmony.
 
 *ADVANCED VISUAL SPECIFICATIONS:*
-- *Composition*: Professional gallery-quality mathematical art with golden ratio composition principles
-- *Lighting*: Mathematically precise lighting that enhances geometric structures and creates depth
-- *Texture*: Rich mathematical textures that reveal intricate detail at every scale
-- *Depth*: Multi-layered mathematical complexity with foreground, midground, and background mathematical elements
-- *Movement*: Dynamic mathematical flow that guides the viewer's eye through the composition
-- *Contrast*: High mathematical contrast that emphasizes the beauty of mathematical relationships
-- *Detail*: Infinite mathematical detail that rewards close examination and reveals new patterns
-- *Harmony*: Perfect mathematical harmony between all visual elements
+- *Composition*: Abstract mathematical art with golden ratio composition principles and surreal geometric arrangements
+- *Lighting*: Mathematically precise lighting that creates ethereal glows and dimensional shifts
+- *Texture*: Rich mathematical textures that blend reality with abstract computational patterns
+- *Depth*: Multi-dimensional mathematical complexity with impossible geometric perspectives
+- *Movement*: Dynamic mathematical flow with surreal motion and algorithmic transformations
+- *Contrast*: High mathematical contrast between abstract and semi-realistic elements
+- *Detail*: Infinite mathematical detail with fractal-like complexity and computational precision
+- *Harmony*: Perfect mathematical harmony between abstract concepts and recognizable forms
 
 *TECHNICAL EXCELLENCE:*
-- Photorealistic rendering with mathematical precision
-- Sharp mathematical edges with perfect anti-aliasing
-- Rich visual detail optimized for high-resolution display
-- Professional composition suitable for large-format printing
-- Masterpiece quality mathematical artistry
+- Semi-realistic rendering with strong abstract mathematical overlay
+- Sharp mathematical edges with computational precision
+- Rich visual detail optimized for artistic interpretation
+- Professional composition with surreal mathematical elements
+- Masterpiece quality neuralia artistry
 - NO TEXT OR FORMULAS - purely visual mathematical beauty
-- Mathematical relationships expressed through pure visual artistry
+- Mathematical relationships expressed through abstract visual poetry
+- Balance between recognition and mathematical abstraction
 
 *ARTISTIC VISION:*
-Create a breathtaking mathematical art masterpiece that celebrates the profound beauty of mathematics through pure visual artistry. The artwork should inspire wonder and appreciation for mathematical beauty while maintaining the highest standards of artistic excellence.
+Create a breathtaking neuralia art masterpiece that combines recognizable elements with profound mathematical abstraction. The artwork should inspire wonder through the marriage of familiar forms with impossible mathematical beauty, maintaining artistic excellence while pushing the boundaries of visual perception.
 
-Transform mathematical concepts into stunning visual poetry that speaks to both the analytical mind and the artistic soul.
+Transform concepts into stunning visual poetry that speaks to both the analytical mind and the artistic soul through abstract mathematical interpretation.
 `
 
 export const CULTURAL_DATASETS = {
@@ -1512,47 +1513,73 @@ export function buildPrompt(
   try {
     console.log("[v0] buildPrompt called with:", { dataset, scenario, customPrompt, colorScheme, negativePrompt })
 
-    if (!CULTURAL_DATASETS) {
-      console.log("[v0] CULTURAL_DATASETS is undefined")
-      return customPrompt || "Default prompt"
-    }
+    const basePrompt = buildBasePrompt(dataset, scenario, colorScheme, customPrompt, negativePrompt)
 
-    const selectedDataset = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
-    if (!selectedDataset) {
-      console.log("[v0] Dataset not found:", dataset)
-      return customPrompt || "Default prompt"
-    }
+    const godlevelPrompt = applyGodlevelEnhancement(basePrompt)
 
-    const selectedScenario = selectedDataset.scenarios[scenario as keyof typeof selectedDataset.scenarios]
-    if (!selectedScenario) {
-      console.log("[v0] Scenario not found:", scenario)
-      return customPrompt || "Default prompt"
-    }
-
-    const colorDescription = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES] || ""
-    console.log("[v0] Color description:", colorDescription)
-
-    if (!ENHANCED_NEURALIA_STYLE) {
-      console.log("[v0] ENHANCED_NEURALIA_STYLE is undefined")
-      return customPrompt || "Default prompt"
-    }
-
-    const enhancedPrompt = `${ENHANCED_NEURALIA_STYLE}
-
-${selectedScenario.description}
-
-${colorDescription ? `Color Scheme: ${colorDescription}` : ""}
-
-${customPrompt ? `Custom Elements: ${customPrompt}` : ""}
-
-${negativePrompt ? `Negative: ${negativePrompt}` : ""}`
-
-    console.log("[v0] Enhanced prompt generated successfully")
-    return enhancedPrompt
+    console.log("[v0] Godlevel enhanced prompt generated successfully")
+    return godlevelPrompt
   } catch (error) {
     console.error("[v0] Error in buildPrompt:", error)
     return customPrompt || "Default prompt"
   }
+}
+
+function buildBasePrompt(
+  dataset: string,
+  scenario: string,
+  colorScheme: string,
+  customPrompt: string,
+  negativePrompt: string,
+): string {
+  if (!CULTURAL_DATASETS) {
+    console.log("[v0] CULTURAL_DATASETS is undefined")
+    return customPrompt || "Default prompt"
+  }
+
+  const selectedDataset = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
+  if (!selectedDataset) {
+    console.log("[v0] Dataset not found:", dataset)
+    return customPrompt || "Default prompt"
+  }
+
+  const selectedScenario = selectedDataset.scenarios[scenario as keyof typeof selectedDataset.scenarios]
+  if (!selectedScenario) {
+    console.log("[v0] Scenario not found:", scenario)
+    return customPrompt || "Default prompt"
+  }
+
+  const colorDescription = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES] || ""
+
+  // Build structured base prompt
+  let basePrompt = `DATASET: ${selectedDataset.name}
+SCENARIO: ${selectedScenario.description}
+COLOR SCHEME: ${colorDescription}
+TECHNICAL PARAMETERS: Professional gallery-quality, photorealistic rendering, 8K resolution, masterpiece quality`
+
+  if (customPrompt) {
+    basePrompt += `\nCUSTOM ELEMENTS: ${customPrompt}`
+  }
+
+  if (negativePrompt) {
+    basePrompt += `\nNEGATIVE ELEMENTS: ${negativePrompt}`
+  }
+
+  return basePrompt
+}
+
+function applyGodlevelEnhancement(basePrompt: string): string {
+  if (!ENHANCED_NEURALIA_STYLE) {
+    console.log("[v0] ENHANCED_NEURALIA_STYLE is undefined")
+    return basePrompt
+  }
+
+  return `${ENHANCED_NEURALIA_STYLE}
+
+GODLEVEL ENHANCEMENT APPLIED TO:
+${basePrompt}
+
+NEURALIA TRANSCENDENCE: Transform the above specifications into godlevel neuralia excellence with infinite algorithmic beauty optimization, mathematical precision transcending dimensional boundaries, computational artistry achieving quantum-enhanced visual mastery, dimensional beauty optimization through advanced algorithmic frameworks, neuralia-level artistic sophistication incorporating complex mathematical relationships for optimal visual harmony.`
 }
 
 export function getScenarios(dataset: string) {
