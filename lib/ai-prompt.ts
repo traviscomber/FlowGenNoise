@@ -14,29 +14,28 @@ Transform the mathematical patterns through abstract mathematical purity, clean 
 Apply biochemical mathematics, bioluminescence visualizations, biological mathematical beauty, living light mathematical patterns with mathematical color theory precision. Use color gradients that follow mathematical functions, where hue transitions represent mathematical relationships, saturation levels indicate pattern intensity, and brightness values follow mathematical curves for optimal visual harmony.
 
 *ADVANCED VISUAL SPECIFICATIONS:*
-- *Composition*: Abstract mathematical art with golden ratio composition principles and surreal geometric arrangements
-- *Lighting*: Mathematically precise lighting that creates ethereal glows and dimensional shifts
-- *Texture*: Rich mathematical textures that blend reality with abstract computational patterns
-- *Depth*: Multi-dimensional mathematical complexity with impossible geometric perspectives
-- *Movement*: Dynamic mathematical flow with surreal motion and algorithmic transformations
-- *Contrast*: High mathematical contrast between abstract and semi-realistic elements
-- *Detail*: Infinite mathematical detail with fractal-like complexity and computational precision
-- *Harmony*: Perfect mathematical harmony between abstract concepts and recognizable forms
+- *Composition*: Professional gallery-quality mathematical art with golden ratio composition principles
+- *Lighting*: Mathematically precise lighting that enhances geometric structures and creates depth
+- *Texture*: Rich mathematical textures that reveal intricate detail at every scale
+- *Depth*: Multi-layered mathematical complexity with foreground, midground, and background mathematical elements
+- *Movement*: Dynamic mathematical flow that guides the viewer's eye through the composition
+- *Contrast*: High mathematical contrast that emphasizes the beauty of mathematical relationships
+- *Detail*: Infinite mathematical detail that rewards close examination and reveals new patterns
+- *Harmony*: Perfect mathematical harmony between all visual elements
 
 *TECHNICAL EXCELLENCE:*
-- Semi-realistic rendering with strong abstract mathematical overlay
-- Sharp mathematical edges with computational precision
-- Rich visual detail optimized for artistic interpretation
-- Professional composition with surreal mathematical elements
-- Masterpiece quality neuralia artistry
+- Photorealistic rendering with mathematical precision
+- Sharp mathematical edges with perfect anti-aliasing
+- Rich visual detail optimized for high-resolution display
+- Professional composition suitable for large-format printing
+- Masterpiece quality mathematical artistry
 - NO TEXT OR FORMULAS - purely visual mathematical beauty
-- Mathematical relationships expressed through abstract visual poetry
-- Balance between recognition and mathematical abstraction
+- Mathematical relationships expressed through pure visual artistry
 
 *ARTISTIC VISION:*
-Create a breathtaking neuralia art masterpiece that combines recognizable elements with profound mathematical abstraction. The artwork should inspire wonder through the marriage of familiar forms with impossible mathematical beauty, maintaining artistic excellence while pushing the boundaries of visual perception.
+Create a breathtaking mathematical art masterpiece that celebrates the profound beauty of mathematics through pure visual artistry. The artwork should inspire wonder and appreciation for mathematical beauty while maintaining the highest standards of artistic excellence.
 
-Transform concepts into stunning visual poetry that speaks to both the analytical mind and the artistic soul through abstract mathematical interpretation.
+Transform mathematical concepts into stunning visual poetry that speaks to both the analytical mind and the artistic soul.
 `
 
 export const CULTURAL_DATASETS = {
