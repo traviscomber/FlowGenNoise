@@ -1,0 +1,28 @@
+-- Insert color schemes
+INSERT INTO color_schemes (name, colors) VALUES
+('neuralia', '["#FF6B35", "#F7931E", "#FFD23F", "#06FFA5", "#118AB2"]'),
+('cosmic', '["#1A0B3D", "#3D1A78", "#7209B7", "#A663CC", "#4CC9F0"]'),
+('organic', '["#2D5016", "#61A5C2", "#A9D6E5", "#E9C46A", "#F4A261"]'),
+('volcanic', '["#8B0000", "#FF4500", "#FF6347", "#FFD700", "#FFA500"]'),
+('oceanic', '["#003366", "#0066CC", "#3399FF", "#66CCFF", "#99E6FF"]'),
+('forest', '["#1B4332", "#2D5A27", "#40916C", "#52B788", "#74C69D"]'),
+('sunset', '["#FF6B35", "#F7931E", "#FFD23F", "#FFBE0B", "#FB8500"]'),
+('arctic', '["#E8F4F8", "#B8E0D2", "#95D5B2", "#74C69D", "#52B788"]'),
+('desert', '["#D4A574", "#E9C46A", "#F4A261", "#E76F51", "#E63946"]'),
+('neon', '["#FF006E", "#8338EC", "#3A86FF", "#06FFA5", "#FFBE0B"]'),
+('monochrome', '["#000000", "#333333", "#666666", "#999999", "#CCCCCC"]'),
+('pastel', '["#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF"]'),
+('metallic', '["#C0C0C0", "#FFD700", "#CD7F32", "#E5E4E2", "#B87333"]'),
+('jewel', '["#8B008B", "#4B0082", "#006400", "#8B0000", "#FF8C00"]'),
+('earth', '["#8B4513", "#A0522D", "#CD853F", "#DEB887", "#F5DEB3"]'),
+('fire', '["#FF0000", "#FF4500", "#FF6347", "#FF7F50", "#FFA500"]'),
+('water', '["#000080", "#0000CD", "#4169E1", "#6495ED", "#87CEEB"]'),
+('air', '["#E0E0E0", "#D3D3D3", "#C0C0C0", "#B0C4DE", "#87CEEB"]'),
+('electric', '["#00FFFF", "#00CED1", "#20B2AA", "#48D1CC", "#40E0D0"]'),
+('mystic', '["#4B0082", "#8A2BE2", "#9370DB", "#BA55D3", "#DA70D6"]'),
+('golden', '["#FFD700", "#FFA500", "#FF8C00", "#DAA520", "#B8860B"]'),
+('silver', '["#C0C0C0", "#A9A9A9", "#808080", "#696969", "#778899"]'),
+('rainbow', '["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF"]'),
+('galaxy', '["#191970", "#483D8B", "#6A5ACD", "#9370DB", "#8A2BE2"]'),
+('aurora', '["#00FF7F", "#00CED1", "#1E90FF", "#9370DB", "#FF69B4"]')
+ON CONFLICT (name) DO NOTHING;
