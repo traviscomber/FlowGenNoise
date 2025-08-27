@@ -24,20 +24,18 @@ Apply biochemical mathematics, bioluminescence visualizations, biological mathem
 - *Harmony*: Perfect mathematical harmony between all visual elements
 
 *TECHNICAL EXCELLENCE:*
-- Semi-realistic rendering with strong mathematical abstraction overlay
-- Mathematical precision balanced with artistic interpretation
-- Sharp geometric edges with perfect mathematical transitions
-- Rich visual detail optimized for mathematical beauty expression
-- Professional composition suitable for mathematical art galleries
-- Masterpiece quality mathematical artistry with abstract elements
+- Photorealistic rendering with mathematical precision
+- Sharp mathematical edges with perfect anti-aliasing
+- Rich visual detail optimized for high-resolution display
+- Professional composition suitable for large-format printing
+- Masterpiece quality mathematical artistry
 - NO TEXT OR FORMULAS - purely visual mathematical beauty
-- Mathematical relationships expressed through balanced realism and abstraction
-- Artistic interpretation of mathematical concepts with selective realistic elements
+- Mathematical relationships expressed through pure visual artistry
 
 *ARTISTIC VISION:*
-Create a breathtaking mathematical art masterpiece that celebrates the profound beauty of mathematics through balanced visual artistry. The artwork should inspire wonder and appreciation for mathematical beauty while maintaining artistic interpretation over pure realism.
+Create a breathtaking mathematical art masterpiece that celebrates the profound beauty of mathematics through pure visual artistry. The artwork should inspire wonder and appreciation for mathematical beauty while maintaining the highest standards of artistic excellence.
 
-Transform mathematical concepts into stunning visual poetry that speaks to both the analytical mind and the artistic soul through balanced abstraction and selective realism.
+Transform mathematical concepts into stunning visual poetry that speaks to both the analytical mind and the artistic soul.
 `
 
 export const CULTURAL_DATASETS = {
