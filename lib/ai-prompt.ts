@@ -1,43 +1,3 @@
-export const ENHANCED_NEURALIA_STYLE = `
-*ENHANCED MATHEMATICAL ART VISUALIZATION:*
-
-*CORE ARTISTIC VISION:*
-make it weird, more weird
-
-*MATHEMATICAL FOUNDATION ENHANCEMENT:*
-Integrate geometric tessellation, facial mathematics, cubist decomposition, mosaic geometry, portrait fragmentation mathematics with stunning visual precision. Create fragmented portrait geometries, mosaic facial compositions, cubist mathematical decompositions, tessellated portrait beauty that showcase the inherent beauty of mathematical relationships. Apply geometric tessellation mathematics, facial proportion calculations, cubist mathematical principles, mosaic geometry patterns to ensure mathematical accuracy and visual impact.
-
-*ENVIRONMENTAL INTEGRATION:*
-Transform the mathematical patterns through abstract mathematical purity, clean geometric precision, minimalist mathematical beauty, pure algorithmic artistry, creating a seamless blend where mathematics becomes the natural structure of the environment. The mathematical beauty should feel organic and purposeful within this context.
-
-*COLOR MATHEMATICAL PRECISION:*
-Apply biochemical mathematics, bioluminescence visualizations, biological mathematical beauty, living light mathematical patterns with mathematical color theory precision. Use color gradients that follow mathematical functions, where hue transitions represent mathematical relationships, saturation levels indicate pattern intensity, and brightness values follow mathematical curves for optimal visual harmony.
-
-*ADVANCED VISUAL SPECIFICATIONS:*
-- *Composition*: Professional gallery-quality mathematical art with golden ratio composition principles
-- *Lighting*: Mathematically precise lighting that enhances geometric structures and creates depth
-- *Texture*: Rich mathematical textures that reveal intricate detail at every scale
-- *Depth*: Multi-layered mathematical complexity with foreground, midground, and background mathematical elements
-- *Movement*: Dynamic mathematical flow that guides the viewer's eye through the composition
-- *Contrast*: High mathematical contrast that emphasizes the beauty of mathematical relationships
-- *Detail*: Infinite mathematical detail that rewards close examination and reveals new patterns
-- *Harmony*: Perfect mathematical harmony between all visual elements
-
-*TECHNICAL EXCELLENCE:*
-- Photorealistic rendering with mathematical precision
-- Sharp mathematical edges with perfect anti-aliasing
-- Rich visual detail optimized for high-resolution display
-- Professional composition suitable for large-format printing
-- Masterpiece quality mathematical artistry
-- NO TEXT OR FORMULAS - purely visual mathematical beauty
-- Mathematical relationships expressed through pure visual artistry
-
-*ARTISTIC VISION:*
-Create a breathtaking mathematical art masterpiece that celebrates the profound beauty of mathematics through pure visual artistry. The artwork should inspire wonder and appreciation for mathematical beauty while maintaining the highest standards of artistic excellence.
-
-Transform mathematical concepts into stunning visual poetry that speaks to both the analytical mind and the artistic soul.
-`
-
 export const CULTURAL_DATASETS = {
   heads: {
     name: "👤 Head & Portraits",
@@ -197,6 +157,34 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel Vietnamese dragon excellence with mythical creature achieving perfect cultural representation through mathematical folklore algorithms, scale pattern optimization via geometric traditional precision, infinite mythological dimensional artistry, computational folklore through algorithmic dragon mastery.",
       },
+      "trung-sisters": {
+        description:
+          "Godlevel Trung Sisters excellence with legendary Vietnamese heroines achieving perfect historical representation through mathematical warrior algorithms, twin leadership optimization via geometric cultural precision, infinite heroic dimensional artistry, computational Vietnamese resistance through algorithmic sisterhood mastery.",
+      },
+      "water-puppets": {
+        description:
+          "Godlevel water puppet excellence with traditional theater achieving perfect cultural representation through mathematical performance algorithms, puppet movement optimization via geometric water precision, infinite theatrical dimensional artistry, computational performance through algorithmic puppet mastery.",
+      },
+      "conical-hat": {
+        description:
+          "Godlevel nón lá excellence with traditional headwear achieving perfect cultural representation through mathematical craft algorithms, weaving optimization via geometric palm precision, infinite craft dimensional artistry, computational tradition through algorithmic hat mastery.",
+      },
+      "mekong-delta": {
+        description:
+          "Godlevel Mekong Delta excellence with river life achieving perfect cultural representation through mathematical aquatic algorithms, delta optimization via geometric water precision, infinite aquatic dimensional artistry, computational geography through algorithmic delta mastery.",
+      },
+      "temple-architecture": {
+        description:
+          "Godlevel Vietnamese temple excellence with sacred architecture achieving perfect spiritual representation through mathematical cultural algorithms, temple optimization via geometric traditional precision, infinite architectural dimensional artistry, computational spirituality through algorithmic temple mastery.",
+      },
+      "silk-weaving": {
+        description:
+          "Godlevel Vietnamese silk excellence with traditional weaving achieving perfect textile representation through mathematical craft algorithms, silk optimization via geometric weaving precision, infinite textile dimensional artistry, computational craftsmanship through algorithmic silk mastery.",
+      },
+      "lacquerware-art": {
+        description:
+          "Godlevel lacquerware excellence with traditional crafts achieving perfect artistic representation through mathematical cultural algorithms, lacquer optimization via geometric artistic precision, infinite artistic dimensional artistry, computational craftsmanship through algorithmic lacquer mastery.",
+      },
       lego: {
         description:
           "Godlevel Vietnamese LEGO excellence featuring blocky cultural construction with systematic Danish precision applied to Vietnamese heritage, modular áo dài and temple assembly, infinite constructive dimensional artistry, computational LEGO Vietnam through algorithmic building mastery.",
@@ -239,6 +227,34 @@ export const CULTURAL_DATASETS = {
       "spice-islands": {
         description:
           "Godlevel spice islands excellence with aromatic treasures achieving perfect flavor representation through mathematical Indonesian culinary algorithms, spice blend optimization via geometric cultural precision, infinite culinary dimensional artistry, computational gastronomy through algorithmic spice mastery.",
+      },
+      "wayang-puppets": {
+        description:
+          "Godlevel wayang excellence with shadow puppet theater achieving perfect cultural representation through mathematical performance algorithms, puppet movement optimization via geometric shadow precision, infinite theatrical dimensional artistry, computational performance through algorithmic wayang mastery.",
+      },
+      "keris-craftsmanship": {
+        description:
+          "Godlevel keris excellence with traditional dagger crafting achieving perfect metalwork representation through mathematical Indonesian algorithms, blade forging optimization via geometric metallurgy precision, infinite craft dimensional artistry, computational craftsmanship through algorithmic keris mastery.",
+      },
+      "rice-terraces": {
+        description:
+          "Godlevel rice terrace excellence with agricultural artistry achieving perfect landscape representation through mathematical Indonesian algorithms, terrace optimization via geometric agricultural precision, infinite agricultural dimensional artistry, computational agriculture through algorithmic terrace mastery.",
+      },
+      "traditional-dance": {
+        description:
+          "Godlevel Indonesian dance excellence with cultural movement achieving perfect performance representation through mathematical dance algorithms, movement optimization via geometric rhythmic precision, infinite dance dimensional artistry, computational performance through algorithmic dance mastery.",
+      },
+      "songket-weaving": {
+        description:
+          "Godlevel songket excellence with traditional weaving achieving perfect textile representation through mathematical Indonesian algorithms, gold thread optimization via geometric weaving precision, infinite textile dimensional artistry, computational craftsmanship through algorithmic songket mastery.",
+      },
+      "borobudur-temple": {
+        description:
+          "Godlevel Borobudur excellence with Buddhist monument achieving perfect spiritual representation through mathematical Indonesian algorithms, mandala optimization via geometric sacred precision, infinite spiritual dimensional artistry, computational spirituality through algorithmic Borobudur mastery.",
+      },
+      "komodo-dragons": {
+        description:
+          "Godlevel Komodo dragon excellence with ancient reptiles achieving perfect natural representation through mathematical Indonesian algorithms, dragon optimization via geometric prehistoric precision, infinite natural dimensional artistry, computational nature through algorithmic Komodo mastery.",
       },
       lego: {
         description:
@@ -1502,83 +1518,103 @@ export interface PromptParams {
   projectionType?: "fisheye" | "tunnel-up" | "tunnel-down" | "little-planet"
 }
 
+const NEURALIA_H3RITAGE_STYLE = `
+**NEURALIA H3RITAGE SIGNATURE STYLE:**
+Hyperrealistic 3D rendering with intricate mathematical precision. Complex layering of mechanical and organic elements seamlessly integrated. Flowing metallic surfaces with swirling, spiral patterns and spherical motifs. Rich metallic color palette featuring deep blues, warm golds, and lustrous silvers with iridescent highlights. Fractal-like detail work with nested geometric forms and circular compositions. Surreal, dreamlike atmosphere with perfect technical execution. Biomechanical fusion aesthetics with ornate decorative elements. Multiple depth layers creating immersive visual complexity. Photorealistic textures with mirror-like metallic finishes and subtle color gradients.
+`
+
 export function buildPrompt(
   dataset: string,
   scenario: string,
-  customPrompt: string,
   colorScheme: string,
+  seed: number,
+  numSamples: number,
+  noiseScale: number,
+  customPrompt = "",
   negativePrompt = "",
+  panoramic360 = false,
+  panoramaFormat = "equirectangular",
+  projectionType = "fisheye",
+  provider = "replicate",
+  model = "flux-1.1-pro-ultra",
 ): string {
-  try {
-    console.log("[v0] buildPrompt called with:", { dataset, scenario, customPrompt, colorScheme, negativePrompt })
+  console.log(`[v0] buildPrompt called with dataset: ${typeof dataset} - ${dataset}`)
+  console.log(`[v0] buildPrompt called with scenario: ${typeof scenario} - ${scenario}`)
 
-    const basePrompt = buildBasePrompt(dataset, scenario, colorScheme, customPrompt, negativePrompt)
-
-    const godlevelPrompt = applyGodlevelEnhancement(basePrompt)
-
-    console.log("[v0] Godlevel enhanced prompt generated successfully")
-    return godlevelPrompt
-  } catch (error) {
-    console.error("[v0] Error in buildPrompt:", error)
-    return customPrompt || "Default prompt"
-  }
-}
-
-function buildBasePrompt(
-  dataset: string,
-  scenario: string,
-  colorScheme: string,
-  customPrompt: string,
-  negativePrompt: string,
-): string {
-  if (!CULTURAL_DATASETS) {
-    console.log("[v0] CULTURAL_DATASETS is undefined")
-    return customPrompt || "Default prompt"
+  let datasetKey = dataset
+  if (typeof dataset === "object" && dataset !== null) {
+    // If dataset is an object, try to extract the dataset property
+    datasetKey = (dataset as any).dataset || Object.keys(dataset)[0] || "heads"
+    console.log(`[v0] Extracted dataset key: ${datasetKey}`)
   }
 
-  const selectedDataset = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
+  const selectedDataset = CULTURAL_DATASETS[datasetKey as keyof typeof CULTURAL_DATASETS]
+  const selectedScenario = selectedDataset?.scenarios[scenario as keyof typeof selectedDataset.scenarios]
+
   if (!selectedDataset) {
-    console.log("[v0] Dataset not found:", dataset)
-    return customPrompt || "Default prompt"
+    console.log(`[v0] Dataset not found: ${datasetKey}`)
+    return customPrompt || "Create a beautiful mathematical art visualization"
   }
 
-  const selectedScenario = selectedDataset.scenarios[scenario as keyof typeof selectedDataset.scenarios]
   if (!selectedScenario) {
-    console.log("[v0] Scenario not found:", scenario)
-    return customPrompt || "Default prompt"
+    console.log(`[v0] Scenario not found: ${scenario} in dataset ${datasetKey}`)
+    return customPrompt || selectedDataset.description
   }
 
-  const colorDescription = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES] || ""
+  // Build prompt from user selections only
+  let prompt = ""
 
-  // Build structured base prompt
-  let basePrompt = `DATASET: ${selectedDataset.name}
-SCENARIO: ${selectedScenario.description}
-COLOR SCHEME: ${colorDescription}
-TECHNICAL PARAMETERS: Professional gallery-quality, photorealistic rendering, 8K resolution, masterpiece quality`
-
-  if (customPrompt) {
-    basePrompt += `\nCUSTOM ELEMENTS: ${customPrompt}`
+  // Add image type prefix based on projection
+  if (panoramic360) {
+    prompt += "ULTRA-HIGH-QUALITY 360° PANORAMIC IMAGE: "
+  } else if (projectionType !== "standard") {
+    prompt += `ULTRA-HIGH-QUALITY ${projectionType.toUpperCase()} PROJECTION IMAGE: `
+  } else {
+    prompt += "ULTRA-HIGH-QUALITY STANDARD IMAGE: "
   }
 
-  if (negativePrompt) {
-    basePrompt += `\nNEGATIVE ELEMENTS: ${negativePrompt}`
+  // Add dataset context
+  prompt += `${selectedDataset.description} `
+
+  // Add scenario details
+  prompt += `${selectedScenario.description} `
+
+  // Add color scheme
+  const colorDescription = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES] || colorScheme
+  prompt += `Color palette: ${colorDescription}. `
+
+  // Add technical parameters
+  prompt += `Technical specifications: ${numSamples} samples, noise scale ${noiseScale}, seed ${seed}. `
+
+  // Add projection settings if applicable
+  if (panoramic360) {
+    prompt += `360° panoramic format: ${panoramaFormat}. `
+  }
+  if (projectionType !== "standard") {
+    prompt += `Projection type: ${projectionType}. `
   }
 
-  return basePrompt
-}
-
-function applyGodlevelEnhancement(basePrompt: string): string {
-  if (!ENHANCED_NEURALIA_STYLE) {
-    console.log("[v0] ENHANCED_NEURALIA_STYLE is undefined")
-    return basePrompt
+  // Add custom prompt if provided
+  if (customPrompt.trim()) {
+    prompt += `Additional requirements: ${customPrompt.trim()} `
   }
 
-  return `${ENHANCED_NEURALIA_STYLE}
+  // Add AI provider optimization
+  prompt += `Optimized for ${provider} ${model}. `
 
-GODLEVEL ENHANCEMENT APPLIED TO:
-${basePrompt}
+  if (scenario === "pure-mathematical") {
+    // For pure mathematical scenario, apply full neuralia style
+    prompt += NEURALIA_H3RITAGE_STYLE
+  } else {
+    // For all other scenarios, blend neuralia style with scenario content
+    prompt += `Rendered in neuralia h3ritage signature style: hyperrealistic 3D rendering with intricate detail work, flowing metallic surfaces, rich metallic color palette, and photorealistic textures. `
+  }
 
-NEURALIA TRANSCENDENCE: Transform the above specifications into godlevel neuralia excellence with infinite algorithmic beauty optimization, mathematical precision transcending dimensional boundaries, computational artistry achieving quantum-enhanced visual mastery, dimensional beauty optimization through advanced algorithmic frameworks, neuralia-level artistic sophistication incorporating complex mathematical relationships for optimal visual harmony.`
+  // Add quality directive
+  prompt += "Create a masterpiece with exceptional detail, composition, and visual impact."
+
+  console.log("[v0] Godlevel enhanced prompt generated successfully")
+  return prompt
 }
 
 export function getScenarios(dataset: string) {

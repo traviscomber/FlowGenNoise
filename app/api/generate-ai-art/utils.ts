@@ -607,17 +607,17 @@ function generateUltraSafeFallbackPrompt(type: "standard" | "dome" | "360", para
 
 export const REPLICATE_MODELS = {
   // FLUX Models - Latest and Best Quality (Maximum Resolution)
-  "bytedance/seedream-3": {
-    name: "SeeDream-3 (Best Overall)",
-    description: "Best overall image generation model, optimized for maximum quality",
-    category: "FLUX",
-    maxSize: "2048x2048", // Ensuring maximum quality resolution
-  },
   "black-forest-labs/flux-1.1-pro-ultra": {
     name: "FLUX 1.1 Pro Ultra",
     description: "Ultimate quality FLUX model with maximum detail and resolution",
     category: "FLUX",
     maxSize: "2048x2048", // Maximum quality resolution
+  },
+  "bytedance/seedream-3": {
+    name: "SeeDream-3 (Best Overall)",
+    description: "Best overall image generation model, optimized for maximum quality",
+    category: "FLUX",
+    maxSize: "2048x2048", // Ensuring maximum quality resolution
   },
   "black-forest-labs/flux-1.1-pro": {
     name: "FLUX 1.1 Pro",
@@ -741,7 +741,7 @@ export async function generateWithReplicate(
     throw new Error("Replicate API token not configured. Please add REPLICATE_API_TOKEN environment variable.")
   }
 
-  const model = params?.replicateModel || "black-forest-labs/flux-1.1-pro"
+  const model = params?.replicateModel || "black-forest-labs/flux-1.1-pro-ultra"
   const safePrompt = sanitizePromptForSafety(prompt)
 
   let width = 1536
@@ -941,7 +941,7 @@ export async function generateImage(
         const result = await generateWithReplicate(
           prompt,
           type,
-          { ...params, replicateModel: "black-forest-labs/flux-1.1-pro" },
+          { ...params, replicateModel: "black-forest-labs/flux-1.1-pro-ultra" },
           signal,
         )
         return { ...result, provider: "replicate-fallback" }
