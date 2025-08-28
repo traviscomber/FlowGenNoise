@@ -31,11 +31,18 @@ export function isValidImageUrl(url: string): boolean {
   }
 }
 
-// Utility function to download files
 export function downloadFile(url: string, filename: string): void {
+  if (typeof document === "undefined") return
+
+  // Ensure filename has proper extension and is unique
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)
+  const baseName = filename.replace(/\.[^/.]+$/, "") // Remove extension
+  const extension = filename.split(".").pop() || "png"
+  const uniqueFilename = `${baseName}-${timestamp}.${extension}`
+
   const link = document.createElement("a")
   link.href = url
-  link.download = filename
+  link.download = uniqueFilename
   link.style.display = "none"
   document.body.appendChild(link)
   link.click()
@@ -104,6 +111,11 @@ export function throttle<T extends (...args: any[]) => any>(func: T, limit: numb
 export async function compressImage(file: File, quality = 0.8): Promise<File> {
   return new Promise((resolve, reject) => {
     try {
+      if (typeof document === "undefined") {
+        reject(new Error("Document not available (SSR environment)"))
+        return
+      }
+
       // Create canvas element
       const canvas = document.createElement("canvas")
       const ctx = canvas.getContext("2d")
@@ -178,4 +190,33 @@ export function validateImageFile(file: File): { valid: boolean; error?: string 
   }
 
   return { valid: true }
+}
+
+export function generateUniqueFilename(
+  baseType: string,
+  dataset: string,
+  scenario: string,
+  provider?: string,
+  colorScheme?: string,
+  additionalInfo?: string,
+): string {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)
+  const cleanDataset = dataset.replace(/[^a-zA-Z0-9]/g, "-")
+  const cleanScenario = scenario.replace(/[^a-zA-Z0-9]/g, "-")
+  const cleanColorScheme = colorScheme?.replace(/[^a-zA-Z0-9]/g, "-") || "default"
+  const cleanProvider = provider?.replace(/[^a-zA-Z0-9]/g, "-") || "ai"
+  const cleanAdditional = additionalInfo?.replace(/[^a-zA-Z0-9]/g, "-") || ""
+
+  const parts = [
+    "flowsketch",
+    baseType,
+    cleanDataset,
+    cleanScenario,
+    cleanProvider,
+    cleanColorScheme,
+    cleanAdditional,
+    timestamp,
+  ].filter(Boolean)
+
+  return `${parts.join("-")}.png`
 }

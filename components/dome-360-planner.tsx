@@ -252,37 +252,51 @@ export default function Dome360Planner() {
   ])
 
   // Download image
-  const downloadImage = useCallback(async (imageUrl: string, filename: string) => {
-    try {
-      const response = await fetch(`/api/download-proxy?url=${encodeURIComponent(imageUrl)}&filename=${filename}`)
+  const downloadImage = useCallback(
+    async (imageUrl: string, filename: string) => {
+      try {
+        // Create unique filename with comprehensive information
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)
+        const datasetName = dataset.replace(/[^a-zA-Z0-9]/g, "-")
+        const scenarioName = scenario.replace(/[^a-zA-Z0-9]/g, "-")
+        const colorSchemeName = colorScheme.replace(/[^a-zA-Z0-9]/g, "-")
+        const typeInfo = generationType === "360" ? `360-${panoramaFormat}` : `dome-${projectionType}`
 
-      if (!response.ok) {
-        throw new Error("Download failed")
+        const uniqueFilename = `flowsketch-${typeInfo}-${datasetName}-${scenarioName}-${colorSchemeName}-${timestamp}.png`
+
+        const response = await fetch(
+          `/api/download-proxy?url=${encodeURIComponent(imageUrl)}&filename=${encodeURIComponent(uniqueFilename)}`,
+        )
+
+        if (!response.ok) {
+          throw new Error("Download failed")
+        }
+
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = url
+        a.download = uniqueFilename
+        document.body.appendChild(a)
+        a.click()
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+
+        toast({
+          title: "Download Complete",
+          description: `${uniqueFilename} downloaded successfully`,
+        })
+      } catch (error) {
+        console.error("Download error:", error)
+        toast({
+          title: "Download Failed",
+          description: "Failed to download image",
+          variant: "destructive",
+        })
       }
-
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = filename
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
-
-      toast({
-        title: "Download Complete",
-        description: `${filename} downloaded successfully`,
-      })
-    } catch (error) {
-      console.error("Download error:", error)
-      toast({
-        title: "Download Failed",
-        description: "Failed to download image",
-        variant: "destructive",
-      })
-    }
-  }, [])
+    },
+    [dataset, scenario, colorScheme, generationType, panoramaFormat, projectionType],
+  )
 
   return (
     <div className="container mx-auto p-6 space-y-6">

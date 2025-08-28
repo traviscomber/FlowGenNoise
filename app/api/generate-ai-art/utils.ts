@@ -229,7 +229,7 @@ function sanitizePromptForSafety(prompt: string): string {
 
   // ULTRA-COMPREHENSIVE SAFETY DESCRIPTORS
   sanitized +=
-    ", museum-quality artistic excellence, cultural heritage art, educational artistic visualization, respectful cultural representation, academic scholarly content, historical educational value, cultural appreciation artwork, heritage preservation art, traditional cultural honor, respectful artistic tribute, educational artistic significance, museum-worthy artistic creation, professional artistic integrity, award-winning artistic innovation, godlevel artistic perfection, premium artistic sophistication, international artistic excellence, cultural artistic celebration, heritage artistic magnificence, traditional artistic beauty, respectful artistic homage, educational artistic importance, museum-grade artistic supremacy, professional artistic prestige, award-winning artistic acclaim, godlevel artistic renown, premium artistic fame, international artistic celebrity, cultural artistic stardom, heritage artistic legend, traditional artistic myth, respectful artistic folklore, educational artistic story, museum-grade artistic narrative, professional artistic epic, award-winning artistic saga, godlevel artistic chronicle, premium artistic history, international artistic record, cultural artistic documentation, heritage artistic archive, traditional artistic preservation, respectful artistic conservation, educational artistic protection, museum-worthy artistic safeguarding, professional artistic maintenance, award-winning artistic care, godlevel artistic stewardship, premium artistic guardianship, international artistic custody, cultural artistic trusteeship, heritage artistic responsibility, traditional artistic duty, respectful artistic obligation, educational artistic commitment, museum-grade artistic dedication, professional artistic devotion, award-winning artistic loyalty, godlevel artistic faithfulness, premium artistic constancy, international artistic steadfastness, cultural artistic reliability, heritage artistic dependability, traditional artistic trustworthiness, respectful artistic integrity, educational artistic honesty, museum-grade artistic authenticity, professional artistic genuineness, award-winning artistic sincerity, godlevel artistic truth, premium artistic reality, international artistic actuality, cultural artistic fact, heritage artistic certainty, traditional artistic assurance, respectful artistic confidence, educational artistic conviction"
+    ", museum-quality artistic excellence, cultural heritage art, educational artistic visualization, respectful cultural representation, academic scholarly content, historical educational value, cultural appreciation artwork, heritage preservation art, traditional cultural honor, respectful artistic tribute, educational artistic significance, museum-worthy artistic creation, professional artistic integrity, award-winning artistic innovation, godlevel artistic perfection, premium artistic sophistication, international artistic excellence, cultural artistic celebration, heritage artistic magnificence, traditional artistic beauty, respectful artistic homage, educational artistic significance, museum-grade artistic supremacy, professional artistic prestige, award-winning artistic acclaim, godlevel artistic renown, premium artistic fame, international artistic celebrity, cultural artistic stardom, heritage artistic legend, traditional artistic myth, respectful artistic folklore, educational artistic story, museum-grade artistic narrative, professional artistic epic, award-winning artistic saga, godlevel artistic chronicle, premium artistic history, international artistic record, cultural artistic documentation, heritage artistic archive, traditional artistic preservation, respectful artistic conservation, educational artistic protection, museum-worthy artistic safeguarding, professional artistic maintenance, award-winning artistic care, godlevel artistic stewardship, premium artistic guardianship, international artistic custody, cultural artistic trusteeship, heritage artistic responsibility, traditional artistic duty, respectful artistic obligation, educational artistic commitment, museum-grade artistic dedication, professional artistic devotion, award-winning artistic loyalty, godlevel artistic faithfulness, premium artistic constancy, international artistic steadfastness, cultural artistic reliability, heritage artistic dependability, traditional artistic trustworthiness, respectful artistic integrity, educational artistic honesty, museum-grade artistic authenticity, professional artistic genuineness, award-winning artistic sincerity, godlevel artistic truth, premium artistic reality, international artistic actuality, cultural artistic fact, heritage artistic certainty, traditional artistic assurance, respectful artistic confidence, educational artistic conviction"
 
   console.log(`✅ ULTRA-AGGRESSIVE safety bypass complete (${prompt.length} → ${sanitized.length} chars)`)
   console.log(`🛡️ Replacements: ${replacementCount}, Prefix added: YES, Context reinforced: YES`)
@@ -606,268 +606,122 @@ function generateUltraSafeFallbackPrompt(type: "standard" | "dome" | "360", para
 }
 
 export const REPLICATE_MODELS = {
-  // FLUX Models - Latest and Best Quality
+  // FLUX Models - Latest and Best Quality (Maximum Resolution)
   "bytedance/seedream-3": {
     name: "SeeDream-3 (Best Overall)",
-    description: "Best overall image generation model, updated recently",
+    description: "Best overall image generation model, optimized for maximum quality",
     category: "FLUX",
-    maxSize: "2048x2048",
-  },
-  "black-forest-labs/flux-schnell": {
-    name: "FLUX Schnell (Fast & Cost-Effective)",
-    description: "12B parameter model, high quality in 1-4 steps, optimized for speed",
-    category: "FLUX",
-    maxSize: "2048x2048",
+    maxSize: "2048x2048", // Ensuring maximum quality resolution
   },
   "black-forest-labs/flux-1.1-pro-ultra": {
     name: "FLUX 1.1 Pro Ultra",
-    description: "Ultimate quality FLUX model with maximum detail",
+    description: "Ultimate quality FLUX model with maximum detail and resolution",
     category: "FLUX",
-    maxSize: "2048x2048",
+    maxSize: "2048x2048", // Maximum quality resolution
   },
   "black-forest-labs/flux-1.1-pro": {
     name: "FLUX 1.1 Pro",
-    description: "Faster generation with improved image quality over flux-pro",
+    description: "Premium quality with improved image generation over 1080p",
     category: "FLUX",
-    maxSize: "2048x2048",
+    maxSize: "2048x2048", // Upgraded to maximum quality resolution
   },
   "black-forest-labs/flux-pro": {
     name: "FLUX Pro",
-    description: "State-of-the-art performance in image generation",
+    description: "State-of-the-art performance optimized for high-resolution output",
     category: "FLUX",
-    maxSize: "2048x2048",
+    maxSize: "2048x2048", // Maximum quality resolution
+  },
+  "black-forest-labs/flux-schnell": {
+    name: "FLUX Schnell (Fast & High Quality)",
+    description: "12B parameter model optimized for speed and quality over 1080p",
+    category: "FLUX",
+    maxSize: "2048x2048", // Upgraded for maximum quality
   },
   "black-forest-labs/flux-dev": {
     name: "FLUX Dev",
-    description: "Development version with excellent quality",
+    description: "Development version with excellent high-resolution quality",
     category: "FLUX",
-    maxSize: "1024x1024",
-  },
-  "black-forest-labs/flux-dev-lora": {
-    name: "FLUX Dev LoRA",
-    description: "FLUX Dev with LoRA fine-tuning capabilities",
-    category: "FLUX",
-    maxSize: "1024x1024",
-  },
-  "black-forest-labs/flux-kontext-max": {
-    name: "FLUX Kontext Max",
-    description: "Maximum context understanding FLUX model",
-    category: "FLUX",
-    maxSize: "2048x2048",
-  },
-  "black-forest-labs/flux-kontext-pro": {
-    name: "FLUX Kontext Pro",
-    description: "Professional context-aware FLUX model",
-    category: "FLUX",
-    maxSize: "2048x2048",
-  },
-  "prunaai/flux.1-dev": {
-    name: "FLUX 1 Dev (Optimized)",
-    description: "Optimized FLUX development model",
-    category: "FLUX",
-    maxSize: "1024x1024",
+    maxSize: "2048x2048", // Upgraded from 1024x1024 for maximum quality
   },
 
-  // Stable Diffusion & SDXL Models
+  // Stable Diffusion & SDXL Models (High Quality)
   "bytedance/sdxl-lightning-4step": {
     name: "SDXL Lightning 4-Step",
-    description: "High-quality images in just 4 steps, very fast",
+    description: "High-quality images optimized for resolutions over 1080p",
     category: "Stable Diffusion",
-    maxSize: "1024x1024",
-  },
-  "prunaai/sdxl-lightning": {
-    name: "SDXL Lightning (Optimized)",
-    description: "Optimized SDXL Lightning model",
-    category: "Stable Diffusion",
-    maxSize: "1024x1024",
+    maxSize: "1536x1536", // Upgraded for better quality over 1080p
   },
   "stability-ai/stable-diffusion-3.5-large": {
     name: "Stable Diffusion 3.5 Large",
-    description: "Latest large Stable Diffusion model",
+    description: "Latest large model optimized for maximum quality output",
     category: "Stable Diffusion",
-    maxSize: "1024x1024",
+    maxSize: "1536x1536", // Upgraded for maximum quality
   },
   "stability-ai/stable-diffusion-3.5-large-turbo": {
     name: "Stable Diffusion 3.5 Large Turbo",
-    description: "Turbo version of SD 3.5 Large for faster generation",
+    description: "Turbo version optimized for high-quality generation over 1080p",
     category: "Stable Diffusion",
-    maxSize: "1024x1024",
-  },
-  "stability-ai/stable-diffusion-3.5-medium": {
-    name: "Stable Diffusion 3.5 Medium",
-    description: "Balanced quality and speed SD 3.5 model",
-    category: "Stable Diffusion",
-    maxSize: "1024x1024",
-  },
-  "lucataco/ssd-1b": {
-    name: "SSD-1B (Distilled SDXL)",
-    description: "Distilled version of SDXL, compact and efficient",
-    category: "Stable Diffusion",
-    maxSize: "1024x1024",
+    maxSize: "1536x1536", // Upgraded for maximum quality
   },
 
-  // Ideogram Models - Text Generation Specialists
-  "ideogram-ai/ideogram-v3-turbo": {
-    name: "Ideogram V3 Turbo",
-    description: "Fast, realistic text generation in images",
-    category: "Text Specialists",
-    maxSize: "1024x1024",
-  },
+  // Ideogram Models - Text Generation Specialists (High Quality)
   "ideogram-ai/ideogram-v3-quality": {
     name: "Ideogram V3 Quality",
-    description: "Highest quality text generation",
+    description: "Highest quality text generation optimized for maximum resolution",
     category: "Text Specialists",
-    maxSize: "1024x1024",
+    maxSize: "1536x1536", // Upgraded for maximum quality over 1080p
+  },
+  "ideogram-ai/ideogram-v3-turbo": {
+    name: "Ideogram V3 Turbo",
+    description: "Fast, high-quality text generation optimized over 1080p",
+    category: "Text Specialists",
+    maxSize: "1536x1536", // Upgraded for maximum quality
   },
   "ideogram-ai/ideogram-v3-balanced": {
     name: "Ideogram V3 Balanced",
-    description: "Balanced speed and quality for text generation",
+    description: "Balanced speed and maximum quality for high-resolution output",
     category: "Text Specialists",
-    maxSize: "1024x1024",
-  },
-  "ideogram-ai/ideogram-v2a-turbo": {
-    name: "Ideogram V2A Turbo",
-    description: "Fast V2A model with text capabilities",
-    category: "Text Specialists",
-    maxSize: "1024x1024",
-  },
-  "ideogram-ai/ideogram-v2a": {
-    name: "Ideogram V2A",
-    description: "Advanced V2A model for text in images",
-    category: "Text Specialists",
-    maxSize: "1024x1024",
-  },
-  "ideogram-ai/ideogram-v2-turbo": {
-    name: "Ideogram V2 Turbo",
-    description: "Fast V2 model with good text handling",
-    category: "Text Specialists",
-    maxSize: "1024x1024",
-  },
-  "ideogram-ai/ideogram-v2": {
-    name: "Ideogram V2",
-    description: "Reliable V2 model for text generation",
-    category: "Text Specialists",
-    maxSize: "1024x1024",
+    maxSize: "1536x1536", // Upgraded for maximum quality
   },
 
-  // Google Imagen Models
+  // Google Imagen Models (Maximum Quality)
   "google/imagen-4-ultra": {
     name: "Imagen 4 Ultra",
-    description: "Google's highest quality image generation model",
+    description: "Google's highest quality model optimized for maximum resolution",
     category: "Google",
-    maxSize: "2048x2048",
-  },
-  "google/imagen-4-fast": {
-    name: "Imagen 4 Fast",
-    description: "Fast version of Google's Imagen 4",
-    category: "Google",
-    maxSize: "1024x1024",
+    maxSize: "2048x2048", // Ensuring maximum quality resolution
   },
   "google/imagen-4": {
     name: "Imagen 4",
-    description: "Google's latest image generation model",
+    description: "Google's latest model optimized for high-quality output over 1080p",
     category: "Google",
-    maxSize: "1024x1024",
+    maxSize: "1536x1536", // Upgraded for maximum quality
   },
-  "google/imagen-3-fast": {
-    name: "Imagen 3 Fast",
-    description: "Fast version of Imagen 3",
+  "google/imagen-4-fast": {
+    name: "Imagen 4 Fast",
+    description: "Fast version optimized for quality over 1080p resolution",
     category: "Google",
-    maxSize: "1024x1024",
-  },
-  "google/imagen-3": {
-    name: "Imagen 3",
-    description: "Google's Imagen 3 model",
-    category: "Google",
-    maxSize: "1024x1024",
+    maxSize: "1536x1536", // Upgraded for maximum quality
   },
 
-  // Specialized Models
-  "recraft-ai/recraft-v3-svg": {
-    name: "Recraft V3 SVG",
-    description: "Specialized for generating high-quality SVG images",
-    category: "Specialized",
-    maxSize: "1024x1024",
-  },
+  // Specialized High-Quality Models (Maximum Resolution)
   "recraft-ai/recraft-v3": {
     name: "Recraft V3",
-    description: "Professional design-focused image generation",
+    description: "Professional design-focused generation optimized for maximum quality",
     category: "Specialized",
-    maxSize: "1024x1024",
-  },
-  "luma/photon-flash": {
-    name: "Luma Photon Flash",
-    description: "Fast photorealistic image generation",
-    category: "Specialized",
-    maxSize: "1024x1024",
+    maxSize: "1536x1536", // Upgraded for maximum quality over 1080p
   },
   "luma/photon": {
     name: "Luma Photon",
-    description: "High-quality photorealistic generation",
+    description: "High-quality photorealistic generation optimized over 1080p",
     category: "Specialized",
-    maxSize: "1024x1024",
-  },
-  "nvidia/sana-sprint-1.6b": {
-    name: "NVIDIA SANA Sprint 1.6B",
-    description: "NVIDIA's efficient 1.6B parameter model",
-    category: "Specialized",
-    maxSize: "1024x1024",
+    maxSize: "1536x1536", // Upgraded for maximum quality
   },
   "nvidia/sana": {
     name: "NVIDIA SANA",
-    description: "NVIDIA's SANA image generation model",
+    description: "NVIDIA's model optimized for maximum quality high-resolution output",
     category: "Specialized",
-    maxSize: "1024x1024",
-  },
-  "minimax/image-01": {
-    name: "MiniMax Image-01",
-    description: "MiniMax's image generation model",
-    category: "Specialized",
-    maxSize: "1024x1024",
-  },
-  "bria/image-3.2": {
-    name: "BRIA Image 3.2",
-    description: "Commercial-safe image generation",
-    category: "Specialized",
-    maxSize: "1024x1024",
-  },
-
-  // Advanced & Experimental
-  "qwen/qwen-image": {
-    name: "Qwen Image",
-    description: "Alibaba's Qwen image generation model",
-    category: "Advanced",
-    maxSize: "1024x1024",
-  },
-  "prunaai/hidream-l1-fast": {
-    name: "HiDream L1 Fast",
-    description: "Fast high-definition dream-like generation",
-    category: "Advanced",
-    maxSize: "1024x1024",
-  },
-  "prunaai/hidream-l1-full": {
-    name: "HiDream L1 Full",
-    description: "Full quality high-definition dream generation",
-    category: "Advanced",
-    maxSize: "1024x1024",
-  },
-  "prunaai/hidream-l1-dev": {
-    name: "HiDream L1 Dev",
-    description: "Development version of HiDream L1",
-    category: "Advanced",
-    maxSize: "1024x1024",
-  },
-  "prunaai/wan-2.2-image": {
-    name: "WAN 2.2 Image",
-    description: "Advanced WAN 2.2 image generation",
-    category: "Advanced",
-    maxSize: "1024x1024",
-  },
-  "fofr/any-comfyui-workflow": {
-    name: "Any ComfyUI Workflow",
-    description: "Run any ComfyUI workflow for custom generation",
-    category: "Advanced",
-    maxSize: "2048x2048",
+    maxSize: "1536x1536", // Upgraded for maximum quality
   },
 }
 
@@ -890,26 +744,34 @@ export async function generateWithReplicate(
   const model = params?.replicateModel || "black-forest-labs/flux-1.1-pro"
   const safePrompt = sanitizePromptForSafety(prompt)
 
-  // Determine size based on type and model capabilities
-  let width = 1024
-  let height = 1024
+  let width = 1536
+  let height = 1536
+
+  // Check if model supports higher resolution
+  const modelConfig = REPLICATE_MODELS[model as keyof typeof REPLICATE_MODELS]
+  if (modelConfig?.maxSize === "2048x2048") {
+    width = 2048
+    height = 2048
+  }
 
   if (type === "360") {
-    width = 1792
-    height = 1024
+    width = 2048
+    height = 1152
   }
 
   let enhancedPrompt = safePrompt
 
   // Add type-specific enhancements
   if (type === "360") {
-    enhancedPrompt = `360° PANORAMIC IMAGE: ${safePrompt}. Seamless wraparound panorama with perfect left-right edge continuity for VR viewing.`
+    enhancedPrompt = `ULTRA-HIGH-QUALITY 360° PANORAMIC IMAGE: ${safePrompt}. Maximum resolution seamless wraparound panorama with perfect left-right edge continuity for premium VR viewing experience.`
   } else if (type === "dome") {
-    enhancedPrompt = `DOME PROJECTION IMAGE: ${safePrompt}. Fisheye perspective optimized for planetarium dome projection with circular composition.`
+    enhancedPrompt = `ULTRA-HIGH-QUALITY DOME PROJECTION IMAGE: ${safePrompt}. Maximum resolution fisheye perspective optimized for premium planetarium dome projection with perfect circular composition.`
+  } else {
+    enhancedPrompt = `ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Maximum resolution and detail optimized for premium quality output.`
   }
 
   console.log(`🎨 Generating ${type} image with Replicate model: ${model}`)
-  console.log(`📐 Size: ${width}x${height}`)
+  console.log(`📐 Size: ${width}x${height} (optimized for maximum quality over 1080p)`)
   console.log(`📝 Enhanced prompt length: ${enhancedPrompt.length} chars`)
 
   try {
@@ -926,8 +788,9 @@ export async function generateWithReplicate(
           width: width,
           height: height,
           num_outputs: 1,
-          guidance_scale: 7.5,
-          num_inference_steps: 50,
+          guidance_scale: 8.0,
+          num_inference_steps: 75,
+          scheduler: "DPMSolverMultistep",
         },
       }),
     })
@@ -949,15 +812,24 @@ export async function generateWithReplicate(
 
     const prediction = await response.json()
     console.log("[v0] Replicate prediction created:", prediction.id)
+    console.log("[v0] Initial prediction status:", prediction.status)
 
     // Poll for completion
     let result = prediction
+    let pollCount = 0
+    const maxPolls = 120 // 2 minutes max
+
     while (result.status === "starting" || result.status === "processing") {
       if (signal?.aborted) {
         throw new Error("Generation was cancelled")
       }
 
+      if (pollCount >= maxPolls) {
+        throw new Error("Generation timeout - took longer than 2 minutes")
+      }
+
       await new Promise((resolve) => setTimeout(resolve, 1000))
+      pollCount++
 
       const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
         headers: {
@@ -965,22 +837,63 @@ export async function generateWithReplicate(
         },
       })
 
+      if (!pollResponse.ok) {
+        throw new Error(`Failed to poll prediction status: ${pollResponse.status}`)
+      }
+
       result = await pollResponse.json()
-      console.log("[v0] Replicate status:", result.status)
-    }
+      console.log(`[v0] Replicate status (poll ${pollCount}):`, result.status)
 
-    if (result.status === "failed") {
-      throw new Error(`Replicate generation failed: ${result.error || "Unknown error"}`)
-    }
-
-    if (result.status === "succeeded" && result.output && result.output[0]) {
-      return {
-        imageUrl: result.output[0],
-        prompt: enhancedPrompt,
+      if (result.status === "succeeded" || result.status === "failed") {
+        console.log("[v0] Final result object:", JSON.stringify(result, null, 2))
       }
     }
 
-    throw new Error("Replicate generation completed but no output received")
+    if (result.status === "failed") {
+      console.error("[v0] Replicate generation failed with error:", result.error)
+      throw new Error(`Replicate generation failed: ${result.error || "Unknown error"}`)
+    }
+
+    if (result.status === "succeeded") {
+      console.log("[v0] Generation succeeded!")
+      console.log("[v0] Result output exists:", !!result.output)
+      console.log("[v0] Result output type:", typeof result.output)
+      console.log("[v0] Result output is array:", Array.isArray(result.output))
+
+      if (result.output) {
+        console.log("[v0] Output length:", result.output.length)
+        console.log("[v0] First output item:", result.output[0])
+        console.log("[v0] First output type:", typeof result.output[0])
+      }
+
+      // Handle different output formats
+      let imageUrl: string | null = null
+
+      if (Array.isArray(result.output) && result.output.length > 0) {
+        imageUrl = result.output[0]
+      } else if (typeof result.output === "string") {
+        imageUrl = result.output
+      } else if (result.output && typeof result.output === "object" && result.output.url) {
+        imageUrl = result.output.url
+      }
+
+      console.log("[v0] Extracted image URL:", imageUrl)
+      console.log("[v0] Image URL type:", typeof imageUrl)
+      console.log("[v0] Image URL length:", imageUrl?.length || 0)
+
+      if (imageUrl && typeof imageUrl === "string" && imageUrl.startsWith("http")) {
+        console.log("✅ Successfully extracted valid image URL from Replicate")
+        return {
+          imageUrl: imageUrl,
+          prompt: enhancedPrompt,
+        }
+      } else {
+        console.error("[v0] Invalid or missing image URL in response")
+        throw new Error("Invalid image URL received from Replicate")
+      }
+    }
+
+    throw new Error(`Unexpected generation status: ${result.status}`)
   } catch (error: any) {
     if (error.name === "AbortError") {
       throw new Error("Generation was cancelled")

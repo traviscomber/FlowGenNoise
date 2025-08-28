@@ -99,18 +99,33 @@ export function TribesDemo() {
     if (!generatedImage) return
 
     try {
-      const response = await fetch(generatedImage)
+      // Create unique filename with comprehensive information
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)
+      const datasetName = params.dataset.replace(/[^a-zA-Z0-9]/g, "-")
+      const scenarioName = params.scenario.replace(/[^a-zA-Z0-9]/g, "-")
+      const colorSchemeName = params.colorScheme.replace(/[^a-zA-Z0-9]/g, "-")
+
+      const uniqueFilename = `flowsketch-tribes-${datasetName}-${scenarioName}-${colorSchemeName}-${params.seed}-${timestamp}.png`
+
+      const response = await fetch(
+        `/api/download-proxy?url=${encodeURIComponent(generatedImage)}&filename=${encodeURIComponent(uniqueFilename)}`,
+      )
+
+      if (!response.ok) {
+        throw new Error("Download failed")
+      }
+
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
-      a.download = `flowsketch-tribes-${params.seed}.png`
+      a.download = uniqueFilename
       a.click()
       window.URL.revokeObjectURL(url)
 
       toast({
         title: "Download Started",
-        description: "Your tribal artwork is being downloaded",
+        description: `${uniqueFilename} is being downloaded`,
       })
     } catch (error) {
       toast({

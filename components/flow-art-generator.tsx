@@ -416,33 +416,47 @@ export function FlowArtGenerator() {
   }, [])
 
   // Download image
-  const downloadImage = useCallback(async (imageUrl: string, filename: string) => {
-    if (!imageUrl || !filename) {
-      toast({ title: "Invalid download parameters", variant: "error" })
-      return
-    }
-
-    try {
-      const response = await fetch(`/api/download-proxy?url=${encodeURIComponent(imageUrl)}`)
-      if (response.ok) {
-        const blob = await response.blob()
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = url
-        a.download = filename
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        URL.revokeObjectURL(url)
-        toast({ title: `Downloaded ${filename}`, variant: "success" })
-      } else {
-        throw new Error("Download failed")
+  const downloadImage = useCallback(
+    async (imageUrl: string, filename: string) => {
+      if (!imageUrl || !filename) {
+        toast({ title: "Invalid download parameters", variant: "error" })
+        return
       }
-    } catch (error: any) {
-      console.error("Download error:", error)
-      toast({ title: `Download failed: ${error.message || "Unknown error"}`, variant: "error" })
-    }
-  }, [])
+
+      try {
+        // Create unique filename with comprehensive information
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)
+        const datasetName = dataset.replace(/[^a-zA-Z0-9]/g, "-")
+        const scenarioName = scenario.replace(/[^a-zA-Z0-9]/g, "-")
+        const providerName = provider === "replicate" ? `replicate-${replicateModel.split("/")[1]}` : "openai-dalle3"
+        const colorSchemeName = colorScheme.replace(/[^a-zA-Z0-9]/g, "-")
+
+        const uniqueFilename = `flowsketch-${datasetName}-${scenarioName}-${providerName}-${colorSchemeName}-${timestamp}.png`
+
+        const response = await fetch(
+          `/api/download-proxy?url=${encodeURIComponent(imageUrl)}&filename=${encodeURIComponent(uniqueFilename)}`,
+        )
+        if (response.ok) {
+          const blob = await response.blob()
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement("a")
+          a.href = url
+          a.download = uniqueFilename
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          URL.revokeObjectURL(url)
+          toast({ title: `Downloaded ${uniqueFilename}`, variant: "success" })
+        } else {
+          throw new Error("Download failed")
+        }
+      } catch (error: any) {
+        console.error("Download error:", error)
+        toast({ title: `Download failed: ${error.message || "Unknown error"}`, variant: "error" })
+      }
+    },
+    [dataset, scenario, provider, replicateModel, colorScheme],
+  )
 
   return (
     <div className="container mx-auto p-6 space-y-8">
