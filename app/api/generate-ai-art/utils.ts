@@ -302,6 +302,32 @@ function generateUltraSafeFallbackPrompt(type: "standard" | "dome" | "360", para
   return fallbackPrompt
 }
 
+async function retryWithBackoff<T>(fn: () => Promise<T>, maxRetries = 3, baseDelay = 1000): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn()
+    } catch (error: any) {
+      const isRateLimit = error.message.includes("Rate limit") || error.message.includes("429")
+      const isBillingLimit = error.message.includes("billing limit") || error.message.includes("Billing hard limit")
+
+      // Don't retry billing or auth errors
+      if (isBillingLimit || error.message.includes("authentication failed")) {
+        throw error
+      }
+
+      // Only retry rate limit errors
+      if (!isRateLimit || attempt === maxRetries) {
+        throw error
+      }
+
+      const delay = baseDelay * Math.pow(2, attempt - 1) + Math.random() * 1000
+      console.log(`⏱️ Rate limit hit, retrying in ${Math.round(delay)}ms (attempt ${attempt}/${maxRetries})`)
+      await new Promise((resolve) => setTimeout(resolve, delay))
+    }
+  }
+  throw new Error("Max retries exceeded")
+}
+
 export async function generateWithOpenAI(
   prompt: string,
   type: "standard" | "dome" | "360",
@@ -475,113 +501,33 @@ ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibitio
     `🎯 Projection: ${type === "360" ? params?.panoramaFormat : type === "dome" ? params?.projectionType : "standard"}`,
   )
 
-  // FIRST ATTEMPT - Try with safety-bypassed prompt
+  // FIRST ATTEMPT - Try with safety-bypassed prompt with retry logic
   try {
     console.log("🎯 Attempting generation with safety-bypassed prompt...")
-    console.log("[v0] Making request to OpenAI API...")
-
-    const response = await fetch("https://api.openai.com/v1/images/generations", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "dall-e-3",
-        prompt: enhancedPrompt,
-        n: 1,
-        size: size,
-        quality: "hd",
-        style: "vivid",
-      }),
-      signal,
-    })
-
-    console.log("[v0] OpenAI API response status:", response.status)
-    console.log("[v0] OpenAI API response ok:", response.ok)
-
-    if (response.ok) {
-      const data = await response.json()
-      console.log("[v0] OpenAI API response data received:", !!data.data)
-      if (data.data && data.data[0] && data.data[0].url) {
-        console.log(`✅ ${type} image generated successfully with safety-bypassed prompt`)
-        return {
-          imageUrl: data.data[0].url,
-          prompt: enhancedPrompt,
-        }
-      }
-    }
-
-    // If we get here, the response wasn't ok, so we'll try the fallback
-    const errorData = await response.json().catch(() => ({}))
-    console.log("[v0] Full error data:", errorData)
-    const errorMessage = errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`
-    console.log(`⚠️ Safety-bypassed prompt failed: ${errorMessage}`)
-
-    if (response.status === 401) {
-      console.log("[v0] Authentication failed - API key is invalid or expired")
-      throw new Error(
-        "OpenAI API key authentication failed. The API key appears to be invalid, expired, or revoked. Please verify your API key at https://platform.openai.com/api-keys and update the OPENAI_API_KEY environment variable with a valid key.",
-      )
-    }
+    return await retryWithBackoff(() => makeOpenAIRequest(enhancedPrompt), 3, 2000)
   } catch (error: any) {
-    console.log(`⚠️ Safety-bypassed prompt failed with error: ${error.message}`)
-    if (error.message.includes("Invalid API key") || error.message.includes("authentication failed")) {
-      throw error
+    if (
+      error.message.includes("billing limit") ||
+      error.message.includes("authentication failed") ||
+      error.message === "CONTENT_POLICY_VIOLATION"
+    ) {
+      if (error.message === "CONTENT_POLICY_VIOLATION") {
+        console.log(`⚠️ Content policy violation, trying ultra-safe fallback...`)
+      } else {
+        throw error // Re-throw billing/auth errors immediately
+      }
+    } else {
+      console.log(`⚠️ Safety-bypassed prompt failed with error: ${error.message}`)
     }
   }
 
-  // SECOND ATTEMPT - Ultra-safe fallback
+  // SECOND ATTEMPT - Ultra-safe fallback with retry logic
   console.log("🚨 Primary prompt failed, trying ULTRA-SAFE fallback...")
 
   try {
     const ultraSafePrompt = generateUltraSafeFallbackPrompt(type, params)
-
-    const fallbackResponse = await fetch("https://api.openai.com/v1/images/generations", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "dall-e-3",
-        prompt: ultraSafePrompt,
-        n: 1,
-        size: size,
-        quality: "hd",
-        style: "vivid",
-      }),
-      signal,
-    })
-
-    if (!fallbackResponse.ok) {
-      const fallbackErrorData = await fallbackResponse.json().catch(() => ({}))
-      const fallbackErrorMessage =
-        fallbackErrorData.error?.message || `HTTP ${fallbackResponse.status}: ${fallbackResponse.statusText}`
-
-      if (fallbackResponse.status === 429) {
-        throw new Error("Rate limit exceeded. Please try again in a few minutes.")
-      } else if (fallbackResponse.status === 400) {
-        throw new Error(`Invalid request: ${fallbackErrorMessage}`)
-      } else if (fallbackResponse.status === 401) {
-        throw new Error(
-          "OpenAI API key authentication failed. The API key appears to be invalid, expired, or revoked. Please verify your API key at https://platform.openai.com/api-keys and update the OPENAI_API_KEY environment variable with a valid key.",
-        )
-      } else {
-        throw new Error(`Even ultra-safe fallback rejected: ${fallbackErrorMessage}`)
-      }
-    }
-
-    const fallbackData = await fallbackResponse.json()
-    if (!fallbackData.data || !fallbackData.data[0] || !fallbackData.data[0].url) {
-      throw new Error("No image URL returned from ultra-safe fallback generation")
-    }
-
     console.log("✅ Ultra-safe fallback generation successful")
-    return {
-      imageUrl: fallbackData.data[0].url,
-      prompt: ultraSafePrompt,
-    }
+    return await retryWithBackoff(() => makeOpenAIRequest(ultraSafePrompt), 3, 2000)
   } catch (error: any) {
     if (error.name === "AbortError") {
       throw new Error("Generation was cancelled")
@@ -589,4 +535,75 @@ ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibitio
     console.error(`❌ OpenAI generation failed for ${type}:`, error)
     throw error
   }
+}
+
+// ULTRA-SAFE FALLBACK PROMPT GENERATOR
+function makeOpenAIRequest(promptToUse: string): Promise<{ imageUrl: string; prompt: string }> {
+  let apiKey = process.env.OPENAI_API_KEY
+
+  if (!apiKey) {
+    apiKey = process.env.OPENAI_KEY
+  }
+
+  const size: "1024x1024" | "1792x1024" = promptToUse.includes("360") ? "1792x1024" : "1024x1024"
+
+  return fetch("https://api.openai.com/v1/images/generations", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: "dall-e-3",
+      prompt: promptToUse,
+      n: 1,
+      size: size,
+      quality: "hd",
+      style: "vivid",
+    }),
+  }).then(async (response) => {
+    console.log("[v0] OpenAI API response status:", response.status)
+    console.log("[v0] OpenAI API response ok:", response.ok)
+
+    if (response.ok) {
+      const data = await response.json()
+      console.log("[v0] OpenAI API response data received:", !!data.data)
+      if (data.data && data.data[0] && data.data[0].url) {
+        return {
+          imageUrl: data.data[0].url,
+          prompt: promptToUse,
+        }
+      }
+    }
+
+    // Handle errors
+    const errorData = await response.json().catch(() => ({}))
+    console.log("[v0] Full error data:", errorData)
+    const errorMessage = errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`
+    const errorCode = errorData.error?.code
+
+    if (errorCode === "billing_hard_limit_reached" || errorMessage.includes("Billing hard limit has been reached")) {
+      throw new Error(
+        "💳 OpenAI billing limit reached. Please add credits to your OpenAI account at https://platform.openai.com/account/billing to continue generating images. Your account has exceeded its spending limit.",
+      )
+    }
+
+    if (response.status === 429) {
+      throw new Error(
+        "⏱️ Rate limit exceeded. OpenAI is temporarily limiting requests. Please wait a few minutes and try again.",
+      )
+    }
+
+    if (response.status === 401) {
+      throw new Error(
+        "🔑 OpenAI API key authentication failed. The API key appears to be invalid, expired, or revoked. Please verify your API key at https://platform.openai.com/api-keys",
+      )
+    }
+
+    if (response.status === 400 && errorMessage.includes("content policy")) {
+      throw new Error("CONTENT_POLICY_VIOLATION")
+    }
+
+    throw new Error(`🚫 OpenAI API Error: ${errorMessage}`)
+  })
 }
