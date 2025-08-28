@@ -14,6 +14,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Alert } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
+import { REPLICATE_MODELS } from "@/app/api/generate-ai-art/utils"
 
 interface GenerationResult {
   standard?: string
@@ -54,6 +55,9 @@ export function FlowArtGenerator() {
   const [customPrompt, setCustomPrompt] = useState("")
   const [negativePrompt, setNegativePrompt] = useState("")
   const [showAdvanced, setShowAdvanced] = useState(false)
+
+  const [provider, setProvider] = useState<"openai" | "replicate">("replicate")
+  const [replicateModel, setReplicateModel] = useState("black-forest-labs/flux-1.1-pro")
 
   // 360° and dome projection settings
   const [panoramic360, setPanoramic360] = useState(false)
@@ -266,41 +270,44 @@ export function FlowArtGenerator() {
   const generateImages = useCallback(async () => {
     if (isGenerating) return
 
+    setIsGenerating(true)
+    setResults({ errors: [] })
+    setGenerationProgress({
+      standard: "generating",
+      dome: "generating",
+      panorama360: "generating",
+    })
+
+    const abortController = new AbortController()
+    abortControllerRef.current = abortController
+
     try {
-      // Use enhanced prompt if available, otherwise build fresh
+      const baseParams = {
+        dataset,
+        scenario,
+        colorScheme,
+        seed,
+        numSamples,
+        noiseScale,
+        customPrompt,
+        negativePrompt,
+        panoramic360,
+        panoramaFormat,
+        projectionType,
+        provider,
+        replicateModel,
+      }
+
       let finalPrompt = ""
       if (customPrompt && customPrompt.trim()) {
         finalPrompt = customPrompt.trim()
       } else {
-        finalPrompt = buildPrompt({
-          dataset: dataset || "vietnamese",
-          scenario: scenario || "trung-sisters",
-          colorScheme: colorScheme || "metallic",
-          seed: seed || 1234,
-          numSamples: numSamples || 4000,
-          noiseScale: noiseScale || 0.08,
-          customPrompt: "",
-          negativePrompt: negativePrompt || "",
-          panoramic360: panoramic360 || false,
-          panoramaFormat: panoramaFormat || "equirectangular",
-          projectionType: projectionType || "fisheye",
-        })
+        finalPrompt = buildPrompt(baseParams)
       }
 
       if (!finalPrompt || finalPrompt.length === 0) {
         throw new Error("Failed to generate prompt")
       }
-
-      setIsGenerating(true)
-      setResults({ errors: [] })
-      setGenerationProgress({
-        standard: "generating",
-        dome: "generating",
-        panorama360: "generating",
-      })
-
-      // Create abort controller for cancellation
-      abortControllerRef.current = new AbortController()
 
       const response = await fetch("/api/generate-ai-art", {
         method: "POST",
@@ -318,8 +325,10 @@ export function FlowArtGenerator() {
           panoramaFormat: panoramaFormat || "equirectangular",
           projectionType: projectionType || "fisheye",
           generateAll: true,
+          provider,
+          replicateModel,
         }),
-        signal: abortControllerRef.current.signal,
+        signal: abortController.signal,
       })
 
       if (response.ok) {
@@ -395,6 +404,8 @@ export function FlowArtGenerator() {
     panoramaFormat,
     projectionType,
     isGenerating,
+    provider,
+    replicateModel,
   ])
 
   // Cancel generation
@@ -713,6 +724,67 @@ export function FlowArtGenerator() {
                 >
                   🔄
                 </button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* AI Provider Selection Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">🤖 AI Provider</CardTitle>
+              <CardDescription>Choose your preferred image generation provider</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="provider">Provider</Label>
+                <Select value={provider} onValueChange={(value: "openai" | "replicate") => setProvider(value)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="replicate">
+                      <div className="flex flex-col">
+                        <span>Replicate Models</span>
+                        <span className="text-xs text-muted-foreground">Multiple model options available</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="openai">
+                      <div className="flex flex-col">
+                        <span>OpenAI DALL-E 3</span>
+                        <span className="text-xs text-muted-foreground">High-quality, reliable generation</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {provider === "replicate" && (
+                <div>
+                  <Label htmlFor="replicateModel">Model</Label>
+                  <Select value={replicateModel} onValueChange={setReplicateModel}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(REPLICATE_MODELS).map(([key, model]) => (
+                        <SelectItem key={key} value={key}>
+                          <div className="flex flex-col">
+                            <span>{model.name}</span>
+                            <span className="text-xs text-muted-foreground">{model.description}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              <div className="text-xs text-muted-foreground">
+                {provider === "replicate" ? (
+                  <span>🔬 Replicate offers various models with different strengths and artistic styles</span>
+                ) : (
+                  <span>✨ DALL-E 3 provides consistent, high-quality results with excellent prompt following</span>
+                )}
               </div>
             </CardContent>
           </Card>

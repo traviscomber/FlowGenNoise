@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { generateWithOpenAI, validateGenerationParams } from "./utils"
+import { generateImage, validateGenerationParams } from "./utils"
 import { buildPrompt } from "@/lib/ai-prompt"
 
 export async function POST(request: NextRequest) {
@@ -27,6 +27,8 @@ export async function POST(request: NextRequest) {
       scenario: body.scenario,
       generateAll: body.generateAll,
       type: body.type,
+      provider: body.provider,
+      model: body.model,
     })
 
     // Validate and sanitize parameters
@@ -44,7 +46,11 @@ export async function POST(request: NextRequest) {
       params.domeProjection = false
     }
 
-    // Build the prompt
+    const provider = body.provider || "replicate"
+    const model = body.model || "black-forest-labs/flux-1.1-pro"
+
+    console.log(`🤖 Using provider: ${provider}, model: ${model}`)
+
     let finalPrompt = ""
     try {
       if (body.prompt && body.prompt.trim()) {
@@ -97,7 +103,7 @@ export async function POST(request: NextRequest) {
       // Generate standard image
       try {
         console.log("🎯 Generating standard image...")
-        const standardResult = await generateWithOpenAI(finalPrompt, "standard", params)
+        const standardResult = await generateImage(finalPrompt, "standard", params, provider, model)
         results.standard = standardResult.imageUrl
         console.log("✅ Standard image generated successfully")
       } catch (error: any) {
@@ -108,7 +114,7 @@ export async function POST(request: NextRequest) {
       // Generate dome projection
       try {
         console.log("🎯 Generating dome projection...")
-        const domeResult = await generateWithOpenAI(finalPrompt, "dome", params)
+        const domeResult = await generateImage(finalPrompt, "dome", params, provider, model)
         results.dome = domeResult.imageUrl
         console.log("✅ Dome projection generated successfully")
       } catch (error: any) {
@@ -119,7 +125,7 @@ export async function POST(request: NextRequest) {
       // Generate 360° panorama
       try {
         console.log("🎯 Generating 360° panorama...")
-        const panoramaResult = await generateWithOpenAI(finalPrompt, "360", params)
+        const panoramaResult = await generateImage(finalPrompt, "360", params, provider, model)
         results.panorama360 = panoramaResult.imageUrl
         console.log("✅ 360° panorama generated successfully")
       } catch (error: any) {
@@ -144,7 +150,7 @@ export async function POST(request: NextRequest) {
     console.log(`🎯 Generating single ${generationType} image...`)
 
     try {
-      const result = await generateWithOpenAI(finalPrompt, generationType, params)
+      const result = await generateImage(finalPrompt, generationType, params, provider, model)
 
       console.log(`✅ ${generationType} image generated successfully`)
 
@@ -178,7 +184,6 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error("❌ Generation API error:", error)
 
-    // Ensure we always return valid JSON
     return NextResponse.json(
       {
         success: false,

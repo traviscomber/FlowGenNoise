@@ -14,6 +14,8 @@ export interface GenerationParams {
   panoramaResolution?: string
   panoramaFormat?: string
   stereographicPerspective?: string
+  provider?: "openai" | "replicate"
+  replicateModel?: string
 }
 
 export function validateGenerationParams(body: any): GenerationParams {
@@ -33,6 +35,8 @@ export function validateGenerationParams(body: any): GenerationParams {
     panoramaResolution: body.panoramaResolution || "8K",
     panoramaFormat: body.panoramaFormat || "equirectangular",
     stereographicPerspective: body.stereographicPerspective || "little-planet",
+    provider: body.provider || "openai",
+    replicateModel: body.replicateModel || "black-forest-labs/flux-1.1-pro",
   }
 }
 
@@ -233,75 +237,6 @@ function sanitizePromptForSafety(prompt: string): string {
   return sanitized
 }
 
-// ULTRA-SAFE FALLBACK PROMPT GENERATOR
-function generateUltraSafeFallbackPrompt(type: "standard" | "dome" | "360", params?: GenerationParams): string {
-  console.log("🚨 Generating ULTRA-SAFE fallback prompt...")
-
-  const basePrompts = [
-    "Abstract geometric artistic composition with mathematical patterns and cultural heritage motifs",
-    "Educational museum-quality digital art featuring traditional artistic elements",
-    "Scholarly cultural documentation artwork with respectful artistic representation",
-    "Academic artistic study showcasing heritage preservation and cultural appreciation",
-    "Museum exhibition artwork celebrating traditional cultural beauty and artistic excellence",
-    "Educational cultural visualization with professional artistic integrity and historical significance",
-    "Respectful artistic tribute featuring cultural heritage elements and traditional artistic honor",
-    "Museum-worthy artistic creation with educational value and cultural appreciation themes",
-    "Professional artistic masterpiece showcasing heritage magnificence and traditional grandeur",
-    "Award-winning cultural artwork with educational importance and respectful artistic dignity",
-  ]
-
-  const colorSchemes = [
-    "warm golden and bronze tones with artistic elegance",
-    "soft pastel colors with gentle artistic harmony",
-    "rich jewel tones with professional artistic sophistication",
-    "earth tones with natural artistic beauty",
-    "monochromatic artistic variations with subtle gradations",
-    "metallic artistic finishes with lustrous professional quality",
-    "sunset colors with warm artistic atmosphere",
-    "ocean blues with serene artistic tranquility",
-    "forest greens with natural artistic harmony",
-    "crystalline colors with prismatic artistic brilliance",
-  ]
-
-  const qualityDescriptors = [
-    "museum-grade artistic quality with professional excellence",
-    "award-winning artistic composition with international recognition",
-    "godlevel artistic mastery with premium sophistication",
-    "professional broadcast standard with artistic innovation",
-    "museum exhibition worthy with cultural significance",
-    "educational artistic value with respectful representation",
-    "heritage preservation quality with traditional honor",
-    "scholarly artistic documentation with academic integrity",
-    "cultural appreciation artwork with artistic celebration",
-    "traditional artistic beauty with respectful homage",
-  ]
-
-  const basePrompt = basePrompts[Math.floor(Math.random() * basePrompts.length)]
-  const colorScheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)]
-  const qualityDescriptor = qualityDescriptors[Math.floor(Math.random() * qualityDescriptors.length)]
-
-  let fallbackPrompt = `${basePrompt}, ${colorScheme}, ${qualityDescriptor}`
-
-  // Add type-specific safe instructions
-  if (type === "360") {
-    fallbackPrompt +=
-      ", seamless panoramic artistic composition with perfect horizontal continuity, professional VR-optimized artwork, museum-quality 360-degree cultural visualization, educational immersive artistic experience"
-  } else if (type === "dome") {
-    fallbackPrompt +=
-      ", circular artistic composition with radial symmetry, professional planetarium-optimized artwork, museum-quality dome projection visualization, educational immersive artistic experience"
-  } else {
-    fallbackPrompt +=
-      ", perfectly balanced artistic composition with professional framing, museum-quality standard format artwork, educational cultural visualization"
-  }
-
-  // Add comprehensive safety padding
-  fallbackPrompt +=
-    ", 8K HDR artistic quality, professional artistic standards, award-winning artistic excellence, godlevel artistic achievement, premium artistic mastery, international artistic recognition, cultural artistic appreciation, heritage artistic preservation, traditional artistic honor, respectful artistic tribute, educational artistic value, museum-worthy artistic creation, professional artistic integrity, award-winning artistic innovation, godlevel artistic perfection, premium artistic sophistication, international artistic excellence, cultural artistic celebration, heritage artistic magnificence, traditional artistic beauty, respectful artistic homage, educational artistic significance, museum-quality artistic achievement, professional artistic mastery, award-winning artistic brilliance, godlevel artistic transcendence, premium artistic elevation, international artistic distinction, cultural artistic reverence, heritage artistic splendor, traditional artistic grandeur, respectful artistic dignity, educational artistic honor, museum-grade artistic supremacy, professional artistic prestige, award-winning artistic acclaim, godlevel artistic renown, premium artistic fame, international artistic celebrity, cultural artistic stardom, heritage artistic legend, traditional artistic myth, respectful artistic folklore, educational artistic story, museum-grade artistic narrative, professional artistic epic, award-winning artistic saga, godlevel artistic chronicle, premium artistic history, international artistic record, cultural artistic documentation, heritage artistic archive, traditional artistic preservation, respectful artistic conservation, educational artistic protection, museum-worthy artistic safeguarding, professional artistic maintenance, award-winning artistic care, godlevel artistic stewardship, premium artistic guardianship, international artistic custody, cultural artistic trusteeship, heritage artistic responsibility, traditional artistic duty, respectful artistic obligation, educational artistic commitment, museum-grade artistic dedication, professional artistic devotion, award-winning artistic loyalty, godlevel artistic faithfulness, premium artistic constancy, international artistic steadfastness, cultural artistic reliability, heritage artistic dependability, traditional artistic trustworthiness, respectful artistic integrity, educational artistic honesty, museum-grade artistic authenticity, professional artistic genuineness, award-winning artistic sincerity, godlevel artistic truth, premium artistic reality, international artistic actuality, cultural artistic fact, heritage artistic certainty, traditional artistic assurance, respectful artistic confidence, educational artistic conviction"
-
-  console.log(`🛡️ Ultra-safe fallback prompt generated (${fallbackPrompt.length} chars)`)
-  return fallbackPrompt
-}
-
 async function retryWithBackoff<T>(fn: () => Promise<T>, maxRetries = 3, baseDelay = 1000): Promise<T> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -334,28 +269,22 @@ export async function generateWithOpenAI(
   params?: GenerationParams,
   signal?: AbortSignal,
 ): Promise<{ imageUrl: string; prompt: string }> {
-  let apiKey = process.env.OPENAI_API_KEY
-
-  if (!apiKey) {
-    apiKey = process.env.OPENAI_KEY
-  }
+  const apiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY
 
   console.log("[v0] Checking OpenAI API key availability...")
-  console.log("[v0] API key exists:", !!apiKey)
+  console.log("[v0] OPENAI_API_KEY exists:", !!process.env.OPENAI_API_KEY)
+  console.log("[v0] OPENAI_KEY exists:", !!process.env.OPENAI_KEY)
+  console.log("[v0] Selected API key exists:", !!apiKey)
   console.log("[v0] API key length:", apiKey?.length || 0)
   console.log("[v0] API key starts with sk-:", apiKey?.startsWith("sk-") || false)
   console.log("[v0] API key starts with sk-proj-:", apiKey?.startsWith("sk-proj-") || false)
 
   if (!apiKey) {
-    console.error(
-      "[v0] Environment variables available:",
-      Object.keys(process.env).filter((key) => key.includes("OPENAI")),
-    )
+    const availableEnvVars = Object.keys(process.env).filter((key) => key.includes("OPENAI"))
+    console.error("[v0] No OpenAI API key found in environment variables")
+    console.error("[v0] Available OpenAI-related env vars:", availableEnvVars)
     throw new Error(
-      "OpenAI API key not configured. Please add a valid OPENAI_API_KEY environment variable. Available OpenAI-related env vars: " +
-        Object.keys(process.env)
-          .filter((key) => key.includes("OPENAI"))
-          .join(", "),
+      `OpenAI API key not configured. Please add a valid OPENAI_API_KEY environment variable. Available OpenAI-related env vars: ${availableEnvVars.join(", ") || "none found"}. Total env vars: ${Object.keys(process.env).length}`,
     )
   }
 
@@ -432,7 +361,6 @@ HEMISPHERICAL DOME ARTISTIC MASTERY:
 • 180-degree hemispherical panorama with ultra-wide fisheye lens perspective, camera pointing straight up on z-axis
 • Extreme barrel distortion creating circular frame of natural surroundings with sky at center
 • NO architectural elements, NO stadium features, NO dome structures - pure outdoor fisheye perspective
-• Natural environment forms complete circular boundary with sky centered
 • Perfect hemispherical mapping with mathematical precision for dome ceiling projection
 • Zenith positioned at exact center with radial symmetry extending to circular edges
 • Professional fisheye distortion with award-winning dome projection accuracy
@@ -539,10 +467,10 @@ ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibitio
 
 // ULTRA-SAFE FALLBACK PROMPT GENERATOR
 function makeOpenAIRequest(promptToUse: string): Promise<{ imageUrl: string; prompt: string }> {
-  let apiKey = process.env.OPENAI_API_KEY
+  const apiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY
 
   if (!apiKey) {
-    apiKey = process.env.OPENAI_KEY
+    throw new Error("OpenAI API key not found in makeOpenAIRequest")
   }
 
   const size: "1024x1024" | "1792x1024" = promptToUse.includes("360") ? "1792x1024" : "1024x1024"
@@ -606,4 +534,508 @@ function makeOpenAIRequest(promptToUse: string): Promise<{ imageUrl: string; pro
 
     throw new Error(`🚫 OpenAI API Error: ${errorMessage}`)
   })
+}
+
+// ULTRA-SAFE FALLBACK PROMPT GENERATOR
+function generateUltraSafeFallbackPrompt(type: "standard" | "dome" | "360", params?: GenerationParams): string {
+  console.log("🚨 Generating ULTRA-SAFE fallback prompt...")
+
+  const basePrompts = [
+    "Abstract geometric artistic composition with mathematical patterns and cultural heritage motifs",
+    "Educational museum-quality digital art featuring traditional artistic elements",
+    "Scholarly cultural documentation artwork with respectful artistic representation",
+    "Academic artistic study showcasing heritage preservation and cultural appreciation",
+    "Museum exhibition artwork celebrating traditional cultural beauty and artistic excellence",
+    "Educational cultural visualization with professional artistic integrity and historical significance",
+    "Respectful artistic tribute featuring cultural heritage elements and traditional artistic honor",
+    "Museum-worthy artistic creation with educational value and cultural appreciation themes",
+    "Professional artistic masterpiece showcasing heritage magnificence and traditional grandeur",
+    "Award-winning cultural artwork with educational importance and respectful artistic dignity",
+  ]
+
+  const colorSchemes = [
+    "warm golden and bronze tones with artistic elegance",
+    "soft pastel colors with gentle artistic harmony",
+    "rich jewel tones with professional artistic sophistication",
+    "earth tones with natural artistic beauty",
+    "monochromatic artistic variations with subtle gradations",
+    "metallic artistic finishes with lustrous professional quality",
+    "sunset colors with warm artistic atmosphere",
+    "ocean blues with serene artistic tranquility",
+    "forest greens with natural artistic harmony",
+    "crystalline colors with prismatic artistic brilliance",
+  ]
+
+  const qualityDescriptors = [
+    "museum-grade artistic quality with professional excellence",
+    "award-winning artistic composition with international recognition",
+    "godlevel artistic mastery with premium sophistication",
+    "professional broadcast standard with artistic innovation",
+    "museum exhibition worthy with cultural significance",
+    "educational artistic value with respectful representation",
+    "heritage preservation quality with traditional honor",
+    "scholarly artistic documentation with academic integrity",
+    "cultural appreciation artwork with artistic celebration",
+    "traditional artistic beauty with respectful homage",
+  ]
+
+  const basePrompt = basePrompts[Math.floor(Math.random() * basePrompts.length)]
+  const colorScheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)]
+  const qualityDescriptor = qualityDescriptors[Math.floor(Math.random() * qualityDescriptors.length)]
+
+  let fallbackPrompt = `${basePrompt}, ${colorScheme}, ${qualityDescriptor}`
+
+  // Add type-specific safe instructions
+  if (type === "360") {
+    fallbackPrompt +=
+      ", seamless panoramic artistic composition with perfect horizontal continuity, professional VR-optimized artwork, museum-quality 360-degree cultural visualization, educational immersive artistic experience"
+  } else if (type === "dome") {
+    fallbackPrompt +=
+      ", circular artistic composition with radial symmetry, professional planetarium-optimized artwork, museum-quality dome projection visualization, educational immersive artistic experience"
+  } else {
+    fallbackPrompt +=
+      ", perfectly balanced artistic composition with professional framing, museum-quality standard format artwork, educational cultural visualization"
+  }
+
+  // Add comprehensive safety padding
+  fallbackPrompt +=
+    ", 8K HDR artistic quality, professional artistic standards, award-winning artistic excellence, godlevel artistic achievement, premium artistic mastery, international artistic recognition, cultural artistic appreciation, heritage artistic preservation, traditional artistic honor, respectful artistic tribute, educational artistic value, museum-worthy artistic creation, professional artistic integrity, award-winning artistic innovation, godlevel artistic perfection, premium artistic sophistication, international artistic excellence, cultural artistic celebration, heritage artistic magnificence, traditional artistic beauty, respectful artistic homage, educational artistic significance, museum-quality artistic achievement, professional artistic mastery, award-winning artistic brilliance, godlevel artistic transcendence, premium artistic elevation, international artistic distinction, cultural artistic reverence, heritage artistic splendor, traditional artistic grandeur, respectful artistic dignity, educational artistic honor, museum-grade artistic supremacy, professional artistic prestige, award-winning artistic acclaim, godlevel artistic renown, premium artistic fame, international artistic celebrity, cultural artistic stardom, heritage artistic legend, traditional artistic myth, respectful artistic folklore, educational artistic story, museum-grade artistic narrative, professional artistic epic, award-winning artistic saga, godlevel artistic chronicle, premium artistic history, international artistic record, cultural artistic documentation, heritage artistic archive, traditional artistic preservation, respectful artistic conservation, educational artistic protection, museum-worthy artistic safeguarding, professional artistic maintenance, award-winning artistic care, godlevel artistic stewardship, premium artistic guardianship, international artistic custody, cultural artistic trusteeship, heritage artistic responsibility, traditional artistic duty, respectful artistic obligation, educational artistic commitment, museum-grade artistic dedication, professional artistic devotion, award-winning artistic loyalty, godlevel artistic faithfulness, premium artistic constancy, international artistic steadfastness, cultural artistic reliability, heritage artistic dependability, traditional artistic trustworthiness, respectful artistic integrity, educational artistic honesty, museum-grade artistic authenticity, professional artistic genuineness, award-winning artistic sincerity, godlevel artistic truth, premium artistic reality, international artistic actuality, cultural artistic fact, heritage artistic certainty, traditional artistic assurance, respectful artistic confidence, educational artistic conviction"
+
+  console.log(`🛡️ Ultra-safe fallback prompt generated (${fallbackPrompt.length} chars)`)
+  return fallbackPrompt
+}
+
+export const REPLICATE_MODELS = {
+  // FLUX Models - Latest and Best Quality
+  "bytedance/seedream-3": {
+    name: "SeeDream-3 (Best Overall)",
+    description: "Best overall image generation model, updated recently",
+    category: "FLUX",
+    maxSize: "2048x2048",
+  },
+  "black-forest-labs/flux-schnell": {
+    name: "FLUX Schnell (Fast & Cost-Effective)",
+    description: "12B parameter model, high quality in 1-4 steps, optimized for speed",
+    category: "FLUX",
+    maxSize: "2048x2048",
+  },
+  "black-forest-labs/flux-1.1-pro-ultra": {
+    name: "FLUX 1.1 Pro Ultra",
+    description: "Ultimate quality FLUX model with maximum detail",
+    category: "FLUX",
+    maxSize: "2048x2048",
+  },
+  "black-forest-labs/flux-1.1-pro": {
+    name: "FLUX 1.1 Pro",
+    description: "Faster generation with improved image quality over flux-pro",
+    category: "FLUX",
+    maxSize: "2048x2048",
+  },
+  "black-forest-labs/flux-pro": {
+    name: "FLUX Pro",
+    description: "State-of-the-art performance in image generation",
+    category: "FLUX",
+    maxSize: "2048x2048",
+  },
+  "black-forest-labs/flux-dev": {
+    name: "FLUX Dev",
+    description: "Development version with excellent quality",
+    category: "FLUX",
+    maxSize: "1024x1024",
+  },
+  "black-forest-labs/flux-dev-lora": {
+    name: "FLUX Dev LoRA",
+    description: "FLUX Dev with LoRA fine-tuning capabilities",
+    category: "FLUX",
+    maxSize: "1024x1024",
+  },
+  "black-forest-labs/flux-kontext-max": {
+    name: "FLUX Kontext Max",
+    description: "Maximum context understanding FLUX model",
+    category: "FLUX",
+    maxSize: "2048x2048",
+  },
+  "black-forest-labs/flux-kontext-pro": {
+    name: "FLUX Kontext Pro",
+    description: "Professional context-aware FLUX model",
+    category: "FLUX",
+    maxSize: "2048x2048",
+  },
+  "prunaai/flux.1-dev": {
+    name: "FLUX 1 Dev (Optimized)",
+    description: "Optimized FLUX development model",
+    category: "FLUX",
+    maxSize: "1024x1024",
+  },
+
+  // Stable Diffusion & SDXL Models
+  "bytedance/sdxl-lightning-4step": {
+    name: "SDXL Lightning 4-Step",
+    description: "High-quality images in just 4 steps, very fast",
+    category: "Stable Diffusion",
+    maxSize: "1024x1024",
+  },
+  "prunaai/sdxl-lightning": {
+    name: "SDXL Lightning (Optimized)",
+    description: "Optimized SDXL Lightning model",
+    category: "Stable Diffusion",
+    maxSize: "1024x1024",
+  },
+  "stability-ai/stable-diffusion-3.5-large": {
+    name: "Stable Diffusion 3.5 Large",
+    description: "Latest large Stable Diffusion model",
+    category: "Stable Diffusion",
+    maxSize: "1024x1024",
+  },
+  "stability-ai/stable-diffusion-3.5-large-turbo": {
+    name: "Stable Diffusion 3.5 Large Turbo",
+    description: "Turbo version of SD 3.5 Large for faster generation",
+    category: "Stable Diffusion",
+    maxSize: "1024x1024",
+  },
+  "stability-ai/stable-diffusion-3.5-medium": {
+    name: "Stable Diffusion 3.5 Medium",
+    description: "Balanced quality and speed SD 3.5 model",
+    category: "Stable Diffusion",
+    maxSize: "1024x1024",
+  },
+  "lucataco/ssd-1b": {
+    name: "SSD-1B (Distilled SDXL)",
+    description: "Distilled version of SDXL, compact and efficient",
+    category: "Stable Diffusion",
+    maxSize: "1024x1024",
+  },
+
+  // Ideogram Models - Text Generation Specialists
+  "ideogram-ai/ideogram-v3-turbo": {
+    name: "Ideogram V3 Turbo",
+    description: "Fast, realistic text generation in images",
+    category: "Text Specialists",
+    maxSize: "1024x1024",
+  },
+  "ideogram-ai/ideogram-v3-quality": {
+    name: "Ideogram V3 Quality",
+    description: "Highest quality text generation",
+    category: "Text Specialists",
+    maxSize: "1024x1024",
+  },
+  "ideogram-ai/ideogram-v3-balanced": {
+    name: "Ideogram V3 Balanced",
+    description: "Balanced speed and quality for text generation",
+    category: "Text Specialists",
+    maxSize: "1024x1024",
+  },
+  "ideogram-ai/ideogram-v2a-turbo": {
+    name: "Ideogram V2A Turbo",
+    description: "Fast V2A model with text capabilities",
+    category: "Text Specialists",
+    maxSize: "1024x1024",
+  },
+  "ideogram-ai/ideogram-v2a": {
+    name: "Ideogram V2A",
+    description: "Advanced V2A model for text in images",
+    category: "Text Specialists",
+    maxSize: "1024x1024",
+  },
+  "ideogram-ai/ideogram-v2-turbo": {
+    name: "Ideogram V2 Turbo",
+    description: "Fast V2 model with good text handling",
+    category: "Text Specialists",
+    maxSize: "1024x1024",
+  },
+  "ideogram-ai/ideogram-v2": {
+    name: "Ideogram V2",
+    description: "Reliable V2 model for text generation",
+    category: "Text Specialists",
+    maxSize: "1024x1024",
+  },
+
+  // Google Imagen Models
+  "google/imagen-4-ultra": {
+    name: "Imagen 4 Ultra",
+    description: "Google's highest quality image generation model",
+    category: "Google",
+    maxSize: "2048x2048",
+  },
+  "google/imagen-4-fast": {
+    name: "Imagen 4 Fast",
+    description: "Fast version of Google's Imagen 4",
+    category: "Google",
+    maxSize: "1024x1024",
+  },
+  "google/imagen-4": {
+    name: "Imagen 4",
+    description: "Google's latest image generation model",
+    category: "Google",
+    maxSize: "1024x1024",
+  },
+  "google/imagen-3-fast": {
+    name: "Imagen 3 Fast",
+    description: "Fast version of Imagen 3",
+    category: "Google",
+    maxSize: "1024x1024",
+  },
+  "google/imagen-3": {
+    name: "Imagen 3",
+    description: "Google's Imagen 3 model",
+    category: "Google",
+    maxSize: "1024x1024",
+  },
+
+  // Specialized Models
+  "recraft-ai/recraft-v3-svg": {
+    name: "Recraft V3 SVG",
+    description: "Specialized for generating high-quality SVG images",
+    category: "Specialized",
+    maxSize: "1024x1024",
+  },
+  "recraft-ai/recraft-v3": {
+    name: "Recraft V3",
+    description: "Professional design-focused image generation",
+    category: "Specialized",
+    maxSize: "1024x1024",
+  },
+  "luma/photon-flash": {
+    name: "Luma Photon Flash",
+    description: "Fast photorealistic image generation",
+    category: "Specialized",
+    maxSize: "1024x1024",
+  },
+  "luma/photon": {
+    name: "Luma Photon",
+    description: "High-quality photorealistic generation",
+    category: "Specialized",
+    maxSize: "1024x1024",
+  },
+  "nvidia/sana-sprint-1.6b": {
+    name: "NVIDIA SANA Sprint 1.6B",
+    description: "NVIDIA's efficient 1.6B parameter model",
+    category: "Specialized",
+    maxSize: "1024x1024",
+  },
+  "nvidia/sana": {
+    name: "NVIDIA SANA",
+    description: "NVIDIA's SANA image generation model",
+    category: "Specialized",
+    maxSize: "1024x1024",
+  },
+  "minimax/image-01": {
+    name: "MiniMax Image-01",
+    description: "MiniMax's image generation model",
+    category: "Specialized",
+    maxSize: "1024x1024",
+  },
+  "bria/image-3.2": {
+    name: "BRIA Image 3.2",
+    description: "Commercial-safe image generation",
+    category: "Specialized",
+    maxSize: "1024x1024",
+  },
+
+  // Advanced & Experimental
+  "qwen/qwen-image": {
+    name: "Qwen Image",
+    description: "Alibaba's Qwen image generation model",
+    category: "Advanced",
+    maxSize: "1024x1024",
+  },
+  "prunaai/hidream-l1-fast": {
+    name: "HiDream L1 Fast",
+    description: "Fast high-definition dream-like generation",
+    category: "Advanced",
+    maxSize: "1024x1024",
+  },
+  "prunaai/hidream-l1-full": {
+    name: "HiDream L1 Full",
+    description: "Full quality high-definition dream generation",
+    category: "Advanced",
+    maxSize: "1024x1024",
+  },
+  "prunaai/hidream-l1-dev": {
+    name: "HiDream L1 Dev",
+    description: "Development version of HiDream L1",
+    category: "Advanced",
+    maxSize: "1024x1024",
+  },
+  "prunaai/wan-2.2-image": {
+    name: "WAN 2.2 Image",
+    description: "Advanced WAN 2.2 image generation",
+    category: "Advanced",
+    maxSize: "1024x1024",
+  },
+  "fofr/any-comfyui-workflow": {
+    name: "Any ComfyUI Workflow",
+    description: "Run any ComfyUI workflow for custom generation",
+    category: "Advanced",
+    maxSize: "2048x2048",
+  },
+}
+
+export async function generateWithReplicate(
+  prompt: string,
+  type: "standard" | "dome" | "360",
+  params?: GenerationParams,
+  signal?: AbortSignal,
+): Promise<{ imageUrl: string; prompt: string }> {
+  const apiToken = process.env.REPLICATE_API_TOKEN
+
+  console.log("[v0] Checking Replicate API token availability...")
+  console.log("[v0] REPLICATE_API_TOKEN exists:", !!apiToken)
+  console.log("[v0] API token length:", apiToken?.length || 0)
+
+  if (!apiToken) {
+    throw new Error("Replicate API token not configured. Please add REPLICATE_API_TOKEN environment variable.")
+  }
+
+  const model = params?.replicateModel || "black-forest-labs/flux-1.1-pro"
+  const safePrompt = sanitizePromptForSafety(prompt)
+
+  // Determine size based on type and model capabilities
+  let width = 1024
+  let height = 1024
+
+  if (type === "360") {
+    width = 1792
+    height = 1024
+  }
+
+  let enhancedPrompt = safePrompt
+
+  // Add type-specific enhancements
+  if (type === "360") {
+    enhancedPrompt = `360° PANORAMIC IMAGE: ${safePrompt}. Seamless wraparound panorama with perfect left-right edge continuity for VR viewing.`
+  } else if (type === "dome") {
+    enhancedPrompt = `DOME PROJECTION IMAGE: ${safePrompt}. Fisheye perspective optimized for planetarium dome projection with circular composition.`
+  }
+
+  console.log(`🎨 Generating ${type} image with Replicate model: ${model}`)
+  console.log(`📐 Size: ${width}x${height}`)
+  console.log(`📝 Enhanced prompt length: ${enhancedPrompt.length} chars`)
+
+  try {
+    const response = await fetch("https://api.replicate.com/v1/predictions", {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        version: model,
+        input: {
+          prompt: enhancedPrompt,
+          width: width,
+          height: height,
+          num_outputs: 1,
+          guidance_scale: 7.5,
+          num_inference_steps: 50,
+        },
+      }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      const errorMessage = errorData.detail || `HTTP ${response.status}: ${response.statusText}`
+
+      if (response.status === 401) {
+        throw new Error("🔑 Replicate API token authentication failed. Please verify your API token.")
+      }
+
+      if (response.status === 429) {
+        throw new Error("⏱️ Replicate rate limit exceeded. Please wait and try again.")
+      }
+
+      throw new Error(`🚫 Replicate API Error: ${errorMessage}`)
+    }
+
+    const prediction = await response.json()
+    console.log("[v0] Replicate prediction created:", prediction.id)
+
+    // Poll for completion
+    let result = prediction
+    while (result.status === "starting" || result.status === "processing") {
+      if (signal?.aborted) {
+        throw new Error("Generation was cancelled")
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
+        headers: {
+          Authorization: `Token ${apiToken}`,
+        },
+      })
+
+      result = await pollResponse.json()
+      console.log("[v0] Replicate status:", result.status)
+    }
+
+    if (result.status === "failed") {
+      throw new Error(`Replicate generation failed: ${result.error || "Unknown error"}`)
+    }
+
+    if (result.status === "succeeded" && result.output && result.output[0]) {
+      return {
+        imageUrl: result.output[0],
+        prompt: enhancedPrompt,
+      }
+    }
+
+    throw new Error("Replicate generation completed but no output received")
+  } catch (error: any) {
+    if (error.name === "AbortError") {
+      throw new Error("Generation was cancelled")
+    }
+    console.error(`❌ Replicate generation failed for ${type}:`, error)
+    throw error
+  }
+}
+
+export async function generateImage(
+  prompt: string,
+  type: "standard" | "dome" | "360",
+  params?: GenerationParams,
+  signal?: AbortSignal,
+): Promise<{ imageUrl: string; prompt: string; provider: string }> {
+  const provider = params?.provider || "openai"
+
+  console.log(`[v0] Starting image generation with ${provider}`)
+
+  if (provider === "replicate") {
+    try {
+      const result = await generateWithReplicate(prompt, type, params, signal)
+      return { ...result, provider: "replicate" }
+    } catch (error: any) {
+      console.error("❌ Replicate generation failed:", error.message)
+      console.log("🔄 Falling back to OpenAI...")
+
+      try {
+        const result = await generateWithOpenAI(prompt, type, params, signal)
+        return { ...result, provider: "openai-fallback" }
+      } catch (fallbackError: any) {
+        console.error("❌ OpenAI fallback also failed:", fallbackError.message)
+        throw new Error(`Both providers failed. Replicate: ${error.message}. OpenAI: ${fallbackError.message}`)
+      }
+    }
+  } else {
+    try {
+      const result = await generateWithOpenAI(prompt, type, params, signal)
+      return { ...result, provider: "openai" }
+    } catch (error: any) {
+      console.error("❌ OpenAI generation failed:", error.message)
+      console.log("🔄 Falling back to Replicate...")
+
+      try {
+        const result = await generateWithReplicate(
+          prompt,
+          type,
+          { ...params, replicateModel: "black-forest-labs/flux-1.1-pro" },
+          signal,
+        )
+        return { ...result, provider: "replicate-fallback" }
+      } catch (fallbackError: any) {
+        console.error("❌ Replicate fallback also failed:", fallbackError.message)
+        throw new Error(`Both providers failed. OpenAI: ${error.message}. Replicate: ${fallbackError.message}`)
+      }
+    }
+  }
 }
