@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Dialog,
   DialogContent,
@@ -36,6 +37,7 @@ import {
   Edit3,
   CheckCircle,
   AlertCircle,
+  Square,
 } from "lucide-react"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios } from "@/lib/ai-prompt"
 
@@ -71,10 +73,21 @@ export default function Dome360Planner() {
 
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImages, setGeneratedImages] = useState<{
+    standard?: GeneratedImage
     dome?: GeneratedImage
     "360"?: GeneratedImage
   }>({})
-  const [generationType, setGenerationType] = useState<"dome" | "360">("dome")
+  const [generationType, setGenerationType] = useState<"standard" | "dome" | "360">("standard")
+
+  const [selectedTypes, setSelectedTypes] = useState<{
+    standard: boolean
+    dome: boolean
+    "360": boolean
+  }>({
+    standard: true,
+    dome: false,
+    "360": false,
+  })
 
   // Prompt enhancement state
   const [isPromptDialogOpen, setIsPromptDialogOpen] = useState(false)
@@ -187,109 +200,165 @@ export default function Dome360Planner() {
     variationType,
   ])
 
-  // Generate image
-  const generateImage = useCallback(async () => {
-    if (isGenerating) return
+  const handleGenerate = useCallback(async () => {
+    if (!dataset || !scenario) {
+      toast({
+        title: "Missing Selection",
+        description: "Please select both a dataset and scenario before generating.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    // Check if at least one type is selected
+    const hasSelection = selectedTypes.standard || selectedTypes.dome || selectedTypes["360"]
+    if (!hasSelection) {
+      toast({
+        title: "No Image Types Selected",
+        description: "Please select at least one image type to generate.",
+        variant: "destructive",
+      })
+      return
+    }
 
     setIsGenerating(true)
-    setError(null)
+    setGeneratedImages({})
 
     try {
-      const orionCalibrationPrompt =
-        generationType === "360" && panoramaFormat === "equirectangular"
-          ? "ORION360 PROFESSIONAL CALIBRATION: Perfect 2:1 aspect ratio equirectangular projection, seamless horizontal edge wrapping with zero visible seams, professional color calibration with accurate gradient mapping, geometric alignment grid precision, directional orientation accuracy (Front-Left-Right-Back), VR-ready panoramic standards, godlevel seamless continuity, ultra-precise edge blending, professional 360° content validation, Orion360 technical specifications compliance"
-          : ""
-
-      console.log("[v0] Starting generation for type:", generationType)
-      console.log("[v0] Expected dimensions:", generationType === "360" ? "1792x1024" : "1440x1440")
-
-      const response = await fetch("/api/generate-ai-art", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          dataset: dataset,
-          scenario: scenario,
-          colorScheme,
-          seed,
-          numSamples,
-          noiseScale,
-          customPrompt: editablePrompt || customPrompt,
-          type: generationType,
-          projectionType,
-          panoramaFormat,
-          loraWeight: generationType === "360" ? loraWeight : undefined,
-          guidanceScale: generationType === "360" ? guidanceScale : undefined,
-          useFluxEquirectangular: generationType === "360" && panoramaFormat === "equirectangular",
-          provider: generationType === "360" ? "openai" : "replicate", // Use OpenAI for 360° generation
-          model: generationType === "360" ? "dall-e-3" : "black-forest-labs/flux-1.1-pro-ultra",
-          width: generationType === "360" ? 1792 : 1440, // DALL-E 3 supports 1792x1024 for 2:1 aspect ratio
-          height: generationType === "360" ? 1024 : 1440, // Proper 2:1 aspect ratio for 360° panoramas
-          guidance_scale: generationType === "360" ? guidanceScale : 8,
-          num_inference_steps: 4, // Fixed to comply with API limits
-          scheduler: "DPMSolverMultistep",
-          size: generationType === "360" ? "1792x1024" : "1024x1024", // DALL-E 3 size parameter
-          quality: generationType === "360" ? "hd" : "standard", // HD quality for 360° panoramas
-          style: generationType === "360" ? "natural" : "vivid", // Natural style for panoramas
-          fluxEquirectangularTrigger:
-            generationType === "360" && panoramaFormat === "equirectangular"
-              ? `equirectangular 360 degree panorama, ${orionCalibrationPrompt}, seamless horizontal wrapping, professional VR panorama, godlevel seamless edges, perfect 360 degree continuity, no visible seams, ultra-high-quality panoramic projection, Orion360 professional standards, VR headset optimized, perfect geometric alignment, professional color calibration`
-              : undefined,
-          seamlessWrapping: generationType === "360",
-          panoramicOptimization: generationType === "360" ? "orion360_professional" : undefined,
-          edgeBlending: generationType === "360" ? "orion_seamless_calibration" : undefined,
-          orionCalibration: generationType === "360" && panoramaFormat === "equirectangular",
-          professionalVR: generationType === "360",
-          geometricAlignment: generationType === "360" ? "orion360_grid_precision" : undefined,
-          panoramic360: generationType === "360", // Explicit 360° flag
-          aspectRatio: generationType === "360" ? "2:1" : "1:1", // Explicit aspect ratio
-        }),
-      })
-
-      const data = await response.json()
-
-      console.log("[v0] API response received:", data.success)
-      console.log("[v0] Image URL received:", data.imageUrl ? "Yes" : "No")
-
-      if (data.success) {
-        const newImage: GeneratedImage = {
-          imageUrl: data.imageUrl,
-          prompt: data.prompt,
-          aspectRatio: data.aspectRatio || (generationType === "360" ? "2:1" : "1:1"),
-          format: data.format || (generationType === "360" ? "360° Panorama" : "Dome Projection"),
-          projectionType: data.projectionType,
-          panoramaFormat: data.panoramaFormat,
-          seamlessWrapping: data.seamlessWrapping,
-          planetariumOptimized: data.planetariumOptimized,
-          orionCalibration: data.orionCalibration,
-          geometricAlignment: data.geometricAlignment,
-        }
-
-        console.log("[v0] Storing image for type:", generationType)
-        console.log("[v0] Image aspect ratio:", newImage.aspectRatio)
-        console.log("[v0] Image format:", newImage.format)
-
-        setGeneratedImages((prev) => {
-          const updated = {
-            ...prev,
-            [generationType]: newImage,
-          }
-          console.log("[v0] Updated generatedImages state:", Object.keys(updated))
-          return updated
-        })
-
-        toast({
-          title: "Generation Complete!",
-          description: `${generationType === "360" ? "360° panorama" : "Dome projection"} generated successfully`,
-        })
-      } else {
-        throw new Error(data.error || "Failed to generate image")
+      const baseParams = {
+        dataset,
+        scenario,
+        colorScheme,
+        seed,
+        numSamples,
+        noiseScale,
+        customPrompt,
+        panoramic360: generationType === "360",
+        panoramaFormat,
+        projectionType,
+        variationType,
+        generationType,
       }
-    } catch (error: any) {
-      console.error("Generation error:", error)
-      setError(error.message || "Failed to generate image")
+
+      // Generate only selected types
+      const generationPromises = []
+
+      if (selectedTypes.standard) {
+        console.log("[v0] Generating Standard image...")
+        generationPromises.push(
+          fetch("/api/generate-ai-art", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...baseParams,
+              width: 1440,
+              height: 1440,
+              model: "black-forest-labs/flux-1.1-pro-ultra",
+              num_inference_steps: 4,
+              guidance_scale: 8,
+              scheduler: "DPMSolverMultistep",
+              style: "vivid",
+              quality: "standard",
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => ({ type: "standard", data })),
+        )
+      }
+
+      if (selectedTypes.dome) {
+        console.log("[v0] Generating Dome image...")
+        generationPromises.push(
+          fetch("/api/generate-ai-art", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...baseParams,
+              width: 1440,
+              height: 1440,
+              model: "black-forest-labs/flux-1.1-pro-ultra",
+              num_inference_steps: 4,
+              guidance_scale: 8,
+              scheduler: "DPMSolverMultistep",
+              style: "vivid",
+              quality: "standard",
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => ({ type: "dome", data })),
+        )
+      }
+
+      if (selectedTypes["360"]) {
+        console.log("[v0] Generating 360° Panorama image...")
+        generationPromises.push(
+          fetch("/api/generate-ai-art", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...baseParams,
+              width: 1792,
+              height: 1024,
+              model: "dall-e-3", // Always use DALL-E 3 for 360° panoramas
+              style: "natural",
+              quality: "hd",
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => ({ type: "360", data })),
+        )
+      }
+
+      // Wait for all selected generations to complete
+      const results = await Promise.all(generationPromises)
+
+      // Process results and update state
+      const newGeneratedImages: { [key: string]: GeneratedImage } = {}
+
+      for (const result of results) {
+        if (result.data.success && result.data.imageUrl) {
+          newGeneratedImages[result.type] = {
+            imageUrl: result.data.imageUrl,
+            prompt: result.data.prompt || "",
+            aspectRatio: result.data.aspectRatio || (result.type === "360" ? "2:1" : "1:1"),
+            format:
+              result.data.format ||
+              (result.type === "360" ? "360° Panorama" : result.type === "dome" ? "Dome Projection" : "Standard Image"),
+            projectionType: result.data.projectionType,
+            panoramaFormat: result.data.panoramaFormat,
+            seamlessWrapping: result.data.seamlessWrapping,
+            planetariumOptimized: result.data.planetariumOptimized,
+            orionCalibration: result.data.orionCalibration,
+            geometricAlignment: result.data.geometricAlignment,
+          }
+          console.log(`[v0] ${result.type} image generated successfully:`, result.data.imageUrl)
+        } else {
+          console.error(`[v0] ${result.type} generation failed:`, result.data.error)
+          toast({
+            title: `${result.type.charAt(0).toUpperCase() + result.type.slice(1)} Generation Failed`,
+            description: result.data.error || "Unknown error occurred",
+            variant: "destructive",
+          })
+        }
+      }
+
+      setGeneratedImages(newGeneratedImages)
+
+      // Set the generation type to the first successfully generated type
+      const firstGeneratedType = Object.keys(newGeneratedImages)[0]
+      if (firstGeneratedType) {
+        setGenerationType(firstGeneratedType as "standard" | "dome" | "360")
+      }
+
+      toast({
+        title: "Generation Complete",
+        description: `Successfully generated ${Object.keys(newGeneratedImages).length} image(s)`,
+      })
+    } catch (error) {
+      console.error("[v0] Generation error:", error)
       toast({
         title: "Generation Failed",
-        description: error.message || "Failed to generate image",
+        description: "An error occurred during generation. Please try again.",
         variant: "destructive",
       })
     } finally {
@@ -303,14 +372,19 @@ export default function Dome360Planner() {
     numSamples,
     noiseScale,
     customPrompt,
-    editablePrompt,
+    selectedTypes,
     generationType,
-    projectionType,
     panoramaFormat,
-    isGenerating,
+    projectionType,
+    variationType,
   ])
 
-  // Download image
+  const currentImage = generatedImages[generationType]
+
+  console.log("[v0] Current generation type:", generationType)
+  console.log("[v0] Current image exists:", currentImage ? "Yes" : "No")
+  console.log("[v0] Current image aspect ratio:", currentImage?.aspectRatio)
+
   const downloadImage = useCallback(
     async (imageUrl: string, filename: string) => {
       try {
@@ -356,23 +430,21 @@ export default function Dome360Planner() {
     [dataset, scenario, colorScheme, generationType, panoramaFormat, projectionType],
   )
 
-  const currentImage = generatedImages[generationType]
-
-  console.log("[v0] Current generation type:", generationType)
-  console.log("[v0] Current image exists:", currentImage ? "Yes" : "No")
-  console.log("[v0] Current image aspect ratio:", currentImage?.aspectRatio)
-
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Dome & 360° Planner
+          FlowSketch Art Generator
         </h1>
         <p className="text-muted-foreground">
-          Specialized tool for dome projection and 360° panoramic art generation with ChatGPT enhancement
+          Professional AI art generation with selective output types and ChatGPT enhancement
         </p>
         <div className="flex justify-center gap-2">
+          <Badge variant="secondary">
+            <Square className="w-3 h-3 mr-1" />
+            Standard Quality
+          </Badge>
           <Badge variant="secondary">
             <CircleDot className="w-3 h-3 mr-1" />
             Dome Optimized
@@ -403,19 +475,74 @@ export default function Dome360Planner() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="h-5 w-5" />
-                Dome & 360° Settings
+                Generation Settings
               </CardTitle>
-              <CardDescription>Configure specialized projection parameters</CardDescription>
+              <CardDescription>Configure image generation parameters and select output types</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Generation Type */}
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold">Select Image Types to Generate</Label>
+                <div className="space-y-3 border border-gray-200 rounded-lg p-3">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="standard"
+                      checked={selectedTypes.standard}
+                      onCheckedChange={(checked) =>
+                        setSelectedTypes((prev) => ({ ...prev, standard: checked as boolean }))
+                      }
+                    />
+                    <Label htmlFor="standard" className="flex items-center gap-2 cursor-pointer">
+                      <Square className="h-4 w-4" />
+                      Standard Image (1440×1440)
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="dome"
+                      checked={selectedTypes.dome}
+                      onCheckedChange={(checked) => setSelectedTypes((prev) => ({ ...prev, dome: checked as boolean }))}
+                    />
+                    <Label htmlFor="dome" className="flex items-center gap-2 cursor-pointer">
+                      <CircleDot className="h-4 w-4" />
+                      Dome Projection (1440×1440)
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="360"
+                      checked={selectedTypes["360"]}
+                      onCheckedChange={(checked) =>
+                        setSelectedTypes((prev) => ({ ...prev, "360": checked as boolean }))
+                      }
+                    />
+                    <Label htmlFor="360" className="flex items-center gap-2 cursor-pointer">
+                      <Globe className="h-4 w-4" />
+                      360° Panorama (1792×1024)
+                    </Label>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Select one or more image types. Each selected type will be generated independently.
+                </p>
+              </div>
+
+              {/* Generation Type for Viewing */}
               <div className="space-y-2">
-                <Label>Generation Type</Label>
-                <Select value={generationType} onValueChange={(value: "dome" | "360") => setGenerationType(value)}>
+                <Label>View Generated Image</Label>
+                <Select
+                  value={generationType}
+                  onValueChange={(value: "standard" | "dome" | "360") => setGenerationType(value)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="standard">
+                      <div className="flex items-center gap-2">
+                        <Square className="h-4 w-4" />
+                        Standard Image
+                      </div>
+                    </SelectItem>
                     <SelectItem value="dome">
                       <div className="flex items-center gap-2">
                         <CircleDot className="h-4 w-4" />
@@ -433,7 +560,7 @@ export default function Dome360Planner() {
               </div>
 
               {/* Projection Type Selection */}
-              {generationType === "dome" && (
+              {(selectedTypes.dome || generationType === "dome") && (
                 <div className="space-y-2">
                   <Label>Dome Projection Type</Label>
                   <Select value={projectionType} onValueChange={setProjectionType}>
@@ -471,7 +598,7 @@ export default function Dome360Planner() {
               )}
 
               {/* Panorama Format Selection */}
-              {generationType === "360" && (
+              {(selectedTypes["360"] || generationType === "360") && (
                 <div className="space-y-2">
                   <Label>360° Panorama Format</Label>
                   <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
@@ -498,7 +625,7 @@ export default function Dome360Planner() {
                   </Select>
                   {panoramaFormat === "equirectangular" && (
                     <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded border border-blue-200">
-                      <strong>FLUX Equirectangular LoRA:</strong> Godlevel 1440×720 resolution with professional
+                      <strong>FLUX Equirectangular LoRA:</strong> Godlevel 1792×1024 resolution with professional
                       seamless wrapping and neuralia h3ritage style. Trigger: "equirectangular 360 degree panorama"
                     </div>
                   )}
@@ -759,16 +886,16 @@ export default function Dome360Planner() {
 
               {/* Action Buttons */}
               <div className="space-y-2">
-                <Button onClick={generateImage} disabled={isGenerating} className="w-full" size="lg">
+                <Button onClick={handleGenerate} disabled={isGenerating} className="w-full" size="lg">
                   {isGenerating ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Generating...
+                      Generating Selected Types...
                     </>
                   ) : (
                     <>
                       <Sparkles className="h-4 w-4 mr-2" />
-                      Generate {generationType === "360" ? "360° Panorama" : "Dome Projection"}
+                      Generate Selected Images
                     </>
                   )}
                 </Button>
@@ -781,20 +908,31 @@ export default function Dome360Planner() {
 
               {/* Current Settings Display */}
               <div className="space-y-2 border-t pt-4">
-                <Label className="text-sm font-semibold">Current Settings</Label>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Type:</span>
+                <Label className="text-sm font-semibold">Selected Types</Label>
+                <div className="flex flex-wrap gap-1">
+                  {selectedTypes.standard && (
                     <Badge variant="outline" className="text-xs">
-                      {generationType === "360" ? "360°" : "Dome"}
+                      <Square className="w-3 h-3 mr-1" />
+                      Standard
                     </Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Format:</span>
+                  )}
+                  {selectedTypes.dome && (
                     <Badge variant="outline" className="text-xs">
-                      {generationType === "360" ? panoramaFormat : projectionType}
+                      <CircleDot className="w-3 h-3 mr-1" />
+                      Dome
                     </Badge>
-                  </div>
+                  )}
+                  {selectedTypes["360"] && (
+                    <Badge variant="outline" className="text-xs">
+                      <Globe className="w-3 h-3 mr-1" />
+                      360°
+                    </Badge>
+                  )}
+                  {!selectedTypes.standard && !selectedTypes.dome && !selectedTypes["360"] && (
+                    <Badge variant="destructive" className="text-xs">
+                      None Selected
+                    </Badge>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -806,13 +944,26 @@ export default function Dome360Planner() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                {generationType === "360" ? <Globe className="h-5 w-5" /> : <CircleDot className="h-5 w-5" />}
-                Generated {generationType === "360" ? "360° Panorama" : "Dome Projection"}
+                {generationType === "360" ? (
+                  <Globe className="h-5 w-5" />
+                ) : generationType === "dome" ? (
+                  <CircleDot className="h-5 w-5" />
+                ) : (
+                  <Square className="h-5 w-5" />
+                )}
+                Generated{" "}
+                {generationType === "360"
+                  ? "360° Panorama"
+                  : generationType === "dome"
+                    ? "Dome Projection"
+                    : "Standard Image"}
               </CardTitle>
               <CardDescription>
                 {generationType === "360"
                   ? `${panoramaFormat === "equirectangular" ? "Seamless equirectangular" : "Stereographic"} 360° panoramic artwork optimized for VR viewing with ChatGPT-enhanced prompts`
-                  : `${projectionType} projection optimized for planetarium dome display with ChatGPT-enhanced prompts`}
+                  : generationType === "dome"
+                    ? `${projectionType} projection optimized for planetarium dome display with ChatGPT-enhanced prompts`
+                    : "High-quality standard image with ChatGPT-enhanced prompts"}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -822,7 +973,7 @@ export default function Dome360Planner() {
                     <AspectRatio ratio={generationType === "360" ? 2 : 1}>
                       <img
                         src={currentImage.imageUrl || "/placeholder.svg"}
-                        alt={`Generated ${generationType === "360" ? "360° Panorama" : "Dome Projection"}`}
+                        alt={`Generated ${generationType === "360" ? "360° Panorama" : generationType === "dome" ? "Dome Projection" : "Standard Image"}`}
                         className="w-full h-full"
                         style={{
                           objectFit: generationType === "360" ? "contain" : "cover",
@@ -856,7 +1007,11 @@ export default function Dome360Planner() {
                           </Badge>
                         )}
                         <Badge variant="outline">
-                          {generationType === "360" ? currentImage.panoramaFormat : currentImage.projectionType}
+                          {generationType === "360"
+                            ? currentImage.panoramaFormat
+                            : generationType === "dome"
+                              ? currentImage.projectionType
+                              : "Standard"}
                         </Badge>
                         <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
                           Neuralia H3ritage
@@ -865,14 +1020,20 @@ export default function Dome360Planner() {
                       <p className="text-sm text-muted-foreground">
                         {generationType === "360"
                           ? "1792×1024 • 360° Panorama • Neuralia Style • Orion360 Calibrated"
-                          : "1440×1440 • Dome Projection • Neuralia Style"}
+                          : generationType === "dome"
+                            ? "1440×1440 • Dome Projection • Neuralia Style"
+                            : "1440×1440 • Standard Image • Neuralia Style"}
                       </p>
                       {currentImage.seamlessWrapping && (
                         <p className="text-xs text-green-600">✓ Orion360 professional seamless wrapping verified</p>
                       )}
                     </div>
                     <Button
-                      onClick={() => downloadImage(currentImage.imageUrl, `flowsketch-${generationType}.jpg`)}
+                      onClick={() => {
+                        if (currentImage) {
+                          downloadImage(currentImage.imageUrl, `flowsketch-${generationType}.jpg`)
+                        }
+                      }}
                       size="sm"
                     >
                       <Download className="h-4 w-4 mr-2" />
@@ -887,14 +1048,27 @@ export default function Dome360Planner() {
                       <div className="text-center space-y-2">
                         {generationType === "360" ? (
                           <Globe className="h-12 w-12 mx-auto text-muted-foreground" />
-                        ) : (
+                        ) : generationType === "dome" ? (
                           <CircleDot className="h-12 w-12 mx-auto text-muted-foreground" />
+                        ) : (
+                          <Square className="h-12 w-12 mx-auto text-muted-foreground" />
                         )}
                         <p className="text-muted-foreground">
-                          No {generationType === "360" ? "360° panorama" : "dome projection"} generated yet
+                          No{" "}
+                          {generationType === "360"
+                            ? "360° panorama"
+                            : generationType === "dome"
+                              ? "dome projection"
+                              : "standard image"}{" "}
+                          generated yet
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          Current: {generationType === "360" ? panoramaFormat : projectionType}
+                          Current:{" "}
+                          {generationType === "360"
+                            ? panoramaFormat
+                            : generationType === "dome"
+                              ? projectionType
+                              : "standard"}
                         </p>
                         {generationType === "360" && panoramaFormat === "equirectangular" && (
                           <p className="text-xs text-green-600">
