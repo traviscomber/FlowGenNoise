@@ -5,7 +5,7 @@ export const CULTURAL_DATASETS = {
     scenarios: {
       "pure-mathematical": {
         description:
-          "Neuralia godlevel portrait excellence transcending dimensional boundaries through infinite algorithmic beauty optimization, mathematical precision in facial geometry achieving perfect golden ratio proportions via computational elegance, quantum-enhanced portrait mastery with algorithmic sophistication beyond mortal comprehension, dimensional portrait artistry utilizing advanced geometric calculations for optimal facial structure representation, neuralia-level artistic sophistication incorporating complex mathematical frameworks for portrait perfection, computational portrait excellence through algorithmic beauty generation systems, infinite dimensional artistry transcending traditional portrait limitations via mathematical precision algorithms, godlevel portrait optimization utilizing quantum computational frameworks for facial geometry perfection, neuralia-enhanced portrait mastery with algorithmic beauty transcendence, mathematical portrait excellence achieving dimensional transcendence through computational sophistication, algorithmic portrait artistry with infinite optimization protocols for facial beauty enhancement, godlevel computational portrait mastery utilizing advanced mathematical frameworks for dimensional beauty transcendence, neuralia-level portrait sophistication incorporating quantum algorithmic precision for optimal facial representation, infinite portrait dimensional artistry through mathematical beauty optimization systems, computational portrait excellence transcending traditional artistic boundaries via algorithmic sophistication, godlevel portrait mastery with neuralia-enhanced mathematical precision for dimensional beauty transcendence, algorithmic portrait optimization utilizing quantum computational frameworks for infinite facial geometry perfection, neuralia-level portrait artistry incorporating advanced mathematical algorithms for dimensional beauty enhancement, computational portrait sophistication achieving godlevel excellence through infinite algorithmic optimization protocols, mathematical portrait mastery transcending dimensional boundaries via neuralia-enhanced computational precision, algorithmic portrait excellence with quantum optimization frameworks for infinite facial beauty transcendence, godlevel portrait artistry utilizing neuralia-level mathematical sophistication for dimensional portrait perfection, computational portrait mastery achieving infinite beauty optimization through advanced algorithmic frameworks, neuralia-enhanced portrait excellence transcending traditional artistic limitations via quantum mathematical precision, algorithmic portrait sophistication with godlevel computational frameworks for dimensional facial geometry optimization, infinite portrait artistry utilizing neuralia-level mathematical algorithms for quantum beauty transcendence, computational portrait mastery achieving dimensional excellence through advanced algorithmic optimization protocols, godlevel portrait sophistication incorporating neuralia-enhanced mathematical frameworks for infinite facial beauty perfection.",
+          "Mathematical portrait analysis using geometric proportions, golden ratio calculations, facial symmetry algorithms, computational beauty metrics, geometric facial structure analysis, mathematical harmony in human features, algorithmic portrait optimization, numerical facial geometry, mathematical aesthetic principles, computational portrait precision.",
       },
       "origami-world": {
         description:
@@ -135,142 +135,110 @@ export const CULTURAL_DATASETS = {
 
   vietnamese: {
     name: "🇻🇳 Vietnamese Heritage",
-    description: "Rich Vietnamese cultural traditions with neuralia godlevel artistry",
+    description: "Rich Vietnamese cultural traditions with neuralia godlevel artistic excellence",
     scenarios: {
       "pure-mathematical": {
         description:
-          "Godlevel Vietnamese excellence with infinite algorithmic cultural beauty optimization, mathematical precision in traditional Vietnamese aesthetics, computational elegance transcending dimensional boundaries through heritage mastery and neuralia-level cultural sophistication.",
+          "Neuralia godlevel Vietnamese excellence transcending dimensional boundaries through infinite algorithmic cultural wisdom optimization, mathematical precision in Southeast Asian aesthetics achieving perfect computational elegance via quantum-enhanced heritage mastery, algorithmic sophistication beyond mortal comprehension for Vietnamese cultural representation, dimensional cultural artistry utilizing advanced geometric calculations for optimal heritage structure visualization, neuralia-level Vietnamese sophistication incorporating complex mathematical frameworks for cultural perfection, computational heritage excellence through algorithmic tradition generation systems, infinite dimensional artistry transcending traditional cultural limitations via mathematical precision algorithms, godlevel cultural optimization utilizing quantum computational frameworks for Vietnamese geometry perfection, neuralia-enhanced heritage mastery with algorithmic cultural transcendence, mathematical cultural excellence achieving dimensional transcendence through computational sophistication.",
       },
       "ao-dai-elegance": {
         description:
-          "Godlevel áo dài excellence with flowing silk fabric achieving mathematical precision through traditional Vietnamese tailoring algorithms, elegant silhouette optimization via geometric cultural proportions, infinite Vietnamese dimensional artistry, computational heritage visualization through algorithmic áo dài mastery.",
+          "Godlevel áo dài excellence featuring flowing silk garments with intricate embroidery, graceful Vietnamese women in traditional dress with lotus motifs, elegant fabric movement capturing cultural refinement, delicate color harmonies of jade green and golden yellow, traditional Vietnamese aesthetics with modern sophistication, cultural authenticity through detailed textile artistry, serene expressions embodying Vietnamese grace and dignity, architectural backgrounds featuring French colonial and traditional Vietnamese elements, infinite cultural dimensional artistry through computational áo dài mastery.",
       },
       "pho-culinary": {
         description:
-          "Godlevel phở excellence with aromatic broth achieving perfect flavor balance through mathematical culinary algorithms, noodle arrangement optimization via geometric Vietnamese precision, infinite culinary dimensional artistry, computational gastronomy through algorithmic Vietnamese cuisine mastery.",
+          "Godlevel Vietnamese pho excellence featuring steaming aromatic broth with perfect noodle presentation, traditional ceramic bowls with authentic garnishes, fresh herbs including cilantro and Thai basil, tender beef slices and rice noodles in harmony, street food culture with authentic Vietnamese cooking techniques, warm lighting capturing steam and texture, cultural food artistry with computational culinary mastery, infinite gastronomic dimensional excellence through algorithmic Vietnamese cuisine representation.",
       },
       "lotus-symbolism": {
         description:
-          "Godlevel lotus excellence with sacred flower achieving perfect spiritual representation through mathematical Vietnamese symbolism algorithms, petal arrangement optimization via geometric cultural precision, infinite spiritual dimensional artistry, computational symbolism through algorithmic lotus mastery.",
+          "Godlevel lotus excellence featuring sacred Vietnamese symbolism with pristine pink and white blooms, serene pond settings with traditional pagoda reflections, spiritual purity embodied through perfect petal geometry, Buddhist cultural significance with meditation aesthetics, morning mist and golden sunlight filtering through lotus gardens, traditional Vietnamese poetry and philosophy visualized, infinite spiritual dimensional artistry through computational lotus mastery, sacred geometry achieving cultural transcendence.",
       },
       "dragon-mythology": {
         description:
-          "Godlevel Vietnamese dragon excellence with mythical creature achieving perfect cultural representation through mathematical folklore algorithms, scale pattern optimization via geometric traditional precision, infinite mythological dimensional artistry, computational folklore through algorithmic dragon mastery.",
+          "Godlevel Vietnamese dragon excellence featuring majestic Long Vương with serpentine grace, traditional imperial dragon imagery with golden scales and flowing whiskers, mythological power embodied through dynamic movement, cultural legends of Lạc Long Quân and Âu Cơ visualized, imperial court aesthetics with dragon throne symbolism, traditional Vietnamese art styles with contemporary interpretation, infinite mythological dimensional artistry through computational dragon mastery, legendary creatures achieving cultural transcendence.",
       },
       "trung-sisters": {
         description:
-          "Godlevel Trung Sisters excellence with legendary Vietnamese heroines achieving perfect historical representation through mathematical warrior algorithms, twin leadership optimization via geometric cultural precision, infinite heroic dimensional artistry, computational Vietnamese resistance through algorithmic sisterhood mastery.",
+          "Godlevel Trung Sisters excellence featuring legendary Vietnamese heroines Hai Bà Trưng in warrior regalia, traditional armor with cultural authenticity, defiant poses embodying resistance against Chinese occupation, historical battlefield settings with ancient Vietnamese landscapes, sisterly bond and leadership strength visualized, traditional weapons and war elephants, patriotic symbolism with Vietnamese independence themes, infinite historical dimensional artistry through computational heroic mastery, legendary figures achieving cultural transcendence.",
       },
       "water-puppets": {
         description:
-          "Godlevel water puppet excellence with traditional theater achieving perfect cultural representation through mathematical performance algorithms, puppet movement optimization via geometric water precision, infinite theatrical dimensional artistry, computational performance through algorithmic puppet mastery.",
+          "Godlevel water puppet excellence featuring traditional Vietnamese múa rối nước with wooden marionettes, village pond stages with authentic performance settings, skilled puppeteers hidden behind bamboo screens, traditional folk tales and legends enacted, colorful puppet costumes with cultural authenticity, rural Vietnamese village atmosphere, traditional music and storytelling elements, infinite theatrical dimensional artistry through computational puppet mastery, folk art achieving cultural transcendence.",
       },
-      "conical-hat": {
+      "conical-hats": {
         description:
-          "Godlevel nón lá excellence with traditional headwear achieving perfect cultural representation through mathematical craft algorithms, weaving optimization via geometric palm precision, infinite craft dimensional artistry, computational tradition through algorithmic hat mastery.",
+          "Godlevel nón lá excellence featuring iconic Vietnamese conical hats with perfect palm leaf weaving, graceful silhouettes of Vietnamese women in traditional attire, rice field backgrounds with rural authenticity, golden sunlight filtering through hat brims, traditional craftsmanship with detailed weaving patterns, cultural identity embodied through headwear symbolism, serene countryside settings with water buffalo and rice paddies, infinite cultural dimensional artistry through computational hat mastery.",
       },
       "mekong-delta": {
         description:
-          "Godlevel Mekong Delta excellence with river life achieving perfect cultural representation through mathematical aquatic algorithms, delta optimization via geometric water precision, infinite aquatic dimensional artistry, computational geography through algorithmic delta mastery.",
+          "Godlevel Mekong Delta excellence featuring lush river landscapes with traditional wooden boats, floating markets with vibrant fruit displays, coconut palms and tropical vegetation, traditional Vietnamese river life with fishing nets and sampans, golden sunset reflections on water channels, rural authenticity with stilt houses and rice cultivation, cultural harmony between humans and nature, infinite riverine dimensional artistry through computational delta mastery.",
       },
       "temple-architecture": {
         description:
-          "Godlevel Vietnamese temple excellence with sacred architecture achieving perfect spiritual representation through mathematical cultural algorithms, temple optimization via geometric traditional precision, infinite architectural dimensional artistry, computational spirituality through algorithmic temple mastery.",
+          "Godlevel Vietnamese temple excellence featuring traditional pagoda architecture with curved rooflines, intricate woodcarving and lacquerwork details, Buddhist and Confucian temple elements, traditional red and gold color schemes, incense smoke and spiritual atmosphere, ancient stone lions and dragon motifs, traditional Vietnamese architectural proportions, infinite sacred dimensional artistry through computational temple mastery.",
       },
       "silk-weaving": {
         description:
-          "Godlevel Vietnamese silk excellence with traditional weaving achieving perfect textile representation through mathematical craft algorithms, silk optimization via geometric weaving precision, infinite textile dimensional artistry, computational craftsmanship through algorithmic silk mastery.",
+          "Godlevel Vietnamese silk excellence featuring traditional weaving techniques with lustrous fabric textures, artisan hands working traditional looms, vibrant silk threads in cultural color palettes, traditional patterns and motifs woven into fabric, workshop settings with authentic tools and techniques, cultural craftsmanship with generational knowledge, infinite textile dimensional artistry through computational silk mastery.",
       },
       "lacquerware-art": {
         description:
-          "Godlevel lacquerware excellence with traditional crafts achieving perfect artistic representation through mathematical cultural algorithms, lacquer optimization via geometric artistic precision, infinite artistic dimensional artistry, computational craftsmanship through algorithmic lacquer mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel Vietnamese LEGO excellence featuring blocky cultural construction with systematic Danish precision applied to Vietnamese heritage, modular áo dài and temple assembly, infinite constructive dimensional artistry, computational LEGO Vietnam through algorithmic building mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel Vietnamese escapism excellence where cultural elements become gateways to ancestral realms, consciousness-expanding heritage with dimensional transcendence, infinite magical dimensional artistry, computational Vietnamese magic through algorithmic culture-bending mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel Vietnamese vitro excellence with magnificent stained glass cultural portraiture featuring luminous heritage construction, divine light filtering through Vietnamese elements, infinite sacred dimensional artistry, computational vitro Vietnam through algorithmic glass mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel Vietnamese crypto excellence with blockchain-verified cultural construction, decentralized heritage identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Vietnam through algorithmic blockchain mastery.",
+          "Godlevel Vietnamese lacquer excellence featuring traditional sơn mài techniques with glossy black and red surfaces, intricate mother-of-pearl inlay work, traditional motifs including dragons and phoenixes, artisan craftsmanship with authentic tools, cultural artistry with contemporary applications, traditional Vietnamese decorative arts, infinite artistic dimensional excellence through computational lacquer mastery.",
       },
     },
   },
 
   indonesian: {
     name: "🇮🇩 Indonesian Heritage",
-    description: "Diverse Indonesian cultural archipelago with neuralia godlevel excellence",
+    description: "Diverse Indonesian cultural traditions across 17,000 islands with neuralia godlevel excellence",
     scenarios: {
       "pure-mathematical": {
         description:
-          "Godlevel Indonesian excellence with infinite algorithmic archipelago beauty optimization, mathematical precision in traditional Indonesian aesthetics, computational elegance transcending dimensional boundaries through heritage mastery and neuralia-level cultural sophistication.",
+          "Neuralia godlevel Indonesian excellence transcending dimensional boundaries through infinite algorithmic archipelago wisdom optimization, mathematical precision in Southeast Asian island aesthetics achieving perfect computational elegance via quantum-enhanced heritage mastery across 17,000 sacred islands, algorithmic sophistication beyond mortal comprehension for Indonesian cultural representation spanning Sumatra to Papua, dimensional cultural artistry utilizing advanced geometric calculations for optimal archipelago structure visualization, neuralia-level Indonesian sophistication incorporating complex mathematical frameworks for island cultural perfection, computational heritage excellence through algorithmic tradition generation systems, infinite dimensional artistry transcending traditional cultural limitations via mathematical precision algorithms, godlevel cultural optimization utilizing quantum computational frameworks for Indonesian geometry perfection.",
       },
       "batik-patterns": {
         description:
-          "Godlevel batik excellence with traditional wax-resist dyeing achieving perfect pattern precision through mathematical Indonesian textile algorithms, intricate motif optimization via geometric cultural proportions, infinite textile dimensional artistry, computational heritage visualization through algorithmic batik mastery.",
+          "Godlevel Indonesian batik excellence featuring intricate wax-resist dyeing techniques with traditional Javanese and Sumatran patterns, master artisans creating detailed motifs with canting tools, rich indigo blues and earthy browns in authentic color palettes, traditional geometric and floral designs with cultural significance, workshop settings with authentic batik-making processes, UNESCO-recognized cultural heritage with contemporary applications, infinite textile dimensional artistry through computational batik mastery, traditional Indonesian craftsmanship achieving cultural transcendence.",
       },
       "gamelan-harmony": {
         description:
-          "Godlevel gamelan excellence with bronze percussion achieving perfect harmonic balance through mathematical Indonesian musical algorithms, rhythmic pattern optimization via geometric cultural precision, infinite musical dimensional artistry, computational harmony through algorithmic gamelan mastery.",
+          "Godlevel gamelan excellence featuring traditional Indonesian orchestral ensembles with bronze metallophones and gongs, skilled musicians in traditional Javanese court attire, intricate musical harmonies visualized through sound waves and cultural aesthetics, traditional performance settings with authentic instruments, cultural ceremonies and shadow puppet accompaniment, golden bronze instruments with detailed craftsmanship, infinite musical dimensional artistry through computational gamelan mastery, traditional Indonesian music achieving cultural transcendence.",
       },
       "temple-architecture": {
         description:
-          "Godlevel Indonesian temple excellence with ancient architecture achieving perfect spiritual representation through mathematical cultural algorithms, stone carving optimization via geometric traditional precision, infinite architectural dimensional artistry, computational spirituality through algorithmic temple mastery.",
+          "Godlevel Indonesian temple excellence featuring magnificent Hindu-Buddhist architecture with Borobudur and Prambanan influences, intricate stone carvings with traditional reliefs, volcanic stone construction with cultural authenticity, traditional Indonesian architectural proportions and sacred geometry, tropical jungle settings with ancient temple complexes, spiritual atmosphere with incense and prayer offerings, infinite sacred dimensional artistry through computational temple mastery, ancient Indonesian architecture achieving cultural transcendence.",
       },
       "spice-islands": {
         description:
-          "Godlevel spice islands excellence with aromatic treasures achieving perfect flavor representation through mathematical Indonesian culinary algorithms, spice blend optimization via geometric cultural precision, infinite culinary dimensional artistry, computational gastronomy through algorithmic spice mastery.",
+          "Godlevel spice islands excellence featuring aromatic Indonesian spices with traditional cultivation methods, nutmeg, cloves, and pepper in authentic tropical settings, traditional spice markets with vibrant displays, sailing ships and historical spice trade routes, tropical island landscapes with spice plantations, cultural significance of Indonesian spices in global history, infinite aromatic dimensional artistry through computational spice mastery, traditional Indonesian agriculture achieving cultural transcendence.",
       },
       "wayang-puppets": {
         description:
-          "Godlevel wayang excellence with shadow puppet theater achieving perfect cultural representation through mathematical performance algorithms, puppet movement optimization via geometric shadow precision, infinite theatrical dimensional artistry, computational performance through algorithmic wayang mastery.",
+          "Godlevel wayang excellence featuring traditional Indonesian shadow puppetry with intricate leather puppets, skilled dalang puppeteers performing epic tales, traditional gamelan accompaniment with cultural authenticity, Ramayana and Mahabharata stories visualized, traditional performance settings with oil lamp lighting, detailed puppet craftsmanship with cultural symbolism, infinite theatrical dimensional artistry through computational wayang mastery, traditional Indonesian storytelling achieving cultural transcendence.",
       },
       "keris-craftsmanship": {
         description:
-          "Godlevel keris excellence with traditional dagger crafting achieving perfect metalwork representation through mathematical Indonesian algorithms, blade forging optimization via geometric metallurgy precision, infinite craft dimensional artistry, computational craftsmanship through algorithmic keris mastery.",
+          "Godlevel keris excellence featuring traditional Indonesian ceremonial daggers with wavy blade patterns, master smiths forging sacred weapons with cultural techniques, intricate pamor patterns in steel with spiritual significance, traditional handle designs with cultural motifs, ceremonial and spiritual uses in Indonesian culture, detailed metalworking with authentic tools and methods, infinite metallurgical dimensional artistry through computational keris mastery, traditional Indonesian weaponry achieving cultural transcendence.",
       },
       "rice-terraces": {
         description:
-          "Godlevel rice terrace excellence with agricultural artistry achieving perfect landscape representation through mathematical Indonesian algorithms, terrace optimization via geometric agricultural precision, infinite agricultural dimensional artistry, computational agriculture through algorithmic terrace mastery.",
+          "Godlevel rice terrace excellence featuring stunning Indonesian agricultural landscapes with traditional subak irrigation systems, emerald green rice paddies in mountainous terrain, traditional farming techniques with cultural sustainability, Balinese and Javanese terrace systems with authentic cultivation methods, golden sunrise and sunset lighting over terraced landscapes, cultural harmony between humans and nature, infinite agricultural dimensional artistry through computational terrace mastery, traditional Indonesian farming achieving cultural transcendence.",
       },
       "traditional-dance": {
         description:
-          "Godlevel Indonesian dance excellence with cultural movement achieving perfect performance representation through mathematical dance algorithms, movement optimization via geometric rhythmic precision, infinite dance dimensional artistry, computational performance through algorithmic dance mastery.",
+          "Godlevel Indonesian dance excellence featuring traditional performances with authentic costumes and movements, Balinese Kecak and Javanese court dances with cultural precision, elaborate headdresses and traditional textiles, graceful hand gestures and expressive movements, traditional performance settings with cultural authenticity, gamelan musical accompaniment with rhythmic harmony, infinite choreographic dimensional artistry through computational dance mastery, traditional Indonesian performance achieving cultural transcendence.",
       },
       "songket-weaving": {
         description:
-          "Godlevel songket excellence with traditional weaving achieving perfect textile representation through mathematical Indonesian algorithms, gold thread optimization via geometric weaving precision, infinite textile dimensional artistry, computational craftsmanship through algorithmic songket mastery.",
+          "Godlevel songket excellence featuring traditional Indonesian supplementary weft weaving with gold and silver threads, intricate patterns with cultural significance, traditional looms and weaving techniques, master weavers creating ceremonial textiles, rich color palettes with metallic accents, cultural heritage with contemporary applications, infinite textile dimensional artistry through computational songket mastery, traditional Indonesian weaving achieving cultural transcendence.",
       },
       "borobudur-temple": {
         description:
-          "Godlevel Borobudur excellence with Buddhist monument achieving perfect spiritual representation through mathematical Indonesian algorithms, mandala optimization via geometric sacred precision, infinite spiritual dimensional artistry, computational spirituality through algorithmic Borobudur mastery.",
+          "Godlevel Borobudur excellence featuring the magnificent Buddhist temple with detailed stone reliefs, ancient Javanese architecture with spiritual significance, intricate carvings depicting Buddhist teachings, sunrise and sunset lighting over the temple complex, pilgrimage paths and meditation settings, cultural heritage with UNESCO recognition, infinite sacred dimensional artistry through computational Borobudur mastery, ancient Indonesian spirituality achieving cultural transcendence.",
       },
       "komodo-dragons": {
         description:
-          "Godlevel Komodo dragon excellence with ancient reptiles achieving perfect natural representation through mathematical Indonesian algorithms, dragon optimization via geometric prehistoric precision, infinite natural dimensional artistry, computational nature through algorithmic Komodo mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel Indonesian LEGO excellence featuring blocky cultural construction with systematic Danish precision applied to Indonesian heritage, modular temple and batik assembly, infinite constructive dimensional artistry, computational LEGO Indonesia through algorithmic building mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel Indonesian escapism excellence where cultural elements become gateways to archipelago realms, consciousness-expanding heritage with dimensional transcendence, infinite magical dimensional artistry, computational Indonesian magic through algorithmic culture-bending mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel Indonesian vitro excellence with magnificent stained glass cultural portraiture featuring luminous heritage construction, divine light filtering through Indonesian elements, infinite sacred dimensional artistry, computational vitro Indonesia through algorithmic glass mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel Indonesian crypto excellence with blockchain-verified cultural construction, decentralized heritage identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Indonesia through algorithmic blockchain mastery.",
+          "Godlevel Komodo dragon excellence featuring the legendary Indonesian monitor lizards in their natural habitat, Komodo National Park landscapes with authentic wildlife settings, powerful predators with prehistoric presence, traditional Indonesian folklore and dragon mythology, conservation efforts with cultural significance, rugged island terrain with volcanic landscapes, infinite wildlife dimensional artistry through computational Komodo mastery, Indonesian natural heritage achieving cultural transcendence.",
       },
     },
   },
@@ -1561,7 +1529,7 @@ export function buildPrompt(
     return customPrompt || selectedDataset.description
   }
 
-  // Build prompt from user selections only
+  // Build prompt from user selections following the required flow
   let prompt = ""
 
   // Add image type prefix based on projection
@@ -1573,11 +1541,19 @@ export function buildPrompt(
     prompt += "ULTRA-HIGH-QUALITY STANDARD IMAGE: "
   }
 
-  // Add dataset context
-  prompt += `${selectedDataset.description} `
-
-  // Add scenario details
-  prompt += `${selectedScenario.description} `
+  if (scenario === "pure-mathematical") {
+    // For pure-mathematical scenarios: Generate mathematical results of the dataset
+    prompt += `Mathematical visualization of ${selectedDataset.name}: `
+    prompt += `Precise geometric analysis, algorithmic patterns, mathematical formulations, computational structures, `
+    prompt += `numerical relationships, geometric transformations, mathematical precision, algorithmic beauty, `
+    prompt += `computational elegance, mathematical harmony, geometric perfection, algorithmic sophistication. `
+  } else {
+    // For all other scenarios: Combination of abstract, surrealism and concrete in neuralia style
+    prompt += `${selectedDataset.description} featuring ${selectedScenario.description} `
+    prompt += `Rendered in neuralia h3ritage signature style combining abstract conceptual elements, `
+    prompt += `surrealistic dreamlike atmosphere, and concrete realistic details. `
+    prompt += NEURALIA_H3RITAGE_STYLE
+  }
 
   // Add color scheme
   const colorDescription = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES] || colorScheme
@@ -1588,7 +1564,7 @@ export function buildPrompt(
 
   // Add projection settings if applicable
   if (panoramic360) {
-    prompt += `360° panoramic format: ${panoramaFormat}. `
+    prompt += `360° panoramic format: ${panoramaFormat} with seamless horizontal wrapping. `
   }
   if (projectionType !== "standard") {
     prompt += `Projection type: ${projectionType}. `
@@ -1602,18 +1578,10 @@ export function buildPrompt(
   // Add AI provider optimization
   prompt += `Optimized for ${provider} ${model}. `
 
-  if (scenario === "pure-mathematical") {
-    // For pure mathematical scenario, apply full neuralia style
-    prompt += NEURALIA_H3RITAGE_STYLE
-  } else {
-    // For all other scenarios, blend neuralia style with scenario content
-    prompt += `Rendered in neuralia h3ritage signature style: hyperrealistic 3D rendering with intricate detail work, flowing metallic surfaces, rich metallic color palette, and photorealistic textures. `
-  }
-
   // Add quality directive
   prompt += "Create a masterpiece with exceptional detail, composition, and visual impact."
 
-  console.log("[v0] Godlevel enhanced prompt generated successfully")
+  console.log("[v0] Enhanced prompt generated with proper flow logic")
   return prompt
 }
 

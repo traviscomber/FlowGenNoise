@@ -48,6 +48,8 @@ interface GeneratedImage {
   panoramaFormat?: string
   seamlessWrapping?: boolean
   planetariumOptimized?: boolean
+  orionCalibration?: boolean
+  geometricAlignment?: string
 }
 
 export default function Dome360Planner() {
@@ -64,8 +66,14 @@ export default function Dome360Planner() {
   const [projectionType, setProjectionType] = useState("fisheye")
   const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
 
+  const [loraWeight, setLoraWeight] = useState(1.0)
+  const [guidanceScale, setGuidanceScale] = useState(2.5)
+
   const [isGenerating, setIsGenerating] = useState(false)
-  const [generatedImage, setGeneratedImage] = useState<GeneratedImage | null>(null)
+  const [generatedImages, setGeneratedImages] = useState<{
+    dome?: GeneratedImage
+    "360"?: GeneratedImage
+  }>({})
   const [generationType, setGenerationType] = useState<"dome" | "360">("dome")
 
   // Prompt enhancement state
@@ -187,12 +195,20 @@ export default function Dome360Planner() {
     setError(null)
 
     try {
+      const orionCalibrationPrompt =
+        generationType === "360" && panoramaFormat === "equirectangular"
+          ? "ORION360 PROFESSIONAL CALIBRATION: Perfect 2:1 aspect ratio equirectangular projection, seamless horizontal edge wrapping with zero visible seams, professional color calibration with accurate gradient mapping, geometric alignment grid precision, directional orientation accuracy (Front-Left-Right-Back), VR-ready panoramic standards, godlevel seamless continuity, ultra-precise edge blending, professional 360° content validation, Orion360 technical specifications compliance"
+          : ""
+
+      console.log("[v0] Starting generation for type:", generationType)
+      console.log("[v0] Expected dimensions:", generationType === "360" ? "1440x720" : "1440x1440")
+
       const response = await fetch("/api/generate-ai-art", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          dataset,
-          scenario,
+          dataset: dataset,
+          scenario: scenario,
           colorScheme,
           seed,
           numSamples,
@@ -201,21 +217,59 @@ export default function Dome360Planner() {
           type: generationType,
           projectionType,
           panoramaFormat,
+          loraWeight: generationType === "360" ? loraWeight : undefined,
+          guidanceScale: generationType === "360" ? guidanceScale : undefined,
+          useFluxEquirectangular: generationType === "360" && panoramaFormat === "equirectangular",
+          provider: "replicate",
+          model: "black-forest-labs/flux-1.1-pro-ultra",
+          width: generationType === "360" ? 1440 : 1440,
+          height: generationType === "360" ? 720 : 1440,
+          guidance_scale: generationType === "360" ? guidanceScale : 8,
+          num_inference_steps: 75,
+          scheduler: "DPMSolverMultistep",
+          fluxEquirectangularTrigger:
+            generationType === "360" && panoramaFormat === "equirectangular"
+              ? `equirectangular 360 degree panorama, ${orionCalibrationPrompt}, seamless horizontal wrapping, professional VR panorama, godlevel seamless edges, perfect 360 degree continuity, no visible seams, ultra-high-quality panoramic projection, Orion360 professional standards, VR headset optimized, perfect geometric alignment, professional color calibration`
+              : undefined,
+          seamlessWrapping: generationType === "360",
+          panoramicOptimization: generationType === "360" ? "orion360_professional" : undefined,
+          edgeBlending: generationType === "360" ? "orion_seamless_calibration" : undefined,
+          orionCalibration: generationType === "360" && panoramaFormat === "equirectangular",
+          professionalVR: generationType === "360",
+          geometricAlignment: generationType === "360" ? "orion360_grid_precision" : undefined,
         }),
       })
 
       const data = await response.json()
 
+      console.log("[v0] API response received:", data.success)
+      console.log("[v0] Image URL received:", data.imageUrl ? "Yes" : "No")
+
       if (data.success) {
-        setGeneratedImage({
+        const newImage: GeneratedImage = {
           imageUrl: data.imageUrl,
           prompt: data.prompt,
-          aspectRatio: data.aspectRatio || (generationType === "360" ? "1.75:1" : "1:1"),
+          aspectRatio: data.aspectRatio || (generationType === "360" ? "2:1" : "1:1"),
           format: data.format || (generationType === "360" ? "360° Panorama" : "Dome Projection"),
           projectionType: data.projectionType,
           panoramaFormat: data.panoramaFormat,
           seamlessWrapping: data.seamlessWrapping,
           planetariumOptimized: data.planetariumOptimized,
+          orionCalibration: data.orionCalibration,
+          geometricAlignment: data.geometricAlignment,
+        }
+
+        console.log("[v0] Storing image for type:", generationType)
+        console.log("[v0] Image aspect ratio:", newImage.aspectRatio)
+        console.log("[v0] Image format:", newImage.format)
+
+        setGeneratedImages((prev) => {
+          const updated = {
+            ...prev,
+            [generationType]: newImage,
+          }
+          console.log("[v0] Updated generatedImages state:", Object.keys(updated))
+          return updated
         })
 
         toast({
@@ -255,7 +309,6 @@ export default function Dome360Planner() {
   const downloadImage = useCallback(
     async (imageUrl: string, filename: string) => {
       try {
-        // Create unique filename with comprehensive information
         const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)
         const datasetName = dataset.replace(/[^a-zA-Z0-9]/g, "-")
         const scenarioName = scenario.replace(/[^a-zA-Z0-9]/g, "-")
@@ -297,6 +350,12 @@ export default function Dome360Planner() {
     },
     [dataset, scenario, colorScheme, generationType, panoramaFormat, projectionType],
   )
+
+  const currentImage = generatedImages[generationType]
+
+  console.log("[v0] Current generation type:", generationType)
+  console.log("[v0] Current image exists:", currentImage ? "Yes" : "No")
+  console.log("[v0] Current image aspect ratio:", currentImage?.aspectRatio)
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -419,8 +478,8 @@ export default function Dome360Planner() {
                         <div className="flex items-center gap-2">
                           <Globe className="h-4 w-4" />
                           Equirectangular
-                          <Badge variant="outline" className="ml-2 text-xs bg-green-50 text-green-700 border-green-200">
-                            Pro Seamless
+                          <Badge variant="outline" className="ml-2 text-xs bg-blue-50 text-blue-700 border-blue-200">
+                            FLUX LoRA
                           </Badge>
                         </div>
                       </SelectItem>
@@ -432,6 +491,12 @@ export default function Dome360Planner() {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  {panoramaFormat === "equirectangular" && (
+                    <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded border border-blue-200">
+                      <strong>FLUX Equirectangular LoRA:</strong> Godlevel 1440×720 resolution with professional
+                      seamless wrapping and neuralia h3ritage style. Trigger: "equirectangular 360 degree panorama"
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -637,6 +702,56 @@ export default function Dome360Planner() {
                 </Dialog>
               </div>
 
+              {generationType === "360" && panoramaFormat === "equirectangular" && (
+                <div className="space-y-4 border border-blue-200 bg-blue-50 p-4 rounded-lg">
+                  <Label className="text-sm font-semibold text-blue-800 flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" />
+                    FLUX Equirectangular LoRA + Orion360 Standards
+                  </Label>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm">LoRA Weight: {loraWeight.toFixed(1)}</Label>
+                    <Slider
+                      value={[loraWeight]}
+                      onValueChange={(value) => setLoraWeight(value[0])}
+                      max={1.5}
+                      min={0.5}
+                      step={0.1}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-blue-600">
+                      Recommended: 0.5-1.5. Increase above 1.0 if image appears too flat.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm">Guidance Scale: {guidanceScale.toFixed(1)}</Label>
+                    <Slider
+                      value={[guidanceScale]}
+                      onValueChange={(value) => setGuidanceScale(value[0])}
+                      max={5.0}
+                      min={1.0}
+                      step={0.1}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-blue-600">
+                      Recommended: ~2.5 for realistic scenes. Higher values for more prompt adherence.
+                    </p>
+                  </div>
+
+                  <div className="text-xs text-blue-700 bg-white p-2 rounded border border-blue-300">
+                    <strong>Resolution:</strong> 1440×720 (2:1 aspect ratio) • <strong>Format:</strong> Equirectangular
+                    • <strong>VR Ready:</strong> Yes • <strong>Neuralia Style:</strong> H3ritage Series •{" "}
+                    <strong>Orion360:</strong> Professional Calibration
+                  </div>
+
+                  <div className="text-xs text-green-700 bg-green-50 p-2 rounded border border-green-300">
+                    <strong>🎯 Orion360 Standards:</strong> Seamless edge wrapping • Color calibration • Geometric
+                    alignment • Professional VR compliance • Zero visible seams • Perfect continuity
+                  </div>
+                </div>
+              )}
+
               {/* Action Buttons */}
               <div className="space-y-2">
                 <Button onClick={generateImage} disabled={isGenerating} className="w-full" size="lg">
@@ -696,38 +811,63 @@ export default function Dome360Planner() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {generatedImage ? (
+              {currentImage ? (
                 <div className="space-y-4">
-                  <AspectRatio ratio={generationType === "360" ? 1.75 : 1}>
-                    <img
-                      src={generatedImage.imageUrl || "/placeholder.svg"}
-                      alt={`Generated ${generationType === "360" ? "360° Panorama" : "Dome Projection"}`}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  </AspectRatio>
+                  <div className="w-full bg-muted rounded-lg overflow-hidden">
+                    <AspectRatio ratio={generationType === "360" ? 2 : 1}>
+                      <img
+                        src={currentImage.imageUrl || "/placeholder.svg"}
+                        alt={`Generated ${generationType === "360" ? "360° Panorama" : "Dome Projection"}`}
+                        className="w-full h-full"
+                        style={{
+                          objectFit: generationType === "360" ? "contain" : "cover",
+                          backgroundColor: generationType === "360" ? "#000" : "transparent",
+                        }}
+                        onLoad={(e) => {
+                          const img = e.target as HTMLImageElement
+                          console.log(
+                            "[v0] Image loaded - Natural dimensions:",
+                            img.naturalWidth,
+                            "x",
+                            img.naturalHeight,
+                          )
+                          console.log("[v0] Image loaded - Display dimensions:", img.width, "x", img.height)
+                          console.log(
+                            "[v0] Image loaded - Aspect ratio:",
+                            (img.naturalWidth / img.naturalHeight).toFixed(2),
+                          )
+                        }}
+                      />
+                    </AspectRatio>
+                  </div>
                   <div className="flex justify-between items-center">
                     <div className="space-y-1">
                       <div className="flex gap-2">
-                        <Badge variant="secondary">{generatedImage.format}</Badge>
-                        {generatedImage.planetariumOptimized && <Badge variant="outline">Planetarium Ready</Badge>}
-                        {generatedImage.seamlessWrapping && (
+                        <Badge variant="secondary">{currentImage.format}</Badge>
+                        {currentImage.planetariumOptimized && <Badge variant="outline">Planetarium Ready</Badge>}
+                        {currentImage.seamlessWrapping && (
                           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                             Professional Seamless
                           </Badge>
                         )}
                         <Badge variant="outline">
-                          {generationType === "360" ? generatedImage.panoramaFormat : generatedImage.projectionType}
+                          {generationType === "360" ? currentImage.panoramaFormat : currentImage.projectionType}
+                        </Badge>
+                        <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                          Neuralia H3ritage
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {generationType === "360" ? "1792×1024 • 360° Panorama" : "1024×1024 • Dome Projection"}
+                        {generationType === "360"
+                          ? "1440×720 • 360° Panorama • Neuralia Style • Orion360 Calibrated"
+                          : "1440×1440 • Dome Projection • Neuralia Style"}
                       </p>
-                      {generatedImage.seamlessWrapping && (
-                        <p className="text-xs text-green-600">✓ Professional seamless edge wrapping verified</p>
+                      {currentImage.seamlessWrapping && (
+                        <p className="text-xs text-green-600">✓ Orion360 professional seamless wrapping verified</p>
                       )}
                     </div>
                     <Button
-                      onClick={() => downloadImage(generatedImage.imageUrl, `flowsketch-${generationType}.jpg`)}
+                      onClick={() => downloadImage(currentImage.imageUrl, `flowsketch-${generationType}.jpg`)}
                       size="sm"
                     >
                       <Download className="h-4 w-4 mr-2" />
@@ -736,25 +876,29 @@ export default function Dome360Planner() {
                   </div>
                 </div>
               ) : (
-                <div
-                  className={`${generationType === "360" ? "aspect-[1.75]" : "aspect-square"} bg-muted rounded-lg flex items-center justify-center`}
-                >
-                  <div className="text-center space-y-2">
-                    {generationType === "360" ? (
-                      <Globe className="h-12 w-12 mx-auto text-muted-foreground" />
-                    ) : (
-                      <CircleDot className="h-12 w-12 mx-auto text-muted-foreground" />
-                    )}
-                    <p className="text-muted-foreground">
-                      No {generationType === "360" ? "360° panorama" : "dome projection"} generated yet
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Current: {generationType === "360" ? panoramaFormat : projectionType}
-                    </p>
-                    {generationType === "360" && panoramaFormat === "equirectangular" && (
-                      <p className="text-xs text-green-600">Will generate with professional seamless wrapping</p>
-                    )}
-                  </div>
+                <div className="w-full bg-muted rounded-lg overflow-hidden">
+                  <AspectRatio ratio={generationType === "360" ? 2 : 1}>
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="text-center space-y-2">
+                        {generationType === "360" ? (
+                          <Globe className="h-12 w-12 mx-auto text-muted-foreground" />
+                        ) : (
+                          <CircleDot className="h-12 w-12 mx-auto text-muted-foreground" />
+                        )}
+                        <p className="text-muted-foreground">
+                          No {generationType === "360" ? "360° panorama" : "dome projection"} generated yet
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Current: {generationType === "360" ? panoramaFormat : projectionType}
+                        </p>
+                        {generationType === "360" && panoramaFormat === "equirectangular" && (
+                          <p className="text-xs text-green-600">
+                            Will generate with Orion360 professional calibration standards
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </AspectRatio>
                 </div>
               )}
             </CardContent>
