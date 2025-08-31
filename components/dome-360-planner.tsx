@@ -201,7 +201,7 @@ export default function Dome360Planner() {
           : ""
 
       console.log("[v0] Starting generation for type:", generationType)
-      console.log("[v0] Expected dimensions:", generationType === "360" ? "1440x720" : "1440x1440")
+      console.log("[v0] Expected dimensions:", generationType === "360" ? "1792x1024" : "1440x1440")
 
       const response = await fetch("/api/generate-ai-art", {
         method: "POST",
@@ -220,13 +220,16 @@ export default function Dome360Planner() {
           loraWeight: generationType === "360" ? loraWeight : undefined,
           guidanceScale: generationType === "360" ? guidanceScale : undefined,
           useFluxEquirectangular: generationType === "360" && panoramaFormat === "equirectangular",
-          provider: "replicate",
-          model: "black-forest-labs/flux-1.1-pro-ultra",
-          width: generationType === "360" ? 1440 : 1440,
-          height: generationType === "360" ? 720 : 1440,
+          provider: generationType === "360" ? "openai" : "replicate", // Use OpenAI for 360° generation
+          model: generationType === "360" ? "dall-e-3" : "black-forest-labs/flux-1.1-pro-ultra",
+          width: generationType === "360" ? 1792 : 1440, // DALL-E 3 supports 1792x1024 for 2:1 aspect ratio
+          height: generationType === "360" ? 1024 : 1440, // Proper 2:1 aspect ratio for 360° panoramas
           guidance_scale: generationType === "360" ? guidanceScale : 8,
-          num_inference_steps: 75,
+          num_inference_steps: 4, // Fixed to comply with API limits
           scheduler: "DPMSolverMultistep",
+          size: generationType === "360" ? "1792x1024" : "1024x1024", // DALL-E 3 size parameter
+          quality: generationType === "360" ? "hd" : "standard", // HD quality for 360° panoramas
+          style: generationType === "360" ? "natural" : "vivid", // Natural style for panoramas
           fluxEquirectangularTrigger:
             generationType === "360" && panoramaFormat === "equirectangular"
               ? `equirectangular 360 degree panorama, ${orionCalibrationPrompt}, seamless horizontal wrapping, professional VR panorama, godlevel seamless edges, perfect 360 degree continuity, no visible seams, ultra-high-quality panoramic projection, Orion360 professional standards, VR headset optimized, perfect geometric alignment, professional color calibration`
@@ -237,6 +240,8 @@ export default function Dome360Planner() {
           orionCalibration: generationType === "360" && panoramaFormat === "equirectangular",
           professionalVR: generationType === "360",
           geometricAlignment: generationType === "360" ? "orion360_grid_precision" : undefined,
+          panoramic360: generationType === "360", // Explicit 360° flag
+          aspectRatio: generationType === "360" ? "2:1" : "1:1", // Explicit aspect ratio
         }),
       })
 
@@ -859,7 +864,7 @@ export default function Dome360Planner() {
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {generationType === "360"
-                          ? "1440×720 • 360° Panorama • Neuralia Style • Orion360 Calibrated"
+                          ? "1792×1024 • 360° Panorama • Neuralia Style • Orion360 Calibrated"
                           : "1440×1440 • Dome Projection • Neuralia Style"}
                       </p>
                       {currentImage.seamlessWrapping && (
