@@ -53,8 +53,7 @@ export function PasswordGate({ children }: PasswordGateProps) {
     setError("")
 
     try {
-      // Simple password check - you can change this password
-      const correctPassword = "flowsketch2024" // Change this to your desired password
+      const correctPassword = "C4rlit0s" // Change this to your desired password
 
       if (password === correctPassword) {
         // Store authentication in localStorage
