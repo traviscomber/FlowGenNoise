@@ -1262,17 +1262,15 @@ export function FlowArtGenerator() {
                 {isGeneratingGodlevel ? "Generating..." : "Godlevel Neuralia"}
               </Button>
 
-              {promptEnhancement && (
-                <Button
-                  onClick={applyEnhancedPrompt}
-                  className="flex-1"
-                  disabled={!editablePrompt || editablePrompt.trim().length === 0}
-                >
-                  <span className="text-slate-100">✓</span> Apply
-                </Button>
-              )}
+              <Button
+                onClick={applyEnhancedPrompt}
+                className="flex-1"
+                disabled={!editablePrompt || editablePrompt.trim().length === 0}
+              >
+                <span className="text-slate-100">✓</span> Apply
+              </Button>
 
-              <Button variant="outline" onClick={() => setIsPromptDialogOpen(false)} className="px-6">
+              <Button variant="outline" onClick={() => setIsPromptDialogOpen(false)} className="flex-1">
                 ↩ Return to Prompt
               </Button>
             </div>
