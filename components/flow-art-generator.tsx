@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef } from "react"
+import { useState, useCallback, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -87,6 +87,14 @@ export function FlowArtGenerator() {
   const [apiKeyStatus, setApiKeyStatus] = useState<any>(null)
   const [isValidatingKey, setIsValidatingKey] = useState(false)
 
+  // Aspect ratio state
+  const [aspectRatios, setAspectRatios] = useState<any[]>([])
+  const [selectedAspectRatio, setSelectedAspectRatio] = useState<{
+    standard?: string
+    dome?: string
+    "360"?: string
+  }>({})
+
   // Refs for cancellation
   const abortControllerRef = useRef<AbortController | null>(null)
 
@@ -135,7 +143,7 @@ export function FlowArtGenerator() {
     } finally {
       setIsValidatingKey(false)
     }
-  }, [])
+  }, [toast])
 
   // Generate random seed
   const randomizeSeed = useCallback(() => {
@@ -161,13 +169,13 @@ export function FlowArtGenerator() {
         setScenario(randomScenario)
       }
     }, 0)
-  }, [handleDatasetChange])
+  }, [handleDatasetChange, setColorScheme, setScenario])
 
   const randomizeTechnicalParams = useCallback(() => {
     setSeed(Math.floor(Math.random() * 10000))
     setNumSamples(Math.floor(Math.random() * 7001) + 1000) // 1000-8000
     setNoiseScale(Math.random() * 0.19 + 0.01) // 0.01-0.2
-  }, [])
+  }, [setSeed, setNumSamples, setNoiseScale])
 
   const randomizeAll = useCallback(() => {
     // Randomize dataset
@@ -194,7 +202,7 @@ export function FlowArtGenerator() {
     setSeed(Math.floor(Math.random() * 10000))
     setNumSamples(Math.floor(Math.random() * 7001) + 1000) // 1000-8000
     setNoiseScale(Math.random() * 0.19 + 0.01) // 0.01-0.2
-  }, [handleDatasetChange])
+  }, [handleDatasetChange, setColorScheme, setScenario, setSeed, setNumSamples, setNoiseScale])
 
   const previewPrompt = useCallback(async () => {
     setIsPromptDialogOpen(true)
@@ -239,6 +247,10 @@ export function FlowArtGenerator() {
     panoramaFormat,
     projectionType,
     toast,
+    setCurrentPrompt,
+    setEditablePrompt,
+    setPromptEnhancement,
+    setIsPromptDialogOpen,
   ])
 
   const enhanceCurrentPrompt = useCallback(async () => {
@@ -282,7 +294,17 @@ export function FlowArtGenerator() {
     } finally {
       setIsEnhancing(false)
     }
-  }, [editablePrompt, negativePrompt, variationType, dataset, scenario, toast])
+  }, [
+    editablePrompt,
+    negativePrompt,
+    variationType,
+    dataset,
+    scenario,
+    toast,
+    setPromptEnhancement,
+    setEditablePrompt,
+    setIsEnhancing,
+  ])
 
   // Preview and enhance prompt
   const previewAndEnhancePrompt = useCallback(async () => {
@@ -380,6 +402,12 @@ export function FlowArtGenerator() {
     panoramaFormat,
     projectionType,
     variationType,
+    toast,
+    setCurrentPrompt,
+    setEditablePrompt,
+    setPromptEnhancement,
+    setIsEnhancing,
+    setIsPromptDialogOpen,
   ])
 
   // Apply enhanced prompt
@@ -391,7 +419,7 @@ export function FlowArtGenerator() {
     } else {
       toast({ title: "No prompt to apply", variant: "error" })
     }
-  }, [editablePrompt])
+  }, [editablePrompt, setCustomPrompt, setIsPromptDialogOpen, toast])
 
   // Reset to original prompt
   const resetToOriginal = useCallback(() => {
@@ -399,7 +427,7 @@ export function FlowArtGenerator() {
       setEditablePrompt(promptEnhancement.originalPrompt)
       toast({ title: "Reset to original prompt", variant: "info" })
     }
-  }, [promptEnhancement])
+  }, [promptEnhancement, setEditablePrompt, toast])
 
   // Reset to enhanced prompt
   const resetToEnhanced = useCallback(() => {
@@ -407,7 +435,7 @@ export function FlowArtGenerator() {
       setEditablePrompt(promptEnhancement.enhancedPrompt)
       toast({ title: "Reset to enhanced prompt", variant: "info" })
     }
-  }, [promptEnhancement])
+  }, [promptEnhancement, setEditablePrompt, toast])
 
   // Generate all image types
   const generateImages = useCallback(async () => {
@@ -549,6 +577,10 @@ export function FlowArtGenerator() {
     isGenerating,
     provider,
     replicateModel,
+    toast,
+    setResults,
+    setGenerationProgress,
+    setIsGenerating,
   ])
 
   // Cancel generation
@@ -598,7 +630,7 @@ export function FlowArtGenerator() {
         toast({ title: `Download failed: ${error.message || "Unknown error"}`, variant: "error" })
       }
     },
-    [dataset, scenario, provider, replicateModel, colorScheme],
+    [dataset, scenario, provider, replicateModel, colorScheme, toast],
   )
 
   const generateGodlevelPrompt = async () => {
@@ -665,6 +697,35 @@ export function FlowArtGenerator() {
       setIsGeneratingGodlevel(false)
     }
   }
+
+  const fetchAspectRatios = async () => {
+    try {
+      const { supabase } = await import("@/lib/supabase")
+
+      const { data, error } = await supabase.from("aspect_ratios").select("*").order("name")
+
+      if (error) {
+        console.error("Error fetching aspect ratios:", error)
+        return
+      }
+
+      setAspectRatios(data || [])
+
+      // Set default aspect ratios
+      const defaults = {
+        standard: data?.find((ar) => ar.generation_type === "standard" && ar.is_default)?.id,
+        dome: data?.find((ar) => ar.generation_type === "dome" && ar.is_default)?.id,
+        "360": data?.find((ar) => ar.generation_type === "360" && ar.is_default)?.id,
+      }
+      setSelectedAspectRatio(defaults)
+    } catch (error) {
+      console.error("Error loading aspect ratios:", error)
+    }
+  }
+
+  useEffect(() => {
+    fetchAspectRatios()
+  }, [])
 
   return (
     <div className="container mx-auto p-6 space-y-8">
@@ -765,17 +826,20 @@ export function FlowArtGenerator() {
           {/* Technical Parameters */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                Technical Parameters
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={randomizeTechnicalParams}
-                  title="Randomize Technical Parameters"
-                >
-                  🎲
-                </Button>
-              </CardTitle>
+              {/* Added aspect ratio selection UI in Technical Parameters section */}
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  Technical Parameters
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={randomizeTechnicalParams}
+                    title="Randomize Technical Parameters"
+                  >
+                    🎲
+                  </Button>
+                </CardTitle>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -825,6 +889,92 @@ export function FlowArtGenerator() {
                     className="flex-1"
                   />
                   <span className="text-sm text-muted-foreground w-12">{noiseScale.toFixed(2)}</span>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="standardAspectRatio" className="text-sm">
+                    Standard Image Aspect Ratio
+                  </Label>
+                  <Select
+                    value={selectedAspectRatio.standard || ""}
+                    onValueChange={(value) => setSelectedAspectRatio((prev) => ({ ...prev, standard: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select aspect ratio" placeholder placeholder="Select aspect ratio" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {aspectRatios
+                        .filter((ar) => ar.generation_type === "standard" || ar.generation_type === "all")
+                        .map((aspectRatio) => (
+                          <SelectItem key={aspectRatio.id} value={aspectRatio.id}>
+                            <div className="flex flex-col">
+                              <span>{aspectRatio.name}</span>
+                              <span className="text-xs text-muted-foreground">
+                                {aspectRatio.width}×{aspectRatio.height} ({aspectRatio.ratio}:1)
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="domeAspectRatio" className="text-sm">
+                    Dome Projection Aspect Ratio
+                  </Label>
+                  <Select
+                    value={selectedAspectRatio.dome || ""}
+                    onValueChange={(value) => setSelectedAspectRatio((prev) => ({ ...prev, dome: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select aspect ratio" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {aspectRatios
+                        .filter((ar) => ar.generation_type === "dome" || ar.generation_type === "all")
+                        .map((aspectRatio) => (
+                          <SelectItem key={aspectRatio.id} value={aspectRatio.id}>
+                            <div className="flex flex-col">
+                              <span>{aspectRatio.name}</span>
+                              <span className="text-xs text-muted-foreground">
+                                {aspectRatio.width}×{aspectRatio.height} ({aspectRatio.ratio}:1)
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="360AspectRatio" className="text-sm">
+                    360° Panorama Aspect Ratio
+                  </Label>
+                  <Select
+                    value={selectedAspectRatio["360"] || ""}
+                    onValueChange={(value) => setSelectedAspectRatio((prev) => ({ ...prev, "360": value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select aspect ratio" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {aspectRatios
+                        .filter((ar) => ar.generation_type === "360" || ar.generation_type === "all")
+                        .map((aspectRatio) => (
+                          <SelectItem key={aspectRatio.id} value={aspectRatio.id}>
+                            <div className="flex flex-col">
+                              <span>{aspectRatio.name}</span>
+                              <span className="text-xs text-muted-foreground">
+                                {aspectRatio.width}×{aspectRatio.height} ({aspectRatio.ratio}:1)
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </CardContent>
@@ -1127,7 +1277,10 @@ export function FlowArtGenerator() {
                   {results.standard ? (
                     <div className="space-y-4">
                       <div className="relative">
-                        <AspectRatio ratio={1}>
+                        {/* Updated aspect ratio display in results section to use dynamic ratios */}
+                        <AspectRatio
+                          ratio={aspectRatios.find((ar) => ar.id === selectedAspectRatio.standard)?.ratio || 1}
+                        >
                           <img
                             src={results.standard || "/placeholder.svg"}
                             alt="Standard generated art"
@@ -1157,7 +1310,8 @@ export function FlowArtGenerator() {
                   {results.dome ? (
                     <div className="space-y-4">
                       <div className="relative">
-                        <AspectRatio ratio={1}>
+                        {/* Updated aspect ratio display in results section to use dynamic ratios */}
+                        <AspectRatio ratio={aspectRatios.find((ar) => ar.id === selectedAspectRatio.dome)?.ratio || 1}>
                           <img
                             src={results.dome || "/placeholder.svg"}
                             alt="Dome projection art"
@@ -1192,7 +1346,11 @@ export function FlowArtGenerator() {
                   {results.panorama360 ? (
                     <div className="space-y-4">
                       <div className="relative">
-                        <AspectRatio ratio={2} className="bg-black rounded-lg overflow-hidden">
+                        {/* Updated aspect ratio display in results section to use dynamic ratios */}
+                        <AspectRatio
+                          ratio={aspectRatios.find((ar) => ar.id === selectedAspectRatio["360"])?.ratio || 2}
+                          className="bg-black rounded-lg overflow-hidden"
+                        >
                           <img
                             src={results.panorama360 || "/placeholder.svg"}
                             alt="360° panoramic art"

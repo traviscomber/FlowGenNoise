@@ -18,6 +18,7 @@ export interface GenerationParams {
   replicateModel?: string
   width?: number
   height?: number
+  aspectRatioId?: string // Added aspect ratio ID reference
 }
 
 export function validateGenerationParams(body: any): GenerationParams {
@@ -41,6 +42,7 @@ export function validateGenerationParams(body: any): GenerationParams {
     replicateModel: body.replicateModel || "black-forest-labs/flux-1.1-pro",
     width: typeof body.width === "number" ? body.width : undefined,
     height: typeof body.height === "number" ? body.height : undefined,
+    aspectRatioId: body.aspectRatioId || undefined, // Added aspect ratio ID reference
   }
 }
 
@@ -618,7 +620,7 @@ export const REPLICATE_MODELS = {
     description: "Ultimate quality FLUX model with maximum detail and flexible aspect ratios",
     category: "FLUX",
     maxSize: "1440x1440",
-    supportedAspectRatios: ["1:1", "2:1", "3:4", "4:3", "16:9"],
+    supportedAspectRatios: ["1:1", "2:1", "3:4", "4:3", "16:9", "21:9", "4:5", "9:16", "9:21"],
   },
   "bytedance/seedream-3": {
     name: "SeeDream-3",
@@ -760,34 +762,58 @@ export async function generateWithReplicate(
   const model = "black-forest-labs/flux-1.1-pro-ultra"
   const safePrompt = sanitizePromptForSafety(prompt)
 
-  let width = params?.width || 1440
-  let height = params?.height || 1440
-  let enhancedPrompt = ""
+  let aspectRatio = "1:1" // Default aspect ratio
 
-  // Override with type-specific defaults if no custom dimensions provided
-  if (!params?.width && !params?.height) {
-    if (type === "360") {
-      width = 1440
-      height = 720 // Default 2:1 aspect ratio for proper equirectangular
-    } else if (type === "dome") {
-      width = 1440
-      height = 1440 // Default 1:1 aspect ratio for dome projection
-    } else {
-      width = 1440
-      height = 1440 // Default 1:1 aspect ratio for standard
-    }
+  // Override with type-specific defaults using only supported aspect ratios
+  if (type === "360") {
+    aspectRatio = "21:9" // Closest wide format for equirectangular panorama (better than 2:1)
+  } else if (type === "dome") {
+    aspectRatio = "1:1" // Perfect for dome projection
+  } else {
+    aspectRatio = "1:1" // Default for standard
   }
 
+  // Allow custom aspect ratio from params if provided, but only use supported values
+  if (params?.width && params?.height) {
+    const ratio = params.width / params.height
+    if (ratio >= 2.3) aspectRatio = "21:9"
+    else if (ratio >= 1.7) aspectRatio = "16:9"
+    else if (ratio >= 1.4) aspectRatio = "3:2"
+    else if (ratio >= 1.2) aspectRatio = "4:3"
+    else if (ratio >= 1.1) aspectRatio = "5:4"
+    else if (ratio >= 0.9) aspectRatio = "1:1"
+    else if (ratio >= 0.8) aspectRatio = "4:5"
+    else if (ratio >= 0.7) aspectRatio = "3:4"
+    else if (ratio >= 0.5) aspectRatio = "2:3"
+    else if (ratio >= 0.4) aspectRatio = "9:16"
+    else aspectRatio = "9:21"
+  }
+
+  console.log(`[v0] Using aspect ratio: ${aspectRatio} for ${type} generation`)
+
+  let enhancedPrompt = ""
+
   if (type === "360") {
-    enhancedPrompt = `ULTRA-HIGH-QUALITY 360° EQUIRECTANGULAR PANORAMA: ${safePrompt}. Professional ${width}x${height} seamless wraparound panorama with perfect left-right edge continuity for premium VR viewing experience, Orion360 calibration standards, equirectangular projection format.`
+    enhancedPrompt = `ULTRA-HIGH-QUALITY 360° EQUIRECTANGULAR PANORAMA - OPTIMAL 21:9 FORMAT: ${safePrompt}. 
+
+PROFESSIONAL EQUIRECTANGULAR SPECIFICATIONS:
+• Perfect 21:9 aspect ratio providing superior ultra-wide results for equirectangular panorama
+• LEFT EDGE must connect SEAMLESSLY with RIGHT EDGE - mathematical precision wraparound
+• Professional equirectangular projection optimized for premium VR headsets and 360° viewers
+• Continuous horizontal environment with zero visible seams or discontinuities
+• FLUX 1.1 Pro Ultra optimized for maximum quality 360° panoramic generation with ultra-wide format
+
+TECHNICAL EXCELLENCE: Ultra-wide 21:9 equirectangular format, professional seamless horizontal wrapping, VR-optimized, premium quality, godlevel artistic mastery with perfect edge continuity, cultural heritage visualization.`
   } else if (type === "dome") {
-    enhancedPrompt = `ULTRA-HIGH-QUALITY DOME PROJECTION IMAGE: ${safePrompt}. Professional ${width}x${height} ${params?.projectionType || "fisheye"} perspective optimized for premium planetarium dome projection with perfect circular composition.`
+    enhancedPrompt = `ULTRA-HIGH-QUALITY DOME PROJECTION IMAGE: ${safePrompt}. Professional ${params?.projectionType || "fisheye"} perspective optimized for premium planetarium dome projection with perfect circular composition.`
   } else {
-    enhancedPrompt = `ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional ${width}x${height} resolution and detail optimized for premium quality output.`
+    enhancedPrompt = `ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional resolution and detail optimized for premium quality output.`
   }
 
   console.log(`🎨 Generating ${type} image with FLUX 1.1 Pro Ultra (preferred model)`)
-  console.log(`📐 Size: ${width}x${height} (flexible aspect ratio support)`)
+  console.log(
+    `📐 Aspect ratio: ${aspectRatio} (${type === "360" ? "optimal 21:9 ultra-wide equirectangular" : "FLUX 1.1 Pro Ultra supported format"})`,
+  )
   console.log(`📝 Enhanced prompt length: ${enhancedPrompt.length} chars`)
 
   try {
@@ -798,123 +824,54 @@ export async function generateWithReplicate(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        version: model,
+        version: "352185dbc99e9dd708b78b4e6870e3ca49d00dc6451a32fc6dd57968194fae5a",
         input: {
           prompt: enhancedPrompt,
-          width: width,
-          height: height,
-          num_outputs: 1,
-          guidance_scale: 8.0,
-          num_inference_steps: 4,
-          scheduler: "DPMSolverMultistep",
+          aspect_ratio: aspectRatio, // Use aspect_ratio instead of width/height
+          output_format: "png", // High quality PNG output
+          raw: false, // Processed for better quality
+          safety_tolerance: 5, // More permissive for artistic content
+          seed: params?.seed || Math.floor(Math.random() * 10000),
         },
       }),
     })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      const errorMessage = errorData.detail || `HTTP ${response.status}: ${response.statusText}`
-
-      if (response.status === 401) {
-        throw new Error("🔑 Replicate API token authentication failed. Please verify your API token.")
-      }
-
-      if (response.status === 429) {
-        throw new Error("⏱️ Replicate rate limit exceeded. Please wait and try again.")
-      }
-
-      throw new Error(`🚫 Replicate API Error: ${errorMessage}`)
+      const errorText = await response.text()
+      console.error(`[v0] Replicate API error response: ${errorText}`)
+      throw new Error(`Replicate API error: ${response.status} ${response.statusText}`)
     }
 
     const prediction = await response.json()
-    console.log("[v0] Replicate prediction created:", prediction.id)
-    console.log("[v0] Initial prediction status:", prediction.status)
+    console.log(`[v0] Prediction created with ID: ${prediction.id}`)
 
     // Poll for completion
     let result = prediction
-    let pollCount = 0
-    const maxPolls = 120 // 2 minutes max
-
     while (result.status === "starting" || result.status === "processing") {
-      if (signal?.aborted) {
-        throw new Error("Generation was cancelled")
-      }
-
-      if (pollCount >= maxPolls) {
-        throw new Error("Generation timeout - took longer than 2 minutes")
-      }
-
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      pollCount++
-
       const pollResponse = await fetch(`https://api.replicate.com/v1/predictions/${result.id}`, {
         headers: {
           Authorization: `Token ${apiToken}`,
         },
       })
-
-      if (!pollResponse.ok) {
-        throw new Error(`Failed to poll prediction status: ${pollResponse.status}`)
-      }
-
       result = await pollResponse.json()
-      console.log(`[v0] Replicate status (poll ${pollCount}):`, result.status)
-
-      if (result.status === "succeeded" || result.status === "failed") {
-        console.log("[v0] Final result object:", JSON.stringify(result, null, 2))
-      }
+      console.log(`[v0] Prediction status: ${result.status}`)
     }
 
-    if (result.status === "failed") {
-      console.error("[v0] Replicate generation failed with error:", result.error)
-      throw new Error(`Replicate generation failed: ${result.error || "Unknown error"}`)
+    if (result.status === "succeeded" && result.output) {
+      // FLUX 1.1 Pro Ultra returns a single URL, not an array
+      const imageUrl = Array.isArray(result.output) ? result.output[0] : result.output
+      return {
+        imageUrl: imageUrl,
+        prompt: enhancedPrompt,
+      }
+    } else {
+      console.error(`[v0] Generation failed with status: ${result.status}`)
+      console.error(`[v0] Error details:`, result.error)
+      throw new Error(`Generation failed: ${result.error || result.status || "Unknown error"}`)
     }
-
-    if (result.status === "succeeded") {
-      console.log("[v0] Generation succeeded!")
-      console.log("[v0] Result output exists:", !!result.output)
-      console.log("[v0] Result output type:", typeof result.output)
-      console.log("[v0] Result output is array:", Array.isArray(result.output))
-
-      if (result.output) {
-        console.log("[v0] Output length:", result.output.length)
-        console.log("[v0] First output item:", result.output[0])
-        console.log("[v0] First output type:", typeof result.output[0])
-      }
-
-      // Handle different output formats
-      let imageUrl: string | null = null
-
-      if (Array.isArray(result.output) && result.output.length > 0) {
-        imageUrl = result.output[0]
-      } else if (typeof result.output === "string") {
-        imageUrl = result.output
-      } else if (result.output && typeof result.output === "object" && result.output.url) {
-        imageUrl = result.output.url
-      }
-
-      console.log("[v0] Extracted image URL:", imageUrl)
-      console.log("[v0] Image URL type:", typeof imageUrl)
-      console.log("[v0] Image URL length:", imageUrl?.length || 0)
-
-      if (imageUrl && typeof imageUrl === "string" && imageUrl.startsWith("http")) {
-        console.log("✅ Successfully extracted valid image URL from Replicate")
-        return {
-          imageUrl: imageUrl,
-          prompt: enhancedPrompt,
-        }
-      } else {
-        console.error("[v0] Invalid or missing image URL in response")
-        throw new Error("Invalid image URL received from Replicate")
-      }
-    }
-
-    throw new Error(`Unexpected generation status: ${result.status}`)
   } catch (error: any) {
-    if (error.name === "AbortError") {
-      throw new Error("Generation was cancelled")
-    }
-    console.error(`❌ Replicate generation failed for ${type}:`, error)
+    console.error("❌ FLUX 1.1 Pro Ultra generation failed:", error.message)
     throw error
   }
 }
