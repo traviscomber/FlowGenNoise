@@ -317,19 +317,28 @@ export async function generateWithOpenAI(
     const panoramaFormat = params?.panoramaFormat || "equirectangular"
 
     if (panoramaFormat === "equirectangular") {
-      enhancedPrompt = `PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA - ORION360 CALIBRATION STANDARD: ${safePrompt}
+      console.log("[v0] Applying enhanced DALL-E letterboxing for true 2:1 ratio workaround")
+      enhancedPrompt = `PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA WITH ENHANCED LETTERBOXING - DALL-E TRUE 2:1 RATIO WORKAROUND: ${safePrompt}
 
-MANDATORY SEAMLESS PROFESSIONAL SPECIFICATIONS - 1792x1024 RESOLUTION:
-• EXACT 1792x1024 pixel dimensions matching professional ORION360 calibration standards
-• LEFT EDGE must connect PERFECTLY with RIGHT EDGE - mathematical precision seamless wrapping
-• Professional equirectangular projection with 7:4 aspect ratio (1.75:1) for optimal VR compatibility
-• Continuous 360° horizontal environment - imagine perfect cylindrical mapping around viewer
-• ZERO visible seams, color breaks, lighting discontinuities, or object interruptions at boundaries
-• Professional seamless edge alignment worthy of ORION360 calibration test patterns
-• VR-optimized for premium headsets with flawless wraparound immersive experience
-• Museum-grade seamless wrapping with broadcast-quality edge continuity
+MANDATORY ENHANCED LETTERBOXING SPECIFICATIONS FOR TRUE 2:1 EFFECTIVE RATIO:
+• SOLID BLACK FRAMES at top and bottom (exactly 64 pixels each) creating perfect 2:1 effective ratio
+• CENTER BAND contains equirectangular 360° content in precise 2:1 proportions (1792x896 effective area)
+• BLACK LETTERBOX BARS frame the panoramic content with mathematical precision for true 2:1 extraction
+• Equirectangular content CENTERED in middle horizontal band with professional calibration standards
+• LEFT EDGE of center content must connect PERFECTLY with RIGHT EDGE - seamless wrapping within center band
+• Professional latitude/longitude coordinate mapping with polar distortion handling in center band
+• ZERO visible seams, color breaks, lighting discontinuities, or edge artifacts in the CENTER PANORAMIC BAND
+• Black frames create clean 2:1 extraction area optimized for VR compatibility and 360° viewers
+• ORION360 calibration quality with broadcast-standard edge continuity in panoramic center area
 
-TECHNICAL EXCELLENCE: 1792x1024 equirectangular format, professional seamless horizontal wrapping, ORION360 calibration quality, VR-optimized, broadcast standard, godlevel artistic mastery with perfect edge continuity, cultural heritage visualization, educational artistic content.`
+COMPOSITION STRUCTURE WITH MATHEMATICAL PRECISION:
+• TOP: Solid black frame/border (exactly 64px height for perfect ratio)
+• CENTER: 360° equirectangular panoramic content (1792x896 = true 2:1 ratio)
+• BOTTOM: Solid black frame/border (exactly 64px height for perfect ratio)
+• Total dimensions: 1792x1024 with mathematically precise 2:1 panoramic extraction area
+
+TECHNICAL EXCELLENCE: 1792x1024 with enhanced black letterboxing, mathematically precise 2:1 equirectangular center band, professional seamless horizontal wrapping in center area, VR-optimized when cropped, broadcast standard, godlevel artistic mastery with perfect edge continuity and polar distortion handling in panoramic band.`
+      console.log("[v0] Enhanced DALL-E letterboxing prompt applied, length:", enhancedPrompt.length)
     } else if (panoramaFormat === "stereographic") {
       const stereographicPerspective = params?.stereographicPerspective || "wide-angle"
 
@@ -484,6 +493,10 @@ function makeOpenAIRequest(promptToUse: string): Promise<{ imageUrl: string; pro
 
   const size: "1024x1024" | "1792x1024" = promptToUse.includes("360") ? "1792x1024" : "1024x1024"
 
+  console.log("[v0] DALL-E makeOpenAIRequest - Size determined:", size)
+  console.log("[v0] DALL-E makeOpenAIRequest - Prompt includes '360':", promptToUse.includes("360"))
+  console.log("[v0] DALL-E makeOpenAIRequest - Prompt includes 'LETTERBOXING':", promptToUse.includes("LETTERBOXING"))
+
   return fetch("https://api.openai.com/v1/images/generations", {
     method: "POST",
     headers: {
@@ -503,7 +516,7 @@ function makeOpenAIRequest(promptToUse: string): Promise<{ imageUrl: string; pro
     console.log("[v0] OpenAI API response ok:", response.ok)
 
     if (response.ok) {
-      const data = await response.json()
+      const data = await await response.json()
       console.log("[v0] OpenAI API response data received:", !!data.data)
       if (data.data && data.data[0] && data.data[0].url) {
         return {
@@ -810,20 +823,21 @@ export async function generateWithReplicate(
   if (type === "360") {
     const { buildGodlevelNeuralia360Wrapper } = await import("@/lib/ai-prompt")
 
-    const basePrompt = `PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA - ORION360 CALIBRATION STANDARD: ${safePrompt}
+    const basePrompt = `PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA - ENHANCED ORION360 CALIBRATION STANDARD: ${safePrompt}
 
-MANDATORY SEAMLESS PROFESSIONAL SPECIFICATIONS - ULTRA-WIDE 21:9 FORMAT:
-• Perfect 21:9 aspect ratio providing superior ultra-wide results for equirectangular panorama
+MANDATORY SEAMLESS PROFESSIONAL SPECIFICATIONS - OPTIMIZED FOR TRUE 2:1 RATIO:
+• ${aspectRatio === "2:1" ? "Perfect 2:1 aspect ratio providing true equirectangular format" : `Ultra-wide ${aspectRatio} format optimized for equirectangular panorama (closest available to 2:1)`}
 • LEFT EDGE must connect PERFECTLY with RIGHT EDGE - mathematical precision seamless wrapping
-• Professional equirectangular projection optimized for premium VR headsets and 360° viewers
+• Professional equirectangular projection with latitude/longitude coordinate mapping precision
 • Continuous horizontal environment with ZERO visible seams, color breaks, or lighting discontinuities
+• Professional polar distortion handling with mathematical algorithms for proper sphere mapping
 • ORION360 calibration quality with museum-grade seamless wrapping and broadcast-quality edge continuity
 • VR-optimized for premium headsets with flawless wraparound immersive experience
-• Professional seamless edge alignment worthy of ORION360 calibration test patterns
+• Professional seamless edge alignment worthy of ORION360 calibration test patterns with godlevel precision
 
-TECHNICAL EXCELLENCE: Ultra-wide 21:9 equirectangular format, professional seamless horizontal wrapping, ORION360 calibration quality, VR-optimized, broadcast standard, godlevel artistic mastery with perfect edge continuity, cultural heritage visualization.`
+TECHNICAL EXCELLENCE: ${aspectRatio === "2:1" ? "True 2:1" : `Optimized ${aspectRatio}`} equirectangular format, professional seamless horizontal wrapping with latitude/longitude precision, ORION360 calibration quality, VR-optimized, broadcast standard, godlevel artistic mastery with perfect edge continuity and polar distortion handling, cultural heritage visualization.`
 
-    // Always apply godlevel neuralia wrapper for 360° images (not just pure-mathematical)
+    // Always apply enhanced godlevel neuralia wrapper for 360° images across all models
     enhancedPrompt = buildGodlevelNeuralia360Wrapper(
       basePrompt,
       params?.dataset || "vietnamese",
@@ -831,7 +845,7 @@ TECHNICAL EXCELLENCE: Ultra-wide 21:9 equirectangular format, professional seaml
       params?.colorScheme || "neon",
     )
     console.log(
-      `[v0] Applied godlevel neuralia 360° equirectangular wrapper for ${isNvidiaSana ? "NVIDIA SANA" : "FLUX"}`,
+      `[v0] Applied enhanced godlevel neuralia 360° equirectangular wrapper for ${isNvidiaSana ? "NVIDIA SANA" : "FLUX"} with ${aspectRatio} ratio`,
     )
   } else if (type === "dome") {
     enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
