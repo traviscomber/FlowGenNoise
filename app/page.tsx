@@ -16,7 +16,7 @@ export default function HomePage() {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl">
-              <span className="text-white text-xl">✨</span>
+              <span className="text-xl">✨</span>
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               FlowSketch Art Generator

@@ -1491,6 +1491,71 @@ const NEURALIA_H3RITAGE_STYLE = `
 Hyperrealistic 3D rendering with intricate mathematical precision. Complex layering of mechanical and organic elements seamlessly integrated. Flowing metallic surfaces with swirling, spiral patterns and spherical motifs. Rich metallic color palette featuring deep blues, warm golds, and lustrous silvers with iridescent highlights. Fractal-like detail work with nested geometric forms and circular compositions. Surreal, dreamlike atmosphere with perfect technical execution. Biomechanical fusion aesthetics with ornate decorative elements. Multiple depth layers creating immersive visual complexity. Photorealistic textures with mirror-like metallic finishes and subtle color gradients.
 `
 
+export async function generateGodlevelPrompt(
+  dataset: string,
+  scenario: string,
+  colorScheme: string,
+  customPrompt = "",
+  panoramic360 = false,
+  projectionType = "standard",
+): Promise<string> {
+  try {
+    const response = await fetch("/api/generate-godlevel-prompt", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        dataset,
+        scenario,
+        colorScheme,
+        customPrompt,
+        panoramic360,
+        projectionType,
+      }),
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to generate godlevel prompt")
+    }
+
+    const data = await response.json()
+    return data.prompt
+  } catch (error) {
+    console.error("[v0] Error generating godlevel prompt:", error)
+    // Fallback to existing buildPrompt function
+    return buildPrompt(
+      dataset,
+      scenario,
+      colorScheme,
+      0,
+      1,
+      0.1,
+      customPrompt,
+      "",
+      panoramic360,
+      "equirectangular",
+      projectionType,
+    )
+  }
+}
+
+export function buildPrompt(params: {
+  dataset: string
+  scenario: string
+  colorScheme: string
+  seed?: number
+  numSamples?: number
+  noiseScale?: number
+  customPrompt?: string
+  negativePrompt?: string
+  panoramic360?: boolean
+  panoramaFormat?: string
+  projectionType?: string
+  provider?: string
+  model?: string
+}): string
+
 export function buildPrompt(
   dataset: string,
   scenario: string,
@@ -1498,6 +1563,38 @@ export function buildPrompt(
   seed: number,
   numSamples: number,
   noiseScale: number,
+  customPrompt?: string,
+  negativePrompt?: string,
+  panoramic360?: boolean,
+  panoramaFormat?: string,
+  projectionType?: string,
+  provider?: string,
+  model?: string,
+): string
+
+export function buildPrompt(
+  datasetOrParams:
+    | string
+    | {
+        dataset: string
+        scenario: string
+        colorScheme: string
+        seed?: number
+        numSamples?: number
+        noiseScale?: number
+        customPrompt?: string
+        negativePrompt?: string
+        panoramic360?: boolean
+        panoramaFormat?: string
+        projectionType?: string
+        provider?: string
+        model?: string
+      },
+  scenario?: string,
+  colorScheme?: string,
+  seed?: number,
+  numSamples?: number,
+  noiseScale?: number,
   customPrompt = "",
   negativePrompt = "",
   panoramic360 = false,
@@ -1506,82 +1603,104 @@ export function buildPrompt(
   provider = "replicate",
   model = "flux-1.1-pro-ultra",
 ): string {
-  console.log(`[v0] buildPrompt called with dataset: ${typeof dataset} - ${dataset}`)
-  console.log(`[v0] buildPrompt called with scenario: ${typeof scenario} - ${scenario}`)
-
-  let datasetKey = dataset
-  if (typeof dataset === "object" && dataset !== null) {
-    // If dataset is an object, try to extract the dataset property
-    datasetKey = (dataset as any).dataset || Object.keys(dataset)[0] || "heads"
-    console.log(`[v0] Extracted dataset key: ${datasetKey}`)
+  let params: {
+    dataset: string
+    scenario: string
+    colorScheme: string
+    seed: number
+    numSamples: number
+    noiseScale: number
+    customPrompt: string
+    negativePrompt: string
+    panoramic360: boolean
+    panoramaFormat: string
+    projectionType: string
+    provider: string
+    model: string
   }
 
-  const selectedDataset = CULTURAL_DATASETS[datasetKey as keyof typeof CULTURAL_DATASETS]
-  const selectedScenario = selectedDataset?.scenarios[scenario as keyof typeof selectedDataset.scenarios]
+  if (typeof datasetOrParams === "object") {
+    // Object parameter call
+    params = {
+      dataset: datasetOrParams.dataset,
+      scenario: datasetOrParams.scenario,
+      colorScheme: datasetOrParams.colorScheme,
+      seed: datasetOrParams.seed || 1234,
+      numSamples: datasetOrParams.numSamples || 4000,
+      noiseScale: datasetOrParams.noiseScale || 0.08,
+      customPrompt: datasetOrParams.customPrompt || "",
+      negativePrompt: datasetOrParams.negativePrompt || "",
+      panoramic360: datasetOrParams.panoramic360 || false,
+      panoramaFormat: datasetOrParams.panoramaFormat || "equirectangular",
+      projectionType: datasetOrParams.projectionType || "fisheye",
+      provider: datasetOrParams.provider || "replicate",
+      model: datasetOrParams.model || "flux-1.1-pro-ultra",
+    }
+  } else {
+    // Individual parameter call
+    params = {
+      dataset: datasetOrParams,
+      scenario: scenario!,
+      colorScheme: colorScheme!,
+      seed: seed || 1234,
+      numSamples: numSamples || 4000,
+      noiseScale: noiseScale || 0.08,
+      customPrompt,
+      negativePrompt,
+      panoramic360,
+      panoramaFormat,
+      projectionType,
+      provider,
+      model,
+    }
+  }
+
+  console.log(`[v0] buildPrompt called with dataset: ${params.dataset}`)
+  console.log(`[v0] buildPrompt called with scenario: ${params.scenario}`)
+
+  const selectedDataset = CULTURAL_DATASETS[params.dataset as keyof typeof CULTURAL_DATASETS]
+  const selectedScenario = selectedDataset?.scenarios[params.scenario as keyof typeof selectedDataset.scenarios]
 
   if (!selectedDataset) {
-    console.log(`[v0] Dataset not found: ${datasetKey}`)
-    return customPrompt || "Create a beautiful mathematical art visualization"
+    console.log(`[v0] Dataset not found: ${params.dataset}`)
+    return params.customPrompt || "Create a beautiful mathematical art visualization"
   }
 
   if (!selectedScenario) {
-    console.log(`[v0] Scenario not found: ${scenario} in dataset ${datasetKey}`)
-    return customPrompt || selectedDataset.description
+    console.log(`[v0] Scenario not found: ${params.scenario} in dataset ${params.dataset}`)
+    return params.customPrompt || selectedDataset.description
   }
 
-  // Build prompt from user selections following the required flow
   let prompt = ""
 
   // Add image type prefix based on projection
-  if (panoramic360) {
-    prompt += "ULTRA-HIGH-QUALITY 360° PANORAMIC IMAGE: "
-  } else if (projectionType !== "standard") {
-    prompt += `ULTRA-HIGH-QUALITY ${projectionType.toUpperCase()} PROJECTION IMAGE: `
-  } else {
-    prompt += "ULTRA-HIGH-QUALITY STANDARD IMAGE: "
+  if (params.panoramic360) {
+    prompt += "360° PANORAMIC: "
+  } else if (params.projectionType !== "standard") {
+    prompt += `${params.projectionType.toUpperCase()} PROJECTION: `
   }
 
   if (scenario === "pure-mathematical") {
     // For pure-mathematical scenarios: Generate mathematical results of the dataset
     prompt += `Mathematical visualization of ${selectedDataset.name}: `
-    prompt += `Precise geometric analysis, algorithmic patterns, mathematical formulations, computational structures, `
-    prompt += `numerical relationships, geometric transformations, mathematical precision, algorithmic beauty, `
-    prompt += `computational elegance, mathematical harmony, geometric perfection, algorithmic sophistication. `
+    prompt += `Geometric analysis, algorithmic patterns, mathematical formulations, computational structures, `
+    prompt += `numerical relationships, geometric transformations, mathematical precision`
   } else {
     // For all other scenarios: Combination of abstract, surrealism and concrete in neuralia style
-    prompt += `${selectedDataset.description} featuring ${selectedScenario.description} `
-    prompt += `Rendered in neuralia h3ritage signature style combining abstract conceptual elements, `
-    prompt += `surrealistic dreamlike atmosphere, and concrete realistic details. `
-    prompt += NEURALIA_H3RITAGE_STYLE
+    prompt += `${selectedScenario.description} `
+    prompt += `Neuralia style: abstract conceptual elements, surrealistic atmosphere, concrete realistic details`
   }
 
   // Add color scheme
   const colorDescription = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES] || colorScheme
-  prompt += `Color palette: ${colorDescription}. `
-
-  // Add technical parameters
-  prompt += `Technical specifications: ${numSamples} samples, noise scale ${noiseScale}, seed ${seed}. `
-
-  // Add projection settings if applicable
-  if (panoramic360) {
-    prompt += `360° panoramic format: ${panoramaFormat} with seamless horizontal wrapping. `
-  }
-  if (projectionType !== "standard") {
-    prompt += `Projection type: ${projectionType}. `
-  }
+  prompt += `. ${colorDescription} color palette`
 
   // Add custom prompt if provided
   if (customPrompt.trim()) {
-    prompt += `Additional requirements: ${customPrompt.trim()} `
+    prompt += `. ${customPrompt.trim()}`
   }
 
-  // Add AI provider optimization
-  prompt += `Optimized for ${provider} ${model}. `
-
-  // Add quality directive
-  prompt += "Create a masterpiece with exceptional detail, composition, and visual impact."
-
-  console.log("[v0] Enhanced prompt generated with proper flow logic")
+  console.log("[v0] Simplified prompt generated")
   return prompt
 }
 

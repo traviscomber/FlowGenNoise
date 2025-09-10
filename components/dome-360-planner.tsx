@@ -67,6 +67,7 @@ export default function Dome360Planner() {
   // Projection settings
   const [projectionType, setProjectionType] = useState("fisheye")
   const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
+  const [stereographicPerspective, setStereographicPerspective] = useState("wide-angle")
 
   const [loraWeight, setLoraWeight] = useState(1.0)
   const [guidanceScale, setGuidanceScale] = useState(2.5)
@@ -124,10 +125,13 @@ export default function Dome360Planner() {
     setColorScheme(randomColor)
 
     // Random projection types
-    const projectionTypes = ["fisheye", "tunnel-up", "tunnel-down", "little-planet"]
+    const domeProjectionTypes = ["fisheye", "tunnel-up", "tunnel-down", "little-planet"]
     const panoramaFormats = ["equirectangular", "stereographic"]
-    setProjectionType(projectionTypes[Math.floor(Math.random() * projectionTypes.length)])
+    const stereographicPerspectives = ["wide-angle", "ultra-wide", "circular-frame"]
+
+    setProjectionType(domeProjectionTypes[Math.floor(Math.random() * domeProjectionTypes.length)])
     setPanoramaFormat(panoramaFormats[Math.floor(Math.random() * panoramaFormats.length)])
+    setStereographicPerspective(stereographicPerspectives[Math.floor(Math.random() * stereographicPerspectives.length)])
 
     setError(null)
     toast({
@@ -267,7 +271,7 @@ export default function Dome360Planner() {
       }
 
       if (selectedTypes.dome) {
-        console.log("[v0] Generating Dome image...")
+        console.log("[v0] Generating Dome image with 180° fisheye projection...")
         generationPromises.push(
           fetch("/api/generate-ai-art", {
             method: "POST",
@@ -282,6 +286,11 @@ export default function Dome360Planner() {
               scheduler: "DPMSolverMultistep",
               style: "vivid",
               quality: "standard",
+              domeProjection: true,
+              projectionType: projectionType, // fisheye, tunnel-up, tunnel-down, little-planet - DOME ONLY
+              hemisphericalMapping: true,
+              fisheyeDistortion: true,
+              planetariumOptimized: true,
             }),
           })
             .then((res) => res.json())
@@ -290,7 +299,7 @@ export default function Dome360Planner() {
       }
 
       if (selectedTypes["360"]) {
-        console.log("[v0] Generating 360° Panorama image...")
+        console.log("[v0] Generating 360° Panorama with equirectangular godlevel wrapping...")
         generationPromises.push(
           fetch("/api/generate-ai-art", {
             method: "POST",
@@ -302,6 +311,12 @@ export default function Dome360Planner() {
               model: "dall-e-3", // Always use DALL-E 3 for 360° panoramas
               style: "natural",
               quality: "hd",
+              panoramic360: true,
+              panoramaFormat: panoramaFormat, // equirectangular or stereographic - 360° ONLY
+              stereographicPerspective: stereographicPerspective, // wide-angle, ultra-wide, circular-frame - 360° ONLY
+              equirectangularMapping: true,
+              seamlessWrapping: true,
+              vrOptimized: true,
             }),
           })
             .then((res) => res.json())
@@ -377,6 +392,7 @@ export default function Dome360Planner() {
     panoramaFormat,
     projectionType,
     variationType,
+    stereographicPerspective,
   ])
 
   const currentImage = generatedImages[generationType]
@@ -504,7 +520,7 @@ export default function Dome360Planner() {
                     />
                     <Label htmlFor="dome" className="flex items-center gap-2 cursor-pointer">
                       <CircleDot className="h-4 w-4" />
-                      Dome Projection (1440×1440)
+                      Dome Projection (1440×1440) - 180° Fisheye
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -517,12 +533,13 @@ export default function Dome360Planner() {
                     />
                     <Label htmlFor="360" className="flex items-center gap-2 cursor-pointer">
                       <Globe className="h-4 w-4" />
-                      360° Panorama (1792×1024)
+                      360° Panorama (1792×1024) - Equirectangular Godlevel Wrapping
                     </Label>
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Select one or more image types. Each selected type will be generated independently.
+                  Select one or more image types. Each selected type will be generated independently with proper
+                  projection effects.
                 </p>
               </div>
 
@@ -571,29 +588,48 @@ export default function Dome360Planner() {
                       <SelectItem value="fisheye">
                         <div className="flex items-center gap-2">
                           <CircleDot className="h-4 w-4" />
-                          Fisheye
+                          <div className="flex flex-col">
+                            <span>Fisheye</span>
+                            <span className="text-xs text-muted-foreground">
+                              180° hemisphere with barrel distortion
+                            </span>
+                          </div>
                         </div>
                       </SelectItem>
                       <SelectItem value="tunnel-up">
                         <div className="flex items-center gap-2">
                           <ArrowUp className="h-4 w-4" />
-                          Tunnel Up
+                          <div className="flex flex-col">
+                            <span>Tunnel Up</span>
+                            <span className="text-xs text-muted-foreground">Upward fisheye perspective</span>
+                          </div>
                         </div>
                       </SelectItem>
                       <SelectItem value="tunnel-down">
                         <div className="flex items-center gap-2">
                           <ArrowDown className="h-4 w-4" />
-                          Tunnel Down
+                          <div className="flex flex-col">
+                            <span>Tunnel Down</span>
+                            <span className="text-xs text-muted-foreground">Downward fisheye perspective</span>
+                          </div>
                         </div>
                       </SelectItem>
                       <SelectItem value="little-planet">
                         <div className="flex items-center gap-2">
                           <Orbit className="h-4 w-4" />
-                          Little Planet
+                          <div className="flex flex-col">
+                            <span>Little Planet</span>
+                            <span className="text-xs text-muted-foreground">Stereographic fisheye projection</span>
+                          </div>
                         </div>
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded border border-blue-200">
+                    <strong>180° Fisheye Dome:</strong> Creates hemispherical projection with extreme barrel distortion
+                    optimized for planetarium dome viewing. Content appears at zenith center with circular environmental
+                    frame.
+                  </div>
                 </div>
               )}
 
@@ -609,7 +645,10 @@ export default function Dome360Planner() {
                       <SelectItem value="equirectangular">
                         <div className="flex items-center gap-2">
                           <Globe className="h-4 w-4" />
-                          Equirectangular
+                          <div className="flex flex-col">
+                            <span>Equirectangular</span>
+                            <span className="text-xs text-muted-foreground">Godlevel seamless wrapping for VR</span>
+                          </div>
                           <Badge variant="outline" className="ml-2 text-xs bg-blue-50 text-blue-700 border-blue-200">
                             FLUX LoRA
                           </Badge>
@@ -618,15 +657,64 @@ export default function Dome360Planner() {
                       <SelectItem value="stereographic">
                         <div className="flex items-center gap-2">
                           <CircleDot className="h-4 w-4" />
-                          Stereographic
+                          <div className="flex flex-col">
+                            <span>Stereographic</span>
+                            <span className="text-xs text-muted-foreground">Little planet fisheye effect</span>
+                          </div>
                         </div>
                       </SelectItem>
                     </SelectContent>
                   </Select>
                   {panoramaFormat === "equirectangular" && (
                     <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded border border-blue-200">
-                      <strong>FLUX Equirectangular LoRA:</strong> Godlevel 1792×1024 resolution with professional
-                      seamless wrapping and neuralia h3ritage style. Trigger: "equirectangular 360 degree panorama"
+                      <strong>Equirectangular Godlevel Wrapping:</strong> Professional 1792×1024 resolution with
+                      seamless edge continuity, perfect horizontal wrapping, and neuralia h3ritage style. Zero visible
+                      seams with computational precision for VR environments.
+                    </div>
+                  )}
+                  {panoramaFormat === "stereographic" && (
+                    <div className="space-y-2">
+                      <Label>Stereographic Perspective</Label>
+                      <Select value={stereographicPerspective} onValueChange={setStereographicPerspective}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="wide-angle">
+                            <div className="flex items-center gap-2">
+                              <Orbit className="h-4 w-4" />
+                              <div className="flex flex-col">
+                                <span>Wide Angle</span>
+                                <span className="text-xs text-muted-foreground">
+                                  Wide-angle stereographic projection
+                                </span>
+                              </div>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="ultra-wide">
+                            <div className="flex items-center gap-2">
+                              <Orbit className="h-4 w-4" />
+                              <div className="flex flex-col">
+                                <span>Ultra Wide</span>
+                                <span className="text-xs text-muted-foreground">
+                                  Ultra-wide stereographic projection
+                                </span>
+                              </div>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="circular-frame">
+                            <div className="flex items-center gap-2">
+                              <Orbit className="h-4 w-4" />
+                              <div className="flex flex-col">
+                                <span>Circular Frame</span>
+                                <span className="text-xs text-muted-foreground">
+                                  Circular frame stereographic projection
+                                </span>
+                              </div>
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   )}
                 </div>
@@ -768,7 +856,7 @@ export default function Dome360Planner() {
                       ) : (
                         <>
                           <Eye className="h-4 w-4 mr-2" />
-                          Preview & Enhance Prompt
+                          <span className="text-slate-800">✨</span> Preview & Enhance Prompt
                         </>
                       )}
                     </Button>
@@ -894,8 +982,7 @@ export default function Dome360Planner() {
                     </>
                   ) : (
                     <>
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      Generate Selected Images
+                      <span className="text-slate-100">✨</span> Generate Selected Images
                     </>
                   )}
                 </Button>
@@ -960,9 +1047,9 @@ export default function Dome360Planner() {
               </CardTitle>
               <CardDescription>
                 {generationType === "360"
-                  ? `${panoramaFormat === "equirectangular" ? "Seamless equirectangular" : "Stereographic"} 360° panoramic artwork optimized for VR viewing with ChatGPT-enhanced prompts`
+                  ? `${panoramaFormat === "equirectangular" ? "Equirectangular godlevel wrapping" : "Stereographic"} 360° panoramic artwork with seamless continuity for VR viewing`
                   : generationType === "dome"
-                    ? `${projectionType} projection optimized for planetarium dome display with ChatGPT-enhanced prompts`
+                    ? `180° fisheye ${projectionType} projection with hemispherical mapping optimized for planetarium dome display`
                     : "High-quality standard image with ChatGPT-enhanced prompts"}
               </CardDescription>
             </CardHeader>
@@ -976,8 +1063,10 @@ export default function Dome360Planner() {
                         alt={`Generated ${generationType === "360" ? "360° Panorama" : generationType === "dome" ? "Dome Projection" : "Standard Image"}`}
                         className="w-full h-full"
                         style={{
-                          objectFit: generationType === "360" ? "contain" : "cover",
+                          objectFit:
+                            generationType === "360" ? "contain" : generationType === "dome" ? "cover" : "cover",
                           backgroundColor: generationType === "360" ? "#000" : "transparent",
+                          borderRadius: generationType === "dome" ? "50%" : "0", // Circular display for dome fisheye
                         }}
                         onLoad={(e) => {
                           const img = e.target as HTMLImageElement
@@ -992,6 +1081,22 @@ export default function Dome360Planner() {
                             "[v0] Image loaded - Aspect ratio:",
                             (img.naturalWidth / img.naturalHeight).toFixed(2),
                           )
+                          if (generationType === "360") {
+                            const aspectRatio = img.naturalWidth / img.naturalHeight
+                            console.log(
+                              "[v0] 360° aspect ratio check:",
+                              aspectRatio >= 1.9 && aspectRatio <= 2.1 ? "✅ Valid 2:1" : "❌ Invalid aspect ratio",
+                            )
+                          }
+                          if (generationType === "dome") {
+                            const aspectRatio = img.naturalWidth / img.naturalHeight
+                            console.log(
+                              "[v0] Dome aspect ratio check:",
+                              aspectRatio >= 0.9 && aspectRatio <= 1.1
+                                ? "✅ Valid 1:1 fisheye"
+                                : "❌ Invalid aspect ratio",
+                            )
+                          }
                         }}
                       />
                     </AspectRatio>
@@ -1042,40 +1147,30 @@ export default function Dome360Planner() {
                   </div>
                 </div>
               ) : (
-                <div className="w-full bg-muted rounded-lg overflow-hidden">
+                <div className="w-full bg-muted rounded-lg flex items-center justify-center">
                   <AspectRatio ratio={generationType === "360" ? 2 : 1}>
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="text-center space-y-2">
-                        {generationType === "360" ? (
-                          <Globe className="h-12 w-12 mx-auto text-muted-foreground" />
-                        ) : generationType === "dome" ? (
-                          <CircleDot className="h-12 w-12 mx-auto text-muted-foreground" />
-                        ) : (
-                          <Square className="h-12 w-12 mx-auto text-muted-foreground" />
-                        )}
-                        <p className="text-muted-foreground">
-                          No{" "}
-                          {generationType === "360"
-                            ? "360° panorama"
-                            : generationType === "dome"
-                              ? "dome projection"
-                              : "standard image"}{" "}
-                          generated yet
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Current:{" "}
-                          {generationType === "360"
-                            ? panoramaFormat
-                            : generationType === "dome"
-                              ? projectionType
-                              : "standard"}
-                        </p>
-                        {generationType === "360" && panoramaFormat === "equirectangular" && (
-                          <p className="text-xs text-green-600">
-                            Will generate with Orion360 professional calibration standards
-                          </p>
-                        )}
-                      </div>
+                    <div className="flex flex-col items-center justify-center text-muted-foreground">
+                      {generationType === "360" ? (
+                        <Globe className="h-12 w-12 mb-2" />
+                      ) : generationType === "dome" ? (
+                        <CircleDot className="h-12 w-12 mb-2" />
+                      ) : (
+                        <Square className="h-12 w-12 mb-2" />
+                      )}
+                      <p className="text-sm">
+                        {generationType === "360"
+                          ? "360° Equirectangular Panorama with Godlevel Wrapping"
+                          : generationType === "dome"
+                            ? "180° Fisheye Dome Projection"
+                            : "Standard Image"}
+                      </p>
+                      <p className="text-xs text-center mt-1">
+                        {generationType === "360"
+                          ? "Seamless wraparound format optimized for VR viewing"
+                          : generationType === "dome"
+                            ? "Hemispherical projection for planetarium dome display"
+                            : "High-quality standard format"}
+                      </p>
                     </div>
                   </AspectRatio>
                 </div>

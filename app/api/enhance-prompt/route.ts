@@ -312,89 +312,62 @@ function buildEnhancementPrompt(
   dataset: string,
   scenario: string,
 ): string {
-  const variationMultipliers = {
-    slight: 1.2,
-    moderate: 1.5,
-    dramatic: 1.8,
-  }
-
-  const multiplier = variationMultipliers[variationLevel as keyof typeof variationMultipliers] || 1.5
-
-  return `Please enhance this AI art prompt for DALL-E 3 generation. The original prompt is for ${dataset} cultural heritage, specifically the ${scenario} scenario.
+  return `You are a professional writing editor. Your task is to improve the grammar, sentence structure, and clarity of this AI art prompt while preserving ALL original words and meaning.
 
 ORIGINAL PROMPT:
 ${originalPrompt}
 
-ENHANCEMENT REQUIREMENTS:
-- Increase detail and richness by approximately ${Math.round((multiplier - 1) * 100)}%
-- Maintain cultural authenticity and respectful representation
-- Add specific artistic and technical quality descriptors
-- Include lighting, composition, and atmospheric details
-- Preserve the core cultural and historical elements
-- Ensure the enhanced prompt stays under 4000 characters
-- Focus on museum-quality artistic excellence
-- Add professional photography and artistic terms
-- Include cultural context and educational value
+STRICT REQUIREMENTS:
+- ONLY fix grammar, punctuation, and sentence structure
+- NEVER add new concepts, adjectives, or descriptive words
+- NEVER use cliche phrases like "epic", "awesome", "stunning", "breathtaking", "majestic", "incredible"
+- NEVER add technical terms like "8K", "HDR", "professional photography", "award-winning"
+- NEVER add quality descriptors like "masterpiece", "godlevel", "premium", "excellence"
+- Maintain the exact same meaning and intent
+- Keep all cultural and historical references intact
+- Only rearrange words for better flow if needed
+- Fix any grammatical errors or awkward phrasing
+- Ensure proper sentence structure and punctuation
+- Make the text more readable and polished
 
-STYLE GUIDELINES:
-- Use respectful, educational language
-- Emphasize artistic and cultural appreciation
-- Include technical photography terms
-- Add atmospheric and lighting details
-- Specify artistic quality and craftsmanship
-- Maintain historical accuracy and cultural sensitivity
+FORBIDDEN WORDS/PHRASES:
+- Epic, awesome, stunning, breathtaking, majestic, incredible, amazing
+- Professional photography, 8K, HDR, broadcast quality, museum quality
+- Award-winning, masterpiece, godlevel, premium, excellence, perfection
+- Any superlative adjectives not in the original prompt
 
-Please provide only the enhanced prompt without any additional commentary or explanation.`
+Provide ONLY the grammatically improved version of the original prompt with no additional commentary.`
 }
 
 function enhancePromptWithRules(originalPrompt: string, variationLevel: string): { enhanced: string; statistics: any } {
   let enhanced = originalPrompt
 
-  // Enhancement rules based on variation level
-  const enhancements = {
-    slight: [
-      ", professional photography quality",
-      ", museum exhibition worthy",
-      ", cultural authenticity",
-      ", artistic excellence",
-      ", premium visual aesthetics",
-    ],
-    moderate: [
-      ", professional photography quality, 8K HDR resolution",
-      ", museum exhibition worthy, award-winning composition",
-      ", cultural authenticity, respectful representation",
-      ", artistic excellence, masterpiece quality",
-      ", premium visual aesthetics, godlevel artistic mastery",
-      ", international art recognition, cultural appreciation",
-      ", heritage preservation, traditional honor",
-      ", educational significance, professional integrity",
-    ],
-    dramatic: [
-      ", professional photography quality, 8K HDR resolution, broadcast standard",
-      ", museum exhibition worthy, award-winning composition, international recognition",
-      ", cultural authenticity, respectful representation, educational value",
-      ", artistic excellence, masterpiece quality, godlevel perfection",
-      ", premium visual aesthetics, godlevel artistic mastery, technical brilliance",
-      ", international art recognition, cultural appreciation, heritage celebration",
-      ", heritage preservation, traditional honor, respectful tribute",
-      ", educational significance, professional integrity, artistic innovation",
-      ", museum-quality achievement, professional mastery, award-winning excellence",
-      ", cultural reverence, heritage splendor, traditional grandeur",
-      ", respectful dignity, educational honor, museum-grade supremacy",
-      ", professional prestige, artistic acclaim, godlevel renown",
-    ],
+  // Simple grammar and structure improvements only
+  enhanced = enhanced
+    // Fix common grammar issues
+    .replace(/\s+/g, " ") // Multiple spaces to single space
+    .replace(/,\s*,/g, ",") // Double commas
+    .replace(/\.\s*\./g, ".") // Double periods
+    .replace(/\s+([,.!?])/g, "$1") // Space before punctuation
+    .replace(/([,.!?])([a-zA-Z])/g, "$1 $2") // Missing space after punctuation
+    // Capitalize first letter of sentences
+    .replace(/(^|[.!?]\s+)([a-z])/g, (match, p1, p2) => p1 + p2.toUpperCase())
+    .trim()
+
+  // Only add minimal improvements based on variation level without cliche phrases
+  const improvements = {
+    slight: [],
+    moderate: [", with attention to detail"],
+    dramatic: [", with careful attention to cultural authenticity and artistic detail"],
   }
 
-  const levelEnhancements = enhancements[variationLevel as keyof typeof enhancements] || enhancements.moderate
+  const levelImprovements = improvements[variationLevel as keyof typeof improvements] || improvements.moderate
 
-  // Add enhancements
-  levelEnhancements.forEach((enhancement) => {
-    enhanced += enhancement
+  levelImprovements.forEach((improvement) => {
+    enhanced += improvement
   })
 
-  // Calculate statistics
   const statistics = calculateStatistics(originalPrompt, enhanced)
-
   return { enhanced, statistics }
 }
 

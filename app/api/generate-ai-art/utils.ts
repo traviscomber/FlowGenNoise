@@ -34,7 +34,7 @@ export function validateGenerationParams(body: any): GenerationParams {
     panoramic360: body.panoramic360 || false,
     panoramaResolution: body.panoramaResolution || "8K",
     panoramaFormat: body.panoramaFormat || "equirectangular",
-    stereographicPerspective: body.stereographicPerspective || "little-planet",
+    stereographicPerspective: body.stereographicPerspective || "wide-angle",
     provider: body.provider || "openai",
     replicateModel: body.replicateModel || "black-forest-labs/flux-1.1-pro",
   }
@@ -304,7 +304,7 @@ export async function generateWithOpenAI(
 
   // Determine size based on type
   let size: "1024x1024" | "1792x1024"
-  let enhancedPrompt = safePrompt
+  let enhancedPrompt = ""
 
   if (type === "360") {
     size = "1792x1024"
@@ -325,16 +325,19 @@ MANDATORY SEAMLESS PROFESSIONAL SPECIFICATIONS - 1792x1024 RESOLUTION:
 
 TECHNICAL EXCELLENCE: 1792x1024 equirectangular format, professional seamless horizontal wrapping, ORION360 calibration quality, VR-optimized, broadcast standard, godlevel artistic mastery with perfect edge continuity, cultural heritage visualization, educational artistic content.`
     } else if (panoramaFormat === "stereographic") {
-      enhancedPrompt = `PROFESSIONAL STEREOGRAPHIC 360° PROJECTION - 1792x1024 FORMAT: ${safePrompt}
+      const stereographicPerspective = params?.stereographicPerspective || "wide-angle"
 
-STEREOGRAPHIC PROFESSIONAL MASTERY:
+      enhancedPrompt = `PROFESSIONAL STEREOGRAPHIC 360° PANORAMA - 1792x1024 FORMAT: ${safePrompt}
+
+STEREOGRAPHIC 360° PANORAMIC MASTERY:
 • Premium stereographic projection with perfect circular distortion at 1792x1024 resolution
-• Entire 360° artistic view compressed into flawless circular frame with mathematical precision
+• Entire 360° panoramic view compressed into flawless circular frame with mathematical precision
 • Center focus with expertly calculated radial distortion increasing toward edges
-• Professional stereographic mapping with award-winning technical execution
-• Museum-quality fisheye lens effect with godlevel artistic precision
+• Professional stereographic mapping with award-winning technical execution for 360° viewing
+• Museum-quality wide-angle effect with godlevel artistic precision for panoramic immersion
+• ${stereographicPerspective} perspective optimized for seamless 360° panoramic experience
 
-TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, professional stereographic projection, award-winning fisheye distortion, museum exhibition quality, godlevel dome mastery, cultural heritage art.`
+TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, professional stereographic projection for 360° panoramas, award-winning wide-angle distortion, museum exhibition quality, godlevel panoramic mastery, cultural heritage art.`
     }
   } else if (type === "dome") {
     size = "1024x1024"
@@ -380,14 +383,14 @@ ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barr
     } else if (projectionType === "little-planet") {
       enhancedPrompt = `ULTIMATE ARTISTIC DOME LITTLE PLANET PROJECTION: ${safePrompt}
 
-LITTLE PLANET ARTISTIC MASTERY:
-• Premium stereographic little planet effect with perfect spherical distortion
-• Tiny planet perspective with beautifully curved horizon and artistic mastery
-• Complete 360° world wrapped into flawless circular frame with mathematical precision
-• Whimsical yet mathematically precise planetary view with award-winning execution
-• Optimized for premium dome projection with perfect spherical mapping
+LITTLE PLANET DOME ARTISTIC MASTERY:
+• Premium stereographic little planet effect with perfect spherical distortion for dome projection
+• Tiny planet perspective with beautifully curved horizon and artistic mastery optimized for planetarium viewing
+• Complete 360° world wrapped into flawless circular frame with mathematical precision for dome ceiling
+• Whimsical yet mathematically precise planetary view with award-winning execution for dome immersion
+• Optimized specifically for premium dome projection with perfect spherical mapping and planetarium compatibility
 
-ARTISTIC EXCELLENCE: Perfect little planet effect, precise spherical distortion, professional dome optimization, museum exhibition quality, godlevel planetary mastery, cultural heritage art.`
+ARTISTIC EXCELLENCE: Perfect little planet effect for dome projection, precise spherical distortion, professional planetarium optimization, museum exhibition quality, godlevel planetary dome mastery, cultural heritage art.`
     }
   } else {
     size = "1024x1024"
@@ -747,19 +750,14 @@ export async function generateWithReplicate(
 
   let width = 1440
   let height = 1440
+  let enhancedPrompt = ""
 
   if (type === "360") {
     width = 1280
     height = 720
-  }
-
-  let enhancedPrompt = safePrompt
-
-  // Add type-specific enhancements
-  if (type === "360") {
-    enhancedPrompt = `ULTRA-HIGH-QUALITY 360° PANORAMIC IMAGE: ${safePrompt}. Professional 1280x720 seamless wraparound panorama with perfect left-right edge continuity for premium VR viewing experience, Orion360 calibration standards.`
+    enhancedPrompt = `ULTRA-HIGH-QUALITY 360° EQUIRECTANGULAR PANORAMA: ${safePrompt}. Professional 1280x720 seamless wraparound panorama with perfect left-right edge continuity for premium VR viewing experience, Orion360 calibration standards, equirectangular projection format.`
   } else if (type === "dome") {
-    enhancedPrompt = `ULTRA-HIGH-QUALITY DOME PROJECTION IMAGE: ${safePrompt}. Professional 1440x1440 fisheye perspective optimized for premium planetarium dome projection with perfect circular composition.`
+    enhancedPrompt = `ULTRA-HIGH-QUALITY DOME PROJECTION IMAGE: ${safePrompt}. Professional 1440x1440 ${params?.projectionType || "fisheye"} perspective optimized for premium planetarium dome projection with perfect circular composition.`
   } else {
     enhancedPrompt = `ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional 1440x1440 resolution and detail optimized for premium quality output.`
   }

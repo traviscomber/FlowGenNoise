@@ -71,6 +71,7 @@ export function FlowArtGenerator() {
   const [editablePrompt, setEditablePrompt] = useState("")
   const [promptEnhancement, setPromptEnhancement] = useState<PromptEnhancement | null>(null)
   const [isEnhancing, setIsEnhancing] = useState(false)
+  const [isGeneratingGodlevel, setIsGeneratingGodlevel] = useState(false)
 
   // Generation state
   const [isGenerating, setIsGenerating] = useState(false)
@@ -140,6 +141,94 @@ export function FlowArtGenerator() {
   const randomizeSeed = useCallback(() => {
     setSeed(Math.floor(Math.random() * 10000))
   }, [])
+
+  const previewPrompt = useCallback(async () => {
+    setIsPromptDialogOpen(true)
+
+    try {
+      // Build base prompt with null safety
+      const basePrompt = buildPrompt({
+        dataset: dataset || "vietnamese",
+        scenario: scenario || "trung-sisters",
+        colorScheme: colorScheme || "metallic",
+        seed: seed || 1234,
+        numSamples: numSamples || 4000,
+        noiseScale: noiseScale || 0.08,
+        customPrompt: customPrompt || "",
+        negativePrompt: negativePrompt || "",
+        panoramic360: panoramic360 || false,
+        panoramaFormat: panoramaFormat || "equirectangular",
+        projectionType: projectionType || "fisheye",
+      })
+
+      if (!basePrompt || basePrompt.length === 0) {
+        throw new Error("Failed to build base prompt")
+      }
+
+      setCurrentPrompt(basePrompt)
+      setEditablePrompt(basePrompt)
+      setPromptEnhancement(null)
+    } catch (error: any) {
+      console.error("Preview error:", error)
+      toast({ title: `Preview failed: ${error.message || "Unknown error"}`, variant: "error" })
+    }
+  }, [
+    dataset,
+    scenario,
+    colorScheme,
+    seed,
+    numSamples,
+    noiseScale,
+    customPrompt,
+    negativePrompt,
+    panoramic360,
+    panoramaFormat,
+    projectionType,
+    toast,
+  ])
+
+  const enhanceCurrentPrompt = useCallback(async () => {
+    if (!editablePrompt) return
+
+    setIsEnhancing(true)
+
+    try {
+      // Enhance with ChatGPT
+      const response = await fetch("/api/enhance-prompt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          originalPrompt: editablePrompt,
+          negativePrompt: negativePrompt || "",
+          variationLevel: variationType || "moderate",
+          dataset: dataset || "vietnamese",
+          scenario: scenario || "trung-sisters",
+        }),
+      })
+
+      if (response.ok) {
+        const enhancement = await response.json()
+        if (enhancement.success && enhancement.enhancedPrompt) {
+          setPromptEnhancement(enhancement)
+          setEditablePrompt(enhancement.enhancedPrompt)
+          toast({
+            title: `Prompt enhanced successfully! Added ${enhancement.statistics?.improvement?.characters || 0} characters.`,
+            variant: "success",
+          })
+        } else {
+          throw new Error(enhancement.error || "Enhancement failed")
+        }
+      } else {
+        const error = await response.json()
+        throw new Error(error.error || "Enhancement request failed")
+      }
+    } catch (error: any) {
+      console.error("Enhancement error:", error)
+      toast({ title: `Enhancement failed: ${error.message || "Unknown error"}`, variant: "error" })
+    } finally {
+      setIsEnhancing(false)
+    }
+  }, [editablePrompt, negativePrompt, variationType, dataset, scenario, toast])
 
   // Preview and enhance prompt
   const previewAndEnhancePrompt = useCallback(async () => {
@@ -458,6 +547,71 @@ export function FlowArtGenerator() {
     [dataset, scenario, provider, replicateModel, colorScheme],
   )
 
+  const generateGodlevelPrompt = async () => {
+    if (!editablePrompt) return
+
+    console.log("[v0] Starting godlevel prompt generation")
+    console.log("[v0] Original prompt:", editablePrompt)
+    console.log("[v0] Dataset:", dataset, "Scenario:", scenario, "Color scheme:", colorScheme)
+
+    setIsGeneratingGodlevel(true)
+    try {
+      console.log("[v0] Making API call to /api/generate-godlevel-prompt")
+      const response = await fetch("/api/generate-godlevel-prompt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          originalPrompt: editablePrompt,
+          dataset: dataset,
+          scenario: scenario,
+          colorScheme: colorScheme,
+          maxLength: 4000,
+        }),
+      })
+
+      console.log("[v0] API response status:", response.status)
+      if (!response.ok) {
+        console.error("[v0] API response not ok:", response.status, response.statusText)
+        throw new Error(`Failed to generate godlevel prompt: ${response.status}`)
+      }
+
+      console.log("[v0] Parsing response JSON")
+      const data = await response.json()
+      console.log("[v0] Received godlevel prompt:", data.godlevelPrompt?.substring(0, 100) + "...")
+
+      setEditablePrompt(data.godlevelPrompt)
+
+      setPromptEnhancement({
+        originalPrompt: editablePrompt,
+        enhancedPrompt: data.godlevelPrompt,
+        statistics: {
+          original: { words: editablePrompt.split(" ").length, characters: editablePrompt.length },
+          enhanced: { words: data.godlevelPrompt.split(" ").length, characters: data.godlevelPrompt.length },
+          improvement: {
+            characters: data.godlevelPrompt.length - editablePrompt.length,
+            words: data.godlevelPrompt.split(" ").length - editablePrompt.split(" ").length,
+            percentage: Math.round(
+              ((data.godlevelPrompt.length - editablePrompt.length) / editablePrompt.length) * 100,
+            ),
+          },
+          maxLength: 4000,
+          withinLimit: data.godlevelPrompt.length <= 4000,
+        },
+        variationType: "neuralia-artistic",
+        generationType: "godlevel",
+        enhancementMethod: "godlevel-neuralia",
+      })
+
+      console.log("[v0] Godlevel prompt generation completed successfully")
+    } catch (error) {
+      console.error("[v0] Error generating godlevel prompt:", error)
+      alert("Failed to generate godlevel prompt. Please try again.")
+    } finally {
+      console.log("[v0] Setting isGeneratingGodlevel to false")
+      setIsGeneratingGodlevel(false)
+    }
+  }
+
   return (
     <div className="container mx-auto p-6 space-y-8">
       {/* Header */}
@@ -726,11 +880,10 @@ export function FlowArtGenerator() {
 
               <div className="flex gap-2">
                 <button
-                  onClick={previewAndEnhancePrompt}
-                  disabled={isEnhancing}
-                  className="flex-1 px-3 py-2 text-sm bg-secondary hover:bg-secondary/80 rounded-md disabled:opacity-50"
+                  onClick={previewPrompt}
+                  className="flex-1 px-3 py-2 text-sm bg-secondary hover:bg-secondary/80 rounded-md"
                 >
-                  {isEnhancing ? "⟳" : "✨"} {isEnhancing ? "Enhancing..." : "Enhance"}
+                  <span className="text-slate-800">👁</span> Preview
                 </button>
                 <button
                   onClick={refreshSite}
@@ -797,7 +950,9 @@ export function FlowArtGenerator() {
                 {provider === "replicate" ? (
                   <span>🔬 Replicate offers various models with different strengths and artistic styles</span>
                 ) : (
-                  <span>✨ DALL-E 3 provides consistent, high-quality results with excellent prompt following</span>
+                  <span>
+                    <span className="text-slate-800">✨</span> DALL-E 3 HD with natural style for photorealistic results
+                  </span>
                 )}
               </div>
             </CardContent>
@@ -997,54 +1152,58 @@ export function FlowArtGenerator() {
         </div>
       </div>
 
-      {/* Prompt Enhancement Dialog */}
+      {/* Enhanced Prompt Preview Dialog */}
       <Dialog open={isPromptDialogOpen} onOpenChange={setIsPromptDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">Prompt Enhancement Studio</DialogTitle>
-            <DialogDescription>Preview, edit, and enhance your AI art prompt with ChatGPT assistance</DialogDescription>
+            <DialogTitle className="flex items-center gap-2">
+              <span className="text-slate-800">👁</span> Prompt Preview
+            </DialogTitle>
+            <DialogDescription>
+              {promptEnhancement
+                ? "Review your enhanced prompt"
+                : "Review your original prompt and enhance it if needed"}
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6">
             {/* Enhancement Statistics */}
-            {promptEnhancement && promptEnhancement.statistics && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-3 bg-muted rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {promptEnhancement.statistics.original?.characters || 0}
-                  </div>
-                  <div className="text-sm text-muted-foreground">Original Chars</div>
+            {promptEnhancement && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted rounded-lg">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary">{promptEnhancement.statistics.original.words}</div>
+                  <div className="text-sm text-muted-foreground">Original Words</div>
                 </div>
-                <div className="text-center p-3 bg-muted rounded-lg">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary">{promptEnhancement.statistics.enhanced.words}</div>
+                  <div className="text-sm text-muted-foreground">Enhanced Words</div>
+                </div>
+                <div className="text-center">
                   <div className="text-2xl font-bold text-green-600">
-                    {promptEnhancement.statistics.enhanced?.characters || 0}
+                    +{promptEnhancement.statistics.improvement.words}
                   </div>
-                  <div className="text-sm text-muted-foreground">Enhanced Chars</div>
+                  <div className="text-sm text-muted-foreground">Words Added</div>
                 </div>
-                <div className="text-center p-3 bg-muted rounded-lg">
-                  <div
-                    className={`text-2xl font-bold ${promptEnhancement.statistics.withinLimit ? "text-green-600" : "text-red-600"}`}
-                  >
-                    +{promptEnhancement.statistics.improvement?.percentage || 0}%
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {promptEnhancement.statistics.improvement.percentage}%
                   </div>
                   <div className="text-sm text-muted-foreground">Improvement</div>
-                </div>
-                <div className="text-center p-3 bg-muted rounded-lg">
-                  <div
-                    className={`text-2xl font-bold ${promptEnhancement.statistics.withinLimit ? "text-green-600" : "text-red-600"}`}
-                  >
-                    {promptEnhancement.statistics.enhanced?.characters || 0}/4000
-                  </div>
-                  <div className="text-sm text-muted-foreground">Char Limit</div>
                 </div>
               </div>
             )}
 
-            {/* Enhancement Method Badge */}
+            {/* Enhancement Method Badges */}
             {promptEnhancement && (
-              <div className="flex items-center gap-2">
-                <Badge variant={promptEnhancement.enhancementMethod === "chatgpt" ? "default" : "secondary"}>
-                  {promptEnhancement.enhancementMethod === "chatgpt" ? <>ChatGPT Enhanced</> : <>Rule-Based Enhanced</>}
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary">
+                  {promptEnhancement.enhancementMethod === "chatgpt" ? (
+                    <>ChatGPT Enhanced</>
+                  ) : promptEnhancement.enhancementMethod === "godlevel-neuralia" ? (
+                    <>Godlevel Neuralia Art</>
+                  ) : (
+                    <>Rule-Based Enhanced</>
+                  )}
                 </Badge>
                 <Badge variant="outline">{promptEnhancement.variationType} variation</Badge>
                 <Badge variant="outline">{promptEnhancement.generationType} generation</Badge>
@@ -1055,17 +1214,17 @@ export function FlowArtGenerator() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label htmlFor="prompt-editor" className="text-base font-semibold">
-                  Enhanced Prompt Editor
+                  {promptEnhancement ? "Enhanced Prompt" : "Original Prompt"}
                 </Label>
                 <div className="flex gap-2">
                   {promptEnhancement && (
                     <>
-                      <button variant="ghost" size="sm" onClick={resetToOriginal}>
+                      <Button variant="ghost" size="sm" onClick={resetToOriginal}>
                         Reset to Original
-                      </button>
-                      <button variant="ghost" size="sm" onClick={resetToEnhanced}>
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={resetToEnhanced}>
                         Reset to Enhanced
-                      </button>
+                      </Button>
                     </>
                   )}
                 </div>
@@ -1075,7 +1234,7 @@ export function FlowArtGenerator() {
                 id="prompt-editor"
                 value={editablePrompt || ""}
                 onChange={(e) => setEditablePrompt(e.target.value)}
-                placeholder="Your enhanced prompt will appear here..."
+                placeholder="Your prompt will appear here..."
                 className="min-h-[200px] font-mono text-sm"
               />
 
@@ -1089,15 +1248,33 @@ export function FlowArtGenerator() {
 
             {/* Action Buttons */}
             <div className="flex gap-3 pt-4">
-              <button
-                onClick={applyEnhancedPrompt}
-                className="flex-1 px-3 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 font-medium"
+              <Button onClick={enhanceCurrentPrompt} disabled={isEnhancing || !editablePrompt} className="flex-1">
+                <span className="text-slate-100">{isEnhancing ? "⟳" : "✨"}</span>{" "}
+                {isEnhancing ? "Enhancing..." : "Enhance"}
+              </Button>
+
+              <Button
+                onClick={generateGodlevelPrompt}
+                disabled={isGeneratingGodlevel || !editablePrompt}
+                className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
               >
-                ✓ Apply Enhanced Prompt
-              </button>
-              <button variant="outline" onClick={() => setIsPromptDialogOpen(false)}>
-                Cancel
-              </button>
+                <span className="text-white">{isGeneratingGodlevel ? "⟳" : "🎨"}</span>{" "}
+                {isGeneratingGodlevel ? "Generating..." : "Godlevel Neuralia"}
+              </Button>
+
+              {promptEnhancement && (
+                <Button
+                  onClick={applyEnhancedPrompt}
+                  className="flex-1"
+                  disabled={!editablePrompt || editablePrompt.trim().length === 0}
+                >
+                  <span className="text-slate-100">✓</span> Apply
+                </Button>
+              )}
+
+              <Button variant="outline" onClick={() => setIsPromptDialogOpen(false)} className="px-6">
+                ↩ Return to Prompt
+              </Button>
             </div>
           </div>
         </DialogContent>

@@ -24,7 +24,21 @@ export async function POST(request: NextRequest) {
     console.log("🔧 Safe parameters:", params)
 
     // Build the prompt
-    const prompt = buildPrompt(params)
+    const prompt = buildPrompt(
+      params.dataset,
+      params.scenario,
+      params.colorScheme,
+      params.seed,
+      params.numSamples,
+      params.noiseScale,
+      params.customPrompt,
+      "", // negativePrompt
+      params.panoramic360,
+      params.panoramaFormat,
+      "fisheye", // projectionType
+      "replicate", // provider
+      "flux-1.1-pro-ultra", // model
+    )
 
     console.log("📝 Generated prompt preview:", prompt.substring(0, 200) + "...")
 
