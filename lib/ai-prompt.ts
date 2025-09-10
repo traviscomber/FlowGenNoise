@@ -1387,7 +1387,7 @@ export const CULTURAL_DATASETS = {
       },
       "prayer-flags": {
         description:
-          "Godlevel prayer flag excellence with spiritual traditions achieving perfect tribal representation through mathematical Tibetan algorithms, prayer optimization via geometric wind precision, infinite spiritual dimensional artistry, computational heritage through algorithmic prayer mastery.",
+          "Godlevel prayer flag excellence with spiritual traditions achieving perfect tribal representation through mathematical Tibetan algorithms, prayer optimization via geometric wind precision, infinite spiritual dimensional artistry, computational heritage through algorithmic prayer flag mastery.",
       },
       "mandala-art": {
         description:
@@ -1445,6 +1445,125 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+}
+
+const SCENE_VARIATIONS = [
+  "ethereal",
+  "mystical",
+  "captivating",
+  "enchanting",
+  "mesmerizing",
+  "breathtaking",
+  "sublime",
+  "transcendent",
+  "luminous",
+  "radiant",
+  "magnificent",
+  "extraordinary",
+]
+
+const ACTION_VARIATIONS = [
+  "featuring",
+  "showcasing",
+  "presenting",
+  "displaying",
+  "revealing",
+  "embodying",
+  "manifesting",
+  "expressing",
+  "celebrating",
+  "honoring",
+  "depicting",
+  "illustrating",
+]
+
+const ATMOSPHERE_VARIATIONS = [
+  "atmosphere",
+  "ambiance",
+  "environment",
+  "setting",
+  "backdrop",
+  "context",
+  "landscape",
+  "realm",
+  "domain",
+  "space",
+  "dimension",
+  "world",
+]
+
+const ARTISTIC_QUALITIES = [
+  "exquisite",
+  "refined",
+  "sublime",
+  "elegant",
+  "graceful",
+  "delicate",
+  "polished",
+  "sophisticated",
+  "ornate",
+  "intricate",
+  "detailed",
+  "elaborate",
+]
+
+const VISUAL_ELEMENTS = [
+  "crystalline structures",
+  "swirling patterns",
+  "geometric forms",
+  "fractal details",
+  "spherical motifs",
+  "nested geometries",
+  "circular compositions",
+  "layered depths",
+  "iridescent highlights",
+  "metallic finishes",
+  "bioluminescent accents",
+  "glowing particles",
+]
+
+const CULTURAL_DESCRIPTORS = [
+  "cultural heritage",
+  "ancestral traditions",
+  "historical significance",
+  "spiritual symbolism",
+  "indigenous artistry",
+  "ceremonial practices",
+  "mythological narratives",
+  "folkloric elements",
+  "traditional craftsmanship",
+  "ritualistic aesthetics",
+  "sacred geometry",
+  "archaeological wonders",
+]
+
+function generateVariedDescription(baseDescription: string, culturalContext: string): string {
+  const artistic = getRandomElement(ARTISTIC_QUALITIES)
+  const visual = getRandomElement(VISUAL_ELEMENTS)
+  const cultural = getRandomElement(CULTURAL_DESCRIPTORS)
+
+  const sceneVariation = getRandomElement(SCENE_VARIATIONS)
+  const actionVariation = getRandomElement(ACTION_VARIATIONS)
+  const atmosphereVariation = getRandomElement(ATMOSPHERE_VARIATIONS)
+
+  // Remove repetitive "Godlevel" and "excellence" patterns
+  const cleanDescription = baseDescription
+    .replace(/Godlevel\s+/gi, "")
+    .replace(/\s+excellence/gi, "")
+    .replace(/infinite\s+.*?dimensional\s+artistry/gi, visual)
+    .replace(/computational\s+.*?through\s+algorithmic.*?sophistication/gi, `${actionVariation} ${cultural}`)
+    .replace(/algorithmic\s+.*?mastery/gi, `${artistic} craftsmanship`)
+    .replace(/featuring/gi, actionVariation)
+    .replace(/atmosphere/gi, atmosphereVariation)
+
+  const structureVariations = [
+    `${sceneVariation} ${cleanDescription} with ${visual} and ${cultural}`,
+    `${artistic} ${cleanDescription} ${actionVariation} ${visual} within ${cultural} ${atmosphereVariation}`,
+    `${cleanDescription} rendered in ${sceneVariation} style with ${visual} and ${cultural} elements`,
+    `${cultural} ${cleanDescription} enhanced by ${artistic} ${visual} and ${sceneVariation} qualities`,
+  ]
+
+  return getRandomElement(structureVariations)
 }
 
 export const COLOR_SCHEMES = {
@@ -1704,34 +1823,92 @@ export function buildPrompt(
 
   let prompt = ""
 
+  const projectionPrefixes = {
+    panoramic360: ["360° PANORAMIC:", "EQUIRECTANGULAR:", "SPHERICAL PANORAMA:", "IMMERSIVE 360°:"],
+    fisheye: ["FISHEYE PROJECTION:", "HEMISPHERICAL VIEW:", "DOME PROJECTION:", "CURVED PERSPECTIVE:"],
+    standard: ["", "ARTISTIC RENDERING:", "CREATIVE VISUALIZATION:", "ARTISTIC INTERPRETATION:"],
+  }
+
   // Add image type prefix based on projection
   if (params.panoramic360) {
-    prompt += "360° PANORAMIC: "
+    prompt += `${getRandomElement(projectionPrefixes.panoramic360)} `
   } else if (params.projectionType !== "standard") {
-    prompt += `${params.projectionType.toUpperCase()} PROJECTION: `
+    const prefixArray =
+      projectionPrefixes[params.projectionType as keyof typeof projectionPrefixes] || projectionPrefixes.standard
+    prompt += `${getRandomElement(prefixArray)} `
+  } else {
+    prompt += `${getRandomElement(projectionPrefixes.standard)} `
   }
+
+  const timeBasedSeed = Date.now() % 1000
+  const randomSeed = Math.floor(Math.random() * 1000) + timeBasedSeed
 
   if (scenario === "pure-mathematical") {
-    // For pure-mathematical scenarios: Generate mathematical results of the dataset
-    prompt += `Mathematical visualization of ${selectedDataset.name}: `
-    prompt += `Geometric analysis, algorithmic patterns, mathematical formulations, computational structures, `
-    prompt += `numerical relationships, geometric transformations, mathematical precision`
+    const mathTerms = [
+      "geometric analysis",
+      "algorithmic patterns",
+      "mathematical formulations",
+      "computational structures",
+      "numerical relationships",
+      "fractal geometries",
+      "parametric equations",
+      "topological transformations",
+      "statistical visualizations",
+      "probability distributions",
+      "harmonic sequences",
+      "mathematical symmetries",
+      "differential equations",
+      "complex analysis",
+      "tensor calculations",
+      "matrix transformations",
+    ]
+
+    Math.random = () => ((randomSeed * 9301 + 49297) % 233280) / 233280
+    const selectedMathTerms = [
+      getRandomElement(mathTerms),
+      getRandomElement(mathTerms),
+      getRandomElement(mathTerms),
+    ].join(", ")
+    Math.random = () => Math.random() // Reset to default
+
+    prompt += `Mathematical visualization of ${selectedDataset.name}: ${selectedMathTerms}, `
+    prompt += `featuring ${getRandomElement(VISUAL_ELEMENTS)} and ${getRandomElement(ARTISTIC_QUALITIES)} precision`
   } else {
-    // For all other scenarios: Combination of abstract, surrealism and concrete in neuralia style
-    prompt += `${selectedScenario.description} `
-    prompt += `Neuralia style: abstract conceptual elements, surrealistic atmosphere, concrete realistic details`
+    const variedDescription = generateVariedDescription(selectedScenario.description, selectedDataset.name)
+    prompt += `${variedDescription}. `
+
+    const neuralidStyles = [
+      "abstract conceptual elements with surrealistic atmosphere and concrete realistic details",
+      "dreamlike abstractions merged with hyperrealistic textures and symbolic imagery",
+      "conceptual artistry blending surreal imagination with tangible cultural elements",
+      "abstract visual poetry combining ethereal concepts with authentic material details",
+      "surrealistic interpretations enhanced by realistic cultural authenticity and symbolic depth",
+      "metaphysical abstractions grounded in tangible cultural heritage and artistic tradition",
+      "symbolic representations merging conceptual depth with realistic cultural authenticity",
+    ]
+    prompt += `Neuralia style: ${getRandomElement(neuralidStyles)}`
   }
 
-  // Add color scheme
   const colorDescription = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES] || colorScheme
-  prompt += `. ${colorDescription} color palette`
+  const colorVariations = [
+    `${colorDescription} color palette`,
+    `rich ${colorDescription} tones`,
+    `sophisticated ${colorDescription} color harmony`,
+    `elegant ${colorDescription} color composition`,
+    `vibrant ${colorDescription} color scheme`,
+    `nuanced ${colorDescription} color gradations`,
+    `expressive ${colorDescription} color dynamics`,
+  ]
+  prompt += `. ${getRandomElement(colorVariations)}`
 
   // Add custom prompt if provided
   if (customPrompt.trim()) {
     prompt += `. ${customPrompt.trim()}`
   }
 
-  console.log("[v0] Simplified prompt generated")
+  console.log(`[v0] Enhanced varied prompt generated with seed: ${randomSeed}`)
+
+  console.log("[v0] Enhanced varied prompt generated")
 
   if (panoramic360) {
     prompt = buildGodlevelNeuralia360Wrapper(prompt, params.dataset, scenario, colorScheme)
@@ -1747,4 +1924,8 @@ export function getScenarios(dataset: string) {
     return {}
   }
   return datasetObj.scenarios
+}
+
+function getRandomElement<T>(array: T[]): T {
+  return array[Math.floor(Math.random() * array.length)]
 }

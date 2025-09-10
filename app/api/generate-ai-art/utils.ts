@@ -26,7 +26,7 @@ export function validateGenerationParams(body: any): GenerationParams {
     dataset: body.dataset || "vietnamese",
     scenario: body.scenario || (body.dataset === "heads" ? "pure-mathematical" : "trung-sisters"),
     colorScheme: body.colorScheme || "neon",
-    seed: typeof body.seed === "number" ? body.seed : Math.floor(Math.random() * 10000),
+    seed: Math.floor(Math.random() * 100000),
     numSamples: typeof body.numSamples === "number" ? body.numSamples : 4000,
     noiseScale: typeof body.noiseScale === "number" ? body.noiseScale : 0.08,
     customPrompt: body.customPrompt || "",
@@ -850,21 +850,22 @@ ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barr
   console.log(`📝 Enhanced prompt length: ${enhancedPrompt.length} chars`)
 
   try {
+    const replicateToken = process.env.REPLICATE_API_TOKEN
     const response = await fetch("https://api.replicate.com/v1/predictions", {
       method: "POST",
       headers: {
-        Authorization: `Token ${apiToken}`,
+        Authorization: `Token ${replicateToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         version: "352185dbc99e9dd708b78b4e6870e3ca49d00dc6451a32fc6dd57968194fae5a",
         input: {
           prompt: enhancedPrompt,
-          aspect_ratio: aspectRatio, // Use aspect_ratio instead of width/height
-          output_format: "png", // High quality PNG output
-          raw: false, // Processed for better quality
-          safety_tolerance: 5, // More permissive for artistic content
-          seed: params?.seed || Math.floor(Math.random() * 10000),
+          aspect_ratio: aspectRatio,
+          output_format: "png",
+          raw: Math.random() > 0.5, // Randomly choose between processed and raw mode
+          safety_tolerance: Math.floor(Math.random() * 3) + 4, // Random between 4-6 for artistic variety
+          seed: Math.floor(Math.random() * 100000), // Always use a fresh random seed
         },
       }),
     })
