@@ -1491,6 +1491,37 @@ const NEURALIA_H3RITAGE_STYLE = `
 Hyperrealistic 3D rendering with intricate mathematical precision. Complex layering of mechanical and organic elements seamlessly integrated. Flowing metallic surfaces with swirling, spiral patterns and spherical motifs. Rich metallic color palette featuring deep blues, warm golds, and lustrous silvers with iridescent highlights. Fractal-like detail work with nested geometric forms and circular compositions. Surreal, dreamlike atmosphere with perfect technical execution. Biomechanical fusion aesthetics with ornate decorative elements. Multiple depth layers creating immersive visual complexity. Photorealistic textures with mirror-like metallic finishes and subtle color gradients.
 `
 
+const NEURALIA_360_FLUX_WRAPPER = `
+**GODLEVEL NEURALIA 360° FLUX EXCELLENCE:**
+Ultra-wide equirectangular panoramic mastery with seamless edge continuity. Infinite dimensional artistry transcending traditional panoramic boundaries through mathematical precision algorithms. Spherical projection optimization utilizing quantum computational frameworks for perfect 360° geometry. Neuralia-enhanced panoramic sophistication incorporating advanced algorithmic precision for optimal immersive experience. Godlevel 360° artistry with infinite optimization protocols for panoramic beauty enhancement. Mathematical panoramic excellence achieving dimensional transcendence through computational sophistication. Algorithmic 360° mastery with neuralia-level precision for immersive reality perfection. Quantum-enhanced panoramic optimization utilizing advanced mathematical frameworks for dimensional transcendence. Infinite 360° dimensional artistry through mathematical optimization systems. Computational panoramic excellence transcending traditional artistic boundaries via algorithmic sophistication. Godlevel immersive mastery with neuralia-enhanced mathematical precision for dimensional panoramic transcendence. Seamless horizon wrapping with perfect mathematical continuity. Ultra-high resolution panoramic detail optimization. Immersive reality enhancement through neuralia computational frameworks.
+`
+
+export function buildGodlevelNeuralia360Wrapper(
+  basePrompt: string,
+  dataset: string,
+  scenario: string,
+  colorScheme: string,
+): string {
+  const datasetObj = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
+  const scenarioObj = datasetObj?.scenarios?.[scenario as keyof typeof datasetObj.scenarios]
+
+  let enhancedPrompt = "GODLEVEL NEURALIA 360° EQUIRECTANGULAR EXCELLENCE: "
+
+  // Add base content with neuralia enhancement
+  enhancedPrompt += basePrompt
+
+  // Add 360°-specific neuralia elements with seamless wrapping focus
+  enhancedPrompt += `. ${NEURALIA_360_FLUX_WRAPPER}`
+
+  // Add H3RITAGE signature style for visual consistency
+  enhancedPrompt += `. ${NEURALIA_H3RITAGE_STYLE}`
+
+  // Add mathematical precision elements for 360° optimization with seamless edge treatment
+  enhancedPrompt += `. SEAMLESS EDGE CONTINUITY MASTERY: Mathematical precision algorithms ensuring perfect left-right edge alignment with zero visible discontinuities. Quantum computational frameworks for dimensional transcendence through algorithmic sophistication. Infinite 360° dimensional artistry with neuralia-enhanced mathematical precision for immersive reality perfection. Professional ORION360 calibration standards with museum-grade seamless wrapping excellence. Broadcast-quality edge treatment with godlevel artistic mastery for premium VR optimization.`
+
+  return enhancedPrompt
+}
+
 export async function generateGodlevelPrompt(
   dataset: string,
   scenario: string,
@@ -1701,6 +1732,12 @@ export function buildPrompt(
   }
 
   console.log("[v0] Simplified prompt generated")
+
+  if (panoramic360) {
+    prompt = buildGodlevelNeuralia360Wrapper(prompt, params.dataset, scenario, colorScheme)
+    console.log("[v0] Applied godlevel neuralia 360° wrapper for FLUX")
+  }
+
   return prompt
 }
 

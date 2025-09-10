@@ -30,6 +30,8 @@ export async function POST(request: NextRequest) {
       type: body.type,
       provider: body.provider,
       model: body.model,
+      selectedAspectRatio: body.selectedAspectRatio,
+      frameless: body.frameless,
     })
 
     // Validate and sanitize parameters
@@ -105,7 +107,15 @@ export async function POST(request: NextRequest) {
       if (body.generateTypes.standard) {
         try {
           console.log("🎯 Generating standard image...")
-          const standardResult = await generateImage(finalPrompt, "standard", params, provider, model)
+          const standardResult = await generateImage(
+            finalPrompt,
+            "standard",
+            params,
+            provider,
+            model,
+            body.selectedAspectRatio,
+            body.frameless,
+          )
           results.standard = standardResult.imageUrl
           console.log("✅ Standard image generated successfully")
           console.log("[v0] Standard image URL:", standardResult.imageUrl)
@@ -118,7 +128,15 @@ export async function POST(request: NextRequest) {
       if (body.generateTypes.dome) {
         try {
           console.log("🎯 Generating dome projection...")
-          const domeResult = await generateImage(finalPrompt, "dome", params, provider, model)
+          const domeResult = await generateImage(
+            finalPrompt,
+            "dome",
+            params,
+            provider,
+            model,
+            body.selectedAspectRatio,
+            body.frameless,
+          )
           results.dome = domeResult.imageUrl
           console.log("✅ Dome projection generated successfully")
           console.log("[v0] Dome image URL:", domeResult.imageUrl)
@@ -131,7 +149,15 @@ export async function POST(request: NextRequest) {
       if (body.generateTypes.panorama360) {
         try {
           console.log("🎯 Generating 360° panorama...")
-          const panoramaResult = await generateImage(finalPrompt, "360", params, provider, model)
+          const panoramaResult = await generateImage(
+            finalPrompt,
+            "360",
+            params,
+            provider,
+            model,
+            body.selectedAspectRatio,
+            body.frameless,
+          )
           results.panorama360 = panoramaResult.imageUrl
           console.log("✅ 360° panorama generated successfully")
           console.log("[v0] 360° image URL:", panoramaResult.imageUrl)
@@ -170,7 +196,15 @@ export async function POST(request: NextRequest) {
       // Generate standard image
       try {
         console.log("🎯 Generating standard image...")
-        const standardResult = await generateImage(finalPrompt, "standard", params, provider, model)
+        const standardResult = await generateImage(
+          finalPrompt,
+          "standard",
+          params,
+          provider,
+          model,
+          body.selectedAspectRatio,
+          body.frameless,
+        )
         results.standard = standardResult.imageUrl
         console.log("✅ Standard image generated successfully")
         console.log("[v0] Standard image URL:", standardResult.imageUrl)
@@ -187,7 +221,15 @@ export async function POST(request: NextRequest) {
       // Generate dome projection
       try {
         console.log("🎯 Generating dome projection...")
-        const domeResult = await generateImage(finalPrompt, "dome", params, provider, model)
+        const domeResult = await generateImage(
+          finalPrompt,
+          "dome",
+          params,
+          provider,
+          model,
+          body.selectedAspectRatio,
+          body.frameless,
+        )
         results.dome = domeResult.imageUrl
         console.log("✅ Dome projection generated successfully")
         console.log("[v0] Dome image URL:", domeResult.imageUrl)
@@ -201,7 +243,15 @@ export async function POST(request: NextRequest) {
       // Generate 360° panorama
       try {
         console.log("🎯 Generating 360° panorama...")
-        const panoramaResult = await generateImage(finalPrompt, "360", params, provider, model)
+        const panoramaResult = await generateImage(
+          finalPrompt,
+          "360",
+          params,
+          provider,
+          model,
+          body.selectedAspectRatio,
+          body.frameless,
+        )
         results.panorama360 = panoramaResult.imageUrl
         console.log("✅ 360° panorama generated successfully")
         console.log("[v0] 360° image URL:", panoramaResult.imageUrl)
@@ -235,7 +285,15 @@ export async function POST(request: NextRequest) {
     console.log(`🎯 Generating single ${generationType} image...`)
 
     try {
-      const result = await generateImage(finalPrompt, generationType, params, provider, model)
+      const result = await generateImage(
+        finalPrompt,
+        generationType,
+        params,
+        provider,
+        model,
+        body.selectedAspectRatio,
+        body.frameless,
+      )
 
       console.log(`✅ ${generationType} image generated successfully`)
 

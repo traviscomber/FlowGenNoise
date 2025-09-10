@@ -226,7 +226,7 @@ function sanitizePromptForSafety(prompt: string): string {
     "developed as museum exhibition artwork",
     "produced as cultural appreciation art",
     "generated as educational heritage visualization",
-    "composed as respectful cultural tribute",
+    "composed as respectful artistic tribute",
     "constructed as artistic cultural celebration",
   ]
 
@@ -350,7 +350,7 @@ TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, profes
     const projectionType = params?.projectionType || "fisheye"
 
     if (projectionType === "fisheye") {
-      enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION: ${safePrompt}
+      enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
 
 FISHEYE DOME ARTISTIC MASTERY:
 • 180-degree hemispherical panorama captured with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis
@@ -359,7 +359,7 @@ FISHEYE DOME ARTISTIC MASTERY:
 • Perfect radial symmetry from center outward with professional dome mapping accuracy
 • NO architectural structures, NO stadium seating, NO dome interiors - only natural outdoor fisheye perspective
 • Natural environment curves dramatically inward toward frame edges creating circular boundary effect
-• Optimized for premium planetarium dome projection with immersive 360° viewing experience
+• Optimized for premium planetarium dome projection with immersive 180° viewing experience
 • Museum-quality fisheye lens effect with award-winning technical precision
 
 ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization.`
@@ -748,6 +748,7 @@ export async function generateWithReplicate(
   type: "standard" | "dome" | "360",
   params?: GenerationParams,
   signal?: AbortSignal,
+  aspectRatioOverride?: string,
 ): Promise<{ imageUrl: string; prompt: string }> {
   const apiToken = process.env.REPLICATE_API_TOKEN
 
@@ -762,31 +763,40 @@ export async function generateWithReplicate(
   const model = "black-forest-labs/flux-1.1-pro-ultra"
   const safePrompt = sanitizePromptForSafety(prompt)
 
-  let aspectRatio = "1:1" // Default aspect ratio
+  let aspectRatio = aspectRatioOverride || "1:1" // Default aspect ratio
 
-  // Override with type-specific defaults using only supported aspect ratios
-  if (type === "360") {
-    aspectRatio = "21:9" // Closest wide format for equirectangular panorama (better than 2:1)
-  } else if (type === "dome") {
-    aspectRatio = "1:1" // Perfect for dome projection
+  if (!aspectRatioOverride) {
+    if (type === "360") {
+      aspectRatio = "21:9" // Closest wide format for equirectangular panorama (21:9 = 2.33, closest to 2:1 = 2.0)
+    } else if (type === "dome") {
+      aspectRatio = "1:1" // Perfect for dome projection
+    } else {
+      aspectRatio = "1:1" // Default for standard
+    }
+
+    // Allow custom aspect ratio from params if provided, but only use supported values
+    if (params?.width && params?.height) {
+      const ratio = params.width / params.height
+      if (ratio >= 2.3) aspectRatio = "21:9"
+      else if (ratio >= 1.7) aspectRatio = "16:9"
+      else if (ratio >= 1.4) aspectRatio = "3:2"
+      else if (ratio >= 1.2) aspectRatio = "4:3"
+      else if (ratio >= 1.1) aspectRatio = "5:4"
+      else if (ratio >= 0.9) aspectRatio = "1:1"
+      else if (ratio >= 0.8) aspectRatio = "4:5"
+      else if (ratio >= 0.7) aspectRatio = "3:4"
+      else if (ratio >= 0.5) aspectRatio = "2:3"
+      else if (ratio >= 0.4) aspectRatio = "9:16"
+      else aspectRatio = "9:21"
+    }
   } else {
-    aspectRatio = "1:1" // Default for standard
-  }
-
-  // Allow custom aspect ratio from params if provided, but only use supported values
-  if (params?.width && params?.height) {
-    const ratio = params.width / params.height
-    if (ratio >= 2.3) aspectRatio = "21:9"
-    else if (ratio >= 1.7) aspectRatio = "16:9"
-    else if (ratio >= 1.4) aspectRatio = "3:2"
-    else if (ratio >= 1.2) aspectRatio = "4:3"
-    else if (ratio >= 1.1) aspectRatio = "5:4"
-    else if (ratio >= 0.9) aspectRatio = "1:1"
-    else if (ratio >= 0.8) aspectRatio = "4:5"
-    else if (ratio >= 0.7) aspectRatio = "3:4"
-    else if (ratio >= 0.5) aspectRatio = "2:3"
-    else if (ratio >= 0.4) aspectRatio = "9:16"
-    else aspectRatio = "9:21"
+    const supportedRatios = ["21:9", "16:9", "3:2", "4:3", "5:4", "1:1", "4:5", "3:4", "2:3", "9:16", "9:21"]
+    if (!supportedRatios.includes(aspectRatioOverride)) {
+      console.log(`[v0] Invalid aspect ratio ${aspectRatioOverride}, defaulting to 21:9 for ${type}`)
+      aspectRatio = type === "360" ? "21:9" : "1:1"
+    } else {
+      aspectRatio = aspectRatioOverride
+    }
   }
 
   console.log(`[v0] Using aspect ratio: ${aspectRatio} for ${type} generation`)
@@ -794,25 +804,48 @@ export async function generateWithReplicate(
   let enhancedPrompt = ""
 
   if (type === "360") {
-    enhancedPrompt = `ULTRA-HIGH-QUALITY 360° EQUIRECTANGULAR PANORAMA - OPTIMAL 21:9 FORMAT: ${safePrompt}. 
+    const { buildGodlevelNeuralia360Wrapper } = await import("@/lib/ai-prompt")
 
-PROFESSIONAL EQUIRECTANGULAR SPECIFICATIONS:
+    const basePrompt = `PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA - ORION360 CALIBRATION STANDARD: ${safePrompt}
+
+MANDATORY SEAMLESS PROFESSIONAL SPECIFICATIONS - ULTRA-WIDE 21:9 FORMAT:
 • Perfect 21:9 aspect ratio providing superior ultra-wide results for equirectangular panorama
-• LEFT EDGE must connect SEAMLESSLY with RIGHT EDGE - mathematical precision wraparound
+• LEFT EDGE must connect PERFECTLY with RIGHT EDGE - mathematical precision seamless wrapping
 • Professional equirectangular projection optimized for premium VR headsets and 360° viewers
-• Continuous horizontal environment with zero visible seams or discontinuities
-• FLUX 1.1 Pro Ultra optimized for maximum quality 360° panoramic generation with ultra-wide format
+• Continuous horizontal environment with ZERO visible seams, color breaks, or lighting discontinuities
+• ORION360 calibration quality with museum-grade seamless wrapping and broadcast-quality edge continuity
+• VR-optimized for premium headsets with flawless wraparound immersive experience
+• Professional seamless edge alignment worthy of ORION360 calibration test patterns
 
-TECHNICAL EXCELLENCE: Ultra-wide 21:9 equirectangular format, professional seamless horizontal wrapping, VR-optimized, premium quality, godlevel artistic mastery with perfect edge continuity, cultural heritage visualization.`
+TECHNICAL EXCELLENCE: Ultra-wide 21:9 equirectangular format, professional seamless horizontal wrapping, ORION360 calibration quality, VR-optimized, broadcast standard, godlevel artistic mastery with perfect edge continuity, cultural heritage visualization.`
+
+    // Always apply godlevel neuralia wrapper for 360° images (not just pure-mathematical)
+    enhancedPrompt = buildGodlevelNeuralia360Wrapper(
+      basePrompt,
+      params?.dataset || "vietnamese",
+      params?.scenario || "trung-sisters",
+      params?.colorScheme || "neon",
+    )
+    console.log("[v0] Applied godlevel neuralia 360° equirectangular wrapper for FLUX")
   } else if (type === "dome") {
-    enhancedPrompt = `ULTRA-HIGH-QUALITY DOME PROJECTION IMAGE: ${safePrompt}. Professional ${params?.projectionType || "fisheye"} perspective optimized for premium planetarium dome projection with perfect circular composition.`
+    enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
+
+FISHEYE DOME ARTISTIC MASTERY:
+• 180-degree hemispherical panorama captured with ultra-wide-angle fisheye lens
+• Extreme barrel distortion where horizon completely disappears, replaced by circular frame
+• Sky positioned at absolute center with mathematical precision, surrounded by curved environmental elements
+• Perfect radial symmetry from center outward with professional dome mapping accuracy
+• Optimized for premium planetarium dome projection with immersive 180° viewing experience
+• Professional ${params?.projectionType || "fisheye"} perspective with perfect circular composition
+
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, planetarium optimization, museum exhibition quality, godlevel dome mastery.`
   } else {
     enhancedPrompt = `ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional resolution and detail optimized for premium quality output.`
   }
 
   console.log(`🎨 Generating ${type} image with FLUX 1.1 Pro Ultra (preferred model)`)
   console.log(
-    `📐 Aspect ratio: ${aspectRatio} (${type === "360" ? "optimal 21:9 ultra-wide equirectangular" : "FLUX 1.1 Pro Ultra supported format"})`,
+    `📐 Aspect ratio: ${aspectRatio} (${type === "360" ? "optimal 21:9 ultra-wide equirectangular with godlevel neuralia enhancement" : "FLUX 1.1 Pro Ultra supported format"})`,
   )
   console.log(`📝 Enhanced prompt length: ${enhancedPrompt.length} chars`)
 
@@ -880,22 +913,88 @@ export async function generateImage(
   prompt: string,
   type: "standard" | "dome" | "360",
   params?: GenerationParams,
-  signal?: AbortSignal,
+  provider?: "openai" | "replicate",
+  model?: string,
+  selectedAspectRatio?: { standard?: string; dome?: string; "360"?: string },
+  frameless?: boolean,
 ): Promise<{ imageUrl: string; prompt: string; provider: string }> {
-  const provider = params?.provider || "openai"
+  const actualProvider = provider || params?.provider || "replicate"
 
-  console.log(`[v0] Starting image generation with ${provider}`)
+  console.log(`[v0] Starting image generation with ${actualProvider}`)
 
-  if (provider === "replicate") {
+  if (frameless) {
+    console.log("[v0] Frameless mode enabled - skipping enhancement wrappers")
+  }
+
+  let aspectRatioOverride: string | undefined
+  if (selectedAspectRatio) {
     try {
-      const result = await generateWithReplicate(prompt, type, params, signal)
+      const { supabase } = await import("@/lib/supabase")
+      let aspectRatioId: string | undefined
+
+      if (type === "standard") {
+        aspectRatioId = selectedAspectRatio.standard
+      } else if (type === "dome") {
+        aspectRatioId = selectedAspectRatio.dome
+      } else if (type === "360") {
+        aspectRatioId = selectedAspectRatio["360"]
+      }
+
+      if (aspectRatioId) {
+        const { data: aspectRatioData, error } = await supabase
+          .from("aspect_ratios")
+          .select("name")
+          .eq("id", aspectRatioId)
+          .single()
+
+        if (!error && aspectRatioData) {
+          const supportedRatios = ["21:9", "16:9", "3:2", "4:3", "5:4", "1:1", "4:5", "3:4", "2:3", "9:16", "9:21"]
+          if (supportedRatios.includes(aspectRatioData.name)) {
+            aspectRatioOverride = aspectRatioData.name
+            console.log(`[v0] Using selected aspect ratio: ${aspectRatioOverride} for ${type} generation`)
+          } else {
+            console.log(`[v0] Unsupported aspect ratio: ${aspectRatioData.name}, using default`)
+            aspectRatioOverride = type === "360" ? "21:9" : "1:1"
+          }
+        }
+      }
+    } catch (error) {
+      console.error("[v0] Error fetching aspect ratio:", error)
+      aspectRatioOverride = type === "360" ? "21:9" : "1:1"
+    }
+  }
+
+  let finalPrompt = prompt
+  if (!frameless) {
+    // Apply enhancement wrappers only when not frameless
+    if (actualProvider === "replicate" && type === "360") {
+      const { buildGodlevelNeuralia360Wrapper } = await import("@/lib/ai-prompt")
+      finalPrompt = buildGodlevelNeuralia360Wrapper(
+        prompt,
+        params?.dataset || "vietnamese",
+        params?.scenario || "trung-sisters",
+        params?.colorScheme || "metallic",
+      )
+      console.log("[v0] Applied godlevel neuralia 360° equirectangular wrapper for FLUX")
+    } else if (actualProvider === "replicate" && type === "dome") {
+      // Apply dome-specific enhancements
+      finalPrompt = `FISHEYE PROJECTION: ${prompt}`
+      console.log("[v0] Applied fisheye projection wrapper for dome generation")
+    }
+  } else {
+    console.log("[v0] Skipping enhancement wrappers due to frameless mode")
+  }
+
+  if (actualProvider === "replicate") {
+    try {
+      const result = await generateWithReplicate(finalPrompt, type, params, undefined, aspectRatioOverride)
       return { ...result, provider: "replicate" }
     } catch (error: any) {
       console.error("❌ Replicate generation failed:", error.message)
       console.log("🔄 Falling back to OpenAI...")
 
       try {
-        const result = await generateWithOpenAI(prompt, type, params, signal)
+        const result = await generateWithOpenAI(finalPrompt, type, params, undefined)
         return { ...result, provider: "openai-fallback" }
       } catch (fallbackError: any) {
         console.error("❌ OpenAI fallback also failed:", fallbackError.message)
@@ -904,7 +1003,7 @@ export async function generateImage(
     }
   } else {
     try {
-      const result = await generateWithOpenAI(prompt, type, params, signal)
+      const result = await generateWithOpenAI(finalPrompt, type, params, undefined)
       return { ...result, provider: "openai" }
     } catch (error: any) {
       console.error("❌ OpenAI generation failed:", error.message)
@@ -912,10 +1011,11 @@ export async function generateImage(
 
       try {
         const result = await generateWithReplicate(
-          prompt,
+          finalPrompt,
           type,
           { ...params, replicateModel: "black-forest-labs/flux-1.1-pro-ultra" },
-          signal,
+          undefined,
+          aspectRatioOverride,
         )
         return { ...result, provider: "replicate-fallback" }
       } catch (fallbackError: any) {

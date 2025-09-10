@@ -312,39 +312,50 @@ function buildEnhancementPrompt(
   dataset: string,
   scenario: string,
 ): string {
-  return `You are a professional writing editor. Your task is to improve the grammar, sentence structure, and clarity of this AI art prompt while preserving ALL original words and meaning.
+  return `You are a professional writing editor focused on grammar and clarity improvements with Neuralia artistic style integration.
 
 ORIGINAL PROMPT:
 ${originalPrompt}
 
-STRICT REQUIREMENTS:
-- ONLY fix grammar, punctuation, and sentence structure
-- NEVER add new concepts, adjectives, or descriptive words
-- NEVER use cliche phrases like "epic", "awesome", "stunning", "breathtaking", "majestic", "incredible"
-- NEVER add technical terms like "8K", "HDR", "professional photography", "award-winning"
-- NEVER add quality descriptors like "masterpiece", "godlevel", "premium", "excellence"
-- Maintain the exact same meaning and intent
-- Keep all cultural and historical references intact
-- Only rearrange words for better flow if needed
-- Fix any grammatical errors or awkward phrasing
-- Ensure proper sentence structure and punctuation
-- Make the text more readable and polished
+NEURALIA STYLE INTEGRATION:
+Based on the user's selections (Dataset: ${dataset}, Scenario: ${scenario}), apply the Neuralia artistic approach that combines:
+- Abstract conceptual elements from ${dataset} cultural heritage
+- Surrealistic atmosphere inspired by ${scenario}
+- Concrete realistic details maintaining cultural authenticity
+- Undefined color palette allowing natural artistic expression
+- Unique artistic style similar to Indonesian aboriginal tribes' approach to art
 
-FORBIDDEN WORDS/PHRASES:
-- Epic, awesome, stunning, breathtaking, majestic, incredible, amazing
-- Professional photography, 8K, HDR, broadcast quality, museum quality
-- Award-winning, masterpiece, godlevel, premium, excellence, perfection
-- Any superlative adjectives not in the original prompt
+TASK: Improve the grammar and readability while integrating Neuralia style elements that represent the unique fusion of the user's cultural selections.
 
-Provide ONLY the grammatically improved version of the original prompt with no additional commentary.`
+ENHANCEMENT RULES:
+- Fix grammar errors, punctuation, and sentence structure
+- Integrate abstract conceptual elements from the selected cultural dataset
+- Add surrealistic atmospheric qualities inspired by the chosen scenario
+- Maintain concrete realistic details for authenticity
+- Allow for undefined/natural color palette expression
+- Create a unique artistic style that represents the fusion of all user selections
+- Keep cultural references respectful and authentic
+
+NEURALIA ARTISTIC ELEMENTS TO INTEGRATE:
+- Abstract conceptual interpretations of ${dataset} heritage
+- Surrealistic atmosphere reflecting ${scenario} narrative
+- Concrete realistic cultural details
+- Organic color palette emergence
+- Unique artistic synthesis like Indonesian aboriginal art traditions
+
+Provide the enhanced prompt with integrated Neuralia style elements that create a unique artistic representation of the user's cultural selections.`
 }
 
 function enhancePromptWithRules(originalPrompt: string, variationLevel: string): { enhanced: string; statistics: any } {
   let enhanced = originalPrompt
 
-  // Simple grammar and structure improvements only
+  // Add Neuralia style prefix for abstract conceptual approach
+  if (!enhanced.includes("abstract conceptual") && !enhanced.includes("surrealistic")) {
+    enhanced = `Abstract conceptual elements with surrealistic atmosphere, concrete realistic details. ${enhanced}`
+  }
+
   enhanced = enhanced
-    // Fix common grammar issues
+    // Fix basic grammar and punctuation issues
     .replace(/\s+/g, " ") // Multiple spaces to single space
     .replace(/,\s*,/g, ",") // Double commas
     .replace(/\.\s*\./g, ".") // Double periods
@@ -352,20 +363,10 @@ function enhancePromptWithRules(originalPrompt: string, variationLevel: string):
     .replace(/([,.!?])([a-zA-Z])/g, "$1 $2") // Missing space after punctuation
     // Capitalize first letter of sentences
     .replace(/(^|[.!?]\s+)([a-z])/g, (match, p1, p2) => p1 + p2.toUpperCase())
+    // Fix common grammar patterns
+    .replace(/\ba\s+([aeiouAEIOU])/g, "an $1") // Fix a/an usage
+    .replace(/\ban\s+([^aeiouAEIOU])/g, "a $1") // Fix an/a usage
     .trim()
-
-  // Only add minimal improvements based on variation level without cliche phrases
-  const improvements = {
-    slight: [],
-    moderate: [", with attention to detail"],
-    dramatic: [", with careful attention to cultural authenticity and artistic detail"],
-  }
-
-  const levelImprovements = improvements[variationLevel as keyof typeof improvements] || improvements.moderate
-
-  levelImprovements.forEach((improvement) => {
-    enhanced += improvement
-  })
 
   const statistics = calculateStatistics(originalPrompt, enhanced)
   return { enhanced, statistics }

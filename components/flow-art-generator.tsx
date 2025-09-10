@@ -113,6 +113,8 @@ export function FlowArtGenerator() {
     panorama360: true,
   })
 
+  const [frameless, setFrameless] = useState(false)
+
   const loadGenerationPreferences = useCallback(async () => {
     try {
       const {
@@ -582,6 +584,8 @@ export function FlowArtGenerator() {
           provider,
           replicateModel,
           generateTypes,
+          selectedAspectRatio,
+          frameless,
         }),
         signal: abortController.signal,
       })
@@ -686,6 +690,8 @@ export function FlowArtGenerator() {
     setGenerationProgress,
     setIsGenerating,
     generateTypes,
+    selectedAspectRatio,
+    frameless,
   ])
 
   // Cancel generation
@@ -1349,6 +1355,18 @@ export function FlowArtGenerator() {
                           className="rounded border-gray-300"
                         />
                         <span className="text-sm">360° VR</span>
+                      </label>
+                    </div>
+
+                    <div className="pt-2 border-t">
+                      <label className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={frameless}
+                          onChange={(e) => setFrameless(e.target.checked)}
+                          className="rounded border-gray-300"
+                        />
+                        <span className="text-sm">Frameless (no enhancement wrapper)</span>
                       </label>
                     </div>
                   </div>
