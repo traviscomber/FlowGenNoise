@@ -54,6 +54,24 @@ interface GeneratedImage {
   geometricAlignment?: string
 }
 
+const ASPECT_RATIOS = {
+  standard: [
+    { value: "1:1", label: "Square (1440×1440)", width: 1440, height: 1440 },
+    { value: "4:3", label: "Portrait (1440×1080)", width: 1440, height: 1080 },
+    { value: "3:4", label: "Landscape (1080×1440)", width: 1080, height: 1440 },
+    { value: "16:9", label: "Widescreen (1440×810)", width: 1440, height: 810 },
+  ],
+  dome: [
+    { value: "1:1", label: "Square Dome (1440×1440)", width: 1440, height: 1440 },
+    { value: "4:3", label: "Portrait Dome (1440×1080)", width: 1440, height: 1080 },
+  ],
+  "360": [
+    { value: "2:1", label: "Equirectangular (1440×720)", width: 1440, height: 720 },
+    { value: "16:9", label: "Panoramic (1440×810)", width: 1440, height: 810 },
+    { value: "3:4", label: "Portrait Panorama (1080×1440)", width: 1080, height: 1440 },
+  ],
+}
+
 export default function Dome360Planner() {
   // State management
   const [dataset, setDataset] = useState("vietnamese")
@@ -68,6 +86,12 @@ export default function Dome360Planner() {
   const [projectionType, setProjectionType] = useState("fisheye")
   const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
   const [stereographicPerspective, setStereographicPerspective] = useState("wide-angle")
+
+  const [aspectRatios, setAspectRatios] = useState({
+    standard: "1:1",
+    dome: "1:1",
+    "360": "2:1",
+  })
 
   const [loraWeight, setLoraWeight] = useState(1.0)
   const [guidanceScale, setGuidanceScale] = useState(2.5)
@@ -249,15 +273,17 @@ export default function Dome360Planner() {
 
       if (selectedTypes.standard) {
         console.log("[v0] Generating Standard image...")
+        const standardAspectRatio =
+          ASPECT_RATIOS.standard.find((ar) => ar.value === aspectRatios.standard) || ASPECT_RATIOS.standard[0]
         generationPromises.push(
           fetch("/api/generate-ai-art", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ...baseParams,
-              width: 1440,
-              height: 1440,
-              model: "black-forest-labs/flux-1.1-pro-ultra",
+              width: standardAspectRatio.width,
+              height: standardAspectRatio.height,
+              model: "black-forest-labs/flux-1.1-pro-ultra", // Set FLUX 1.1 Pro Ultra as preferred model
               num_inference_steps: 4,
               guidance_scale: 8,
               scheduler: "DPMSolverMultistep",
@@ -272,15 +298,16 @@ export default function Dome360Planner() {
 
       if (selectedTypes.dome) {
         console.log("[v0] Generating Dome image with 180° fisheye projection...")
+        const domeAspectRatio = ASPECT_RATIOS.dome.find((ar) => ar.value === aspectRatios.dome) || ASPECT_RATIOS.dome[0]
         generationPromises.push(
           fetch("/api/generate-ai-art", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ...baseParams,
-              width: 1440,
-              height: 1440,
-              model: "black-forest-labs/flux-1.1-pro-ultra",
+              width: domeAspectRatio.width,
+              height: domeAspectRatio.height,
+              model: "black-forest-labs/flux-1.1-pro-ultra", // Set FLUX 1.1 Pro Ultra as preferred model
               num_inference_steps: 4,
               guidance_scale: 8,
               scheduler: "DPMSolverMultistep",
@@ -300,17 +327,22 @@ export default function Dome360Planner() {
 
       if (selectedTypes["360"]) {
         console.log("[v0] Generating 360° Panorama with equirectangular godlevel wrapping...")
+        const panoramaAspectRatio =
+          ASPECT_RATIOS["360"].find((ar) => ar.value === aspectRatios["360"]) || ASPECT_RATIOS["360"][0]
         generationPromises.push(
           fetch("/api/generate-ai-art", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ...baseParams,
-              width: 1792,
-              height: 1024,
-              model: "dall-e-3", // Always use DALL-E 3 for 360° panoramas
-              style: "natural",
-              quality: "hd",
+              width: panoramaAspectRatio.width,
+              height: panoramaAspectRatio.height,
+              model: "black-forest-labs/flux-1.1-pro-ultra", // Use FLUX 1.1 Pro Ultra for 360° as well
+              num_inference_steps: 4,
+              guidance_scale: 8,
+              scheduler: "DPMSolverMultistep",
+              style: "vivid",
+              quality: "standard",
               panoramic360: true,
               panoramaFormat: panoramaFormat, // equirectangular or stereographic - 360° ONLY
               stereographicPerspective: stereographicPerspective, // wide-angle, ultra-wide, circular-frame - 360° ONLY
@@ -393,6 +425,7 @@ export default function Dome360Planner() {
     projectionType,
     variationType,
     stereographicPerspective,
+    aspectRatios,
   ])
 
   const currentImage = generatedImages[generationType]
@@ -496,50 +529,121 @@ export default function Dome360Planner() {
               <CardDescription>Configure image generation parameters and select output types</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Select Image Types to Generate */}
               <div className="space-y-3">
                 <Label className="text-sm font-semibold">Select Image Types to Generate</Label>
                 <div className="space-y-3 border border-gray-200 rounded-lg p-3">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="standard"
-                      checked={selectedTypes.standard}
-                      onCheckedChange={(checked) =>
-                        setSelectedTypes((prev) => ({ ...prev, standard: checked as boolean }))
-                      }
-                    />
-                    <Label htmlFor="standard" className="flex items-center gap-2 cursor-pointer">
-                      <Square className="h-4 w-4" />
-                      Standard Image (1440×1440)
-                    </Label>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="standard"
+                        checked={selectedTypes.standard}
+                        onCheckedChange={(checked) =>
+                          setSelectedTypes((prev) => ({ ...prev, standard: checked as boolean }))
+                        }
+                      />
+                      <Label htmlFor="standard" className="flex items-center gap-2 cursor-pointer">
+                        <Square className="h-4 w-4" />
+                        Standard Image - FLUX 1.1 Pro Ultra
+                      </Label>
+                    </div>
+                    {selectedTypes.standard && (
+                      <div className="ml-6 space-y-1">
+                        <Label className="text-xs text-muted-foreground">Aspect Ratio</Label>
+                        <Select
+                          value={aspectRatios.standard}
+                          onValueChange={(value) => setAspectRatios((prev) => ({ ...prev, standard: value }))}
+                        >
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ASPECT_RATIOS.standard.map((ratio) => (
+                              <SelectItem key={ratio.value} value={ratio.value}>
+                                {ratio.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="dome"
-                      checked={selectedTypes.dome}
-                      onCheckedChange={(checked) => setSelectedTypes((prev) => ({ ...prev, dome: checked as boolean }))}
-                    />
-                    <Label htmlFor="dome" className="flex items-center gap-2 cursor-pointer">
-                      <CircleDot className="h-4 w-4" />
-                      Dome Projection (1440×1440) - 180° Fisheye
-                    </Label>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="dome"
+                        checked={selectedTypes.dome}
+                        onCheckedChange={(checked) =>
+                          setSelectedTypes((prev) => ({ ...prev, dome: checked as boolean }))
+                        }
+                      />
+                      <Label htmlFor="dome" className="flex items-center gap-2 cursor-pointer">
+                        <CircleDot className="h-4 w-4" />
+                        Dome Projection - FLUX 1.1 Pro Ultra
+                      </Label>
+                    </div>
+                    {selectedTypes.dome && (
+                      <div className="ml-6 space-y-1">
+                        <Label className="text-xs text-muted-foreground">Aspect Ratio</Label>
+                        <Select
+                          value={aspectRatios.dome}
+                          onValueChange={(value) => setAspectRatios((prev) => ({ ...prev, dome: value }))}
+                        >
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ASPECT_RATIOS.dome.map((ratio) => (
+                              <SelectItem key={ratio.value} value={ratio.value}>
+                                {ratio.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="360"
-                      checked={selectedTypes["360"]}
-                      onCheckedChange={(checked) =>
-                        setSelectedTypes((prev) => ({ ...prev, "360": checked as boolean }))
-                      }
-                    />
-                    <Label htmlFor="360" className="flex items-center gap-2 cursor-pointer">
-                      <Globe className="h-4 w-4" />
-                      360° Panorama (1792×1024) - Equirectangular Godlevel Wrapping
-                    </Label>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="360"
+                        checked={selectedTypes["360"]}
+                        onCheckedChange={(checked) =>
+                          setSelectedTypes((prev) => ({ ...prev, "360": checked as boolean }))
+                        }
+                      />
+                      <Label htmlFor="360" className="flex items-center gap-2 cursor-pointer">
+                        <Globe className="h-4 w-4" />
+                        360° Panorama - FLUX 1.1 Pro Ultra
+                      </Label>
+                    </div>
+                    {selectedTypes["360"] && (
+                      <div className="ml-6 space-y-1">
+                        <Label className="text-xs text-muted-foreground">Aspect Ratio</Label>
+                        <Select
+                          value={aspectRatios["360"]}
+                          onValueChange={(value) => setAspectRatios((prev) => ({ ...prev, "360": value }))}
+                        >
+                          <SelectTrigger className="h-8 text-xs">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ASPECT_RATIOS["360"].map((ratio) => (
+                              <SelectItem key={ratio.value} value={ratio.value}>
+                                {ratio.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Select one or more image types. Each selected type will be generated independently with proper
-                  projection effects.
+                  Select image types and aspect ratios. FLUX 1.1 Pro Ultra is used for all generations with customizable
+                  dimensions up to 1440px.
                 </p>
               </div>
 

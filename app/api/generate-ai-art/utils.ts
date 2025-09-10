@@ -16,6 +16,8 @@ export interface GenerationParams {
   stereographicPerspective?: string
   provider?: "openai" | "replicate"
   replicateModel?: string
+  width?: number
+  height?: number
 }
 
 export function validateGenerationParams(body: any): GenerationParams {
@@ -37,6 +39,8 @@ export function validateGenerationParams(body: any): GenerationParams {
     stereographicPerspective: body.stereographicPerspective || "wide-angle",
     provider: body.provider || "openai",
     replicateModel: body.replicateModel || "black-forest-labs/flux-1.1-pro",
+    width: typeof body.width === "number" ? body.width : undefined,
+    height: typeof body.height === "number" ? body.height : undefined,
   }
 }
 
@@ -609,122 +613,131 @@ function generateUltraSafeFallbackPrompt(type: "standard" | "dome" | "360", para
 }
 
 export const REPLICATE_MODELS = {
-  // FLUX Models - Latest and Best Quality (Replicate Limit Compliant)
   "black-forest-labs/flux-1.1-pro-ultra": {
-    name: "FLUX 1.1 Pro Ultra",
-    description: "Ultimate quality FLUX model with maximum detail and resolution",
+    name: "FLUX 1.1 Pro Ultra (Preferred)",
+    description: "Ultimate quality FLUX model with maximum detail and flexible aspect ratios",
     category: "FLUX",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "2:1", "3:4", "4:3", "16:9"],
   },
   "bytedance/seedream-3": {
-    name: "SeeDream-3 (Best Overall)",
-    description: "Best overall image generation model, optimized for maximum quality",
+    name: "SeeDream-3",
+    description: "High quality alternative model with good performance",
     category: "FLUX",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "black-forest-labs/flux-1.1-pro": {
     name: "FLUX 1.1 Pro",
     description: "Premium quality with improved image generation over 1080p",
     category: "FLUX",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "black-forest-labs/flux-pro": {
     name: "FLUX Pro",
     description: "State-of-the-art performance optimized for high-resolution output",
     category: "FLUX",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "black-forest-labs/flux-schnell": {
     name: "FLUX Schnell (Fast & High Quality)",
     description: "12B parameter model optimized for speed and quality over 1080p",
     category: "FLUX",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "black-forest-labs/flux-dev": {
     name: "FLUX Dev",
     description: "Development version with excellent high-resolution quality",
     category: "FLUX",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
-
-  // Stable Diffusion & SDXL Models (High Quality)
   "bytedance/sdxl-lightning-4step": {
     name: "SDXL Lightning 4-Step",
     description: "High-quality images optimized for resolutions over 1080p",
     category: "Stable Diffusion",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "stability-ai/stable-diffusion-3.5-large": {
     name: "Stable Diffusion 3.5 Large",
     description: "Latest large model optimized for maximum quality output",
     category: "Stable Diffusion",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "stability-ai/stable-diffusion-3.5-large-turbo": {
     name: "Stable Diffusion 3.5 Large Turbo",
     description: "Turbo version optimized for high-quality generation over 1080p",
     category: "Stable Diffusion",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
-
-  // Ideogram Models - Text Generation Specialists (High Quality)
   "ideogram-ai/ideogram-v3-quality": {
     name: "Ideogram V3 Quality",
     description: "Highest quality text generation optimized for maximum resolution",
     category: "Text Specialists",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "ideogram-ai/ideogram-v3-turbo": {
     name: "Ideogram V3 Turbo",
     description: "Fast, high-quality text generation optimized over 1080p",
     category: "Text Specialists",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "ideogram-ai/ideogram-v3-balanced": {
     name: "Ideogram V3 Balanced",
     description: "Balanced speed and maximum quality for high-resolution output",
     category: "Text Specialists",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
-
-  // Google Imagen Models (Maximum Quality)
   "google/imagen-4-ultra": {
     name: "Imagen 4 Ultra",
     description: "Google's highest quality model optimized for maximum resolution",
     category: "Google",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "google/imagen-4": {
     name: "Imagen 4",
     description: "Google's latest model optimized for high-quality output over 1080p",
     category: "Google",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "google/imagen-4-fast": {
     name: "Imagen 4 Fast",
     description: "Fast version optimized for quality over 1080p resolution",
     category: "Google",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
-
-  // Specialized High-Quality Models (Maximum Resolution)
   "recraft-ai/recraft-v3": {
     name: "Recraft V3",
     description: "Professional design-focused generation optimized for maximum quality",
     category: "Specialized",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "luma/photon": {
     name: "Luma Photon",
     description: "High-quality photorealistic generation optimized over 1080p",
     category: "Specialized",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "nvidia/sana": {
     name: "NVIDIA SANA",
     description: "NVIDIA's model optimized for maximum quality high-resolution output",
     category: "Specialized",
-    maxSize: "1440x1440", // Updated to comply with Replicate's 1440px limit
+    maxSize: "1440x1440",
+    supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
 }
 
@@ -744,26 +757,37 @@ export async function generateWithReplicate(
     throw new Error("Replicate API token not configured. Please add REPLICATE_API_TOKEN environment variable.")
   }
 
-  const model =
-    type === "360" ? "black-forest-labs/flux-1.1-pro-ultra" : params?.replicateModel || "bytedance/seedream-3"
+  const model = "black-forest-labs/flux-1.1-pro-ultra"
   const safePrompt = sanitizePromptForSafety(prompt)
 
-  let width = 1440
-  let height = 1440
+  let width = params?.width || 1440
+  let height = params?.height || 1440
   let enhancedPrompt = ""
 
-  if (type === "360") {
-    width = 1280
-    height = 720
-    enhancedPrompt = `ULTRA-HIGH-QUALITY 360° EQUIRECTANGULAR PANORAMA: ${safePrompt}. Professional 1280x720 seamless wraparound panorama with perfect left-right edge continuity for premium VR viewing experience, Orion360 calibration standards, equirectangular projection format.`
-  } else if (type === "dome") {
-    enhancedPrompt = `ULTRA-HIGH-QUALITY DOME PROJECTION IMAGE: ${safePrompt}. Professional 1440x1440 ${params?.projectionType || "fisheye"} perspective optimized for premium planetarium dome projection with perfect circular composition.`
-  } else {
-    enhancedPrompt = `ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional 1440x1440 resolution and detail optimized for premium quality output.`
+  // Override with type-specific defaults if no custom dimensions provided
+  if (!params?.width && !params?.height) {
+    if (type === "360") {
+      width = 1440
+      height = 720 // Default 2:1 aspect ratio for proper equirectangular
+    } else if (type === "dome") {
+      width = 1440
+      height = 1440 // Default 1:1 aspect ratio for dome projection
+    } else {
+      width = 1440
+      height = 1440 // Default 1:1 aspect ratio for standard
+    }
   }
 
-  console.log(`🎨 Generating ${type} image with Replicate model: ${model}`)
-  console.log(`📐 Size: ${width}x${height} (optimized for model capabilities)`)
+  if (type === "360") {
+    enhancedPrompt = `ULTRA-HIGH-QUALITY 360° EQUIRECTANGULAR PANORAMA: ${safePrompt}. Professional ${width}x${height} seamless wraparound panorama with perfect left-right edge continuity for premium VR viewing experience, Orion360 calibration standards, equirectangular projection format.`
+  } else if (type === "dome") {
+    enhancedPrompt = `ULTRA-HIGH-QUALITY DOME PROJECTION IMAGE: ${safePrompt}. Professional ${width}x${height} ${params?.projectionType || "fisheye"} perspective optimized for premium planetarium dome projection with perfect circular composition.`
+  } else {
+    enhancedPrompt = `ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional ${width}x${height} resolution and detail optimized for premium quality output.`
+  }
+
+  console.log(`🎨 Generating ${type} image with FLUX 1.1 Pro Ultra (preferred model)`)
+  console.log(`📐 Size: ${width}x${height} (flexible aspect ratio support)`)
   console.log(`📝 Enhanced prompt length: ${enhancedPrompt.length} chars`)
 
   try {
