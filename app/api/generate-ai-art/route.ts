@@ -167,14 +167,36 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      if (body.generateTypes.cubemap) {
+        try {
+          console.log("🎯 Generating cubemap environment...")
+          const cubemapResult = await generateImage(
+            finalPrompt,
+            "cubemap",
+            params,
+            provider,
+            model,
+            body.selectedAspectRatio,
+            body.frameless,
+          )
+          results.cubemap = cubemapResult.imageUrl
+          console.log("✅ Cubemap environment generated successfully")
+          console.log("[v0] Cubemap image URL:", cubemapResult.imageUrl)
+        } catch (error: any) {
+          console.error("❌ Cubemap generation failed:", error)
+          results.errors.push(`Cubemap generation failed: ${error.message}`)
+        }
+      }
+
       const selectedCount = Object.values(body.generateTypes).filter(Boolean).length
-      const successCount = [results.standard, results.dome, results.panorama360].filter(Boolean).length
+      const successCount = [results.standard, results.dome, results.panorama360, results.cubemap].filter(Boolean).length
       console.log(`🎉 Selective generation completed: ${successCount}/${selectedCount} images generated`)
 
       console.log("[v0] Final results being returned to frontend:")
       console.log("[v0] Results.standard exists:", !!results.standard)
       console.log("[v0] Results.dome exists:", !!results.dome)
       console.log("[v0] Results.panorama360 exists:", !!results.panorama360)
+      console.log("[v0] Results.cubemap exists:", !!results.cubemap)
       console.log("[v0] Results.errors:", results.errors)
 
       return NextResponse.json({
@@ -262,13 +284,34 @@ export async function POST(request: NextRequest) {
         results.errors.push(`360° generation failed: ${error.message}`)
       }
 
-      const successCount = [results.standard, results.dome, results.panorama360].filter(Boolean).length
-      console.log(`🎉 Batch generation completed: ${successCount}/3 images generated`)
+      // Generate cubemap environment
+      try {
+        console.log("🎯 Generating cubemap environment...")
+        const cubemapResult = await generateImage(
+          finalPrompt,
+          "cubemap",
+          params,
+          provider,
+          model,
+          body.selectedAspectRatio,
+          body.frameless,
+        )
+        results.cubemap = cubemapResult.imageUrl
+        console.log("✅ Cubemap environment generated successfully")
+        console.log("[v0] Cubemap image URL:", cubemapResult.imageUrl)
+      } catch (error: any) {
+        console.error("❌ Cubemap generation failed:", error)
+        results.errors.push(`Cubemap generation failed: ${error.message}`)
+      }
+
+      const successCount = [results.standard, results.dome, results.panorama360, results.cubemap].filter(Boolean).length
+      console.log(`🎉 Batch generation completed: ${successCount}/4 images generated`)
 
       console.log("[v0] Final results being returned to frontend:")
       console.log("[v0] Results.standard exists:", !!results.standard)
       console.log("[v0] Results.dome exists:", !!results.dome)
       console.log("[v0] Results.panorama360 exists:", !!results.panorama360)
+      console.log("[v0] Results.cubemap exists:", !!results.cubemap)
       console.log("[v0] Results.errors:", results.errors)
 
       return NextResponse.json({

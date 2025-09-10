@@ -1,119 +1,75 @@
 "use client"
 
-import { useState, useCallback, useRef, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Alert } from "@/components/ui/alert"
+import { useState, useCallback, useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
-import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
-import { REPLICATE_MODELS } from "@/app/api/generate-ai-art/utils"
-
+import { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios } from "@/lib/ai-prompt"
 import { supabase } from "@/lib/supabase"
+import { RefreshCw, Sparkles, Eye, ArrowUp, CheckCircle } from "lucide-react"
 
 interface GenerationResult {
   standard?: string
   dome?: string
   panorama360?: string
-  errors: string[]
+  cubemap?: string
 }
 
-interface GenerationProgress {
-  standard: "idle" | "generating" | "completed" | "failed"
-  dome: "idle" | "generating" | "completed" | "failed"
-  panorama360: "idle" | "generating" | "completed" | "failed"
+interface AspectRatio {
+  id: string
+  name: string
+  width: number
+  height: number
+  ratio: number
+  generation_type: string
 }
 
-interface PromptEnhancement {
-  originalPrompt: string
-  enhancedPrompt: string
-  statistics: {
-    original: { characters: number; words: number }
-    enhanced: { characters: number; words: number }
-    improvement: { characters: number; words: number; percentage: number }
-    maxLength: number
-    withinLimit: boolean
-  }
-  variationType: string
-  generationType: string
-  enhancementMethod: string
-}
+const FlowArtGenerator = () => {
+  const { toast } = useToast()
 
-export function FlowArtGenerator() {
-  // Core generation parameters
   const [dataset, setDataset] = useState("vietnamese")
-  const [scenario, setScenario] = useState("trung-sisters")
+  const [scenario, setScenario] = useState("lotus-symbolism")
   const [colorScheme, setColorScheme] = useState("metallic")
-  const [seed, setSeed] = useState(1234)
-  const [numSamples, setNumSamples] = useState(4000)
-  const [noiseScale, setNoiseScale] = useState(0.08)
   const [customPrompt, setCustomPrompt] = useState("")
-  const [negativePrompt, setNegativePrompt] = useState("")
-  const [showAdvanced, setShowAdvanced] = useState(false)
-
-  const [provider, setProvider] = useState<"openai" | "replicate">("replicate")
-  const [replicateModel, setReplicateModel] = useState("black-forest-labs/flux-1.1-pro-ultra")
-
-  // 360° and dome projection settings
-  const [panoramic360, setPanoramic360] = useState(false)
-  const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
-  const [projectionType, setProjectionType] = useState("fisheye")
-
-  // Prompt enhancement settings
-  const [variationType, setVariationType] = useState("moderate")
-  const [isPromptDialogOpen, setIsPromptDialogOpen] = useState(false)
-  const [currentPrompt, setCurrentPrompt] = useState("")
-  const [editablePrompt, setEditablePrompt] = useState("")
-  const [promptEnhancement, setPromptEnhancement] = useState<PromptEnhancement | null>(null)
-  const [isEnhancing, setIsEnhancing] = useState(false)
-  const [isGeneratingGodlevel, setIsGeneratingGodlevel] = useState(false)
-
-  // Generation state
   const [isGenerating, setIsGenerating] = useState(false)
-  const [generationProgress, setGenerationProgress] = useState<GenerationProgress>({
-    standard: "idle",
-    dome: "idle",
-    panorama360: "idle",
-  })
-  const [results, setResults] = useState<GenerationResult>({ errors: [] })
-  const [activeTab, setActiveTab] = useState("standard")
+  const [results, setResults] = useState<GenerationResult>({})
+  const [activeTab, setActiveTab] = useState<keyof GenerationResult>("standard")
+  const [aspectRatios, setAspectRatios] = useState<AspectRatio[]>([])
 
-  // Debug state
-  const [apiKeyStatus, setApiKeyStatus] = useState<any>(null)
-  const [isValidatingKey, setIsValidatingKey] = useState(false)
-
-  // Aspect ratio state
-  const [aspectRatios, setAspectRatios] = useState<any[]>([])
   const [selectedAspectRatio, setSelectedAspectRatio] = useState<{
     standard?: string
     dome?: string
     "360"?: string
+    cubemap?: string
   }>({})
 
-  // Refs for cancellation
-  const abortControllerRef = useRef<AbortController | null>(null)
+  const [selectedModel, setSelectedModel] = useState<{
+    standard: "flux" | "nvidia-sana"
+  }>({
+    standard: "nvidia-sana", // Default to NVIDIA SANA for best resolution
+  })
 
-  // Get available scenarios for current dataset - with null safety
-  const availableScenarios = getScenarios(dataset) || {}
-  const scenarioEntries = Object.entries(availableScenarios)
-
-  // Toast hook
-  const { toast } = useToast()
+  const [domeEffect, setDomeEffect] = useState<"fisheye" | "little-planet" | "tunnel-up">("fisheye")
 
   const [generateTypes, setGenerateTypes] = useState({
     standard: true,
     dome: true,
     panorama360: true,
+    cubemap: true,
   })
 
   const [frameless, setFrameless] = useState(false)
+
+  const [technicalParams, setTechnicalParams] = useState({
+    seed: Math.floor(Math.random() * 10000),
+    numSamples: 4000,
+    noiseScale: 0.08,
+    timeStep: 0.02,
+  })
+
+  const [isEnhancing, setIsEnhancing] = useState(false)
+  const [isPreviewing, setIsPreviewing] = useState(false)
+  const [previewPrompt, setPreviewPrompt] = useState("")
+
+  const scenarioEntries = Object.entries(getScenarios(dataset))
 
   const loadGenerationPreferences = useCallback(async () => {
     try {
@@ -134,6 +90,7 @@ export function FlowArtGenerator() {
           standard: data.generate_standard,
           dome: data.generate_dome,
           panorama360: data.generate_360,
+          cubemap: data.generate_cubemap || true,
         })
       }
     } catch (error) {
@@ -153,6 +110,7 @@ export function FlowArtGenerator() {
         generate_standard: preferences.standard,
         generate_dome: preferences.dome,
         generate_360: preferences.panorama360,
+        generate_cubemap: preferences.cubemap,
       })
 
       if (error) {
@@ -162,10 +120,6 @@ export function FlowArtGenerator() {
       console.error("Error saving generation preferences:", error)
     }
   }, [])
-
-  useEffect(() => {
-    loadGenerationPreferences()
-  }, [loadGenerationPreferences])
 
   const updateGenerateTypes = useCallback(
     (updater: (prev: typeof generateTypes) => typeof generateTypes) => {
@@ -178,641 +132,8 @@ export function FlowArtGenerator() {
     [saveGenerationPreferences],
   )
 
-  const refreshSite = useCallback(() => {
-    window.location.reload()
-  }, [])
-
-  // Reset scenario when dataset changes
-  const handleDatasetChange = useCallback((newDataset: string) => {
-    setDataset(newDataset)
-    const scenarios = getScenarios(newDataset) || {}
-    const firstScenario = Object.keys(scenarios)[0]
-    if (firstScenario) {
-      setScenario(firstScenario)
-    }
-  }, [])
-
-  // Validate OpenAI API Key
-  const validateApiKey = useCallback(async () => {
-    setIsValidatingKey(true)
+  const fetchAspectRatios = useCallback(async () => {
     try {
-      console.log("🔍 Validating OpenAI API key...")
-      const response = await fetch("/api/validate-openai-key")
-      const result = await response.json()
-      setApiKeyStatus(result)
-
-      if (result.success) {
-        toast({ title: "✅ OpenAI API key is valid and working!", variant: "success" })
-      } else {
-        toast({ title: `❌ API Key Error: ${result.error}`, variant: "error" })
-      }
-    } catch (error: any) {
-      console.error("API key validation failed:", error)
-      toast({ title: "Failed to validate API key", variant: "error" })
-      setApiKeyStatus({
-        success: false,
-        error: "Validation request failed",
-      })
-    } finally {
-      setIsValidatingKey(false)
-    }
-  }, [toast])
-
-  // Generate random seed
-  const randomizeSeed = useCallback(() => {
-    setSeed(Math.floor(Math.random() * 10000))
-  }, [])
-
-  const randomizeDataset = useCallback(() => {
-    const datasetKeys = Object.keys(CULTURAL_DATASETS)
-    const randomDataset = datasetKeys[Math.floor(Math.random() * datasetKeys.length)]
-    handleDatasetChange(randomDataset)
-
-    // Also randomize color scheme
-    const colorKeys = Object.keys(COLOR_SCHEMES)
-    const randomColor = colorKeys[Math.floor(Math.random() * colorKeys.length)]
-    setColorScheme(randomColor)
-
-    // Randomize scenario after dataset change
-    setTimeout(() => {
-      const scenarios = getScenarios(randomDataset) || {}
-      const scenarioKeys = Object.keys(scenarios)
-      if (scenarioKeys.length > 0) {
-        const randomScenario = scenarioKeys[Math.floor(Math.random() * scenarioKeys.length)]
-        setScenario(randomScenario)
-      }
-    }, 0)
-  }, [handleDatasetChange, setColorScheme, setScenario])
-
-  const randomizeTechnicalParams = useCallback(() => {
-    setSeed(Math.floor(Math.random() * 10000))
-    setNumSamples(Math.floor(Math.random() * 7001) + 1000) // 1000-8000
-    setNoiseScale(Math.random() * 0.19 + 0.01) // 0.01-0.2
-  }, [setSeed, setNumSamples, setNoiseScale])
-
-  const randomizeAll = useCallback(() => {
-    // Randomize dataset
-    const datasetKeys = Object.keys(CULTURAL_DATASETS)
-    const randomDataset = datasetKeys[Math.floor(Math.random() * datasetKeys.length)]
-    handleDatasetChange(randomDataset)
-
-    // Randomize color scheme
-    const colorKeys = Object.keys(COLOR_SCHEMES)
-    const randomColor = colorKeys[Math.floor(Math.random() * colorKeys.length)]
-    setColorScheme(randomColor)
-
-    // Randomize scenario after dataset change
-    setTimeout(() => {
-      const currentDataset = CULTURAL_DATASETS[randomDataset]
-      if (currentDataset && currentDataset.scenarios) {
-        const scenarioKeys = Object.keys(currentDataset.scenarios)
-        const randomScenario = scenarioKeys[Math.floor(Math.random() * scenarioKeys.length)]
-        setScenario(randomScenario)
-      }
-    }, 100)
-
-    // Randomize technical parameters
-    setSeed(Math.floor(Math.random() * 10000))
-    setNumSamples(Math.floor(Math.random() * 7001) + 1000) // 1000-8000
-    setNoiseScale(Math.random() * 0.19 + 0.01) // 0.01-0.2
-  }, [handleDatasetChange, setColorScheme, setScenario, setSeed, setNumSamples, setNoiseScale])
-
-  const previewPrompt = useCallback(async () => {
-    setIsPromptDialogOpen(true)
-
-    try {
-      // Build base prompt with null safety
-      const basePrompt = buildPrompt({
-        dataset: dataset || "vietnamese",
-        scenario: scenario || "trung-sisters",
-        colorScheme: colorScheme || "metallic",
-        seed: seed || 1234,
-        numSamples: numSamples || 4000,
-        noiseScale: noiseScale || 0.08,
-        customPrompt: customPrompt || "",
-        negativePrompt: negativePrompt || "",
-        panoramic360: panoramic360 || false,
-        panoramaFormat: panoramaFormat || "equirectangular",
-        projectionType: projectionType || "fisheye",
-      })
-
-      if (!basePrompt || basePrompt.length === 0) {
-        throw new Error("Failed to build base prompt")
-      }
-
-      setCurrentPrompt(basePrompt)
-      setEditablePrompt(basePrompt)
-      setPromptEnhancement(null)
-    } catch (error: any) {
-      console.error("Preview error:", error)
-      toast({ title: `Preview failed: ${error.message || "Unknown error"}`, variant: "error" })
-    }
-  }, [
-    dataset,
-    scenario,
-    colorScheme,
-    seed,
-    numSamples,
-    noiseScale,
-    customPrompt,
-    negativePrompt,
-    panoramic360,
-    panoramaFormat,
-    projectionType,
-    toast,
-    setCurrentPrompt,
-    setEditablePrompt,
-    setPromptEnhancement,
-    setIsPromptDialogOpen,
-  ])
-
-  const enhanceCurrentPrompt = useCallback(async () => {
-    if (!editablePrompt) return
-
-    setIsEnhancing(true)
-
-    try {
-      // Enhance with ChatGPT
-      const response = await fetch("/api/enhance-prompt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          originalPrompt: editablePrompt,
-          negativePrompt: negativePrompt || "",
-          variationLevel: variationType || "moderate",
-          dataset: dataset || "vietnamese",
-          scenario: scenario || "trung-sisters",
-        }),
-      })
-
-      if (response.ok) {
-        const enhancement = await response.json()
-        if (enhancement.success && enhancement.enhancedPrompt) {
-          setPromptEnhancement(enhancement)
-          setEditablePrompt(enhancement.enhancedPrompt)
-          toast({
-            title: `Prompt enhanced successfully! Added ${enhancement.statistics?.improvement?.characters || 0} characters.`,
-            variant: "success",
-          })
-        } else {
-          throw new Error(enhancement.error || "Enhancement failed")
-        }
-      } else {
-        const error = await response.json()
-        throw new Error(error.error || "Enhancement request failed")
-      }
-    } catch (error: any) {
-      console.error("Enhancement error:", error)
-      toast({ title: `Enhancement failed: ${error.message || "Unknown error"}`, variant: "error" })
-    } finally {
-      setIsEnhancing(false)
-    }
-  }, [
-    editablePrompt,
-    negativePrompt,
-    variationType,
-    dataset,
-    scenario,
-    toast,
-    setPromptEnhancement,
-    setEditablePrompt,
-    setIsEnhancing,
-  ])
-
-  // Preview and enhance prompt
-  const previewAndEnhancePrompt = useCallback(async () => {
-    setIsEnhancing(true)
-    setIsPromptDialogOpen(true)
-
-    try {
-      // Build base prompt with null safety
-      const basePrompt = buildPrompt({
-        dataset: dataset || "vietnamese",
-        scenario: scenario || "trung-sisters",
-        colorScheme: colorScheme || "metallic",
-        seed: seed || 1234,
-        numSamples: numSamples || 4000,
-        noiseScale: noiseScale || 0.08,
-        customPrompt: customPrompt || "",
-        negativePrompt: negativePrompt || "",
-        panoramic360: panoramic360 || false,
-        panoramaFormat: panoramaFormat || "equirectangular",
-        projectionType: projectionType || "fisheye",
-      })
-
-      if (!basePrompt || basePrompt.length === 0) {
-        throw new Error("Failed to build base prompt")
-      }
-
-      setCurrentPrompt(basePrompt)
-      setEditablePrompt(basePrompt)
-
-      // Enhance with ChatGPT
-      const response = await fetch("/api/enhance-prompt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          originalPrompt: basePrompt,
-          negativePrompt: negativePrompt || "",
-          variationLevel: variationType || "moderate",
-          dataset: dataset || "vietnamese",
-          scenario: scenario || "trung-sisters",
-        }),
-      })
-
-      if (response.ok) {
-        const enhancement = await response.json()
-        if (enhancement.success && enhancement.enhancedPrompt) {
-          setPromptEnhancement(enhancement)
-          setEditablePrompt(enhancement.enhancedPrompt)
-          toast({
-            title: `Prompt enhanced successfully! Added ${enhancement.statistics?.improvement?.characters || 0} characters.`,
-            variant: "success",
-          })
-        } else {
-          throw new Error(enhancement.error || "Enhancement failed")
-        }
-      } else {
-        const error = await response.json()
-        throw new Error(error.error || "Enhancement request failed")
-      }
-    } catch (error: any) {
-      console.error("Enhancement error:", error)
-      toast({ title: `Enhancement failed: ${error.message || "Unknown error"}`, variant: "error" })
-
-      // Fallback to base prompt if enhancement fails
-      const fallbackPrompt = buildPrompt({
-        dataset: dataset || "vietnamese",
-        scenario: scenario || "trung-sisters",
-        colorScheme: colorScheme || "metallic",
-        seed: seed || 1234,
-        numSamples: numSamples || 4000,
-        noiseScale: noiseScale || 0.08,
-        customPrompt: customPrompt || "",
-        negativePrompt: negativePrompt || "",
-        panoramic360: panoramic360 || false,
-        panoramaFormat: panoramaFormat || "equirectangular",
-        projectionType: projectionType || "fisheye",
-      })
-
-      if (fallbackPrompt) {
-        setCurrentPrompt(fallbackPrompt)
-        setEditablePrompt(fallbackPrompt)
-      }
-    } finally {
-      setIsEnhancing(false)
-    }
-  }, [
-    dataset,
-    scenario,
-    colorScheme,
-    seed,
-    numSamples,
-    noiseScale,
-    customPrompt,
-    negativePrompt,
-    panoramic360,
-    panoramaFormat,
-    projectionType,
-    variationType,
-    toast,
-    setCurrentPrompt,
-    setEditablePrompt,
-    setPromptEnhancement,
-    setIsEnhancing,
-    setIsPromptDialogOpen,
-  ])
-
-  // Apply enhanced prompt
-  const applyEnhancedPrompt = useCallback(() => {
-    if (editablePrompt && editablePrompt.trim()) {
-      setCustomPrompt(editablePrompt.trim())
-      setIsPromptDialogOpen(false)
-      toast({ title: "Enhanced prompt applied successfully!", variant: "success" })
-    } else {
-      toast({ title: "No prompt to apply", variant: "error" })
-    }
-  }, [editablePrompt, setCustomPrompt, setIsPromptDialogOpen, toast])
-
-  // Reset to original prompt
-  const resetToOriginal = useCallback(() => {
-    if (promptEnhancement && promptEnhancement.originalPrompt) {
-      setEditablePrompt(promptEnhancement.originalPrompt)
-      toast({ title: "Reset to original prompt", variant: "info" })
-    }
-  }, [promptEnhancement, setEditablePrompt, toast])
-
-  // Reset to enhanced prompt
-  const resetToEnhanced = useCallback(() => {
-    if (promptEnhancement && promptEnhancement.enhancedPrompt) {
-      setEditablePrompt(promptEnhancement.enhancedPrompt)
-      toast({ title: "Reset to enhanced prompt", variant: "info" })
-    }
-  }, [promptEnhancement, setEditablePrompt, toast])
-
-  const generateImages = useCallback(async () => {
-    if (isGenerating) return
-
-    const selectedTypes = Object.entries(generateTypes).filter(([_, selected]) => selected)
-    if (selectedTypes.length === 0) {
-      toast({
-        title: "No generation types selected",
-        description: "Please select at least one image type to generate.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setIsGenerating(true)
-    setResults({ errors: [] })
-
-    // Initialize progress only for selected types
-    const initialProgress: GenerationProgress = {
-      standard: generateTypes.standard ? "generating" : "idle",
-      dome: generateTypes.dome ? "generating" : "idle",
-      panorama360: generateTypes.panorama360 ? "generating" : "idle",
-    }
-    setGenerationProgress(initialProgress)
-
-    const abortController = new AbortController()
-    abortControllerRef.current = abortController
-
-    try {
-      const baseParams = {
-        dataset,
-        scenario,
-        colorScheme,
-        seed,
-        numSamples,
-        noiseScale,
-        customPrompt,
-        negativePrompt,
-        panoramic360,
-        panoramaFormat,
-        projectionType,
-        provider,
-        replicateModel,
-      }
-
-      let finalPrompt = ""
-      if (customPrompt && customPrompt.trim()) {
-        finalPrompt = customPrompt.trim()
-      } else {
-        finalPrompt = buildPrompt(baseParams)
-      }
-
-      if (!finalPrompt || finalPrompt.length === 0) {
-        throw new Error("Failed to generate prompt")
-      }
-
-      const response = await fetch("/api/generate-ai-art", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: finalPrompt,
-          negativePrompt: negativePrompt || "",
-          dataset: dataset || "vietnamese",
-          scenario: scenario || "trung-sisters",
-          colorScheme: colorScheme || "metallic",
-          seed: seed || 1234,
-          numSamples: numSamples || 4000,
-          noiseScale: noiseScale || 0.08,
-          panoramic360: panoramic360 || false,
-          panoramaFormat: panoramaFormat || "equirectangular",
-          projectionType: projectionType || "fisheye",
-          generateAll: false,
-          provider,
-          replicateModel,
-          generateTypes,
-          selectedAspectRatio,
-          frameless,
-        }),
-        signal: abortController.signal,
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-
-        console.log("[v0] Received API response:", result)
-        console.log("[v0] Result.standard:", result.standard)
-        console.log("[v0] Result.dome:", result.dome)
-        console.log("[v0] Result.panorama360:", result.panorama360)
-        console.log("[v0] Result.errors:", result.errors)
-
-        // Ensure result has the expected structure
-        const safeResult = {
-          standard: generateTypes.standard ? result.standard || null : null,
-          dome: generateTypes.dome ? result.dome || null : null,
-          panorama360: generateTypes.panorama360 ? result.panorama360 || null : null,
-          errors: Array.isArray(result.errors) ? result.errors : [],
-        }
-
-        console.log("[v0] Safe result after processing:")
-        console.log("[v0] SafeResult.standard:", safeResult.standard)
-        console.log("[v0] SafeResult.dome:", safeResult.dome)
-        console.log("[v0] SafeResult.panorama360:", safeResult.panorama360)
-
-        setResults(safeResult)
-
-        const availableTabs = []
-        if (safeResult.standard) availableTabs.push("standard")
-        if (safeResult.dome) availableTabs.push("dome")
-        if (safeResult.panorama360) availableTabs.push("panorama360")
-
-        if (availableTabs.length > 0) {
-          setActiveTab(availableTabs[0])
-        }
-
-        // Update progress based on results
-        setGenerationProgress({
-          standard: safeResult.standard ? "completed" : "failed",
-          dome: safeResult.dome ? "completed" : "failed",
-          panorama360: safeResult.panorama360 ? "completed" : "failed",
-        })
-
-        const successCount = [safeResult.standard, safeResult.dome, safeResult.panorama360].filter(Boolean).length
-        toast({
-          title: `Generated ${successCount}/${Object.values(generateTypes).filter(Boolean).length} images successfully!`,
-          description: "Your artwork has been generated successfully",
-          variant: "success",
-        })
-
-        safeResult.errors.forEach((error: string) => toast({ title: error, variant: "error" }))
-      } else {
-        // Handle non-JSON responses
-        let errorMessage = "Generation failed"
-        try {
-          const error = await response.json()
-          errorMessage = error.error || errorMessage
-        } catch (parseError) {
-          // If response is not JSON, use status text
-          errorMessage = `HTTP ${response.status}: ${response.statusText}`
-        }
-        throw new Error(errorMessage)
-      }
-    } catch (error: any) {
-      if (error.name === "AbortError") {
-        toast({ title: "Generation cancelled", variant: "info" })
-      } else {
-        console.error("Generation error:", error)
-        toast({
-          title: "Generation Failed",
-          description: error.message || "Failed to generate artwork",
-          variant: "destructive",
-        })
-        setGenerationProgress({
-          standard: "failed",
-          dome: "failed",
-          panorama360: "failed",
-        })
-      }
-    } finally {
-      setIsGenerating(false)
-      abortControllerRef.current = null
-    }
-  }, [
-    dataset,
-    scenario,
-    colorScheme,
-    seed,
-    numSamples,
-    noiseScale,
-    customPrompt,
-    negativePrompt,
-    panoramic360,
-    panoramaFormat,
-    projectionType,
-    isGenerating,
-    provider,
-    replicateModel,
-    toast,
-    setResults,
-    setGenerationProgress,
-    setIsGenerating,
-    generateTypes,
-    selectedAspectRatio,
-    frameless,
-  ])
-
-  // Cancel generation
-  const cancelGeneration = useCallback(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
-  }, [])
-
-  // Download image
-  const downloadImage = useCallback(
-    async (imageUrl: string, filename: string) => {
-      if (!imageUrl || !filename) {
-        toast({ title: "Invalid download parameters", variant: "error" })
-        return
-      }
-
-      try {
-        // Create unique filename with comprehensive information
-        const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)
-        const datasetName = dataset.replace(/[^a-zA-Z0-9]/g, "-")
-        const scenarioName = scenario.replace(/[^a-zA-Z0-9]/g, "-")
-        const providerName = provider === "replicate" ? `replicate-${replicateModel.split("/")[1]}` : "openai-dalle3"
-        const colorSchemeName = colorScheme.replace(/[^a-zA-Z0-9]/g, "-")
-
-        const uniqueFilename = `flowsketch-${datasetName}-${scenarioName}-${providerName}-${colorSchemeName}-${timestamp}.png`
-
-        const response = await fetch(
-          `/api/download-proxy?url=${encodeURIComponent(imageUrl)}&filename=${encodeURIComponent(uniqueFilename)}`,
-        )
-        if (response.ok) {
-          const blob = await response.blob()
-          const url = URL.createObjectURL(blob)
-          const a = document.createElement("a")
-          a.href = url
-          a.download = uniqueFilename
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
-          URL.revokeObjectURL(url)
-          toast({ title: `Downloaded ${uniqueFilename}`, variant: "success" })
-        } else {
-          throw new Error("Download failed")
-        }
-      } catch (error: any) {
-        console.error("Download error:", error)
-        toast({ title: `Download failed: ${error.message || "Unknown error"}`, variant: "error" })
-      }
-    },
-    [dataset, scenario, provider, replicateModel, colorScheme, toast],
-  )
-
-  const generateGodlevelPrompt = async () => {
-    if (!editablePrompt) return
-
-    console.log("[v0] Starting godlevel prompt generation")
-    console.log("[v0] Original prompt:", editablePrompt)
-    console.log("[v0] Dataset:", dataset, "Scenario:", scenario, "Color scheme:", colorScheme)
-
-    setIsGeneratingGodlevel(true)
-    try {
-      console.log("[v0] Making API call to /api/generate-godlevel-prompt")
-      const response = await fetch("/api/generate-godlevel-prompt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          originalPrompt: editablePrompt,
-          dataset: dataset,
-          scenario: scenario,
-          colorScheme: colorScheme,
-          maxLength: 4000,
-        }),
-      })
-
-      console.log("[v0] API response status:", response.status)
-      if (!response.ok) {
-        console.error("[v0] API response not ok:", response.status, response.statusText)
-        throw new Error(`Failed to generate godlevel prompt: ${response.status}`)
-      }
-
-      console.log("[v0] Parsing response JSON")
-      const data = await response.json()
-      console.log("[v0] Received godlevel prompt:", data.godlevelPrompt?.substring(0, 100) + "...")
-
-      setEditablePrompt(data.godlevelPrompt)
-
-      setPromptEnhancement({
-        originalPrompt: editablePrompt,
-        enhancedPrompt: data.godlevelPrompt,
-        statistics: {
-          original: { words: editablePrompt.split(" ").length, characters: editablePrompt.length },
-          enhanced: { words: data.godlevelPrompt.split(" ").length, characters: data.godlevelPrompt.length },
-          improvement: {
-            characters: data.godlevelPrompt.length - editablePrompt.length,
-            words: data.godlevelPrompt.split(" ").length - editablePrompt.split(" ").length,
-            percentage: Math.round(
-              ((data.godlevelPrompt.length - editablePrompt.length) / editablePrompt.length) * 100,
-            ),
-          },
-          maxLength: 4000,
-          withinLimit: data.godlevelPrompt.length <= 4000,
-        },
-        variationType: "neuralia-artistic",
-        generationType: "godlevel",
-        enhancementMethod: "godlevel-neuralia",
-      })
-
-      console.log("[v0] Godlevel prompt generation completed successfully")
-    } catch (error) {
-      console.error("[v0] Error generating godlevel prompt:", error)
-      alert("Failed to generate godlevel prompt. Please try again.")
-    } finally {
-      console.log("[v0] Setting isGeneratingGodlevel to false")
-      setIsGeneratingGodlevel(false)
-    }
-  }
-
-  const fetchAspectRatios = async () => {
-    try {
-      const { supabase } = await import("@/lib/supabase")
-
       const { data, error } = await supabase.from("aspect_ratios").select("*").order("name")
 
       if (error) {
@@ -820,927 +141,818 @@ export function FlowArtGenerator() {
         return
       }
 
-      const sanaAspectRatios = [
-        {
-          id: "sana-4k-2-1",
-          name: "SANA 4K 2:1",
-          generation_type: "360",
-          width: 4096,
-          height: 2048,
-          ratio: 2.0,
-          is_default: false,
-          description: "True 2:1 equirectangular for NVIDIA SANA 4K",
-        },
+      const sanaNvidiaRatios: AspectRatio[] = [
+        { id: "sana-4k-2-1", name: "SANA 4K 2:1", width: 4096, height: 2048, ratio: 2.0, generation_type: "360" },
         {
           id: "sana-4k-square",
           name: "SANA 4K Square",
-          generation_type: "standard",
           width: 4096,
           height: 4096,
           ratio: 1.0,
-          is_default: false,
-          description: "4K square format for NVIDIA SANA",
-        },
-        {
-          id: "sana-4k-21-9",
-          name: "SANA 4K 21:9",
-          generation_type: "360",
-          width: 3072,
-          height: 1280,
-          ratio: 2.4,
-          is_default: false,
-          description: "Ultra-wide 21:9 for NVIDIA SANA",
-        },
-        {
-          id: "sana-4k-16-9",
-          name: "SANA 4K 16:9",
           generation_type: "standard",
-          width: 2688,
-          height: 1536,
-          ratio: 1.75,
-          is_default: false,
-          description: "Widescreen 16:9 for NVIDIA SANA",
         },
         {
-          id: "sana-4k-dome",
-          name: "SANA 4K Dome",
-          generation_type: "dome",
-          width: 4096,
-          height: 4096,
+          id: "flux-4mp-square",
+          name: "FLUX 4MP Square",
+          width: 2048,
+          height: 2048,
           ratio: 1.0,
-          is_default: false,
-          description: "4K dome projection for NVIDIA SANA",
+          generation_type: "standard",
         },
+        { id: "flux-21-9", name: "FLUX 21:9", width: 2688, height: 1536, ratio: 1.78, generation_type: "360" },
+        { id: "sana-4k-4-3", name: "SANA 4K 4:3", width: 2304, height: 1792, ratio: 1.33, generation_type: "cubemap" },
+        { id: "dome-fisheye", name: "Dome Fisheye", width: 2048, height: 2048, ratio: 1.0, generation_type: "dome" },
       ]
 
-      // Combine database aspect ratios with NVIDIA SANA options
-      const allAspectRatios = [...(data || []), ...sanaAspectRatios]
-      setAspectRatios(allAspectRatios)
+      const allRatios = [...(data || []), ...sanaNvidiaRatios]
+      setAspectRatios(allRatios)
 
-      // Set default aspect ratios
-      const defaults = {
-        standard: allAspectRatios?.find((ar) => ar.generation_type === "standard" && ar.is_default)?.id,
-        dome: allAspectRatios?.find((ar) => ar.generation_type === "dome" && ar.is_default)?.id,
-        "360": allAspectRatios?.find((ar) => ar.generation_type === "360" && ar.is_default)?.id,
-      }
-      setSelectedAspectRatio(defaults)
+      // Set model-specific defaults
+      setSelectedAspectRatio({
+        standard: "sana-4k-square", // NVIDIA SANA 4K by default
+        dome: "dome-fisheye", // Fixed dome resolution
+        "360": "sana-4k-2-1", // Closest to 2:1 ratio
+        cubemap: "sana-4k-4-3", // 4:3 for cubemap
+      })
     } catch (error) {
-      console.error("Error loading aspect ratios:", error)
+      console.error("Error fetching aspect ratios:", error)
+    }
+  }, [])
+
+  const handleDatasetChange = (newDataset: string) => {
+    setDataset(newDataset)
+    const scenarios = getScenarios(newDataset)
+    const firstScenario = Object.keys(scenarios)[0]
+    if (firstScenario) {
+      setScenario(firstScenario)
     }
   }
 
+  const randomizeDataset = () => {
+    const datasets = Object.keys(CULTURAL_DATASETS)
+    const randomDataset = datasets[Math.floor(Math.random() * datasets.length)]
+    handleDatasetChange(randomDataset)
+
+    const colorSchemes = Object.keys(COLOR_SCHEMES)
+    const randomColorScheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)]
+    setColorScheme(randomColorScheme)
+  }
+
+  const randomizeScenario = () => {
+    const scenarios = getScenarios(dataset)
+    const scenarioKeys = Object.keys(scenarios)
+    const randomScenario = scenarioKeys[Math.floor(Math.random() * scenarioKeys.length)]
+    setScenario(randomScenario)
+  }
+
+  const randomizeColorScheme = () => {
+    const colorSchemes = Object.keys(COLOR_SCHEMES)
+    const randomColorScheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)]
+    setColorScheme(randomColorScheme)
+  }
+
+  const randomizeTechnicalParams = () => {
+    setTechnicalParams({
+      seed: Math.floor(Math.random() * 10000),
+      numSamples: Math.floor(Math.random() * 6000) + 2000,
+      noiseScale: Math.random() * 0.15 + 0.05,
+      timeStep: Math.random() * 0.08 + 0.01,
+    })
+  }
+
+  const randomizeAll = () => {
+    randomizeDataset()
+    randomizeColorScheme()
+    randomizeTechnicalParams()
+    toast({
+      title: "All Parameters Randomized",
+      description: "Dataset, scenario, color scheme, and technical parameters randomized",
+    })
+  }
+
+  const generateArt = async () => {
+    if (!dataset || !scenario) {
+      toast({
+        title: "Missing Information",
+        description: "Please select a dataset and scenario.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsGenerating(true)
+    setResults({})
+
+    try {
+      const response = await fetch("/api/generate-ai-art", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dataset,
+          scenario,
+          colorScheme,
+          customPrompt,
+          generateTypes,
+          selectedAspectRatio,
+          selectedModel,
+          domeEffect,
+          frameless,
+          technicalParams,
+          generateAll: false,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to generate art")
+      }
+
+      const data = await response.json()
+      console.log("[v0] API response received:", data)
+
+      const newResults: GenerationResult = {}
+      if (data.standard) newResults.standard = data.standard
+      if (data.dome) newResults.dome = data.dome
+      if (data.panorama360) newResults.panorama360 = data.panorama360
+      if (data.cubemap) newResults.cubemap = data.cubemap
+
+      console.log("[v0] Extracted results:", newResults)
+      setResults(newResults)
+
+      // Set active tab to first available result
+      const availableTabs = Object.keys(newResults) as (keyof GenerationResult)[]
+      if (availableTabs.length > 0) {
+        setActiveTab(availableTabs[0])
+        console.log("[v0] Set active tab to:", availableTabs[0])
+      }
+
+      toast({
+        title: "Art Generated Successfully",
+        description: "Your AI art has been generated!",
+      })
+    } catch (error) {
+      console.error("Error generating art:", error)
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate art. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  const enhancePrompt = async () => {
+    if (!customPrompt || !customPrompt.trim()) {
+      toast({
+        title: "No Prompt",
+        description: "Please enter a prompt to enhance.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    try {
+      const response = await fetch("/api/enhance-prompt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          originalPrompt: customPrompt || "",
+          dataset,
+          scenario,
+          colorScheme,
+          technicalParams,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to enhance prompt")
+      }
+
+      const data = await response.json()
+      setCustomPrompt(data.enhancedPrompt || "")
+
+      toast({
+        title: "Prompt Enhanced",
+        description: "Your prompt has been enhanced with AI assistance.",
+      })
+    } catch (error) {
+      console.error("Error enhancing prompt:", error)
+      toast({
+        title: "Enhancement Failed",
+        description: "Failed to enhance prompt. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const previewEnhancedPrompt = async () => {
+    setIsPreviewing(true)
+    try {
+      const response = await fetch("/api/preview-ai-prompt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dataset,
+          scenario,
+          colorScheme,
+          customPrompt,
+          technicalParams,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to preview prompt")
+      }
+
+      const data = await response.json()
+      setPreviewPrompt(data.prompt)
+
+      toast({
+        title: "Prompt Preview Generated",
+        description: "Preview of enhanced prompt is ready",
+      })
+    } catch (error) {
+      console.error("Error previewing prompt:", error)
+      toast({
+        title: "Preview Failed",
+        description: "Failed to generate prompt preview",
+        variant: "destructive",
+      })
+    } finally {
+      setIsPreviewing(false)
+    }
+  }
+
+  const applyGodlevelNeuralia = async () => {
+    if (!results[activeTab as keyof GenerationResult]) {
+      toast({
+        title: "No Image Selected",
+        description: "Please generate an image first",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsEnhancing(true)
+    try {
+      const response = await fetch("/api/generate-godlevel-prompt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dataset,
+          scenario,
+          colorScheme,
+          customPrompt,
+          imageType: activeTab,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to apply godlevel neuralia")
+      }
+
+      const data = await response.json()
+      setCustomPrompt(data.enhancedPrompt)
+
+      toast({
+        title: "Godlevel Neuralia Applied",
+        description: "Advanced neuralia enhancements applied to prompt",
+      })
+    } catch (error) {
+      console.error("Error applying godlevel neuralia:", error)
+      toast({
+        title: "Enhancement Failed",
+        description: "Failed to apply godlevel neuralia",
+        variant: "destructive",
+      })
+    } finally {
+      setIsEnhancing(false)
+    }
+  }
+
+  const returnToPrompt = () => {
+    setCustomPrompt("")
+    setPreviewPrompt("")
+    toast({
+      title: "Returned to Prompt",
+      description: "Cleared custom prompt and preview",
+    })
+  }
+
   useEffect(() => {
+    loadGenerationPreferences()
     fetchAspectRatios()
-  }, [])
+  }, [loadGenerationPreferences, fetchAspectRatios])
+
+  useEffect(() => {
+    const availableTypes = Object.entries(generateTypes)
+      .filter(([_, enabled]) => enabled)
+      .map(([type]) => type)
+
+    if (availableTypes.length > 0 && !availableTypes.includes(activeTab)) {
+      setActiveTab(availableTypes[0] as keyof GenerationResult)
+    }
+  }, [generateTypes, activeTab])
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              FlowSketch Art Generator
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-2">
-              Generate professional-quality AI art with perfect 360° seamless wrapping, dome projections, and cultural
-              authenticity
-            </p>
-          </div>
-          <div className="flex gap-2"></div>
+    <div className="min-h-screen bg-background p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-2">FlowSketch Art Generator</h1>
+          <p className="text-muted-foreground">
+            Create stunning AI art with cultural datasets and advanced generation techniques
+          </p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-2">
-          <Badge variant="secondary">GODLEVEL Quality</Badge>
-          <Badge variant="secondary">360° VR Ready</Badge>
-          <Badge variant="secondary">Dome Projection</Badge>
-          <Badge variant="secondary">ChatGPT Enhanced</Badge>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Controls Panel */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* Dataset Selection */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                Cultural Dataset
-                <Button variant="ghost" size="sm" onClick={randomizeDataset} title="Randomize Dataset">
-                  🎲
-                </Button>
-              </CardTitle>
-              <CardDescription>Choose from authentic cultural heritage collections</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="dataset">Dataset</Label>
-                <Select value={dataset} onValueChange={handleDatasetChange}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(CULTURAL_DATASETS).map(([key, value]) => (
-                      <SelectItem key={key} value={key}>
-                        {value.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="scenario">Scenario</Label>
-                <Select value={scenario} onValueChange={setScenario}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {scenarioEntries.map(([key]) => (
-                      <SelectItem key={key} value={key}>
-                        {key
-                          .split("-")
-                          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                          .join(" ")}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="colorScheme">Color Scheme</Label>
-                <Select value={colorScheme} onValueChange={setColorScheme}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(COLOR_SCHEMES).map(([key, value]) => (
-                      <SelectItem key={key} value={key}>
-                        <div className="flex flex-col">
-                          <span className="capitalize">{key}</span>
-                          <span className="text-xs text-muted-foreground">{value}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Technical Parameters */}
-          <Card>
-            <CardHeader>
-              {/* Added aspect ratio selection UI in Technical Parameters section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Panel - Controls */}
+          <div className="space-y-6">
+            {/* Cultural Dataset Selection */}
+            <div className="bg-card rounded-lg p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  Technical Parameters
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={randomizeTechnicalParams}
-                    title="Randomize Technical Parameters"
+                <h3 className="text-lg font-semibold">Cultural Dataset</h3>
+                <button
+                  onClick={randomizeDataset}
+                  className="p-2 rounded-md hover:bg-muted transition-colors"
+                  title="Randomize dataset and scenario"
+                >
+                  🎲
+                </button>
+              </div>
+
+              <select
+                value={dataset}
+                onChange={(e) => handleDatasetChange(e.target.value)}
+                className="w-full p-3 rounded-md border bg-background"
+              >
+                {Object.entries(CULTURAL_DATASETS).map(([key, data]) => (
+                  <option key={key} value={key}>
+                    {data.name}
+                  </option>
+                ))}
+              </select>
+
+              {/* Scenario Selection */}
+              {scenarioEntries.length > 0 && (
+                <div className="flex gap-2">
+                  <select
+                    value={scenario}
+                    onChange={(e) => setScenario(e.target.value)}
+                    className="flex-1 p-3 rounded-md border bg-background"
+                  >
+                    {scenarioEntries.map(([key, data]) => (
+                      <option key={key} value={key}>
+                        {data.name || key}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={randomizeScenario}
+                    className="p-3 rounded-md hover:bg-muted transition-colors"
+                    title="Randomize scenario"
                   >
                     🎲
-                  </Button>
-                </CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <Label htmlFor="seed">Seed</Label>
-                  <Button variant="ghost" size="sm" onClick={randomizeSeed}>
-                    ⟲
-                  </Button>
-                </div>
-                <div className="flex gap-2">
-                  <Slider
-                    value={[seed]}
-                    onValueChange={(value) => setSeed(value[0])}
-                    max={9999}
-                    min={1}
-                    step={1}
-                    className="flex-1"
-                  />
-                  <span className="text-sm text-muted-foreground w-12">{seed}</span>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="numSamples">Data Points</Label>
-                <div className="flex gap-2">
-                  <Slider
-                    value={[numSamples]}
-                    onValueChange={(value) => setNumSamples(value[0])}
-                    max={8000}
-                    min={1000}
-                    step={500}
-                    className="flex-1"
-                  />
-                  <span className="text-sm text-muted-foreground w-12">{numSamples}</span>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="noiseScale">Noise Scale</Label>
-                <div className="flex gap-2">
-                  <Slider
-                    value={[noiseScale]}
-                    onValueChange={(value) => setNoiseScale(value[0])}
-                    max={0.2}
-                    min={0.01}
-                    step={0.01}
-                    className="flex-1"
-                  />
-                  <span className="text-sm text-muted-foreground w-12">{noiseScale.toFixed(2)}</span>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="standardAspectRatio" className="text-sm">
-                    Standard Image Aspect Ratio
-                  </Label>
-                  <Select
-                    value={selectedAspectRatio.standard || ""}
-                    onValueChange={(value) => setSelectedAspectRatio((prev) => ({ ...prev, standard: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select aspect ratio" placeholder placeholder="Select aspect ratio" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {aspectRatios
-                        .filter((ar) => ar.generation_type === "standard" || ar.generation_type === "all")
-                        .map((aspectRatio) => (
-                          <SelectItem key={aspectRatio.id} value={aspectRatio.id}>
-                            <div className="flex flex-col">
-                              <span>{aspectRatio.name}</span>
-                              <span className="text-xs text-muted-foreground">
-                                {aspectRatio.width}×{aspectRatio.height} ({aspectRatio.ratio}:1)
-                              </span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="domeAspectRatio" className="text-sm">
-                    Dome Projection Aspect Ratio
-                  </Label>
-                  <Select
-                    value={selectedAspectRatio.dome || ""}
-                    onValueChange={(value) => setSelectedAspectRatio((prev) => ({ ...prev, dome: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select aspect ratio" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {aspectRatios
-                        .filter((ar) => ar.generation_type === "dome" || ar.generation_type === "all")
-                        .map((aspectRatio) => (
-                          <SelectItem key={aspectRatio.id} value={aspectRatio.id}>
-                            <div className="flex flex-col">
-                              <span>{aspectRatio.name}</span>
-                              <span className="text-xs text-muted-foreground">
-                                {aspectRatio.width}×{aspectRatio.height} ({aspectRatio.ratio}:1)
-                              </span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="360AspectRatio" className="text-sm">
-                    360° Panorama Aspect Ratio
-                  </Label>
-                  <Select
-                    value={selectedAspectRatio["360"] || ""}
-                    onValueChange={(value) => setSelectedAspectRatio((prev) => ({ ...prev, "360": value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select aspect ratio" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {aspectRatios
-                        .filter((ar) => ar.generation_type === "360" || ar.generation_type === "all")
-                        .map((aspectRatio) => (
-                          <SelectItem key={aspectRatio.id} value={aspectRatio.id}>
-                            <div className="flex flex-col">
-                              <span>{aspectRatio.name}</span>
-                              <span className="text-xs text-muted-foreground">
-                                {aspectRatio.width}×{aspectRatio.height} ({aspectRatio.ratio}:1)
-                              </span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Projection Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">Projection Settings</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="panoramaFormat">360° Format</Label>
-                <Select value={panoramaFormat} onValueChange={setPanoramaFormat}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="equirectangular">
-                      <div className="flex flex-col">
-                        <span>Equirectangular</span>
-                        <span className="text-xs text-muted-foreground">Perfect seamless wrapping for VR</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="stereographic">
-                      <div className="flex flex-col">
-                        <span>Stereographic</span>
-                        <span className="text-xs text-muted-foreground">Little planet fisheye effect</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="projectionType">Dome Projection</Label>
-                <Select value={projectionType} onValueChange={setProjectionType}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="fisheye">
-                      <div className="flex flex-col">
-                        <span>Fisheye</span>
-                        <span className="text-xs text-muted-foreground">Standard dome projection</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="tunnel-up">
-                      <div className="flex flex-col">
-                        <span>Tunnel Up</span>
-                        <span className="text-xs text-muted-foreground">Looking up through tunnel</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="tunnel-down">
-                      <div className="flex flex-col">
-                        <span>Tunnel Down</span>
-                        <span className="text-xs text-muted-foreground">Looking down through tunnel</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="little-planet">
-                      <div className="flex flex-col">
-                        <span>Little Planet</span>
-                        <span className="text-xs text-muted-foreground">Curved horizon planet view</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Prompt Enhancement */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">Prompt Enhancement</CardTitle>
-              <CardDescription>Use ChatGPT to enhance your prompts for better results</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="negativePrompt">Negative Prompt (Optional)</Label>
-                <Textarea
-                  id="negativePrompt"
-                  value={negativePrompt}
-                  onChange={(e) => setNegativePrompt(e.target.value)}
-                  placeholder="Enter words or elements you want to avoid in the generated image (e.g., blurry, low quality, distorted faces, text, watermarks)"
-                  className="min-h-[80px] text-sm"
-                />
-                <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
-                  <span>Specify what to exclude from generation</span>
-                  <span>{negativePrompt.length} characters</span>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="variationType">Enhancement Level</Label>
-                <Select value={variationType} onValueChange={setVariationType}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="slight">
-                      <div className="flex flex-col">
-                        <span>Slight (+20%)</span>
-                        <span className="text-xs text-muted-foreground">Subtle improvements</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="moderate">
-                      <div className="flex flex-col">
-                        <span>Moderate (+50%)</span>
-                        <span className="text-xs text-muted-foreground">Balanced enhancement</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="dramatic">
-                      <div className="flex flex-col">
-                        <span>Dramatic (+80%)</span>
-                        <span className="text-xs text-muted-foreground">Maximum enhancement</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={previewPrompt}
-                  className="flex-1 px-3 py-2 text-sm bg-secondary hover:bg-secondary/80 rounded-md"
-                >
-                  <span className="text-slate-800">👁</span> Preview
-                </button>
-                <button
-                  onClick={refreshSite}
-                  className="px-3 py-2 text-sm bg-secondary hover:bg-secondary/80 rounded-md"
-                >
-                  🔄
-                </button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* AI Provider Selection Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">🤖 AI Provider</CardTitle>
-              <CardDescription>Choose your preferred image generation provider</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="provider">Provider</Label>
-                <Select value={provider} onValueChange={(value: "openai" | "replicate") => setProvider(value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="replicate">
-                      <div className="flex flex-col">
-                        <span>Replicate Models</span>
-                        <span className="text-xs text-muted-foreground">Multiple model options available</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="openai">
-                      <div className="flex flex-col">
-                        <span>OpenAI DALL-E 3</span>
-                        <span className="text-xs text-muted-foreground">High-quality, reliable generation</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {provider === "replicate" && (
-                <div>
-                  <Label htmlFor="replicateModel">Model</Label>
-                  <Select value={replicateModel} onValueChange={setReplicateModel}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(REPLICATE_MODELS).map(([key, model]) => (
-                        <SelectItem key={key} value={key}>
-                          <div className="flex flex-col">
-                            <span>{model.name}</span>
-                            <span className="text-xs text-muted-foreground">{model.description}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              <div className="text-xs text-muted-foreground">
-                {provider === "replicate" ? (
-                  <span>🔬 Replicate offers various models with different strengths and artistic styles</span>
-                ) : (
-                  <span>
-                    <span className="text-slate-800">✨</span> DALL-E 3 HD with natural style for photorealistic results
-                  </span>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Generation Controls */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">Generate Art</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {isGenerating ? (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Generating...</span>
-                    <Button variant="outline" size="sm" onClick={cancelGeneration}>
-                      ⟲ Cancel
-                    </Button>
-                  </div>
-
-                  <div className="space-y-2">
-                    {generateTypes.standard && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-2">Standard</span>
-                        <span className="text-muted-foreground">{generationProgress.standard}</span>
-                      </div>
-                    )}
-                    {generateTypes.dome && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-2">Dome</span>
-                        <span className="text-muted-foreground">{generationProgress.dome}</span>
-                      </div>
-                    )}
-                    {generateTypes.panorama360 && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-2">360° Panorama</span>
-                        <span className="text-muted-foreground">{generationProgress.panorama360}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-medium">Generate Types</h3>
-                    <div className="grid grid-cols-3 gap-3">
-                      <label className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={generateTypes.standard}
-                          onChange={(e) => updateGenerateTypes((prev) => ({ ...prev, standard: e.target.checked }))}
-                          className="rounded border-gray-300"
-                        />
-                        <span className="text-sm">Standard</span>
-                      </label>
-                      <label className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={generateTypes.dome}
-                          onChange={(e) => updateGenerateTypes((prev) => ({ ...prev, dome: e.target.checked }))}
-                          className="rounded border-gray-300"
-                        />
-                        <span className="text-sm">Dome</span>
-                      </label>
-                      <label className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={generateTypes.panorama360}
-                          onChange={(e) => updateGenerateTypes((prev) => ({ ...prev, panorama360: e.target.checked }))}
-                          className="rounded border-gray-300"
-                        />
-                        <span className="text-sm">360° VR</span>
-                      </label>
-                    </div>
-
-                    <div className="pt-2 border-t">
-                      <label className="flex items-center space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={frameless}
-                          onChange={(e) => setFrameless(e.target.checked)}
-                          className="rounded border-gray-300"
-                        />
-                        <span className="text-sm">Frameless (no enhancement wrapper)</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={generateImages}
-                    className="w-full py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 font-medium"
-                  >
-                    🎨 Generate Art
                   </button>
                 </div>
               )}
 
-              {customPrompt && (
-                <Alert>
-                  <span className="text-sm font-medium">
-                    Using custom enhanced prompt ({customPrompt.length} characters)
-                  </span>
-                </Alert>
+              {/* Color Scheme Selection */}
+              <div className="flex gap-2">
+                <select
+                  value={colorScheme}
+                  onChange={(e) => setColorScheme(e.target.value)}
+                  className="flex-1 p-3 rounded-md border bg-background"
+                >
+                  {Object.entries(COLOR_SCHEMES).map(([key, data]) => (
+                    <option key={key} value={key}>
+                      {key.charAt(0).toUpperCase() + key.slice(1)} - {data}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={randomizeColorScheme}
+                  className="p-3 rounded-md hover:bg-muted transition-colors"
+                  title="Randomize color scheme"
+                >
+                  🎲
+                </button>
+              </div>
+            </div>
+
+            {/* Technical Parameters */}
+            <div className="bg-card rounded-lg p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Technical Parameters</h3>
+                <button
+                  onClick={randomizeTechnicalParams}
+                  className="p-2 rounded-md hover:bg-muted transition-colors"
+                  title="Randomize technical parameters"
+                >
+                  🎲
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Seed: {technicalParams.seed}</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="10000"
+                    value={technicalParams.seed}
+                    onChange={(e) => setTechnicalParams((prev) => ({ ...prev, seed: Number.parseInt(e.target.value) }))}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Samples: {technicalParams.numSamples}</label>
+                  <input
+                    type="range"
+                    min="1000"
+                    max="8000"
+                    step="100"
+                    value={technicalParams.numSamples}
+                    onChange={(e) =>
+                      setTechnicalParams((prev) => ({ ...prev, numSamples: Number.parseInt(e.target.value) }))
+                    }
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Noise: {technicalParams.noiseScale.toFixed(3)}</label>
+                  <input
+                    type="range"
+                    min="0.01"
+                    max="0.2"
+                    step="0.001"
+                    value={technicalParams.noiseScale}
+                    onChange={(e) =>
+                      setTechnicalParams((prev) => ({ ...prev, noiseScale: Number.parseFloat(e.target.value) }))
+                    }
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Time Step: {technicalParams.timeStep.toFixed(3)}</label>
+                  <input
+                    type="range"
+                    min="0.005"
+                    max="0.1"
+                    step="0.001"
+                    value={technicalParams.timeStep}
+                    onChange={(e) =>
+                      setTechnicalParams((prev) => ({ ...prev, timeStep: Number.parseFloat(e.target.value) }))
+                    }
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Custom Prompt */}
+            <div className="bg-card rounded-lg p-6 space-y-4">
+              <h3 className="text-lg font-semibold">Custom Prompt</h3>
+              <textarea
+                value={customPrompt}
+                onChange={(e) => setCustomPrompt(e.target.value)}
+                placeholder="Enter your custom prompt here..."
+                className="w-full p-3 rounded-md border bg-background min-h-[100px] resize-vertical"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={enhancePrompt}
+                  disabled={!customPrompt || !customPrompt.trim()}
+                  className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-md hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Enhance Prompt
+                </button>
+                <button
+                  onClick={previewEnhancedPrompt}
+                  disabled={isPreviewing}
+                  className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-md hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                >
+                  <Eye className="w-4 h-4" />
+                  {isPreviewing ? "Previewing..." : "Preview"}
+                </button>
+              </div>
+
+              {/* Preview Prompt Display */}
+              {previewPrompt && (
+                <div className="mt-4 p-3 bg-muted rounded-md">
+                  <h4 className="text-sm font-semibold mb-2">Preview:</h4>
+                  <p className="text-sm text-muted-foreground">{previewPrompt}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Generation Types */}
+            <div className="bg-card rounded-lg p-6 space-y-4">
+              <h3 className="text-lg font-semibold">Generation Types</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={generateTypes.standard}
+                    onChange={(e) => updateGenerateTypes((prev) => ({ ...prev, standard: e.target.checked }))}
+                  />
+                  <span>Standard</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={generateTypes.dome}
+                    onChange={(e) => updateGenerateTypes((prev) => ({ ...prev, dome: e.target.checked }))}
+                  />
+                  <span>180° Dome</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={generateTypes.panorama360}
+                    onChange={(e) => updateGenerateTypes((prev) => ({ ...prev, panorama360: e.target.checked }))}
+                  />
+                  <span>360° Equirectangular</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={generateTypes.cubemap}
+                    onChange={(e) => updateGenerateTypes((prev) => ({ ...prev, cubemap: e.target.checked }))}
+                  />
+                  <span>Cubemap</span>
+                </label>
+              </div>
+
+              <label className="flex items-center space-x-2">
+                <input type="checkbox" checked={frameless} onChange={(e) => setFrameless(e.target.checked)} />
+                <span>Frameless (no enhancement wrappers)</span>
+              </label>
+            </div>
+
+            {/* Model and Effect Selection */}
+            <div className="bg-card rounded-lg p-6 space-y-4">
+              <h3 className="text-lg font-semibold">Model & Effects</h3>
+
+              {generateTypes.standard && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">Standard Model</label>
+                  <select
+                    value={selectedModel.standard}
+                    onChange={(e) =>
+                      setSelectedModel((prev) => ({ ...prev, standard: e.target.value as "flux" | "nvidia-sana" }))
+                    }
+                    className="w-full p-2 rounded-md border bg-background text-sm"
+                  >
+                    <option value="nvidia-sana">NVIDIA SANA (4K - Best Resolution)</option>
+                    <option value="flux">FLUX 1.1 Pro Ultra (4MP)</option>
+                  </select>
+                </div>
               )}
 
-              {negativePrompt && (
-                <Alert>
-                  <span className="text-sm font-medium">
-                    Using negative prompt ({negativePrompt.length} characters) - excluding specified elements
-                  </span>
-                </Alert>
+              {generateTypes.dome && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">180° Dome Effect</label>
+                  <select
+                    value={domeEffect}
+                    onChange={(e) => setDomeEffect(e.target.value as "fisheye" | "little-planet" | "tunnel-up")}
+                    className="w-full p-2 rounded-md border bg-background text-sm"
+                  >
+                    <option value="fisheye">Fisheye Projection</option>
+                    <option value="little-planet">Little Planet</option>
+                    <option value="tunnel-up">Tunnel Up</option>
+                  </select>
+                </div>
               )}
-            </CardContent>
-          </Card>
-        </div>
 
-        {/* Results Panel */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="flex justify-center mb-4">
-            <Button
-              variant="outline"
-              size="lg"
+              {generateTypes.panorama360 && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">360° Equirectangular</label>
+                  <div className="p-2 bg-muted rounded-md text-sm text-muted-foreground">
+                    Locked to closest 2:1 ratio (4096×2048) for optimal equirectangular format
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="bg-card rounded-lg p-6 space-y-4">
+              <h3 className="text-lg font-semibold">Resolution Settings</h3>
+
+              {generateTypes.standard && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Standard Resolution ({selectedModel.standard === "nvidia-sana" ? "NVIDIA SANA 4K" : "FLUX 4MP"})
+                  </label>
+                  <select
+                    value={selectedAspectRatio.standard || ""}
+                    onChange={(e) => setSelectedAspectRatio((prev) => ({ ...prev, standard: e.target.value }))}
+                    className="w-full p-2 rounded-md border bg-background text-sm"
+                  >
+                    {selectedModel.standard === "nvidia-sana" ? (
+                      <>
+                        <option value="sana-4k-square">4096×4096 (Square - Best Quality)</option>
+                        <option value="sana-4k-16-9">2688×1536 (16:9)</option>
+                        <option value="sana-4k-4-3">2304×1792 (4:3)</option>
+                      </>
+                    ) : (
+                      <>
+                        <option value="flux-4mp-square">2048×2048 (Square - 4MP)</option>
+                        <option value="flux-16-9">2688×1536 (16:9)</option>
+                        <option value="flux-4-3">2304×1792 (4:3)</option>
+                      </>
+                    )}
+                  </select>
+                </div>
+              )}
+
+              {generateTypes.cubemap && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">Cubemap Resolution</label>
+                  <select
+                    value={selectedAspectRatio.cubemap || ""}
+                    onChange={(e) => setSelectedAspectRatio((prev) => ({ ...prev, cubemap: e.target.value }))}
+                    className="w-full p-2 rounded-md border bg-background text-sm"
+                  >
+                    <option value="sana-4k-4-3">2304×1792 (4:3 - Best for Environment Mapping)</option>
+                    <option value="cubemap-hd">1600×1200 (4:3 HD)</option>
+                    <option value="cubemap-standard">1280×960 (4:3 Standard)</option>
+                  </select>
+                </div>
+              )}
+
+              {generateTypes.dome && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">180° Dome Resolution</label>
+                  <div className="p-2 bg-muted rounded-md text-sm text-muted-foreground">
+                    Fixed at 2048×2048 (Best resolution for dome projection)
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Randomize All Button */}
+            <button
               onClick={randomizeAll}
-              className="text-lg px-6 py-3 bg-transparent"
-              title="Randomize Everything"
+              className="w-full bg-accent text-accent-foreground py-3 px-6 rounded-md hover:bg-accent/90 transition-colors text-lg font-semibold flex items-center justify-center gap-2"
             >
-              🎲 Randomize All
-            </Button>
+              <RefreshCw className="w-5 h-5" />
+              Randomize All
+            </button>
+
+            {/* Generate Button */}
+            <button
+              onClick={generateArt}
+              disabled={isGenerating}
+              className="w-full bg-primary text-primary-foreground py-3 px-6 rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg font-semibold"
+            >
+              {isGenerating ? "Generating..." : "Generate Art"}
+            </button>
           </div>
 
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">Generated Images</CardTitle>
-              <CardDescription>
-                Professional-quality AI art with seamless 360° wrapping and dome projection
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="standard" className="flex items-center gap-2" disabled={!generateTypes.standard}>
-                    Standard
-                    {results.standard && "✓"}
-                  </TabsTrigger>
-                  <TabsTrigger value="dome" className="flex items-center gap-2" disabled={!generateTypes.dome}>
-                    Dome
-                    {results.dome && "✓"}
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="panorama360"
-                    className="flex items-center gap-2"
-                    disabled={!generateTypes.panorama360}
+          {/* Right Panel - Results */}
+          <div className="space-y-6">
+            <div className="bg-card rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Generated Images</h3>
+
+              {/* Tabs */}
+              <div className="flex space-x-1 mb-4 bg-muted p-1 rounded-lg">
+                {generateTypes.standard && (
+                  <button
+                    onClick={() => setActiveTab("standard")}
+                    className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
+                      activeTab === "standard"
+                        ? "bg-background text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
                   >
-                    360° VR
-                    {results.panorama360 && "✓"}
-                  </TabsTrigger>
-                </TabsList>
+                    Standard
+                  </button>
+                )}
+                {generateTypes.dome && (
+                  <button
+                    onClick={() => setActiveTab("dome")}
+                    className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
+                      activeTab === "dome"
+                        ? "bg-background text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Dome
+                  </button>
+                )}
+                {generateTypes.panorama360 && (
+                  <button
+                    onClick={() => setActiveTab("panorama360")}
+                    className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
+                      activeTab === "panorama360"
+                        ? "bg-background text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    360°
+                  </button>
+                )}
+                {generateTypes.cubemap && (
+                  <button
+                    onClick={() => setActiveTab("cubemap")}
+                    className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${
+                      activeTab === "cubemap"
+                        ? "bg-background text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    Cubemap
+                  </button>
+                )}
+              </div>
 
-                <TabsContent value="standard" className="space-y-4">
-                  {results.standard ? (
-                    <div className="space-y-4">
-                      <div className="relative">
-                        {/* Updated aspect ratio display in results section to use dynamic ratios */}
-                        <AspectRatio
-                          ratio={aspectRatios.find((ar) => ar.id === selectedAspectRatio.standard)?.ratio || 1}
-                        >
-                          <img
-                            src={results.standard || "/placeholder.svg"}
-                            alt="Standard generated art"
-                            className="rounded-lg object-cover w-full h-full"
-                          />
-                        </AspectRatio>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => downloadImage(results.standard!, `flowsketch-standard-${seed}.png`)}
-                          className="px-4 py-2 bg-secondary hover:bg-secondary/80 rounded-md text-sm"
-                        >
-                          ⬇ Download Standard
-                        </button>
-                      </div>
+              {/* Image Display */}
+              <div className="min-h-[400px] flex items-center justify-center bg-muted rounded-lg">
+                {isGenerating ? (
+                  <div className="text-center space-y-2">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                    <p className="text-sm text-muted-foreground">Generating images...</p>
+                  </div>
+                ) : results[activeTab as keyof GenerationResult] ? (
+                  <div className="w-full space-y-4">
+                    {console.log(
+                      "[v0] Displaying image for tab:",
+                      activeTab,
+                      "URL:",
+                      results[activeTab as keyof GenerationResult],
+                    )}
+                    <img
+                      src={results[activeTab as keyof GenerationResult] || "/placeholder.svg"}
+                      alt={`Generated ${activeTab} art`}
+                      className="w-full h-auto rounded-lg"
+                      onLoad={() => console.log("[v0] Image loaded successfully for tab:", activeTab)}
+                      onError={(e) => {
+                        console.error("[v0] Image failed to load for tab:", activeTab, "Error:", e)
+                        console.error("[v0] Image URL:", results[activeTab as keyof GenerationResult])
+                      }}
+                    />
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={enhancePrompt}
+                        className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-md hover:bg-secondary/80 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <ArrowUp className="w-4 h-4" />
+                        Enhance
+                      </button>
+                      <button
+                        onClick={applyGodlevelNeuralia}
+                        disabled={isEnhancing}
+                        className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-md hover:bg-secondary/80 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        {isEnhancing ? "Applying..." : "Godlevel Neuralia"}
+                      </button>
+                      <button
+                        onClick={() => setCustomPrompt(previewPrompt || customPrompt)}
+                        className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-md hover:bg-secondary/80 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                        Apply
+                      </button>
+                      <button
+                        onClick={returnToPrompt}
+                        className="flex-1 bg-secondary text-secondary-foreground py-2 px-4 rounded-md hover:bg-secondary/80 transition-colors"
+                      >
+                        Return to Prompt
+                      </button>
                     </div>
-                  ) : (
-                    <div className="flex items-center justify-center h-64 border-2 border-dashed border-muted-foreground/25 rounded-lg">
-                      <div className="text-center space-y-2">
-                        <span className="text-muted-foreground">Standard image will appear here</span>
-                      </div>
+                  </div>
+                ) : (
+                  <div className="text-center space-y-2">
+                    {console.log("[v0] No image for tab:", activeTab, "Results object:", results)}
+                    <p className="text-muted-foreground">No {activeTab} image generated yet</p>
+                    <p className="text-sm text-muted-foreground">Click "Generate Art" to create images</p>
+                    {/* Debug info */}
+                    <div className="text-xs text-muted-foreground mt-2">
+                      <p>Active tab: {activeTab}</p>
+                      <p>Available results: {Object.keys(results).join(", ") || "none"}</p>
                     </div>
-                  )}
-                </TabsContent>
-
-                <TabsContent value="dome" className="space-y-4">
-                  {results.dome ? (
-                    <div className="space-y-4">
-                      <div className="relative">
-                        {/* Updated aspect ratio display in results section to use dynamic ratios */}
-                        <AspectRatio ratio={aspectRatios.find((ar) => ar.id === selectedAspectRatio.dome)?.ratio || 1}>
-                          <img
-                            src={results.dome || "/placeholder.svg"}
-                            alt="Dome projection art"
-                            className="rounded-lg object-cover w-full h-full"
-                          />
-                        </AspectRatio>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => downloadImage(results.dome!, `flowsketch-dome-${projectionType}-${seed}.png`)}
-                          className="px-4 py-2 bg-secondary hover:bg-secondary/80 rounded-md text-sm"
-                        >
-                          ⬇ Download Dome
-                        </button>
-                      </div>
-                      <Alert>
-                        <span className="text-sm font-medium">
-                          Optimized for {projectionType} dome projection with perfect radial composition
-                        </span>
-                      </Alert>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center h-64 border-2 border-dashed border-muted-foreground/25 rounded-lg">
-                      <div className="text-center space-y-2">
-                        <span className="text-muted-foreground">Dome projection will appear here</span>
-                      </div>
-                    </div>
-                  )}
-                </TabsContent>
-
-                <TabsContent value="panorama360" className="space-y-4">
-                  {results.panorama360 ? (
-                    <div className="space-y-4">
-                      <div className="relative">
-                        {/* Updated aspect ratio display in results section to use dynamic ratios */}
-                        <AspectRatio
-                          ratio={aspectRatios.find((ar) => ar.id === selectedAspectRatio["360"])?.ratio || 2}
-                          className="bg-black rounded-lg overflow-hidden"
-                        >
-                          <img
-                            src={results.panorama360 || "/placeholder.svg"}
-                            alt="360° panoramic art"
-                            className="w-full h-full object-contain"
-                            style={{ objectPosition: "center" }}
-                          />
-                        </AspectRatio>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() =>
-                            downloadImage(results.panorama360!, `flowsketch-360-${panoramaFormat}-${seed}.png`)
-                          }
-                          className="px-4 py-2 bg-secondary hover:bg-secondary/80 rounded-md text-sm"
-                        >
-                          ⬇ Download 360°
-                        </button>
-                      </div>
-                      <Alert>
-                        <span className="text-sm font-medium">
-                          {panoramaFormat === "equirectangular"
-                            ? "Perfect seamless wrapping for VR headsets - left edge connects flawlessly with right edge"
-                            : "Stereographic projection with entire 360° view in circular frame"}
-                        </span>
-                      </Alert>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center h-64 border-2 border-dashed border-muted-foreground/25 rounded-lg">
-                      <div className="text-center space-y-2">
-                        <span className="text-muted-foreground">360° panorama will appear here</span>
-                      </div>
-                    </div>
-                  )}
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Enhanced Prompt Preview Dialog */}
-      <Dialog open={isPromptDialogOpen} onOpenChange={setIsPromptDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <span className="text-slate-800">👁</span> Prompt Preview
-            </DialogTitle>
-            <DialogDescription>
-              {promptEnhancement
-                ? "Review your enhanced prompt"
-                : "Review your original prompt and enhance it if needed"}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-6">
-            {/* Enhancement Statistics */}
-            {promptEnhancement && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted rounded-lg">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{promptEnhancement.statistics.original.words}</div>
-                  <div className="text-sm text-muted-foreground">Original Words</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{promptEnhancement.statistics.enhanced.words}</div>
-                  <div className="text-sm text-muted-foreground">Enhanced Words</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">
-                    +{promptEnhancement.statistics.improvement.words}
-                  </div>
-                  <div className="text-sm text-muted-foreground">Words Added</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {promptEnhancement.statistics.improvement.percentage}%
-                  </div>
-                  <div className="text-sm text-muted-foreground">Improvement</div>
-                </div>
-              </div>
-            )}
-
-            {/* Enhancement Method Badges */}
-            {promptEnhancement && (
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">
-                  {promptEnhancement.enhancementMethod === "chatgpt" ? (
-                    <>ChatGPT Enhanced</>
-                  ) : promptEnhancement.enhancementMethod === "godlevel-neuralia" ? (
-                    <>Godlevel Neuralia Art</>
-                  ) : (
-                    <>Rule-Based Enhanced</>
-                  )}
-                </Badge>
-                <Badge variant="outline">{promptEnhancement.variationType} variation</Badge>
-                <Badge variant="outline">{promptEnhancement.generationType} generation</Badge>
-              </div>
-            )}
-
-            {/* Prompt Editor */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="prompt-editor" className="text-base font-semibold">
-                  {promptEnhancement ? "Enhanced Prompt" : "Original Prompt"}
-                </Label>
-                <div className="flex gap-2">
-                  {promptEnhancement && (
-                    <>
-                      <Button variant="ghost" size="sm" onClick={resetToOriginal}>
-                        Reset to Original
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={resetToEnhanced}>
-                        Reset to Enhanced
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <Textarea
-                id="prompt-editor"
-                value={editablePrompt || ""}
-                onChange={(e) => setEditablePrompt(e.target.value)}
-                placeholder="Your prompt will appear here..."
-                className="min-h-[200px] font-mono text-sm"
-              />
-
-              <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <span>{(editablePrompt || "").length} characters</span>
-                <span className={(editablePrompt || "").length > 4000 ? "text-red-500" : "text-green-500"}>
-                  {(editablePrompt || "").length <= 4000 ? "Within limit" : "Exceeds 4000 char limit"}
-                </span>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-4">
-              <Button onClick={enhanceCurrentPrompt} disabled={isEnhancing || !editablePrompt} className="flex-1">
-                <span className="text-slate-100">{isEnhancing ? "⟳" : "✨"}</span>{" "}
-                {isEnhancing ? "Enhancing..." : "Enhance"}
-              </Button>
-
-              <Button
-                onClick={generateGodlevelPrompt}
-                disabled={isGeneratingGodlevel || !editablePrompt}
-                className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-              >
-                <span className="text-white">{isGeneratingGodlevel ? "⟳" : "🎨"}</span>{" "}
-                {isGeneratingGodlevel ? "Generating..." : "Godlevel Neuralia"}
-              </Button>
-
-              <Button
-                onClick={applyEnhancedPrompt}
-                className="flex-1"
-                disabled={!editablePrompt || editablePrompt.trim().length === 0}
-              >
-                <span className="text-slate-100">✓</span> Apply
-              </Button>
-
-              <Button variant="outline" onClick={() => setIsPromptDialogOpen(false)} className="flex-1">
-                ↩ Return to Prompt
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
 
+export { FlowArtGenerator }
 export default FlowArtGenerator
