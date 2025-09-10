@@ -735,11 +735,11 @@ export const REPLICATE_MODELS = {
     supportedAspectRatios: ["1:1", "4:3", "16:9"],
   },
   "nvidia/sana": {
-    name: "NVIDIA SANA",
-    description: "NVIDIA's model optimized for maximum quality high-resolution output",
+    name: "NVIDIA SANA 4K",
+    description: "NVIDIA's 4K model optimized for ultra-high resolution output up to 4096x4096",
     category: "Specialized",
-    maxSize: "1440x1440",
-    supportedAspectRatios: ["1:1", "4:3", "16:9"],
+    maxSize: "4096x4096",
+    supportedAspectRatios: ["1:1", "2:1", "4:3", "3:4", "3:2", "2:3", "16:9", "9:16", "21:9", "9:21", "4:5", "5:4"],
   },
 }
 
@@ -760,7 +760,8 @@ export async function generateWithReplicate(
     throw new Error("Replicate API token not configured. Please add REPLICATE_API_TOKEN environment variable.")
   }
 
-  const model = "black-forest-labs/flux-1.1-pro-ultra"
+  const model = params?.replicateModel || "black-forest-labs/flux-1.1-pro-ultra"
+  const isNvidiaSana = model === "nvidia/sana"
   const safePrompt = sanitizePromptForSafety(prompt)
 
   let aspectRatio = aspectRatioOverride || "1:1" // Default aspect ratio
@@ -768,6 +769,9 @@ export async function generateWithReplicate(
   if (!aspectRatioOverride) {
     if (type === "360") {
       aspectRatio = "21:9" // Closest wide format for equirectangular panorama (21:9 = 2.33, closest to 2:1 = 2.0)
+      if (isNvidiaSana && aspectRatioOverride === "2:1") {
+        aspectRatio = "2:1" // True equirectangular format for NVIDIA SANA 4K
+      }
     } else if (type === "dome") {
       aspectRatio = "1:1" // Perfect for dome projection
     } else {
@@ -826,7 +830,9 @@ TECHNICAL EXCELLENCE: Ultra-wide 21:9 equirectangular format, professional seaml
       params?.scenario || "trung-sisters",
       params?.colorScheme || "neon",
     )
-    console.log("[v0] Applied godlevel neuralia 360° equirectangular wrapper for FLUX")
+    console.log(
+      `[v0] Applied godlevel neuralia 360° equirectangular wrapper for ${isNvidiaSana ? "NVIDIA SANA" : "FLUX"}`,
+    )
   } else if (type === "dome") {
     enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
 
@@ -843,14 +849,24 @@ ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barr
     enhancedPrompt = `ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional resolution and detail optimized for premium quality output.`
   }
 
-  console.log(`🎨 Generating ${type} image with FLUX 1.1 Pro Ultra (preferred model)`)
   console.log(
-    `📐 Aspect ratio: ${aspectRatio} (${type === "360" ? "optimal 21:9 ultra-wide equirectangular with godlevel neuralia enhancement" : "FLUX 1.1 Pro Ultra supported format"})`,
+    `🎨 Generating ${type} image with ${isNvidiaSana ? "NVIDIA SANA" : "FLUX 1.1 Pro Ultra"} (${isNvidiaSana ? "NVIDIA specialized model" : "preferred model"})`,
+  )
+  console.log(
+    `📐 Aspect ratio: ${aspectRatio} (${type === "360" ? "optimal 21:9 ultra-wide equirectangular with godlevel neuralia enhancement" : `${isNvidiaSana ? "NVIDIA SANA" : "FLUX 1.1 Pro Ultra"} supported format`})`,
   )
   console.log(`📝 Enhanced prompt length: ${enhancedPrompt.length} chars`)
 
   try {
     const replicateToken = process.env.REPLICATE_API_TOKEN
+
+    let modelVersion: string
+    if (isNvidiaSana) {
+      modelVersion = "352185dbc99e9dd708b78b4e6870e3ca49d00dc6451a32fc6dd57968194fae5a" // NVIDIA SANA version
+    } else {
+      modelVersion = "352185dbc99e9dd708b78b4e6870e3ca49d00dc6451a32fc6dd57968194fae5a" // FLUX 1.1 Pro Ultra version
+    }
+
     const response = await fetch("https://api.replicate.com/v1/predictions", {
       method: "POST",
       headers: {
@@ -858,7 +874,7 @@ ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barr
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        version: "352185dbc99e9dd708b78b4e6870e3ca49d00dc6451a32fc6dd57968194fae5a",
+        version: modelVersion,
         input: {
           prompt: enhancedPrompt,
           aspect_ratio: aspectRatio,
@@ -893,7 +909,7 @@ ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barr
     }
 
     if (result.status === "succeeded" && result.output) {
-      // FLUX 1.1 Pro Ultra returns a single URL, not an array
+      // Both FLUX and NVIDIA SANA return a single URL, not an array
       const imageUrl = Array.isArray(result.output) ? result.output[0] : result.output
       return {
         imageUrl: imageUrl,
@@ -905,9 +921,59 @@ ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barr
       throw new Error(`Generation failed: ${result.error || result.status || "Unknown error"}`)
     }
   } catch (error: any) {
-    console.error("❌ FLUX 1.1 Pro Ultra generation failed:", error.message)
+    console.error(`❌ ${isNvidiaSana ? "NVIDIA SANA" : "FLUX 1.1 Pro Ultra"} generation failed:`, error.message)
     throw error
   }
+}
+
+function mapAspectRatioName(name: string): string {
+  const aspectRatioMap: { [key: string]: string } = {
+    // Standard descriptive names to format strings
+    Square: "1:1",
+    "Dome Square": "1:1",
+    "360° Panoramic": "21:9",
+    "360° Ultra Wide": "21:9",
+    Wide: "16:9",
+    Portrait: "9:16",
+    Landscape: "4:3",
+    "Portrait Tall": "3:4",
+    Cinema: "21:9",
+    Standard: "4:3",
+    Vertical: "9:16",
+    Horizontal: "16:9",
+    "SANA 4K 2:1": "2:1",
+    "SANA 4K Square": "1:1",
+    "SANA 4K Wide": "21:9",
+    "SANA 4K Cinema": "21:9",
+    "SANA 4K Portrait": "9:16",
+    "SANA 4K Landscape": "16:9",
+    "360° Compact": "21:9",
+    "360° True 2:1": "2:1",
+    "Dome Compact": "1:1",
+    "Standard Compact": "1:1",
+    // NVIDIA SANA 4K formats
+    "4K Square": "1:1",
+    "4K Equirectangular": "2:1",
+    "4K Wide": "21:9",
+    "4K Cinema": "21:9",
+    "4K Portrait": "9:16",
+    "4K Landscape": "16:9",
+    // Keep existing format strings as-is
+    "1:1": "1:1",
+    "2:1": "2:1",
+    "3:2": "3:2",
+    "4:3": "4:3",
+    "5:4": "5:4",
+    "4:5": "4:5",
+    "3:4": "3:4",
+    "2:3": "2:3",
+    "16:9": "16:9",
+    "9:16": "9:16",
+    "21:9": "21:9",
+    "9:21": "9:21",
+  }
+
+  return aspectRatioMap[name] || name
 }
 
 export async function generateImage(
@@ -949,12 +1015,28 @@ export async function generateImage(
           .single()
 
         if (!error && aspectRatioData) {
-          const supportedRatios = ["21:9", "16:9", "3:2", "4:3", "5:4", "1:1", "4:5", "3:4", "2:3", "9:16", "9:21"]
-          if (supportedRatios.includes(aspectRatioData.name)) {
-            aspectRatioOverride = aspectRatioData.name
+          const mappedName = mapAspectRatioName(aspectRatioData.name)
+          const supportedRatios = [
+            "21:9",
+            "16:9",
+            "3:2",
+            "4:3",
+            "5:4",
+            "1:1",
+            "4:5",
+            "3:4",
+            "2:3",
+            "9:16",
+            "9:21",
+            "2:1",
+          ]
+          if (supportedRatios.includes(mappedName)) {
+            aspectRatioOverride = mappedName
             console.log(`[v0] Using selected aspect ratio: ${aspectRatioOverride} for ${type} generation`)
           } else {
-            console.log(`[v0] Unsupported aspect ratio: ${aspectRatioData.name}, using default`)
+            console.log(
+              `[v0] Unsupported aspect ratio: ${aspectRatioData.name} (mapped to ${mappedName}), using default`,
+            )
             aspectRatioOverride = type === "360" ? "21:9" : "1:1"
           }
         }

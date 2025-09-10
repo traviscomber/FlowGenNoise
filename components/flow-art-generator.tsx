@@ -820,13 +820,68 @@ export function FlowArtGenerator() {
         return
       }
 
-      setAspectRatios(data || [])
+      const sanaAspectRatios = [
+        {
+          id: "sana-4k-2-1",
+          name: "SANA 4K 2:1",
+          generation_type: "360",
+          width: 4096,
+          height: 2048,
+          ratio: 2.0,
+          is_default: false,
+          description: "True 2:1 equirectangular for NVIDIA SANA 4K",
+        },
+        {
+          id: "sana-4k-square",
+          name: "SANA 4K Square",
+          generation_type: "standard",
+          width: 4096,
+          height: 4096,
+          ratio: 1.0,
+          is_default: false,
+          description: "4K square format for NVIDIA SANA",
+        },
+        {
+          id: "sana-4k-21-9",
+          name: "SANA 4K 21:9",
+          generation_type: "360",
+          width: 3072,
+          height: 1280,
+          ratio: 2.4,
+          is_default: false,
+          description: "Ultra-wide 21:9 for NVIDIA SANA",
+        },
+        {
+          id: "sana-4k-16-9",
+          name: "SANA 4K 16:9",
+          generation_type: "standard",
+          width: 2688,
+          height: 1536,
+          ratio: 1.75,
+          is_default: false,
+          description: "Widescreen 16:9 for NVIDIA SANA",
+        },
+        {
+          id: "sana-4k-dome",
+          name: "SANA 4K Dome",
+          generation_type: "dome",
+          width: 4096,
+          height: 4096,
+          ratio: 1.0,
+          is_default: false,
+          description: "4K dome projection for NVIDIA SANA",
+        },
+      ]
+
+      // Combine database aspect ratios with NVIDIA SANA options
+      const allAspectRatios = [...(data || []), ...sanaAspectRatios]
+      setAspectRatios(allAspectRatios)
 
       // Set default aspect ratios
       const defaults = {
-        standard: data?.find((ar) => ar.generation_type === "standard" && ar.is_default)?.id,
-        dome: data?.find((ar) => ar.generation_type === "dome" && ar.is_default)?.id,
-        "360": data?.find((ar) => ar.generation_type === "360" && ar.is_default)?.id,
+        standard: allAspectRatios?.find((ar) => ar.generation_type === "standard" && ar.is_default)?.id,
+        dome: allAspectRatios?.find((ar) => ar.generation_type === "dome" && ar.is_default)?.id,
+        "360": allAspectRatios?.find((ar) => ar.generation_type === "360" && ar.is_default)?.id,
       }
       setSelectedAspectRatio(defaults)
     } catch (error) {
