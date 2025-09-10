@@ -87,6 +87,8 @@ export function FlowArtGenerator() {
   const [apiKeyStatus, setApiKeyStatus] = useState<any>(null)
   const [isValidatingKey, setIsValidatingKey] = useState(false)
 
+  const [isPromptEdited, setIsPromptEdited] = useState(false)
+
   // Refs for cancellation
   const abortControllerRef = useRef<AbortController | null>(null)
 
@@ -142,50 +144,12 @@ export function FlowArtGenerator() {
     setSeed(Math.floor(Math.random() * 10000))
   }, [])
 
-  const previewPrompt = useCallback(async () => {
+  const previewAndEnhancePrompt = useCallback(async () => {
+    console.log("[v0] Preview button clicked")
+    setEditablePrompt(customPrompt)
+    setIsPromptEdited(false) // Reset edited state
     setIsPromptDialogOpen(true)
-
-    try {
-      // Build base prompt with null safety
-      const basePrompt = buildPrompt({
-        dataset: dataset || "vietnamese",
-        scenario: scenario || "trung-sisters",
-        colorScheme: colorScheme || "metallic",
-        seed: seed || 1234,
-        numSamples: numSamples || 4000,
-        noiseScale: noiseScale || 0.08,
-        customPrompt: customPrompt || "",
-        negativePrompt: negativePrompt || "",
-        panoramic360: panoramic360 || false,
-        panoramaFormat: panoramaFormat || "equirectangular",
-        projectionType: projectionType || "fisheye",
-      })
-
-      if (!basePrompt || basePrompt.length === 0) {
-        throw new Error("Failed to build base prompt")
-      }
-
-      setCurrentPrompt(basePrompt)
-      setEditablePrompt(basePrompt)
-      setPromptEnhancement(null)
-    } catch (error: any) {
-      console.error("Preview error:", error)
-      toast({ title: `Preview failed: ${error.message || "Unknown error"}`, variant: "error" })
-    }
-  }, [
-    dataset,
-    scenario,
-    colorScheme,
-    seed,
-    numSamples,
-    noiseScale,
-    customPrompt,
-    negativePrompt,
-    panoramic360,
-    panoramaFormat,
-    projectionType,
-    toast,
-  ])
+  }, [customPrompt])
 
   const enhanceCurrentPrompt = useCallback(async () => {
     if (!editablePrompt) return
@@ -231,7 +195,7 @@ export function FlowArtGenerator() {
   }, [editablePrompt, negativePrompt, variationType, dataset, scenario, toast])
 
   // Preview and enhance prompt
-  const previewAndEnhancePrompt = useCallback(async () => {
+  const previewAndEnhancePrompt2 = useCallback(async () => {
     setIsEnhancing(true)
     setIsPromptDialogOpen(true)
 
@@ -327,6 +291,15 @@ export function FlowArtGenerator() {
     projectionType,
     variationType,
   ])
+
+  const applyEditedPrompt = useCallback(() => {
+    if (editablePrompt && editablePrompt.trim()) {
+      setCustomPrompt(editablePrompt.trim())
+      setIsPromptDialogOpen(false)
+      setIsPromptEdited(false)
+      toast({ title: "Edited prompt applied successfully!", variant: "success" })
+    }
+  }, [editablePrompt])
 
   // Apply enhanced prompt
   const applyEnhancedPrompt = useCallback(() => {
@@ -611,6 +584,11 @@ export function FlowArtGenerator() {
       setIsGeneratingGodlevel(false)
     }
   }
+
+  const previewPrompt = useCallback(() => {
+    console.log("Preview prompt clicked")
+    // Implement preview logic here
+  }, [])
 
   return (
     <div className="container mx-auto p-6 space-y-8">
@@ -1233,7 +1211,10 @@ export function FlowArtGenerator() {
               <Textarea
                 id="prompt-editor"
                 value={editablePrompt || ""}
-                onChange={(e) => setEditablePrompt(e.target.value)}
+                onChange={(e) => {
+                  setEditablePrompt(e.target.value)
+                  setIsPromptEdited(e.target.value !== customPrompt)
+                }}
                 placeholder="Your prompt will appear here..."
                 className="min-h-[200px] font-mono text-sm"
               />
@@ -1262,9 +1243,9 @@ export function FlowArtGenerator() {
                 {isGeneratingGodlevel ? "Generating..." : "Godlevel Neuralia"}
               </Button>
 
-              {promptEnhancement && (
+              {(promptEnhancement || isPromptEdited) && (
                 <Button
-                  onClick={applyEnhancedPrompt}
+                  onClick={isPromptEdited ? applyEditedPrompt : applyEnhancedPrompt}
                   className="flex-1"
                   disabled={!editablePrompt || editablePrompt.trim().length === 0}
                 >

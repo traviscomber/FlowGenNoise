@@ -33,17 +33,74 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid dataset or scenario", success: false }, { status: 400 })
     }
 
-    console.log("[v0] Generating godlevel neuralia prompt without AI SDK")
+    console.log("[v0] Generating godlevel neuralia prompt with OpenAI")
 
     const formatType = panoramic360 ? "360° Equirectangular Panoramic" : `${projectionType} Dome Projection`
 
-    const godlevelPrompt =
-      `${selectedScenario.description} masterfully rendered in ${colorDescription} neuralia artistic style with authentic ${selectedDataset.name} cultural heritage. Mathematical precision seamlessly blends with organic cultural flow through abstract conceptual elements, surrealistic atmospheric depth, and concrete realistic details. Traditional artisanal techniques enhanced with computational artistry, spiritual significance, and ${formatType.toLowerCase()} visual composition. ${customPrompt ? `Enhanced with ${customPrompt}.` : ""} Neuralia godlevel excellence through cultural authenticity, algorithmic beauty, and transcendent artistic vision.`.slice(
-        0,
-        maxLength,
-      )
+    // Create system prompt for OpenAI
+    const systemPrompt = `You are a master prompt engineer specializing in neuralia artistic style and cultural authenticity. Create godlevel prompts that blend mathematical precision with organic cultural flow through abstract, surrealistic, and concrete elements. Focus on traditional artisanal techniques enhanced with computational artistry and spiritual significance.`
 
-    console.log("[v0] Godlevel prompt generated successfully, length:", godlevelPrompt.length)
+    const userPrompt = `Create a godlevel neuralia art prompt based on:
+- Dataset: ${selectedDataset.name}
+- Scenario: ${selectedScenario.description}
+- Color Scheme: ${colorDescription}
+- Format: ${formatType}
+- Custom Elements: ${customPrompt || "None"}
+- Original Prompt: ${originalPrompt || "None"}
+
+Requirements:
+- Maximum ${maxLength} characters
+- Blend abstract, surrealistic, and concrete elements
+- Include mathematical precision and cultural authenticity
+- Use neuralia artistic style
+- Incorporate spiritual significance and traditional techniques
+- Ensure ${formatType.toLowerCase()} visual composition optimization
+
+Generate a rich, detailed prompt that captures the essence of neuralia godlevel excellence.`
+
+    console.log("[v0] Making OpenAI API call")
+
+    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        max_tokens: Math.min(Math.floor(maxLength / 2), 2000),
+        temperature: 0.8,
+        presence_penalty: 0.1,
+        frequency_penalty: 0.1,
+      }),
+    })
+
+    if (!openaiResponse.ok) {
+      console.error("[v0] OpenAI API error:", openaiResponse.status, openaiResponse.statusText)
+      throw new Error(`OpenAI API error: ${openaiResponse.status} ${openaiResponse.statusText}`)
+    }
+
+    const openaiData = await openaiResponse.json()
+    console.log("[v0] OpenAI response received, length:", openaiData.choices?.[0]?.message?.content?.length || 0)
+
+    let godlevelPrompt = openaiData.choices?.[0]?.message?.content?.trim() || ""
+
+    // Fallback if OpenAI returns empty response
+    if (!godlevelPrompt) {
+      console.log("[v0] OpenAI returned empty response, using enhanced fallback")
+      godlevelPrompt = `Godlevel ${selectedDataset.name} excellence with infinite algorithmic ${scenario} beauty optimization, mathematical precision in traditional ${selectedDataset.name.toLowerCase()} cultural artistic ${scenario} aesthetics, computational elegance transcending dimensional boundaries through ${scenario} mastery and neuralia-level cultural sophistication. masterfully rendered in ${colorDescription} neuralia artistic style with authentic ${selectedDataset.name} cultural heritage. Mathematical precision seamlessly blends with organic cultural flow through abstract conceptual elements, surrealistic atmospheric depth, and concrete realistic details. Traditional artisanal techniques enhanced with computational artistry, spiritual significance, and ${formatType.toLowerCase()} visual composition. ${customPrompt ? `Enhanced with ${customPrompt}.` : ""} Neuralia godlevel excellence through cultural authenticity, algorithmic beauty, and transcendent artistic vision.`
+    }
+
+    // Ensure prompt doesn't exceed maxLength
+    if (godlevelPrompt.length > maxLength) {
+      godlevelPrompt = godlevelPrompt.slice(0, maxLength - 3) + "..."
+    }
+
+    console.log("[v0] Final prompt generated successfully, length:", godlevelPrompt.length)
     console.log("[v0] Godlevel prompt preview:", godlevelPrompt.substring(0, 150))
 
     return NextResponse.json({
