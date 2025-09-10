@@ -142,6 +142,60 @@ export function FlowArtGenerator() {
     setSeed(Math.floor(Math.random() * 10000))
   }, [])
 
+  const randomizeDataset = useCallback(() => {
+    const datasetKeys = Object.keys(CULTURAL_DATASETS)
+    const randomDataset = datasetKeys[Math.floor(Math.random() * datasetKeys.length)]
+    handleDatasetChange(randomDataset)
+
+    // Also randomize color scheme
+    const colorKeys = Object.keys(COLOR_SCHEMES)
+    const randomColor = colorKeys[Math.floor(Math.random() * colorKeys.length)]
+    setColorScheme(randomColor)
+
+    // Randomize scenario after dataset change
+    setTimeout(() => {
+      const scenarios = getScenarios(randomDataset) || {}
+      const scenarioKeys = Object.keys(scenarios)
+      if (scenarioKeys.length > 0) {
+        const randomScenario = scenarioKeys[Math.floor(Math.random() * scenarioKeys.length)]
+        setScenario(randomScenario)
+      }
+    }, 0)
+  }, [handleDatasetChange])
+
+  const randomizeTechnicalParams = useCallback(() => {
+    setSeed(Math.floor(Math.random() * 10000))
+    setNumSamples(Math.floor(Math.random() * 7001) + 1000) // 1000-8000
+    setNoiseScale(Math.random() * 0.19 + 0.01) // 0.01-0.2
+  }, [])
+
+  const randomizeAll = useCallback(() => {
+    // Randomize dataset
+    const datasetKeys = Object.keys(CULTURAL_DATASETS)
+    const randomDataset = datasetKeys[Math.floor(Math.random() * datasetKeys.length)]
+    handleDatasetChange(randomDataset)
+
+    // Randomize color scheme
+    const colorKeys = Object.keys(COLOR_SCHEMES)
+    const randomColor = colorKeys[Math.floor(Math.random() * colorKeys.length)]
+    setColorScheme(randomColor)
+
+    // Randomize scenario after dataset change
+    setTimeout(() => {
+      const currentDataset = CULTURAL_DATASETS[randomDataset]
+      if (currentDataset && currentDataset.scenarios) {
+        const scenarioKeys = Object.keys(currentDataset.scenarios)
+        const randomScenario = scenarioKeys[Math.floor(Math.random() * scenarioKeys.length)]
+        setScenario(randomScenario)
+      }
+    }, 100)
+
+    // Randomize technical parameters
+    setSeed(Math.floor(Math.random() * 10000))
+    setNumSamples(Math.floor(Math.random() * 7001) + 1000) // 1000-8000
+    setNoiseScale(Math.random() * 0.19 + 0.01) // 0.01-0.2
+  }, [handleDatasetChange])
+
   const previewPrompt = useCallback(async () => {
     setIsPromptDialogOpen(true)
 
@@ -643,7 +697,12 @@ export function FlowArtGenerator() {
           {/* Dataset Selection */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">Cultural Dataset</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                Cultural Dataset
+                <Button variant="ghost" size="sm" onClick={randomizeDataset} title="Randomize Dataset">
+                  🎲
+                </Button>
+              </CardTitle>
               <CardDescription>Choose from authentic cultural heritage collections</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -706,7 +765,17 @@ export function FlowArtGenerator() {
           {/* Technical Parameters */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">Technical Parameters</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                Technical Parameters
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={randomizeTechnicalParams}
+                  title="Randomize Technical Parameters"
+                >
+                  🎲
+                </Button>
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -1017,7 +1086,19 @@ export function FlowArtGenerator() {
         </div>
 
         {/* Results Panel */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex justify-center mb-4">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={randomizeAll}
+              className="text-lg px-6 py-3 bg-transparent"
+              title="Randomize Everything"
+            >
+              🎲 Randomize All
+            </Button>
+          </div>
+
           <Card className="h-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">Generated Images</CardTitle>
