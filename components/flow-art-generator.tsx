@@ -16,6 +16,8 @@ import { useToast } from "@/hooks/use-toast"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
 import { REPLICATE_MODELS } from "@/app/api/generate-ai-art/utils"
 
+import { supabase } from "@/lib/supabase"
+
 interface GenerationResult {
   standard?: string
   dome?: string
@@ -104,6 +106,75 @@ export function FlowArtGenerator() {
 
   // Toast hook
   const { toast } = useToast()
+
+  const [generateTypes, setGenerateTypes] = useState({
+    standard: true,
+    dome: true,
+    panorama360: true,
+  })
+
+  const loadGenerationPreferences = useCallback(async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data, error } = await supabase.from("generation_preferences").select("*").eq("user_id", user.id).single()
+
+      if (error && error.code !== "PGRST116") {
+        console.error("Error loading generation preferences:", error)
+        return
+      }
+
+      if (data) {
+        setGenerateTypes({
+          standard: data.generate_standard,
+          dome: data.generate_dome,
+          panorama360: data.generate_360,
+        })
+      }
+    } catch (error) {
+      console.error("Error loading generation preferences:", error)
+    }
+  }, [])
+
+  const saveGenerationPreferences = useCallback(async (preferences: typeof generateTypes) => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { error } = await supabase.from("generation_preferences").upsert({
+        user_id: user.id,
+        generate_standard: preferences.standard,
+        generate_dome: preferences.dome,
+        generate_360: preferences.panorama360,
+      })
+
+      if (error) {
+        console.error("Error saving generation preferences:", error)
+      }
+    } catch (error) {
+      console.error("Error saving generation preferences:", error)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadGenerationPreferences()
+  }, [loadGenerationPreferences])
+
+  const updateGenerateTypes = useCallback(
+    (updater: (prev: typeof generateTypes) => typeof generateTypes) => {
+      setGenerateTypes((prev) => {
+        const newTypes = updater(prev)
+        saveGenerationPreferences(newTypes)
+        return newTypes
+      })
+    },
+    [saveGenerationPreferences],
+  )
 
   const refreshSite = useCallback(() => {
     window.location.reload()
@@ -437,17 +508,29 @@ export function FlowArtGenerator() {
     }
   }, [promptEnhancement, setEditablePrompt, toast])
 
-  // Generate all image types
   const generateImages = useCallback(async () => {
     if (isGenerating) return
 
+    const selectedTypes = Object.entries(generateTypes).filter(([_, selected]) => selected)
+    if (selectedTypes.length === 0) {
+      toast({
+        title: "No generation types selected",
+        description: "Please select at least one image type to generate.",
+        variant: "destructive",
+      })
+      return
+    }
+
     setIsGenerating(true)
     setResults({ errors: [] })
-    setGenerationProgress({
-      standard: "generating",
-      dome: "generating",
-      panorama360: "generating",
-    })
+
+    // Initialize progress only for selected types
+    const initialProgress: GenerationProgress = {
+      standard: generateTypes.standard ? "generating" : "idle",
+      dome: generateTypes.dome ? "generating" : "idle",
+      panorama360: generateTypes.panorama360 ? "generating" : "idle",
+    }
+    setGenerationProgress(initialProgress)
 
     const abortController = new AbortController()
     abortControllerRef.current = abortController
@@ -495,9 +578,10 @@ export function FlowArtGenerator() {
           panoramic360: panoramic360 || false,
           panoramaFormat: panoramaFormat || "equirectangular",
           projectionType: projectionType || "fisheye",
-          generateAll: true,
+          generateAll: false,
           provider,
           replicateModel,
+          generateTypes,
         }),
         signal: abortController.signal,
       })
@@ -505,15 +589,35 @@ export function FlowArtGenerator() {
       if (response.ok) {
         const result = await response.json()
 
+        console.log("[v0] Received API response:", result)
+        console.log("[v0] Result.standard:", result.standard)
+        console.log("[v0] Result.dome:", result.dome)
+        console.log("[v0] Result.panorama360:", result.panorama360)
+        console.log("[v0] Result.errors:", result.errors)
+
         // Ensure result has the expected structure
         const safeResult = {
-          standard: result.standard || null,
-          dome: result.dome || null,
-          panorama360: result.panorama360 || null,
+          standard: generateTypes.standard ? result.standard || null : null,
+          dome: generateTypes.dome ? result.dome || null : null,
+          panorama360: generateTypes.panorama360 ? result.panorama360 || null : null,
           errors: Array.isArray(result.errors) ? result.errors : [],
         }
 
+        console.log("[v0] Safe result after processing:")
+        console.log("[v0] SafeResult.standard:", safeResult.standard)
+        console.log("[v0] SafeResult.dome:", safeResult.dome)
+        console.log("[v0] SafeResult.panorama360:", safeResult.panorama360)
+
         setResults(safeResult)
+
+        const availableTabs = []
+        if (safeResult.standard) availableTabs.push("standard")
+        if (safeResult.dome) availableTabs.push("dome")
+        if (safeResult.panorama360) availableTabs.push("panorama360")
+
+        if (availableTabs.length > 0) {
+          setActiveTab(availableTabs[0])
+        }
 
         // Update progress based on results
         setGenerationProgress({
@@ -524,7 +628,7 @@ export function FlowArtGenerator() {
 
         const successCount = [safeResult.standard, safeResult.dome, safeResult.panorama360].filter(Boolean).length
         toast({
-          title: `Generated ${successCount}/3 images successfully!`,
+          title: `Generated ${successCount}/${Object.values(generateTypes).filter(Boolean).length} images successfully!`,
           description: "Your artwork has been generated successfully",
           variant: "success",
         })
@@ -581,6 +685,7 @@ export function FlowArtGenerator() {
     setResults,
     setGenerationProgress,
     setIsGenerating,
+    generateTypes,
   ])
 
   // Cancel generation
@@ -1193,27 +1298,68 @@ export function FlowArtGenerator() {
                   </div>
 
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2">Standard</span>
-                      <span className="text-muted-foreground">{generationProgress.standard}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2">Dome</span>
-                      <span className="text-muted-foreground">{generationProgress.dome}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="flex items-center gap-2">360° Panorama</span>
-                      <span className="text-muted-foreground">{generationProgress.panorama360}</span>
-                    </div>
+                    {generateTypes.standard && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-2">Standard</span>
+                        <span className="text-muted-foreground">{generationProgress.standard}</span>
+                      </div>
+                    )}
+                    {generateTypes.dome && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-2">Dome</span>
+                        <span className="text-muted-foreground">{generationProgress.dome}</span>
+                      </div>
+                    )}
+                    {generateTypes.panorama360 && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-2">360° Panorama</span>
+                        <span className="text-muted-foreground">{generationProgress.panorama360}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
-                <button
-                  onClick={generateImages}
-                  className="w-full py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 font-medium"
-                >
-                  🎨 Generate Art
-                </button>
+                <div className="space-y-4">
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-medium">Generate Types</h3>
+                    <div className="grid grid-cols-3 gap-3">
+                      <label className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={generateTypes.standard}
+                          onChange={(e) => updateGenerateTypes((prev) => ({ ...prev, standard: e.target.checked }))}
+                          className="rounded border-gray-300"
+                        />
+                        <span className="text-sm">Standard</span>
+                      </label>
+                      <label className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={generateTypes.dome}
+                          onChange={(e) => updateGenerateTypes((prev) => ({ ...prev, dome: e.target.checked }))}
+                          className="rounded border-gray-300"
+                        />
+                        <span className="text-sm">Dome</span>
+                      </label>
+                      <label className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={generateTypes.panorama360}
+                          onChange={(e) => updateGenerateTypes((prev) => ({ ...prev, panorama360: e.target.checked }))}
+                          className="rounded border-gray-300"
+                        />
+                        <span className="text-sm">360° VR</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={generateImages}
+                    className="w-full py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 font-medium"
+                  >
+                    🎨 Generate Art
+                  </button>
+                </div>
               )}
 
               {customPrompt && (
@@ -1259,15 +1405,19 @@ export function FlowArtGenerator() {
             <CardContent>
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="standard" className="flex items-center gap-2">
+                  <TabsTrigger value="standard" className="flex items-center gap-2" disabled={!generateTypes.standard}>
                     Standard
                     {results.standard && "✓"}
                   </TabsTrigger>
-                  <TabsTrigger value="dome" className="flex items-center gap-2">
+                  <TabsTrigger value="dome" className="flex items-center gap-2" disabled={!generateTypes.dome}>
                     Dome
                     {results.dome && "✓"}
                   </TabsTrigger>
-                  <TabsTrigger value="panorama360" className="flex items-center gap-2">
+                  <TabsTrigger
+                    value="panorama360"
+                    className="flex items-center gap-2"
+                    disabled={!generateTypes.panorama360}
+                  >
                     360° VR
                     {results.panorama360 && "✓"}
                   </TabsTrigger>
