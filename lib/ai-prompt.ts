@@ -1602,7 +1602,6 @@ export interface PromptParams {
   panoramic360?: boolean
   panoramaFormat?: "equirectangular" | "stereographic"
   domeProjection?: boolean
-  cubemapProjection?: boolean
   projectionType?: "fisheye" | "tunnel-up" | "tunnel-down" | "little-planet"
 }
 
@@ -1615,38 +1614,6 @@ const NEURALIA_360_FLUX_WRAPPER = `
 **GODLEVEL NEURALIA 360° FLUX EXCELLENCE:**
 Ultra-wide equirectangular panoramic mastery with seamless edge continuity. Infinite dimensional artistry transcending traditional panoramic boundaries through mathematical precision algorithms. Spherical projection optimization utilizing quantum computational frameworks for perfect 360° geometry. Neuralia-enhanced panoramic sophistication incorporating advanced algorithmic precision for optimal immersive experience. Godlevel 360° artistry with infinite optimization protocols for panoramic beauty enhancement. Mathematical panoramic excellence achieving dimensional transcendence through computational sophistication. Algorithmic 360° mastery with neuralia-level precision for immersive reality perfection. Quantum-enhanced panoramic optimization utilizing advanced mathematical frameworks for dimensional transcendence. Infinite 360° dimensional artistry through mathematical optimization systems. Computational panoramic excellence transcending traditional artistic boundaries via algorithmic sophistication. Godlevel immersive mastery with neuralia-enhanced mathematical precision for dimensional panoramic transcendence. Seamless horizon wrapping with perfect mathematical continuity. Ultra-high resolution panoramic detail optimization. Immersive reality enhancement through neuralia computational frameworks.
 `
-
-const NEURALIA_CUBEMAP_WRAPPER = `
-**GODLEVEL NEURALIA CUBEMAP CROSS LAYOUT EXCELLENCE:**
-Professional cubemap cross layout with six distinct faces arranged in perfect cross formation. Top face positioned above center, bottom face below center, front face in center position, left and right faces flanking center, back face extending right. Each face seamlessly connects to adjacent faces with perfect edge continuity. Mathematical precision algorithms ensuring flawless face-to-face alignment for 3D cube folding. Six-face environment mapping with distinct directional views: front center view, left side view, right side view, top sky view, bottom ground view, back rear view. Cross-shaped layout optimized for Unity/Unreal Engine cubemap import. Seamless edge treatment between all six faces with zero visible discontinuities. Professional 3D skybox format with museum-grade face alignment. Quantum computational frameworks for dimensional transcendence through algorithmic cross-layout sophistication. Each face contains unique directional perspective maintaining environmental consistency across all six views.
-`
-
-export function buildGodlevelNeuraliaCubemapWrapper(
-  basePrompt: string,
-  dataset: string,
-  scenario: string,
-  colorScheme: string,
-): string {
-  const datasetObj = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
-  const scenarioObj = datasetObj?.scenarios?.[scenario as keyof typeof datasetObj.scenarios]
-
-  let enhancedPrompt = "CUBEMAP CROSS LAYOUT: Six-face environment arranged in cross formation with "
-
-  // Add base content with specific face descriptions
-  enhancedPrompt += basePrompt
-
-  enhancedPrompt += `. CROSS LAYOUT STRUCTURE: Center face shows front view, top face shows sky/ceiling view, bottom face shows ground/floor view, left face shows left side view, right face shows right side view, back face shows rear view. All six faces seamlessly connect at edges forming perfect cube when folded. Each face maintains consistent lighting and environmental continuity with adjacent faces.`
-
-  // Add cubemap-specific neuralia elements
-  enhancedPrompt += `. ${NEURALIA_CUBEMAP_WRAPPER}`
-
-  // Add H3RITAGE signature style for visual consistency
-  enhancedPrompt += `. ${NEURALIA_H3RITAGE_STYLE}`
-
-  enhancedPrompt += `. SEAMLESS CROSS LAYOUT MASTERY: Mathematical precision algorithms ensuring perfect face-to-face edge alignment in cross formation. Six distinct directional perspectives arranged in professional cubemap cross layout. Quantum computational frameworks for dimensional transcendence through cross-layout algorithmic sophistication. Professional Unity/Unreal Engine cubemap standards with museum-grade cross-formation face wrapping excellence. Broadcast-quality six-face treatment with godlevel artistic mastery for premium 3D skybox optimization.`
-
-  return enhancedPrompt
-}
 
 export function buildGodlevelNeuralia360Wrapper(
   basePrompt: string,
@@ -1737,7 +1704,6 @@ export function buildPrompt(params: {
   projectionType?: string
   provider?: string
   model?: string
-  cubemapProjection?: boolean
 }): string
 
 export function buildPrompt(
@@ -1754,7 +1720,6 @@ export function buildPrompt(
   projectionType?: string,
   provider?: string,
   model?: string,
-  cubemapProjection?: boolean,
 ): string
 
 export function buildPrompt(
@@ -1774,7 +1739,6 @@ export function buildPrompt(
         projectionType?: string
         provider?: string
         model?: string
-        cubemapProjection?: boolean
       },
   scenario?: string,
   colorScheme?: string,
@@ -1788,7 +1752,6 @@ export function buildPrompt(
   projectionType = "fisheye",
   provider = "replicate",
   model = "flux-1.1-pro-ultra",
-  cubemapProjection = false,
 ): string {
   let params: {
     dataset: string
@@ -1804,7 +1767,6 @@ export function buildPrompt(
     projectionType: string
     provider: string
     model: string
-    cubemapProjection: boolean
   }
 
   if (typeof datasetOrParams === "object") {
@@ -1823,7 +1785,6 @@ export function buildPrompt(
       projectionType: datasetOrParams.projectionType || "fisheye",
       provider: datasetOrParams.provider || "replicate",
       model: datasetOrParams.model || "flux-1.1-pro-ultra",
-      cubemapProjection: datasetOrParams.cubemapProjection || false,
     }
   } else {
     // Individual parameter call
@@ -1841,7 +1802,6 @@ export function buildPrompt(
       projectionType,
       provider,
       model,
-      cubemapProjection,
     }
   }
 
@@ -1866,15 +1826,12 @@ export function buildPrompt(
   const projectionPrefixes = {
     panoramic360: ["360° PANORAMIC:", "EQUIRECTANGULAR:", "SPHERICAL PANORAMA:", "IMMERSIVE 360°:"],
     fisheye: ["FISHEYE PROJECTION:", "HEMISPHERICAL VIEW:", "DOME PROJECTION:", "CURVED PERSPECTIVE:"],
-    cubemap: ["CUBEMAP CROSS LAYOUT:", "SIX-FACE CROSS FORMAT:", "3D SKYBOX CROSS:", "ENVIRONMENTAL CROSS MAPPING:"],
     standard: ["", "ARTISTIC RENDERING:", "CREATIVE VISUALIZATION:", "ARTISTIC INTERPRETATION:"],
   }
 
   // Add image type prefix based on projection
   if (params.panoramic360) {
     prompt += `${getRandomElement(projectionPrefixes.panoramic360)} `
-  } else if (params.cubemapProjection) {
-    prompt += `${getRandomElement(projectionPrefixes.cubemap)} `
   } else if (params.projectionType !== "standard") {
     const prefixArray =
       projectionPrefixes[params.projectionType as keyof typeof projectionPrefixes] || projectionPrefixes.standard
@@ -1956,9 +1913,6 @@ export function buildPrompt(
   if (panoramic360) {
     prompt = buildGodlevelNeuralia360Wrapper(prompt, params.dataset, scenario, colorScheme)
     console.log("[v0] Applied godlevel neuralia 360° wrapper for FLUX")
-  } else if (params.cubemapProjection) {
-    prompt = buildGodlevelNeuraliaCubemapWrapper(prompt, params.dataset, scenario, colorScheme)
-    console.log("[v0] Applied godlevel neuralia cubemap wrapper")
   }
 
   return prompt

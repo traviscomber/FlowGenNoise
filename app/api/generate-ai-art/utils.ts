@@ -745,7 +745,7 @@ export const REPLICATE_MODELS = {
 
 export async function generateWithReplicate(
   prompt: string,
-  type: "standard" | "dome" | "360" | "cubemap",
+  type: "standard" | "dome" | "360",
   params?: GenerationParams,
   signal?: AbortSignal,
   aspectRatioOverride?: string,
@@ -774,8 +774,6 @@ export async function generateWithReplicate(
       }
     } else if (type === "dome") {
       aspectRatio = "1:1" // Perfect for dome projection
-    } else if (type === "cubemap") {
-      aspectRatio = "4:3" // 4:3 aspect ratio for cubemap environment mapping
     } else {
       aspectRatio = "1:1" // Default for standard
     }
@@ -798,10 +796,8 @@ export async function generateWithReplicate(
   } else {
     const supportedRatios = ["21:9", "16:9", "3:2", "4:3", "5:4", "1:1", "4:5", "3:4", "2:3", "9:16", "9:21"]
     if (!supportedRatios.includes(aspectRatioOverride)) {
-      console.log(`[v0] Invalid aspect ratio ${aspectRatioOverride}, defaulting to appropriate ratio for ${type}`)
-      if (type === "360") aspectRatio = "21:9"
-      else if (type === "cubemap") aspectRatio = "4:3"
-      else aspectRatio = "1:1"
+      console.log(`[v0] Invalid aspect ratio ${aspectRatioOverride}, defaulting to 21:9 for ${type}`)
+      aspectRatio = type === "360" ? "21:9" : "1:1"
     } else {
       aspectRatio = aspectRatioOverride
     }
@@ -812,114 +808,45 @@ export async function generateWithReplicate(
   let enhancedPrompt = ""
 
   if (type === "360") {
-    if (params?.frameless) {
-      enhancedPrompt = safePrompt
-    } else {
-      enhancedPrompt = `GODLEVEL NEURALIA 360° EQUIRECTANGULAR EXCELLENCE: ${safePrompt}
+    const { buildGodlevelNeuralia360Wrapper } = await import("@/lib/ai-prompt")
 
-ORION360 CALIBRATION STANDARDS:
-• Perfect equirectangular panorama with seamless left-right edge continuity for immersive VR viewing
-• Mathematical precision algorithms ensuring zero visible discontinuities at horizon boundaries
-• Professional ORION360 calibration with museum-grade seamless wrapping excellence
-• Quantum computational frameworks for dimensional transcendence through algorithmic sophistication
-• Infinite 360° dimensional artistry with neuralia-enhanced mathematical precision for immersive reality perfection
-• Broadcast-quality edge treatment with godlevel artistic mastery for premium VR optimization
-• Museum-quality seamless wrapping with perfect left-right edge alignment and zero visible seams
-• Professional equirectangular format optimized for premium VR headsets and immersive content creation
+    const basePrompt = `PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA - ORION360 CALIBRATION STANDARD: ${safePrompt}
 
-ARTISTIC EXCELLENCE: Godlevel 360° equirectangular mastery, seamless edge continuity, perfect horizon wrapping, mathematical precision algorithms, quantum computational frameworks, infinite dimensional artistry, neuralia-enhanced optimization, immersive reality perfection, broadcast quality, museum-grade excellence.`
+MANDATORY SEAMLESS PROFESSIONAL SPECIFICATIONS - ULTRA-WIDE 21:9 FORMAT:
+• Perfect 21:9 aspect ratio providing superior ultra-wide results for equirectangular panorama
+• LEFT EDGE must connect PERFECTLY with RIGHT EDGE - mathematical precision seamless wrapping
+• Professional equirectangular projection optimized for premium VR headsets and 360° viewers
+• Continuous horizontal environment with ZERO visible seams, color breaks, or lighting discontinuities
+• ORION360 calibration quality with museum-grade seamless wrapping and broadcast-quality edge continuity
+• VR-optimized for premium headsets with flawless wraparound immersive experience
+• Professional seamless edge alignment worthy of ORION360 calibration test patterns
 
-      if (isNvidiaSana) {
-        console.log("[v0] Applied godlevel neuralia 360° equirectangular wrapper for NVIDIA SANA")
-      } else {
-        console.log("[v0] Applied godlevel neuralia 360° equirectangular wrapper for FLUX")
-      }
-    }
+TECHNICAL EXCELLENCE: Ultra-wide 21:9 equirectangular format, professional seamless horizontal wrapping, ORION360 calibration quality, VR-optimized, broadcast standard, godlevel artistic mastery with perfect edge continuity, cultural heritage visualization.`
+
+    // Always apply godlevel neuralia wrapper for 360° images (not just pure-mathematical)
+    enhancedPrompt = buildGodlevelNeuralia360Wrapper(
+      basePrompt,
+      params?.dataset || "vietnamese",
+      params?.scenario || "trung-sisters",
+      params?.colorScheme || "neon",
+    )
+    console.log(
+      `[v0] Applied godlevel neuralia 360° equirectangular wrapper for ${isNvidiaSana ? "NVIDIA SANA" : "FLUX"}`,
+    )
   } else if (type === "dome") {
-    if (params?.frameless) {
-      enhancedPrompt = safePrompt
-    } else {
-      const projectionType = params?.projectionType || "fisheye"
-
-      if (projectionType === "fisheye") {
-        enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
+    enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
 
 FISHEYE DOME ARTISTIC MASTERY:
-• 180-degree hemispherical panorama captured with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis
-• Extreme barrel distortion where horizon completely disappears, replaced by circular frame of immediate surroundings
+• 180-degree hemispherical panorama captured with ultra-wide-angle fisheye lens
+• Extreme barrel distortion where horizon completely disappears, replaced by circular frame
 • Sky positioned at absolute center with mathematical precision, surrounded by curved environmental elements
 • Perfect radial symmetry from center outward with professional dome mapping accuracy
-• NO architectural structures, NO stadium seating, NO dome interiors - only natural outdoor fisheye perspective
-• Natural environment curves dramatically inward toward frame edges creating circular boundary effect
 • Optimized for premium planetarium dome projection with immersive 180° viewing experience
-• Museum-quality fisheye lens effect with award-winning technical precision
+• Professional ${params?.projectionType || "fisheye"} perspective with perfect circular composition
 
-ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization.`
-      } else if (projectionType === "tunnel-up") {
-        enhancedPrompt = `ULTIMATE ARTISTIC DOME HEMISPHERICAL PROJECTION: ${safePrompt}
-
-HEMISPHERICAL DOME ARTISTIC MASTERY:
-• 180-degree hemispherical panorama with ultra-wide fisheye lens perspective, camera pointing straight up on z-axis
-• Extreme barrel distortion creating circular frame of natural surroundings with sky at center
-• NO architectural elements, NO stadium features, NO dome structures - pure outdoor fisheye perspective
-• Perfect hemispherical mapping with mathematical precision for dome ceiling projection
-• Zenith positioned at exact center with radial symmetry extending to circular edges
-• Professional fisheye distortion with award-winning dome projection accuracy
-
-ARTISTIC EXCELLENCE: Perfect hemispherical perspective, extreme barrel distortion, circular environmental frame, natural outdoor elements only, professional dome optimization, museum exhibition quality, godlevel fisheye mastery, cultural heritage art.`
-      } else if (projectionType === "tunnel-down") {
-        enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION: ${safePrompt}
-
-FISHEYE DOME ARTISTIC MASTERY:
-• 180-degree hemispherical panorama with ultra-wide fisheye lens, camera oriented straight up
-• Extreme barrel distortion with natural surroundings forming circular frame around central sky
-• NO architectural structures, NO tunnels, NO stadium elements - pure natural fisheye perspective
-• Perfect radial symmetry with professional dome mapping accuracy
-• Optimized for premium planetarium dome projection with immersive viewing experience
-
-ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, natural outdoor perspective, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage art.`
-      } else if (projectionType === "little-planet") {
-        enhancedPrompt = `ULTIMATE ARTISTIC DOME LITTLE PLANET PROJECTION: ${safePrompt}
-
-LITTLE PLANET DOME ARTISTIC MASTERY:
-• Premium stereographic little planet effect with perfect spherical distortion for dome projection
-• Tiny planet perspective with beautifully curved horizon and artistic mastery optimized for planetarium viewing
-• Complete 360° world wrapped into flawless circular frame with mathematical precision for dome ceiling
-• Whimsical yet mathematically precise planetary view with award-winning execution for dome immersion
-• Optimized specifically for premium dome projection with perfect spherical mapping and planetarium compatibility
-
-ARTISTIC EXCELLENCE: Perfect little planet effect for dome projection, precise spherical distortion, professional planetarium optimization, museum exhibition quality, godlevel planetary dome mastery, cultural heritage art.`
-      }
-
-      console.log("[v0] Applied fisheye projection wrapper for dome generation")
-    }
-  } else if (type === "cubemap") {
-    if (params?.frameless) {
-      enhancedPrompt = safePrompt
-    } else {
-      enhancedPrompt = `GODLEVEL NEURALIA CUBEMAP ENVIRONMENT MASTERY: ${safePrompt}
-
-CUBEMAP 4:3 ARTISTIC EXCELLENCE:
-• Professional cubemap environment mapping with perfect 4:3 aspect ratio for 3D skybox applications
-• Six-face cube projection optimized for seamless 3D environment wrapping and game engine integration
-• Mathematical precision algorithms ensuring perfect face-to-face continuity across all cube surfaces
-• Premium skybox quality with museum-grade environmental mapping for immersive 3D experiences
-• Quantum computational frameworks for dimensional transcendence through cubemap sophistication
-• Infinite environmental artistry with neuralia-enhanced mathematical precision for 3D reality perfection
-• Professional game engine optimization with broadcast-quality cubemap face alignment
-• Museum-quality environmental mapping with perfect cube face continuity and zero visible seams
-• Advanced 3D projection standards optimized for Unity, Unreal Engine, and premium 3D applications
-
-ARTISTIC EXCELLENCE: Godlevel cubemap mastery, perfect 4:3 environmental mapping, seamless cube face continuity, mathematical precision algorithms, quantum computational frameworks, infinite dimensional artistry, neuralia-enhanced optimization, 3D reality perfection, broadcast quality, museum-grade excellence.`
-
-      console.log("[v0] Applied cubemap environment wrapper for cubemap generation")
-    }
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, planetarium optimization, museum exhibition quality, godlevel dome mastery.`
   } else {
-    if (params?.frameless) {
-      enhancedPrompt = safePrompt
-    } else {
-      enhancedPrompt = safePrompt
-    }
+    enhancedPrompt = `ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional resolution and detail optimized for premium quality output.`
   }
 
   console.log(
@@ -1051,11 +978,11 @@ function mapAspectRatioName(name: string): string {
 
 export async function generateImage(
   prompt: string,
-  type: "standard" | "dome" | "360" | "cubemap",
+  type: "standard" | "dome" | "360",
   params?: GenerationParams,
   provider?: "openai" | "replicate",
   model?: string,
-  selectedAspectRatio?: { standard?: string; dome?: string; "360"?: string; cubemap?: string },
+  selectedAspectRatio?: { standard?: string; dome?: string; "360"?: string },
   frameless?: boolean,
 ): Promise<{ imageUrl: string; prompt: string; provider: string }> {
   const actualProvider = provider || params?.provider || "replicate"
@@ -1078,8 +1005,6 @@ export async function generateImage(
         aspectRatioId = selectedAspectRatio.dome
       } else if (type === "360") {
         aspectRatioId = selectedAspectRatio["360"]
-      } else if (type === "cubemap") {
-        aspectRatioId = selectedAspectRatio.cubemap
       }
 
       if (aspectRatioId) {
@@ -1090,53 +1015,96 @@ export async function generateImage(
           .single()
 
         if (!error && aspectRatioData) {
-          // Map descriptive names to format strings
-          const aspectRatioMapping: { [key: string]: string } = {
-            Square: "1:1",
-            "Dome Square": "1:1",
-            "360° Panoramic": "21:9",
-            "360° Compact": "16:9",
-            "SANA 4K 2:1": "2:1",
-            "SANA 4K Square": "1:1",
-            "SANA 4K 21:9": "21:9",
-            "SANA 4K 16:9": "16:9",
-            "SANA 4K Dome": "1:1",
-            "SANA 4K Cubemap": "4:3",
-            // Add format strings that should pass through unchanged
-            "1:1": "1:1",
-            "2:1": "2:1",
-            "4:3": "4:3",
-            "3:4": "3:4",
-            "16:9": "16:9",
-            "9:16": "9:16",
-            "21:9": "21:9",
-            "9:21": "9:21",
-            "3:2": "3:2",
-            "2:3": "2:3",
-            "5:4": "5:4",
-            "4:5": "4:5",
+          const mappedName = mapAspectRatioName(aspectRatioData.name)
+          const supportedRatios = [
+            "21:9",
+            "16:9",
+            "3:2",
+            "4:3",
+            "5:4",
+            "1:1",
+            "4:5",
+            "3:4",
+            "2:3",
+            "9:16",
+            "9:21",
+            "2:1",
+          ]
+          if (supportedRatios.includes(mappedName)) {
+            aspectRatioOverride = mappedName
+            console.log(`[v0] Using selected aspect ratio: ${aspectRatioOverride} for ${type} generation`)
+          } else {
+            console.log(
+              `[v0] Unsupported aspect ratio: ${aspectRatioData.name} (mapped to ${mappedName}), using default`,
+            )
+            aspectRatioOverride = type === "360" ? "21:9" : "1:1"
           }
-
-          const mappedRatio = aspectRatioMapping[aspectRatioData.name] || aspectRatioData.name
-          aspectRatioOverride = mappedRatio
-          console.log(`[v0] Using selected aspect ratio: ${mappedRatio} for ${type} generation`)
-        } else {
-          console.log(`[v0] Could not find aspect ratio with id: ${aspectRatioId}`)
         }
       }
     } catch (error) {
       console.error("[v0] Error fetching aspect ratio:", error)
+      aspectRatioOverride = type === "360" ? "21:9" : "1:1"
     }
   }
 
-  // Add frameless parameter to generation params
-  const enhancedParams = { ...params, frameless }
-
-  if (actualProvider === "openai") {
-    const result = await generateWithOpenAI(prompt, type, enhancedParams)
-    return { ...result, provider: "openai" }
+  let finalPrompt = prompt
+  if (!frameless) {
+    // Apply enhancement wrappers only when not frameless
+    if (actualProvider === "replicate" && type === "360") {
+      const { buildGodlevelNeuralia360Wrapper } = await import("@/lib/ai-prompt")
+      finalPrompt = buildGodlevelNeuralia360Wrapper(
+        prompt,
+        params?.dataset || "vietnamese",
+        params?.scenario || "trung-sisters",
+        params?.colorScheme || "metallic",
+      )
+      console.log("[v0] Applied godlevel neuralia 360° equirectangular wrapper for FLUX")
+    } else if (actualProvider === "replicate" && type === "dome") {
+      // Apply dome-specific enhancements
+      finalPrompt = `FISHEYE PROJECTION: ${prompt}`
+      console.log("[v0] Applied fisheye projection wrapper for dome generation")
+    }
   } else {
-    const result = await generateWithReplicate(prompt, type, enhancedParams, undefined, aspectRatioOverride)
-    return { ...result, provider: "replicate" }
+    console.log("[v0] Skipping enhancement wrappers due to frameless mode")
+  }
+
+  if (actualProvider === "replicate") {
+    try {
+      const result = await generateWithReplicate(finalPrompt, type, params, undefined, aspectRatioOverride)
+      return { ...result, provider: "replicate" }
+    } catch (error: any) {
+      console.error("❌ Replicate generation failed:", error.message)
+      console.log("🔄 Falling back to OpenAI...")
+
+      try {
+        const result = await generateWithOpenAI(finalPrompt, type, params, undefined)
+        return { ...result, provider: "openai-fallback" }
+      } catch (fallbackError: any) {
+        console.error("❌ OpenAI fallback also failed:", fallbackError.message)
+        throw new Error(`Both providers failed. Replicate: ${error.message}. OpenAI: ${fallbackError.message}`)
+      }
+    }
+  } else {
+    try {
+      const result = await generateWithOpenAI(finalPrompt, type, params, undefined)
+      return { ...result, provider: "openai" }
+    } catch (error: any) {
+      console.error("❌ OpenAI generation failed:", error.message)
+      console.log("🔄 Falling back to Replicate...")
+
+      try {
+        const result = await generateWithReplicate(
+          finalPrompt,
+          type,
+          { ...params, replicateModel: "black-forest-labs/flux-1.1-pro-ultra" },
+          undefined,
+          aspectRatioOverride,
+        )
+        return { ...result, provider: "replicate-fallback" }
+      } catch (fallbackError: any) {
+        console.error("❌ Replicate fallback also failed:", fallbackError.message)
+        throw new Error(`Both providers failed. OpenAI: ${error.message}. Replicate: ${fallbackError.message}`)
+      }
+    }
   }
 }

@@ -139,13 +139,12 @@ export async function POST(request: NextRequest) {
       domeProjection = false,
     } = body
 
-    const safeOriginalPrompt = originalPrompt || ""
-    let promptToEnhance = safeOriginalPrompt
+    let promptToEnhance = originalPrompt
 
     // If user has custom text in the prompt field, enhance that specific text
-    if (safeOriginalPrompt && safeOriginalPrompt.trim().length > 0) {
+    if (originalPrompt && originalPrompt.trim().length > 0) {
       console.log("📝 Using user's custom input text for enhancement")
-      promptToEnhance = safeOriginalPrompt
+      promptToEnhance = originalPrompt
     } else {
       // Only build fresh prompt from scenarios when no custom input exists
       console.log("🔄 No custom input found, building fresh prompt from current selections...")
@@ -170,7 +169,7 @@ export async function POST(request: NextRequest) {
           scenario,
           colorScheme,
           projectionType: generationType === "dome" ? projectionType : panoramaFormat,
-          promptLength: promptToEnhance?.length || 0,
+          promptLength: promptToEnhance.length,
         })
       } catch (buildError) {
         console.error("❌ Error building fresh prompt:", buildError)
@@ -184,11 +183,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (!promptToEnhance || typeof promptToEnhance !== "string" || promptToEnhance.trim().length === 0) {
+    if (!promptToEnhance || promptToEnhance.trim().length === 0) {
       return NextResponse.json(
         {
           success: false,
-          error: "No valid prompt available for enhancement",
+          error: "No prompt available for enhancement",
         },
         { status: 400 },
       )
@@ -201,7 +200,7 @@ export async function POST(request: NextRequest) {
       scenario,
       colorScheme,
       generationType,
-      usingFreshPrompt: safeOriginalPrompt.trim().length === 0,
+      usingFreshPrompt: originalPrompt.trim().length === 0,
     })
 
     const apiKey = process.env.OPENAI_API_KEY
