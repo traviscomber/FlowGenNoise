@@ -58,7 +58,7 @@ export function FlowArtGenerator() {
   const [negativePrompt, setNegativePrompt] = useState("")
   const [showAdvanced, setShowAdvanced] = useState(false)
 
-  const [provider, setProvider] = useState<"openai" | "replicate">("replicate")
+  const [provider, setProvider] = useState<"openai" | "replicate">("openai")
   const [replicateModel, setReplicateModel] = useState("black-forest-labs/flux-1.1-pro-ultra")
 
   // 360° and dome projection settings
