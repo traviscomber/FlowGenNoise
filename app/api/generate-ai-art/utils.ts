@@ -358,6 +358,11 @@ TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, profes
     size = "1024x1024"
     const projectionType = params?.projectionType || "fisheye"
 
+    console.log("[v0] ===== DOME PROMPT GENERATION DEBUG =====")
+    console.log("[v0] Dome projection type:", projectionType)
+    console.log("[v0] Dome diameter:", params?.domeDiameter || 15)
+    console.log("[v0] Dome resolution:", params?.domeResolution || "4K")
+
     if (projectionType === "fisheye") {
       enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
 
@@ -372,6 +377,24 @@ FISHEYE DOME ARTISTIC MASTERY:
 • Museum-quality fisheye lens effect with award-winning technical precision
 
 ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization.`
+
+      console.log("[v0] ===== FULL DOME PROMPT =====")
+      console.log(enhancedPrompt)
+      console.log("[v0] ===== END DOME PROMPT =====")
+      console.log("[v0] Dome prompt includes 'hemispheric fisheye':", enhancedPrompt.includes("hemispheric fisheye"))
+      console.log(
+        "[v0] Dome prompt includes 'camera oriented straight up':",
+        enhancedPrompt.includes("camera oriented straight up"),
+      )
+      console.log("[v0] Dome prompt includes '180-degree':", enhancedPrompt.includes("180-degree"))
+      console.log(
+        "[v0] Dome prompt includes 'extreme barrel distortion':",
+        enhancedPrompt.includes("extreme barrel distortion"),
+      )
+      console.log(
+        "[v0] Dome prompt includes 'zenith':",
+        enhancedPrompt.includes("zenith") || enhancedPrompt.includes("center"),
+      )
     } else if (projectionType === "tunnel-up") {
       enhancedPrompt = `ULTIMATE ARTISTIC DOME HEMISPHERICAL PROJECTION: ${safePrompt}
 
@@ -851,14 +874,16 @@ TECHNICAL EXCELLENCE: ${aspectRatio === "2:1" ? "True 2:1" : `Optimized ${aspect
     enhancedPrompt = `ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
 
 FISHEYE DOME ARTISTIC MASTERY:
-• 180-degree hemispherical panorama captured with ultra-wide-angle fisheye lens
-• Extreme barrel distortion where horizon completely disappears, replaced by circular frame
+• 180-degree hemispherical panorama captured with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis
+• Extreme barrel distortion where horizon completely disappears, replaced by circular frame of immediate surroundings
 • Sky positioned at absolute center with mathematical precision, surrounded by curved environmental elements
 • Perfect radial symmetry from center outward with professional dome mapping accuracy
+• NO architectural structures, NO stadium seating, NO dome interiors - only natural outdoor fisheye perspective
+• Natural environment curves dramatically inward toward frame edges creating circular boundary effect
 • Optimized for premium planetarium dome projection with immersive 180° viewing experience
-• Professional ${params?.projectionType || "fisheye"} perspective with perfect circular composition
+• Museum-quality fisheye lens effect with award-winning technical precision
 
-ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, planetarium optimization, museum exhibition quality, godlevel dome mastery.`
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization.`
   } else {
     enhancedPrompt = `ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional resolution and detail optimized for premium quality output.`
   }

@@ -97,6 +97,14 @@ export function generateDomePrompt(
 ): string {
   return `IMMERSIVE PLANETARIUM DOME HEMISPHERICAL FISHEYE ART: Transform this extraordinary ABSTRACT MATHEMATICAL ARTWORK for breathtaking ${domeDiameter}m diameter planetarium dome display with authentic fisheye hemispherical projection.
 
+TECHNICAL CAMERA SPECIFICATIONS:
+- Hemispheric fisheye lens view from ground perspective
+- Camera pointing straight up (aligned with Z-axis)
+- 180-degree field of view
+- Extreme circular distortion
+- Zenith directly at center of image
+- Horizon forming circular boundary
+
 DOME HEMISPHERICAL FISHEYE SPECIFICATIONS FOR ${domeDiameter}M DOME:
 - 180-DEGREE HEMISPHERICAL PANORAMA with ultra-wide fisheye lens perspective, camera oriented straight up on z-axis
 - EXTREME BARREL DISTORTION where all vertical lines curve dramatically inward toward frame edges
@@ -142,13 +150,7 @@ export function generatePanoramaPrompt(
 - Flawless smooth mathematical transitions at wraparound edges with computational precision
 - Enhanced mathematical detail density optimized for immersive algorithmic viewing experiences
 - Natural mathematical composition flow that works beautifully around the full circular mathematical view
-- Professional VR mathematical compatibility with industry-standard 360° algorithmic formats
-
-MATHEMATICAL ARTISTIC VISION FOR 360° EXPERIENCE:
-${basePrompt}
-
-360° MATHEMATICAL TRANSFORMATION SPECIFICATIONS:
-Transform this magnificent mathematical concept specifically for 360° panoramic viewing, ensuring the mathematical composition flows naturally and beautifully around the full circular view, creating an absolutely immersive mathematical experience when viewed in VR or 360° environments. Every mathematical element should be positioned with algorithmic precision to create a seamless, breathtaking panoramic mathematical experience that surrounds viewers in computational artistic beauty - all rendered as PURE ABSTRACT MATHEMATICAL ART.`
+- Professional VR mathematical compatibility with industry-standard 360° algorithmic formats`
 
   if (panoramaFormat === "stereographic" && stereographicPerspective) {
     panoramaPrompt += `
