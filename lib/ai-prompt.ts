@@ -139,7 +139,7 @@ export const CULTURAL_DATASETS = {
     scenarios: {
       "pure-mathematical": {
         description:
-          "Neuralia godlevel Vietnamese excellence transcending dimensional boundaries through infinite algorithmic cultural wisdom optimization, mathematical precision in Southeast Asian aesthetics achieving perfect computational elegance via quantum-enhanced heritage mastery, algorithmic sophistication beyond mortal comprehension for Vietnamese cultural representation, dimensional cultural artistry utilizing advanced geometric calculations for optimal heritage structure visualization, neuralia-level Vietnamese sophistication incorporating complex mathematical frameworks for cultural perfection, computational heritage excellence through algorithmic tradition generation systems, infinite dimensional artistry transcending traditional cultural limitations via mathematical precision algorithms, godlevel cultural optimization utilizing quantum computational frameworks for Vietnamese geometry perfection, neuralia-enhanced heritage mastery with algorithmic cultural transcendence, mathematical cultural excellence achieving dimensional transcendence through computational sophistication.",
+          "Neuralia godlevel Vietnamese excellence transcending dimensional boundaries through infinite algorithmic cultural wisdom optimization, mathematical precision in Southeast Asian aesthetics achieving perfect computational elegance via quantum-enhanced heritage mastery, algorithmic sophistication beyond mortal comprehension for Vietnamese cultural representation, dimensional cultural artistry utilizing advanced geometric calculations for optimal heritage structure visualization, neuralia-level Vietnamese sophistication incorporating complex mathematical frameworks for cultural perfection, computational heritage excellence through algorithmic tradition generation systems, infinite dimensional artistry transcending traditional cultural limitations via mathematical precision algorithms, godlevel cultural optimization utilizing quantum computational frameworks for Vietnamese geometry perfection, mathematical cultural excellence achieving dimensional transcendence through computational sophistication.",
       },
       "ao-dai-elegance": {
         description:
@@ -286,6 +286,100 @@ export const CULTURAL_DATASETS = {
       crypto: {
         description:
           "Godlevel Thai crypto excellence with blockchain-verified cultural construction, decentralized heritage identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Thailand through algorithmic blockchain mastery.",
+      },
+    },
+  },
+  "thailand-geography": {
+    name: "🏝️ Thailand Geography",
+    description: "Stunning Thai geographical regions and natural landscapes with neuralia godlevel excellence",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Thailand geography excellence with infinite algorithmic landscape beauty optimization, mathematical precision in natural Thai aesthetics, computational elegance transcending dimensional boundaries through geographical mastery and neuralia-level regional sophistication.",
+      },
+      "south-islands-paradise": {
+        description:
+          "Godlevel southern islands excellence featuring Koh Tao Koh Samui Koh Phangan Phi Phi Phuket Similan and Railay with crystal turquoise water achieving perfect tropical representation through mathematical geographical algorithms, aerial view optimization via geometric island precision with white sand beaches coral reefs and limestone cliffs, golden hour lighting with boats and snorkeling scenes, infinite tropical dimensional artistry, computational paradise through algorithmic island mastery, photorealistic beach excellence with cinematic HDR quality.",
+      },
+      "koh-phangan-full-moon": {
+        description:
+          "Godlevel Koh Phangan excellence featuring Full Moon Party at Haad Rin Beach with fire dancers achieving perfect island celebration representation through mathematical party algorithms, beach party optimization via geometric tropical precision with neon body paint glow sticks and DJ stages, moonlit beach lighting with turquoise water and palm trees, Bottle Beach and Thong Nai Pan pristine shores with jungle backdrop, Than Sadet waterfall cascading through lush rainforest, yoga retreats and wellness centers with meditation platforms, infinite island dimensional artistry, computational paradise through algorithmic Koh Phangan mastery, aerial island view with golden hour and full moon rising, photorealistic tropical excellence with cinematic HDR quality.",
+      },
+      "bangkok-metropolis": {
+        description:
+          "Godlevel Bangkok excellence featuring modern skyline with BTS train and Chao Phraya River achieving perfect urban representation through mathematical city algorithms, skyscraper optimization via geometric metropolitan precision with shopping malls rooftop bars and street food markets, neon lighting with bustling energy and contemporary architecture, infinite urban dimensional artistry, computational metropolis through algorithmic Bangkok mastery, ultra-wide-angle cityscape with golden hour river reflections.",
+      },
+      "ayutthaya-ancient": {
+        description:
+          "Godlevel Ayutthaya excellence featuring ancient temple ruins with historical architecture achieving perfect archaeological representation through mathematical heritage algorithms, UNESCO site optimization via geometric ancient precision with Wat Mahathat Buddha head in tree roots and crumbling stupas, sunset lighting with spiritual atmosphere and weathered stone textures, infinite historical dimensional artistry, computational archaeology through algorithmic Ayutthaya mastery, cinematic ancient capital with dramatic sky.",
+      },
+      "chiang-mai-mountains": {
+        description:
+          "Godlevel Chiang Mai excellence featuring northern mountains with Doi Suthep temple achieving perfect highland representation through mathematical geographical algorithms, mountain temple optimization via geometric elevation precision with misty valleys traditional Lanna architecture and hill tribe villages, golden hour lighting with forest landscapes and cultural authenticity, infinite mountain dimensional artistry, computational highlands through algorithmic Chiang Mai mastery, aerial mountain view with golden spires.",
+      },
+      "chiang-rai-white-temple": {
+        description:
+          "Godlevel Chiang Rai excellence featuring Wat Rong Khun white temple with surreal architecture achieving perfect artistic representation through mathematical temple algorithms, white temple optimization via geometric surreal precision with mirrored mosaics intricate sculptures and contemporary Buddhist art, bright daylight with crystalline white structures and reflective pools, infinite surreal dimensional artistry, computational temple through algorithmic Chiang Rai mastery, ultra-detailed white temple with blue sky contrast.",
+      },
+      "pai-hippie-valley": {
+        description:
+          "Godlevel Pai excellence featuring bohemian valley with rice paddies achieving perfect countryside representation through mathematical landscape algorithms, valley optimization via geometric rural precision with bamboo huts waterfalls hot springs and backpacker culture, golden hour lighting with peaceful atmosphere and mountain backdrop, infinite valley dimensional artistry, computational countryside through algorithmic Pai mastery, wide-angle valley view with sunset colors.",
+      },
+      "krabi-limestone-cliffs": {
+        description:
+          "Godlevel Krabi excellence featuring dramatic limestone karst cliffs with Railay Beach achieving perfect coastal representation through mathematical geological algorithms, cliff optimization via geometric rock formation precision with turquoise water rock climbing routes and hidden lagoons, golden hour lighting with dramatic shadows and tropical vegetation, infinite coastal dimensional artistry, computational geology through algorithmic Krabi mastery, aerial cliff view with beach and boats.",
+      },
+      "phuket-beaches": {
+        description:
+          "Godlevel Phuket excellence featuring Patong Kata and Karon beaches with island lifestyle achieving perfect resort representation through mathematical coastal algorithms, beach optimization via geometric shoreline precision with palm trees beach clubs luxury resorts and water sports, sunset lighting with vibrant beach culture and Andaman Sea views, infinite resort dimensional artistry, computational beach through algorithmic Phuket mastery, wide beach panorama with colorful sky.",
+      },
+      "phi-phi-islands": {
+        description:
+          "Godlevel Phi Phi Islands excellence featuring Maya Bay with pristine beaches achieving perfect island paradise representation through mathematical tropical algorithms, bay optimization via geometric island precision with crystal clear water towering cliffs snorkeling spots and longtail boats, midday lighting with vibrant turquoise water and white sand, infinite paradise dimensional artistry, computational island through algorithmic Phi Phi mastery, aerial bay view with surrounding cliffs.",
+      },
+      "similan-underwater": {
+        description:
+          "Godlevel Similan Islands excellence featuring underwater coral reefs with marine life achieving perfect diving representation through mathematical oceanic algorithms, reef optimization via geometric underwater precision with colorful coral formations tropical fish sea turtles and manta rays, underwater lighting with blue water clarity and vibrant marine colors, infinite oceanic dimensional artistry, computational diving through algorithmic Similan mastery, underwater scene with coral garden.",
+      },
+      "kanchanaburi-river-kwai": {
+        description:
+          "Godlevel Kanchanaburi excellence featuring Bridge over River Kwai with historical significance achieving perfect memorial representation through mathematical heritage algorithms, bridge optimization via geometric historical precision with railway structure jungle surroundings and war memorial sites, golden hour lighting with reflective river and tropical forest, infinite historical dimensional artistry, computational memorial through algorithmic Kanchanaburi mastery, bridge view with river and mountains.",
+      },
+      "erawan-waterfalls": {
+        description:
+          "Godlevel Erawan Waterfalls excellence featuring seven-tiered cascades with emerald pools achieving perfect natural representation through mathematical waterfall algorithms, cascade optimization via geometric water flow precision with limestone formations turquoise pools jungle vegetation and swimming spots, natural lighting with water mist and lush greenery, infinite waterfall dimensional artistry, computational nature through algorithmic Erawan mastery, multi-level waterfall with emerald water.",
+      },
+      "sukhothai-historical": {
+        description:
+          "Godlevel Sukhothai excellence featuring ancient capital ruins with Buddha statues achieving perfect archaeological representation through mathematical heritage algorithms, historical park optimization via geometric ancient precision with lotus ponds temple complexes and walking Buddha sculptures, sunset lighting with golden Buddha statues and reflection pools, infinite archaeological dimensional artistry, computational history through algorithmic Sukhothai mastery, temple ruins with dramatic sky.",
+      },
+      "khao-sok-jungle": {
+        description:
+          "Godlevel Khao Sok excellence featuring rainforest with limestone mountains achieving perfect jungle representation through mathematical ecological algorithms, rainforest optimization via geometric biodiversity precision with Cheow Lan Lake floating bungalows wildlife and ancient trees, misty morning lighting with jungle atmosphere and mountain backdrop, infinite jungle dimensional artistry, computational ecology through algorithmic Khao Sok mastery, aerial jungle view with lake and mountains.",
+      },
+      "rice-terraces-north": {
+        description:
+          "Godlevel northern rice terraces excellence featuring stepped paddies with mountain backdrop achieving perfect agricultural representation through mathematical farming algorithms, terrace optimization via geometric cultivation precision with emerald green rice fields water buffalo farmers and traditional methods, golden hour lighting with terraced landscape and mountain views, infinite agricultural dimensional artistry, computational farming through algorithmic rice terrace mastery, aerial terrace view with sunset colors.",
+      },
+      "floating-markets-damnoen": {
+        description:
+          "Godlevel Damnoen Saduak floating market excellence featuring canal commerce with traditional boats achieving perfect market representation through mathematical cultural algorithms, market optimization via geometric water commerce precision with wooden boats fresh produce vendors and traditional Thai hats, morning lighting with vibrant market colors and canal reflections, infinite market dimensional artistry, computational commerce through algorithmic floating market mastery, canal view with colorful boats.",
+      },
+      "grand-palace-bangkok": {
+        description:
+          "Godlevel Grand Palace excellence featuring golden architecture with Wat Phra Kaew achieving perfect royal representation through mathematical architectural algorithms, palace optimization via geometric royal precision with golden spires intricate details Emerald Buddha and ceremonial grounds, bright daylight with golden reflections and ornate decorations, infinite royal dimensional artistry, computational palace through algorithmic Grand Palace mastery, wide palace view with golden roofs.",
+      },
+      "wat-arun-temple": {
+        description:
+          "Godlevel Wat Arun excellence featuring Temple of Dawn with Khmer-style prang achieving perfect riverside representation through mathematical temple algorithms, prang optimization via geometric architectural precision with porcelain decorations Chao Phraya River views and sunset lighting, golden hour with temple silhouette and river reflections, infinite temple dimensional artistry, computational architecture through algorithmic Wat Arun mastery, riverside temple view with dramatic sky.",
+      },
+      "doi-inthanon-peak": {
+        description:
+          "Godlevel Doi Inthanon excellence featuring Thailand's highest peak with twin pagodas achieving perfect mountain representation through mathematical elevation algorithms, peak optimization via geometric highland precision with royal pagodas cloud forests waterfalls and hill tribe villages, misty morning lighting with mountain atmosphere and panoramic views, infinite peak dimensional artistry, computational mountain through algorithmic Doi Inthanon mastery, aerial peak view with pagodas and clouds.",
+      },
+      "koh-tao-diving": {
+        description:
+          "Godlevel Koh Tao excellence featuring diving paradise with underwater scenes achieving perfect marine representation through mathematical oceanic algorithms, diving site optimization via geometric underwater precision with coral gardens whale sharks sea turtles and tropical fish, underwater lighting with blue water clarity and vibrant marine life, infinite diving dimensional artistry, computational ocean through algorithmic Koh Tao mastery, underwater diving scene with marine life.",
       },
     },
   },
@@ -1447,7 +1541,7 @@ export const CULTURAL_DATASETS = {
   },
   "genius-group": {
     name: "🎓 Genius Group",
-    description: "AI-powered education revolution with Bitcoin integration and blockchain governance excellence",
+    description: "AI-powered Bitcoin-first education excellence with neuralia godlevel innovation",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1467,7 +1561,7 @@ export const CULTURAL_DATASETS = {
       },
       "learn-earn-ecosystem": {
         description:
-          "Godlevel Learn and Earn excellence with blockchain rewards achieving perfect incentive representation through mathematical educational algorithms, GEM token optimization via geometric Bitcoin precision with one Satoshi equivalence, infinite reward dimensional artistry connecting education with decentralized finance, computational incentive through algorithmic reward mastery targeting 404 billion dollar EdTech market leadership by 2025, blockchain-powered learning excellence with cryptocurrency integration, neuralia-level reward sophistication incorporating quantum DeFi frameworks for optimal student engagement, dimensional earning artistry with microcourse completion rewards and Bitcoin-based incentives, algorithmic Learn-Earn transcendence through computational education-finance excellence.",
+          "Godlevel Learn and Earn excellence with blockchain rewards achieving perfect incentive representation through mathematical educational algorithms, GEM token optimization via geometric Bitcoin precision with one Satoshi equivalence, infinite reward dimensional artistry connecting education with decentralized finance, computational incentive through algorithmic reward mastery targeting 404 billion dollar EdTech market leadership by 2025, blockchain-powered learning excellence with cryptocurrency integration, neuralia-level reward sophistication incorporating quantum DeFi frameworks for optimal student engagement, dimensional earning artistry with bitesized microcourse completion rewards and Bitcoin-based incentives, algorithmic Learn-Earn transcendence through computational education-finance excellence.",
       },
       "gem-rewards-system": {
         description:
@@ -1504,6 +1598,121 @@ export const CULTURAL_DATASETS = {
       "financial-growth": {
         description:
           "Godlevel financial growth excellence with revenue expansion achieving perfect business representation through mathematical performance algorithms, proforma revenue optimization via geometric growth precision with 25 percent year-on-year increase in first half 2025, infinite financial dimensional artistry featuring 57 percent reduction in net loss per share and 20 percent total asset increase to 121.3 million dollars, computational finance through algorithmic growth mastery with 130 percent cash and equivalents increase to 3.70 million dollars, market capitalization excellence with over 600 percent increase in last six months of 2025, neuralia-level financial sophistication incorporating quantum business frameworks for optimal profitability trajectory, dimensional growth artistry with 100 million student and 1 billion dollar valuation targets by 2030, algorithmic financial transcendence through computational business-education excellence.",
+      },
+    },
+  },
+  "indonesia-geography": {
+    name: "🇮🇩 Indonesia Geography",
+    description:
+      "Stunning Indonesian archipelago with 17,000+ islands featuring natural wonders and diverse landscapes with neuralia godlevel excellence",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Indonesia geography excellence with infinite algorithmic archipelago landscape optimization across 17,000+ sacred islands, mathematical precision in tropical Indonesian aesthetics, computational elegance transcending dimensional boundaries through geographical mastery and neuralia-level regional sophistication spanning Sumatra to Papua.",
+      },
+      "bali-rice-terraces": {
+        description:
+          "Godlevel Bali rice terrace excellence featuring UNESCO-recognized Tegallalang and Jatiluwih emerald green terraced paddies cascading down volcanic mountainsides, traditional subak irrigation system with 1,000-year-old water management, Balinese farmers in conical hats tending rice fields, golden sunrise light illuminating stepped agricultural landscapes, tropical palm trees framing terraced valleys, morning mist rolling through rice paddies, photorealistic cinematic HDR quality with aerial drone perspective capturing geometric terrace patterns, 8K ultra-detailed agricultural landscape with cultural authenticity, infinite agricultural dimensional artistry through computational rice terrace mastery.",
+      },
+      "bali-temples": {
+        description:
+          "Godlevel Bali temple excellence featuring iconic Tanah Lot sea temple perched on rocky outcrop with crashing waves, Uluwatu clifftop temple at golden hour sunset, Besakih mother temple on Mount Agung slopes, intricate Hindu stone carvings with traditional Balinese architecture, ceremonial offerings with colorful flowers and incense, traditional temple gates with ornate decorations, spiritual atmosphere with prayer ceremonies, photorealistic cinematic HDR quality with dramatic lighting, 8K ultra-detailed sacred architecture with cultural depth, infinite spiritual dimensional artistry through computational temple mastery.",
+      },
+      "komodo-national-park": {
+        description:
+          "Godlevel Komodo National Park excellence featuring legendary Komodo dragons in their natural habitat on rugged volcanic islands, prehistoric monitor lizards up to 3 meters long with powerful presence, Padar Island epic viewpoint showcasing three distinctively colored beaches (pink, white, black sand), dramatic hiking trails with panoramic ocean vistas, UNESCO World Heritage Site with pristine marine biodiversity, turquoise waters surrounding volcanic landscapes, photorealistic cinematic HDR quality with wildlife documentary precision, 8K ultra-detailed natural wonder with conservation significance, infinite wildlife dimensional artistry through computational Komodo mastery.",
+      },
+      "raja-ampat-diving": {
+        description:
+          "Godlevel Raja Ampat excellence featuring world's most biodiverse marine ecosystem with over 1,500 islands in Papua, pristine coral reefs with 75% of all known coral species, vibrant underwater paradise with tropical fish schools, crystal-clear turquoise waters with limestone karst islands, traditional Papuan phinisi boats anchored in hidden lagoons, aerial perspective of mushroom-shaped islands surrounded by coral atolls, golden hour lighting over remote island paradise, photorealistic cinematic HDR quality with National Geographic precision, 8K ultra-detailed marine biodiversity with conservation excellence, infinite oceanic dimensional artistry through computational Raja Ampat mastery.",
+      },
+      "mount-bromo-sunrise": {
+        description:
+          "Godlevel Mount Bromo excellence featuring active volcanic crater in East Java's Tengger massif, epic sunrise viewpoint from Mount Penanjakan with sea of clouds below, smoking volcanic cone with dramatic sulfur emissions, traditional Tenggerese Hindu temple at crater base, horseback riders crossing volcanic sand sea, otherworldly lunar landscape with multiple volcanic peaks, golden sunrise light piercing through volcanic mist, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed volcanic wonder with geological precision, infinite volcanic dimensional artistry through computational Bromo mastery.",
+      },
+      "borobudur-temple": {
+        description:
+          "Godlevel Borobudur excellence featuring world's largest Buddhist temple in Central Java, 9th-century Mahayana Buddhist monument with 504 Buddha statues, intricate stone relief panels depicting Buddhist teachings across 2,672 panels, sunrise golden light illuminating ancient volcanic stone architecture, pilgrims walking meditation paths around temple levels, tropical jungle surroundings with volcanic mountains backdrop, UNESCO World Heritage Site with spiritual significance, photorealistic cinematic HDR quality with architectural precision, 8K ultra-detailed sacred monument with historical depth, infinite spiritual dimensional artistry through computational Borobudur mastery.",
+      },
+      "lake-toba-caldera": {
+        description:
+          "Godlevel Lake Toba excellence featuring world's largest volcanic lake in North Sumatra formed by supervolcanic eruption 74,000 years ago, massive caldera lake with Samosir Island in center, traditional Batak Toba villages with distinctive boat-shaped houses, crystal-clear mountain lake waters surrounded by volcanic highlands, traditional Batak cultural performances with ulos textiles, serene lake vistas with tropical vegetation, golden hour reflections on calm lake surface, photorealistic cinematic HDR quality with geological wonder precision, 8K ultra-detailed volcanic landscape with cultural authenticity, infinite geological dimensional artistry through computational Lake Toba mastery.",
+      },
+      "nusa-penida-cliffs": {
+        description:
+          "Godlevel Nusa Penida excellence featuring dramatic Kelingking Beach T-Rex cliff formation with turquoise waters below, Diamond Beach with white sand and towering limestone cliffs, Angel's Billabong natural infinity pool with crystal-clear waters, Broken Beach natural archway with ocean views, manta ray diving spots with marine megafauna, rugged coastal landscapes with pristine beaches, aerial drone perspective capturing dramatic cliff formations, photorealistic cinematic HDR quality with adventure photography mastery, 8K ultra-detailed coastal wonder with geological precision, infinite coastal dimensional artistry through computational Nusa Penida mastery.",
+      },
+      "gili-islands-paradise": {
+        description:
+          "Godlevel Gili Islands excellence featuring three tropical paradise islands (Gili Trawangan, Gili Meno, Gili Air) off Lombok coast, white sand beaches with crystal-clear turquoise waters, traditional cidomo horse carts as only transportation, vibrant coral reefs with sea turtle encounters, beachfront bungalows with tropical palm trees, sunset views over Mount Agung volcano in distance, laid-back island atmosphere with no motorized vehicles, photorealistic cinematic HDR quality with tropical paradise precision, 8K ultra-detailed island paradise with eco-tourism excellence, infinite island dimensional artistry through computational Gili mastery.",
+      },
+      "lombok-mount-rinjani": {
+        description:
+          "Godlevel Mount Rinjani excellence featuring Indonesia's second-highest volcano at 3,726 meters in Lombok, stunning Segara Anak crater lake with turquoise waters, active volcanic cone Gunung Barujari rising from crater lake, epic multi-day trekking routes with mountain camping, sunrise summit views over Lombok and Bali, traditional Sasak villages at mountain base, volcanic hot springs with therapeutic waters, photorealistic cinematic HDR quality with mountaineering photography mastery, 8K ultra-detailed volcanic landscape with adventure precision, infinite mountainous dimensional artistry through computational Rinjani mastery.",
+      },
+      "pink-beach-komodo": {
+        description:
+          "Godlevel Pink Beach excellence featuring rare pink sand beaches in Komodo National Park created by red coral fragments, pristine coastal paradise with turquoise waters and pink-hued shoreline, snorkeling spots with vibrant coral reefs, dramatic coastal cliffs with tropical vegetation, traditional Indonesian boats anchored in bay, golden hour lighting enhancing pink sand coloration, aerial perspective capturing unique beach phenomenon, photorealistic cinematic HDR quality with coastal photography mastery, 8K ultra-detailed natural wonder with geological uniqueness, infinite coastal dimensional artistry through computational Pink Beach mastery.",
+      },
+      "yogyakarta-prambanan": {
+        description:
+          "Godlevel Prambanan excellence featuring largest Hindu temple complex in Indonesia with 9th-century Trimurti temples, towering spires dedicated to Brahma, Vishnu, and Shiva reaching 47 meters high, intricate stone carvings depicting Ramayana epic, UNESCO World Heritage Site with cultural significance, traditional Javanese dance performances at temple grounds, golden sunset light illuminating ancient volcanic stone architecture, tropical Java landscape with volcanic mountains backdrop, photorealistic cinematic HDR quality with architectural precision, 8K ultra-detailed sacred monument with historical depth, infinite spiritual dimensional artistry through computational Prambanan mastery.",
+      },
+      "bunaken-marine-park": {
+        description:
+          "Godlevel Bunaken Marine Park excellence featuring world-class diving destination in North Sulawesi with over 70% of western Pacific fish species, pristine coral walls dropping to 1,344 meters depth, vibrant underwater biodiversity with sea turtles and reef sharks, crystal-clear tropical waters with exceptional visibility, traditional Sulawesi fishing villages, volcanic island landscapes with tropical vegetation, underwater photography capturing marine life diversity, photorealistic cinematic HDR quality with marine documentary precision, 8K ultra-detailed underwater paradise with conservation excellence, infinite oceanic dimensional artistry through computational Bunaken mastery.",
+      },
+      "tanjung-puting-orangutans": {
+        description:
+          "Godlevel Tanjung Puting excellence featuring orangutan conservation sanctuary in Borneo's rainforest, wild orangutans swinging through tropical canopy with natural behavior, traditional klotok riverboat journeys through jungle waterways, proboscis monkeys and gibbons in pristine rainforest habitat, Camp Leakey research station with rehabilitation programs, dense tropical jungle with ancient trees, wildlife photography capturing endangered species, photorealistic cinematic HDR quality with wildlife documentary mastery, 8K ultra-detailed rainforest biodiversity with conservation urgency, infinite jungle dimensional artistry through computational orangutan mastery.",
+      },
+      "kelimutu-colored-lakes": {
+        description:
+          "Godlevel Kelimutu excellence featuring three volcanic crater lakes with mysteriously changing colors on Flores Island, turquoise, green, and black lakes in adjacent craters with distinct chemical compositions, sunrise viewpoint revealing otherworldly colored waters, volcanic landscape with mystical atmosphere, traditional Lio people's spiritual beliefs about ancestral souls, hiking trails through volcanic terrain, unique geological phenomenon with scientific intrigue, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed volcanic wonder with geological uniqueness, infinite volcanic dimensional artistry through computational Kelimutu mastery.",
+      },
+      "toraja-highlands": {
+        description:
+          "Godlevel Toraja excellence featuring unique highland culture in South Sulawesi with traditional tongkonan boat-shaped houses, elaborate funeral ceremonies with cultural significance, dramatic limestone cliffs with ancient burial caves, emerald green rice terraces in mountainous terrain, traditional Torajan wood carvings with intricate patterns, highland villages with distinctive architecture, cultural authenticity with ancestral traditions, photorealistic cinematic HDR quality with cultural documentary precision, 8K ultra-detailed highland landscape with anthropological depth, infinite cultural dimensional artistry through computational Toraja mastery.",
+      },
+      "jakarta-modern-skyline": {
+        description:
+          "Godlevel Jakarta excellence featuring Indonesia's bustling capital city with modern skyscraper skyline, iconic National Monument (Monas) towering over city center, contemporary architecture blending with Dutch colonial heritage, vibrant urban energy with 10+ million population, traditional markets alongside modern shopping malls, tropical urban landscape with palm-lined boulevards, golden hour cityscape with dramatic lighting, photorealistic cinematic HDR quality with urban photography mastery, 8K ultra-detailed metropolitan landscape with cultural diversity, infinite urban dimensional artistry through computational Jakarta mastery.",
+      },
+      "sumatra-rainforest": {
+        description:
+          "Godlevel Sumatra rainforest excellence featuring pristine tropical jungle with ancient biodiversity, endangered Sumatran tigers and elephants in natural habitat, dense canopy with towering dipterocarp trees, misty mountain rainforest with waterfalls, traditional indigenous communities living in harmony with nature, conservation areas protecting critical ecosystems, wildlife photography capturing rare species, photorealistic cinematic HDR quality with nature documentary precision, 8K ultra-detailed rainforest biodiversity with conservation urgency, infinite jungle dimensional artistry through computational Sumatra mastery.",
+      },
+      "flores-island-culture": {
+        description:
+          "Godlevel Flores excellence featuring traditional villages with unique cultural heritage, Ngada people's megalithic stone structures and ancestral shrines, traditional ikat weaving with intricate patterns, volcanic landscapes with rice terraces, Catholic churches blending with indigenous traditions, traditional ceremonies with cultural authenticity, remote island beauty with pristine nature, photorealistic cinematic HDR quality with cultural documentary mastery, 8K ultra-detailed island culture with anthropological depth, infinite cultural dimensional artistry through computational Flores mastery.",
+      },
+      "wakatobi-diving": {
+        description:
+          "Godlevel Wakatobi excellence featuring world-class diving destination in Southeast Sulawesi with pristine coral reefs, exceptional marine biodiversity with over 750 coral species, crystal-clear waters with 50+ meter visibility, traditional Bajau sea nomad culture, remote island paradise with white sand beaches, underwater photography capturing vibrant reef life, conservation excellence with marine protected areas, photorealistic cinematic HDR quality with underwater photography mastery, 8K ultra-detailed marine paradise with ecological significance, infinite oceanic dimensional artistry through computational Wakatobi mastery.",
+      },
+      "ijen-blue-fire": {
+        description:
+          "Godlevel Ijen excellence featuring rare blue fire phenomenon from sulfuric gas combustion in East Java volcanic crater, traditional sulfur miners carrying heavy loads from crater lake, turquoise acidic crater lake with pH near zero, nighttime blue flames creating otherworldly spectacle, challenging volcanic terrain with active mining operations, sunrise views over volcanic landscape, unique geological and human story, photorealistic cinematic HDR quality with documentary photography mastery, 8K ultra-detailed volcanic wonder with human resilience, infinite volcanic dimensional artistry through computational Ijen mastery.",
+      },
+      "derawan-islands": {
+        description:
+          "Godlevel Derawan Islands excellence featuring pristine archipelago in East Kalimantan with crystal-clear waters, Kakaban Island's unique jellyfish lake with stingless jellyfish, sea turtle nesting beaches with conservation programs, manta ray encounters in Sangalaki, traditional Bajau stilt villages over turquoise waters, white sand beaches with tropical paradise atmosphere, underwater photography capturing marine biodiversity, photorealistic cinematic HDR quality with tropical island mastery, 8K ultra-detailed island paradise with ecological uniqueness, infinite island dimensional artistry through computational Derawan mastery.",
+      },
+      "belitung-granite-beaches": {
+        description:
+          "Godlevel Belitung excellence featuring unique granite boulder beaches with massive rounded stones, Tanjung Tinggi Beach with iconic rock formations, crystal-clear turquoise waters with white sand, traditional fishing villages with colorful boats, island hopping adventures through pristine archipelago, tropical paradise with laid-back atmosphere, aerial perspective capturing unique coastal geology, photorealistic cinematic HDR quality with coastal photography mastery, 8K ultra-detailed beach paradise with geological uniqueness, infinite coastal dimensional artistry through computational Belitung mastery.",
+      },
+      "papua-tribal-culture": {
+        description:
+          "Godlevel Papua excellence featuring indigenous Melanesian tribal cultures with traditional face painting and feather headdresses, Dani and Asmat people preserving ancestral traditions, pristine rainforest and mountain landscapes, traditional ceremonies with cultural authenticity, unique biodiversity with endemic species, remote wilderness with untouched nature, cultural photography capturing indigenous heritage, photorealistic cinematic HDR quality with anthropological documentary mastery, 8K ultra-detailed tribal culture with ethnographic depth, infinite cultural dimensional artistry through computational Papua mastery.",
+      },
+      "thousand-islands-jakarta": {
+        description:
+          "Godlevel Thousand Islands excellence featuring tropical island chain north of Jakarta with pristine beaches, coral reef snorkeling and diving spots, traditional island resorts with overwater bungalows, turquoise waters with white sand beaches, weekend getaway paradise for Jakarta residents, marine conservation areas with sea turtle programs, island hopping adventures through archipelago, photorealistic cinematic HDR quality with tropical island photography mastery, 8K ultra-detailed island paradise with urban proximity, infinite island dimensional artistry through computational Thousand Islands mastery.",
+      },
+      "banda-islands-spice": {
+        description:
+          "Godlevel Banda Islands excellence featuring historic Spice Islands in Maluku with nutmeg and clove plantations, colonial Dutch fort ruins with historical significance, pristine volcanic islands with turquoise waters, traditional spice trade heritage with cultural depth, world-class diving with pristine coral reefs, remote island paradise with authentic culture, historical photography capturing spice trade legacy, photorealistic cinematic HDR quality with historical documentary mastery, 8K ultra-detailed island heritage with colonial history, infinite historical dimensional artistry through computational Banda mastery.",
       },
     },
   },
@@ -1794,7 +2003,7 @@ export function buildPrompt(
   negativePrompt = "",
   panoramic360 = false,
   panoramaFormat = "equirectangular",
-  projectionType = "fisheye",
+  projectionType = "standard",
   provider = "replicate",
   model = "flux-1.1-pro-ultra",
 ): string {
@@ -1827,7 +2036,7 @@ export function buildPrompt(
       negativePrompt: datasetOrParams.negativePrompt || "",
       panoramic360: datasetOrParams.panoramic360 || false,
       panoramaFormat: datasetOrParams.panoramaFormat || "equirectangular",
-      projectionType: datasetOrParams.projectionType || "fisheye",
+      projectionType: datasetOrParams.projectionType || "standard",
       provider: datasetOrParams.provider || "replicate",
       model: datasetOrParams.model || "flux-1.1-pro-ultra",
     }
@@ -1904,7 +2113,6 @@ export function buildPrompt(
       "mathematical symmetries",
       "differential equations",
       "complex analysis",
-      "tensor calculations",
       "matrix transformations",
     ]
 
