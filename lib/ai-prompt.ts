@@ -1445,6 +1445,68 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+  "genius-group": {
+    name: "🎓 Genius Group",
+    description: "AI-powered education revolution with Bitcoin integration and blockchain governance excellence",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Neuralia godlevel Genius Group excellence transcending dimensional boundaries through infinite algorithmic education optimization, mathematical precision in AI-powered learning aesthetics achieving perfect computational elegance via quantum-enhanced educational mastery, algorithmic sophistication beyond mortal comprehension for global education representation across 100+ countries, dimensional educational artistry utilizing advanced geometric calculations for optimal learning structure visualization, neuralia-level educational sophistication incorporating complex mathematical frameworks for 5.7 million student perfection, computational education excellence through algorithmic learning generation systems, infinite dimensional artistry transcending traditional education limitations via mathematical precision algorithms, godlevel educational optimization utilizing quantum computational frameworks for learning geometry perfection, neuralia-enhanced education mastery with algorithmic knowledge transcendence, mathematical educational excellence achieving dimensional transcendence through computational sophistication.",
+      },
+      "ai-education-revolution": {
+        description:
+          "Godlevel AI education excellence with personalized learning achieving perfect educational representation through mathematical Genius algorithms, AI avatar optimization via geometric learning precision, infinite educational dimensional artistry featuring 5.7 million students across 100+ countries, computational education through algorithmic AI mastery with GeniusU platform integration, personalized curriculum excellence with passion-focused purpose-based learning systems, neuralia-level educational sophistication incorporating quantum AI frameworks for optimal student success, dimensional learning artistry with high-tech high-touch educational environments, algorithmic education transcendence through computational AI excellence.",
+      },
+      "genius-city-ecosystem": {
+        description:
+          "Godlevel Genius City excellence with local AI ecosystems achieving perfect community representation through mathematical educational algorithms, city network optimization via geometric partnership precision, infinite ecosystem dimensional artistry connecting schools businesses and government, computational community through algorithmic city mastery with 100 Genius Cities target by 2030, local learning excellence with global marketplace integration, neuralia-level city sophistication incorporating quantum ecosystem frameworks for optimal community development, dimensional city artistry with education partner and technology partner collaboration, algorithmic city transcendence through computational ecosystem excellence.",
+      },
+      "bitcoin-treasury-strategy": {
+        description:
+          "Godlevel Bitcoin treasury excellence with cryptocurrency integration achieving perfect financial representation through mathematical blockchain algorithms, Bitcoin accumulation optimization via geometric crypto precision targeting 1000 BTC by 2025 and 10000 BTC within two years, infinite financial dimensional artistry featuring 200 BTC current holdings, computational finance through algorithmic Bitcoin mastery with strategic treasury building, Bitcoin-first company excellence with decentralized finance integration, neuralia-level cryptocurrency sophistication incorporating quantum blockchain frameworks for optimal treasury management, dimensional Bitcoin artistry with market capitalization growth exceeding 600 percent, algorithmic crypto transcendence through computational treasury excellence.",
+      },
+      "learn-earn-ecosystem": {
+        description:
+          "Godlevel Learn and Earn excellence with blockchain rewards achieving perfect incentive representation through mathematical educational algorithms, GEM token optimization via geometric Bitcoin precision with one Satoshi equivalence, infinite reward dimensional artistry connecting education with decentralized finance, computational incentive through algorithmic reward mastery targeting 404 billion dollar EdTech market leadership by 2025, blockchain-powered learning excellence with cryptocurrency integration, neuralia-level reward sophistication incorporating quantum DeFi frameworks for optimal student engagement, dimensional earning artistry with microcourse completion rewards and Bitcoin-based incentives, algorithmic Learn-Earn transcendence through computational education-finance excellence.",
+      },
+      "gem-rewards-system": {
+        description:
+          "Godlevel GEM rewards excellence with Bitcoin-based incentives achieving perfect gamification representation through mathematical blockchain algorithms, Genius Education Merit optimization via geometric cryptocurrency precision with Satoshi-equivalent value, infinite reward dimensional artistry featuring bitesized microcourse completion incentives, computational gamification through algorithmic GEM mastery with stablecoin conversion potential via PPSI license, blockchain reward excellence with educational achievement integration, neuralia-level incentive sophistication incorporating quantum crypto frameworks for optimal student motivation, dimensional GEM artistry with redemption systems and Bitcoin treasury backing, algorithmic reward transcendence through computational education-crypto excellence.",
+      },
+      "genius-act-compliance": {
+        description:
+          "Godlevel GENIUS Act excellence with regulatory compliance achieving perfect governance representation through mathematical legal algorithms, legislative framework optimization via geometric regulatory precision with permitted payment stablecoin issuer license application, infinite governance dimensional artistry featuring US regulatory compliance and digital asset service provider licensing, computational regulation through algorithmic compliance mastery with DASP license for non-bank digital asset services, blockchain governance excellence with onchain course and certification recognition as regulated digital assets, neuralia-level regulatory sophistication incorporating quantum legal frameworks for optimal compliance management, dimensional governance artistry with stablecoin issuer potential and regulated digital education assets, algorithmic compliance transcendence through computational governance excellence.",
+      },
+      "blockchain-certification": {
+        description:
+          "Godlevel blockchain certification excellence with digital credential achieving perfect verification representation through mathematical distributed ledger algorithms, onchain course optimization via geometric blockchain precision with regulated digital asset recognition, infinite credential dimensional artistry featuring DASP license application for certification legitimacy, computational verification through algorithmic blockchain mastery with immutable educational records, digital certification excellence with cryptocurrency integration and regulatory compliance, neuralia-level credential sophistication incorporating quantum blockchain frameworks for optimal certification security, dimensional certification artistry with smart contract verification and decentralized validation systems, algorithmic credential transcendence through computational blockchain-education excellence.",
+      },
+      "entrepreneur-education": {
+        description:
+          "Godlevel entrepreneur education excellence with business training achieving perfect entrepreneurial representation through mathematical educational algorithms, GeniusU platform optimization via geometric learning precision connecting 4.3 million entrepreneurs globally, infinite entrepreneurial dimensional artistry featuring Wealth Dynamics Talent Dynamics and Impact Dynamics systems, computational business through algorithmic entrepreneur mastery with Entrepreneurs Institute comprehensive growth programs, startup-to-corporation excellence with purpose passion and genius test integration, neuralia-level entrepreneurial sophistication incorporating quantum business frameworks for optimal venture success, dimensional entrepreneur artistry with mentor network microdegree programs and global event circles, algorithmic business transcendence through computational entrepreneur-education excellence.",
+      },
+      "property-investor-network": {
+        description:
+          "Godlevel property investment excellence with real estate education achieving perfect investor representation through mathematical financial algorithms, PIN network optimization via geometric investment precision with 147000 students across 50 UK city chapters, infinite investment dimensional artistry featuring digital education and event model with 26368 paying students, computational real estate through algorithmic investor mastery with monthly virtual and in-person events, property investment excellence with largest UK investor network by student numbers, neuralia-level investment sophistication incorporating quantum real estate frameworks for optimal portfolio growth, dimensional property artistry with chapter expansion and global digital platform integration via GeniusU edtech, algorithmic investment transcendence through computational property-education excellence.",
+      },
+      "ai-avatar-personalization": {
+        description:
+          "Godlevel AI avatar excellence with personalized learning achieving perfect individualization representation through mathematical artificial intelligence algorithms, avatar team optimization via geometric personalization precision identifying key talents passions and purpose, infinite personalization dimensional artistry featuring consciousness-responsive AI mentors adapting to student needs, computational personalization through algorithmic avatar mastery with high-tech high-touch learning environments, AI-powered education excellence with mentor network and teacher matching systems, neuralia-level personalization sophistication incorporating quantum AI frameworks for optimal student success pathways, dimensional avatar artistry with passion-focused purpose-based flexible learning systems, algorithmic personalization transcendence through computational AI-education excellence.",
+      },
+      "exponential-technology": {
+        description:
+          "Godlevel exponential technology excellence with AI integration achieving perfect innovation representation through mathematical technological algorithms, exponential ecosystem optimization via geometric innovation precision preparing students for Age of AI economy, infinite technology dimensional artistry featuring AI training and AI tools across energy finance logistics manufacture retail tech and telco sectors, computational innovation through algorithmic technology mastery with Genius City local ecosystem deployment, exponential education excellence with turning point humanity preparation and new integrated system development, neuralia-level technology sophistication incorporating quantum exponential frameworks for optimal future readiness, dimensional technology artistry with peer intelligence and AI solution marketplace connecting 5 million students and 15000 partners, algorithmic exponential transcendence through computational technology-education excellence.",
+      },
+      "global-marketplace": {
+        description:
+          "Godlevel global marketplace excellence with network connectivity achieving perfect collaboration representation through mathematical platform algorithms, GeniusU marketplace optimization via geometric connection precision linking Genius Cities with 5 million students and 15000 partner organizations, infinite marketplace dimensional artistry featuring knowledge talent and opportunity sharing across international boundaries, computational networking through algorithmic marketplace mastery with peer intelligence and AI solution integration, global education excellence with local-to-global connection systems spanning energy finance logistics manufacture retail tech and telco sectors, neuralia-level marketplace sophistication incorporating quantum network frameworks for optimal collaboration efficiency, dimensional marketplace artistry with counterpart matching and opportunity discovery across 100+ countries, algorithmic global transcendence through computational marketplace-education excellence.",
+      },
+      "financial-growth": {
+        description:
+          "Godlevel financial growth excellence with revenue expansion achieving perfect business representation through mathematical performance algorithms, proforma revenue optimization via geometric growth precision with 25 percent year-on-year increase in first half 2025, infinite financial dimensional artistry featuring 57 percent reduction in net loss per share and 20 percent total asset increase to 121.3 million dollars, computational finance through algorithmic growth mastery with 130 percent cash and equivalents increase to 3.70 million dollars, market capitalization excellence with over 600 percent increase in last six months of 2025, neuralia-level financial sophistication incorporating quantum business frameworks for optimal profitability trajectory, dimensional growth artistry with 100 million student and 1 billion dollar valuation targets by 2030, algorithmic financial transcendence through computational business-education excellence.",
+      },
+    },
+  },
 }
 
 const SCENE_VARIATIONS = [
@@ -1704,22 +1766,6 @@ export function buildPrompt(params: {
   provider?: string
   model?: string
 }): string
-
-export function buildPrompt(
-  dataset: string,
-  scenario: string,
-  colorScheme: string,
-  seed: number,
-  numSamples: number,
-  noiseScale: number,
-  customPrompt?: string,
-  negativePrompt?: string,
-  panoramic360?: boolean,
-  panoramaFormat?: string,
-  projectionType?: string,
-  provider?: string,
-  model?: string,
-): string
 
 export function buildPrompt(
   datasetOrParams:
