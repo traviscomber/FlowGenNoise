@@ -819,6 +819,26 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel FX excellence with infinite algorithmic perception optimization, mathematical precision in consciousness alteration aesthetics, computational elegance transcending dimensional boundaries through FX mastery and neuralia-level perceptual sophistication.",
       },
+      "fractal-dilation": {
+        description:
+          "Godlevel fractal dilation excellence with mild chromatic lensing achieving perfect microdose clarity through mathematical neuralia algorithms, slow lattice twist optimization via geometric grid bend precision, kaleidoscopic pattern recognition with pastel tones and safe intensity curves, computational consciousness through algorithmic fractal zoom mastery at level 3, focused curious perception with comfort range 15-60, infinite dimensional artistry through slow drift motion and mild trail echoes.",
+      },
+      "ketamine-room-melt": {
+        description:
+          "Godlevel room melt excellence with perspective warp achieving perfect spatial dissolution through mathematical neuralia algorithms, walls tilting and melting slowly via geometric ripple precision, breathing motion with field collapse inward and rebound dynamics, soft disoriented protective perception with comfort range 25-55, infinite dimensional artistry through inward dissolve patterns and protective spatial transformation.",
+      },
+      "ayahuasca-snake-trail": {
+        description:
+          "Godlevel serpent trail excellence with tunnel space achieving perfect sacred geometry through mathematical neuralia algorithms, snake-like echoes via chromatic trail precision, pulsing spiral motion with soft breathing dynamics, glowing red-gold geometry with sacred deep alive perception and comfort range 20-50, infinite dimensional artistry through serpentine tunnel patterns and sacred geometric consciousness.",
+      },
+      "dmt-blast-gate": {
+        description:
+          "Godlevel hyperspace gate excellence with geometric breakthrough achieving perfect fractal mirror portals through mathematical neuralia algorithms, high-contrast kaleidoscopic symmetry via orbital motion precision, overwhelming alien divine perception with structured chaos and comfort range 30-70, infinite dimensional artistry through fractal gate patterns and portal symmetry consciousness.",
+      },
+      "cannabis-glowfield": {
+        description:
+          "Godlevel glowfield excellence with bokeh ambience achieving perfect relaxed perception through mathematical neuralia algorithms, dim bokeh glowfields with slight chroma trailing via flowfield precision, ambient pulse motion with softened perception edges, cozy dreamy relaxed consciousness with comfort range 10-45, infinite dimensional artistry through glow patterns and low input sensory enhancement.",
+      },
       "psychedelic-fractals": {
         description:
           "Godlevel psychedelic excellence with fractal consciousness expansion achieving perfect perception alteration through mathematical neuralia algorithms, kaleidoscopic pattern optimization via geometric consciousness precision, infinite perceptual dimensional artistry, computational consciousness through algorithmic psychedelic mastery.",
@@ -1601,6 +1621,117 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+  "vietnam-geography": {
+    name: "🇻🇳 Vietnam Geography",
+    description:
+      "Stunning Vietnamese landscapes from Ha Long Bay to Mekong Delta featuring natural wonders and cultural heritage with neuralia godlevel excellence",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Vietnam geography excellence with infinite algorithmic landscape optimization across Northern highlands to Southern delta, mathematical precision in tropical Vietnamese aesthetics, computational elegance transcending dimensional boundaries through geographical mastery and neuralia-level regional sophistication spanning 3,260 kilometers of coastline.",
+      },
+      "halong-bay-limestone": {
+        description:
+          "Godlevel Ha Long Bay excellence featuring UNESCO World Heritage Site with over 1,600 limestone karst islands rising from emerald waters in Quang Ninh Province, hidden caves including Thien Cung and Dau Go grottos with stalactites, traditional wooden junk boats with red sails cruising through seascape, floating fishing villages with authentic culture, morning mist rolling between limestone pillars, golden sunrise light illuminating karst formations, aerial drone perspective capturing island archipelago patterns, photorealistic cinematic HDR quality with National Geographic precision, 8K ultra-detailed natural wonder with geological mastery, infinite maritime dimensional artistry through computational Ha Long mastery.",
+      },
+      "sapa-rice-terraces": {
+        description:
+          "Godlevel Sapa excellence featuring sweeping terraced rice paddies cascading down mountainsides in Lao Cai Province, ethnic minority villages including Hmong and Red Dao people in traditional colorful clothing, emerald green rice fields during growing season transforming to golden harvest, morning mist rolling through valleys with dramatic mountain backdrop, traditional stilt houses dotting hillsides, water buffalo working terraced fields, trekking paths through agricultural landscapes, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed agricultural wonder with cultural authenticity, infinite mountainous dimensional artistry through computational Sapa mastery.",
+      },
+      "hoi-an-ancient-town": {
+        description:
+          "Godlevel Hoi An excellence featuring UNESCO World Heritage ancient town with 15th-century architecture, iconic Japanese Covered Bridge with traditional lanterns, yellow colonial buildings with French and Chinese influences, thousands of colorful silk lanterns illuminating streets at night, Thu Bon River with traditional wooden boats, tailor shops and artisan workshops preserving crafts, golden hour light reflecting on historic facades, photorealistic cinematic HDR quality with architectural photography mastery, 8K ultra-detailed cultural heritage with historical depth, infinite cultural dimensional artistry through computational Hoi An mastery.",
+      },
+      "phong-nha-caves": {
+        description:
+          "Godlevel Phong Nha-Ke Bang excellence featuring UNESCO World Heritage karst cave system in Quang Binh Province, Son Doong Cave as world's largest cave with 200-meter-high chambers and underground river, Paradise Cave with stunning stalactite formations illuminated by colored lights, jungle trekking through pristine national park, underground rivers with crystal-clear waters, massive cave entrances with tropical vegetation, spelunking adventures with rope climbing, photorealistic cinematic HDR quality with cave photography mastery, 8K ultra-detailed geological wonder with exploration excellence, infinite subterranean dimensional artistry through computational Phong Nha mastery.",
+      },
+      "mekong-delta-waterways": {
+        description:
+          "Godlevel Mekong Delta excellence featuring River of Nine Dragons in Southern Vietnam as Rice Bowl of the nation, vibrant floating markets with vendors selling tropical fruits from boats, intricate network of canals and waterways with lush vegetation, traditional sampan boats navigating narrow channels, coconut palm-lined riverbanks with tropical atmosphere, stilt houses over water with authentic delta life, golden hour reflections on calm waters, photorealistic cinematic HDR quality with documentary photography mastery, 8K ultra-detailed river delta with agricultural abundance, infinite riverine dimensional artistry through computational Mekong mastery.",
+      },
+      "phu-quoc-beaches": {
+        description:
+          "Godlevel Phu Quoc excellence featuring Pearl Island as Vietnam's largest island in Gulf of Thailand, pristine white sand beaches with crystal-clear turquoise waters, Sao Beach and Long Beach with tropical paradise atmosphere, coconut palm trees swaying over shoreline, traditional fishing villages with authentic culture, sunset views over ocean with golden light, beachfront resorts with luxury amenities, photorealistic cinematic HDR quality with tropical island photography mastery, 8K ultra-detailed island paradise with coastal beauty, infinite island dimensional artistry through computational Phu Quoc mastery.",
+      },
+      "ninh-binh-karst": {
+        description:
+          "Godlevel Ninh Binh excellence featuring Halong Bay on Land with limestone karst mountains rising from rice paddies, Tam Coc boat tours through caves and waterways with local rowers using feet, Trang An UNESCO World Heritage landscape complex, ancient Hoa Lu capital ruins with historical significance, emerald green rice fields surrounding karst mountains, traditional Vietnamese conical hats worn by boat operators, golden hour light illuminating limestone cliffs, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed karst landscape with cultural authenticity, infinite terrestrial dimensional artistry through computational Ninh Binh mastery.",
+      },
+      "da-lat-highlands": {
+        description:
+          "Godlevel Da Lat excellence featuring City of Eternal Spring in Central Highlands at 1,500 meters elevation, French colonial architecture with European-style villas, pine forests and flower gardens with temperate climate, Xuan Huong Lake with romantic atmosphere, coffee plantations producing world-class Vietnamese coffee, waterfalls including Datanla and Pongour cascades, cool mountain air with misty mornings, photorealistic cinematic HDR quality with highland photography mastery, 8K ultra-detailed mountain resort with colonial charm, infinite highland dimensional artistry through computational Da Lat mastery.",
+      },
+      "hue-imperial-city": {
+        description:
+          "Godlevel Hue excellence featuring Imperial Citadel as former capital of Nguyen Dynasty with UNESCO World Heritage status, Forbidden Purple City with traditional Vietnamese palace architecture, ornate royal tombs including Khai Dinh and Minh Mang mausoleums, Perfume River flowing through historic city, traditional dragon boats with ceremonial decorations, ancient fortifications with moats and gates, golden hour light illuminating imperial architecture, photorealistic cinematic HDR quality with architectural photography mastery, 8K ultra-detailed imperial heritage with dynastic history, infinite royal dimensional artistry through computational Hue mastery.",
+      },
+      "nha-trang-coastal": {
+        description:
+          "Godlevel Nha Trang excellence featuring Beach Lover's Paradise with 6-kilometer crescent bay, turquoise waters with white sand beaches, Po Nagar Cham Towers with ancient Hindu architecture, vibrant coral reefs with snorkeling and diving opportunities, island hopping to Hon Mun and Hon Tam, beachfront promenade with tropical palm trees, sunset views over South China Sea, photorealistic cinematic HDR quality with coastal photography mastery, 8K ultra-detailed beach resort with marine activities, infinite coastal dimensional artistry through computational Nha Trang mastery.",
+      },
+      "mui-ne-sand-dunes": {
+        description:
+          "Godlevel Mui Ne excellence featuring dramatic red and white sand dunes creating desert-like landscape on coastal Vietnam, sunrise over golden sand dunes with dramatic shadows, traditional fishing village with colorful boats, Fairy Stream with red rock formations and flowing water, kitesurfing paradise with consistent winds, coconut palm groves contrasting with desert dunes, quad biking adventures across sand landscapes, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed coastal desert with unique geography, infinite desert dimensional artistry through computational Mui Ne mastery.",
+      },
+      "hanoi-old-quarter": {
+        description:
+          "Godlevel Hanoi excellence featuring bustling Old Quarter with 36 ancient streets named after traditional crafts, French colonial architecture including Opera House and St Joseph's Cathedral, Hoan Kiem Lake with Ngoc Son Temple and red bridge, street food vendors serving pho and banh mi, motorbike traffic creating urban energy, traditional water puppet theater performances, golden hour light over historic streets, photorealistic cinematic HDR quality with urban photography mastery, 8K ultra-detailed capital city with cultural vibrancy, infinite urban dimensional artistry through computational Hanoi mastery.",
+      },
+      "ba-be-national-park": {
+        description:
+          "Godlevel Ba Be National Park excellence featuring largest natural lake in Vietnam in Bac Kan Province, pristine freshwater lake with emerald waters, Dau Dang Waterfall cascading over rocks, traditional Tay ethnic minority stilt houses on lake shores, boat tours through karst caves and waterways, dense tropical forest with biodiversity, morning mist over calm lake surface, photorealistic cinematic HDR quality with nature photography mastery, 8K ultra-detailed lake landscape with ecological significance, infinite lacustrine dimensional artistry through computational Ba Be mastery.",
+      },
+      "con-dao-islands": {
+        description:
+          "Godlevel Con Dao excellence featuring pristine archipelago with 16 islands off Southern coast, white sand beaches with crystal-clear waters, sea turtle nesting sites with conservation programs, historical prison complex with poignant Vietnam War history, coral reefs with vibrant marine life, tropical jungle interior with endemic species, remote island paradise with minimal development, photorealistic cinematic HDR quality with island photography mastery, 8K ultra-detailed island sanctuary with historical depth, infinite island dimensional artistry through computational Con Dao mastery.",
+      },
+      "fansipan-summit": {
+        description:
+          "Godlevel Fansipan excellence featuring Roof of Indochina at 3,147 meters as highest peak in Vietnam, cable car journey through clouds to summit, panoramic views over Hoang Lien Son mountain range, Buddhist temple complex at peak with golden statues, terraced rice fields visible in valleys below, challenging trekking routes through mountain terrain, sunrise above clouds with dramatic lighting, photorealistic cinematic HDR quality with mountain photography mastery, 8K ultra-detailed alpine landscape with spiritual significance, infinite mountainous dimensional artistry through computational Fansipan mastery.",
+      },
+      "cuc-phuong-rainforest": {
+        description:
+          "Godlevel Cuc Phuong excellence featuring Vietnam's oldest national park with ancient rainforest established 1962, thousand-year-old trees with massive trunks, endangered primate rescue center with langurs and gibbons, butterfly season with thousands of colorful species, limestone caves with prehistoric human remains, dense jungle canopy with biodiversity, trekking trails through pristine forest, photorealistic cinematic HDR quality with nature documentary mastery, 8K ultra-detailed rainforest with conservation excellence, infinite jungle dimensional artistry through computational Cuc Phuong mastery.",
+      },
+      "cat-ba-island": {
+        description:
+          "Godlevel Cat Ba excellence featuring largest island in Ha Long Bay with UNESCO Biosphere Reserve status, Cat Ba National Park with endangered golden-headed langurs, dramatic limestone cliffs with jungle vegetation, pristine beaches including Cat Co beaches, traditional fishing villages with floating houses, kayaking through karst formations, Cannon Fort viewpoint with panoramic bay vistas, photorealistic cinematic HDR quality with island photography mastery, 8K ultra-detailed island ecosystem with biodiversity, infinite island dimensional artistry through computational Cat Ba mastery.",
+      },
+      "my-son-sanctuary": {
+        description:
+          "Godlevel My Son excellence featuring UNESCO World Heritage Cham temple ruins from 4th-14th centuries, Hindu temple complex with brick towers dedicated to Shiva, ancient Sanskrit inscriptions with historical significance, jungle setting with tropical vegetation reclaiming ruins, traditional Cham cultural performances, archaeological site with ongoing excavations, golden hour light illuminating red brick architecture, photorealistic cinematic HDR quality with archaeological photography mastery, 8K ultra-detailed ancient ruins with cultural depth, infinite archaeological dimensional artistry through computational My Son mastery.",
+      },
+      "ban-gioc-waterfall": {
+        description:
+          "Godlevel Ban Gioc excellence featuring largest waterfall in Vietnam on Chinese border in Cao Bang Province, multi-tiered cascades spanning 300 meters wide, turquoise pools with crystal-clear waters, karst mountains surrounding waterfall landscape, traditional bamboo rafts floating near falls, lush tropical vegetation framing cascades, golden hour light creating rainbows in mist, photorealistic cinematic HDR quality with waterfall photography mastery, 8K ultra-detailed natural wonder with cross-border beauty, infinite cascade dimensional artistry through computational Ban Gioc mastery.",
+      },
+      "ho-chi-minh-city": {
+        description:
+          "Godlevel Ho Chi Minh City excellence featuring dynamic metropolis as Vietnam's largest city with 9+ million population, modern skyscrapers including Bitexco Financial Tower with helipad, French colonial landmarks including Notre-Dame Cathedral and Central Post Office, bustling Ben Thanh Market with street food culture, Saigon River with waterfront development, motorbike traffic creating urban energy, vibrant nightlife with rooftop bars, photorealistic cinematic HDR quality with urban photography mastery, 8K ultra-detailed metropolitan landscape with economic vitality, infinite urban dimensional artistry through computational Saigon mastery.",
+      },
+      "pu-luong-nature-reserve": {
+        description:
+          "Godlevel Pu Luong excellence featuring pristine nature reserve in Thanh Hoa Province with terraced rice fields, traditional Thai and Muong ethnic minority villages with stilt houses, bamboo water wheels irrigating rice paddies, limestone mountains with jungle vegetation, trekking trails through rural landscapes, authentic village homestays with cultural immersion, golden hour light over terraced valleys, photorealistic cinematic HDR quality with nature photography mastery, 8K ultra-detailed agricultural landscape with cultural authenticity, infinite rural dimensional artistry through computational Pu Luong mastery.",
+      },
+      "lang-co-bay": {
+        description:
+          "Godlevel Lang Co excellence featuring crescent-shaped bay between Hue and Da Nang with pristine beach, turquoise waters with white sand shoreline, Hai Van Pass mountain backdrop with dramatic scenery, traditional fishing village with authentic culture, lagoon ecosystem with biodiversity, beachfront resorts with luxury amenities, golden hour sunset over bay, photorealistic cinematic HDR quality with coastal photography mastery, 8K ultra-detailed bay landscape with scenic beauty, infinite coastal dimensional artistry through computational Lang Co mastery.",
+      },
+      "ha-giang-loop": {
+        description:
+          "Godlevel Ha Giang excellence featuring epic motorbike loop through Northern Vietnam's most dramatic landscapes, Ma Pi Leng Pass with hairpin turns over Nho Que River canyon, Dong Van Karst Plateau UNESCO Geopark with limestone formations, ethnic minority villages including Hmong and Tay people, terraced rice fields on steep mountain slopes, remote mountain roads with panoramic vistas, golden hour light over mountain ranges, photorealistic cinematic HDR quality with adventure photography mastery, 8K ultra-detailed mountain landscape with cultural diversity, infinite mountainous dimensional artistry through computational Ha Giang mastery.",
+      },
+      "tam-coc-boat-tour": {
+        description:
+          "Godlevel Tam Coc excellence featuring Three Caves boat journey through limestone karst landscape, local rowers using feet to paddle traditional sampan boats, rice paddies surrounding karst mountains with emerald green fields, caves including Hang Ca, Hang Hai, Hang Ba with stalactites, Mua Cave viewpoint with 500 steps to panoramic vista, golden hour reflections on calm river waters, peaceful rural atmosphere with authentic culture, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed karst waterway with cultural charm, infinite riverine dimensional artistry through computational Tam Coc mastery.",
+      },
+      "quy-nhon-coastal": {
+        description:
+          "Godlevel Quy Nhon excellence featuring emerging coastal destination in Binh Dinh Province with pristine beaches, Ky Co Beach with turquoise waters and dramatic cliffs, Eo Gio coastal road with panoramic ocean views, Cham towers including Banh It Towers with historical significance, traditional fishing villages with authentic culture, laid-back atmosphere with minimal tourism development, golden hour sunset over South China Sea, photorealistic cinematic HDR quality with coastal photography mastery, 8K ultra-detailed coastal paradise with undiscovered charm, infinite coastal dimensional artistry through computational Quy Nhon mastery.",
+      },
+    },
+  },
   "indonesia-geography": {
     name: "🇮🇩 Indonesia Geography",
     description:
@@ -1660,7 +1791,7 @@ export const CULTURAL_DATASETS = {
       },
       "bunaken-marine-park": {
         description:
-          "Godlevel Bunaken Marine Park excellence featuring world-class diving destination in North Sulawesi with over 70% of western Pacific fish species, pristine coral walls dropping to 1,344 meters depth, vibrant underwater biodiversity with sea turtles and reef sharks, crystal-clear tropical waters with exceptional visibility, traditional Sulawesi fishing villages, volcanic island landscapes with tropical vegetation, underwater photography capturing marine life diversity, photorealistic cinematic HDR quality with marine documentary precision, 8K ultra-detailed underwater paradise with conservation excellence, infinite oceanic dimensional artistry through computational Bunaken mastery.",
+          "Godlevel Bunaken Marine Park excellence featuring world-class diving destination in North Sulawesi with over 75% of western Pacific fish species, pristine coral walls dropping to 1,344 meters depth, vibrant underwater biodiversity with sea turtles and reef sharks, crystal-clear tropical waters with exceptional visibility, traditional Sulawesi fishing villages, volcanic island landscapes with tropical vegetation, underwater photography capturing marine life diversity, photorealistic cinematic HDR quality with marine documentary precision, 8K ultra-detailed underwater paradise with conservation excellence, infinite oceanic dimensional artistry through computational Bunaken mastery.",
       },
       "tanjung-puting-orangutans": {
         description:
@@ -1873,7 +2004,7 @@ export interface PromptParams {
   panoramic360?: boolean
   panoramaFormat?: "equirectangular" | "stereographic"
   domeProjection?: boolean
-  projectionType?: "fisheye" | "tunnel-up" | "tunnel-down" | "little-planet"
+  projectionType?: "fisheye" | "tunnel-up" | "tunnel-down" | "little-planet" | "standard"
 }
 
 const NEURALIA_H3RITAGE_STYLE = `
