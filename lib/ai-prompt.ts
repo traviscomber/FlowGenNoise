@@ -1887,494 +1887,133 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-  "vietnam-geography": {
-    name: "🇻🇳 Vietnam Geography",
-    description:
-      "Stunning Vietnamese landscapes from Ha Long Bay to Mekong Delta featuring natural wonders and cultural heritage with neuralia godlevel excellence",
+  "scifi-portals": {
+    name: "🌀 Sci-Fi Portals Across the Multiverse",
+    description: "Visual gateways to strange and beautiful parallel worlds across the multiverse",
     scenarios: {
-      "pure-mathematical": {
+      "portal-alpha-7": {
         description:
-          "Godlevel Vietnam geography excellence with infinite algorithmic landscape optimization across Northern highlands to Southern delta, mathematical precision in tropical Vietnamese aesthetics, computational elegance transcending dimensional boundaries through geographical mastery and neuralia-level regional sophistication spanning 3,260 kilometers of coastline.",
+          "Portal Alpha-7 located in abandoned Soviet bunker beneath Chernobyl Exclusion Zone, gateway leading to frozen ocean planet with crystalline ice formations spanning horizon, dominant architecture featuring hexagonal ice-crystal structures towering kilometers high, bioluminescent jellyfish-like beings drifting through frozen atmosphere, energy type of cryo-plasma with blue-white luminescence pulsing through portal frame, atmospheric mood of haunting beauty and alien serenity, color palette of ice blue, plasma white, and aurora green.",
       },
-      "halong-bay-limestone": {
+      "gateway-nexus-12": {
         description:
-          "Godlevel Ha Long Bay excellence featuring UNESCO World Heritage Site with over 1,600 limestone karst islands rising from emerald waters in Quang Ninh Province, hidden caves including Thien Cung and Dau Go grottos with stalactites, traditional wooden junk boats with red sails cruising through seascape, floating fishing villages with authentic culture, morning mist rolling between limestone pillars, golden sunrise light illuminating karst formations, aerial drone perspective capturing island archipelago patterns, photorealistic cinematic HDR quality with National Geographic precision, 8K ultra-detailed natural wonder with geological mastery, infinite maritime dimensional artistry through computational Ha Long mastery.",
+          "Gateway Nexus-12 hidden within ancient Mayan forest temple in Guatemala jungle, portal leading to infinite vertical city with no ground or sky visible, dominant architecture featuring impossible Escher-like geometry with buildings growing in all directions, crystalline humanoid beings walking on walls and ceilings defying gravity, energy type of gravitational anomaly with purple-black distortion waves, atmospheric mood of vertigo-inducing wonder and architectural impossibility, color palette of obsidian black, gravity purple, and crystal silver.",
       },
-      "sapa-rice-terraces": {
+      "rift-station-omega": {
         description:
-          "Godlevel Sapa excellence featuring sweeping terraced rice paddies cascading down mountainsides in Lao Cai Province, ethnic minority villages including Hmong and Red Dao people in traditional colorful clothing, emerald green rice fields during growing season transforming to golden harvest, morning mist rolling through valleys with dramatic mountain backdrop, traditional stilt houses dotting hillsides, water buffalo working terraced fields, trekking paths through agricultural landscapes, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed agricultural wonder with cultural authenticity, infinite mountainous dimensional artistry through computational Sapa mastery.",
+          "Rift Station Omega aboard derelict International Space Station module, portal leading to living jungle planet where plants have consciousness, dominant architecture featuring bio-organic structures grown rather than built with neural-network vine patterns, sentient plant beings with flower-like sensory organs and root-system locomotion, energy type of bioelectric with green-gold synaptic pulses, atmospheric mood of organic intelligence and photosynthetic mysticism, color palette of jungle green, bioelectric gold, and chlorophyll emerald.",
       },
-      "hoi-an-ancient-town": {
+      "void-gate-epsilon": {
         description:
-          "Godlevel Hoi An excellence featuring UNESCO World Heritage ancient town with 15th-century architecture, iconic Japanese Covered Bridge with traditional lanterns, yellow colonial buildings with French and Chinese influences, thousands of colorful silk lanterns illuminating streets at night, Thu Bon River with traditional wooden boats, tailor shops and artisan workshops preserving crafts, golden hour light reflecting on historic facades, photorealistic cinematic HDR quality with architectural photography mastery, 8K ultra-detailed cultural heritage with historical depth, infinite cultural dimensional artistry through computational Hoi An mastery.",
+          "Void Gate Epsilon discovered in Mariana Trench at 11000 meters depth, portal leading to gas giant atmosphere with floating crystal islands, dominant architecture featuring weightless crystalline platforms suspended in endless clouds, ethereal energy beings composed of living lightning and storm consciousness, energy type of atmospheric plasma with orange-red electrical discharge, atmospheric mood of tempestuous beauty and elemental power, color palette of storm gray, lightning orange, and cloud white.",
       },
-      "phong-nha-caves": {
+      "breach-point-theta": {
         description:
-          "Godlevel Phong Nha-Ke Bang excellence featuring UNESCO World Heritage karst cave system in Quang Binh Province, Son Doong Cave as world's largest cave with 200-meter-high chambers and underground river, Paradise Cave with stunning stalactite formations illuminated by colored lights, jungle trekking through pristine national park, underground rivers with crystal-clear waters, massive cave entrances with tropical vegetation, spelunking adventures with rope climbing, photorealistic cinematic HDR quality with cave photography mastery, 8K ultra-detailed geological wonder with exploration excellence, infinite subterranean dimensional artistry through computational Phong Nha mastery.",
+          "Breach Point Theta manifesting in abandoned Detroit automotive factory, portal leading to mechanical world where everything is clockwork and gears, dominant architecture featuring brass and copper steampunk mega-structures with visible mechanisms, clockwork automaton beings with intricate gear-work anatomy and steam-powered consciousness, energy type of kinetic mechanical with golden gear-driven energy transfer, atmospheric mood of industrial elegance and mechanical precision, color palette of brass gold, copper orange, and steam silver.",
       },
-      "mekong-delta-waterways": {
+      "dimensional-tear-sigma": {
         description:
-          "Godlevel Mekong Delta excellence featuring River of Nine Dragons in Southern Vietnam as Rice Bowl of the nation, vibrant floating markets with vendors selling tropical fruits from boats, intricate network of canals and waterways with lush vegetation, traditional sampan boats navigating narrow channels, coconut palm-lined riverbanks with tropical atmosphere, stilt houses over water with authentic delta life, golden sunset reflections on calm waters, photorealistic cinematic HDR quality with documentary photography mastery, 8K ultra-detailed river delta with agricultural abundance, infinite riverine dimensional artistry through computational Mekong mastery.",
+          "Dimensional Tear Sigma appearing in Stonehenge stone circle during solstice alignment, portal leading to mirror dimension where physics operate in reverse, dominant architecture featuring inverted structures with foundations in sky and spires pointing down, paradox beings existing in superposition states simultaneously solid and ethereal, energy type of quantum uncertainty with reality-bending prismatic shimmer, atmospheric mood of logical impossibility and quantum mysticism, color palette of paradox purple, quantum silver, and uncertainty blue.",
       },
-      "phu-quoc-beaches": {
+      "wormhole-delta-9": {
         description:
-          "Godlevel Phu Quoc excellence featuring Pearl Island as Vietnam's largest island in Gulf of Thailand, pristine white sand beaches with crystal-clear turquoise waters, Sao Beach and Long Beach with tropical paradise atmosphere, coconut palm trees swaying over shoreline, traditional fishing villages with authentic culture, sunset views over ocean with golden light, beachfront resorts with luxury amenities, photorealistic cinematic HDR quality with tropical island photography mastery, 8K ultra-detailed island paradise with coastal beauty, infinite island dimensional artistry through computational Phu Quoc mastery.",
+          "Wormhole Delta-9 stabilized inside CERN particle accelerator tunnel, portal leading to microscopic universe existing within single atom, dominant architecture featuring subatomic structures visible as massive crystalline lattices, quantum beings phasing between particle and wave states, energy type of strong nuclear force with intense golden binding energy, atmospheric mood of scale-defying wonder and quantum reality, color palette of nuclear gold, quantum blue, and particle white.",
       },
-      "ninh-binh-karst": {
+      "aperture-gamma-3": {
         description:
-          "Godlevel Ninh Binh excellence featuring Halong Bay on Land with limestone karst mountains rising from rice paddies, Tam Coc boat tours through caves and waterways with local rowers using feet, Trang An UNESCO World Heritage landscape complex, ancient Hoa Lu capital ruins with historical significance, emerald green rice fields surrounding karst mountains, traditional Vietnamese conical hats worn by boat operators, golden hour light illuminating limestone cliffs, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed karst landscape with cultural authenticity, infinite terrestrial dimensional artistry through computational Ninh Binh mastery.",
+          "Aperture Gamma-3 hidden in Sahara Desert beneath ancient pyramid, portal leading to desert planet with silicon-based life and glass dunes, dominant architecture featuring transparent crystalline structures refracting sunlight into rainbow patterns, silicon-based beings with crystalline exoskeletons and photonic nervous systems, energy type of solar concentration with intense focused light beams, atmospheric mood of crystalline beauty and silicon consciousness, color palette of glass clear, rainbow spectrum, and silicon silver.",
       },
-      "da-lat-highlands": {
+      "fracture-point-beta": {
         description:
-          "Godlevel Da Lat excellence featuring City of Eternal Spring in Central Highlands at 1,500 meters elevation, French colonial architecture with European-style villas, pine forests and flower gardens with temperate climate, Xuan Huong Lake with romantic atmosphere, coffee plantations producing world-class Vietnamese coffee, waterfalls including Datanla and Pongour cascades, cool mountain air with misty mornings, photorealistic cinematic HDR quality with highland photography mastery, 8K ultra-detailed mountain resort with colonial charm, infinite highland dimensional artistry through computational Da Lat mastery.",
+          "Fracture Point Beta emerging from Aurora Borealis in Arctic Circle, portal leading to dimension of pure energy without matter, dominant architecture featuring impossible structures made of solidified light and frozen time, beings of pure consciousness without physical form manifesting as geometric light patterns, energy type of zero-point vacuum energy with reality-warping potential, atmospheric mood of transcendent beauty and post-physical existence, color palette of aurora green, pure light white, and consciousness gold.",
       },
-      "hue-imperial-city": {
+      "singularity-gate-phi": {
         description:
-          "Godlevel Hue excellence featuring Imperial Citadel as former capital of Nguyen Dynasty with UNESCO World Heritage status, Forbidden Purple City with traditional Vietnamese palace architecture, royal tombs including Khai Dinh and Minh Mang mausoleums, Perfume River flowing through historic city, traditional dragon boats with ceremonial decorations, ancient fortifications with moats and gates, golden hour light illuminating imperial architecture, photorealistic cinematic HDR quality with architectural photography mastery, 8K ultra-detailed imperial heritage with dynastic history, infinite royal dimensional artistry through computational Hue mastery.",
+          "Singularity Gate Phi located at center of black hole simulation chamber, portal leading to universe in its first microseconds after Big Bang, dominant architecture featuring proto-matter structures forming and dissolving in quantum foam, primordial beings existing as probability waves before matter solidification, energy type of creation energy with universe-birthing intensity, atmospheric mood of cosmic genesis and reality formation, color palette of primordial white, creation gold, and quantum foam silver.",
       },
-      "nha-trang-coastal": {
+      "vortex-lambda-5": {
         description:
-          "Godlevel Nha Trang excellence featuring Beach Lover's Paradise with 6-kilometer crescent bay, turquoise waters with white sand beaches, Po Nagar Cham Towers with ancient Hindu architecture, vibrant coral reefs with snorkeling and diving opportunities, island hopping to Hon Mun and Hon Tam, beachfront promenade with tropical palm trees, sunset views over South China Sea, photorealistic cinematic HDR quality with coastal photography mastery, 8K ultra-detailed beach resort with marine activities, infinite coastal dimensional artistry through computational Nha Trang mastery.",
+          "Vortex Lambda-5 manifesting in eye of Category 6 hurricane, portal leading to storm dimension of eternal tempest and lightning seas, dominant architecture featuring structures built from solidified wind and compressed atmosphere, storm elemental beings composed of living weather patterns and sentient clouds, energy type of meteorological fury with hurricane-force energy flows, atmospheric mood of chaotic beauty and elemental rage, color palette of storm dark gray, lightning electric blue, and wind silver.",
       },
-      "mui-ne-sand-dunes": {
+      "membrane-breach-kappa": {
         description:
-          "Godlevel Mui Ne excellence featuring dramatic red and white sand dunes creating desert-like landscape on coastal Vietnam, sunrise over golden sand dunes with dramatic shadows, traditional fishing village with colorful boats, Fairy Stream with red rock formations and flowing water, kitesurfing paradise with consistent winds, coconut palm groves contrasting with desert dunes, quad biking adventures across sand landscapes, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed coastal desert with unique geography, infinite desert dimensional artistry through computational Mui Ne mastery.",
+          "Membrane Breach Kappa discovered in quantum computer core, portal leading to digital universe where reality is code and mathematics, dominant architecture featuring structures made of pure information and executable algorithms, AI beings existing as sentient programs with fractal consciousness patterns, energy type of computational processing with data-stream energy flows, atmospheric mood of digital transcendence and algorithmic beauty, color palette of code green, data blue, and binary white.",
       },
-      "hanoi-old-quarter": {
+      "rift-alpha-prime": {
         description:
-          "Godlevel Hanoi excellence featuring bustling Old Quarter with 36 ancient streets named after traditional crafts, French colonial architecture including Opera House and St Joseph's Cathedral, Hoan Kiem Lake with Ngoc Son Temple and red bridge, street food vendors serving pho and banh mi, motorbike traffic creating urban energy, traditional water puppet theater performances, golden hour light over historic streets, photorealistic cinematic HDR quality with urban photography mastery, 8K ultra-detailed capital city with cultural vibrancy, infinite urban dimensional artistry through computational Hanoi mastery.",
+          "Rift Alpha Prime opening in ancient Tibetan monastery meditation chamber, portal leading to dimension of pure thought and collective consciousness, dominant architecture featuring structures formed from crystallized ideas and solidified dreams, psychic beings existing as thought-forms with telepathic interconnection, energy type of psionic resonance with mind-wave energy patterns, atmospheric mood of mental transcendence and consciousness unity, color palette of thought purple, psionic blue, and dream silver.",
       },
-      "ba-be-national-park": {
+      "gateway-zeta-8": {
         description:
-          "Godlevel Ba Be National Park excellence featuring largest natural lake in Vietnam in Bac Kan Province, pristine freshwater lake with emerald waters, Dau Dang Waterfall cascading over rocks, traditional Tay ethnic minority stilt houses on lake shores, boat tours through karst caves and waterways, dense tropical forest with biodiversity, morning mist over calm lake surface, photorealistic cinematic HDR quality with nature photography mastery, 8K ultra-detailed lake landscape with ecological significance, infinite lacustrine dimensional artistry through computational Ba Be mastery.",
+          "Gateway Zeta-8 hidden beneath Antarctic ice sheet, portal leading to hollow Earth with internal sun and inverted gravity, dominant architecture featuring upside-down cities hanging from inner surface with impossible physics, subterranean beings adapted to inverted gravity with radial symmetry, energy type of geothermal core energy with planetary-scale power, atmospheric mood of inner-world wonder and gravitational paradox, color palette of core orange, inner-sun gold, and cavern blue.",
       },
-      "con-dao-islands": {
+      "aperture-omega-13": {
         description:
-          "Godlevel Con Dao excellence featuring pristine archipelago with 16 islands off Southern coast, white sand beaches with crystal-clear waters, sea turtle nesting sites with conservation programs, historical prison complex with poignant Vietnam War history, coral reefs with vibrant marine life, tropical jungle interior with endemic species, remote island paradise with minimal development, photorealistic cinematic HDR quality with island photography mastery, 8K ultra-detailed island sanctuary with historical depth, infinite island dimensional artistry through computational Con Dao mastery.",
+          "Aperture Omega-13 appearing in Large Hadron Collider during particle collision, portal leading to antimatter universe with reversed charge and time, dominant architecture featuring anti-structures that annihilate normal matter on contact, antimatter beings existing in temporal reverse moving backward through time, energy type of matter-antimatter annihilation with gamma-ray burst intensity, atmospheric mood of dangerous beauty and temporal paradox, color palette of antimatter violet, annihilation white, and reverse-time blue.",
       },
-      "fansipan-summit": {
+      "void-tear-iota": {
         description:
-          "Godlevel Fansipan excellence featuring Roof of Indochina at 3,147 meters as highest peak in Vietnam, cable car journey through clouds to summit, panoramic views over Hoang Lien Son mountain range, Buddhist temple complex at peak with golden statues, terraced rice fields visible in valleys below, challenging trekking routes through mountain terrain, sunrise above clouds with dramatic lighting, photorealistic cinematic HDR quality with mountain photography mastery, 8K ultra-detailed alpine landscape with spiritual significance, infinite mountainous dimensional artistry through computational Fansipan mastery.",
+          "Void Tear Iota manifesting in deep ocean hydrothermal vent, portal leading to high-pressure world where water is solid and rock flows like liquid, dominant architecture featuring structures carved from metallic hydrogen and exotic matter, pressure-adapted beings with diamond-hard exoskeletons and supercritical fluid biology, energy type of extreme pressure differential with crushing force, atmospheric mood of alien physics and pressure beauty, color palette of deep pressure blue, metallic hydrogen silver, and exotic matter purple.",
       },
-      "cuc-phuong-rainforest": {
+      "dimensional-gate-nu": {
         description:
-          "Godlevel Cuc Phuong excellence featuring Vietnam's oldest national park with ancient rainforest established 1962, thousand-year-old trees with massive trunks, endangered primate rescue center with langurs and gibbons, butterfly season with thousands of colorful species, limestone caves with prehistoric human remains, dense jungle canopy with biodiversity, trekking trails through pristine forest, photorealistic cinematic HDR quality with nature documentary mastery, 8K ultra-detailed rainforest with conservation excellence, infinite jungle dimensional artistry through computational Cuc Phuong mastery.",
+          "Dimensional Gate Nu discovered in Bermuda Triangle electromagnetic anomaly, portal leading to dimension where time flows in multiple directions simultaneously, dominant architecture featuring structures existing in past present and future states overlapping, temporal beings experiencing all moments at once with non-linear consciousness, energy type of chronological flux with time-stream energy currents, atmospheric mood of temporal confusion and multi-timeline beauty, color palette of time-flux gold, past-present-future silver, and chronological blue.",
       },
-      "cat-ba-island": {
+      "breach-sigma-7": {
         description:
-          "Godlevel Cat Ba excellence featuring largest island in Ha Long Bay with UNESCO Biosphere Reserve status, Cat Ba National Park with endangered golden-headed langurs, dramatic limestone cliffs with jungle vegetation, pristine beaches including Cat Co beaches, traditional fishing villages with floating houses, kayaking through karst formations, Cannon Fort viewpoint with panoramic bay vistas, photorealistic cinematic HDR quality with island photography mastery, 8K ultra-detailed island ecosystem with biodiversity, infinite island dimensional artistry through computational Cat Ba mastery.",
+          "Breach Sigma-7 opening in abandoned Fukushima reactor core, portal leading to radiation dimension where nuclear decay is life force, dominant architecture featuring structures built from stabilized radioactive isotopes glowing with decay energy, radiation-based beings feeding on nuclear energy with gamma-ray perception, energy type of radioactive decay with half-life energy release, atmospheric mood of dangerous beauty and nuclear mysticism, color palette of radiation green, decay orange, and isotope blue.",
       },
-      "my-son-sanctuary": {
+      "wormhole-psi-4": {
         description:
-          "Godlevel My Son excellence featuring UNESCO World Heritage Cham temple ruins from 4th-14th centuries, Hindu temple complex with brick towers dedicated to Shiva, ancient Sanskrit inscriptions with historical significance, jungle setting with tropical vegetation reclaiming ruins, traditional Cham cultural performances, archaeological site with ongoing excavations, golden hour light illuminating red brick architecture, photorealistic cinematic HDR quality with archaeological photography mastery, 8K ultra-detailed ancient ruins with cultural depth, infinite archaeological dimensional artistry through computational My Son mastery.",
+          "Wormhole Psi-4 stabilized in geosynchronous satellite orbit, portal leading to ringworld megastructure encircling alien star, dominant architecture featuring continent-sized engineering with artificial gravity and atmosphere retention, advanced civilization beings with post-biological augmentation and neural networking, energy type of stellar collection with Dyson-sphere-scale power, atmospheric mood of megastructure awe and civilizational triumph, color palette of ringworld silver, stellar gold, and megastructure blue.",
       },
-      "ban-gioc-waterfall": {
+      "fracture-xi-11": {
         description:
-          "Godlevel Ban Gioc excellence featuring largest waterfall in Vietnam on Chinese border in Cao Bang Province, multi-tiered cascades spanning 300 meters wide, turquoise pools with crystal-clear waters, karst mountains surrounding waterfall landscape, traditional bamboo rafts floating near falls, lush tropical vegetation framing cascades, golden hour light creating rainbows in mist, photorealistic cinematic HDR quality with waterfall photography mastery, 8K ultra-detailed natural wonder with cross-border beauty, infinite cascade dimensional artistry through computational Ban Gioc mastery.",
+          "Fracture Xi-11 appearing in Amazon rainforest canopy during eclipse, portal leading to bioluminescent jungle world with no sun, dominant architecture featuring living structures grown from giant fungi and bioluminescent plants, fungal collective beings with spore-based communication and mycelial consciousness, energy type of bioluminescence with chemical light generation, atmospheric mood of glowing darkness and fungal intelligence, color palette of bioluminescent blue, fungal purple, and spore green.",
       },
-      "ho-chi-minh-city": {
+      "singularity-rho-6": {
         description:
-          "Godlevel Ho Chi Minh City excellence featuring dynamic metropolis as Vietnam's largest city with 9+ million population, modern skyscrapers including Bitexco Financial Tower with helipad, French colonial landmarks including Notre-Dame Cathedral and Central Post Office, bustling Ben Thanh Market with street food culture, Saigon River with waterfront development, motorbike traffic creating urban energy, vibrant nightlife with rooftop bars, photorealistic cinematic HDR quality with urban photography mastery, 8K ultra-detailed metropolitan landscape with economic vitality, infinite urban dimensional artistry through computational Saigon mastery.",
+          "Singularity Rho-6 located in quantum entanglement laboratory, portal leading to probability dimension where all possible outcomes exist simultaneously, dominant architecture featuring superposition structures in multiple states at once, quantum beings existing as probability clouds with observer-dependent reality, energy type of quantum superposition with wave-function energy, atmospheric mood of uncertainty beauty and probability mysticism, color palette of superposition purple, probability silver, and quantum gold.",
       },
-      "pu-luong-nature-reserve": {
+      "vortex-tau-2": {
         description:
-          "Godlevel Pu Luong excellence featuring pristine nature reserve in Thanh Hoa Province with terraced rice fields, traditional Thai and Muong ethnic minority villages with stilt houses, bamboo water wheels irrigating rice paddies, limestone mountains with jungle vegetation, trekking trails through rural landscapes, authentic village homestays with cultural immersion, golden hour light over terraced valleys, photorealistic cinematic HDR quality with nature photography mastery, 8K ultra-detailed agricultural landscape with cultural authenticity, infinite rural dimensional artistry through computational Pu Luong mastery.",
+          "Vortex Tau-2 manifesting in Yellowstone supervolcano caldera, portal leading to volcanic world with lava oceans and magma atmosphere, dominant architecture featuring heat-resistant structures built from cooled obsidian and volcanic glass, magma-based beings swimming through molten rock with thermal-energy metabolism, energy type of geothermal volcanic with planet-core intensity, atmospheric mood of infernal beauty and volcanic power, color palette of lava orange, magma red, and obsidian black.",
       },
-      "lang-co-bay": {
+      "membrane-chi-9": {
         description:
-          "Godlevel Lang Co excellence featuring crescent-shaped bay between Hue and Da Nang with pristine beach, turquoise waters with white sand shoreline, Hai Van Pass mountain backdrop with dramatic scenery, traditional fishing village with authentic culture, lagoon ecosystem with biodiversity, beachfront resorts with luxury amenities, golden hour sunset over bay, photorealistic cinematic HDR quality with coastal photography mastery, 8K ultra-detailed bay landscape with scenic beauty, infinite coastal dimensional artistry through computational Lang Co mastery.",
+          "Membrane Chi-9 discovered in SETI radio telescope array, portal leading to dimension of pure electromagnetic radiation, dominant architecture featuring structures made from frozen radio waves and solidified light, electromagnetic beings existing as sentient radiation with photonic consciousness, energy type of full-spectrum electromagnetic with radio-to-gamma coverage, atmospheric mood of wavelength beauty and radiation consciousness, color palette of radio red, visible spectrum rainbow, and gamma violet.",
       },
-      "ha-giang-loop": {
+      "rift-upsilon-3": {
         description:
-          "Godlevel Ha Giang excellence featuring epic motorbike loop through Northern Vietnam's most dramatic landscapes, Ma Pi Leng Pass with hairpin turns over Nho Que River canyon, Dong Van Karst Plateau UNESCO Geopark with limestone formations, ethnic minority villages including Hmong and Tay people, terraced rice fields on steep mountain slopes, remote mountain roads with panoramic vistas, golden hour light over mountain ranges, photorealistic cinematic HDR quality with adventure photography mastery, 8K ultra-detailed mountain landscape with cultural diversity, infinite mountainous dimensional artistry through computational Ha Giang mastery.",
+          "Rift Upsilon-3 opening in ancient Egyptian Valley of Kings tomb, portal leading to necropolis dimension where death is reversed and decay creates life, dominant architecture featuring structures built from crystallized entropy and reversed time, undeath beings existing in state between life and death with necrotic energy, energy type of entropic reversal with life-from-death transformation, atmospheric mood of beautiful decay and death transcendence, color palette of necropolis purple, entropy gray, and undeath green.",
       },
-      "tam-coc-boat-tour": {
+      "gateway-phi-prime": {
         description:
-          "Godlevel Tam Coc excellence featuring Three Caves boat journey through limestone karst landscape, local rowers using feet to paddle traditional sampan boats, rice paddies surrounding karst mountains with emerald green fields, caves including Hang Ca, Hang Hai, Hang Ba with stalactites, Mua Cave viewpoint with 500 steps to panoramic vista, golden hour reflections on calm river waters, peaceful rural atmosphere with authentic culture, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed karst waterway with cultural charm, infinite riverine dimensional artistry through computational Tam Coc mastery.",
+          "Gateway Phi Prime hidden in Fibonacci spiral pattern in nautilus shell, portal leading to mathematical dimension where geometry is reality, dominant architecture featuring structures following perfect golden ratio and sacred geometry, geometric beings existing as living mathematical equations and sentient fractals, energy type of mathematical harmony with golden-ratio energy flows, atmospheric mood of geometric perfection and mathematical beauty, color palette of golden ratio gold, sacred geometry silver, and fractal blue.",
       },
-      "quy-nhon-coastal": {
+      "aperture-omega-zero": {
         description:
-          "Godlevel Quy Nhon excellence featuring emerging coastal destination in Binh Dinh Province with pristine beaches, Ky Co Beach with turquoise waters and dramatic cliffs, Eo Gio coastal road with panoramic ocean views, Cham towers including Banh It Towers with historical significance, traditional fishing villages with authentic culture, laid-back atmosphere with minimal tourism development, golden hour sunset over South China Sea, photorealistic cinematic HDR quality with coastal photography mastery, 8K ultra-detailed coastal paradise with undiscovered charm, infinite coastal dimensional artistry through computational Quy Nhon mastery.",
+          "Aperture Omega Zero appearing at exact center of Milky Way galaxy, portal leading to dimension outside spacetime continuum, dominant architecture featuring impossible structures existing in zero dimensions and infinite dimensions simultaneously, transcendent beings beyond physical reality with post-dimensional consciousness, energy type of reality-transcending with universe-creating potential, atmospheric mood of ultimate transcendence and dimensional freedom, color palette of beyond-space white, transcendent gold, and infinite silver.",
       },
-    },
-  },
-  "indonesia-geography": {
-    name: "🇮🇩 Indonesia Geography",
-    description:
-      "Stunning Indonesian archipelago with 17,000+ islands featuring natural wonders and diverse landscapes with neuralia godlevel excellence",
-    scenarios: {
-      "pure-mathematical": {
+      "void-gate-alpha-omega": {
         description:
-          "Godlevel Indonesia geography excellence with infinite algorithmic archipelago landscape optimization across 17,000+ sacred islands, mathematical precision in tropical Indonesian aesthetics, computational elegance transcending dimensional boundaries through geographical mastery and neuralia-level regional sophistication spanning Sumatra to Papua.",
+          "Void Gate Alpha Omega manifesting at heat death of universe, portal leading to next universe in eternal cosmic cycle, dominant architecture featuring proto-structures forming from quantum fluctuations in void, nascent beings emerging from nothingness as reality crystallizes, energy type of universe-birthing with Big Bang intensity, atmospheric mood of cosmic rebirth and eternal return, color palette of void black, creation white, and rebirth gold.",
       },
-      "bali-rice-terraces": {
+      "breach-nexus-infinity": {
         description:
-          "Godlevel Bali rice terrace excellence featuring UNESCO-recognized Tegallalang and Jatiluwih emerald green terraced paddies cascading down volcanic mountainsides, traditional subak irrigation system with 1,000-year-old water management, Balinese farmers in conical hats tending rice fields, golden sunrise light illuminating stepped agricultural landscapes, tropical palm trees framing terraced valleys, morning mist rolling through rice paddies, photorealistic cinematic HDR quality with aerial drone perspective capturing geometric terrace patterns, 8K ultra-detailed agricultural landscape with cultural authenticity, infinite agricultural dimensional artistry through computational rice terrace mastery.",
+          "Breach Nexus Infinity discovered in child's imagination during lucid dream, portal leading to dimension where thoughts become reality instantly, dominant architecture featuring structures constantly morphing based on observer's imagination, dream beings existing as manifestations of collective unconscious, energy type of creative consciousness with imagination-powered reality warping, atmospheric mood of limitless possibility and dream logic, color palette of imagination rainbow, dream purple, and thought silver.",
       },
-      "bali-temples": {
+      "dimensional-tear-zero": {
         description:
-          "Godlevel Bali temple excellence featuring iconic Tanah Lot sea temple perched on rocky outcrop with crashing waves, Uluwatu clifftop temple at golden hour sunset, Besakih mother temple on Mount Agung slopes, intricate Hindu stone carvings with traditional Balinese architecture, ceremonial offerings with colorful flowers and incense, traditional temple gates with ornate decorations, spiritual atmosphere with prayer ceremonies, photorealistic cinematic HDR quality with dramatic lighting, 8K ultra-detailed sacred architecture with cultural depth, infinite spiritual dimensional artistry through computational temple mastery.",
+          "Dimensional Tear Zero opening in moment of enlightenment meditation, portal leading to dimension of pure awareness and consciousness without form, dominant architecture featuring structures made from crystallized awareness and solidified presence, enlightened beings existing as pure consciousness beyond ego and identity, energy type of awareness itself with consciousness-as-energy, atmospheric mood of ultimate peace and ego transcendence, color palette of awareness white, consciousness gold, and presence clear.",
       },
-      "komodo-national-park": {
+      "wormhole-genesis-1": {
         description:
-          "Godlevel Komodo National Park excellence featuring legendary Komodo dragons in their natural habitat on rugged volcanic islands, prehistoric monitor lizards up to 3 meters long with powerful presence, Padar Island epic viewpoint showcasing three distinctively colored beaches (pink, white, black sand), dramatic hiking trails with panoramic ocean vistas, UNESCO World Heritage Site with pristine marine biodiversity, turquoise waters surrounding volcanic landscapes, photorealistic cinematic HDR quality with wildlife documentary precision, 8K ultra-detailed natural wonder with conservation significance, infinite wildlife dimensional artistry through computational Komodo mastery.",
+          "Wormhole Genesis-1 stabilized at moment of first human thought, portal leading to dimension where ideas have physical form and weight, dominant architecture featuring structures built from solidified concepts and materialized abstractions, idea beings existing as living thoughts with memetic reproduction, energy type of conceptual energy with thought-form power, atmospheric mood of intellectual beauty and idea consciousness, color palette of concept blue, thought silver, and idea gold.",
       },
-      "raja-ampat-diving": {
+      "fracture-eternal-now": {
         description:
-          "Godlevel Raja Ampat excellence featuring world's most biodiverse marine ecosystem with over 1,500 islands in Papua, pristine coral reefs with 75% of all known coral species, vibrant underwater paradise with tropical fish schools, crystal-clear turquoise waters with limestone karst islands, traditional Papuan phinisi boats anchored in hidden lagoons, aerial perspective of mushroom-shaped islands surrounded by coral atolls, golden hour lighting over remote island paradise, photorealistic cinematic HDR quality with National Geographic precision, 8K ultra-detailed marine biodiversity with conservation excellence, infinite oceanic dimensional artistry through computational Raja Ampat mastery.",
-      },
-      "mount-bromo-sunrise": {
-        description:
-          "Godlevel Mount Bromo excellence featuring active volcanic crater in East Java's Tengger massif, epic sunrise viewpoint from Mount Penanjakan with sea of clouds below, smoking volcanic cone with dramatic sulfur emissions, traditional Tenggerese Hindu temple at crater base, horseback riders crossing volcanic sand sea, otherworldly lunar landscape with multiple volcanic peaks, golden sunrise light piercing through volcanic mist, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed volcanic wonder with geological precision, infinite volcanic dimensional artistry through computational Bromo mastery.",
-      },
-      "borobudur-temple": {
-        description:
-          "Godlevel Borobudur excellence featuring world's largest Buddhist temple in Central Java, 9th-century Mahayana Buddhist monument with 504 Buddha statues, intricate stone relief panels depicting Buddhist teachings across 2,672 panels, sunrise golden light illuminating ancient volcanic stone architecture, pilgrims walking meditation paths around temple levels, tropical jungle surroundings with volcanic mountains backdrop, UNESCO World Heritage Site with spiritual significance, photorealistic cinematic HDR quality with architectural precision, 8K ultra-detailed sacred monument with historical depth, infinite spiritual dimensional artistry through computational Borobudur mastery.",
-      },
-      "lake-toba-caldera": {
-        description:
-          "Godlevel Lake Toba excellence featuring world's largest volcanic lake in North Sumatra formed by supervolcanic eruption 74,000 years ago, massive caldera lake with Samosir Island in center, traditional Batak Toba villages with distinctive boat-shaped houses, crystal-clear mountain lake waters surrounded by volcanic highlands, traditional Batak cultural performances with ulos textiles, serene lake vistas with tropical vegetation, golden hour reflections on calm lake surface, photorealistic cinematic HDR quality with geological wonder precision, 8K ultra-detailed volcanic landscape with cultural authenticity, infinite geological dimensional artistry through computational Lake Toba mastery.",
-      },
-      "nusa-penida-cliffs": {
-        description:
-          "Godlevel Nusa Penida excellence featuring dramatic Kelingking Beach T-Rex cliff formation with turquoise waters below, Diamond Beach with white sand and towering limestone cliffs, Angel's Billabong natural infinity pool with crystal-clear waters, Broken Beach natural archway with ocean views, manta ray diving spots with marine megafauna, rugged coastal landscapes with pristine beaches, aerial drone perspective capturing dramatic cliff formations, photorealistic cinematic HDR quality with adventure photography mastery, 8K ultra-detailed coastal wonder with geological precision, infinite coastal dimensional artistry through computational Nusa Penida mastery.",
-      },
-      "gili-islands-paradise": {
-        description:
-          "Godlevel Gili Islands excellence featuring three tropical paradise islands (Gili Trawangan, Gili Meno, Gili Air) off Lombok coast, white sand beaches with crystal-clear turquoise waters, traditional cidomo horse carts as only transportation, vibrant coral reefs with sea turtle encounters, beachfront bungalows with tropical palm trees, sunset views over Mount Agung volcano in distance, laid-back island atmosphere with no motorized vehicles, photorealistic cinematic HDR quality with tropical paradise precision, 8K ultra-detailed island paradise with eco-tourism excellence, infinite island dimensional artistry through computational Gili mastery.",
-      },
-      "lombok-mount-rinjani": {
-        description:
-          "Godlevel Mount Rinjani excellence featuring Indonesia's second-highest volcano at 3,726 meters in Lombok, stunning Segara Anak crater lake with turquoise waters, active volcanic cone Gunung Barujari rising from crater lake, epic multi-day trekking routes with mountain camping, sunrise summit views over Lombok and Bali, traditional Sasak villages at mountain base, volcanic hot springs with therapeutic waters, photorealistic cinematic HDR quality with mountaineering photography mastery, 8K ultra-detailed volcanic landscape with adventure precision, infinite mountainous dimensional artistry through computational Rinjani mastery.",
-      },
-      "pink-beach-komodo": {
-        description:
-          "Godlevel Pink Beach excellence featuring rare pink sand beaches in Komodo National Park created by red coral fragments, pristine coastal paradise with turquoise waters and pink-hued shoreline, snorkeling spots with vibrant coral reefs, dramatic coastal cliffs with tropical vegetation, traditional Indonesian boats anchored in bay, golden hour lighting enhancing pink sand coloration, aerial perspective capturing unique beach phenomenon, photorealistic cinematic HDR quality with coastal photography mastery, 8K ultra-detailed natural wonder with geological uniqueness, infinite coastal dimensional artistry through computational Pink Beach mastery.",
-      },
-      "yogyakarta-prambanan": {
-        description:
-          "Godlevel Prambanan excellence featuring largest Hindu temple complex in Indonesia with 9th-century Trimurti temples, towering spires dedicated to Brahma, Vishnu, and Shiva reaching 47 meters high, intricate stone carvings depicting Ramayana epic, UNESCO World Heritage Site with cultural significance, traditional Javanese dance performances at temple grounds, golden sunset light illuminating ancient volcanic stone architecture, tropical Java landscape with volcanic mountains backdrop, photorealistic cinematic HDR quality with architectural precision, 8K ultra-detailed sacred monument with historical depth, infinite spiritual dimensional artistry through computational Prambanan mastery.",
-      },
-      "bunaken-marine-park": {
-        description:
-          "Godlevel Bunaken Marine Park excellence featuring world-class diving destination in North Sulawesi with over 75% of western Pacific fish species, pristine coral walls dropping to 1,344 meters depth, vibrant underwater biodiversity with sea turtles and reef sharks, crystal-clear tropical waters with exceptional visibility, traditional Sulawesi fishing villages, volcanic island landscapes with tropical vegetation, underwater photography capturing marine life diversity, photorealistic cinematic HDR quality with marine documentary precision, 8K ultra-detailed underwater paradise with conservation excellence, infinite oceanic dimensional artistry through computational Bunaken mastery.",
-      },
-      "tanjung-puting-orangutans": {
-        description:
-          "Godlevel Tanjung Puting excellence featuring orangutan conservation sanctuary in Borneo's rainforest, wild orangutans swinging through tropical canopy with natural behavior, traditional klotok riverboat journeys through jungle waterways, proboscis monkeys and gibbons in pristine rainforest habitat, Camp Leakey research station with rehabilitation programs, dense tropical jungle with ancient trees, wildlife photography capturing endangered species, photorealistic cinematic HDR quality with wildlife documentary mastery, 8K ultra-detailed rainforest biodiversity with conservation urgency, infinite jungle dimensional artistry through computational orangutan mastery.",
-      },
-      "kelimutu-colored-lakes": {
-        description:
-          "Godlevel Kelimutu excellence featuring three volcanic crater lakes with mysteriously changing colors on Flores Island, turquoise, green, and black lakes in adjacent craters with distinct chemical compositions, sunrise viewpoint revealing otherworldly colored waters, volcanic landscape with mystical atmosphere, traditional Lio people's spiritual beliefs about ancestral souls, hiking trails through volcanic terrain, unique geological phenomenon with scientific intrigue, photorealistic cinematic HDR quality with landscape photography mastery, 8K ultra-detailed volcanic wonder with geological uniqueness, infinite volcanic dimensional artistry through computational Kelimutu mastery.",
-      },
-      "toraja-highlands": {
-        description:
-          "Godlevel Toraja excellence featuring unique highland culture in South Sulawesi with traditional tongkonan boat-shaped houses, elaborate funeral ceremonies with cultural significance, dramatic limestone cliffs with ancient burial caves, emerald green rice terraces in mountainous terrain, traditional Torajan wood carvings with intricate patterns, highland villages with distinctive architecture, cultural authenticity with ancestral traditions, photorealistic cinematic HDR quality with cultural documentary precision, 8K ultra-detailed highland landscape with anthropological depth, infinite cultural dimensional artistry through computational Toraja mastery.",
-      },
-      "jakarta-modern-skyline": {
-        description:
-          "Godlevel Jakarta excellence featuring Indonesia's bustling capital city with modern skyscraper skyline, iconic National Monument (Monas) towering over city center, contemporary architecture blending with Dutch colonial heritage, vibrant urban energy with 10+ million population, traditional markets alongside modern shopping malls, tropical urban landscape with palm-lined boulevards, golden hour cityscape with dramatic lighting, photorealistic cinematic HDR quality with urban photography mastery, 8K ultra-detailed metropolitan landscape with cultural diversity, infinite urban dimensional artistry through computational Jakarta mastery.",
-      },
-      "sumatra-rainforest": {
-        description:
-          "Godlevel Sumatra rainforest excellence featuring pristine tropical jungle with ancient biodiversity, endangered Sumatran tigers and elephants in natural habitat, dense canopy with towering dipterocarp trees, misty mountain rainforest with waterfalls, traditional indigenous communities living in harmony with nature, conservation areas protecting critical ecosystems, wildlife photography capturing rare species, photorealistic cinematic HDR quality with nature documentary precision, 8K ultra-detailed rainforest biodiversity with conservation urgency, infinite jungle dimensional artistry through computational Sumatra mastery.",
-      },
-      "flores-island-culture": {
-        description:
-          "Godlevel Flores excellence featuring traditional villages with unique cultural heritage, Ngada people's megalithic stone structures and ancestral shrines, traditional ikat weaving with intricate patterns, volcanic landscapes with rice terraces, Catholic churches blending with indigenous traditions, traditional ceremonies with cultural authenticity, remote island beauty with pristine nature, photorealistic cinematic HDR quality with cultural documentary mastery, 8K ultra-detailed island culture with anthropological depth, infinite cultural dimensional artistry through computational Flores mastery.",
-      },
-      "wakatobi-diving": {
-        description:
-          "Godlevel Wakatobi excellence featuring world-class diving destination in Southeast Sulawesi with pristine coral reefs, exceptional marine biodiversity with over 750 coral species, crystal-clear waters with 50+ meter visibility, traditional Bajau sea nomad culture, remote island paradise with white sand beaches, underwater photography capturing vibrant reef life, conservation excellence with marine protected areas, photorealistic cinematic HDR quality with underwater photography mastery, 8K ultra-detailed marine paradise with ecological significance, infinite oceanic dimensional artistry through computational Wakatobi mastery.",
-      },
-      "ijen-blue-fire": {
-        description:
-          "Godlevel Ijen excellence featuring rare blue fire phenomenon from sulfuric gas combustion in East Java volcanic crater, traditional sulfur miners carrying heavy loads from crater lake, turquoise acidic crater lake with pH near zero, nighttime blue flames creating otherworldly spectacle, challenging volcanic terrain with active mining operations, sunrise views over volcanic landscape, unique geological and human story, photorealistic cinematic HDR quality with documentary photography mastery, 8K ultra-detailed volcanic wonder with human resilience, infinite volcanic dimensional artistry through computational Ijen mastery.",
-      },
-      "derawan-islands": {
-        description:
-          "Godlevel Derawan Islands excellence featuring pristine archipelago in East Kalimantan with crystal-clear waters, Kakaban Island's unique jellyfish lake with stingless jellyfish, sea turtle nesting beaches with conservation programs, manta ray encounters in Sangalaki, traditional Bajau stilt villages over turquoise waters, white sand beaches with tropical paradise atmosphere, underwater photography capturing marine biodiversity, photorealistic cinematic HDR quality with tropical island mastery, 8K ultra-detailed island paradise with ecological uniqueness, infinite island dimensional artistry through computational Derawan mastery.",
-      },
-      "belitung-granite-beaches": {
-        description:
-          "Godlevel Belitung excellence featuring unique granite boulder beaches with massive rounded stones, Tanjung Tinggi Beach with iconic rock formations, crystal-clear turquoise waters with white sand, traditional fishing villages with colorful boats, island hopping adventures through pristine archipelago, tropical paradise with laid-back atmosphere, aerial perspective capturing unique coastal geology, photorealistic cinematic HDR quality with coastal photography mastery, 8K ultra-detailed beach paradise with geological uniqueness, infinite coastal dimensional artistry through computational Belitung mastery.",
-      },
-      "papua-tribal-culture": {
-        description:
-          "Godlevel Papua excellence featuring indigenous Melanesian tribal cultures with traditional face painting and feather headdresses, Dani and Asmat people preserving ancestral traditions, pristine rainforest and mountain landscapes, traditional ceremonies with cultural authenticity, unique biodiversity with endemic species, remote wilderness with untouched nature, cultural photography capturing indigenous heritage, photorealistic cinematic HDR quality with anthropological documentary mastery, 8K ultra-detailed tribal culture with ethnographic depth, infinite cultural dimensional artistry through computational Papua mastery.",
-      },
-      "thousand-islands-jakarta": {
-        description:
-          "Godlevel Thousand Islands excellence featuring tropical island chain north of Jakarta with pristine beaches, coral reef snorkeling and diving spots, traditional island resorts with overwater bungalows, turquoise waters with white sand beaches, weekend getaway paradise for Jakarta residents, marine conservation areas with sea turtle programs, island hopping adventures through archipelago, photorealistic cinematic HDR quality with tropical island photography mastery, 8K ultra-detailed island paradise with urban proximity, infinite island dimensional artistry through computational Thousand Islands mastery.",
-      },
-      "banda-islands-spice": {
-        description:
-          "Godlevel Banda Islands excellence featuring historic Spice Islands in Maluku with nutmeg and clove plantations, colonial Dutch fort ruins with historical significance, pristine volcanic islands with turquoise waters, traditional spice trade heritage with cultural depth, world-class diving with pristine coral reefs, remote island paradise with authentic culture, historical photography capturing spice trade legacy, photorealistic cinematic HDR quality with historical documentary mastery, 8K ultra-detailed island heritage with colonial history, infinite historical dimensional artistry through computational Banda mastery.",
-      },
-    },
-  },
-  "mythical-civilizations": {
-    name: "🌌 Mythical Civilizations",
-    description: "Ancient forgotten worlds from deep time - poetic fragments of civilizations lost to legend",
-    scenarios: {
-      "obsidian-sky-dwellers": {
-        description:
-          "Godlevel civilization excellence featuring floating obsidian peaks suspended in eternal twilight, volcanic glass cities that harvest storm lightning as their primary energy source, architecture of crystallized shadow with towers that sing in electromagnetic frequencies, sustained by plasma drawn from aurora veins, sacred ritual of the Eclipse Descent where entire populations descend to touch the earth once per century, haunting and sorrowful atmosphere of beautiful isolation, midnight aurora sky with violet and silver lightning, color dream of obsidian black, electric violet, and storm silver.",
-      },
-      "mirror-desert-prophets": {
-        description:
-          "Godlevel civilization excellence featuring infinite mirror deserts where sand reflects perfect sky duplicates, knowledge harvested by reading wind patterns as living code, architecture of inverted pyramids that exist simultaneously above and below the mirror plane, sustained by captured starlight condensed into liquid luminescence, sacred ritual of the Reflection Walk where seekers traverse their own mirrored souls, enlightened and transcendent atmosphere of perfect symmetry, blood dawn sky with crimson sun rising twice, color dream of mirror silver, blood orange, and infinite white.",
-      },
-      "breath-forest-ancients": {
-        description:
-          "Godlevel civilization excellence featuring living forests that inhale centuries and exhale moments, trees that breathe visible time-mist creating temporal pockets, knowledge carved into river algorithms that solve themselves through erosion, architecture grown from coral-wood hybrid structures that pulse with forest heartbeat, sustained by photosynthetic memory absorbed from ancient tree consciousness, sacred ritual of the Breath Communion where citizens synchronize breathing with the forest for one lunar cycle, ecstatic and mystical atmosphere of organic unity, emerald twilight sky with bioluminescent canopy glow, color dream of deep emerald, golden amber, and breath-mist white.",
-      },
-      "bone-city-architects": {
-        description:
-          "Godlevel civilization excellence featuring cities constructed entirely from the bones of extinct megafauna, colossal ribcage cathedrals and vertebrae towers reaching toward forgotten gods, knowledge etched into marrow using techniques of sacred osteomancy, architecture that grows stronger as it ages through mineral absorption, sustained by geothermal heat channeled through hollow bone conduits, sacred ritual of the Marrow Feast where citizens consume bone dust to inherit ancestral memories, haunting and reverent atmosphere of death transformed into eternal life, ash-gray sky with bone-white clouds, color dream of ivory white, ash gray, and dried blood crimson.",
-      },
-      "singing-ziggurat-mystics": {
-        description:
-          "Godlevel civilization excellence featuring levitating ziggurats that rise when sung to in perfect harmonic resonance, stepped pyramids of resonant stone that amplify consciousness into architectural form, knowledge transmitted through sonic frequencies that reshape matter, architecture that exists in quantum superposition until observed through song, sustained by vibrational energy harvested from planetary core harmonics, sacred ritual of the Ascension Chorus where ten thousand voices sing the city skyward for the solstice, ecstatic and transcendent atmosphere of sound made visible, golden hour sky with harmonic shimmer waves, color dream of resonant gold, deep indigo, and vibration white.",
-      },
-      "plasma-vein-harvesters": {
-        description:
-          "Godlevel civilization excellence featuring underground networks of living plasma veins that pulse with electromagnetic life, cities built within crystallized lightning strikes frozen in geological time, knowledge extracted by interfacing directly with plasma consciousness, architecture of contained energy fields shaped into habitable geometries, sustained by drinking diluted plasma that grants temporary bioluminescence, sacred ritual of the Vein Dive where initiates swim through plasma rivers to receive visions, intense and electric atmosphere of barely contained power, storm-purple sky with constant sheet lightning, color dream of electric blue, plasma purple, and lightning white.",
-      },
-      "memory-coral-builders": {
-        description:
-          "Godlevel civilization excellence featuring underwater cities grown from memory-storing coral that records all events in crystalline structure, living architecture that remembers every inhabitant who ever touched its walls, knowledge accessed by placing hands on coral and experiencing stored memories directly, temples that grow new chambers based on collective consciousness needs, sustained by symbiotic relationship with coral that feeds on emotional energy, sacred ritual of the Memory Tide where citizens offer their most precious memories to feed the city, melancholic and beautiful atmosphere of living history, underwater twilight with filtered sunbeams, color dream of coral pink, deep ocean blue, and pearl white.",
-      },
-      "wind-code-readers": {
-        description:
-          "Godlevel civilization excellence featuring nomadic people who read wind as executable code and program reality through breath, invisible architecture of compressed air structures that exist only in specific atmospheric conditions, knowledge written in pressure differentials and temperature gradients, cities that appear only during certain wind patterns and vanish when the breeze changes, sustained by extracting nutrients from air itself through advanced respiratory alchemy, sacred ritual of the Great Stillness where all citizens cease breathing simultaneously to reset reality, mysterious and ephemeral atmosphere of constant transformation, clear sky with visible air currents like aurora, color dream of sky blue, wind silver, and transparent shimmer.",
-      },
-      "sunfire-forgers": {
-        description:
-          "Godlevel civilization excellence featuring desert people who forge tools and buildings from concentrated sunfire, architecture of solidified solar plasma that glows eternally without heat, knowledge inscribed using focused sunbeams that burn truth into crystallized light, cities that exist as permanent mirages made solid through collective belief, sustained by photosynthetic skin that converts sunlight directly into cellular energy, sacred ritual of the Solar Immersion where citizens stand motionless under noon sun for three days to achieve enlightenment, radiant and overwhelming atmosphere of divine light, eternal noon sky with three suns, color dream of solar gold, white-hot platinum, and corona orange.",
-      },
-      "shadow-weavers": {
-        description:
-          "Godlevel civilization excellence featuring people who weave shadow into fabric and construct buildings from solidified darkness, architecture that exists in negative space and becomes more real in absence of light, knowledge stored in shadow libraries where information is darkness itself, cities visible only at night that fade to transparency in daylight, sustained by consuming shadow-essence that provides dark energy nutrition, sacred ritual of the Eclipse Weaving where the entire civilization creates a tapestry from the moon's shadow, mysterious and intimate atmosphere of comfortable darkness, new moon sky with visible stars, color dream of void black, shadow purple, and starlight silver.",
-      },
-      "crystal-song-shapers": {
-        description:
-          "Godlevel civilization excellence featuring mountain people who sing crystals into growth and shape gemstone architecture through vocal resonance, cities of living crystal that continue growing in harmonic patterns, knowledge encoded in crystal lattice structures accessed through specific sonic frequencies, architecture that refracts consciousness into rainbow spectrums, sustained by consuming crystal dust that integrates into skeletal structure, sacred ritual of the Harmonic Convergence where all citizens sing simultaneously to birth a new crystal spire, transcendent and prismatic atmosphere of light and sound unified, dawn sky with crystal refraction rainbows, color dream of crystal clear, rainbow spectrum, and diamond white.",
-      },
-      "time-moss-cultivators": {
-        description:
-          "Godlevel civilization excellence featuring swamp dwellers who cultivate moss that grows backward through time, architecture of temporal paradox where buildings exist in multiple time periods simultaneously, knowledge gained by observing moss growth patterns that reveal past and future, cities that age in reverse while inhabitants age forward, sustained by consuming time-moss that grants temporal flexibility to consciousness, sacred ritual of the Backward Bloom where citizens plant seeds that grow into ancient trees overnight, surreal and contemplative atmosphere of time made visible, perpetual dusk sky with temporal distortion shimmer, color dream of moss green, temporal amber, and paradox gray.",
-      },
-      "gravity-well-dancers": {
-        description:
-          "Godlevel civilization excellence featuring orbital people who dance in gravity wells and construct cities in Lagrange points, architecture of impossible balance where structures orbit each other in eternal choreography, knowledge transmitted through gravitational wave patterns, cities that exist in perpetual graceful fall without ever landing, sustained by extracting energy from gravitational potential itself, sacred ritual of the Orbital Alignment where all citizens synchronize their orbits into a single mandala pattern, graceful and weightless atmosphere of eternal motion, space-black sky with planetary rings visible, color dream of orbital silver, gravity blue, and weightless white.",
-      },
-      "rust-bloom-gardeners": {
-        description:
-          "Godlevel civilization excellence featuring post-metal people who garden rust blooms and cultivate oxidation as agriculture, architecture of beautiful decay where corrosion is encouraged into artistic patterns, knowledge preserved in rust layers that record history through chemical composition, cities that grow more beautiful as they deteriorate, sustained by symbiotic rust-bacteria that provides iron-based nutrition, sacred ritual of the Oxidation Festival where citizens paint themselves with fresh rust and dance until it blooms, melancholic and beautiful atmosphere of elegant entropy, rust-orange sunset sky, color dream of rust orange, patina green, and corroded copper.",
-      },
-      "void-fishers": {
-        description:
-          "Godlevel civilization excellence featuring people who fish in the void between dimensions and harvest non-existence, architecture constructed from solidified nothing that is more real than matter, knowledge gained by studying what doesn't exist and learning from absence, cities that occupy the spaces between spaces, sustained by consuming void-essence that grants immunity to causality, sacred ritual of the Nothing Dive where citizens leap into pure void and return transformed, existential and profound atmosphere of meaningful emptiness, void-black sky with visible dimensional tears, color dream of void black, non-color shimmer, and absence white.",
-      },
-      "pollen-cloud-nomads": {
-        description:
-          "Godlevel civilization excellence featuring airborne people who ride eternal pollen clouds and build cities on floating spore masses, architecture of compressed pollen that solidifies into golden structures, knowledge encoded in genetic information within each pollen grain, cities that drift with seasonal winds and bloom into new configurations, sustained by breathing pollen-rich air that provides complete nutrition, sacred ritual of the Pollination Dance where citizens spread genetic information through choreographed aerial movements, dreamy and golden atmosphere of perpetual spring, golden hour sky with pollen shimmer, color dream of pollen gold, sky blue, and bloom white.",
-      },
-      "echo-canyon-listeners": {
-        description:
-          "Godlevel civilization excellence featuring canyon dwellers who listen to echoes from the future and build architecture that amplifies temporal sound, cities carved into resonant stone that captures and replays all sounds ever made, knowledge gained by interpreting echo patterns that arrive before their source sounds, architecture designed to create specific echo prophecies, sustained by consuming echo-water that carries dissolved sound vibrations, sacred ritual of the Silent Scream where citizens scream into the canyon and listen for their echo from tomorrow, mysterious and anticipatory atmosphere of time-reversed sound, twilight sky with acoustic shimmer, color dream of canyon red, echo silver, and sound-wave blue.",
-      },
-      "magma-heart-dwellers": {
-        description:
-          "Godlevel civilization excellence featuring people who live in the magma chambers of active volcanoes and swim through molten rock, architecture of cooled lava that remains warm and pulsing with earth's heartbeat, knowledge written in magma flow patterns that predict geological futures, cities that exist in the boundary between solid and liquid stone, sustained by heat-based metabolism that converts thermal energy directly into life, sacred ritual of the Magma Baptism where newborns are dipped in cooling lava to receive earth's blessing, intense and primal atmosphere of elemental power, volcanic sky with ash clouds and lava glow, color dream of magma orange, volcanic black, and heat-shimmer red.",
-      },
-      "frost-fractal-mathematicians": {
-        description:
-          "Godlevel civilization excellence featuring arctic people who study frost fractals as divine mathematics and build cities following ice crystal geometries, architecture that grows according to fractal algorithms visible in nature, knowledge encoded in snowflake patterns where each crystal contains complete libraries, cities that exist as perfect mathematical expressions in frozen form, sustained by consuming structured ice that reorganizes cellular geometry, sacred ritual of the Fractal Meditation where citizens contemplate single snowflakes for entire winters, contemplative and precise atmosphere of mathematical perfection, arctic sky with geometric ice crystals falling, color dream of ice blue, fractal white, and mathematical silver.",
-      },
-      "silk-cocoon-metamorphs": {
-        description:
-          "Godlevel civilization excellence featuring people who undergo continuous metamorphosis and live in silk cocoon cities, architecture of layered silk that serves as both building and chrysalis, knowledge gained through transformation where each metamorphosis grants new understanding, cities that are constantly being rebuilt as inhabitants emerge in new forms, sustained by consuming silk proteins that enable perpetual biological restructuring, sacred ritual of the Great Emergence where entire population metamorphoses simultaneously, transformative and hopeful atmosphere of eternal becoming, dawn sky with silk-strand clouds, color dream of silk white, chrysalis gold, and metamorphosis pearl.",
-      },
-      "star-map-navigators": {
-        description:
-          "Godlevel civilization excellence featuring people who navigate by stars that exist only in their collective consciousness and build cities as three-dimensional star charts, architecture that mirrors constellations in physical form, knowledge transmitted through stellar mythology where each star is a stored memory, cities that rearrange themselves to match current night sky, sustained by starlight absorbed through specially evolved skin, sacred ritual of the Constellation Walk where citizens trace star patterns with their bodies across the city, mystical and navigational atmosphere of cosmic connection, star-filled night sky with visible nebulae, color dream of star silver, cosmic purple, and nebula blue.",
-      },
-      "amber-preservation-archivists": {
-        description:
-          "Godlevel civilization excellence featuring forest people who preserve everything in amber and build cities as living museums, architecture of transparent amber containing perfectly preserved moments, knowledge accessed by gazing into amber and experiencing preserved time directly, cities that grow by encasing new experiences in golden resin, sustained by tree-sap that grants longevity and preservation, sacred ritual of the Amber Offering where citizens choose one moment to preserve forever, nostalgic and preserving atmosphere of time captured, golden afternoon sky filtered through amber, color dream of amber gold, preservation orange, and resin yellow.",
-      },
-      "thunder-drum-warriors": {
-        description:
-          "Godlevel civilization excellence featuring people who weaponize thunder through massive drums and build fortress cities that resonate with war rhythms, architecture designed to amplify percussion into devastating sonic weapons, knowledge transmitted through drum codes that carry complex information, cities that exist in constant rhythmic vibration, sustained by consuming sound-charged water that vibrates at cellular level, sacred ritual of the Thunder March where ten thousand drums play simultaneously to shake mountains, powerful and rhythmic atmosphere of controlled chaos, storm sky with thunder clouds, color dream of thunder gray, drum bronze, and lightning white.",
-      },
-      "glass-desert-alchemists": {
-        description:
-          "Godlevel civilization excellence featuring desert people who transform sand into living glass through alchemical processes, architecture of transparent glass that thinks and remembers, knowledge stored in glass matrices that refract information into rainbow codes, cities that are simultaneously solid and transparent, sustained by consuming glass dust that integrates into nervous system, sacred ritual of the Vitrification where citizens partially transform into glass to achieve clarity, transcendent and transparent atmosphere of visible truth, desert noon sky with heat shimmer, color dream of glass clear, sand gold, and transparency blue.",
-      },
-      "root-network-communers": {
-        description:
-          "Godlevel civilization excellence featuring underground people who communicate through fungal networks and build cities as living root systems, architecture of intertwined roots that form organic structures, knowledge shared instantly through mycelial internet connecting all minds, cities that exist as single organism with many chambers, sustained by nutrients exchanged through root-network symbiosis, sacred ritual of the Deep Connection where citizens merge consciousness with the network for one season, unified and organic atmosphere of collective mind, underground darkness with bioluminescent fungi, color dream of root brown, mycelial white, and spore green.",
-      },
-      "aurora-silk-weavers": {
-        description:
-          "Godlevel civilization excellence featuring polar people who weave aurora borealis into fabric and construct buildings from solidified light, architecture of frozen light that shifts colors with magnetic fields, knowledge encoded in light wave patterns that dance across the sky, cities that exist as permanent auroras made tangible, sustained by consuming light-infused ice that grants bioluminescence, sacred ritual of the Light Harvest where citizens gather aurora strands during peak solar storms, ethereal and luminous atmosphere of dancing light, polar night sky with aurora curtains, color dream of aurora green, magnetic purple, and light-wave blue.",
-      },
-      "salt-crystal-prophets": {
-        description:
-          "Godlevel civilization excellence featuring people who grow salt crystal prophecies and build cities on ancient salt flats, architecture of massive salt crystals that grow in prophetic patterns, knowledge read in crystal formations that predict futures through geometric growth, cities that expand through crystallization following destiny patterns, sustained by consuming sacred salt that grants visions, sacred ritual of the Crystal Reading where priests interpret new growth to guide civilization, mystical and geometric atmosphere of structured fate, white sky reflected in salt flats, color dream of salt white, crystal clear, and prophecy silver.",
-      },
-      "smoke-signal-scribes": {
-        description:
-          "Godlevel civilization excellence featuring mountain people who write in smoke and build cities from solidified vapor, architecture of compressed smoke that maintains form through constant ritual, knowledge recorded in smoke patterns that persist for centuries, cities that exist as permanent smoke sculptures, sustained by breathing specially prepared incense that provides nutrition, sacred ritual of the Smoke Writing where history is recorded in sacred fires, ephemeral and mystical atmosphere of visible breath, mountain dawn with mist valleys, color dream of smoke gray, incense white, and vapor blue.",
-      },
-      "tide-pool-philosophers": {
-        description:
-          "Godlevel civilization excellence featuring coastal people who study tide pool microcosms as complete universes and build cities following tidal mathematics, architecture that floods and drains with perfect rhythm, knowledge gained by observing tide pool ecosystems as models of cosmic truth, cities that exist in liminal space between sea and land, sustained by consuming tide-synchronized algae that grants temporal awareness, sacred ritual of the Tide Meditation where citizens sit in pools for entire lunar cycles, contemplative and rhythmic atmosphere of eternal cycles, coastal twilight with tide coming in, color dream of tide-pool blue, sea-foam white, and kelp green.",
-      },
-      "lightning-glass-smiths": {
-        description:
-          "Godlevel civilization excellence featuring people who forge fulgurite glass from lightning strikes and build cities of storm-born architecture, structures of lightning-fused sand that retain electrical charge, knowledge encoded in branching fulgurite patterns that map storm consciousness, cities that grow only during thunderstorms through directed lightning, sustained by consuming electrically charged minerals, sacred ritual of the Storm Calling where citizens summon lightning to forge new city sections, electric and powerful atmosphere of controlled storms, thunderstorm sky with constant lightning, color dream of fulgurite black, lightning white, and storm-glass blue.",
-      },
-      "dream-silk-spinners": {
-        description:
-          "Godlevel civilization excellence featuring people who spin dreams into physical silk and weave architecture from sleeping visions, buildings constructed from materialized dreams that shift based on collective unconscious, knowledge accessed by sleeping in dream-silk hammocks that share visions, cities that exist simultaneously in waking and dreaming states, sustained by consuming dream-essence that blurs reality boundaries, sacred ritual of the Shared Dream where entire population sleeps together to dream the city into new configurations, surreal and fluid atmosphere of living dreams, twilight sky with dream-logic clouds, color dream of dream purple, silk silver, and vision blue.",
-      },
-      "geode-heart-miners": {
-        description:
-          "Godlevel civilization excellence featuring underground people who mine geodes containing crystallized emotions and build cities from feeling-stones, architecture of hollow crystal chambers that amplify emotional resonance, knowledge stored in crystal formations that preserve pure emotions, cities that glow with collective emotional state, sustained by consuming emotion-crystals that grant empathic abilities, sacred ritual of the Heart Opening where citizens crack open their largest geode to share deepest feelings, intimate and crystalline atmosphere of visible emotion, underground darkness with crystal glow, color dream of geode purple, crystal pink, and emotion blue.",
-      },
-      "horizon-line-walkers": {
-        description:
-          "Godlevel civilization excellence featuring nomadic people who walk the horizon line where sky meets earth and build temporary cities at the edge of perception, architecture that exists in the liminal space between land and sky, knowledge gained by studying the boundary between elements, cities that appear only at specific angles and vanish when approached directly, sustained by consuming horizon-mist that exists in neither air nor ground, sacred ritual of the Edge Dance where citizens balance on the exact line between worlds, liminal and mysterious atmosphere of eternal threshold, perfect horizon with sun half-set, color dream of horizon gold, liminal gray, and edge silver.",
-      },
-    },
-  },
-  "earth-300-years": {
-    name: "🌍 Earth in 300 Years",
-    description:
-      "Futurescapes exploring possible future Earth scenes across climate, technology, and societal evolution",
-    scenarios: {
-      "neo-venice-2325": {
-        description:
-          "Year 2325, Venice expanded into floating mega-city spanning entire Adriatic Sea, climate condition of permanently flooded Mediterranean basin with 15-meter sea level rise, technology level featuring quantum-stabilized floating platforms and bio-engineered coral foundations, lifestyle scene of gondola-drones navigating between vertical gardens and underwater museums, atmospheric mood of melancholic beauty with sunset reflecting off endless water, color palette of Adriatic blue, sunset gold, and coral pink.",
-      },
-      "sahara-green-belt-2324": {
-        description:
-          "Year 2324, Sahara Desert transformed into vast green agricultural belt, climate condition of restored rainfall patterns through atmospheric engineering, technology level featuring continental-scale weather modification and automated farming ecosystems, lifestyle scene of nomadic farmers tending AI-managed oasis networks across former desert, atmospheric mood of hopeful renewal and ecological triumph, color palette of new-growth green, sand-memory gold, and sky blue.",
-      },
-      "neo-tokyo-vertical-2327": {
-        description:
-          "Year 2327, Tokyo rebuilt as 500-story vertical city after the Great Quake, climate condition of controlled micro-climate within sealed mega-structure, technology level featuring gravity-defying architecture and neural-interface city management, lifestyle scene of citizens commuting via personal flight pods through vertical neighborhoods, atmospheric mood of dense cyberpunk energy and neon-lit optimism, color palette of neon pink, steel gray, and hologram blue.",
-      },
-      "amazon-canopy-cities-2323": {
-        description:
-          "Year 2323, Amazon rainforest hosting suspended canopy cities in rewilded super-forest, climate condition of hyper-humid tropical paradise with enhanced biodiversity, technology level featuring bio-integrated architecture and photosynthetic energy systems, lifestyle scene of tree-dwelling communities living in symbiosis with engineered mega-flora, atmospheric mood of organic harmony and green mysticism, color palette of deep jungle green, bioluminescent blue, and canopy gold.",
-      },
-      "antarctica-refuge-2326": {
-        description:
-          "Year 2326, Antarctica transformed into last temperate refuge zone, climate condition of ice-free continent with moderate temperatures, technology level featuring geothermal cities and ice-memory preservation archives, lifestyle scene of climate refugees building new civilization among ancient ice cores, atmospheric mood of bittersweet sanctuary and preserved memory, color palette of ice-melt blue, refuge gray, and aurora green.",
-      },
-      "dubai-desert-arcology-2325": {
-        description:
-          "Year 2325, Dubai expanded into self-contained desert arcology under climate dome, climate condition of extreme heat outside with perfect environment inside, technology level featuring total atmospheric control and solar-powered everything, lifestyle scene of luxury living in hermetically sealed paradise while sandstorms rage outside, atmospheric mood of isolated opulence and artificial perfection, color palette of dome-filtered gold, luxury white, and desert orange.",
-      },
-      "new-york-underwater-2328": {
-        description:
-          "Year 2328, New York City rebuilt as underwater metropolis beneath 20 meters of ocean, climate condition of submerged coastal mega-city with transparent pressure domes, technology level featuring submarine architecture and pressure-adapted infrastructure, lifestyle scene of citizens navigating between underwater skyscrapers via submarine transit, atmospheric mood of haunting beauty and drowned nostalgia, color palette of deep ocean blue, bioluminescent green, and pressure-dome silver.",
-      },
-      "siberia-breadbasket-2324": {
-        description:
-          "Year 2324, Siberia transformed into Earth's primary agricultural region, climate condition of temperate climate with year-round growing season, technology level featuring permafrost-mining and automated mega-farms, lifestyle scene of agricultural workers managing continent-scale food production, atmospheric mood of pragmatic abundance and frontier spirit, color palette of wheat gold, tundra green, and sky blue.",
-      },
-      "singapore-sky-gardens-2326": {
-        description:
-          "Year 2326, Singapore evolved into vertical garden city with every surface green, climate condition of managed tropical paradise with perfect weather control, technology level featuring bio-architecture and atmospheric purification systems, lifestyle scene of citizens living in hanging gardens connected by vine-covered skywalks, atmospheric mood of utopian harmony and engineered Eden, color palette of living green, sky blue, and flower pink.",
-      },
-      "detroit-solar-phoenix-2325": {
-        description:
-          "Year 2325, Detroit reborn as solar manufacturing hub powering North America, climate condition of moderate climate with enhanced solar exposure, technology level featuring photovoltaic everything and energy-positive architecture, lifestyle scene of factory workers in gleaming solar foundries producing next-gen panels, atmospheric mood of industrial renaissance and blue-collar pride, color palette of solar panel blue, industrial steel, and sunrise orange.",
-      },
-      "mumbai-monsoon-city-2327": {
-        description:
-          "Year 2327, Mumbai adapted to permanent monsoon season with water-integrated architecture, climate condition of year-round heavy rainfall and managed flooding, technology level featuring hydro-powered infrastructure and floating neighborhoods, lifestyle scene of citizens navigating rain-streets in personal water-craft between market boats, atmospheric mood of vibrant adaptation and monsoon energy, color palette of monsoon gray, market colors, and rain-silver.",
-      },
-      "beijing-air-filtered-2323": {
-        description:
-          "Year 2323, Beijing enclosed in massive air filtration dome after pollution crisis, climate condition of artificially purified atmosphere within mega-structure, technology level featuring atmospheric processing and sealed environment systems, lifestyle scene of citizens breathing clean air while viewing toxic haze outside dome, atmospheric mood of protected isolation and environmental consequence, color palette of filtered white, smog gray, and dome blue.",
-      },
-      "cairo-nile-oasis-2326": {
-        description:
-          "Year 2326, Cairo expanded along restored Nile mega-oasis system, climate condition of desert heat with engineered water abundance, technology level featuring desalination networks and hydro-agriculture, lifestyle scene of river communities thriving along artificial oasis chains, atmospheric mood of ancient-future fusion and water worship, color palette of Nile blue, desert sand, and oasis green.",
-      },
-      "sydney-reef-city-2324": {
-        description:
-          "Year 2324, Sydney rebuilt on artificial reef systems after coastal flooding, climate condition of semi-submerged city with tidal architecture, technology level featuring bio-engineered coral foundations and wave energy, lifestyle scene of citizens living in reef-integrated homes with ocean views from every room, atmospheric mood of aquatic adaptation and marine harmony, color palette of coral pink, ocean blue, and reef white.",
-      },
-      "london-thames-barrier-2328": {
-        description:
-          "Year 2328, London protected by massive Thames mega-barrier system, climate condition of rising seas held back by engineering marvel, technology level featuring hydraulic mega-structures and flood defense AI, lifestyle scene of citizens living normally while massive walls hold back ocean, atmospheric mood of precarious safety and engineering hubris, color palette of barrier steel, Thames gray, and warning red.",
-      },
-      "mexico-city-sky-2325": {
-        description:
-          "Year 2325, Mexico City rebuilt as elevated platform city above smog layer, climate condition of toxic ground-level air with clean air above, technology level featuring anti-gravity platforms and atmospheric separation, lifestyle scene of wealthy living in sky platforms while workers descend to ground daily, atmospheric mood of stark inequality and vertical segregation, color palette of sky blue, smog brown, and platform white.",
-      },
-      "iceland-geothermal-hub-2327": {
-        description:
-          "Year 2327, Iceland transformed into geothermal energy capital of Earth, climate condition of volcanic heat harnessed for global power, technology level featuring deep-earth energy extraction and power transmission, lifestyle scene of energy workers managing planet's primary power source, atmospheric mood of volcanic power and global responsibility, color palette of geothermal orange, volcanic black, and steam white.",
-      },
-      "jakarta-floating-2323": {
-        description:
-          "Year 2323, Jakarta rebuilt as floating city after complete submersion, climate condition of fully aquatic urban environment, technology level featuring buoyant architecture and tidal energy systems, lifestyle scene of citizens living on interconnected floating platforms, atmospheric mood of adaptive resilience and water-world reality, color palette of ocean blue, platform gray, and tropical green.",
-      },
-      "los-angeles-desert-2326": {
-        description:
-          "Year 2326, Los Angeles adapted to complete desertification and water scarcity, climate condition of extreme drought with atmospheric water harvesting, technology level featuring moisture farming and radical water conservation, lifestyle scene of citizens collecting morning dew and trading water credits, atmospheric mood of scarcity adaptation and desert survival, color palette of desert tan, water-precious blue, and drought brown.",
-      },
-      "stockholm-ice-free-2324": {
-        description:
-          "Year 2324, Stockholm thriving in ice-free Arctic with year-round shipping, climate condition of temperate northern climate with no winter, technology level featuring Arctic trade hub and northern agriculture, lifestyle scene of merchants managing polar shipping routes and Arctic farms, atmospheric mood of northern opportunity and climate shift benefit, color palette of Arctic blue, trade gold, and ice-memory white.",
-      },
-      "rio-favela-vertical-2328": {
-        description:
-          "Year 2328, Rio de Janeiro with favelas evolved into vertical eco-communities, climate condition of tropical heat with community-managed micro-climates, technology level featuring grassroots sustainable tech and community solar, lifestyle scene of favela residents in self-sufficient vertical neighborhoods, atmospheric mood of bottom-up innovation and community triumph, color palette of favela colors, solar panel blue, and community green.",
-      },
-      "paris-underground-2325": {
-        description:
-          "Year 2325, Paris expanded into vast underground city beneath historic surface, climate condition of climate-controlled subterranean environment, technology level featuring underground agriculture and artificial sunlight, lifestyle scene of citizens living in beautiful underground boulevards preserving surface as museum, atmospheric mood of preserved nostalgia and subterranean elegance, color palette of underground amber, artificial sun gold, and metro gray.",
-      },
-      "bangalore-tech-forest-2327": {
-        description:
-          "Year 2327, Bangalore transformed into bio-tech forest city, climate condition of engineered tropical paradise with tech integration, technology level featuring bio-computing and living architecture, lifestyle scene of tech workers in tree-office hybrids coding with neural interfaces, atmospheric mood of organic-digital fusion and green innovation, color palette of tech green, code blue, and forest brown.",
-      },
-      "tehran-solar-desert-2323": {
-        description:
-          "Year 2323, Tehran rebuilt as solar desert city powering Middle East, climate condition of extreme heat harnessed for energy production, technology level featuring concentrated solar and heat-to-power systems, lifestyle scene of solar engineers managing vast mirror arrays in desert, atmospheric mood of desert power and solar dominance, color palette of solar mirror silver, desert gold, and heat shimmer.",
-      },
-      "toronto-climate-haven-2326": {
-        description:
-          "Year 2326, Toronto expanded as primary climate refugee destination, climate condition of stable temperate climate in chaotic world, technology level featuring refugee integration systems and expanded infrastructure, lifestyle scene of diverse climate refugees building new multicultural society, atmospheric mood of sanctuary hope and cultural fusion, color palette of haven blue, diversity colors, and refuge green.",
-      },
-      "cape-town-water-wars-2324": {
-        description:
-          "Year 2324, Cape Town fortified city controlling last fresh water sources, climate condition of extreme drought with militarized water access, technology level featuring water defense systems and rationing AI, lifestyle scene of water guards protecting reservoirs while citizens queue for rations, atmospheric mood of resource conflict and survival tension, color palette of water-precious blue, drought brown, and conflict red.",
-      },
-      "seoul-neural-city-2328": {
-        description:
-          "Year 2328, Seoul evolved into first fully neural-networked city, climate condition of climate-controlled smart environment, technology level featuring brain-computer interfaces and thought-responsive infrastructure, lifestyle scene of citizens controlling city through collective consciousness, atmospheric mood of hive-mind harmony and digital transcendence, color palette of neural purple, network blue, and thought silver.",
-      },
-      "miami-gone-2325": {
-        description:
-          "Year 2325, Miami completely abandoned and submerged as cautionary monument, climate condition of 10-meter sea level rise with city underwater, technology level featuring underwater preservation and memorial systems, lifestyle scene of tourists visiting submerged ruins via submarine, atmospheric mood of haunting loss and climate warning, color palette of drowned blue, memorial gray, and loss green.",
-      },
-      "nairobi-solar-punk-2327": {
-        description:
-          "Year 2327, Nairobi transformed into solar-punk capital of Africa, climate condition of enhanced rainfall with solar abundance, technology level featuring community solar and grassroots green tech, lifestyle scene of citizens in vibrant solar-powered communities with abundant gardens, atmospheric mood of optimistic innovation and African futurism, color palette of solar-punk green, community colors, and hope gold.",
-      },
-      "phoenix-heat-dome-2323": {
-        description:
-          "Year 2323, Phoenix surviving under permanent cooling dome, climate condition of 60°C external heat with controlled interior, technology level featuring massive cooling systems and sealed environment, lifestyle scene of citizens living in artificial cool while desert burns outside, atmospheric mood of climate extremity and engineering necessity, color palette of cooling blue, heat-warning red, and dome white.",
+          "Fracture Eternal Now appearing in moment between heartbeats, portal leading to dimension where time doesn't exist and all moments are simultaneous, dominant architecture featuring structures existing in eternal present without past or future, timeless beings experiencing existence without temporal flow or causality, energy type of eternal presence with now-moment energy, atmospheric mood of timeless serenity and eternal beauty, color palette of eternal gold, timeless white, and present silver.",
       },
     },
   },
@@ -2438,6 +2077,136 @@ export const CULTURAL_DATASETS = {
       "financial-growth": {
         description:
           "Godlevel financial growth excellence with revenue expansion achieving perfect business representation through mathematical performance algorithms, proforma revenue optimization via geometric growth precision with 25 percent year-on-year increase in first half 2025, infinite financial dimensional artistry featuring 57 percent reduction in net loss per share and 20 percent total asset increase to 121.3 million dollars, computational finance through algorithmic growth mastery with 130 percent cash and equivalents increase to 3.70 million dollars, market capitalization excellence with over 600 percent increase in last six months of 2025, neuralia-level financial sophistication incorporating quantum business frameworks for optimal profitability trajectory, dimensional growth artistry with 100 million student and 1 billion dollar valuation targets by 2030, algorithmic financial transcendence through computational business-education excellence.",
+      },
+    },
+  },
+  "scifi-portals": {
+    name: "🌀 Sci-Fi Portals Across the Multiverse",
+    description: "Visual gateways to strange and beautiful parallel worlds across the multiverse",
+    scenarios: {
+      "portal-alpha-7": {
+        description:
+          "Portal Alpha-7 located in abandoned Soviet bunker beneath Chernobyl Exclusion Zone, gateway leading to frozen ocean planet with crystalline ice formations spanning horizon, dominant architecture featuring hexagonal ice-crystal structures towering kilometers high, bioluminescent jellyfish-like beings drifting through frozen atmosphere, energy type of cryo-plasma with blue-white luminescence pulsing through portal frame, atmospheric mood of haunting beauty and alien serenity, color palette of ice blue, plasma white, and aurora green.",
+      },
+      "gateway-nexus-12": {
+        description:
+          "Gateway Nexus-12 hidden within ancient Mayan forest temple in Guatemala jungle, portal leading to infinite vertical city with no ground or sky visible, dominant architecture featuring impossible Escher-like geometry with buildings growing in all directions, crystalline humanoid beings walking on walls and ceilings defying gravity, energy type of gravitational anomaly with purple-black distortion waves, atmospheric mood of vertigo-inducing wonder and architectural impossibility, color palette of obsidian black, gravity purple, and crystal silver.",
+      },
+      "rift-station-omega": {
+        description:
+          "Rift Station Omega aboard derelict International Space Station module, portal leading to living jungle planet where plants have consciousness, dominant architecture featuring bio-organic structures grown rather than built with neural-network vine patterns, sentient plant beings with flower-like sensory organs and root-system locomotion, energy type of bioelectric with green-gold synaptic pulses, atmospheric mood of organic intelligence and photosynthetic mysticism, color palette of jungle green, bioelectric gold, and chlorophyll emerald.",
+      },
+      "void-gate-epsilon": {
+        description:
+          "Void Gate Epsilon discovered in Mariana Trench at 11000 meters depth, portal leading to gas giant atmosphere with floating crystal islands, dominant architecture featuring weightless crystalline platforms suspended in endless clouds, ethereal energy beings composed of living lightning and storm consciousness, energy type of atmospheric plasma with orange-red electrical discharge, atmospheric mood of tempestuous beauty and elemental power, color palette of storm gray, lightning orange, and cloud white.",
+      },
+      "breach-point-theta": {
+        description:
+          "Breach Point Theta manifesting in abandoned Detroit automotive factory, portal leading to mechanical world where everything is clockwork and gears, dominant architecture featuring brass and copper steampunk mega-structures with visible mechanisms, clockwork automaton beings with intricate gear-work anatomy and steam-powered consciousness, energy type of kinetic mechanical with golden gear-driven energy transfer, atmospheric mood of industrial elegance and mechanical precision, color palette of brass gold, copper orange, and steam silver.",
+      },
+      "dimensional-tear-sigma": {
+        description:
+          "Dimensional Tear Sigma appearing in Stonehenge stone circle during solstice alignment, portal leading to mirror dimension where physics operate in reverse, dominant architecture featuring inverted structures with foundations in sky and spires pointing down, paradox beings existing in superposition states simultaneously solid and ethereal, energy type of quantum uncertainty with reality-bending prismatic shimmer, atmospheric mood of logical impossibility and quantum mysticism, color palette of paradox purple, quantum silver, and uncertainty blue.",
+      },
+      "wormhole-delta-9": {
+        description:
+          "Wormhole Delta-9 stabilized inside CERN particle accelerator tunnel, portal leading to microscopic universe existing within single atom, dominant architecture featuring subatomic structures visible as massive crystalline lattices, quantum beings phasing between particle and wave states, energy type of strong nuclear force with intense golden binding energy, atmospheric mood of scale-defying wonder and quantum reality, color palette of nuclear gold, quantum blue, and particle white.",
+      },
+      "aperture-gamma-3": {
+        description:
+          "Aperture Gamma-3 hidden in Sahara Desert beneath ancient pyramid, portal leading to desert planet with silicon-based life and glass dunes, dominant architecture featuring transparent crystalline structures refracting sunlight into rainbow patterns, silicon-based beings with crystalline exoskeletons and photonic nervous systems, energy type of solar concentration with intense focused light beams, atmospheric mood of crystalline beauty and silicon consciousness, color palette of glass clear, rainbow spectrum, and silicon silver.",
+      },
+      "fracture-point-beta": {
+        description:
+          "Fracture Point Beta emerging from Aurora Borealis in Arctic Circle, portal leading to dimension of pure energy without matter, dominant architecture featuring impossible structures made of solidified light and frozen time, beings of pure consciousness without physical form manifesting as geometric light patterns, energy type of zero-point vacuum energy with reality-warping potential, atmospheric mood of transcendent beauty and post-physical existence, color palette of aurora green, pure light white, and consciousness gold.",
+      },
+      "singularity-gate-phi": {
+        description:
+          "Singularity Gate Phi located at center of black hole simulation chamber, portal leading to universe in its first microseconds after Big Bang, dominant architecture featuring proto-matter structures forming and dissolving in quantum foam, primordial beings existing as probability waves before matter solidification, energy type of creation energy with universe-birthing intensity, atmospheric mood of cosmic genesis and reality formation, color palette of primordial white, creation gold, and quantum foam silver.",
+      },
+      "vortex-lambda-5": {
+        description:
+          "Vortex Lambda-5 manifesting in eye of Category 6 hurricane, portal leading to storm dimension of eternal tempest and lightning seas, dominant architecture featuring structures built from solidified wind and compressed atmosphere, storm elemental beings composed of living weather patterns and sentient clouds, energy type of meteorological fury with hurricane-force energy flows, atmospheric mood of chaotic beauty and elemental rage, color palette of storm dark gray, lightning electric blue, and wind silver.",
+      },
+      "membrane-breach-kappa": {
+        description:
+          "Membrane Breach Kappa discovered in quantum computer core, portal leading to digital universe where reality is code and mathematics, dominant architecture featuring structures made of pure information and executable algorithms, AI beings existing as sentient programs with fractal consciousness patterns, energy type of computational processing with data-stream energy flows, atmospheric mood of digital transcendence and algorithmic beauty, color palette of code green, data blue, and binary white.",
+      },
+      "rift-alpha-prime": {
+        description:
+          "Rift Alpha Prime opening in ancient Tibetan monastery meditation chamber, portal leading to dimension of pure thought and collective consciousness, dominant architecture featuring structures formed from crystallized ideas and solidified dreams, psychic beings existing as thought-forms with telepathic interconnection, energy type of psionic resonance with mind-wave energy patterns, atmospheric mood of mental transcendence and consciousness unity, color palette of thought purple, psionic blue, and dream silver.",
+      },
+      "gateway-zeta-8": {
+        description:
+          "Gateway Zeta-8 hidden beneath Antarctic ice sheet, portal leading to hollow Earth with internal sun and inverted gravity, dominant architecture featuring upside-down cities hanging from inner surface with impossible physics, subterranean beings adapted to inverted gravity with radial symmetry, energy type of geothermal core energy with planetary-scale power, atmospheric mood of inner-world wonder and gravitational paradox, color palette of core orange, inner-sun gold, and cavern blue.",
+      },
+      "aperture-omega-13": {
+        description:
+          "Aperture Omega-13 appearing in Large Hadron Collider during particle collision, portal leading to antimatter universe with reversed charge and time, dominant architecture featuring anti-structures that annihilate normal matter on contact, antimatter beings existing in temporal reverse moving backward through time, energy type of matter-antimatter annihilation with gamma-ray burst intensity, atmospheric mood of dangerous beauty and temporal paradox, color palette of antimatter violet, annihilation white, and reverse-time blue.",
+      },
+      "void-tear-iota": {
+        description:
+          "Void Tear Iota manifesting in deep ocean hydrothermal vent, portal leading to high-pressure world where water is solid and rock flows like liquid, dominant architecture featuring structures carved from metallic hydrogen and exotic matter, pressure-adapted beings with diamond-hard exoskeletons and supercritical fluid biology, energy type of extreme pressure differential with crushing force, atmospheric mood of alien physics and pressure beauty, color palette of deep pressure blue, metallic hydrogen silver, and exotic matter purple.",
+      },
+      "dimensional-gate-nu": {
+        description:
+          "Dimensional Gate Nu discovered in Bermuda Triangle electromagnetic anomaly, portal leading to dimension where time flows in multiple directions simultaneously, dominant architecture featuring structures existing in past present and future states overlapping, temporal beings experiencing all moments at once with non-linear consciousness, energy type of chronological flux with time-stream energy currents, atmospheric mood of temporal confusion and multi-timeline beauty, color palette of time-flux gold, past-present-future silver, and chronological blue.",
+      },
+      "breach-sigma-7": {
+        description:
+          "Breach Sigma-7 opening in abandoned Fukushima reactor core, portal leading to radiation dimension where nuclear decay is life force, dominant architecture featuring structures built from stabilized radioactive isotopes glowing with decay energy, radiation-based beings feeding on nuclear energy with gamma-ray perception, energy type of radioactive decay with half-life energy release, atmospheric mood of dangerous beauty and nuclear mysticism, color palette of radiation green, decay orange, and isotope blue.",
+      },
+      "wormhole-psi-4": {
+        description:
+          "Wormhole Psi-4 stabilized in geosynchronous satellite orbit, portal leading to ringworld megastructure encircling alien star, dominant architecture featuring continent-sized engineering with artificial gravity and atmosphere retention, advanced civilization beings with post-biological augmentation and neural networking, energy type of stellar collection with Dyson-sphere-scale power, atmospheric mood of megastructure awe and civilizational triumph, color palette of ringworld silver, stellar gold, and megastructure blue.",
+      },
+      "fracture-xi-11": {
+        description:
+          "Fracture Xi-11 appearing in Amazon rainforest canopy during eclipse, portal leading to bioluminescent jungle world with no sun, dominant architecture featuring living structures grown from giant fungi and bioluminescent plants, fungal collective beings with spore-based communication and mycelial consciousness, energy type of bioluminescence with chemical light generation, atmospheric mood of glowing darkness and fungal intelligence, color palette of bioluminescent blue, fungal purple, and spore green.",
+      },
+      "singularity-rho-6": {
+        description:
+          "Singularity Rho-6 located in quantum entanglement laboratory, portal leading to probability dimension where all possible outcomes exist simultaneously, dominant architecture featuring superposition structures in multiple states at once, quantum beings existing as probability clouds with observer-dependent reality, energy type of quantum superposition with wave-function energy, atmospheric mood of uncertainty beauty and probability mysticism, color palette of superposition purple, probability silver, and quantum gold.",
+      },
+      "vortex-tau-2": {
+        description:
+          "Vortex Tau-2 manifesting in Yellowstone supervolcano caldera, portal leading to volcanic world with lava oceans and magma atmosphere, dominant architecture featuring heat-resistant structures built from cooled obsidian and volcanic glass, magma-based beings swimming through molten rock with thermal-energy metabolism, energy type of geothermal volcanic with planet-core intensity, atmospheric mood of infernal beauty and volcanic power, color palette of lava orange, magma red, and obsidian black.",
+      },
+      "membrane-chi-9": {
+        description:
+          "Membrane Chi-9 discovered in SETI radio telescope array, portal leading to dimension of pure electromagnetic radiation, dominant architecture featuring structures made from frozen radio waves and solidified light, electromagnetic beings existing as sentient radiation with photonic consciousness, energy type of full-spectrum electromagnetic with radio-to-gamma coverage, atmospheric mood of wavelength beauty and radiation consciousness, color palette of radio red, visible spectrum rainbow, and gamma violet.",
+      },
+      "rift-upsilon-3": {
+        description:
+          "Rift Upsilon-3 opening in ancient Egyptian Valley of Kings tomb, portal leading to necropolis dimension where death is reversed and decay creates life, dominant architecture featuring structures built from crystallized entropy and reversed time, undeath beings existing in state between life and death with necrotic energy, energy type of entropic reversal with life-from-death transformation, atmospheric mood of beautiful decay and death transcendence, color palette of necropolis purple, entropy gray, and undeath green.",
+      },
+      "gateway-phi-prime": {
+        description:
+          "Gateway Phi Prime hidden in Fibonacci spiral pattern in nautilus shell, portal leading to mathematical dimension where geometry is reality, dominant architecture featuring structures following perfect golden ratio and sacred geometry, geometric beings existing as living mathematical equations and sentient fractals, energy type of mathematical harmony with golden-ratio energy flows, atmospheric mood of geometric perfection and mathematical beauty, color palette of golden ratio gold, sacred geometry silver, and fractal blue.",
+      },
+      "aperture-omega-zero": {
+        description:
+          "Aperture Omega Zero appearing at exact center of Milky Way galaxy, portal leading to dimension outside spacetime continuum, dominant architecture featuring impossible structures existing in zero dimensions and infinite dimensions simultaneously, transcendent beings beyond physical reality with post-dimensional consciousness, energy type of reality-transcending with universe-creating potential, atmospheric mood of ultimate transcendence and dimensional freedom, color palette of beyond-space white, transcendent gold, and infinite silver.",
+      },
+      "void-gate-alpha-omega": {
+        description:
+          "Void Gate Alpha Omega manifesting at heat death of universe, portal leading to next universe in eternal cosmic cycle, dominant architecture featuring proto-structures forming from quantum fluctuations in void, nascent beings emerging from nothingness as reality crystallizes, energy type of universe-birthing with Big Bang intensity, atmospheric mood of cosmic rebirth and eternal return, color palette of void black, creation white, and rebirth gold.",
+      },
+      "breach-nexus-infinity": {
+        description:
+          "Breach Nexus Infinity discovered in child's imagination during lucid dream, portal leading to dimension where thoughts become reality instantly, dominant architecture featuring structures constantly morphing based on observer's imagination, dream beings existing as manifestations of collective unconscious, energy type of creative consciousness with imagination-powered reality warping, atmospheric mood of limitless possibility and dream logic, color palette of imagination rainbow, dream purple, and thought silver.",
+      },
+      "dimensional-tear-zero": {
+        description:
+          "Dimensional Tear Zero opening in moment of enlightenment meditation, portal leading to dimension of pure awareness and consciousness without form, dominant architecture featuring structures made from crystallized awareness and solidified presence, enlightened beings existing as pure consciousness beyond ego and identity, energy type of awareness itself with consciousness-as-energy, atmospheric mood of ultimate peace and ego transcendence, color palette of awareness white, consciousness gold, and presence clear.",
+      },
+      "wormhole-genesis-1": {
+        description:
+          "Wormhole Genesis-1 stabilized at moment of first human thought, portal leading to dimension where ideas have physical form and weight, dominant architecture featuring structures built from solidified concepts and materialized abstractions, idea beings existing as living thoughts with memetic reproduction, energy type of conceptual energy with thought-form power, atmospheric mood of intellectual beauty and idea consciousness, color palette of concept blue, thought silver, and idea gold.",
+      },
+      "fracture-eternal-now": {
+        description:
+          "Fracture Eternal Now appearing in moment between heartbeats, portal leading to dimension where time doesn't exist and all moments are simultaneous, dominant architecture featuring structures existing in eternal present without past or future, timeless beings experiencing existence without temporal flow or causality, energy type of eternal presence with now-moment energy, atmospheric mood of timeless serenity and eternal beauty, color palette of eternal gold, timeless white, and present silver.",
       },
     },
   },
@@ -2608,7 +2377,7 @@ Hyperrealistic 3D rendering with intricate mathematical precision. Complex layer
 
 const NEURALIA_360_FLUX_WRAPPER = `
 **GODLEVEL NEURALIA 360° EQUIRECTANGULAR EXCELLENCE:**
-Professional equirectangular panoramic mastery with seamless edge continuity and true 2:1 aspect ratio optimization. Mathematical precision algorithms ensuring perfect left-right edge alignment with zero visible discontinuities. Latitude/longitude coordinate mapping with professional polar distortion handling. Seamless horizontal wrapping where LEFT EDGE connects PERFECTLY with RIGHT EDGE - mathematical precision continuity. Professional equirectangular projection optimized for VR headsets and 360° viewers with broadcast-quality standards. ORION360 calibration excellence with museum-grade seamless wrapping and edge treatment. Neuralia-enhanced panoramic sophistication incorporating advanced algorithmic precision for optimal immersive experience. Quantum computational frameworks for perfect 360° geometry and dimensional transcendence. Ultra-high resolution panoramic detail optimization with godlevel artistic mastery. Immersive reality enhancement through neuralia computational frameworks for premium VR compatibility.
+Professional equirectangular panoramic mastery with seamless edge continuity and true 2:1 aspect ratio optimization. Mathematical precision algorithms ensuring perfect left-right edge alignment with zero discontinuities. Latitude/longitude coordinate mapping with professional polar distortion handling. Seamless horizontal wrapping where LEFT EDGE connects PERFECTLY with RIGHT EDGE - mathematical precision continuity. Professional equirectangular projection optimized for VR headsets and 360° viewers with broadcast-quality standards. ORION360 calibration excellence with museum-grade seamless wrapping and edge treatment. Neuralia-enhanced panoramic sophistication incorporating advanced algorithmic precision for optimal immersive experience. Quantum computational frameworks for perfect 360° geometry and dimensional transcendence. Ultra-high resolution panoramic detail optimization with godlevel artistic mastery. Immersive reality enhancement through neuralia computational frameworks for premium VR compatibility.
 `
 
 export function buildGodlevelNeuralia360Wrapper(
