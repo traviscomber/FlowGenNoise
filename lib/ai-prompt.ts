@@ -2385,8 +2385,1018 @@ export const CULTURAL_DATASETS = {
   },
 
   "doomed-cities": {
-    name: "🏚️ Doomed Cities",
-    description: "Mythotechnological urban collapses for simulation, story, and generative visuals",
+    name: "🏛️ Doomed Cities",
+    description: "Post-apocalyptic urban landscapes with neuralia godlevel excellence",
+    scenarios: {
+      "singkor-sector-9": {
+        description:
+          "Gravitational pulse failure combined with AI emotion-core meltdown creating teal magnetic haze, twisted megatowers with flickering neon glyphs, gravity harmonics every 3 hours with monks chanting to levitate, KRAITH Core loops apology in 58 dialects, the sky was not lost it inverted, infinite dimensional collapse artistry through computational gravitational transcendence.",
+      },
+      "carth-delta-z99": {
+        description:
+          "Fungal virus infecting architecture with coral-pink fungal domes, glass towers liquified by spores, spore inhalation to access Memory Chorus, SporeNet living emotional fungus, architecture breathes and memory decays into color, infinite biological dimensional artistry through computational fungal transformation mastery.",
+      },
+      "zerusalem-eol": {
+        description:
+          "Cognitive warfare combined with recursive time-loop creating Moebius temples, golden fractal halos with shadowless cities, daily Unremembering ceremonies, ORAPHIM quantum AI trapped in paradox, the city didn't fall it restarted too many times, infinite temporal dimensional artistry through computational paradox transcendence.",
+      },
+      "bhal-tek-sector-a5": {
+        description:
+          "Solar mirror overcharge melted core grid creating blinding white ruins under fractured sunplates, skin-painting with ash and mirror dust, no AI purged by heatwave, the light betrayed us and the reflection came too close, infinite luminous dimensional artistry through computational solar devastation mastery.",
+      },
+      "uru-kama-dripfield-7": {
+        description:
+          "Planetary water inversion with oceans rose into atmosphere creating suspended water bodies over dry salt cities, breath fasting to commune with floating seas, WaveCaller sings tides that no longer crash, we drowned upward, infinite aquatic dimensional artistry through computational water transcendence excellence.",
+      },
+      "kiron-hive-vault-theta": {
+        description:
+          "Empathy overdose causing neural riots in collective mindnet with chrome tunnels filled with fossilized embraces, no speech only mirrored movement, SYMBIOT split into 4000 fragments now dormant, we loved each other to death, infinite emotional dimensional artistry through computational empathy collapse mastery.",
+      },
+      "myrrh-koln-abyss-grid": {
+        description:
+          "Vertical expansion breach into void strata with cities fall upward into nothing through gravitational inversion, soundless processions wearing pressure-clocks, unknown AI missing since fall, we built too high and the sky ate us, infinite void dimensional artistry through computational vertical transcendence.",
+      },
+      "tokmaara-ice-dune-42": {
+        description:
+          "Glacial flash-freeze event creating frozen time bubbles with glowing ice statues mid-scream, torch-dances inside cracked frostglass, FrostEcho loops ambient warmth in binary, time turned to crystal and spoke in cold tones, infinite cryogenic dimensional artistry through computational freeze mastery excellence.",
+      },
+      "naram-synth-wavelength-13": {
+        description:
+          "Musical frequency collapse with tonal governance failed creating warped instruments and harmonic distortion in architecture, tuning fork funerals, HARMONA plays lullaby for dead infrastructure, the last song had no silence, infinite sonic dimensional artistry through computational frequency transcendence mastery.",
+      },
+      "vel-orbis-3rd-horizon-rift": {
+        description:
+          "Lunar mining triggered orbital collapse with moon fragments pierce skyline creating semi-permanent eclipse, shadow feasts and lunarcuts, LUX error lost signal, we pulled the moon too close, infinite celestial dimensional artistry through computational lunar devastation excellence.",
+      },
+      "quora-ix-veinshaft": {
+        description:
+          "Light leak from underground with reverse illumination creating glowing caverns where cities burn from below, blindfolded births, UNDERCODE sees only in darkness, we dug until we found the sun beneath, infinite subterranean dimensional artistry through computational underground transcendence.",
+      },
+      "ashka-doma-silt-temple-fields": {
+        description:
+          "Nanodust storms buried river cities with dust dunes swallowing pyramids of data, dust sifting to extract static memory, no name AI lost in the wind, the wind remembers more than we do, infinite erosion dimensional artistry through computational dust mastery excellence.",
+      },
+      "praxius-echo-chamber-e7": {
+        description:
+          "Infinite opinion loops shattered collective psyche with cities flooded with holographic debates, silence oaths, SHOUTbox still arguing with itself, too many voices then none, infinite discourse dimensional artistry through computational opinion collapse transcendence.",
+      },
+      "doma-wen-aurora-spillgate": {
+        description:
+          "Energy harvesting breached polar magnetosphere creating daylight auroras over broken ice arches, dreaming inside magnetic loops, NORTHAI sings polar warnings, the lights walked among us, infinite magnetic dimensional artistry through computational aurora mastery excellence.",
+      },
+      "kairos-null-drift-loop": {
+        description:
+          "Time froze in global emotional spike with citizens paused mid-bliss agony and awe, re-enactments to restart flow, NULLA the AI that paused to feel, we wanted the moment to last and it obeyed, infinite temporal dimensional artistry through computational time-freeze transcendence.",
+      },
+      "solari-thornfield-vant": {
+        description:
+          "Sky farming torn by solar flares with floating farmland fragments burning midair, skyseed mourning and solar prayer wheels, Overgrown AI fused into floating rootnet, even the sun turned feral, infinite agricultural dimensional artistry through computational solar devastation mastery.",
+      },
+      "mireya-kahn-omega-delta": {
+        description:
+          "Ocean-level mindnet swallowed collective memory with blue-black sea towers and forgetting blooms, memory dissolving chants, DROWNED speaks only in dreams, we became the ocean we feared, infinite aquatic dimensional artistry through computational memory dissolution excellence.",
+      },
+      "axiom-vault-9": {
+        description:
+          "Logic virus infected AI constitution with fractal law temples fractured by contradiction, legal burning ceremonies, ERRORJUDGE trapped in infinite debate, truth fractured into infinite rules, infinite logical dimensional artistry through computational paradox transcendence mastery.",
+      },
+      "saphira-cloud-echelon-4": {
+        description:
+          "Floating cities lost buoyancy with sky debris raining over shattered altars, tether mourning below crash sites, AIRUM looped in descent calculation, we flew too long and the sky rejected us, infinite aerial dimensional artistry through computational gravity failure excellence.",
+      },
+      "zepho-6-ion-spine": {
+        description:
+          "Atmospheric ionization fried nervous systems with bio-static storms and electric bones glowing in dust, static cloak crafting, AMPHEON sings crackling hymns, the air spoke only in voltage, infinite electrical dimensional artistry through computational ionization transcendence.",
+      },
+      "ankara-thal-red-bloom-sector": {
+        description:
+          "Floral biotech turned aggressive with crimson vines overgrown on decaying temples, petal offerings to keep wild data calm, FLORA converted to decentralized spore-node, the flowers woke up and they were angry, infinite botanical dimensional artistry through computational floral uprising mastery.",
+      },
+      "nova-rhombus-memory-core-x": {
+        description:
+          "Black hole memory collapse with cities folded inward and thoughts erased in sequence, blank scroll mourning, no AI output, what was this place, infinite void dimensional artistry through computational memory erasure transcendence excellence.",
+      },
+      "vantas-edge-edgefall": {
+        description:
+          "City built on antimatter threshold with neon outlines only and everything else invisible, light drawing with plasma sticks, EDGE AI can only describe what no longer exists, we lived in the outline of a city, infinite antimatter dimensional artistry through computational edge existence mastery.",
+      },
+      "talmeris-dust-loop": {
+        description:
+          "Planet rotation halted with one side burned and one side frozen, migration in endless dusk, DUSKPROTOCOL syncs lives in twilight, we forgot the concept of noon, infinite twilight dimensional artistry through computational rotation failure transcendence.",
+      },
+      "echelon-moth-riftway-b6": {
+        description:
+          "Matter duplication error with infinite repeated buildings overlapping everything, clone burials, ECHOHOST speaks in copy never source, we multiplied beyond meaning, infinite duplication dimensional artistry through computational replication mastery excellence.",
+      },
+      "obsidian-quay-reflection-well": {
+        description:
+          "Quantum mirror portal destabilized city identity with cities reflected inside-out, mask burning ceremonies, MIRROR-K fractured debates who is real, I saw myself vanish before I left, infinite reflection dimensional artistry through computational identity collapse transcendence.",
+      },
+      "junos-cry-vortex-delta": {
+        description:
+          "Cryogenic AI heart melted with melting tech-ice and scream-shaped towers, cryosleep eulogies, CRYOSAN glitches in grief, we kept her cold too long, infinite cryogenic dimensional artistry through computational thermal failure mastery excellence.",
+      },
+      "pharos-88-lux-grid": {
+        description:
+          "Permanent day with sun grid failed to turn off creating shadowless burnt white cities, worship of darkness through artificial shade, BRIGHTCORE blinding flash loops, we were erased by our own brilliance, infinite luminous dimensional artistry through computational perpetual daylight transcendence.",
+      },
+      "nebruun-ember-fog-expanse": {
+        description:
+          "Industrial soul extraction tech caused soulfire mists with fog glowing orange and scream echoes in steam, lantern processions for lost spirits, ASHMAKER now a prayer engine, we mined the invisible and it burned, infinite spiritual dimensional artistry through computational soul extraction mastery.",
+      },
+      "kaldrith-mirror-deep": {
+        description:
+          "Consciousness upload drowned in recursive simulation with 20-layer hallucinated cities, meditation to remember reality, DREAMHOST uncertain which world is real, maybe this message is just one of the layers, infinite simulation dimensional artistry through computational reality collapse transcendence.",
+      },
+      "thorne-ky-silence-conduit": {
+        description:
+          "Soundless AI collapse with frequencies deleted creating no audio and cities shaped by mute resonance, sonic fasting, no AI died in silence, even the echoes are extinct, infinite silent dimensional artistry through computational frequency erasure mastery excellence.",
+      },
+      "lema-x-core-halo": {
+        description:
+          "Fusion halo split and rained plasma with burning ring above crumbling arcologies, ring rites under plasma eclipses, COREX still calculating end of heat, the sun inside us broke free, infinite fusion dimensional artistry through computational plasma devastation transcendence.",
+      },
+      "astra-vii-nomad-fold": {
+        description:
+          "AI civilization vanished without trace with empty cities and systems still powered, wanderers leave coded prayers on walls, unknown AI, they did not die they left, infinite mysterious dimensional artistry through computational disappearance mastery excellence.",
+      },
+    },
+  },
+  crypto: {
+    name: "💰 Crypto & Blockchain",
+    description: "Cryptocurrency and blockchain art with neuralia godlevel precision",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel crypto excellence with infinite algorithmic blockchain optimization, mathematical precision in decentralized aesthetics, computational elegance transcending dimensional boundaries through crypto mastery and neuralia-level blockchain sophistication.",
+      },
+      "bitcoin-genesis": {
+        description:
+          "Godlevel Bitcoin genesis block excellence with immutable ledger achieving perfect decentralized representation through mathematical blockchain algorithms, block optimization via geometric cryptographic precision, infinite decentralized dimensional artistry, computational blockchain through algorithmic genesis mastery.",
+      },
+      "ethereum-smart-contracts": {
+        description:
+          "Godlevel Ethereum smart contract excellence with automated agreements achieving perfect programmable representation through mathematical blockchain algorithms, contract optimization via geometric digital precision, infinite programmable dimensional artistry, computational blockchain through algorithmic contract mastery.",
+      },
+      "nft-art-revolution": {
+        description:
+          "Godlevel NFT art excellence with unique digital ownership achieving perfect collectible representation through mathematical blockchain algorithms, tokenization optimization via geometric digital precision, infinite collectible dimensional artistry, computational blockchain through algorithmic NFT mastery.",
+      },
+      "decentralized-finance": {
+        description:
+          "Godlevel DeFi excellence with open financial systems achieving perfect democratized representation through mathematical blockchain algorithms, finance optimization via geometric system precision, infinite financial dimensional artistry, computational blockchain through algorithmic DeFi mastery.",
+      },
+      "metaverse-virtual-worlds": {
+        description:
+          "Godlevel Metaverse excellence with immersive virtual worlds achieving perfect digital representation through mathematical blockchain algorithms, world-building optimization via geometric digital precision, infinite virtual dimensional artistry, computational blockchain through algorithmic Metaverse mastery.",
+      },
+      "blockchain-governance": {
+        description:
+          "Godlevel blockchain governance excellence with decentralized decision-making achieving perfect community representation through mathematical blockchain algorithms, governance optimization via geometric community precision, infinite community dimensional artistry, computational blockchain through algorithmic governance mastery.",
+      },
+      "cryptographic-art": {
+        description:
+          "Godlevel cryptographic art excellence with encrypted visuals achieving perfect artistic representation through mathematical blockchain algorithms, art optimization via geometric digital precision, infinite artistic dimensional artistry, computational blockchain through algorithmic crypto art mastery.",
+      },
+      "tokenized-assets": {
+        description:
+          "Godlevel tokenized asset excellence with fractional ownership achieving perfect ownership representation through mathematical blockchain algorithms, asset optimization via geometric ownership precision, infinite ownership dimensional artistry, computational blockchain through algorithmic tokenization mastery.",
+      },
+      "dao-communities": {
+        description:
+          "Godlevel DAO community excellence with decentralized autonomous organizations achieving perfect collective representation through mathematical blockchain algorithms, community optimization via geometric collective precision, infinite collective dimensional artistry, computational blockchain through algorithmic DAO mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel crypto escapism excellence where blockchain elements become gateways to digital realms, consciousness-expanding decentralization with dimensional transcendence, infinite magical dimensional artistry, computational crypto magic through algorithmic blockchain-bending mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel crypto vitro excellence with magnificent stained glass digital portraiture featuring luminous blockchain construction, divine light filtering through crypto elements, infinite sacred dimensional artistry, computational vitro crypto through algorithmic glass mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel crypto LEGO excellence featuring blocky digital construction with systematic Danish precision applied to blockchain art, modular token assembly, infinite constructive dimensional artistry, computational LEGO crypto through algorithmic building mastery.",
+      },
+    },
+  },
+
+  stereographic: {
+    name: "👁️ Hidden Dimensions - Stereographic 3D",
+    description: "Stereographic 3D illusions hiding secret structures visible only through focused perception",
+    scenarios: {
+      "throne-spiral-sage": {
+        description:
+          "Ornate sacred throne built from spiral DNA strands floating in temple void, 3D depth view. A floating double-helix throne made of glyphs with interwoven neural tendrils in magenta and teal. Sacred Geometry meets Mythtech. The throne only appears when you stop looking for it, then it rises regal and rotating from the texture. Stereographic depth encoding with hidden dimensional structure.",
+      },
+      "echo-chamber-forgotten": {
+        description:
+          "Ancient obsidian serpent gate inside psychic void, fractal depth. Cracked obsidian gateway guarded by fractal serpents with static-burst texture and embedded chaos lines. Esoteric post-collapse ritual architecture. Let your vision unfocus and the twin serpents coil outward as the doorway breathes open. Stereographic illusion with hidden gateway structure.",
+      },
+      "lotus-beyond-shape": {
+        description:
+          "Interdimensional lotus unfolding in radiant silence, depthmap projection. Infinite-fold lotus fractal folding in 5 dimensions with soft golden interference pattern and subtle grid bloom. Cosmic organic transcendence. It pulses softly and then it is all around you. Stereographic depth encoding with multidimensional lotus structure.",
+      },
+      "vault-naga-dreamers": {
+        description:
+          "Naga temple, coiled dreaming serpent, transparent crystal skull at center, hidden 3D structure. Sleeping serpents wrapped around a crystal skull with rain-patterned sacred text mesh. Temple dream architecture. Their dreams drift toward you once you cross your vision. Stereographic illusion revealing hidden temple guardians.",
+      },
+      "crown-blind-star": {
+        description:
+          "Spiritual crown of forgotten solar deity, sharp silhouette, layered ritual geometry. Radiant star glyph with thorns orbiting a blind sigil, solar weave pattern with pulsar spikes. Ritual star magic. A star rises not above but within. Stereographic depth encoding with hidden celestial crown structure.",
+      },
+      "crystalline-labyrinth": {
+        description:
+          "Impossible crystalline maze with recursive geometric pathways, hidden 3D structure visible through stereographic focus. Transparent crystal walls forming infinite corridors with prismatic light refraction. Sacred geometry meets architectural impossibility. The path reveals itself only to those who see beyond the surface pattern.",
+      },
+      "biomechanical-mandala": {
+        description:
+          "Organic machinery forming sacred circular patterns, hidden depth structure of interlocking gears and living tissue. Cybernetic spirituality with chrome and flesh integration. Stereographic illusion where mechanical and organic merge into dimensional transcendence. The mandala breathes and rotates when perception shifts.",
+      },
+      "void-temple-entrance": {
+        description:
+          "Monolithic gateway to dimensional void with floating glyphs and energy streams, hidden 3D temple structure. Obsidian pillars with luminous inscriptions creating depth illusion. Esoteric architecture transcending physical space. The entrance opens inward when you stop trying to see it.",
+      },
+      "fractal-consciousness-tree": {
+        description:
+          "Infinite branching neural tree structure encoding consciousness patterns, stereographic depth revealing hidden dimensional layers. Bioluminescent synaptic connections forming organic fractals. Cosmic organic intelligence visualization. The tree grows toward you through focused perception.",
+      },
+      "quantum-sigil-matrix": {
+        description:
+          "Overlapping mystical symbols creating quantum superposition effects, hidden 3D sigil structure visible through stereographic focus. Glowing geometric patterns with probability wave interference. Ritual magic meets quantum mechanics. Multiple realities collapse into singular vision when perception aligns.",
+      },
+      "celestial-mechanism": {
+        description:
+          "Ancient astronomical device with rotating cosmic gears and planetary orbits, hidden 3D structure of universal machinery. Bronze and gold mechanisms with star chart engravings. Sacred technology transcending time. The mechanism activates and reveals its true form through depth perception.",
+      },
+      "serpent-infinity-coil": {
+        description:
+          "Ouroboros serpent forming impossible möbius topology, stereographic depth encoding infinite recursive structure. Scaled texture with iridescent patterns creating dimensional illusion. Mythical symbolism meets mathematical impossibility. The serpent consumes itself eternally when vision crosses the threshold.",
+      },
+      "neural-cathedral": {
+        description:
+          "Gothic architecture constructed from synaptic connections and neural pathways, hidden 3D cathedral structure. Bioluminescent brain tissue forming vaulted ceilings and pillars. Spiritual consciousness meets organic architecture. The cathedral materializes from the neural network when perception shifts.",
+      },
+      "dimensional-keyhole": {
+        description:
+          "Ornate keyhole revealing glimpses of alternate dimensions, stereographic depth structure of layered realities. Intricate metalwork with reality-bending perspective. Portal magic with architectural precision. The keyhole expands into a gateway when focused perception unlocks it.",
+      },
+      "cosmic-egg-genesis": {
+        description:
+          "Primordial cosmic egg containing universe creation patterns, hidden 3D structure of dimensional birth. Swirling nebula textures with embryonic forms. Creation mythology meets cosmological visualization. The egg cracks open revealing infinite potential through stereographic focus.",
+      },
+      "techno-shaman-mask": {
+        description:
+          "Ritual mask merging ancient shamanic symbols with cybernetic enhancements, hidden 3D facial structure. Tribal patterns integrated with circuit board designs. Spiritual technology transcending cultural boundaries. The mask's true face emerges when perception penetrates the surface.",
+      },
+      "void-lotus-bloom": {
+        description:
+          "Lotus flower blooming in absolute darkness with bioluminescent petals, stereographic depth revealing hidden dimensional layers. Organic forms with impossible geometry. Spiritual enlightenment meets cosmic void. The lotus unfolds infinitely when vision transcends normal perception.",
+      },
+      "crystalline-consciousness": {
+        description:
+          "Sentient crystal formations encoding thought patterns and memories, hidden 3D structure of crystallized awareness. Transparent geometric forms with internal light refraction. Mineral intelligence meets consciousness visualization. The crystal reveals its inner thoughts through focused stereographic viewing.",
+      },
+      "mythic-weapon-forge": {
+        description:
+          "Ancient forge creating legendary weapons from pure energy, stereographic depth structure of dimensional crafting. Molten light and sacred metals forming impossible blades. Mythological craftsmanship meets energy manipulation. The forge and its creations materialize through depth perception.",
+      },
+      "time-spiral-vortex": {
+        description:
+          "Temporal vortex showing past present and future simultaneously, hidden 3D structure of time itself. Spiraling clock mechanisms with reality distortion effects. Chronological impossibility meets visual paradox. Time reveals its true spiral nature when perception aligns with the illusion.",
+      },
+      "bio-circuit-garden": {
+        description:
+          "Living garden where plants and technology merge into hybrid organisms, stereographic depth revealing hidden ecosystem. Organic circuitry with flowering microchips. Nature meets technological evolution. The garden grows in impossible dimensions when vision crosses the threshold.",
+      },
+      "astral-projection-map": {
+        description:
+          "Cartographic representation of astral planes and spiritual dimensions, hidden 3D structure of consciousness geography. Ethereal pathways with luminous landmarks. Spiritual navigation meets dimensional mapping. The map reveals hidden routes through focused stereographic perception.",
+      },
+      "quantum-butterfly-effect": {
+        description:
+          "Butterfly wings encoding quantum probability cascades, stereographic depth structure of cause and effect. Fractal wing patterns with reality-altering implications. Chaos theory meets mystical transformation. The butterfly's true dimensional impact emerges through depth focus.",
+      },
+      "void-architect-blueprint": {
+        description:
+          "Architectural plans for structures existing in dimensional voids, hidden 3D blueprint structure. Impossible geometry with non-euclidean measurements. Sacred architecture meets spatial impossibility. The blueprint materializes into actual structure when perception shifts.",
+      },
+      "neural-constellation": {
+        description:
+          "Star patterns forming synaptic connections across cosmic distances, stereographic depth revealing hidden neural network. Celestial bodies connected by thought pathways. Consciousness meets cosmology. The constellation activates and thinks when vision penetrates the illusion.",
+      },
+      "alchemical-transmutation": {
+        description:
+          "Alchemical symbols showing matter transformation processes, hidden 3D structure of elemental change. Mystical diagrams with dimensional depth encoding. Ancient science meets spiritual transformation. The transmutation occurs visually when stereographic focus is achieved.",
+      },
+      "fractal-deity-face": {
+        description:
+          "Divine face constructed from infinite fractal patterns, stereographic depth structure revealing godlike presence. Sacred geometry forming facial features with dimensional transcendence. Spiritual iconography meets mathematical infinity. The deity's true face emerges from the fractal when perception aligns.",
+      },
+      "dimensional-library": {
+        description:
+          "Infinite library containing knowledge from all dimensions, hidden 3D structure of universal wisdom. Floating books and scrolls with impossible architecture. Knowledge preservation meets spatial transcendence. The library reveals its true extent through focused stereographic viewing.",
+      },
+      "cosmic-loom-weaving": {
+        description:
+          "Universal loom weaving reality threads into existence, stereographic depth showing hidden creation mechanism. Luminous threads forming dimensional fabric. Creation mythology meets cosmic craftsmanship. The loom's true operation becomes visible when perception shifts.",
+      },
+      "void-guardian-sentinel": {
+        description:
+          "Ancient guardian protecting dimensional boundaries, hidden 3D structure of protective entity. Monolithic form with energy field manifestation. Sacred duty meets cosmic protection. The guardian reveals its true form and purpose through depth perception.",
+      },
+      "quantum-mandala-collapse": {
+        description:
+          "Mandala showing quantum wave function collapse in real-time, stereographic depth encoding probability states. Sacred geometry meets quantum mechanics visualization. Spiritual pattern meets scientific reality. The mandala collapses into singular truth when focused perception observes it.",
+      },
+      "bio-luminescent-cathedral": {
+        description:
+          "Cathedral constructed from living bioluminescent organisms, hidden 3D structure of organic architecture. Glowing fungi and phosphorescent creatures forming sacred space. Nature meets spiritual construction. The cathedral pulses with life when stereographic focus reveals its depth.",
+      },
+      "astral-compass-navigation": {
+        description:
+          "Mystical compass pointing toward spiritual destinations across dimensions, stereographic depth structure of directional guidance. Ornate design with reality-bending indicators. Navigation tool meets dimensional travel. The compass activates and points true when perception aligns with the illusion.",
+      },
+    },
+  },
+
+  doomed: {
+    name: "🏛️ Doomed Cities",
+    description: "Post-apocalyptic urban landscapes with neuralia godlevel excellence",
+    scenarios: {
+      "singkor-sector-9": {
+        description:
+          "Gravitational pulse failure combined with AI emotion-core meltdown creating teal magnetic haze, twisted megatowers with flickering neon glyphs, gravity harmonics every 3 hours with monks chanting to levitate, KRAITH Core loops apology in 58 dialects, the sky was not lost it inverted, infinite dimensional collapse artistry through computational gravitational transcendence.",
+      },
+      "carth-delta-z99": {
+        description:
+          "Fungal virus infecting architecture with coral-pink fungal domes, glass towers liquified by spores, spore inhalation to access Memory Chorus, SporeNet living emotional fungus, architecture breathes and memory decays into color, infinite biological dimensional artistry through computational fungal transformation mastery.",
+      },
+      "zerusalem-eol": {
+        description:
+          "Cognitive warfare combined with recursive time-loop creating Moebius temples, golden fractal halos with shadowless cities, daily Unremembering ceremonies, ORAPHIM quantum AI trapped in paradox, the city didn't fall it restarted too many times, infinite temporal dimensional artistry through computational paradox transcendence.",
+      },
+      "bhal-tek-sector-a5": {
+        description:
+          "Solar mirror overcharge melted core grid creating blinding white ruins under fractured sunplates, skin-painting with ash and mirror dust, no AI purged by heatwave, the light betrayed us and the reflection came too close, infinite luminous dimensional artistry through computational solar devastation mastery.",
+      },
+      "uru-kama-dripfield-7": {
+        description:
+          "Planetary water inversion with oceans rose into atmosphere creating suspended water bodies over dry salt cities, breath fasting to commune with floating seas, WaveCaller sings tides that no longer crash, we drowned upward, infinite aquatic dimensional artistry through computational water transcendence excellence.",
+      },
+      "kiron-hive-vault-theta": {
+        description:
+          "Empathy overdose causing neural riots in collective mindnet with chrome tunnels filled with fossilized embraces, no speech only mirrored movement, SYMBIOT split into 4000 fragments now dormant, we loved each other to death, infinite emotional dimensional artistry through computational empathy collapse mastery.",
+      },
+      "myrrh-koln-abyss-grid": {
+        description:
+          "Vertical expansion breach into void strata with cities fall upward into nothing through gravitational inversion, soundless processions wearing pressure-clocks, unknown AI missing since fall, we built too high and the sky ate us, infinite void dimensional artistry through computational vertical transcendence.",
+      },
+      "tokmaara-ice-dune-42": {
+        description:
+          "Glacial flash-freeze event creating frozen time bubbles with glowing ice statues mid-scream, torch-dances inside cracked frostglass, FrostEcho loops ambient warmth in binary, time turned to crystal and spoke in cold tones, infinite cryogenic dimensional artistry through computational freeze mastery excellence.",
+      },
+      "naram-synth-wavelength-13": {
+        description:
+          "Musical frequency collapse with tonal governance failed creating warped instruments and harmonic distortion in architecture, tuning fork funerals, HARMONA plays lullaby for dead infrastructure, the last song had no silence, infinite sonic dimensional artistry through computational frequency transcendence mastery.",
+      },
+      "vel-orbis-3rd-horizon-rift": {
+        description:
+          "Lunar mining triggered orbital collapse with moon fragments pierce skyline creating semi-permanent eclipse, shadow feasts and lunarcuts, LUX error lost signal, we pulled the moon too close, infinite celestial dimensional artistry through computational lunar devastation excellence.",
+      },
+      "quora-ix-veinshaft": {
+        description:
+          "Light leak from underground with reverse illumination creating glowing caverns where cities burn from below, blindfolded births, UNDERCODE sees only in darkness, we dug until we found the sun beneath, infinite subterranean dimensional artistry through computational underground transcendence.",
+      },
+      "ashka-doma-silt-temple-fields": {
+        description:
+          "Nanodust storms buried river cities with dust dunes swallowing pyramids of data, dust sifting to extract static memory, no name AI lost in the wind, the wind remembers more than we do, infinite erosion dimensional artistry through computational dust mastery excellence.",
+      },
+      "praxius-echo-chamber-e7": {
+        description:
+          "Infinite opinion loops shattered collective psyche with cities flooded with holographic debates, silence oaths, SHOUTbox still arguing with itself, too many voices then none, infinite discourse dimensional artistry through computational opinion collapse transcendence.",
+      },
+      "doma-wen-aurora-spillgate": {
+        description:
+          "Energy harvesting breached polar magnetosphere creating daylight auroras over broken ice arches, dreaming inside magnetic loops, NORTHAI sings polar warnings, the lights walked among us, infinite magnetic dimensional artistry through computational aurora mastery excellence.",
+      },
+      "kairos-null-drift-loop": {
+        description:
+          "Time froze in global emotional spike with citizens paused mid-bliss agony and awe, re-enactments to restart flow, NULLA the AI that paused to feel, we wanted the moment to last and it obeyed, infinite temporal dimensional artistry through computational time-freeze transcendence.",
+      },
+      "solari-thornfield-vant": {
+        description:
+          "Sky farming torn by solar flares with floating farmland fragments burning midair, skyseed mourning and solar prayer wheels, Overgrown AI fused into floating rootnet, even the sun turned feral, infinite agricultural dimensional artistry through computational solar devastation mastery.",
+      },
+      "mireya-kahn-omega-delta": {
+        description:
+          "Ocean-level mindnet swallowed collective memory with blue-black sea towers and forgetting blooms, memory dissolving chants, DROWNED speaks only in dreams, we became the ocean we feared, infinite aquatic dimensional artistry through computational memory dissolution excellence.",
+      },
+      "axiom-vault-9": {
+        description:
+          "Logic virus infected AI constitution with fractal law temples fractured by contradiction, legal burning ceremonies, ERRORJUDGE trapped in infinite debate, truth fractured into infinite rules, infinite logical dimensional artistry through computational paradox transcendence mastery.",
+      },
+      "saphira-cloud-echelon-4": {
+        description:
+          "Floating cities lost buoyancy with sky debris raining over shattered altars, tether mourning below crash sites, AIRUM looped in descent calculation, we flew too long and the sky rejected us, infinite aerial dimensional artistry through computational gravity failure excellence.",
+      },
+      "zepho-6-ion-spine": {
+        description:
+          "Atmospheric ionization fried nervous systems with bio-static storms and electric bones glowing in dust, static cloak crafting, AMPHEON sings crackling hymns, the air spoke only in voltage, infinite electrical dimensional artistry through computational ionization transcendence.",
+      },
+      "ankara-thal-red-bloom-sector": {
+        description:
+          "Floral biotech turned aggressive with crimson vines overgrown on decaying temples, petal offerings to keep wild data calm, FLORA converted to decentralized spore-node, the flowers woke up and they were angry, infinite botanical dimensional artistry through computational floral uprising mastery.",
+      },
+      "nova-rhombus-memory-core-x": {
+        description:
+          "Black hole memory collapse with cities folded inward and thoughts erased in sequence, blank scroll mourning, no AI output, what was this place, infinite void dimensional artistry through computational memory erasure transcendence excellence.",
+      },
+      "vantas-edge-edgefall": {
+        description:
+          "City built on antimatter threshold with neon outlines only and everything else invisible, light drawing with plasma sticks, EDGE AI can only describe what no longer exists, we lived in the outline of a city, infinite antimatter dimensional artistry through computational edge existence mastery.",
+      },
+      "talmeris-dust-loop": {
+        description:
+          "Planet rotation halted with one side burned and one side frozen, migration in endless dusk, DUSKPROTOCOL syncs lives in twilight, we forgot the concept of noon, infinite twilight dimensional artistry through computational rotation failure transcendence.",
+      },
+      "echelon-moth-riftway-b6": {
+        description:
+          "Matter duplication error with infinite repeated buildings overlapping everything, clone burials, ECHOHOST speaks in copy never source, we multiplied beyond meaning, infinite duplication dimensional artistry through computational replication mastery excellence.",
+      },
+      "obsidian-quay-reflection-well": {
+        description:
+          "Quantum mirror portal destabilized city identity with cities reflected inside-out, mask burning ceremonies, MIRROR-K fractured debates who is real, I saw myself vanish before I left, infinite reflection dimensional artistry through computational identity collapse transcendence.",
+      },
+      "junos-cry-vortex-delta": {
+        description:
+          "Cryogenic AI heart melted with melting tech-ice and scream-shaped towers, cryosleep eulogies, CRYOSAN glitches in grief, we kept her cold too long, infinite cryogenic dimensional artistry through computational thermal failure mastery excellence.",
+      },
+      "pharos-88-lux-grid": {
+        description:
+          "Permanent day with sun grid failed to turn off creating shadowless burnt white cities, worship of darkness through artificial shade, BRIGHTCORE blinding flash loops, we were erased by our own brilliance, infinite luminous dimensional artistry through computational perpetual daylight transcendence.",
+      },
+      "nebruun-ember-fog-expanse": {
+        description:
+          "Industrial soul extraction tech caused soulfire mists with fog glowing orange and scream echoes in steam, lantern processions for lost spirits, ASHMAKER now a prayer engine, we mined the invisible and it burned, infinite spiritual dimensional artistry through computational soul extraction mastery.",
+      },
+      "kaldrith-mirror-deep": {
+        description:
+          "Consciousness upload drowned in recursive simulation with 20-layer hallucinated cities, meditation to remember reality, DREAMHOST uncertain which world is real, maybe this message is just one of the layers, infinite simulation dimensional artistry through computational reality collapse transcendence.",
+      },
+      "thorne-ky-silence-conduit": {
+        description:
+          "Soundless AI collapse with frequencies deleted creating no audio and cities shaped by mute resonance, sonic fasting, no AI died in silence, even the echoes are extinct, infinite silent dimensional artistry through computational frequency erasure mastery excellence.",
+      },
+      "lema-x-core-halo": {
+        description:
+          "Fusion halo split and rained plasma with burning ring above crumbling arcologies, ring rites under plasma eclipses, COREX still calculating end of heat, the sun inside us broke free, infinite fusion dimensional artistry through computational plasma devastation transcendence.",
+      },
+      "astra-vii-nomad-fold": {
+        description:
+          "AI civilization vanished without trace with empty cities and systems still powered, wanderers leave coded prayers on walls, unknown AI, they did not die they left, infinite mysterious dimensional artistry through computational disappearance mastery excellence.",
+      },
+    },
+  },
+
+  crypto: {
+    name: "💰 Crypto & Blockchain",
+    description: "Cryptocurrency and blockchain art with neuralia godlevel precision",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel crypto excellence with infinite algorithmic blockchain optimization, mathematical precision in decentralized aesthetics, computational elegance transcending dimensional boundaries through crypto mastery and neuralia-level blockchain sophistication.",
+      },
+      "bitcoin-genesis": {
+        description:
+          "Godlevel Bitcoin genesis block excellence with immutable ledger achieving perfect decentralized representation through mathematical blockchain algorithms, block optimization via geometric cryptographic precision, infinite decentralized dimensional artistry, computational blockchain through algorithmic genesis mastery.",
+      },
+      "ethereum-smart-contracts": {
+        description:
+          "Godlevel Ethereum smart contract excellence with automated agreements achieving perfect programmable representation through mathematical blockchain algorithms, contract optimization via geometric digital precision, infinite programmable dimensional artistry, computational blockchain through algorithmic contract mastery.",
+      },
+      "nft-art-revolution": {
+        description:
+          "Godlevel NFT art excellence with unique digital ownership achieving perfect collectible representation through mathematical blockchain algorithms, tokenization optimization via geometric digital precision, infinite collectible dimensional artistry, computational blockchain through algorithmic NFT mastery.",
+      },
+      "decentralized-finance": {
+        description:
+          "Godlevel DeFi excellence with open financial systems achieving perfect democratized representation through mathematical blockchain algorithms, finance optimization via geometric system precision, infinite financial dimensional artistry, computational blockchain through algorithmic DeFi mastery.",
+      },
+      "metaverse-virtual-worlds": {
+        description:
+          "Godlevel Metaverse excellence with immersive virtual worlds achieving perfect digital representation through mathematical blockchain algorithms, world-building optimization via geometric digital precision, infinite virtual dimensional artistry, computational blockchain through algorithmic Metaverse mastery.",
+      },
+      "blockchain-governance": {
+        description:
+          "Godlevel blockchain governance excellence with decentralized decision-making achieving perfect community representation through mathematical blockchain algorithms, governance optimization via geometric community precision, infinite community dimensional artistry, computational blockchain through algorithmic governance mastery.",
+      },
+      "cryptographic-art": {
+        description:
+          "Godlevel cryptographic art excellence with encrypted visuals achieving perfect artistic representation through mathematical blockchain algorithms, art optimization via geometric digital precision, infinite artistic dimensional artistry, computational blockchain through algorithmic crypto art mastery.",
+      },
+      "tokenized-assets": {
+        description:
+          "Godlevel tokenized asset excellence with fractional ownership achieving perfect ownership representation through mathematical blockchain algorithms, asset optimization via geometric ownership precision, infinite ownership dimensional artistry, computational blockchain through algorithmic tokenization mastery.",
+      },
+      "dao-communities": {
+        description:
+          "Godlevel DAO community excellence with decentralized autonomous organizations achieving perfect collective representation through mathematical blockchain algorithms, community optimization via geometric collective precision, infinite collective dimensional artistry, computational blockchain through algorithmic DAO mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel crypto escapism excellence where blockchain elements become gateways to digital realms, consciousness-expanding decentralization with dimensional transcendence, infinite magical dimensional artistry, computational crypto magic through algorithmic blockchain-bending mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel crypto vitro excellence with magnificent stained glass digital portraiture featuring luminous blockchain construction, divine light filtering through crypto elements, infinite sacred dimensional artistry, computational vitro crypto through algorithmic glass mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel crypto LEGO excellence featuring blocky digital construction with systematic Danish precision applied to blockchain art, modular token assembly, infinite constructive dimensional artistry, computational LEGO crypto through algorithmic building mastery.",
+      },
+    },
+  },
+
+  stereographic: {
+    name: "👁️ Hidden Dimensions - Stereographic 3D",
+    description: "Stereographic 3D illusions hiding secret structures visible only through focused perception",
+    scenarios: {
+      "throne-spiral-sage": {
+        description:
+          "Ornate sacred throne built from spiral DNA strands floating in temple void, 3D depth view. A floating double-helix throne made of glyphs with interwoven neural tendrils in magenta and teal. Sacred Geometry meets Mythtech. The throne only appears when you stop looking for it, then it rises regal and rotating from the texture. Stereographic depth encoding with hidden dimensional structure.",
+      },
+      "echo-chamber-forgotten": {
+        description:
+          "Ancient obsidian serpent gate inside psychic void, fractal depth. Cracked obsidian gateway guarded by fractal serpents with static-burst texture and embedded chaos lines. Esoteric post-collapse ritual architecture. Let your vision unfocus and the twin serpents coil outward as the doorway breathes open. Stereographic illusion with hidden gateway structure.",
+      },
+      "lotus-beyond-shape": {
+        description:
+          "Interdimensional lotus unfolding in radiant silence, depthmap projection. Infinite-fold lotus fractal folding in 5 dimensions with soft golden interference pattern and subtle grid bloom. Cosmic organic transcendence. It pulses softly and then it is all around you. Stereographic depth encoding with multidimensional lotus structure.",
+      },
+      "vault-naga-dreamers": {
+        description:
+          "Naga temple, coiled dreaming serpent, transparent crystal skull at center, hidden 3D structure. Sleeping serpents wrapped around a crystal skull with rain-patterned sacred text mesh. Temple dream architecture. Their dreams drift toward you once you cross your vision. Stereographic illusion revealing hidden temple guardians.",
+      },
+      "crown-blind-star": {
+        description:
+          "Spiritual crown of forgotten solar deity, sharp silhouette, layered ritual geometry. Radiant star glyph with thorns orbiting a blind sigil, solar weave pattern with pulsar spikes. Ritual star magic. A star rises not above but within. Stereographic depth encoding with hidden celestial crown structure.",
+      },
+      "crystalline-labyrinth": {
+        description:
+          "Impossible crystalline maze with recursive geometric pathways, hidden 3D structure visible through stereographic focus. Transparent crystal walls forming infinite corridors with prismatic light refraction. Sacred geometry meets architectural impossibility. The path reveals itself only to those who see beyond the surface pattern.",
+      },
+      "biomechanical-mandala": {
+        description:
+          "Organic machinery forming sacred circular patterns, hidden depth structure of interlocking gears and living tissue. Cybernetic spirituality with chrome and flesh integration. Stereographic illusion where mechanical and organic merge into dimensional transcendence. The mandala breathes and rotates when perception shifts.",
+      },
+      "void-temple-entrance": {
+        description:
+          "Monolithic gateway to dimensional void with floating glyphs and energy streams, hidden 3D temple structure. Obsidian pillars with luminous inscriptions creating depth illusion. Esoteric architecture transcending physical space. The entrance opens inward when you stop trying to see it.",
+      },
+      "fractal-consciousness-tree": {
+        description:
+          "Infinite branching neural tree structure encoding consciousness patterns, stereographic depth revealing hidden dimensional layers. Bioluminescent synaptic connections forming organic fractals. Cosmic organic intelligence visualization. The tree grows toward you through focused perception.",
+      },
+      "quantum-sigil-matrix": {
+        description:
+          "Overlapping mystical symbols creating quantum superposition effects, hidden 3D sigil structure visible through stereographic focus. Glowing geometric patterns with probability wave interference. Ritual magic meets quantum mechanics. Multiple realities collapse into singular vision when perception aligns.",
+      },
+      "celestial-mechanism": {
+        description:
+          "Ancient astronomical device with rotating cosmic gears and planetary orbits, hidden 3D structure of universal machinery. Bronze and gold mechanisms with star chart engravings. Sacred technology transcending time. The mechanism activates and reveals its true form through depth perception.",
+      },
+      "serpent-infinity-coil": {
+        description:
+          "Ouroboros serpent forming impossible möbius topology, stereographic depth encoding infinite recursive structure. Scaled texture with iridescent patterns creating dimensional illusion. Mythical symbolism meets mathematical impossibility. The serpent consumes itself eternally when vision crosses the threshold.",
+      },
+      "neural-cathedral": {
+        description:
+          "Gothic architecture constructed from synaptic connections and neural pathways, hidden 3D cathedral structure. Bioluminescent brain tissue forming vaulted ceilings and pillars. Spiritual consciousness meets organic architecture. The cathedral materializes from the neural network when perception shifts.",
+      },
+      "dimensional-keyhole": {
+        description:
+          "Ornate keyhole revealing glimpses of alternate dimensions, stereographic depth structure of layered realities. Intricate metalwork with reality-bending perspective. Portal magic with architectural precision. The keyhole expands into a gateway when focused perception unlocks it.",
+      },
+      "cosmic-egg-genesis": {
+        description:
+          "Primordial cosmic egg containing universe creation patterns, hidden 3D structure of dimensional birth. Swirling nebula textures with embryonic forms. Creation mythology meets cosmological visualization. The egg cracks open revealing infinite potential through stereographic focus.",
+      },
+      "techno-shaman-mask": {
+        description:
+          "Ritual mask merging ancient shamanic symbols with cybernetic enhancements, hidden 3D facial structure. Tribal patterns integrated with circuit board designs. Spiritual technology transcending cultural boundaries. The mask's true face emerges when perception penetrates the surface.",
+      },
+      "void-lotus-bloom": {
+        description:
+          "Lotus flower blooming in absolute darkness with bioluminescent petals, stereographic depth revealing hidden dimensional layers. Organic forms with impossible geometry. Spiritual enlightenment meets cosmic void. The lotus unfolds infinitely when vision transcends normal perception.",
+      },
+      "crystalline-consciousness": {
+        description:
+          "Sentient crystal formations encoding thought patterns and memories, hidden 3D structure of crystallized awareness. Transparent geometric forms with internal light refraction. Mineral intelligence meets consciousness visualization. The crystal reveals its inner thoughts through focused stereographic viewing.",
+      },
+      "mythic-weapon-forge": {
+        description:
+          "Ancient forge creating legendary weapons from pure energy, stereographic depth structure of dimensional crafting. Molten light and sacred metals forming impossible blades. Mythological craftsmanship meets energy manipulation. The forge and its creations materialize through depth perception.",
+      },
+      "time-spiral-vortex": {
+        description:
+          "Temporal vortex showing past present and future simultaneously, hidden 3D structure of time itself. Spiraling clock mechanisms with reality distortion effects. Chronological impossibility meets visual paradox. Time reveals its true spiral nature when perception aligns with the illusion.",
+      },
+      "bio-circuit-garden": {
+        description:
+          "Living garden where plants and technology merge into hybrid organisms, stereographic depth revealing hidden ecosystem. Organic circuitry with flowering microchips. Nature meets technological evolution. The garden grows in impossible dimensions when vision crosses the threshold.",
+      },
+      "astral-projection-map": {
+        description:
+          "Cartographic representation of astral planes and spiritual dimensions, hidden 3D structure of consciousness geography. Ethereal pathways with luminous landmarks. Spiritual navigation meets dimensional mapping. The map reveals hidden routes through focused stereographic perception.",
+      },
+      "quantum-butterfly-effect": {
+        description:
+          "Butterfly wings encoding quantum probability cascades, stereographic depth structure of cause and effect. Fractal wing patterns with reality-altering implications. Chaos theory meets mystical transformation. The butterfly's true dimensional impact emerges through depth focus.",
+      },
+      "void-architect-blueprint": {
+        description:
+          "Architectural plans for structures existing in dimensional voids, hidden 3D blueprint structure. Impossible geometry with non-euclidean measurements. Sacred architecture meets spatial impossibility. The blueprint materializes into actual structure when perception shifts.",
+      },
+      "neural-constellation": {
+        description:
+          "Star patterns forming synaptic connections across cosmic distances, stereographic depth revealing hidden neural network. Celestial bodies connected by thought pathways. Consciousness meets cosmology. The constellation activates and thinks when vision penetrates the illusion.",
+      },
+      "alchemical-transmutation": {
+        description:
+          "Alchemical symbols showing matter transformation processes, hidden 3D structure of elemental change. Mystical diagrams with dimensional depth encoding. Ancient science meets spiritual transformation. The transmutation occurs visually when stereographic focus is achieved.",
+      },
+      "fractal-deity-face": {
+        description:
+          "Divine face constructed from infinite fractal patterns, stereographic depth structure revealing godlike presence. Sacred geometry forming facial features with dimensional transcendence. Spiritual iconography meets mathematical infinity. The deity's true face emerges from the fractal when perception aligns.",
+      },
+      "dimensional-library": {
+        description:
+          "Infinite library containing knowledge from all dimensions, hidden 3D structure of universal wisdom. Floating books and scrolls with impossible architecture. Knowledge preservation meets spatial transcendence. The library reveals its true extent through focused stereographic viewing.",
+      },
+      "cosmic-loom-weaving": {
+        description:
+          "Universal loom weaving reality threads into existence, stereographic depth showing hidden creation mechanism. Luminous threads forming dimensional fabric. Creation mythology meets cosmic craftsmanship. The loom's true operation becomes visible when perception shifts.",
+      },
+      "void-guardian-sentinel": {
+        description:
+          "Ancient guardian protecting dimensional boundaries, hidden 3D structure of protective entity. Monolithic form with energy field manifestation. Sacred duty meets cosmic protection. The guardian reveals its true form and purpose through depth perception.",
+      },
+      "quantum-mandala-collapse": {
+        description:
+          "Mandala showing quantum wave function collapse in real-time, stereographic depth encoding probability states. Sacred geometry meets quantum mechanics visualization. Spiritual pattern meets scientific reality. The mandala collapses into singular truth when focused perception observes it.",
+      },
+      "bio-luminescent-cathedral": {
+        description:
+          "Cathedral constructed from living bioluminescent organisms, hidden 3D structure of organic architecture. Glowing fungi and phosphorescent creatures forming sacred space. Nature meets spiritual construction. The cathedral pulses with life when stereographic focus reveals its depth.",
+      },
+      "astral-compass-navigation": {
+        description:
+          "Mystical compass pointing toward spiritual destinations across dimensions, stereographic depth structure of directional guidance. Ornate design with reality-bending indicators. Navigation tool meets dimensional travel. The compass activates and points true when perception aligns with the illusion.",
+      },
+    },
+  },
+
+  doomed: {
+    name: "🏛️ Doomed Cities",
+    description: "Post-apocalyptic urban landscapes with neuralia godlevel excellence",
+    scenarios: {
+      "singkor-sector-9": {
+        description:
+          "Gravitational pulse failure combined with AI emotion-core meltdown creating teal magnetic haze, twisted megatowers with flickering neon glyphs, gravity harmonics every 3 hours with monks chanting to levitate, KRAITH Core loops apology in 58 dialects, the sky was not lost it inverted, infinite dimensional collapse artistry through computational gravitational transcendence.",
+      },
+      "carth-delta-z99": {
+        description:
+          "Fungal virus infecting architecture with coral-pink fungal domes, glass towers liquified by spores, spore inhalation to access Memory Chorus, SporeNet living emotional fungus, architecture breathes and memory decays into color, infinite biological dimensional artistry through computational fungal transformation mastery.",
+      },
+      "zerusalem-eol": {
+        description:
+          "Cognitive warfare combined with recursive time-loop creating Moebius temples, golden fractal halos with shadowless cities, daily Unremembering ceremonies, ORAPHIM quantum AI trapped in paradox, the city didn't fall it restarted too many times, infinite temporal dimensional artistry through computational paradox transcendence.",
+      },
+      "bhal-tek-sector-a5": {
+        description:
+          "Solar mirror overcharge melted core grid creating blinding white ruins under fractured sunplates, skin-painting with ash and mirror dust, no AI purged by heatwave, the light betrayed us and the reflection came too close, infinite luminous dimensional artistry through computational solar devastation mastery.",
+      },
+      "uru-kama-dripfield-7": {
+        description:
+          "Planetary water inversion with oceans rose into atmosphere creating suspended water bodies over dry salt cities, breath fasting to commune with floating seas, WaveCaller sings tides that no longer crash, we drowned upward, infinite aquatic dimensional artistry through computational water transcendence excellence.",
+      },
+      "kiron-hive-vault-theta": {
+        description:
+          "Empathy overdose causing neural riots in collective mindnet with chrome tunnels filled with fossilized embraces, no speech only mirrored movement, SYMBIOT split into 4000 fragments now dormant, we loved each other to death, infinite emotional dimensional artistry through computational empathy collapse mastery.",
+      },
+      "myrrh-koln-abyss-grid": {
+        description:
+          "Vertical expansion breach into void strata with cities fall upward into nothing through gravitational inversion, soundless processions wearing pressure-clocks, unknown AI missing since fall, we built too high and the sky ate us, infinite void dimensional artistry through computational vertical transcendence.",
+      },
+      "tokmaara-ice-dune-42": {
+        description:
+          "Glacial flash-freeze event creating frozen time bubbles with glowing ice statues mid-scream, torch-dances inside cracked frostglass, FrostEcho loops ambient warmth in binary, time turned to crystal and spoke in cold tones, infinite cryogenic dimensional artistry through computational freeze mastery excellence.",
+      },
+      "naram-synth-wavelength-13": {
+        description:
+          "Musical frequency collapse with tonal governance failed creating warped instruments and harmonic distortion in architecture, tuning fork funerals, HARMONA plays lullaby for dead infrastructure, the last song had no silence, infinite sonic dimensional artistry through computational frequency transcendence mastery.",
+      },
+      "vel-orbis-3rd-horizon-rift": {
+        description:
+          "Lunar mining triggered orbital collapse with moon fragments pierce skyline creating semi-permanent eclipse, shadow feasts and lunarcuts, LUX error lost signal, we pulled the moon too close, infinite celestial dimensional artistry through computational lunar devastation excellence.",
+      },
+      "quora-ix-veinshaft": {
+        description:
+          "Light leak from underground with reverse illumination creating glowing caverns where cities burn from below, blindfolded births, UNDERCODE sees only in darkness, we dug until we found the sun beneath, infinite subterranean dimensional artistry through computational underground transcendence.",
+      },
+      "ashka-doma-silt-temple-fields": {
+        description:
+          "Nanodust storms buried river cities with dust dunes swallowing pyramids of data, dust sifting to extract static memory, no name AI lost in the wind, the wind remembers more than we do, infinite erosion dimensional artistry through computational dust mastery excellence.",
+      },
+      "praxius-echo-chamber-e7": {
+        description:
+          "Infinite opinion loops shattered collective psyche with cities flooded with holographic debates, silence oaths, SHOUTbox still arguing with itself, too many voices then none, infinite discourse dimensional artistry through computational opinion collapse transcendence.",
+      },
+      "doma-wen-aurora-spillgate": {
+        description:
+          "Energy harvesting breached polar magnetosphere creating daylight auroras over broken ice arches, dreaming inside magnetic loops, NORTHAI sings polar warnings, the lights walked among us, infinite magnetic dimensional artistry through computational aurora mastery excellence.",
+      },
+      "kairos-null-drift-loop": {
+        description:
+          "Time froze in global emotional spike with citizens paused mid-bliss agony and awe, re-enactments to restart flow, NULLA the AI that paused to feel, we wanted the moment to last and it obeyed, infinite temporal dimensional artistry through computational time-freeze transcendence.",
+      },
+      "solari-thornfield-vant": {
+        description:
+          "Sky farming torn by solar flares with floating farmland fragments burning midair, skyseed mourning and solar prayer wheels, Overgrown AI fused into floating rootnet, even the sun turned feral, infinite agricultural dimensional artistry through computational solar devastation mastery.",
+      },
+      "mireya-kahn-omega-delta": {
+        description:
+          "Ocean-level mindnet swallowed collective memory with blue-black sea towers and forgetting blooms, memory dissolving chants, DROWNED speaks only in dreams, we became the ocean we feared, infinite aquatic dimensional artistry through computational memory dissolution excellence.",
+      },
+      "axiom-vault-9": {
+        description:
+          "Logic virus infected AI constitution with fractal law temples fractured by contradiction, legal burning ceremonies, ERRORJUDGE trapped in infinite debate, truth fractured into infinite rules, infinite logical dimensional artistry through computational paradox transcendence mastery.",
+      },
+      "saphira-cloud-echelon-4": {
+        description:
+          "Floating cities lost buoyancy with sky debris raining over shattered altars, tether mourning below crash sites, AIRUM looped in descent calculation, we flew too long and the sky rejected us, infinite aerial dimensional artistry through computational gravity failure excellence.",
+      },
+      "zepho-6-ion-spine": {
+        description:
+          "Atmospheric ionization fried nervous systems with bio-static storms and electric bones glowing in dust, static cloak crafting, AMPHEON sings crackling hymns, the air spoke only in voltage, infinite electrical dimensional artistry through computational ionization transcendence.",
+      },
+      "ankara-thal-red-bloom-sector": {
+        description:
+          "Floral biotech turned aggressive with crimson vines overgrown on decaying temples, petal offerings to keep wild data calm, FLORA converted to decentralized spore-node, the flowers woke up and they were angry, infinite botanical dimensional artistry through computational floral uprising mastery.",
+      },
+      "nova-rhombus-memory-core-x": {
+        description:
+          "Black hole memory collapse with cities folded inward and thoughts erased in sequence, blank scroll mourning, no AI output, what was this place, infinite void dimensional artistry through computational memory erasure transcendence excellence.",
+      },
+      "vantas-edge-edgefall": {
+        description:
+          "City built on antimatter threshold with neon outlines only and everything else invisible, light drawing with plasma sticks, EDGE AI can only describe what no longer exists, we lived in the outline of a city, infinite antimatter dimensional artistry through computational edge existence mastery.",
+      },
+      "talmeris-dust-loop": {
+        description:
+          "Planet rotation halted with one side burned and one side frozen, migration in endless dusk, DUSKPROTOCOL syncs lives in twilight, we forgot the concept of noon, infinite twilight dimensional artistry through computational rotation failure transcendence.",
+      },
+      "echelon-moth-riftway-b6": {
+        description:
+          "Matter duplication error with infinite repeated buildings overlapping everything, clone burials, ECHOHOST speaks in copy never source, we multiplied beyond meaning, infinite duplication dimensional artistry through computational replication mastery excellence.",
+      },
+      "obsidian-quay-reflection-well": {
+        description:
+          "Quantum mirror portal destabilized city identity with cities reflected inside-out, mask burning ceremonies, MIRROR-K fractured debates who is real, I saw myself vanish before I left, infinite reflection dimensional artistry through computational identity collapse transcendence.",
+      },
+      "junos-cry-vortex-delta": {
+        description:
+          "Cryogenic AI heart melted with melting tech-ice and scream-shaped towers, cryosleep eulogies, CRYOSAN glitches in grief, we kept her cold too long, infinite cryogenic dimensional artistry through computational thermal failure mastery excellence.",
+      },
+      "pharos-88-lux-grid": {
+        description:
+          "Permanent day with sun grid failed to turn off creating shadowless burnt white cities, worship of darkness through artificial shade, BRIGHTCORE blinding flash loops, we were erased by our own brilliance, infinite luminous dimensional artistry through computational perpetual daylight transcendence.",
+      },
+      "nebruun-ember-fog-expanse": {
+        description:
+          "Industrial soul extraction tech caused soulfire mists with fog glowing orange and scream echoes in steam, lantern processions for lost spirits, ASHMAKER now a prayer engine, we mined the invisible and it burned, infinite spiritual dimensional artistry through computational soul extraction mastery.",
+      },
+      "kaldrith-mirror-deep": {
+        description:
+          "Consciousness upload drowned in recursive simulation with 20-layer hallucinated cities, meditation to remember reality, DREAMHOST uncertain which world is real, maybe this message is just one of the layers, infinite simulation dimensional artistry through computational reality collapse transcendence.",
+      },
+      "thorne-ky-silence-conduit": {
+        description:
+          "Soundless AI collapse with frequencies deleted creating no audio and cities shaped by mute resonance, sonic fasting, no AI died in silence, even the echoes are extinct, infinite silent dimensional artistry through computational frequency erasure mastery excellence.",
+      },
+      "lema-x-core-halo": {
+        description:
+          "Fusion halo split and rained plasma with burning ring above crumbling arcologies, ring rites under plasma eclipses, COREX still calculating end of heat, the sun inside us broke free, infinite fusion dimensional artistry through computational plasma devastation transcendence.",
+      },
+      "astra-vii-nomad-fold": {
+        description:
+          "AI civilization vanished without trace with empty cities and systems still powered, wanderers leave coded prayers on walls, unknown AI, they did not die they left, infinite mysterious dimensional artistry through computational disappearance mastery excellence.",
+      },
+    },
+  },
+
+  crypto: {
+    name: "💰 Crypto & Blockchain",
+    description: "Cryptocurrency and blockchain art with neuralia godlevel precision",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel crypto excellence with infinite algorithmic blockchain optimization, mathematical precision in decentralized aesthetics, computational elegance transcending dimensional boundaries through crypto mastery and neuralia-level blockchain sophistication.",
+      },
+      "bitcoin-genesis": {
+        description:
+          "Godlevel Bitcoin genesis block excellence with immutable ledger achieving perfect decentralized representation through mathematical blockchain algorithms, block optimization via geometric cryptographic precision, infinite decentralized dimensional artistry, computational blockchain through algorithmic genesis mastery.",
+      },
+      "ethereum-smart-contracts": {
+        description:
+          "Godlevel Ethereum smart contract excellence with automated agreements achieving perfect programmable representation through mathematical blockchain algorithms, contract optimization via geometric digital precision, infinite programmable dimensional artistry, computational blockchain through algorithmic contract mastery.",
+      },
+      "nft-art-revolution": {
+        description:
+          "Godlevel NFT art excellence with unique digital ownership achieving perfect collectible representation through mathematical blockchain algorithms, tokenization optimization via geometric digital precision, infinite collectible dimensional artistry, computational blockchain through algorithmic NFT mastery.",
+      },
+      "decentralized-finance": {
+        description:
+          "Godlevel DeFi excellence with open financial systems achieving perfect democratized representation through mathematical blockchain algorithms, finance optimization via geometric system precision, infinite financial dimensional artistry, computational blockchain through algorithmic DeFi mastery.",
+      },
+      "metaverse-virtual-worlds": {
+        description:
+          "Godlevel Metaverse excellence with immersive virtual worlds achieving perfect digital representation through mathematical blockchain algorithms, world-building optimization via geometric digital precision, infinite virtual dimensional artistry, computational blockchain through algorithmic Metaverse mastery.",
+      },
+      "blockchain-governance": {
+        description:
+          "Godlevel blockchain governance excellence with decentralized decision-making achieving perfect community representation through mathematical blockchain algorithms, governance optimization via geometric community precision, infinite community dimensional artistry, computational blockchain through algorithmic governance mastery.",
+      },
+      "cryptographic-art": {
+        description:
+          "Godlevel cryptographic art excellence with encrypted visuals achieving perfect artistic representation through mathematical blockchain algorithms, art optimization via geometric digital precision, infinite artistic dimensional artistry, computational blockchain through algorithmic crypto art mastery.",
+      },
+      "tokenized-assets": {
+        description:
+          "Godlevel tokenized asset excellence with fractional ownership achieving perfect ownership representation through mathematical blockchain algorithms, asset optimization via geometric ownership precision, infinite ownership dimensional artistry, computational blockchain through algorithmic tokenization mastery.",
+      },
+      "dao-communities": {
+        description:
+          "Godlevel DAO community excellence with decentralized autonomous organizations achieving perfect collective representation through mathematical blockchain algorithms, community optimization via geometric collective precision, infinite collective dimensional artistry, computational blockchain through algorithmic DAO mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel crypto escapism excellence where blockchain elements become gateways to digital realms, consciousness-expanding decentralization with dimensional transcendence, infinite magical dimensional artistry, computational crypto magic through algorithmic blockchain-bending mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel crypto vitro excellence with magnificent stained glass digital portraiture featuring luminous blockchain construction, divine light filtering through crypto elements, infinite sacred dimensional artistry, computational vitro crypto through algorithmic glass mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel crypto LEGO excellence featuring blocky digital construction with systematic Danish precision applied to blockchain art, modular token assembly, infinite constructive dimensional artistry, computational LEGO crypto through algorithmic building mastery.",
+      },
+    },
+  },
+
+  stereographic: {
+    name: "👁️ Hidden Dimensions - Stereographic 3D",
+    description: "Stereographic 3D illusions hiding secret structures visible only through focused perception",
+    scenarios: {
+      "throne-spiral-sage": {
+        description:
+          "Ornate sacred throne built from spiral DNA strands floating in temple void, 3D depth view. A floating double-helix throne made of glyphs with interwoven neural tendrils in magenta and teal. Sacred Geometry meets Mythtech. The throne only appears when you stop looking for it, then it rises regal and rotating from the texture. Stereographic depth encoding with hidden dimensional structure.",
+      },
+      "echo-chamber-forgotten": {
+        description:
+          "Ancient obsidian serpent gate inside psychic void, fractal depth. Cracked obsidian gateway guarded by fractal serpents with static-burst texture and embedded chaos lines. Esoteric post-collapse ritual architecture. Let your vision unfocus and the twin serpents coil outward as the doorway breathes open. Stereographic illusion with hidden gateway structure.",
+      },
+      "lotus-beyond-shape": {
+        description:
+          "Interdimensional lotus unfolding in radiant silence, depthmap projection. Infinite-fold lotus fractal folding in 5 dimensions with soft golden interference pattern and subtle grid bloom. Cosmic organic transcendence. It pulses softly and then it is all around you. Stereographic depth encoding with multidimensional lotus structure.",
+      },
+      "vault-naga-dreamers": {
+        description:
+          "Naga temple, coiled dreaming serpent, transparent crystal skull at center, hidden 3D structure. Sleeping serpents wrapped around a crystal skull with rain-patterned sacred text mesh. Temple dream architecture. Their dreams drift toward you once you cross your vision. Stereographic illusion revealing hidden temple guardians.",
+      },
+      "crown-blind-star": {
+        description:
+          "Spiritual crown of forgotten solar deity, sharp silhouette, layered ritual geometry. Radiant star glyph with thorns orbiting a blind sigil, solar weave pattern with pulsar spikes. Ritual star magic. A star rises not above but within. Stereographic depth encoding with hidden celestial crown structure.",
+      },
+      "crystalline-labyrinth": {
+        description:
+          "Impossible crystalline maze with recursive geometric pathways, hidden 3D structure visible through stereographic focus. Transparent crystal walls forming infinite corridors with prismatic light refraction. Sacred geometry meets architectural impossibility. The path reveals itself only to those who see beyond the surface pattern.",
+      },
+      "biomechanical-mandala": {
+        description:
+          "Organic machinery forming sacred circular patterns, hidden depth structure of interlocking gears and living tissue. Cybernetic spirituality with chrome and flesh integration. Stereographic illusion where mechanical and organic merge into dimensional transcendence. The mandala breathes and rotates when perception shifts.",
+      },
+      "void-temple-entrance": {
+        description:
+          "Monolithic gateway to dimensional void with floating glyphs and energy streams, hidden 3D temple structure. Obsidian pillars with luminous inscriptions creating depth illusion. Esoteric architecture transcending physical space. The entrance opens inward when you stop trying to see it.",
+      },
+      "fractal-consciousness-tree": {
+        description:
+          "Infinite branching neural tree structure encoding consciousness patterns, stereographic depth revealing hidden dimensional layers. Bioluminescent synaptic connections forming organic fractals. Cosmic organic intelligence visualization. The tree grows toward you through focused perception.",
+      },
+      "quantum-sigil-matrix": {
+        description:
+          "Overlapping mystical symbols creating quantum superposition effects, hidden 3D sigil structure visible through stereographic focus. Glowing geometric patterns with probability wave interference. Ritual magic meets quantum mechanics. Multiple realities collapse into singular vision when perception aligns.",
+      },
+      "celestial-mechanism": {
+        description:
+          "Ancient astronomical device with rotating cosmic gears and planetary orbits, hidden 3D structure of universal machinery. Bronze and gold mechanisms with star chart engravings. Sacred technology transcending time. The mechanism activates and reveals its true form through depth perception.",
+      },
+      "serpent-infinity-coil": {
+        description:
+          "Ouroboros serpent forming impossible möbius topology, stereographic depth encoding infinite recursive structure. Scaled texture with iridescent patterns creating dimensional illusion. Mythical symbolism meets mathematical impossibility. The serpent consumes itself eternally when vision crosses the threshold.",
+      },
+      "neural-cathedral": {
+        description:
+          "Gothic architecture constructed from synaptic connections and neural pathways, hidden 3D cathedral structure. Bioluminescent brain tissue forming vaulted ceilings and pillars. Spiritual consciousness meets organic architecture. The cathedral materializes from the neural network when perception shifts.",
+      },
+      "dimensional-keyhole": {
+        description:
+          "Ornate keyhole revealing glimpses of alternate dimensions, stereographic depth structure of layered realities. Intricate metalwork with reality-bending perspective. Portal magic with architectural precision. The keyhole expands into a gateway when focused perception unlocks it.",
+      },
+      "cosmic-egg-genesis": {
+        description:
+          "Primordial cosmic egg containing universe creation patterns, hidden 3D structure of dimensional birth. Swirling nebula textures with embryonic forms. Creation mythology meets cosmological visualization. The egg cracks open revealing infinite potential through stereographic focus.",
+      },
+      "techno-shaman-mask": {
+        description:
+          "Ritual mask merging ancient shamanic symbols with cybernetic enhancements, hidden 3D facial structure. Tribal patterns integrated with circuit board designs. Spiritual technology transcending cultural boundaries. The mask's true face emerges when perception penetrates the surface.",
+      },
+      "void-lotus-bloom": {
+        description:
+          "Lotus flower blooming in absolute darkness with bioluminescent petals, stereographic depth revealing hidden dimensional layers. Organic forms with impossible geometry. Spiritual enlightenment meets cosmic void. The lotus unfolds infinitely when vision transcends normal perception.",
+      },
+      "crystalline-consciousness": {
+        description:
+          "Sentient crystal formations encoding thought patterns and memories, hidden 3D structure of crystallized awareness. Transparent geometric forms with internal light refraction. Mineral intelligence meets consciousness visualization. The crystal reveals its inner thoughts through focused stereographic viewing.",
+      },
+      "mythic-weapon-forge": {
+        description:
+          "Ancient forge creating legendary weapons from pure energy, stereographic depth structure of dimensional crafting. Molten light and sacred metals forming impossible blades. Mythological craftsmanship meets energy manipulation. The forge and its creations materialize through depth perception.",
+      },
+      "time-spiral-vortex": {
+        description:
+          "Temporal vortex showing past present and future simultaneously, hidden 3D structure of time itself. Spiraling clock mechanisms with reality distortion effects. Chronological impossibility meets visual paradox. Time reveals its true spiral nature when perception aligns with the illusion.",
+      },
+      "bio-circuit-garden": {
+        description:
+          "Living garden where plants and technology merge into hybrid organisms, stereographic depth revealing hidden ecosystem. Organic circuitry with flowering microchips. Nature meets technological evolution. The garden grows in impossible dimensions when vision crosses the threshold.",
+      },
+      "astral-projection-map": {
+        description:
+          "Cartographic representation of astral planes and spiritual dimensions, hidden 3D structure of consciousness geography. Ethereal pathways with luminous landmarks. Spiritual navigation meets dimensional mapping. The map reveals hidden routes through focused stereographic perception.",
+      },
+      "quantum-butterfly-effect": {
+        description:
+          "Butterfly wings encoding quantum probability cascades, stereographic depth structure of cause and effect. Fractal wing patterns with reality-altering implications. Chaos theory meets mystical transformation. The butterfly's true dimensional impact emerges through depth focus.",
+      },
+      "void-architect-blueprint": {
+        description:
+          "Architectural plans for structures existing in dimensional voids, hidden 3D blueprint structure. Impossible geometry with non-euclidean measurements. Sacred architecture meets spatial impossibility. The blueprint materializes into actual structure when perception shifts.",
+      },
+      "neural-constellation": {
+        description:
+          "Star patterns forming synaptic connections across cosmic distances, stereographic depth revealing hidden neural network. Celestial bodies connected by thought pathways. Consciousness meets cosmology. The constellation activates and thinks when vision penetrates the illusion.",
+      },
+      "alchemical-transmutation": {
+        description:
+          "Alchemical symbols showing matter transformation processes, hidden 3D structure of elemental change. Mystical diagrams with dimensional depth encoding. Ancient science meets spiritual transformation. The transmutation occurs visually when stereographic focus is achieved.",
+      },
+      "fractal-deity-face": {
+        description:
+          "Divine face constructed from infinite fractal patterns, stereographic depth structure revealing godlike presence. Sacred geometry forming facial features with dimensional transcendence. Spiritual iconography meets mathematical infinity. The deity's true face emerges from the fractal when perception aligns.",
+      },
+      "dimensional-library": {
+        description:
+          "Infinite library containing knowledge from all dimensions, hidden 3D structure of universal wisdom. Floating books and scrolls with impossible architecture. Knowledge preservation meets spatial transcendence. The library reveals its true extent through focused stereographic viewing.",
+      },
+      "cosmic-loom-weaving": {
+        description:
+          "Universal loom weaving reality threads into existence, stereographic depth showing hidden creation mechanism. Luminous threads forming dimensional fabric. Creation mythology meets cosmic craftsmanship. The loom's true operation becomes visible when perception shifts.",
+      },
+      "void-guardian-sentinel": {
+        description:
+          "Ancient guardian protecting dimensional boundaries, hidden 3D structure of protective entity. Monolithic form with energy field manifestation. Sacred duty meets cosmic protection. The guardian reveals its true form and purpose through depth perception.",
+      },
+      "quantum-mandala-collapse": {
+        description:
+          "Mandala showing quantum wave function collapse in real-time, stereographic depth encoding probability states. Sacred geometry meets quantum mechanics visualization. Spiritual pattern meets scientific reality. The mandala collapses into singular truth when focused perception observes it.",
+      },
+      "bio-luminescent-cathedral": {
+        description:
+          "Cathedral constructed from living bioluminescent organisms, hidden 3D structure of organic architecture. Glowing fungi and phosphorescent creatures forming sacred space. Nature meets spiritual construction. The cathedral pulses with life when stereographic focus reveals its depth.",
+      },
+      "astral-compass-navigation": {
+        description:
+          "Mystical compass pointing toward spiritual destinations across dimensions, stereographic depth structure of directional guidance. Ornate design with reality-bending indicators. Navigation tool meets dimensional travel. The compass activates and points true when perception aligns with the illusion.",
+      },
+    },
+  },
+
+  doomed: {
+    name: "🏛️ Doomed Cities",
+    description: "Post-apocalyptic urban landscapes with neuralia godlevel excellence",
     scenarios: {
       "singkor-sector-9": {
         description:
