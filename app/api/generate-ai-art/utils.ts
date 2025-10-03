@@ -212,7 +212,7 @@ function sanitizePromptForSafety(prompt: string): string {
   ]
 
   const noTextPrefix =
-    "CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography visible in the image. Pure visual art only. "
+    "CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only. "
 
   // Always add an ultra-safe prefix with NO TEXT instruction
   const randomPrefix = ultraSafeArtisticPrefixes[Math.floor(Math.random() * ultraSafeArtisticPrefixes.length)]
@@ -330,7 +330,7 @@ export async function generateWithOpenAI(
 
     if (panoramaFormat === "equirectangular") {
       console.log("[v0] Applying enhanced DALL-E letterboxing for true 2:1 ratio workaround")
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible anywhere in the image. Pure visual art only.
+      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible anywhere in the image. Pure visual art only.
 
 PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA WITH ENHANCED LETTERBOXING - DALL-E TRUE 2:1 RATIO WORKAROUND: ${safePrompt}
 
@@ -352,7 +352,7 @@ COMPOSITION STRUCTURE WITH MATHEMATICAL PRECISION:
 • BOTTOM: Solid black frame/border (exactly 64px height for perfect ratio)
 • Total dimensions: 1792x1024 with mathematically precise 2:1 panoramic extraction area
 
-TECHNICAL EXCELLENCE: 1792x1024 with enhanced black letterboxing, mathematically precise 2:1 equirectangular center band, professional seamless horizontal wrapping in center area, VR-optimized when cropped, broadcast standard, godlevel artistic mastery with perfect edge continuity and polar distortion handling in panoramic band. NO text, numbers, or letters visible anywhere.`
+TECHNICAL EXCELLENCE: 1792x1024 with enhanced black letterboxing, mathematically precise 2:1 equirectangular center band, professional seamless horizontal wrapping in center area, VR-optimized when cropped, broadcast standard, godlevel artistic mastery with perfect edge continuity and polar distortion handling in panoramic band. NO text, numbers, or letters visible.`
       console.log(
         "[v0] Enhanced DALL-E letterboxing prompt applied with NO TEXT instruction, length:",
         enhancedPrompt.length,
@@ -360,7 +360,7 @@ TECHNICAL EXCELLENCE: 1792x1024 with enhanced black letterboxing, mathematically
     } else if (panoramaFormat === "stereographic") {
       const stereographicPerspective = params?.stereographicPerspective || "wide-angle"
 
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
+      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
 
 PROFESSIONAL STEREOGRAPHIC 360° PANORAMA - 1792x1024 FORMAT: ${safePrompt}
 
@@ -385,22 +385,23 @@ TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, profes
     console.log("[v0] Dome resolution:", params?.domeResolution || "4K")
 
     if (projectionType === "fisheye") {
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
+      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible anywhere in the image. Pure visual art only.
 
-ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
+Generate an ultra-wide-angle 180-degree hemispherical fisheye panorama. The camera is oriented straight up along the z-axis (zenith view), resulting in extreme barrel distortion. The sky must be positioned at the absolute, mathematically precise center of the image, surrounded by curved environmental elements, which can be natural or man-made structures. Establish perfect radial geometry extending from the center outward to the edges. The image must explicitly show the horizon completely absent, replaced by the circular frame of the immediate surroundings. The surrounding elements (e.g., buildings, columns, bridges, or trees/foliage) must curve dramatically inward toward the frame edges.
+
+ARTISTIC CONTENT: ${safePrompt}
 
 FISHEYE DOME ARTISTIC MASTERY:
-• 180-degree hemispherical panorama captured with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis
+• 180-degree hemispherical panorama with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis (zenith view)
 • Extreme barrel distortion where horizon completely disappears, replaced by circular frame of immediate surroundings
-• Sky positioned at absolute center with mathematical precision, surrounded by curved environmental elements
-• Perfect radial symmetry from center outward with professional dome mapping accuracy
-• NO architectural structures, NO stadium seating, NO dome interiors - only natural outdoor fisheye perspective
-• Natural environment curves dramatically inward toward frame edges creating circular boundary effect
+• Sky positioned at absolute, mathematically precise center, surrounded by curved environmental elements (natural or man-made)
+• Perfect radial geometry extending from center outward to edges with professional dome mapping accuracy
+• Surrounding elements (buildings, columns, bridges, trees/foliage) curve dramatically inward toward frame edges
 • Optimized for premium planetarium dome projection with immersive 180° viewing experience
 • Museum-quality fisheye lens effect with award-winning technical precision
-• ABSOLUTELY NO text, numbers, letters, words, messages, labels, or typography anywhere in the image
+• ABSOLUTELY NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts anywhere in the image
 
-ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization. NO text or numbers visible.`
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, zenith-centered sky, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization. NO text, NO numbers, NO letters, NO fonts, NO typography visible anywhere.`
 
       console.log("[v0] ===== FULL DOME PROMPT =====")
       console.log(enhancedPrompt)
@@ -419,53 +420,11 @@ ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barr
         "[v0] Dome prompt includes 'zenith':",
         enhancedPrompt.includes("zenith") || enhancedPrompt.includes("center"),
       )
-    } else if (projectionType === "tunnel-up") {
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
-
-ULTIMATE ARTISTIC DOME HEMISPHERICAL PROJECTION: ${safePrompt}
-
-HEMISPHERICAL DOME ARTISTIC MASTERY:
-• 180-degree hemispherical panorama with ultra-wide fisheye lens perspective, camera pointing straight up on z-axis
-• Extreme barrel distortion creating circular frame of natural surroundings with sky at center
-• NO architectural elements, NO stadium features, NO dome structures - pure outdoor fisheye perspective
-• Perfect hemispherical mapping with mathematical precision for dome ceiling projection
-• Zenith positioned at exact center with radial symmetry extending to circular edges
-• Professional fisheye distortion with award-winning dome projection accuracy
-• ABSOLUTELY NO text, numbers, letters, words, messages, labels, or typography in the image
-
-ARTISTIC EXCELLENCE: Perfect hemispherical perspective, extreme barrel distortion, circular environmental frame, natural outdoor elements only, professional dome optimization, museum exhibition quality, godlevel fisheye mastery, cultural heritage art. NO text or numbers visible.`
-    } else if (projectionType === "tunnel-down") {
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
-
-ULTIMATE ARTISTIC DOME FISHEYE PROJECTION: ${safePrompt}
-
-FISHEYE DOME ARTISTIC MASTERY:
-• 180-degree hemispherical panorama with ultra-wide fisheye lens, camera oriented straight up
-• Extreme barrel distortion with natural surroundings forming circular frame around central sky
-• NO architectural structures, NO tunnels, NO stadium elements - pure natural fisheye perspective
-• Perfect radial symmetry with professional dome mapping accuracy
-• Optimized for premium planetarium dome projection with immersive viewing experience
-• ABSOLUTELY NO text, numbers, letters, words, messages, labels, or typography in the image
-
-ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, natural outdoor perspective, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage art. NO text or numbers visible.`
-    } else if (projectionType === "little-planet") {
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
-
-ULTIMATE ARTISTIC DOME LITTLE PLANET PROJECTION: ${safePrompt}
-
-LITTLE PLANET DOME ARTISTIC MASTERY:
-• Premium stereographic little planet effect with perfect spherical distortion for dome projection
-• Tiny planet perspective with beautifully curved horizon and artistic mastery optimized for planetarium viewing
-• Complete 360° world wrapped into flawless circular frame with mathematical precision for dome ceiling
-• Whimsical yet mathematically precise planetary view with award-winning execution for dome immersion
-• Optimized specifically for premium dome projection with perfect spherical mapping and planetarium compatibility
-• ABSOLUTELY NO text, numbers, letters, words, messages, labels, or typography anywhere in the image
-
-ARTISTIC EXCELLENCE: Perfect little planet effect for dome projection, precise spherical distortion, professional planetarium optimization, museum exhibition quality, godlevel planetary dome mastery, cultural heritage art. NO text or numbers visible.`
+      console.log("[v0] Dome prompt includes 'NO fonts':", enhancedPrompt.includes("NO fonts"))
     }
   } else {
     size = "1024x1024"
-    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
+    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
 
 ULTIMATE ARTISTIC STANDARD COMPOSITION: ${safePrompt}
 
@@ -892,7 +851,7 @@ export async function generateWithReplicate(
   if (type === "360") {
     const { buildGodlevelNeuralia360Wrapper } = await import("@/lib/ai-prompt")
 
-    const basePrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible anywhere in the image. Pure visual art only.
+    const basePrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible anywhere in the image. Pure visual art only.
 
 PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA - ENHANCED ORION360 CALIBRATION STANDARD: ${safePrompt}
 
@@ -920,24 +879,26 @@ TECHNICAL EXCELLENCE: ${aspectRatio === "2:1" ? "True 2:1" : `Optimized ${aspect
       `[v0] Applied enhanced godlevel neuralia 360° equirectangular wrapper for ${isNvidiaSana ? "NVIDIA SANA" : "FLUX"} with ${aspectRatio} ratio`,
     )
   } else if (type === "dome") {
-    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
+    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
 
-ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
+Generate an ultra-wide-angle 180-degree hemispherical fisheye panorama. The camera is oriented straight up along the z-axis (zenith view), resulting in extreme barrel distortion. The sky must be positioned at the absolute, mathematically precise center of the image, surrounded by curved environmental elements, which can be natural or man-made structures. Establish perfect radial geometry extending from the center outward to the edges. The image must explicitly show the horizon completely absent, replaced by the circular frame of the immediate surroundings. The surrounding elements (e.g., buildings, columns, bridges, or trees/foliage) must curve dramatically inward toward the frame edges.
+
+ARTISTIC CONTENT: ${safePrompt}
 
 FISHEYE DOME ARTISTIC MASTERY:
-• 180-degree hemispherical panorama captured with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis
+• 180-degree hemispherical panorama with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis (zenith view)
 • Extreme barrel distortion where horizon completely disappears, replaced by circular frame of immediate surroundings
-• Sky positioned at absolute center with mathematical precision, surrounded by curved environmental elements
-• Perfect radial symmetry from center outward with professional dome mapping accuracy
+• Sky positioned at absolute, mathematically precise center, surrounded by curved environmental elements (natural or man-made)
+• Perfect radial geometry extending from center outward to edges with professional dome mapping accuracy
 • NO architectural structures, NO stadium seating, NO dome interiors - only natural outdoor fisheye perspective
 • Natural environment curves dramatically inward toward frame edges creating circular boundary effect
 • Optimized for premium planetarium dome projection with immersive 180° viewing experience
 • Museum-quality fisheye lens effect with award-winning technical precision
-• ABSOLUTELY NO text, numbers, letters, words, messages, labels, or typography anywhere in the image
+• ABSOLUTELY NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts anywhere in the image
 
-ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization. NO text or numbers visible.`
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization. NO text, NO numbers, NO letters, NO fonts, NO typography visible anywhere.`
   } else {
-    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
+    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
 
 ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional resolution and detail optimized for premium quality output. ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, or typography in the image.`
   }
