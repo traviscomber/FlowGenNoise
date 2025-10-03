@@ -1160,6 +1160,78 @@ export const CULTURAL_DATASETS = {
     },
   },
 
+  "infrared-rituals": {
+    name: "🔥 Global Rituals in Infrared",
+    description:
+      "Ancient and contemporary rituals visualized through infrared thermal spectrum with neuralia godlevel precision",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel infrared ritual excellence with infinite algorithmic thermal-spectrum optimization, mathematical precision in heat-signature aesthetics, computational elegance transcending dimensional boundaries through infrared mastery and neuralia-level thermal sophistication.",
+      },
+      "balinese-trance": {
+        description:
+          "Godlevel Balinese trance ceremony excellence with infrared thermal visualization of spiritual possession, glowing red heat signatures of dancers in ecstatic states, electric violet auras surrounding temple grounds, spectral green energy fields during gamelan crescendos, ghostly neon silhouettes of masked performers, thermal gradients revealing consciousness shifts, infinite spiritual dimensional artistry through neuralia-level infrared ritual mastery.",
+      },
+      "ethiopian-coffee": {
+        description:
+          "Godlevel Ethiopian coffee ceremony excellence with infrared thermal visualization of sacred hospitality ritual, glowing crimson heat from roasting beans, electric violet smoke patterns rising from traditional jebena pot, spectral green thermal signatures of communal gathering, ghostly neon silhouettes of ceremony participants, thermal gradients revealing cultural warmth, infinite cultural dimensional artistry through neuralia-level infrared ritual mastery.",
+      },
+      "siberian-shamanic": {
+        description:
+          "Godlevel Siberian shamanic dance excellence with infrared thermal visualization of ancient spiritual practice, glowing red heat signatures of rhythmic movement in arctic cold, electric violet energy fields during drum ceremonies, spectral green thermal patterns of trance states, ghostly neon silhouettes of shamanic figures, thermal gradients revealing spiritual transformation, infinite mystical dimensional artistry through neuralia-level infrared ritual mastery.",
+      },
+      "japanese-firewalk": {
+        description:
+          "Godlevel Japanese fire-walking ritual excellence with infrared thermal visualization of Shinto purification ceremony, intense glowing red heat from burning coals, electric violet thermal auras of participants crossing flames, spectral green energy signatures during prayers, ghostly neon silhouettes of monks and practitioners, thermal gradients revealing spiritual courage, infinite sacred dimensional artistry through neuralia-level infrared ritual mastery.",
+      },
+      "amazonian-ayahuasca": {
+        description:
+          "Godlevel Amazonian ayahuasca ceremony excellence with infrared thermal visualization of sacred plant medicine ritual, glowing red heat signatures of ceremonial fire, electric violet thermal patterns of visionary states, spectral green energy fields in jungle setting, ghostly neon silhouettes of shamans and participants, thermal gradients revealing consciousness expansion, infinite entheogenic dimensional artistry through neuralia-level infrared ritual mastery.",
+      },
+      "sufi-whirling": {
+        description:
+          "Godlevel Sufi whirling dervish excellence with infrared thermal visualization of mystical Islamic practice, glowing red heat signatures of spinning meditation, electric violet thermal trails of flowing robes, spectral green energy patterns during spiritual ecstasy, ghostly neon silhouettes of rotating figures, thermal gradients revealing divine connection, infinite mystical dimensional artistry through neuralia-level infrared ritual mastery.",
+      },
+      "maori-haka": {
+        description:
+          "Godlevel Maori haka excellence with infrared thermal visualization of warrior ceremonial dance, glowing red heat signatures of intense physical expression, electric violet thermal auras of collective energy, spectral green patterns during synchronized movements, ghostly neon silhouettes of performers with traditional moko, thermal gradients revealing ancestral power, infinite cultural dimensional artistry through neuralia-level infrared ritual mastery.",
+      },
+      "tibetan-sand-mandala": {
+        description:
+          "Godlevel Tibetan sand mandala excellence with infrared thermal visualization of sacred Buddhist art ritual, glowing red heat signatures of monks' focused concentration, electric violet thermal patterns of meditative states, spectral green energy fields surrounding intricate geometric designs, ghostly neon silhouettes of practitioners, thermal gradients revealing spiritual dedication, infinite sacred dimensional artistry through neuralia-level infrared ritual mastery.",
+      },
+      "vodou-ceremony": {
+        description:
+          "Godlevel Haitian Vodou ceremony excellence with infrared thermal visualization of spiritual possession ritual, glowing red heat signatures of drumming and dancing, electric violet thermal auras during loa invocation, spectral green energy patterns of spiritual presence, ghostly neon silhouettes of possessed practitioners, thermal gradients revealing divine communication, infinite mystical dimensional artistry through neuralia-level infrared ritual mastery.",
+      },
+      "native-sweat-lodge": {
+        description:
+          "Godlevel Native American sweat lodge excellence with infrared thermal visualization of purification ceremony, intense glowing red heat from sacred stones, electric violet thermal patterns of steam and prayer, spectral green energy signatures during spiritual cleansing, ghostly neon silhouettes of participants in darkness, thermal gradients revealing physical and spiritual purification, infinite sacred dimensional artistry through neuralia-level infrared ritual mastery.",
+      },
+      "hindu-fire-puja": {
+        description:
+          "Godlevel Hindu fire puja excellence with infrared thermal visualization of Vedic ritual ceremony, glowing red heat signatures of sacred fire altar, electric violet thermal patterns of offerings and mantras, spectral green energy fields during priest invocations, ghostly neon silhouettes of devotees, thermal gradients revealing divine presence, infinite sacred dimensional artistry through neuralia-level infrared ritual mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel infrared ritual LEGO excellence featuring blocky thermal-spectrum construction with systematic Danish precision applied to ceremonial heat visualization, modular infrared assembly with authentic ritual characteristics, infinite constructive dimensional artistry, computational LEGO infrared through algorithmic building mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel infrared ritual escapism excellence where thermal signatures become gateways to alternate spiritual dimensions, consciousness-expanding heat visualization with dimensional transcendence, infinite magical dimensional artistry, computational infrared ritual magic through algorithmic reality-bending mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel infrared ritual vitro excellence with magnificent stained glass thermal portraiture featuring luminous heat-signature construction, divine light filtering through infrared ritual elements, infinite sacred dimensional artistry, computational vitro infrared through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel infrared ritual crypto excellence with blockchain-verified thermal construction, decentralized heat-signature identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto infrared through algorithmic blockchain mastery.",
+      },
+    },
+  },
+
   "wheres-brain": {
     name: "🧠 Where's the Brain?",
     description: "Neuralia-style hidden brain finding challenge with godlevel complexity",
@@ -2295,7 +2367,7 @@ export const CULTURAL_DATASETS = {
       },
       "rio-favela-vertical-2328": {
         description:
-          "Year 2328, Rio de Janeiro with favelas evolved into vertical eco-communities, climate condition of tropical heat with community-managed micro-climates, technology level featuring grassroots sustainable tech and community solar, lifestyle scene of favela residents in self-sufficient vertical neighborhoods, atmospheric mood of bottom-up innovation and community triumph, color palette of favela colors, solar panel blue, and community green.",
+          "Year 2328, Rio de Janeiro with favelas evolved into vertical eco-communities, climate condition of tropical heat with community-managed micro-climates, technology level featuring grassroots sustainable tech and community solar, lifestyle scene of favela residents in self-sufficient vertical neighborhoods, atmospheric mood of optimistic innovation and African futurism, color palette of favela colors, solar panel blue, and community green.",
       },
       "paris-underground-2325": {
         description:
@@ -2438,7 +2510,7 @@ export const CULTURAL_DATASETS = {
       },
       "ho-chi-minh-motorbike-parade": {
         description:
-          "Urban location on Ho Chi Minh City streets during decorated motorbike parade, cultural elements featuring traditional jeepneys adorned with flowers and LED decorations, atmospheric mood of mobile celebration where transportation becomes performance, modern fantasy showing riders in creative costumes navigating decorated streets, ancestral connection through community gathering traditions adapted to urban mobility, color palette of motorbike chrome, decoration spectrum, and street lights, visual style capturing the kinetic energy of urban festivity.",
+          "Urban location on Ho Chi Minh City streets during decorated vehicle parade, cultural elements featuring traditional jeepneys adorned with flowers and LED decorations, atmospheric mood of mobile celebration where transportation becomes performance, modern fantasy showing riders in creative costumes navigating decorated streets, ancestral connection through community gathering traditions adapted to urban mobility, color palette of motorbike chrome, decoration spectrum, and street lights, visual style capturing the kinetic energy of urban festivity.",
       },
       "macau-casino-spirits": {
         description:
@@ -2501,7 +2573,7 @@ export const CULTURAL_DATASETS = {
       },
       "genius-city-ecosystem": {
         description:
-          "Godlevel Genius City excellence with local AI ecosystems achieving perfect community representation through mathematical educational algorithms, city network optimization via geometric partnership precision, infinite ecosystem dimensional artistry connecting schools businesses and government, computational community through algorithmic city mastery with 100 Genius Cities target by 2030, local learning excellence with global marketplace integration, neuralia-level city sophistication incorporating quantum ecosystem frameworks for optimal community development, dimensional city artistry with education partner and technology partner collaboration, algorithmic city transcendence through computational ecosystem excellence.",
+          "Godlevel Genius City excellence with local AI ecosystems achieving perfect community representation through mathematical educational algorithms, city network optimization via geometric partnership precision, infinite ecosystem dimensional artistry connecting schools businesses and government, computational networking through algorithmic city mastery with 100 Genius Cities target by 2030, local learning excellence with global marketplace integration, neuralia-level city sophistication incorporating quantum ecosystem frameworks for optimal community development, dimensional city artistry with education partner and technology partner collaboration, algorithmic city transcendence through computational ecosystem excellence.",
       },
       "bitcoin-treasury-strategy": {
         description:
@@ -2652,7 +2724,7 @@ export const CULTURAL_DATASETS = {
       },
       "singularity-rho-6": {
         description:
-          "Singularity Rho-6 located in quantum entanglement laboratory, portal leading to probability dimension where all possible outcomes exist simultaneously, dominant architecture featuring superposition structures in multiple states at once, quantum beings existing as probability clouds with observer-dependent reality, energy type of quantum superposition with wave-function energy, atmospheric mood of uncertainty beauty and probability mysticism, color palette of superposition purple, probability silver, and quantum gold.",
+          "Singularity Rho-6 located in quantum entanglement laboratory, portal leading to dimension of pure probability where all possible outcomes exist simultaneously, dominant architecture featuring superposition structures in multiple states at once, quantum beings existing as probability clouds with observer-dependent reality, energy type of quantum superposition with wave-function energy, atmospheric mood of uncertainty beauty and probability mysticism, color palette of superposition purple, probability silver, and quantum gold.",
       },
       "vortex-tau-2": {
         description:
