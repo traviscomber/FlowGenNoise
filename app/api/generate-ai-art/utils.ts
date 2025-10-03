@@ -250,19 +250,28 @@ async function retryWithBackoff<T>(fn: () => Promise<T>, maxRetries = 3, baseDel
     } catch (error: any) {
       const isRateLimit = error.message.includes("Rate limit") || error.message.includes("429")
       const isBillingLimit = error.message.includes("billing limit") || error.message.includes("Billing hard limit")
+      const isServerError =
+        error.message.includes("503") ||
+        error.message.includes("upstream connect error") ||
+        error.message.includes("Connection refused")
 
       // Don't retry billing or auth errors
       if (isBillingLimit || error.message.includes("authentication failed")) {
         throw error
       }
 
-      // Only retry rate limit errors
-      if (!isRateLimit || attempt === maxRetries) {
+      if ((!isRateLimit && !isServerError) || attempt === maxRetries) {
         throw error
       }
 
       const delay = baseDelay * Math.pow(2, attempt - 1) + Math.random() * 1000
-      console.log(`⏱️ Rate limit hit, retrying in ${Math.round(delay)}ms (attempt ${attempt}/${maxRetries})`)
+      if (isServerError) {
+        console.log(
+          `⚠️ OpenAI server error (503), retrying in ${Math.round(delay)}ms (attempt ${attempt}/${maxRetries})`,
+        )
+      } else {
+        console.log(`⏱️ Rate limit hit, retrying in ${Math.round(delay)}ms (attempt ${attempt}/${maxRetries})`)
+      }
       await new Promise((resolve) => setTimeout(resolve, delay))
     }
   }
@@ -539,7 +548,7 @@ function makeOpenAIRequest(promptToUse: string): Promise<{ imageUrl: string; pro
     console.log("[v0] OpenAI API response ok:", response.ok)
 
     if (response.ok) {
-      const data = await await response.json()
+      const data = await response.json()
       console.log("[v0] OpenAI API response data received:", !!data.data)
       if (data.data && data.data[0] && data.data[0].url) {
         return {
@@ -570,6 +579,16 @@ function makeOpenAIRequest(promptToUse: string): Promise<{ imageUrl: string; pro
     if (response.status === 401) {
       throw new Error(
         "🔑 OpenAI API key authentication failed. The API key appears to be invalid, expired, or revoked. Please verify your API key at https://platform.openai.com/api-keys",
+      )
+    }
+
+    if (
+      response.status === 503 ||
+      errorMessage.includes("upstream connect error") ||
+      errorMessage.includes("Connection refused")
+    ) {
+      throw new Error(
+        `⚠️ OpenAI servers are temporarily unavailable (503). This is usually temporary - the system will automatically retry. Error: ${errorMessage}`,
       )
     }
 

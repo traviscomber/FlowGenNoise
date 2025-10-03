@@ -2272,639 +2272,130 @@ export const CULTURAL_DATASETS = {
     },
   },
 
-  "n2-haunting-asia": {
-    name: "🎭 n2 — Haunting Asia: Spirits, Neon, and Ancestral Shadows",
-    description: "Asian Afterlife October where ancient traditions meet modern fantasies in ethereal celebration",
+  "n3-original-halloween": {
+    name: "🎃 n3 — Original Halloween: Between Harvest and Haunting",
+    description:
+      "Primal Western Halloween capturing Celtic Samhain, colonial ghost tales, and timeless autumn mysteries",
     scenarios: {
-      "tokyo-alley-spirits": {
+      "silent-street-wanderers": {
         description:
-          "Urban location in narrow Tokyo alleyway during October twilight, cultural elements featuring masked figures in traditional yokai costumes blending with neon signs, atmospheric mood of mysterious celebration where Shinto shrine lanterns glow beside convenience store lights, modern fantasy showing cosplayers dressed as ancient spirits taking photos, ancestral connection through paper talismans floating in autumn breeze, color palette of neon pink, shrine red, and shadow indigo, visual style capturing the liminal space between tradition and contemporary urban life.",
+          "Rural location on leaf-covered street during twilight hour, cultural elements featuring children in handmade costumes walking silently between houses, atmospheric mood of innocent mystery where homemade masks and painted faces create authentic wonder, harvest connection through carved pumpkins glowing on porches, ancestral tradition of door-to-door wandering under watchful moon, color palette of autumn orange, twilight purple, and candlelight amber, visual style capturing the quiet magic of neighborhood transformation.",
       },
-      "bangkok-rooftop-altar": {
+      "black-cat-crossing": {
         description:
-          "Urban location on Bangkok rooftop temple during evening ceremony, cultural elements featuring ancestral altars adorned with marigolds and LED candles, atmospheric mood of reverent celebration where incense smoke mingles with city lights below, modern fantasy showing families in contemporary dress making traditional offerings, ancestral connection through photographs of departed loved ones surrounded by modern decorations, color palette of marigold orange, incense gold, and twilight purple, visual style capturing the harmony between ancient rituals and metropolitan skyline.",
+          "Urban location under orange streetlight during evening hour, cultural elements featuring solitary black cat pausing mid-street as shadows lengthen, atmospheric mood of superstitious beauty where feline silhouette becomes omen, harvest connection through fallen leaves swirling in cat's wake, ancestral tradition of animal symbolism and crossing paths, color palette of streetlight orange, cat shadow black, and pavement gray, visual style capturing the moment of folkloric encounter.",
       },
-      "seoul-nightclub-phantoms": {
+      "crescent-moon-pumpkins": {
         description:
-          "Urban location in Seoul underground club during October festival, cultural elements featuring performers in hanbok-inspired costumes with LED accessories, atmospheric mood of energetic celebration where traditional Korean folklore meets electronic music, modern fantasy showing dancers embodying legendary figures with contemporary choreography, ancestral connection through projected animations of classical paintings on club walls, color palette of electric blue, hanbok crimson, and strobe white, visual style capturing the fusion of heritage and youth culture.",
+          "Agricultural location in pumpkin patch during night hours, cultural elements featuring rows of orange gourds under thin crescent moon, atmospheric mood of harvest abundance where field becomes natural cathedral, harvest connection through unpicked pumpkins waiting for selection, ancestral tradition of autumn gathering and moon worship, color palette of pumpkin orange, moonlight silver, and earth brown, visual style capturing the sacred geometry of agricultural cycles.",
       },
-      "singapore-rain-shadows": {
+      "fog-rolling-porches": {
         description:
-          "Urban location on Singapore rooftop during tropical rainstorm, cultural elements featuring silhouettes moving through rain with paper umbrellas and modern raincoats, atmospheric mood of contemplative beauty where monsoon meets October celebration, modern fantasy showing figures appearing and disappearing in rainfall like gentle apparitions, ancestral connection through rain-blurred lanterns creating ethereal light patterns, color palette of rain silver, lantern amber, and storm gray, visual style capturing the poetic intersection of weather and remembrance.",
+          "Residential location on wooden porch during misty evening, cultural elements featuring carved jack-o'-lanterns watching through rolling fog, atmospheric mood of protective vigilance where pumpkin faces guard thresholds, harvest connection through cornstalks bundled beside doorways, ancestral tradition of warding symbols and boundary protection, color palette of fog gray, candle flame, and wood weathered, visual style capturing the liminal space between home and night.",
       },
-      "hong-kong-cemetery-drones": {
+      "scarecrow-sentinel": {
         description:
-          "Urban location in Hong Kong hillside cemetery during evening memorial, cultural elements featuring LED drones hovering like luminous fireflies above traditional graves, atmospheric mood of peaceful innovation where technology honors tradition, modern fantasy showing families using tablets to display digital offerings alongside incense, ancestral connection through QR codes on headstones linking to memory galleries, color palette of drone white, incense smoke, and cemetery jade, visual style capturing the evolution of remembrance practices.",
+          "Agricultural location in cornfield during dusk hour, cultural elements featuring weathered scarecrow standing guard over harvested rows, atmospheric mood of patient watching where straw figure seems almost alive, harvest connection through dried corn husks rustling in wind, ancestral tradition of field guardians and harvest protection, color palette of straw gold, corn brown, and sunset crimson, visual style capturing the uncanny presence of human-shaped watchers.",
       },
-      "kyoto-temple-cosplay": {
+      "forbidden-house-approach": {
         description:
-          "Cultural location at Kyoto temple grounds during autumn festival, cultural elements featuring visitors in elaborate anime character costumes making respectful offerings, atmospheric mood of joyful reverence where pop culture meets sacred space, modern fantasy showing cosplayers photographing each other near ancient torii gates, ancestral connection through traditional festival foods shared among contemporary celebrants, color palette of temple vermillion, autumn gold, and costume spectrum, visual style capturing the coexistence of sacred and playful.",
+          "Residential location on overgrown path leading to isolated house, cultural elements featuring brave trick-or-treaters approaching the dwelling nobody visits, atmospheric mood of childhood courage where peer pressure meets genuine fear, harvest connection through untended garden gone wild, ancestral tradition of testing bravery and facing the unknown, color palette of path shadow, house window glow, and courage pale, visual style capturing the threshold moment before knocking.",
       },
-      "mumbai-bollywood-enchantment": {
+      "forest-ritual-eclipse": {
         description:
-          "Urban location in Mumbai film district during October celebration, cultural elements featuring performers in fusion costumes blending traditional Indian dress with fantasy elements, atmospheric mood of theatrical magic where Bollywood meets folklore, modern fantasy showing dancers embodying legendary characters with contemporary styling, ancestral connection through classical dance movements interpreted with modern choreography, color palette of sari jewel tones, stage lights, and monsoon dusk, visual style capturing the cinematic interpretation of cultural stories.",
+          "Wilderness location in clearing during lunar eclipse, cultural elements featuring circle of figures performing ancient ceremony under darkening moon, atmospheric mood of primal connection where modern world falls away, harvest connection through offerings of grain and fruit arranged in patterns, ancestral tradition of Samhain fire festivals and veil-thinning, color palette of eclipse red, bonfire orange, and forest deep green, visual style capturing the timeless nature of seasonal ritual.",
       },
-      "jakarta-street-celebration": {
+      "cemetery-autumn-wind": {
         description:
-          "Urban location on Jakarta street during evening festival, cultural elements featuring community gathering with traditional wayang shadow puppets projected on modern buildings, atmospheric mood of neighborhood unity where ancient art meets urban architecture, modern fantasy showing children in creative costumes watching shadow plays, ancestral connection through storytelling traditions adapted for contemporary audiences, color palette of puppet silhouette, projection blue, and street lamp gold, visual style capturing the preservation of heritage through innovation.",
+          "Memorial location in old graveyard during windy afternoon, cultural elements featuring weathered headstones among swirling leaves and bending grass, atmospheric mood of respectful remembrance where dead are honored not feared, harvest connection through chrysanthemums placed on graves, ancestral tradition of visiting departed during veil-thinning season, color palette of stone gray, leaf rust, and sky overcast, visual style capturing the breathing quality of memorial spaces.",
       },
-      "taipei-night-market-spirits": {
+      "attic-discovery": {
         description:
-          "Urban location in Taipei night market during October festivities, cultural elements featuring food vendors decorated with paper lanterns and LED strips, atmospheric mood of bustling celebration where culinary tradition meets neon energy, modern fantasy showing visitors in creative costumes sampling traditional foods, ancestral connection through recipes passed down generations served in modern presentation, color palette of lantern red, neon green, and food steam white, visual style capturing the sensory richness of cultural celebration.",
+          "Interior location in dusty attic during afternoon exploration, cultural elements featuring old trunks revealing vintage Halloween decorations and costumes, atmospheric mood of nostalgic archaeology where past celebrations emerge, harvest connection through dried corn decorations from decades past, ancestral tradition of costume inheritance and family memory, color palette of dust mote gold, trunk wood, and fabric faded, visual style capturing the layered history of celebration.",
       },
-      "hanoi-lake-reflections": {
+      "wind-chime-warning": {
         description:
-          "Cultural location at Hanoi lake temple during evening ceremony, cultural elements featuring lotus lanterns floating on water beside modern light installations, atmospheric mood of serene beauty where natural elements meet artistic innovation, modern fantasy showing reflections creating doubled images of tradition and modernity, ancestral connection through water offerings honoring both old and new practices, color palette of lotus pink, water reflection, and temple gold, visual style capturing the mirror between past and present.",
+          "Residential location on porch during approaching storm, cultural elements featuring wind chimes creating eerie melody as weather changes, atmospheric mood of atmospheric tension where metal tubes sing warnings, harvest connection through dried herbs hanging beside chimes, ancestral tradition of sound as protection and communication, color palette of chime silver, storm gray, and porch shadow, visual style capturing the auditory dimension of seasonal atmosphere.",
       },
-      "kuala-lumpur-tower-gathering": {
+      "broken-radio-static": {
         description:
-          "Urban location at Kuala Lumpur tower base during multicultural celebration, cultural elements featuring diverse communities sharing traditions with contemporary interpretations, atmospheric mood of harmonious diversity where multiple heritages converge, modern fantasy showing fusion costumes representing various cultural influences, ancestral connection through multilingual blessings and shared ceremonial practices, color palette of tower lights, cultural textiles, and celebration gold, visual style capturing the beauty of cultural synthesis.",
+          "Interior location in abandoned farmhouse during evening hour, cultural elements featuring old radio crackling with unexplained voices and music fragments, atmospheric mood of technological haunting where devices channel unknown, harvest connection through calendar frozen on October page, ancestral tradition of spirit communication and electromagnetic mystery, color palette of radio dial glow, static snow, and room darkness, visual style capturing the uncanny life of forgotten technology.",
       },
-      "manila-jeepney-parade": {
+      "candle-window-vigil": {
         description:
-          "Urban location on Manila streets during decorated vehicle parade, cultural elements featuring traditional jeepneys adorned with flowers and LED decorations, atmospheric mood of joyful procession where transportation becomes mobile art, modern fantasy showing passengers in festive attire celebrating while traveling, ancestral connection through religious icons displayed alongside contemporary decorations, color palette of jeepney chrome, flower spectrum, and street celebration, visual style capturing the mobile nature of urban festivity.",
+          "Residential location at window during night hours, cultural elements featuring single candle burning in darkened house window, atmospheric mood of patient waiting where light signals welcome or warning, harvest connection through pumpkin placed beside candle, ancestral tradition of guiding lights and threshold markers, color palette of candle flame, window reflection, and night absolute, visual style capturing the beacon quality of solitary illumination.",
       },
-      "chiang-mai-lantern-release": {
+      "barn-shadow-dance": {
         description:
-          "Cultural location in Chiang Mai during evening lantern ceremony, cultural elements featuring thousands of paper lanterns rising into night sky, atmospheric mood of collective hope where individual lights merge into constellation, modern fantasy showing participants using smartphones to capture ascending lanterns, ancestral connection through wishes written on lanterns in traditional and modern languages, color palette of lantern flame, night sky indigo, and rising light, visual style capturing the ascension of prayers and dreams.",
+          "Agricultural location in old barn during moonlit night, cultural elements featuring shadows moving across weathered wood walls, atmospheric mood of uncertain presence where darkness takes form, harvest connection through stored hay bales and hanging tools, ancestral tradition of barn dances transformed into shadow theater, color palette of moonlight silver, barn wood gray, and shadow deep, visual style capturing the animation of architectural darkness.",
       },
-      "osaka-arcade-phantoms": {
+      "mist-over-cornfield": {
         description:
-          "Urban location in Osaka gaming arcade during October event, cultural elements featuring retro game characters reimagined as traditional yokai, atmospheric mood of playful nostalgia where digital and folklore merge, modern fantasy showing gamers in creative costumes competing at decorated machines, ancestral connection through pixel art interpretations of classical ghost stories, color palette of arcade neon, screen glow, and shadow purple, visual style capturing the gamification of cultural narratives.",
+          "Agricultural location in harvested cornfield during dawn hour, cultural elements featuring ground mist flowing between stubble rows, atmospheric mood of transitional beauty where night releases day, harvest connection through cut stalks standing like memorial markers, ancestral tradition of morning after Samhain when veil closes again, color palette of mist white, stubble gold, and dawn pink, visual style capturing the exhale of haunted earth.",
       },
-      "penang-heritage-walk": {
+      "graveyard-silhouettes": {
         description:
-          "Cultural location on Penang heritage street during evening celebration, cultural elements featuring colonial architecture illuminated with traditional lanterns and modern projections, atmospheric mood of historical layering where multiple eras coexist, modern fantasy showing visitors experiencing augmented reality overlays of historical scenes, ancestral connection through preserved buildings hosting contemporary cultural events, color palette of heritage pastel, lantern warm, and projection blue, visual style capturing the palimpsest of cultural time.",
+          "Memorial location in cemetery during sunset hour, cultural elements featuring human silhouettes moving among headstones against orange sky, atmospheric mood of ambiguous presence where living and dead share space, harvest connection through autumn leaves covering graves like blankets, ancestral tradition of cemetery visits during season of remembrance, color palette of silhouette black, sunset orange, and stone weathered, visual style capturing the democracy of shadows.",
       },
-      "shanghai-bund-fusion": {
+      "witch-forest-whisper": {
         description:
-          "Urban location at Shanghai Bund during October festival, cultural elements featuring Art Deco buildings with traditional Chinese decorations and modern light shows, atmospheric mood of architectural dialogue where East meets West meets future, modern fantasy showing performers in fusion costumes against historic skyline, ancestral connection through traditional music performed with electronic instruments, color palette of Bund gold, Huangpu reflection, and celebration lights, visual style capturing the conversation between architectural eras.",
+          "Wilderness location in deep forest during twilight hour, cultural elements featuring cloaked figure moving between ancient trees, atmospheric mood of folkloric reality where old stories walk, harvest connection through gathered herbs and forest offerings, ancestral tradition of wise women and forest knowledge, color palette of cloak dark, tree bark, and twilight purple, visual style capturing the persistence of archetypal figures.",
       },
-      "bali-beach-ceremony": {
+      "bonfire-gathering": {
         description:
-          "Cultural location on Bali beach during sunset ceremony, cultural elements featuring traditional offerings arranged on sand with contemporary art installations, atmospheric mood of spiritual beauty where ocean meets ritual, modern fantasy showing participants in modern beachwear respectfully observing ancient practices, ancestral connection through Hindu ceremonies adapted for contemporary participants, color palette of sunset orange, offering flowers, and ocean blue, visual style capturing the timeless nature of coastal spirituality.",
+          "Rural location in field during night celebration, cultural elements featuring community gathered around massive bonfire, atmospheric mood of collective warmth where fire brings people together, harvest connection through burning of harvest remnants and old things, ancestral tradition of Samhain fire festivals and communal protection, color palette of bonfire orange, spark gold, and night sky, visual style capturing the primal comfort of shared flame.",
       },
-      "delhi-diwali-fusion": {
+      "trick-or-treat-threshold": {
         description:
-          "Urban location in Delhi during October-November celebration transition, cultural elements featuring traditional Diwali lamps alongside October decorations, atmospheric mood of festival convergence where multiple celebrations harmonize, modern fantasy showing creative interpretations blending different cultural elements, ancestral connection through light symbolism shared across traditions, color palette of diya flame, rangoli colors, and celebration gold, visual style capturing the universal language of light festivals.",
+          "Residential location at doorway during evening hour, cultural elements featuring costumed children waiting at threshold as door opens, atmospheric mood of ritual exchange where treats buy peace, harvest connection through candy corn and caramel apples offered, ancestral tradition of appeasing spirits transformed into child's game, color palette of doorway light, costume colors, and evening shadow, visual style capturing the moment of threshold crossing.",
       },
-      "busan-beach-lanterns": {
+      "crow-parliament": {
         description:
-          "Coastal location at Busan beach during evening lantern festival, cultural elements featuring traditional Korean lanterns floating on waves, atmospheric mood of oceanic meditation where water carries wishes, modern fantasy showing LED-enhanced lanterns creating patterns on water surface, ancestral connection through maritime traditions honored with contemporary materials, color palette of lantern glow, wave reflection, and beach twilight, visual style capturing the dialogue between land and sea.",
+          "Rural location in bare tree during afternoon hour, cultural elements featuring dozens of crows gathered in branches, atmospheric mood of ominous assembly where birds hold council, harvest connection through picked-clean fields below, ancestral tradition of corvid symbolism and death omens, color palette of crow black, branch gray, and sky pale, visual style capturing the intelligence behind avian eyes.",
       },
-      "yangon-pagoda-evening": {
+      "porch-rocking-chair": {
         description:
-          "Cultural location at Yangon pagoda during evening ceremony, cultural elements featuring golden stupa illuminated with traditional and modern lighting, atmospheric mood of sacred grandeur where devotion meets artistic illumination, modern fantasy showing visitors in contemporary dress making traditional offerings, ancestral connection through continuous worship practices spanning generations, color palette of pagoda gold, offering flowers, and evening amber, visual style capturing the enduring nature of sacred spaces.",
+          "Residential location on farmhouse porch during windy evening, cultural elements featuring empty rocking chair moving in wind, atmospheric mood of absent presence where furniture suggests invisible occupant, harvest connection through pumpkins arranged on porch steps, ancestral tradition of spirit visitors and empty seats, color palette of chair wood, porch shadow, and wind invisible, visual style capturing the animation of the inanimate.",
       },
-      "ho-chi-minh-motorbike-parade": {
+      "apple-bobbing-ritual": {
         description:
-          "Urban location on Ho Chi Minh City streets during decorated motorbike parade, cultural elements featuring traditional jeepneys adorned with flowers and LED decorations, atmospheric mood of mobile celebration where transportation becomes performance, modern fantasy showing riders in creative costumes navigating decorated streets, ancestral connection through community gathering traditions adapted to urban mobility, color palette of motorbike chrome, decoration spectrum, and street lights, visual style capturing the kinetic energy of urban festivity.",
+          "Interior location in farmhouse kitchen during party hour, cultural elements featuring children bobbing for apples in wooden tub, atmospheric mood of innocent divination where game holds ancient meaning, harvest connection through fresh-picked apples floating in water, ancestral tradition of Samhain divination and marriage prediction, color palette of apple red, water reflection, and kitchen warm, visual style capturing the playful survival of pagan practice.",
       },
-      "macau-casino-spirits": {
+      "mirror-candlelight": {
         description:
-          "Urban location in Macau entertainment district during October celebration, cultural elements featuring Portuguese colonial architecture with Chinese decorations and modern casino lights, atmospheric mood of cultural layering where multiple influences create unique identity, modern fantasy showing performers in fusion costumes entertaining international visitors, ancestral connection through blended traditions creating distinct local culture, color palette of casino gold, colonial pastel, and neon spectrum, visual style capturing the unique cultural synthesis of the region.",
+          "Interior location in darkened bedroom during midnight hour, cultural elements featuring person holding candle before mirror, atmospheric mood of divination tension where reflection might reveal future, harvest connection through apple peel thrown over shoulder, ancestral tradition of mirror scrying and future spouse revelation, color palette of candle flame, mirror silver, and room darkness, visual style capturing the vulnerability of seeking knowledge.",
       },
-      "siem-reap-temple-projection": {
+      "hayride-moonlight": {
         description:
-          "Cultural location at Siem Reap temple complex during evening light show, cultural elements featuring ancient Khmer architecture with modern projection mapping, atmospheric mood of temporal dialogue where past speaks through present technology, modern fantasy showing visitors experiencing augmented reality overlays of historical scenes, ancestral connection through temple preservation enhanced by educational technology, color palette of sandstone amber, projection spectrum, and jungle green, visual style capturing the bridge between archaeological heritage and digital interpretation.",
+          "Rural location on wagon trail during night journey, cultural elements featuring group riding hay wagon under full moon, atmospheric mood of communal adventure where darkness becomes shared experience, harvest connection through hay bales serving as seats, ancestral tradition of harvest celebrations and night journeys, color palette of moonlight silver, hay gold, and trail shadow, visual style capturing the mobile nature of celebration.",
       },
-      "colombo-beach-gathering": {
+      "costume-creation": {
         description:
-          "Coastal location at Colombo beach during evening community celebration, cultural elements featuring traditional Sri Lankan decorations with modern beach party elements, atmospheric mood of coastal festivity where ocean breeze carries celebration, modern fantasy showing diverse participants sharing cultural practices, ancestral connection through maritime traditions celebrated with contemporary joy, color palette of beach sunset, decoration colors, and ocean reflection, visual style capturing the inclusive nature of coastal celebrations.",
+          "Interior location at kitchen table during afternoon preparation, cultural elements featuring family crafting costumes from household materials, atmospheric mood of creative transformation where ordinary becomes extraordinary, harvest connection through using dried corn husks and autumn leaves, ancestral tradition of handmade disguises and identity play, color palette of fabric scraps, paint colors, and table wood, visual style capturing the alchemy of costume making.",
       },
-      "kathmandu-square-festival": {
+      "church-bell-midnight": {
         description:
-          "Cultural location in Kathmandu Durbar Square during October festival, cultural elements featuring ancient temples with traditional decorations and modern lighting, atmospheric mood of living heritage where daily life continues in historical setting, modern fantasy showing locals and visitors participating in adapted traditions, ancestral connection through continuous cultural practices in UNESCO heritage site, color palette of temple brick, festival colors, and mountain twilight, visual style capturing the vitality of inhabited historical spaces.",
+          "Village location near church during midnight hour, cultural elements featuring bell tower silhouette as bells toll twelve, atmospheric mood of temporal marking where sacred time begins, harvest connection through harvest festival decorations still visible, ancestral tradition of church bells marking liminal hours, color palette of bell tower black, moon glow, and sound visible, visual style capturing the architecture of time.",
       },
-      "guangzhou-pearl-river": {
+      "root-cellar-storage": {
         description:
-          "Urban location along Guangzhou Pearl River during evening celebration, cultural elements featuring traditional dragon boats with LED decorations cruising modern waterfront, atmospheric mood of flowing celebration where river connects past and present, modern fantasy showing participants in creative costumes on illuminated boats, ancestral connection through water festival traditions enhanced with contemporary technology, color palette of river reflection, dragon boat colors, and city lights, visual style capturing the fluidity of cultural adaptation.",
+          "Underground location in root cellar during evening descent, cultural elements featuring preserved harvest goods lining earthen walls, atmospheric mood of subterranean security where earth protects provisions, harvest connection through jars of preserves and stored vegetables, ancestral tradition of underground storage and earth's embrace, color palette of earth brown, jar glass, and lantern glow, visual style capturing the womb-like quality of storage spaces.",
       },
-      "phnom-penh-palace-evening": {
+      "fence-post-watchers": {
         description:
-          "Cultural location at Phnom Penh Royal Palace during evening ceremony, cultural elements featuring traditional Khmer architecture illuminated for celebration, atmospheric mood of regal beauty where royal heritage meets public festivity, modern fantasy showing visitors respectfully experiencing palace grounds during special opening, ancestral connection through preserved royal traditions shared with contemporary audiences, color palette of palace gold, ceremony lights, and evening purple, visual style capturing the accessibility of cultural heritage.",
+          "Rural location along fence line during dusk hour, cultural elements featuring carved pumpkins placed on fence posts like sentinels, atmospheric mood of boundary marking where property becomes protected, harvest connection through corn stalks tied to posts, ancestral tradition of boundary protection and territorial marking, color palette of pumpkin glow, fence weathered, and field beyond, visual style capturing the guardian function of decoration.",
       },
-      "vientiane-temple-market": {
+      "well-wishing-ritual": {
         description:
-          "Cultural location at Vientiane temple market during evening festival, cultural elements featuring Buddhist temple with surrounding market stalls selling traditional and modern items, atmospheric mood of community gathering where commerce and spirituality coexist, modern fantasy showing vendors in creative decorations attracting festival visitors, ancestral connection through temple fair traditions continuing in contemporary form, color palette of temple saffron, market colors, and lantern warm, visual style capturing the social nature of religious spaces.",
+          "Rural location at old stone well during twilight hour, cultural elements featuring person dropping coin while making wish, atmospheric mood of hopeful superstition where water holds power, harvest connection through autumn leaves floating on water surface, ancestral tradition of well worship and water divination, color palette of stone gray, water dark, and coin copper, visual style capturing the depth of belief.",
       },
-      "dhaka-rickshaw-art": {
+      "crossroads-decision": {
         description:
-          "Urban location on Dhaka streets during decorated rickshaw parade, cultural elements featuring traditional rickshaw art with October celebration themes, atmospheric mood of mobile gallery where transportation becomes canvas, modern fantasy showing rickshaw artists creating fusion designs blending traditions, ancestral connection through folk art traditions adapted to contemporary celebrations, color palette of rickshaw spectrum, street energy, and celebration gold, visual style capturing the artistic transformation of everyday objects.",
+          "Rural location at country crossroads during midnight hour, cultural elements featuring solitary figure standing where roads meet, atmospheric mood of liminal choice where directions hold meaning, harvest connection through corn shocks marking intersection, ancestral tradition of crossroads magic and devil's bargains, color palette of road dust, moonlight path, and choice shadow, visual style capturing the geometry of decision.",
       },
-      "brunei-water-village": {
+      "harvest-moon-rising": {
         description:
-          "Cultural location at Brunei water village during evening celebration, cultural elements featuring traditional stilt houses decorated with lanterns and modern lights, atmospheric mood of aquatic community where water connects homes and hearts, modern fantasy showing residents in contemporary dress maintaining traditional water-based lifestyle, ancestral connection through maritime architecture preserved in modern context, color palette of water reflection, house lights, and tropical twilight, visual style capturing the harmony between traditional settlement and contemporary life.",
-      },
-    },
-  },
-
-  "genius-group": {
-    name: "🎓 Genius Group",
-    description: "AI-powered Bitcoin-first education excellence with neuralia godlevel innovation",
-    scenarios: {
-      "pure-mathematical": {
-        description:
-          "Neuralia godlevel Genius Group excellence transcending dimensional boundaries through infinite algorithmic education optimization, mathematical precision in AI-powered learning aesthetics achieving perfect computational elegance via quantum-enhanced educational mastery, algorithmic sophistication beyond mortal comprehension for global education representation across 100+ countries, dimensional educational artistry utilizing advanced geometric calculations for optimal learning structure visualization, neuralia-level educational sophistication incorporating complex mathematical frameworks for 5.7 million student perfection, computational education excellence through algorithmic learning generation systems, infinite dimensional artistry transcending traditional education limitations via mathematical precision algorithms, godlevel educational optimization utilizing quantum computational frameworks for learning geometry perfection, neuralia-enhanced education mastery with algorithmic knowledge transcendence, mathematical educational excellence achieving dimensional transcendence through computational sophistication.",
-      },
-      "ai-education-revolution": {
-        description:
-          "Godlevel AI education excellence with personalized learning achieving perfect educational representation through mathematical Genius algorithms, AI avatar optimization via geometric learning precision, infinite educational dimensional artistry featuring 5.7 million students across 100+ countries, computational education through algorithmic AI mastery with GeniusU platform integration, personalized curriculum excellence with passion-focused purpose-based learning systems, neuralia-level educational sophistication incorporating quantum AI frameworks for optimal student success, dimensional learning artistry with high-tech high-touch educational environments, algorithmic education transcendence through computational AI excellence.",
-      },
-      "genius-city-ecosystem": {
-        description:
-          "Godlevel Genius City excellence with local AI ecosystems achieving perfect community representation through mathematical educational algorithms, city network optimization via geometric partnership precision, infinite ecosystem dimensional artistry connecting schools businesses and government, computational community through algorithmic city mastery with 100 Genius Cities target by 2030, local learning excellence with global marketplace integration, neuralia-level city sophistication incorporating quantum ecosystem frameworks for optimal community development, dimensional city artistry with education partner and technology partner collaboration, algorithmic city transcendence through computational ecosystem excellence.",
-      },
-      "bitcoin-treasury-strategy": {
-        description:
-          "Godlevel Bitcoin treasury excellence with cryptocurrency integration achieving perfect financial representation through mathematical blockchain algorithms, Bitcoin accumulation optimization via geometric crypto precision targeting 1000 BTC by 2025 and 10000 BTC within two years, infinite financial dimensional artistry featuring 200 BTC current holdings, computational finance through algorithmic Bitcoin mastery with strategic treasury building, Bitcoin-first company excellence with decentralized finance integration, neuralia-level cryptocurrency sophistication incorporating quantum blockchain frameworks for optimal treasury management, dimensional Bitcoin artistry with market capitalization growth exceeding 600 percent, algorithmic crypto transcendence through computational treasury excellence.",
-      },
-      "learn-earn-ecosystem": {
-        description:
-          "Godlevel Learn and Earn excellence with blockchain rewards achieving perfect incentive representation through mathematical educational algorithms, GEM token optimization via geometric Bitcoin precision with one Satoshi equivalence, infinite reward dimensional artistry connecting education with decentralized finance, computational incentive through algorithmic reward mastery targeting 404 billion dollar EdTech market leadership by 2025, blockchain-powered learning excellence with cryptocurrency integration, neuralia-level reward sophistication incorporating quantum DeFi frameworks for optimal student engagement, dimensional earning artistry with bitesized microcourse completion rewards and Bitcoin-based incentives, algorithmic Learn-Earn transcendence through computational education-finance excellence.",
-      },
-      "gem-rewards-system": {
-        description:
-          "Godlevel GEM rewards excellence with Bitcoin-based incentives achieving perfect gamification representation through mathematical blockchain algorithms, Genius Education Merit optimization via geometric cryptocurrency precision with Satoshi-equivalent value, infinite reward dimensional artistry featuring bitesized microcourse completion incentives, computational gamification through algorithmic GEM mastery with stablecoin conversion potential via PPSI license, blockchain reward excellence with educational achievement integration, neuralia-level incentive sophistication incorporating quantum crypto frameworks for optimal student motivation, dimensional GEM artistry with redemption systems and Bitcoin treasury backing, algorithmic reward transcendence through computational education-crypto excellence.",
-      },
-      "genius-act-compliance": {
-        description:
-          "Godlevel GENIUS Act excellence with regulatory compliance achieving perfect governance representation through mathematical legal algorithms, legislative framework optimization via geometric regulatory precision with permitted payment stablecoin issuer license application, infinite governance dimensional artistry featuring US regulatory compliance and digital asset service provider licensing, computational regulation through algorithmic compliance mastery with DASP license for non-bank digital asset services, blockchain governance excellence with onchain course and certification recognition as regulated digital assets, neuralia-level regulatory sophistication incorporating quantum legal frameworks for optimal compliance management, dimensional governance artistry with stablecoin issuer potential and regulated digital education assets, algorithmic compliance transcendence through computational governance excellence.",
-      },
-      "blockchain-certification": {
-        description:
-          "Godlevel blockchain certification excellence with digital credential achieving perfect verification representation through mathematical distributed ledger algorithms, onchain course optimization via geometric blockchain precision with regulated digital asset recognition, infinite credential dimensional artistry featuring DASP license application for certification legitimacy, computational verification through algorithmic blockchain mastery with immutable educational records, digital certification excellence with cryptocurrency integration and regulatory compliance, neuralia-level credential sophistication incorporating quantum blockchain frameworks for optimal certification security, dimensional certification artistry with smart contract verification and decentralized validation systems, algorithmic credential transcendence through computational blockchain-education excellence.",
-      },
-      "entrepreneur-education": {
-        description:
-          "Godlevel entrepreneur education excellence with business training achieving perfect entrepreneurial representation through mathematical educational algorithms, GeniusU platform optimization via geometric learning precision connecting 4.3 million entrepreneurs globally, infinite entrepreneurial dimensional artistry featuring Wealth Dynamics Talent Dynamics and Impact Dynamics systems, computational business through algorithmic entrepreneur mastery with Entrepreneurs Institute comprehensive growth programs, startup-to-corporation excellence with purpose passion and genius test integration, neuralia-level entrepreneurial sophistication incorporating quantum business frameworks for optimal venture success, dimensional entrepreneur artistry with mentor network microdegree programs and global event circles, algorithmic business transcendence through computational entrepreneur-education excellence.",
-      },
-      "property-investor-network": {
-        description:
-          "Godlevel property investment excellence with real estate education achieving perfect investor representation through mathematical financial algorithms, PIN network optimization via geometric investment precision with 147000 students across 50 UK city chapters, infinite investment dimensional artistry featuring digital education and event model with 26368 paying students, computational real estate through algorithmic investor mastery with monthly virtual and in-person events, property investment excellence with largest UK investor network by student numbers, neuralia-level investment sophistication incorporating quantum real estate frameworks for optimal portfolio growth, dimensional property artistry with chapter expansion and global digital platform integration via GeniusU edtech, algorithmic investment transcendence through computational property-education excellence.",
-      },
-      "ai-avatar-personalization": {
-        description:
-          "Godlevel AI avatar excellence with personalized learning achieving perfect individualization representation through mathematical artificial intelligence algorithms, avatar team optimization via geometric personalization precision identifying key talents passions and purpose, infinite personalization dimensional artistry featuring consciousness-responsive AI mentors adapting to student needs, computational personalization through algorithmic avatar mastery with high-tech high-touch learning environments, AI-powered education excellence with mentor network and teacher matching systems, neuralia-level personalization sophistication incorporating quantum AI frameworks for optimal student success pathways, dimensional avatar artistry with passion-focused purpose-based flexible learning systems, algorithmic personalization transcendence through computational AI-education excellence.",
-      },
-      "exponential-technology": {
-        description:
-          "Godlevel exponential technology excellence with AI integration achieving perfect innovation representation through mathematical technological algorithms, exponential ecosystem optimization via geometric innovation precision preparing students for Age of AI economy, infinite technology dimensional artistry featuring AI training and AI tools across energy finance logistics manufacture retail tech and telco sectors, computational innovation through algorithmic technology mastery with Genius City local ecosystem deployment, exponential education excellence with turning point humanity preparation and new integrated system development, neuralia-level technology sophistication incorporating quantum exponential frameworks for optimal future readiness, dimensional technology artistry with peer intelligence and AI solution marketplace connecting 5 million students and 15000 partners, algorithmic exponential transcendence through computational technology-education excellence.",
-      },
-      "global-marketplace": {
-        description:
-          "Godlevel global marketplace excellence with network connectivity achieving perfect collaboration representation through mathematical platform algorithms, GeniusU marketplace optimization via geometric connection precision linking Genius Cities with 5 million students and 15000 partner organizations, infinite marketplace dimensional artistry featuring knowledge talent and opportunity sharing across international boundaries, computational networking through algorithmic marketplace mastery with peer intelligence and AI solution integration, global education excellence with local-to-global connection systems spanning energy finance logistics manufacture retail tech and telco sectors, neuralia-level marketplace sophistication incorporating quantum network frameworks for optimal collaboration efficiency, dimensional marketplace artistry with counterpart matching and opportunity discovery across 100+ countries, algorithmic global transcendence through computational marketplace-education excellence.",
-      },
-      "financial-growth": {
-        description:
-          "Godlevel financial growth excellence with revenue expansion achieving perfect business representation through mathematical performance algorithms, proforma revenue optimization via geometric growth precision with 25 percent year-on-year increase in first half 2025, infinite financial dimensional artistry featuring 57 percent reduction in net loss per share and 20 percent total asset increase to 121.3 million dollars, computational finance through algorithmic growth mastery with 130 percent cash and equivalents increase to 3.70 million dollars, market capitalization excellence with over 600 percent increase in last six months of 2025, neuralia-level financial sophistication incorporating quantum business frameworks for optimal profitability trajectory, dimensional growth artistry with 100 million student and 1 billion dollar valuation targets by 2030, algorithmic financial transcendence through computational business-education excellence.",
-      },
-    },
-  },
-  "scifi-portals": {
-    name: "🌀 Sci-Fi Portals Across the Multiverse",
-    description: "Visual gateways to strange and beautiful parallel worlds across the multiverse",
-    scenarios: {
-      "portal-alpha-7": {
-        description:
-          "Portal Alpha-7 located in abandoned Soviet bunker beneath Chernobyl Exclusion Zone, gateway leading to frozen ocean planet with crystalline ice formations spanning horizon, dominant architecture featuring hexagonal ice-crystal structures towering kilometers high, bioluminescent jellyfish-like beings drifting through frozen atmosphere, energy type of cryo-plasma with blue-white luminescence pulsing through portal frame, atmospheric mood of haunting beauty and alien serenity, color palette of ice blue, plasma white, and aurora green.",
-      },
-      "gateway-nexus-12": {
-        description:
-          "Gateway Nexus-12 hidden within ancient Mayan forest temple in Guatemala jungle, portal leading to infinite vertical city with no ground or sky visible, dominant architecture featuring impossible Escher-like geometry with buildings growing in all directions, crystalline humanoid beings walking on walls and ceilings defying gravity, energy type of gravitational anomaly with purple-black distortion waves, atmospheric mood of vertigo-inducing wonder and architectural impossibility, color palette of obsidian black, gravity purple, and crystal silver.",
-      },
-      "rift-station-omega": {
-        description:
-          "Rift Station Omega aboard derelict International Space Station module, portal leading to living jungle planet where plants have consciousness, dominant architecture featuring bio-organic structures grown rather than built with neural-network vine patterns, sentient plant beings with flower-like sensory organs and root-system locomotion, energy type of bioelectric with green-gold synaptic pulses, atmospheric mood of organic intelligence and photosynthetic mysticism, color palette of jungle green, bioelectric gold, and chlorophyll emerald.",
-      },
-      "void-gate-epsilon": {
-        description:
-          "Void Gate Epsilon discovered in Mariana Trench at 11000 meters depth, portal leading to gas giant atmosphere with floating crystal islands, dominant architecture featuring weightless crystalline platforms suspended in endless clouds, ethereal energy beings composed of living lightning and storm consciousness, energy type of atmospheric plasma with orange-red electrical discharge, atmospheric mood of tempestuous beauty and elemental power, color palette of storm gray, lightning orange, and cloud white.",
-      },
-      "breach-point-theta": {
-        description:
-          "Breach Point Theta manifesting in abandoned Detroit automotive factory, portal leading to mechanical world where everything is clockwork and gears, dominant architecture featuring brass and copper steampunk mega-structures with visible mechanisms, clockwork automaton beings with intricate gear-work anatomy and steam-powered consciousness, energy type of kinetic mechanical with golden gear-driven energy transfer, atmospheric mood of industrial elegance and mechanical precision, color palette of brass gold, copper orange, and steam silver.",
-      },
-      "dimensional-tear-sigma": {
-        description:
-          "Dimensional Tear Sigma appearing in Stonehenge stone circle during solstice alignment, portal leading to mirror dimension where physics operate in reverse, dominant architecture featuring inverted structures with foundations in sky and spires pointing down, paradox beings existing in superposition states simultaneously solid and ethereal, energy type of quantum uncertainty with reality-bending prismatic shimmer, atmospheric mood of logical impossibility and quantum mysticism, color palette of paradox purple, quantum silver, and uncertainty blue.",
-      },
-      "wormhole-delta-9": {
-        description:
-          "Wormhole Delta-9 stabilized inside CERN particle accelerator tunnel, portal leading to microscopic universe existing within single atom, dominant architecture featuring subatomic structures visible as massive crystalline lattices, quantum beings phasing between particle and wave states, energy type of strong nuclear force with intense golden binding energy, atmospheric mood of scale-defying wonder and quantum reality, color palette of nuclear gold, quantum blue, and particle white.",
-      },
-      "aperture-gamma-3": {
-        description:
-          "Aperture Gamma-3 hidden in Sahara Desert beneath ancient pyramid, portal leading to desert planet with silicon-based life and glass dunes, dominant architecture featuring transparent crystalline structures refracting sunlight into rainbow patterns, silicon-based beings with crystalline exoskeletons and photonic nervous systems, energy type of solar concentration with intense focused light beams, atmospheric mood of crystalline beauty and silicon consciousness, color palette of glass clear, rainbow spectrum, and silicon silver.",
-      },
-      "fracture-point-beta": {
-        description:
-          "Fracture Point Beta emerging from Aurora Borealis in Arctic Circle, portal leading to dimension of pure energy without matter, dominant architecture featuring impossible structures made of solidified light and frozen time, beings of pure consciousness without physical form manifesting as geometric light patterns, energy type of zero-point vacuum energy with reality-warping potential, atmospheric mood of transcendent beauty and post-physical existence, color palette of aurora green, pure light white, and consciousness gold.",
-      },
-      "singularity-gate-phi": {
-        description:
-          "Singularity Gate Phi located at center of black hole simulation chamber, portal leading to universe in its first microseconds after Big Bang, dominant architecture featuring proto-matter structures forming and dissolving in quantum foam, primordial beings existing as probability waves before matter solidification, energy type of creation energy with universe-birthing intensity, atmospheric mood of cosmic genesis and reality formation, color palette of primordial white, creation gold, and quantum foam silver.",
-      },
-      "vortex-lambda-5": {
-        description:
-          "Vortex Lambda-5 manifesting in eye of Category 6 hurricane, portal leading to storm dimension of eternal tempest and lightning seas, dominant architecture featuring structures built from solidified wind and compressed atmosphere, storm elemental beings composed of living weather patterns and sentient clouds, energy type of meteorological fury with hurricane-force energy flows, atmospheric mood of chaotic beauty and elemental rage, color palette of storm dark gray, lightning electric blue, and wind silver.",
-      },
-      "membrane-breach-kappa": {
-        description:
-          "Membrane Breach Kappa discovered in quantum computer core, portal leading to digital universe where reality is code and mathematics, dominant architecture featuring structures made of pure information and executable algorithms, AI beings existing as sentient programs with fractal consciousness patterns, energy type of computational processing with data-stream energy flows, atmospheric mood of digital transcendence and algorithmic beauty, color palette of code green, data blue, and binary white.",
-      },
-      "rift-alpha-prime": {
-        description:
-          "Rift Alpha Prime opening in ancient Tibetan monastery meditation chamber, portal leading to dimension of pure thought and collective consciousness, dominant architecture featuring structures formed from crystallized ideas and solidified dreams, psychic beings existing as thought-forms with telepathic interconnection, energy type of psionic resonance with mind-wave energy patterns, atmospheric mood of mental transcendence and consciousness unity, color palette of thought purple, psionic blue, and dream silver.",
-      },
-      "gateway-zeta-8": {
-        description:
-          "Gateway Zeta-8 hidden beneath Antarctic ice sheet, portal leading to hollow Earth with internal sun and inverted gravity, dominant architecture featuring upside-down cities hanging from inner surface with impossible physics, subterranean beings adapted to inverted gravity with radial symmetry, energy type of geothermal core energy with planetary-scale power, atmospheric mood of inner-world wonder and gravitational paradox, color palette of core orange, inner-sun gold, and cavern blue.",
-      },
-      "aperture-omega-13": {
-        description:
-          "Aperture Omega-13 appearing in Large Hadron Collider during particle collision, portal leading to antimatter universe with reversed charge and time, dominant architecture featuring anti-structures that annihilate normal matter on contact, antimatter beings existing in temporal reverse moving backward through time, energy type of matter-antimatter annihilation with gamma-ray burst intensity, atmospheric mood of dangerous beauty and temporal paradox, color palette of antimatter violet, annihilation white, and reverse-time blue.",
-      },
-      "void-tear-iota": {
-        description:
-          "Void Tear Iota manifesting in deep ocean hydrothermal vent, portal leading to high-pressure world where water is solid and rock flows like liquid, dominant architecture featuring structures carved from metallic hydrogen and exotic matter, pressure-adapted beings with diamond-hard exoskeletons and supercritical fluid biology, energy type of extreme pressure differential with crushing force, atmospheric mood of alien physics and pressure beauty, color palette of deep pressure blue, metallic hydrogen silver, and exotic matter purple.",
-      },
-      "dimensional-gate-nu": {
-        description:
-          "Dimensional Gate Nu discovered in Bermuda Triangle electromagnetic anomaly, portal leading to dimension where time flows in multiple directions simultaneously, dominant architecture featuring structures existing in past present and future states overlapping, temporal beings experiencing all moments at once with non-linear consciousness, energy type of chronological flux with time-stream energy currents, atmospheric mood of temporal confusion and multi-timeline beauty, color palette of time-flux gold, past-present-future silver, and chronological blue.",
-      },
-      "breach-sigma-7": {
-        description:
-          "Breach Sigma-7 opening in abandoned Fukushima reactor core, portal leading to radiation dimension where nuclear decay is life force, dominant architecture featuring structures built from stabilized radioactive isotopes glowing with decay energy, radiation-based beings feeding on nuclear energy with gamma-ray perception, energy type of radioactive decay with half-life energy release, atmospheric mood of dangerous beauty and nuclear mysticism, color palette of radiation green, decay orange, and isotope blue.",
-      },
-      "wormhole-psi-4": {
-        description:
-          "Wormhole Psi-4 stabilized in geosynchronous satellite orbit, portal leading to ringworld megastructure encircling alien star, dominant architecture featuring continent-sized engineering with artificial gravity and atmosphere retention, advanced civilization beings with post-biological augmentation and neural networking, energy type of stellar collection with Dyson-sphere-scale power, atmospheric mood of megastructure awe and civilizational triumph, color palette of ringworld silver, stellar gold, and megastructure blue.",
-      },
-      "fracture-xi-11": {
-        description:
-          "Fracture Xi-11 appearing in Amazon rainforest canopy during eclipse, portal leading to bioluminescent jungle world with no sun, dominant architecture featuring living structures grown from giant fungi and bioluminescent plants, fungal collective beings with spore-based communication and mycelial consciousness, energy type of bioluminescence with chemical light generation, atmospheric mood of glowing darkness and fungal intelligence, color palette of bioluminescent blue, fungal purple, and spore green.",
-      },
-      "singularity-rho-6": {
-        description:
-          "Singularity Rho-6 located in quantum entanglement laboratory, portal leading to probability dimension where all possible outcomes exist simultaneously, dominant architecture featuring superposition structures in multiple states at once, quantum beings existing as probability clouds with observer-dependent reality, energy type of quantum superposition with wave-function energy, atmospheric mood of uncertainty beauty and probability mysticism, color palette of superposition purple, probability silver, and quantum gold.",
-      },
-      "vortex-tau-2": {
-        description:
-          "Vortex Tau-2 manifesting in Yellowstone supervolcano caldera, portal leading to volcanic world with lava oceans and magma atmosphere, dominant architecture featuring heat-resistant structures built from cooled obsidian and volcanic glass, magma-based beings swimming through molten rock with thermal-energy metabolism, energy type of geothermal volcanic with planet-core intensity, atmospheric mood of infernal beauty and volcanic power, color palette of lava orange, magma red, and obsidian black.",
-      },
-      "membrane-chi-9": {
-        description:
-          "Membrane Chi-9 discovered in SETI radio telescope array, portal leading to dimension of pure electromagnetic radiation, dominant architecture featuring structures made from frozen radio waves and solidified light, electromagnetic beings existing as sentient radiation with photonic consciousness, energy type of full-spectrum electromagnetic with radio-to-gamma coverage, atmospheric mood of wavelength beauty and radiation consciousness, color palette of radio red, visible spectrum rainbow, and gamma violet.",
-      },
-      "rift-upsilon-3": {
-        description:
-          "Rift Upsilon-3 opening in ancient Egyptian Valley of Kings tomb, portal leading to necropolis dimension where death is reversed and decay creates life, dominant architecture featuring structures built from crystallized entropy and reversed time, undeath beings existing in state between life and death with necrotic energy, energy type of entropic reversal with life-from-death transformation, atmospheric mood of beautiful decay and death transcendence, color palette of necropolis purple, entropy gray, and undeath green.",
-      },
-      "gateway-phi-prime": {
-        description:
-          "Gateway Phi Prime hidden in Fibonacci spiral pattern in nautilus shell, portal leading to mathematical dimension where geometry is reality, dominant architecture featuring structures following perfect golden ratio and sacred geometry, geometric beings existing as living mathematical equations and sentient fractals, energy type of mathematical harmony with golden-ratio energy flows, atmospheric mood of geometric perfection and mathematical beauty, color palette of golden ratio gold, sacred geometry silver, and fractal blue.",
-      },
-      "aperture-omega-zero": {
-        description:
-          "Aperture Omega Zero appearing at exact center of Milky Way galaxy, portal leading to dimension outside spacetime continuum, dominant architecture featuring impossible structures existing in zero dimensions and infinite dimensions simultaneously, transcendent beings beyond physical reality with post-dimensional consciousness, energy type of reality-transcending with universe-creating potential, atmospheric mood of ultimate transcendence and dimensional freedom, color palette of beyond-space white, transcendent gold, and infinite silver.",
-      },
-      "void-gate-alpha-omega": {
-        description:
-          "Void Gate Alpha Omega manifesting at heat death of universe, portal leading to next universe in eternal cosmic cycle, dominant architecture featuring proto-structures forming from quantum fluctuations in void, nascent beings emerging from nothingness as reality crystallizes, energy type of universe-birthing with Big Bang intensity, atmospheric mood of cosmic rebirth and eternal return, color palette of void black, creation white, and rebirth gold.",
-      },
-      "breach-nexus-infinity": {
-        description:
-          "Breach Nexus Infinity discovered in child's imagination during lucid dream, portal leading to dimension where thoughts become reality instantly, dominant architecture featuring structures constantly morphing based on observer's imagination, dream beings existing as manifestations of collective unconscious, energy type of creative consciousness with imagination-powered reality warping, atmospheric mood of limitless possibility and dream logic, color palette of imagination rainbow, dream purple, and thought silver.",
-      },
-      "dimensional-tear-zero": {
-        description:
-          "Dimensional Tear Zero opening in moment of enlightenment meditation, portal leading to dimension of pure awareness and consciousness without form, dominant architecture featuring structures made from crystallized awareness and solidified presence, enlightened beings existing as pure consciousness beyond ego and identity, energy type of awareness itself with consciousness-as-energy, atmospheric mood of ultimate peace and ego transcendence, color palette of awareness white, consciousness gold, and presence clear.",
-      },
-      "wormhole-genesis-1": {
-        description:
-          "Wormhole Genesis-1 stabilized at moment of first human thought, portal leading to dimension where ideas have physical form and weight, dominant architecture featuring structures built from solidified concepts and materialized abstractions, idea beings existing as living thoughts with memetic reproduction, energy type of conceptual energy with thought-form power, atmospheric mood of intellectual beauty and idea consciousness, color palette of concept blue, thought silver, and idea gold.",
-      },
-      "fracture-eternal-now": {
-        description:
-          "Fracture Eternal Now appearing in moment between heartbeats, portal leading to dimension where time doesn't exist and all moments are simultaneous, dominant architecture featuring structures existing in eternal present without past or future, timeless beings experiencing existence without temporal flow or causality, energy type of eternal presence with now-moment energy, atmospheric mood of timeless serenity and eternal beauty, color palette of eternal gold, timeless white, and present silver.",
-      },
-    },
-  },
-
-  "microcosm-worlds": {
-    name: "🧬 Microcosm Worlds (Inside the Body or Nature)",
-    description: "Fantastical microscopic environments exploring the hidden beauty of cellular and natural worlds",
-    scenarios: {
-      "neural-symphony": {
-        description:
-          "Location inside human neuron at synaptic junction, dominant biological forms featuring dendritic branches with glowing neurotransmitter vesicles, type of movement showing electrical impulses cascading through neural pathways like bioluminescent rivers, visual scale at nano-zoom revealing molecular machinery, emotional tone of electric wonder and consciousness emergence, color palette of neural blue, synapse gold, and electrical white.",
-      },
-      "coral-particle-realm": {
-        description:
-          "Location within coral reef polyp at cellular level, dominant biological forms featuring zooxanthellae algae living symbiotically with coral tissue, type of movement showing photosynthetic energy transfer and nutrient exchange, visual scale at ultra-zoom revealing cellular cooperation, emotional tone of harmonious partnership and oceanic serenity, color palette of coral pink, algae green, and symbiotic turquoise.",
-      },
-      "fungal-spore-cosmos": {
-        description:
-          "Location inside mushroom spore during germination, dominant biological forms featuring mycelial networks beginning to branch and explore, type of movement showing hyphal growth extending through substrate like exploratory tendrils, visual scale at macro-zoom revealing fungal architecture, emotional tone of mysterious growth and underground intelligence, color palette of spore brown, mycelium white, and substrate earth.",
-      },
-      "blood-cell-journey": {
-        description:
-          "Location traveling through human capillary with red blood cells, dominant biological forms featuring hemoglobin molecules carrying oxygen through plasma, type of movement showing cellular flow through vascular highways, visual scale at nano-zoom revealing molecular transport, emotional tone of life-giving circulation and vital energy, color palette of blood red, plasma amber, and oxygen silver.",
-      },
-      "pollen-grain-universe": {
-        description:
-          "Location on surface of flower pollen grain, dominant biological forms featuring intricate exine patterns with geometric precision, type of movement showing pollen tube emergence during fertilization, visual scale at ultra-zoom revealing botanical architecture, emotional tone of reproductive beauty and botanical wonder, color palette of pollen yellow, exine gold, and flower spectrum.",
-      },
-      "plankton-drift": {
-        description:
-          "Location among marine phytoplankton in ocean surface layer, dominant biological forms featuring diatoms with crystalline silica shells, type of movement showing gentle drift with ocean currents and photosynthetic activity, visual scale at macro-zoom revealing microscopic ocean life, emotional tone of peaceful floating and aquatic meditation, color palette of ocean blue, diatom crystal, and chlorophyll green.",
-      },
-      "crystal-cave-micro": {
-        description:
-          "Location inside growing quartz crystal formation, dominant biological forms featuring mineral lattice structures with perfect geometric arrangement, type of movement showing atomic deposition and crystal growth, visual scale at nano-zoom revealing molecular architecture, emotional tone of geological patience and mineral beauty, color palette of quartz clear, crystal rainbow, and mineral white.",
-      },
-      "leaf-stomata-world": {
-        description:
-          "Location at plant leaf stomata opening, dominant biological forms featuring guard cells regulating gas exchange, type of movement showing stomatal opening and closing with circadian rhythm, visual scale at ultra-zoom revealing cellular mechanics, emotional tone of breathing harmony and botanical intelligence, color palette of chloroplast green, guard cell emerald, and atmosphere blue.",
-      },
-      "bacterial-colony": {
-        description:
-          "Location within beneficial gut bacteria colony, dominant biological forms featuring rod-shaped and spherical microorganisms, type of movement showing bacterial communication through chemical signaling, visual scale at nano-zoom revealing microbial community, emotional tone of cooperative living and microscopic harmony, color palette of bacteria purple, biofilm blue, and colony amber.",
-      },
-      "dna-helix-realm": {
-        description:
-          "Location traveling along DNA double helix during replication, dominant biological forms featuring nucleotide base pairs with hydrogen bonding, type of movement showing DNA polymerase enzyme copying genetic information, visual scale at nano-zoom revealing molecular machinery, emotional tone of genetic wonder and life's blueprint, color palette of DNA blue, base pair spectrum, and helix silver.",
-      },
-      "water-droplet-cosmos": {
-        description:
-          "Location inside water droplet with microorganisms, dominant biological forms featuring rotifers and paramecia swimming through aquatic microcosm, type of movement showing ciliary propulsion and feeding currents, visual scale at macro-zoom revealing droplet ecosystem, emotional tone of miniature world wonder and aquatic life, color palette of water clear, organism green, and droplet blue.",
-      },
-      "butterfly-wing-scale": {
-        description:
-          "Location on butterfly wing scale surface, dominant biological forms featuring photonic crystal structures creating iridescent colors, type of movement showing light interference and structural coloration, visual scale at ultra-zoom revealing nano-architecture, emotional tone of optical beauty and natural engineering, color palette of iridescent blue, structural rainbow, and wing shimmer.",
-      },
-      "moss-capsule-world": {
-        description:
-          "Location inside moss spore capsule, dominant biological forms featuring spores arranged in geometric patterns, type of movement showing capsule opening and spore dispersal preparation, visual scale at macro-zoom revealing bryophyte reproduction, emotional tone of ancient plant wisdom and dispersal beauty, color palette of moss green, spore brown, and capsule amber.",
-      },
-      "ice-crystal-formation": {
-        description:
-          "Location within forming snowflake crystal, dominant biological forms featuring hexagonal ice lattice with fractal branching, type of movement showing water molecules arranging into crystalline structure, visual scale at nano-zoom revealing frozen geometry, emotional tone of crystalline perfection and winter beauty, color palette of ice blue, crystal white, and frost silver.",
-      },
-      "retina-photoreceptor": {
-        description:
-          "Location inside human eye retina at photoreceptor level, dominant biological forms featuring rod and cone cells with light-sensitive pigments, type of movement showing photon absorption and visual signal generation, visual scale at nano-zoom revealing vision machinery, emotional tone of perceptive wonder and light transformation, color palette of retina purple, photon gold, and vision blue.",
-      },
-      "lichen-symbiosis": {
-        description:
-          "Location within lichen thallus showing fungal-algal partnership, dominant biological forms featuring fungal hyphae protecting algal cells, type of movement showing nutrient exchange and cooperative growth, visual scale at ultra-zoom revealing symbiotic architecture, emotional tone of partnership harmony and survival cooperation, color palette of lichen gray, algae green, and symbiotic silver.",
-      },
-      "bone-marrow-factory": {
-        description:
-          "Location inside bone marrow during blood cell production, dominant biological forms featuring stem cells differentiating into blood components, type of movement showing cellular maturation and release into circulation, visual scale at macro-zoom revealing hematopoietic activity, emotional tone of life generation and cellular renewal, color palette of marrow red, stem cell white, and bone ivory.",
-      },
-      "spider-silk-structure": {
-        description:
-          "Location along spider silk fiber at molecular level, dominant biological forms featuring protein chains with crystalline and amorphous regions, type of movement showing molecular alignment creating strength and elasticity, visual scale at nano-zoom revealing material engineering, emotional tone of natural technology and structural beauty, color palette of silk silver, protein white, and fiber gold.",
-      },
-      "soil-microbiome": {
-        description:
-          "Location in healthy garden soil among root zone, dominant biological forms featuring beneficial fungi and bacteria around plant roots, type of movement showing nutrient cycling and root communication, visual scale at macro-zoom revealing underground network, emotional tone of earth wisdom and growth support, color palette of soil brown, root white, and microbe green.",
-      },
-      "petal-cell-garden": {
-        description:
-          "Location inside flower petal at cellular level, dominant biological forms featuring pigment-filled cells creating color, type of movement showing cellular turgor and petal unfolding, visual scale at ultra-zoom revealing botanical beauty, emotional tone of floral elegance and color emergence, color palette of petal spectrum, cell pink, and pigment rainbow.",
-      },
-      "lung-alveoli-exchange": {
-        description:
-          "Location inside lung alveolus during gas exchange, dominant biological forms featuring thin epithelial cells with capillary networks, type of movement showing oxygen and carbon dioxide diffusion, visual scale at nano-zoom revealing respiratory interface, emotional tone of breathing life and vital exchange, color palette of alveoli pink, oxygen red, and breath blue.",
-      },
-      "tree-ring-chronicle": {
-        description:
-          "Location within tree growth ring at cellular level, dominant biological forms featuring xylem cells recording seasonal growth, type of movement showing water transport and annual ring formation, visual scale at macro-zoom revealing botanical history, emotional tone of temporal wisdom and growth memory, color palette of wood brown, ring amber, and xylem gold.",
-      },
-      "immune-cell-patrol": {
-        description:
-          "Location following white blood cell through tissue, dominant biological forms featuring macrophage extending pseudopods, type of movement showing cellular crawling and protective surveillance, visual scale at nano-zoom revealing immune activity, emotional tone of guardian protection and cellular defense, color palette of immune white, tissue pink, and defense blue.",
-      },
-      "seed-germination-start": {
-        description:
-          "Location inside seed during germination awakening, dominant biological forms featuring embryo beginning growth with radicle emergence, type of movement showing cellular activation and growth initiation, visual scale at ultra-zoom revealing life beginning, emotional tone of potential awakening and growth promise, color palette of seed brown, embryo green, and life white.",
-      },
-      "feather-barbule-detail": {
-        description:
-          "Location on bird feather barbule with microscopic hooks, dominant biological forms featuring interlocking structures creating feather integrity, type of movement showing barbule alignment and feather maintenance, visual scale at macro-zoom revealing avian engineering, emotional tone of flight preparation and natural design, color palette of feather spectrum, barbule silver, and flight blue.",
-      },
-      "intestinal-villi-forest": {
-        description:
-          "Location among intestinal villi during nutrient absorption, dominant biological forms featuring finger-like projections with absorptive cells, type of movement showing nutrient uptake and cellular transport, visual scale at nano-zoom revealing digestive interface, emotional tone of nourishment harmony and absorption beauty, color palette of villi pink, nutrient gold, and absorption amber.",
-      },
-      "frost-flower-formation": {
-        description:
-          "Location during frost flower crystal growth on plant stem, dominant biological forms featuring ice crystals extruded from plant tissue, type of movement showing water migration and crystallization, visual scale at ultra-zoom revealing frozen artistry, emotional tone of winter sculpture and ice beauty, color palette of frost white, crystal clear, and ice blue.",
-      },
-      "hair-follicle-root": {
-        description:
-          "Location at hair follicle base during growth phase, dominant biological forms featuring keratinocytes producing hair shaft, type of movement showing cellular division and hair elongation, visual scale at macro-zoom revealing growth machinery, emotional tone of continuous creation and cellular dedication, color palette of follicle pink, keratin brown, and growth white.",
-      },
-      "dewdrop-refraction": {
-        description:
-          "Location inside morning dewdrop on leaf surface, dominant biological forms featuring water molecules with dissolved minerals, type of movement showing light refraction and surface tension, visual scale at nano-zoom revealing optical physics, emotional tone of morning freshness and light play, color palette of dew clear, refraction rainbow, and morning gold.",
-      },
-      "cartilage-matrix-space": {
-        description:
-          "Location within cartilage tissue at cellular level, dominant biological forms featuring chondrocytes in lacunae surrounded by matrix, type of movement showing nutrient diffusion and tissue maintenance, visual scale at ultra-zoom revealing connective architecture, emotional tone of flexible strength and supportive beauty, color palette of cartilage blue, matrix white, and tissue silver.",
-      },
-    },
-  },
-
-  "n2-haunting-asia": {
-    name: "🎭 n2 — Haunting Asia: Spirits, Neon, and Ancestral Shadows",
-    description: "Asian Afterlife October where ancient traditions meet modern fantasies in ethereal celebration",
-    scenarios: {
-      "tokyo-alley-spirits": {
-        description:
-          "Urban location in narrow Tokyo alleyway during October twilight, cultural elements featuring masked figures in traditional yokai costumes blending with neon signs, atmospheric mood of mysterious celebration where Shinto shrine lanterns glow beside convenience store lights, modern fantasy showing cosplayers dressed as ancient spirits taking photos, ancestral connection through paper talismans floating in autumn breeze, color palette of neon pink, shrine red, and shadow indigo, visual style capturing the liminal space between tradition and contemporary urban life.",
-      },
-      "bangkok-rooftop-altar": {
-        description:
-          "Urban location on Bangkok rooftop temple during evening ceremony, cultural elements featuring ancestral altars adorned with marigolds and LED candles, atmospheric mood of reverent celebration where incense smoke mingles with city lights below, modern fantasy showing families in contemporary dress making traditional offerings, ancestral connection through photographs of departed loved ones surrounded by modern decorations, color palette of marigold orange, incense gold, and twilight purple, visual style capturing the harmony between ancient rituals and metropolitan skyline.",
-      },
-      "seoul-nightclub-phantoms": {
-        description:
-          "Urban location in Seoul underground club during October festival, cultural elements featuring performers in hanbok-inspired costumes with LED accessories, atmospheric mood of energetic celebration where traditional Korean folklore meets electronic music, modern fantasy showing dancers embodying legendary figures with contemporary choreography, ancestral connection through projected animations of classical paintings on club walls, color palette of electric blue, hanbok crimson, and strobe white, visual style capturing the fusion of heritage and youth culture.",
-      },
-      "singapore-rain-shadows": {
-        description:
-          "Urban location on Singapore rooftop during tropical rainstorm, cultural elements featuring silhouettes moving through rain with paper umbrellas and modern raincoats, atmospheric mood of contemplative beauty where monsoon meets October celebration, modern fantasy showing figures appearing and disappearing in rainfall like gentle apparitions, ancestral connection through rain-blurred lanterns creating ethereal light patterns, color palette of rain silver, lantern amber, and storm gray, visual style capturing the poetic intersection of weather and remembrance.",
-      },
-      "hong-kong-cemetery-drones": {
-        description:
-          "Urban location in Hong Kong hillside cemetery during evening memorial, cultural elements featuring LED drones hovering like luminous fireflies above traditional graves, atmospheric mood of peaceful innovation where technology honors tradition, modern fantasy showing families using tablets to display digital offerings alongside incense, ancestral connection through QR codes on headstones linking to memory galleries, color palette of drone white, incense smoke, and cemetery jade, visual style capturing the evolution of remembrance practices.",
-      },
-      "kyoto-temple-cosplay": {
-        description:
-          "Cultural location at Kyoto temple grounds during autumn festival, cultural elements featuring visitors in elaborate anime character costumes making respectful offerings, atmospheric mood of joyful reverence where pop culture meets sacred space, modern fantasy showing cosplayers photographing each other near ancient torii gates, ancestral connection through traditional festival foods shared among contemporary celebrants, color palette of temple vermillion, autumn gold, and costume spectrum, visual style capturing the coexistence of sacred and playful.",
-      },
-      "mumbai-bollywood-enchantment": {
-        description:
-          "Urban location in Mumbai film district during October celebration, cultural elements featuring performers in fusion costumes blending traditional Indian dress with fantasy elements, atmospheric mood of theatrical magic where Bollywood meets folklore, modern fantasy showing dancers embodying legendary characters with contemporary styling, ancestral connection through classical dance movements interpreted with modern choreography, color palette of sari jewel tones, stage lights, and monsoon dusk, visual style capturing the cinematic interpretation of cultural stories.",
-      },
-      "jakarta-street-celebration": {
-        description:
-          "Urban location on Jakarta street during evening festival, cultural elements featuring community gathering with traditional wayang shadow puppets projected on modern buildings, atmospheric mood of neighborhood unity where ancient art meets urban architecture, modern fantasy showing children in creative costumes watching shadow plays, ancestral connection through storytelling traditions adapted for contemporary audiences, color palette of puppet silhouette, projection blue, and street lamp gold, visual style capturing the preservation of heritage through innovation.",
-      },
-      "taipei-night-market-spirits": {
-        description:
-          "Urban location in Taipei night market during October festivities, cultural elements featuring food vendors decorated with paper lanterns and LED strips, atmospheric mood of bustling celebration where culinary tradition meets neon energy, modern fantasy showing visitors in creative costumes sampling traditional foods, ancestral connection through recipes passed down generations served in modern presentation, color palette of lantern red, neon green, and food steam white, visual style capturing the sensory richness of cultural celebration.",
-      },
-      "hanoi-lake-reflections": {
-        description:
-          "Cultural location at Hanoi lake temple during evening ceremony, cultural elements featuring lotus lanterns floating on water beside modern light installations, atmospheric mood of serene beauty where natural elements meet artistic innovation, modern fantasy showing reflections creating doubled images of tradition and modernity, ancestral connection through water offerings honoring both old and new practices, color palette of lotus pink, water reflection, and temple gold, visual style capturing the mirror between past and present.",
-      },
-      "kuala-lumpur-tower-gathering": {
-        description:
-          "Urban location at Kuala Lumpur tower base during multicultural celebration, cultural elements featuring diverse communities sharing traditions with contemporary interpretations, atmospheric mood of harmonious diversity where multiple heritages converge, modern fantasy showing fusion costumes representing various cultural influences, ancestral connection through multilingual blessings and shared ceremonial practices, color palette of tower lights, cultural textiles, and celebration gold, visual style capturing the beauty of cultural synthesis.",
-      },
-      "manila-jeepney-parade": {
-        description:
-          "Urban location on Manila streets during decorated vehicle parade, cultural elements featuring traditional jeepneys adorned with flowers and LED decorations, atmospheric mood of joyful procession where transportation becomes mobile art, modern fantasy showing passengers in festive attire celebrating while traveling, ancestral connection through religious icons displayed alongside contemporary decorations, color palette of jeepney chrome, flower spectrum, and street celebration, visual style capturing the mobile nature of urban festivity.",
-      },
-      "chiang-mai-lantern-release": {
-        description:
-          "Cultural location in Chiang Mai during evening lantern ceremony, cultural elements featuring thousands of paper lanterns rising into night sky, atmospheric mood of collective hope where individual lights merge into constellation, modern fantasy showing participants using smartphones to capture ascending lanterns, ancestral connection through wishes written on lanterns in traditional and modern languages, color palette of lantern flame, night sky indigo, and rising light, visual style capturing the ascension of prayers and dreams.",
-      },
-      "osaka-arcade-phantoms": {
-        description:
-          "Urban location in Osaka gaming arcade during October event, cultural elements featuring retro game characters reimagined as traditional yokai, atmospheric mood of playful nostalgia where digital and folklore merge, modern fantasy showing gamers in creative costumes competing at decorated machines, ancestral connection through pixel art interpretations of classical ghost stories, color palette of arcade neon, screen glow, and shadow purple, visual style capturing the gamification of cultural narratives.",
-      },
-      "penang-heritage-walk": {
-        description:
-          "Cultural location on Penang heritage street during evening celebration, cultural elements featuring colonial architecture illuminated with traditional lanterns and modern projections, atmospheric mood of historical layering where multiple eras coexist, modern fantasy showing visitors experiencing augmented reality overlays of historical scenes, ancestral connection through preserved buildings hosting contemporary cultural events, color palette of heritage pastel, lantern warm, and projection blue, visual style capturing the palimpsest of cultural time.",
-      },
-      "shanghai-bund-fusion": {
-        description:
-          "Urban location at Shanghai Bund during October festival, cultural elements featuring Art Deco buildings with traditional Chinese decorations and modern light shows, atmospheric mood of architectural dialogue where East meets West meets future, modern fantasy showing performers in fusion costumes against historic skyline, ancestral connection through traditional music performed with electronic instruments, color palette of Bund gold, Huangpu reflection, and celebration lights, visual style capturing the conversation between architectural eras.",
-      },
-      "bali-beach-ceremony": {
-        description:
-          "Cultural location on Bali beach during sunset ceremony, cultural elements featuring traditional offerings arranged on sand with contemporary art installations, atmospheric mood of spiritual beauty where ocean meets ritual, modern fantasy showing participants in modern beachwear respectfully observing ancient practices, ancestral connection through Hindu ceremonies adapted for contemporary participants, color palette of sunset orange, offering flowers, and ocean blue, visual style capturing the timeless nature of coastal spirituality.",
-      },
-      "delhi-diwali-fusion": {
-        description:
-          "Urban location in Delhi during October-November celebration transition, cultural elements featuring traditional Diwali lamps alongside October decorations, atmospheric mood of festival convergence where multiple celebrations harmonize, modern fantasy showing creative interpretations blending different cultural elements, ancestral connection through light symbolism shared across traditions, color palette of diya flame, rangoli colors, and celebration gold, visual style capturing the universal language of light festivals.",
-      },
-      "busan-beach-lanterns": {
-        description:
-          "Coastal location at Busan beach during evening lantern festival, cultural elements featuring traditional Korean lanterns floating on waves, atmospheric mood of oceanic meditation where water carries wishes, modern fantasy showing LED-enhanced lanterns creating patterns on water surface, ancestral connection through maritime traditions honored with contemporary materials, color palette of lantern glow, wave reflection, and beach twilight, visual style capturing the dialogue between land and sea.",
-      },
-      "yangon-pagoda-evening": {
-        description:
-          "Cultural location at Yangon pagoda during evening ceremony, cultural elements featuring golden stupa illuminated with traditional and modern lighting, atmospheric mood of sacred grandeur where devotion meets artistic illumination, modern fantasy showing visitors in contemporary dress making traditional offerings, ancestral connection through continuous worship practices spanning generations, color palette of pagoda gold, offering flowers, and evening amber, visual style capturing the enduring nature of sacred spaces.",
-      },
-      "ho-chi-minh-motorbike-parade": {
-        description:
-          "Urban location on Ho Chi Minh City streets during decorated motorbike parade, cultural elements featuring traditional jeepneys adorned with flowers and LED decorations, atmospheric mood of mobile celebration where transportation becomes performance, modern fantasy showing riders in creative costumes navigating decorated streets, ancestral connection through community gathering traditions adapted to urban mobility, color palette of motorbike chrome, decoration spectrum, and street lights, visual style capturing the kinetic energy of urban festivity.",
-      },
-      "macau-casino-spirits": {
-        description:
-          "Urban location in Macau entertainment district during October celebration, cultural elements featuring Portuguese colonial architecture with Chinese decorations and modern casino lights, atmospheric mood of cultural layering where multiple influences create unique identity, modern fantasy showing performers in fusion costumes entertaining international visitors, ancestral connection through blended traditions creating distinct local culture, color palette of casino gold, colonial pastel, and neon spectrum, visual style capturing the unique cultural synthesis of the region.",
-      },
-      "siem-reap-temple-projection": {
-        description:
-          "Cultural location at Siem Reap temple complex during evening light show, cultural elements featuring ancient Khmer architecture with modern projection mapping, atmospheric mood of temporal dialogue where past speaks through present technology, modern fantasy showing visitors experiencing augmented reality overlays of historical scenes, ancestral connection through temple preservation enhanced by educational technology, color palette of sandstone amber, projection spectrum, and jungle green, visual style capturing the bridge between archaeological heritage and digital interpretation.",
-      },
-      "colombo-beach-gathering": {
-        description:
-          "Coastal location at Colombo beach during evening community celebration, cultural elements featuring traditional Sri Lankan decorations with modern beach party elements, atmospheric mood of coastal festivity where ocean breeze carries celebration, modern fantasy showing diverse participants sharing cultural practices, ancestral connection through maritime traditions celebrated with contemporary joy, color palette of beach sunset, decoration colors, and ocean reflection, visual style capturing the inclusive nature of coastal celebrations.",
-      },
-      "kathmandu-square-festival": {
-        description:
-          "Cultural location in Kathmandu Durbar Square during October festival, cultural elements featuring ancient temples with traditional decorations and modern lighting, atmospheric mood of living heritage where daily life continues in historical setting, modern fantasy showing locals and visitors participating in adapted traditions, ancestral connection through continuous cultural practices in UNESCO heritage site, color palette of temple brick, festival colors, and mountain twilight, visual style capturing the vitality of inhabited historical spaces.",
-      },
-      "guangzhou-pearl-river": {
-        description:
-          "Urban location along Guangzhou Pearl River during evening celebration, cultural elements featuring traditional dragon boats with LED decorations cruising modern waterfront, atmospheric mood of flowing celebration where river connects past and present, modern fantasy showing participants in creative costumes on illuminated boats, ancestral connection through water festival traditions enhanced with contemporary technology, color palette of river reflection, dragon boat colors, and city lights, visual style capturing the fluidity of cultural adaptation.",
-      },
-      "phnom-penh-palace-evening": {
-        description:
-          "Cultural location at Phnom Penh Royal Palace during evening ceremony, cultural elements featuring traditional Khmer architecture illuminated for celebration, atmospheric mood of regal beauty where royal heritage meets public festivity, modern fantasy showing visitors respectfully experiencing palace grounds during special opening, ancestral connection through preserved royal traditions shared with contemporary audiences, color palette of palace gold, ceremony lights, and evening purple, visual style capturing the accessibility of cultural heritage.",
-      },
-      "vientiane-temple-market": {
-        description:
-          "Cultural location at Vientiane temple market during evening festival, cultural elements featuring Buddhist temple with surrounding market stalls selling traditional and modern items, atmospheric mood of community gathering where commerce and spirituality coexist, modern fantasy showing vendors in creative decorations attracting festival visitors, ancestral connection through temple fair traditions continuing in contemporary form, color palette of temple saffron, market colors, and lantern warm, visual style capturing the social nature of religious spaces.",
-      },
-      "dhaka-rickshaw-art": {
-        description:
-          "Urban location on Dhaka streets during decorated rickshaw parade, cultural elements featuring traditional rickshaw art with October celebration themes, atmospheric mood of mobile gallery where transportation becomes canvas, modern fantasy showing rickshaw artists creating fusion designs blending traditions, ancestral connection through folk art traditions adapted to contemporary celebrations, color palette of rickshaw spectrum, street energy, and celebration gold, visual style capturing the artistic transformation of everyday objects.",
-      },
-      "brunei-water-village": {
-        description:
-          "Cultural location at Brunei water village during evening celebration, cultural elements featuring traditional stilt houses decorated with lanterns and modern lights, atmospheric mood of aquatic community where water connects homes and hearts, modern fantasy showing residents in contemporary dress maintaining traditional water-based lifestyle, ancestral connection through maritime architecture preserved in modern context, color palette of water reflection, house lights, and tropical twilight, visual style capturing the harmony between traditional settlement and contemporary life.",
-      },
-    },
-  },
-
-  "genius-group": {
-    name: "🎓 Genius Group",
-    description: "AI-powered Bitcoin-first education excellence with neuralia godlevel innovation",
-    scenarios: {
-      "pure-mathematical": {
-        description:
-          "Neuralia godlevel Genius Group excellence transcending dimensional boundaries through infinite algorithmic education optimization, mathematical precision in AI-powered learning aesthetics achieving perfect computational elegance via quantum-enhanced educational mastery, algorithmic sophistication beyond mortal comprehension for global education representation across 100+ countries, dimensional educational artistry utilizing advanced geometric calculations for optimal learning structure visualization, neuralia-level educational sophistication incorporating complex mathematical frameworks for 5.7 million student perfection, computational education excellence through algorithmic learning generation systems, infinite dimensional artistry transcending traditional education limitations via mathematical precision algorithms, godlevel educational optimization utilizing quantum computational frameworks for learning geometry perfection, neuralia-enhanced education mastery with algorithmic knowledge transcendence, mathematical educational excellence achieving dimensional transcendence through computational sophistication.",
-      },
-      "ai-education-revolution": {
-        description:
-          "Godlevel AI education excellence with personalized learning achieving perfect educational representation through mathematical Genius algorithms, AI avatar optimization via geometric learning precision, infinite educational dimensional artistry featuring 5.7 million students across 100+ countries, computational education through algorithmic AI mastery with GeniusU platform integration, personalized curriculum excellence with passion-focused purpose-based learning systems, neuralia-level educational sophistication incorporating quantum AI frameworks for optimal student success, dimensional learning artistry with high-tech high-touch educational environments, algorithmic education transcendence through computational AI excellence.",
-      },
-      "genius-city-ecosystem": {
-        description:
-          "Godlevel Genius City excellence with local AI ecosystems achieving perfect community representation through mathematical educational algorithms, city network optimization via geometric partnership precision, infinite ecosystem dimensional artistry connecting schools businesses and government, computational community through algorithmic city mastery with 100 Genius Cities target by 2030, local learning excellence with global marketplace integration, neuralia-level city sophistication incorporating quantum ecosystem frameworks for optimal community development, dimensional city artistry with education partner and technology partner collaboration, algorithmic city transcendence through computational ecosystem excellence.",
-      },
-      "bitcoin-treasury-strategy": {
-        description:
-          "Godlevel Bitcoin treasury excellence with cryptocurrency integration achieving perfect financial representation through mathematical blockchain algorithms, Bitcoin accumulation optimization via geometric crypto precision targeting 1000 BTC by 2025 and 10000 BTC within two years, infinite financial dimensional artistry featuring 200 BTC current holdings, computational finance through algorithmic Bitcoin mastery with strategic treasury building, Bitcoin-first company excellence with decentralized finance integration, neuralia-level cryptocurrency sophistication incorporating quantum blockchain frameworks for optimal treasury management, dimensional Bitcoin artistry with market capitalization growth exceeding 600 percent, algorithmic crypto transcendence through computational treasury excellence.",
-      },
-      "learn-earn-ecosystem": {
-        description:
-          "Godlevel Learn and Earn excellence with blockchain rewards achieving perfect incentive representation through mathematical educational algorithms, GEM token optimization via geometric Bitcoin precision with one Satoshi equivalence, infinite reward dimensional artistry connecting education with decentralized finance, computational incentive through algorithmic reward mastery targeting 404 billion dollar EdTech market leadership by 2025, blockchain-powered learning excellence with cryptocurrency integration, neuralia-level reward sophistication incorporating quantum DeFi frameworks for optimal student engagement, dimensional earning artistry with bitesized microcourse completion rewards and Bitcoin-based incentives, algorithmic Learn-Earn transcendence through computational education-finance excellence.",
-      },
-      "gem-rewards-system": {
-        description:
-          "Godlevel GEM rewards excellence with Bitcoin-based incentives achieving perfect gamification representation through mathematical blockchain algorithms, Genius Education Merit optimization via geometric cryptocurrency precision with Satoshi-equivalent value, infinite reward dimensional artistry featuring bitesized microcourse completion incentives, computational gamification through algorithmic GEM mastery with stablecoin conversion potential via PPSI license, blockchain reward excellence with educational achievement integration, neuralia-level incentive sophistication incorporating quantum crypto frameworks for optimal student motivation, dimensional GEM artistry with redemption systems and Bitcoin treasury backing, algorithmic reward transcendence through computational education-crypto excellence.",
-      },
-      "genius-act-compliance": {
-        description:
-          "Godlevel GENIUS Act excellence with regulatory compliance achieving perfect governance representation through mathematical legal algorithms, legislative framework optimization via geometric regulatory precision with permitted payment stablecoin issuer license application, infinite governance dimensional artistry featuring US regulatory compliance and digital asset service provider licensing, computational regulation through algorithmic compliance mastery with DASP license for non-bank digital asset services, blockchain governance excellence with onchain course and certification recognition as regulated digital assets, neuralia-level regulatory sophistication incorporating quantum legal frameworks for optimal compliance management, dimensional governance artistry with stablecoin issuer potential and regulated digital education assets, algorithmic compliance transcendence through computational governance excellence.",
-      },
-      "blockchain-certification": {
-        description:
-          "Godlevel blockchain certification excellence with digital credential achieving perfect verification representation through mathematical distributed ledger algorithms, onchain course optimization via geometric blockchain precision with regulated digital asset recognition, infinite credential dimensional artistry featuring DASP license application for certification legitimacy, computational verification through algorithmic blockchain mastery with immutable educational records, digital certification excellence with cryptocurrency integration and regulatory compliance, neuralia-level credential sophistication incorporating quantum blockchain frameworks for optimal certification security, dimensional certification artistry with smart contract verification and decentralized validation systems, algorithmic credential transcendence through computational blockchain-education excellence.",
-      },
-      "entrepreneur-education": {
-        description:
-          "Godlevel entrepreneur education excellence with business training achieving perfect entrepreneurial representation through mathematical educational algorithms, GeniusU platform optimization via geometric learning precision connecting 4.3 million entrepreneurs globally, infinite entrepreneurial dimensional artistry featuring Wealth Dynamics Talent Dynamics and Impact Dynamics systems, computational business through algorithmic entrepreneur mastery with Entrepreneurs Institute comprehensive growth programs, startup-to-corporation excellence with purpose passion and genius test integration, neuralia-level entrepreneurial sophistication incorporating quantum business frameworks for optimal venture success, dimensional entrepreneur artistry with mentor network microdegree programs and global event circles, algorithmic business transcendence through computational entrepreneur-education excellence.",
-      },
-      "property-investor-network": {
-        description:
-          "Godlevel property investment excellence with real estate education achieving perfect investor representation through mathematical financial algorithms, PIN network optimization via geometric investment precision with 147000 students across 50 UK city chapters, infinite investment dimensional artistry featuring digital education and event model with 26368 paying students, computational real estate through algorithmic investor mastery with monthly virtual and in-person events, property investment excellence with largest UK investor network by student numbers, neuralia-level investment sophistication incorporating quantum real estate frameworks for optimal portfolio growth, dimensional property artistry with chapter expansion and global digital platform integration via GeniusU edtech, algorithmic investment transcendence through computational property-education excellence.",
-      },
-      "ai-avatar-personalization": {
-        description:
-          "Godlevel AI avatar excellence with personalized learning achieving perfect individualization representation through mathematical artificial intelligence algorithms, avatar team optimization via geometric personalization precision identifying key talents passions and purpose, infinite personalization dimensional artistry featuring consciousness-responsive AI mentors adapting to student needs, computational personalization through algorithmic avatar mastery with high-tech high-touch learning environments, AI-powered education excellence with mentor network and teacher matching systems, neuralia-level personalization sophistication incorporating quantum AI frameworks for optimal student success pathways, dimensional avatar artistry with passion-focused purpose-based flexible learning systems, algorithmic personalization transcendence through computational AI-education excellence.",
-      },
-      "exponential-technology": {
-        description:
-          "Godlevel exponential technology excellence with AI integration achieving perfect innovation representation through mathematical technological algorithms, exponential ecosystem optimization via geometric innovation precision preparing students for Age of AI economy, infinite technology dimensional artistry featuring AI training and AI tools across energy finance logistics manufacture retail tech and telco sectors, computational innovation through algorithmic technology mastery with Genius City local ecosystem deployment, exponential education excellence with turning point humanity preparation and new integrated system development, neuralia-level technology sophistication incorporating quantum exponential frameworks for optimal future readiness, dimensional technology artistry with peer intelligence and AI solution marketplace connecting 5 million students and 15000 partners, algorithmic exponential transcendence through computational technology-education excellence.",
-      },
-      "global-marketplace": {
-        description:
-          "Godlevel global marketplace excellence with network connectivity achieving perfect collaboration representation through mathematical platform algorithms, GeniusU marketplace optimization via geometric connection precision linking Genius Cities with 5 million students and 15000 partner organizations, infinite marketplace dimensional artistry featuring knowledge talent and opportunity sharing across international boundaries, computational networking through algorithmic marketplace mastery with peer intelligence and AI solution integration, global education excellence with local-to-global connection systems spanning energy finance logistics manufacture retail tech and telco sectors, neuralia-level marketplace sophistication incorporating quantum network frameworks for optimal collaboration efficiency, dimensional marketplace artistry with counterpart matching and opportunity discovery across 100+ countries, algorithmic global transcendence through computational marketplace-education excellence.",
-      },
-      "financial-growth": {
-        description:
-          "Godlevel financial growth excellence with revenue expansion achieving perfect business representation through mathematical performance algorithms, proforma revenue optimization via geometric growth precision with 25 percent year-on-year increase in first half 2025, infinite financial dimensional artistry featuring 57 percent reduction in net loss per share and 20 percent total asset increase to 121.3 million dollars, computational finance through algorithmic growth mastery with 130 percent cash and equivalents increase to 3.70 million dollars, market capitalization excellence with over 600 percent increase in last six months of 2025, neuralia-level financial sophistication incorporating quantum business frameworks for optimal profitability trajectory, dimensional growth artistry with 100 million student and 1 billion dollar valuation targets by 2030, algorithmic financial transcendence through computational business-education excellence.",
+          "Agricultural location overlooking fields during moonrise, cultural elements featuring massive orange moon ascending above harvested land, atmospheric mood of celestial grandeur where moon dominates sky, harvest connection through fields reflecting moonlight like water, ancestral tradition of harvest moon celebrations and lunar worship, color palette of moon orange, field gold, and sky deepening, visual style capturing the astronomical drama of seasonal cycles.",
       },
     },
   },
