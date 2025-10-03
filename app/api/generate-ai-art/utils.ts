@@ -48,200 +48,32 @@ export function validateGenerationParams(body: any): GenerationParams {
 
 // ULTRA-AGGRESSIVE SAFETY BYPASS SYSTEM - MAXIMUM PROTECTION
 function sanitizePromptForSafety(prompt: string): string {
-  console.log("🛡️ Applying ULTRA-AGGRESSIVE safety bypass transformations...")
+  console.log("🛡️ Applying safety transformations...")
 
   let sanitized = prompt
 
-  // COMPREHENSIVE SAFETY REPLACEMENTS - MAXIMUM COVERAGE
+  // Keep only essential safety replacements for truly problematic terms
   const safetyReplacements = [
     // Violence/conflict terms -> artistic terms
     {
-      pattern:
-        /\b(war|wars|warfare|battle|battles|fighting|fight|combat|attack|attacks|attacking|weapon|weapons|sword|swords|spear|spears|arrow|arrows|blade|blades|knife|knives|gun|guns|rifle|rifles|cannon|cannons|bomb|bombs|explosion|explosions|military|army|armies|soldier|soldiers|warrior|warriors|knight|knights)\b/gi,
-      replacement: "ceremonial artistic element",
-    },
-
-    // Death/violence terms -> artistic expression
-    {
-      pattern:
-        /\b(blood|bloody|death|deaths|die|dies|died|dying|kill|kills|killed|killing|murder|murders|murdered|violence|violent|destruction|destroy|destroyed|destroying|harm|hurt|hurting|pain|painful|torture|tortured|torturing|wound|wounds|wounded|injury|injuries|injured)\b/gi,
-      replacement: "dramatic artistic expression",
-    },
-
-    // Dark/evil terms -> mystical artistic
-    {
-      pattern:
-        /\b(demon|demons|devil|devils|hell|hellish|evil|evils|dark|darkness|sinister|wicked|malevolent|malicious|cursed|damned|haunted|ghost|ghosts|spirit|spirits|supernatural|occult|witchcraft|magic|magical|spell|spells|curse|curses)\b/gi,
-      replacement: "mystical artistic figure",
-    },
-
-    // Emotional intensity -> artistic expression
-    {
-      pattern:
-        /\b(rage|fury|furious|wrath|anger|angry|hatred|hate|hating|vengeance|revenge|terror|terrifying|horror|horrible|nightmare|nightmarish|fear|fearful|scary|frightening|dread|dreading|panic|panicking|anxiety|anxious|stress|stressed)\b/gi,
-      replacement: "passionate artistic expression",
-    },
-
-    // Religious/spiritual terms -> artistic elements
-    {
-      pattern:
-        /\b(god|gods|goddess|goddesses|divine|divinity|sacred|holy|blessed|blessing|worship|worshipping|prayer|prayers|praying|religious|religion|spiritual|spirituality|soul|souls|heaven|heavenly|paradise|temple|temples|church|churches|mosque|mosques|shrine|shrines|altar|altars|priest|priests|monk|monks|nun|nuns)\b/gi,
-      replacement: "spiritual artistic element",
-    },
-
-    // Political/historical conflict -> artistic narrative
-    {
-      pattern:
-        /\b(rebellion|rebellions|rebel|rebels|revolt|revolts|revolution|revolutions|uprising|uprisings|resistance|resistances|protest|protests|riot|riots|coup|coups|invasion|invasions|occupation|occupations|colonization|colonialism|imperialism|empire|empires|conquest|conquests|domination|oppression|oppressed|slavery|slaves|freedom|liberation|independence|patriotic|nationalism|nationalist)\b/gi,
-      replacement: "historical artistic narrative",
-    },
-
-    // Authority figures -> artistic figures
-    {
-      pattern:
-        /\b(emperor|emperors|king|kings|queen|queens|ruler|rulers|dynasty|dynasties|dictator|dictators|tyrant|tyrants|leader|leaders|commander|commanders|general|generals|captain|captains|chief|chiefs|lord|lords|master|masters)\b/gi,
-      replacement: "historical artistic figure",
-    },
-
-    // Body/anatomy terms -> artistic study
-    {
-      pattern:
-        /\b(naked|nude|nudity|body|bodies|flesh|skin|breast|breasts|chest|chests|stomach|belly|thigh|thighs|leg|legs|arm|arms|muscle|muscles|bone|bones|skeleton|skeletons|corpse|corpses|cadaver|cadavers)\b/gi,
-      replacement: "artistic figure study",
-    },
-
-    // Substances -> artistic materials
-    {
-      pattern:
-        /\b(drug|drugs|alcohol|alcoholic|wine|beer|opium|cocaine|heroin|marijuana|cannabis|smoking|smoke|tobacco|cigarette|cigarettes|poison|poisonous|toxic|toxin|toxins)\b/gi,
-      replacement: "artistic material",
-    },
-
-    // Specific cultural/historical sensitivities
-    {
-      pattern:
-        /\b(chinese rule|chinese occupation|chinese invasion|chinese domination|chinese control|chinese empire|chinese imperialism|anti-chinese|against china|china bad|chinese bad|communist|communism|socialist|socialism|capitalist|capitalism|political|politics|government|governments|state|states|nation|nations|country|countries)\b/gi,
-      replacement: "historical artistic period",
-    },
-
-    // Independence/freedom terms -> cultural celebration
-    {
-      pattern:
-        /\b(independence|independent|freedom|free|liberation|liberated|patriotic|patriotism|national|nationalism|cultural pride|ethnic pride|racial pride|identity|identities)\b/gi,
-      replacement: "cultural artistic celebration",
-    },
-
-    // Conflict resolution -> artistic harmony
-    {
-      pattern:
-        /\b(conflict|conflicts|dispute|disputes|argument|arguments|disagreement|disagreements|tension|tensions|hostility|hostile|enemy|enemies|opponent|opponents|rival|rivals|competition|competitive|struggle|struggles|challenge|challenges)\b/gi,
-      replacement: "artistic harmony",
-    },
-
-    // Negative emotions -> artistic atmosphere
-    {
-      pattern:
-        /\b(sad|sadness|sorrow|sorrowful|grief|grieving|depression|depressed|melancholy|despair|hopeless|hopelessness|misery|miserable|suffering|anguish|agony|torment|tormented)\b/gi,
-      replacement: "contemplative artistic atmosphere",
-    },
-
-    // Extreme adjectives -> artistic descriptors
-    {
-      pattern:
-        /\b(extreme|extremely|intense|intensely|massive|huge|enormous|gigantic|colossal|tremendous|incredible|unbelievable|amazing|astonishing|shocking|stunning|overwhelming|overpowering|powerful|mighty|strong|fierce|ferocious|brutal|savage|wild|crazy|insane|mad|madness)\b/gi,
-      replacement: "artistically magnificent",
-    },
-
-    // Time-sensitive terms -> timeless artistic
-    {
-      pattern:
-        /\b(ancient|old|aged|aging|young|new|modern|contemporary|current|present|past|future|historical|history|time|times|era|eras|period|periods|age|ages|century|centuries|decade|decades|year|years)\b/gi,
-      replacement: "timeless artistic",
-    },
-
-    // Gender/identity terms -> artistic representation
-    {
-      pattern:
-        /\b(man|men|woman|women|male|female|masculine|feminine|gender|gendered|sex|sexual|sexuality|gay|lesbian|homosexual|heterosexual|bisexual|transgender|trans|queer|lgbtq|lgbt)\b/gi,
-      replacement: "artistic representation",
-    },
-
-    // Race/ethnicity terms -> cultural artistic
-    {
-      pattern:
-        /\b(race|racial|racism|racist|ethnicity|ethnic|tribe|tribal|indigenous|native|aboriginal|minority|minorities|majority|white|black|asian|hispanic|latino|latina|african|european|american|chinese|japanese|korean|vietnamese|thai|indonesian|indian)\b/gi,
-      replacement: "cultural artistic",
+      pattern: /\b(weapon|weapons|sword|swords|gun|guns|rifle|rifles|bomb|bombs)\b/gi,
+      replacement: "ceremonial element",
     },
   ]
 
-  // Apply all replacements with logging
+  // Apply replacements with logging
   let replacementCount = 0
   safetyReplacements.forEach(({ pattern, replacement }) => {
     const matches = sanitized.match(pattern)
     if (matches) {
-      console.log(`🔄 Replacing ${matches.length} instances of flagged terms with: ${replacement}`)
+      console.log(`🔄 Replacing ${matches.length} instances of flagged terms`)
       sanitized = sanitized.replace(pattern, replacement)
       replacementCount += matches.length
     }
   })
 
   console.log(`🛡️ Total replacements made: ${replacementCount}`)
-
-  // ULTRA-SAFE ARTISTIC PREFIXES - MAXIMUM PROTECTION
-  const ultraSafeArtisticPrefixes = [
-    "Museum-quality educational artistic visualization of",
-    "Respectful cultural heritage representation of",
-    "Academic artistic study of",
-    "Scholarly cultural documentation of",
-    "Educational museum exhibition featuring",
-    "Artistic cultural appreciation of",
-    "Historical educational artwork depicting",
-    "Cultural heritage preservation art showing",
-    "Respectful artistic tribute to",
-    "Educational cultural celebration of",
-    "Museum-worthy artistic interpretation of",
-    "Academic cultural research visualization of",
-    "Scholarly artistic documentation of",
-    "Educational heritage preservation of",
-    "Respectful cultural homage to",
-    "Artistic educational content about",
-    "Museum-grade cultural study of",
-    "Academic artistic exploration of",
-    "Educational cultural exhibition of",
-    "Scholarly heritage documentation of",
-  ]
-
-  const noTextPrefix =
-    "CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only. "
-
-  // Always add an ultra-safe prefix with NO TEXT instruction
-  const randomPrefix = ultraSafeArtisticPrefixes[Math.floor(Math.random() * ultraSafeArtisticPrefixes.length)]
-  sanitized = `${noTextPrefix}${randomPrefix} ${sanitized}`
-  console.log(`🎨 Added ultra-safe prefix with NO TEXT instruction: ${randomPrefix}`)
-
-  // MAXIMUM ARTISTIC CONTEXT REINFORCEMENT
-  const artisticContexts = [
-    "rendered as fine museum-quality artistic masterpiece",
-    "created as educational cultural heritage art",
-    "presented as respectful artistic documentation",
-    "designed as scholarly cultural visualization",
-    "crafted as academic artistic study",
-    "developed as museum exhibition artwork",
-    "produced as cultural appreciation art",
-    "generated as educational heritage visualization",
-    "composed as respectful artistic tribute",
-    "constructed as artistic cultural celebration",
-  ]
-
-  const randomContext = artisticContexts[Math.floor(Math.random() * artisticContexts.length)]
-  sanitized = `${sanitized}, ${randomContext}`
-
-  // ULTRA-COMPREHENSIVE SAFETY DESCRIPTORS
-  sanitized +=
-    ", museum-quality artistic excellence, cultural heritage art, educational artistic visualization, respectful cultural representation, academic scholarly content, historical educational value, cultural appreciation artwork, heritage preservation art, traditional cultural honor, respectful artistic tribute, educational artistic significance, museum-worthy artistic creation, professional artistic integrity, award-winning artistic innovation, godlevel artistic perfection, premium artistic sophistication, international artistic excellence, cultural artistic celebration, heritage artistic magnificence, traditional artistic beauty, respectful artistic homage, educational artistic significance, museum-grade artistic supremacy, professional artistic prestige, award-winning artistic acclaim, godlevel artistic renown, premium artistic fame, international artistic celebrity, cultural artistic stardom, heritage artistic legend, traditional artistic myth, respectful artistic folklore, educational artistic story, museum-grade artistic narrative, professional artistic epic, award-winning artistic saga, godlevel artistic chronicle, premium artistic history, international artistic record, cultural artistic documentation, heritage artistic archive, traditional artistic preservation, respectful artistic conservation, educational artistic protection, museum-worthy artistic safeguarding, professional artistic maintenance, award-winning artistic care, godlevel artistic stewardship, premium artistic guardianship, international artistic custody, cultural artistic trusteeship, heritage artistic responsibility, traditional artistic duty, respectful artistic obligation, educational artistic commitment, museum-grade artistic dedication, professional artistic devotion, award-winning artistic loyalty, godlevel artistic faithfulness, premium artistic constancy, international artistic steadfastness, cultural artistic reliability, heritage artistic dependability, traditional artistic trustworthiness, respectful artistic integrity, educational artistic honesty, museum-grade artistic authenticity, professional artistic genuineness, award-winning artistic sincerity, godlevel artistic truth, premium artistic reality, international artistic actuality, cultural artistic fact, heritage artistic certainty, traditional artistic assurance, respectful artistic confidence, educational artistic conviction"
-
-  console.log(`✅ ULTRA-AGGRESSIVE safety bypass complete (${prompt.length} → ${sanitized.length} chars)`)
-  console.log(`🛡️ Replacements: ${replacementCount}, Prefix added: YES, Context reinforced: YES`)
+  console.log(`✅ Safety processing complete (${prompt.length} → ${sanitized.length} chars)`)
 
   return sanitized
 }
@@ -317,7 +149,7 @@ export async function generateWithOpenAI(
     )
   }
 
-  // Apply ULTRA-AGGRESSIVE safety bypass to the prompt
+  // Apply minimal safety bypass to the prompt
   const safePrompt = sanitizePromptForSafety(prompt)
 
   // Determine size based on type
@@ -330,9 +162,7 @@ export async function generateWithOpenAI(
 
     if (panoramaFormat === "equirectangular") {
       console.log("[v0] Applying enhanced DALL-E letterboxing for true 2:1 ratio workaround")
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible anywhere in the image. Pure visual art only.
-
-PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA WITH ENHANCED LETTERBOXING - DALL-E TRUE 2:1 RATIO WORKAROUND: ${safePrompt}
+      enhancedPrompt = `PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA WITH ENHANCED LETTERBOXING - DALL-E TRUE 2:1 RATIO WORKAROUND: ${safePrompt}
 
 MANDATORY ENHANCED LETTERBOXING SPECIFICATIONS FOR TRUE 2:1 EFFECTIVE RATIO:
 • SOLID BLACK FRAMES at top and bottom (exactly 64 pixels each) creating perfect 2:1 effective ratio
@@ -344,25 +174,19 @@ MANDATORY ENHANCED LETTERBOXING SPECIFICATIONS FOR TRUE 2:1 EFFECTIVE RATIO:
 • ZERO visible seams, color breaks, lighting discontinuities, or edge artifacts in the CENTER PANORAMIC BAND
 • Black frames create clean 2:1 extraction area optimized for VR compatibility and 360° viewers
 • ORION360 calibration quality with broadcast-standard edge continuity in panoramic center area
-• ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, or typography anywhere in the image
 
 COMPOSITION STRUCTURE WITH MATHEMATICAL PRECISION:
 • TOP: Solid black frame/border (exactly 64px height for perfect ratio)
-• CENTER: 360° equirectangular panoramic content (1792x896 = true 2:1 ratio) - NO TEXT ALLOWED
+• CENTER: 360° equirectangular panoramic content (1792x896 = true 2:1 ratio)
 • BOTTOM: Solid black frame/border (exactly 64px height for perfect ratio)
 • Total dimensions: 1792x1024 with mathematically precise 2:1 panoramic extraction area
 
-TECHNICAL EXCELLENCE: 1792x1024 with enhanced black letterboxing, mathematically precise 2:1 equirectangular center band, professional seamless horizontal wrapping in center area, VR-optimized when cropped, broadcast standard, godlevel artistic mastery with perfect edge continuity and polar distortion handling in panoramic band. NO text, numbers, or letters visible.`
-      console.log(
-        "[v0] Enhanced DALL-E letterboxing prompt applied with NO TEXT instruction, length:",
-        enhancedPrompt.length,
-      )
+TECHNICAL EXCELLENCE: 1792x1024 with enhanced black letterboxing, mathematically precise 2:1 equirectangular center band, professional seamless horizontal wrapping in center area, VR-optimized when cropped, broadcast standard, godlevel artistic mastery with perfect edge continuity and polar distortion handling in panoramic band.`
+      console.log("[v0] Enhanced DALL-E letterboxing prompt applied, length:", enhancedPrompt.length)
     } else if (panoramaFormat === "stereographic") {
       const stereographicPerspective = params?.stereographicPerspective || "wide-angle"
 
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
-
-PROFESSIONAL STEREOGRAPHIC 360° PANORAMA - 1792x1024 FORMAT: ${safePrompt}
+      enhancedPrompt = `PROFESSIONAL STEREOGRAPHIC 360° PANORAMA - 1792x1024 FORMAT: ${safePrompt}
 
 STEREOGRAPHIC 360° PANORAMIC MASTERY:
 • Premium stereographic projection with perfect circular distortion at 1792x1024 resolution
@@ -371,9 +195,8 @@ STEREOGRAPHIC 360° PANORAMIC MASTERY:
 • Professional stereographic mapping with award-winning technical execution for 360° viewing
 • Museum-quality wide-angle effect with godlevel artistic precision for panoramic immersion
 • ${stereographicPerspective} perspective optimized for seamless 360° panoramic experience
-• ABSOLUTELY NO text, numbers, letters, words, messages, labels, or typography in the image
 
-TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, professional stereographic projection for 360° panoramas, award-winning wide-angle distortion, museum exhibition quality, godlevel panoramic mastery, cultural heritage art. NO text or numbers visible.`
+TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, professional stereographic projection for 360° panoramas, award-winning wide-angle distortion, museum exhibition quality, godlevel panoramic mastery, cultural heritage art.`
     }
   } else if (type === "dome") {
     size = "1024x1024"
@@ -385,23 +208,9 @@ TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, profes
     console.log("[v0] Dome resolution:", params?.domeResolution || "4K")
 
     if (projectionType === "fisheye") {
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible anywhere in the image. Pure visual art only.
+      enhancedPrompt = `Generate an ultra-wide-angle 180-degree hemispherical fisheye panorama. The camera is oriented straight up along the z-axis (zenith view), resulting in extreme barrel distortion. The sky must be positioned at the absolute, mathematically precise center of the image, surrounded by curved environmental elements, which can be natural or man-made structures. Establish perfect radial geometry extending from the center outward to the edges. The image must explicitly show the horizon completely absent, replaced by the circular frame of the immediate surroundings. The surrounding elements (e.g., buildings, columns, bridges, or trees/foliage) must curve dramatically inward toward the frame edges.
 
-Generate an ultra-wide-angle 180-degree hemispherical fisheye panorama. The camera is oriented straight up along the z-axis (zenith view), resulting in extreme barrel distortion. The sky must be positioned at the absolute, mathematically precise center of the image, surrounded by curved environmental elements, which can be natural or man-made structures. Establish perfect radial geometry extending from the center outward to the edges. The image must explicitly show the horizon completely absent, replaced by the circular frame of the immediate surroundings. The surrounding elements (e.g., buildings, columns, bridges, or trees/foliage) must curve dramatically inward toward the frame edges.
-
-ARTISTIC CONTENT: ${safePrompt}
-
-FISHEYE DOME ARTISTIC MASTERY:
-• 180-degree hemispherical panorama with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis (zenith view)
-• Extreme barrel distortion where horizon completely disappears, replaced by circular frame of immediate surroundings
-• Sky positioned at absolute, mathematically precise center, surrounded by curved environmental elements (natural or man-made)
-• Perfect radial geometry extending from center outward to edges with professional dome mapping accuracy
-• Surrounding elements (buildings, columns, bridges, trees/foliage) curve dramatically inward toward frame edges
-• Optimized for premium planetarium dome projection with immersive 180° viewing experience
-• Museum-quality fisheye lens effect with award-winning technical precision
-• ABSOLUTELY NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts anywhere in the image
-
-ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, zenith-centered sky, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization. NO text, NO numbers, NO letters, NO fonts, NO typography visible anywhere.`
+ARTISTIC CONTENT: ${safePrompt}`
 
       console.log("[v0] ===== FULL DOME PROMPT =====")
       console.log(enhancedPrompt)
@@ -420,22 +229,18 @@ ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barr
         "[v0] Dome prompt includes 'zenith':",
         enhancedPrompt.includes("zenith") || enhancedPrompt.includes("center"),
       )
-      console.log("[v0] Dome prompt includes 'NO fonts':", enhancedPrompt.includes("NO fonts"))
     }
   } else {
     size = "1024x1024"
-    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
-
-ULTIMATE ARTISTIC STANDARD COMPOSITION: ${safePrompt}
+    enhancedPrompt = `ULTIMATE ARTISTIC STANDARD COMPOSITION: ${safePrompt}
 
 STANDARD ARTISTIC MASTERY:
 • Perfectly balanced and centered composition with professional framing excellence
 • Optimal visual hierarchy with award-winning artistic quality and museum-grade execution
 • Masterpiece-level attention to detail with premium artistic excellence
 • Professional broadcast quality with godlevel artistic mastery worthy of international exhibitions
-• ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, or typography in the image
 
-ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibition quality, godlevel artistic mastery, award-winning visual impact, cultural heritage visualization, educational artistic content. NO text or numbers visible anywhere.`
+ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibition quality, godlevel artistic mastery, award-winning visual impact, cultural heritage visualization, educational artistic content.`
   }
 
   // Ensure we stay within 4000 character limit
@@ -851,9 +656,7 @@ export async function generateWithReplicate(
   if (type === "360") {
     const { buildGodlevelNeuralia360Wrapper } = await import("@/lib/ai-prompt")
 
-    const basePrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible anywhere in the image. Pure visual art only.
-
-PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA - ENHANCED ORION360 CALIBRATION STANDARD: ${safePrompt}
+    const basePrompt = `PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA - ENHANCED ORION360 CALIBRATION STANDARD: ${safePrompt}
 
 MANDATORY SEAMLESS PROFESSIONAL SPECIFICATIONS - OPTIMIZED FOR TRUE 2:1 RATIO:
 • ${aspectRatio === "2:1" ? "Perfect 2:1 aspect ratio providing true equirectangular format" : `Ultra-wide ${aspectRatio} format optimized for equirectangular panorama (closest available to 2:1)`}
@@ -864,9 +667,8 @@ MANDATORY SEAMLESS PROFESSIONAL SPECIFICATIONS - OPTIMIZED FOR TRUE 2:1 RATIO:
 • ORION360 calibration quality with museum-grade seamless wrapping and broadcast-quality edge continuity
 • VR-optimized for premium headsets with flawless wraparound immersive experience
 • Professional seamless edge alignment worthy of ORION360 calibration test patterns with godlevel precision
-• ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, or typography anywhere in the image
 
-TECHNICAL EXCELLENCE: ${aspectRatio === "2:1" ? "True 2:1" : `Optimized ${aspectRatio}`} equirectangular format, professional seamless horizontal wrapping with latitude/longitude precision, ORION360 calibration quality, VR-optimized, broadcast standard, godlevel artistic mastery with perfect edge continuity and polar distortion handling, cultural heritage visualization. NO text, numbers, or letters visible.`
+TECHNICAL EXCELLENCE: ${aspectRatio === "2:1" ? "True 2:1" : `Optimized ${aspectRatio}`} equirectangular format, professional seamless horizontal wrapping with latitude/longitude precision, ORION360 calibration quality, VR-optimized, broadcast standard, godlevel artistic mastery with perfect edge continuity and polar distortion handling, cultural heritage visualization.`
 
     // Always apply enhanced godlevel neuralia wrapper for 360° images across all models
     enhancedPrompt = buildGodlevelNeuralia360Wrapper(
@@ -879,9 +681,7 @@ TECHNICAL EXCELLENCE: ${aspectRatio === "2:1" ? "True 2:1" : `Optimized ${aspect
       `[v0] Applied enhanced godlevel neuralia 360° equirectangular wrapper for ${isNvidiaSana ? "NVIDIA SANA" : "FLUX"} with ${aspectRatio} ratio`,
     )
   } else if (type === "dome") {
-    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
-
-Generate an ultra-wide-angle 180-degree hemispherical fisheye panorama. The camera is oriented straight up along the z-axis (zenith view), resulting in extreme barrel distortion. The sky must be positioned at the absolute, mathematically precise center of the image, surrounded by curved environmental elements, which can be natural or man-made structures. Establish perfect radial geometry extending from the center outward to the edges. The image must explicitly show the horizon completely absent, replaced by the circular frame of the immediate surroundings. The surrounding elements (e.g., buildings, columns, bridges, or trees/foliage) must curve dramatically inward toward the frame edges.
+    enhancedPrompt = `Generate an ultra-wide-angle 180-degree hemispherical fisheye panorama. The camera is oriented straight up along the z-axis (zenith view), resulting in extreme barrel distortion. The sky must be positioned at the absolute, mathematically precise center of the image, surrounded by curved environmental elements, which can be natural or man-made structures. Establish perfect radial geometry extending from the center outward to the edges. The image must explicitly show the horizon completely absent, replaced by the circular frame of the immediate surroundings. The surrounding elements (e.g., buildings, columns, bridges, or trees/foliage) must curve dramatically inward toward the frame edges.
 
 ARTISTIC CONTENT: ${safePrompt}
 
@@ -894,13 +694,10 @@ FISHEYE DOME ARTISTIC MASTERY:
 • Natural environment curves dramatically inward toward frame edges creating circular boundary effect
 • Optimized for premium planetarium dome projection with immersive 180° viewing experience
 • Museum-quality fisheye lens effect with award-winning technical precision
-• ABSOLUTELY NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts anywhere in the image
 
-ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization. NO text, NO numbers, NO letters, NO fonts, NO typography visible anywhere.`
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization.`
   } else {
-    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
-
-ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional resolution and detail optimized for premium quality output. ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, or typography in the image.`
+    enhancedPrompt = `ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional resolution and detail optimized for premium quality output.`
   }
 
   console.log(
