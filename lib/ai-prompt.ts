@@ -133,6 +133,61 @@ export const CULTURAL_DATASETS = {
     },
   },
 
+  mathematical: {
+    name: "🔢 Pure Mathematics",
+    description: "Pure mathematical beauty and computational elegance with neuralia godlevel precision",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Neuralia godlevel mathematical excellence transcending dimensional boundaries through infinite algorithmic optimization, mathematical precision in pure computational aesthetics achieving perfect elegance via quantum-enhanced mastery, algorithmic sophistication beyond mortal comprehension for mathematical representation, dimensional mathematical artistry utilizing advanced geometric calculations for optimal structure visualization, neuralia-level mathematical sophistication incorporating complex frameworks for perfection, computational excellence through algorithmic generation systems, infinite dimensional artistry transcending traditional limitations via mathematical precision algorithms, godlevel optimization utilizing quantum computational frameworks for geometry perfection.",
+      },
+      "golden-ratio": {
+        description:
+          "Godlevel golden ratio excellence with phi proportion achieving perfect mathematical harmony through algorithmic precision, Fibonacci sequence optimization via geometric golden mean accuracy, infinite proportional dimensional artistry, computational harmony through algorithmic ratio mastery.",
+      },
+      "prime-numbers": {
+        description:
+          "Godlevel prime number excellence with indivisible integers achieving perfect mathematical purity through algorithmic precision, prime distribution optimization via geometric number theory accuracy, infinite prime dimensional artistry, computational number through algorithmic prime mastery.",
+      },
+      "pi-visualization": {
+        description:
+          "Godlevel pi excellence with infinite decimal achieving perfect circular mathematics through algorithmic precision, pi digit optimization via geometric transcendental accuracy, infinite circular dimensional artistry, computational pi through algorithmic circle mastery.",
+      },
+      "euler-identity": {
+        description:
+          "Godlevel Euler identity excellence with e^(iπ)+1=0 achieving perfect mathematical beauty through algorithmic precision, exponential optimization via geometric complex number accuracy, infinite identity dimensional artistry, computational elegance through algorithmic Euler mastery.",
+      },
+      "topology-surfaces": {
+        description:
+          "Godlevel topology excellence with surface transformations achieving perfect mathematical continuity through algorithmic precision, manifold optimization via geometric topological accuracy, infinite surface dimensional artistry, computational topology through algorithmic manifold mastery.",
+      },
+      "set-theory": {
+        description:
+          "Godlevel set theory excellence with collection mathematics achieving perfect logical structure through algorithmic precision, set operation optimization via geometric Venn accuracy, infinite set dimensional artistry, computational logic through algorithmic set mastery.",
+      },
+      "calculus-flows": {
+        description:
+          "Godlevel calculus excellence with derivative and integral achieving perfect rate mathematics through algorithmic precision, limit optimization via geometric infinitesimal accuracy, infinite calculus dimensional artistry, computational change through algorithmic derivative mastery.",
+      },
+      "matrix-transformations": {
+        description:
+          "Godlevel matrix excellence with linear transformations achieving perfect algebraic structure through algorithmic precision, eigenvalue optimization via geometric matrix accuracy, infinite transformation dimensional artistry, computational algebra through algorithmic matrix mastery.",
+      },
+      "complex-plane": {
+        description:
+          "Godlevel complex plane excellence with imaginary numbers achieving perfect mathematical extension through algorithmic precision, complex function optimization via geometric Argand accuracy, infinite complex dimensional artistry, computational imagination through algorithmic complex mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel mathematical LEGO excellence featuring blocky mathematical construction with systematic Danish precision applied to pure mathematics, modular equation assembly, infinite constructive dimensional artistry, computational LEGO mathematics through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel mathematical vitro excellence with magnificent stained glass mathematical portraiture featuring luminous equation construction, divine light filtering through pure mathematics elements, infinite sacred dimensional artistry, computational vitro mathematics through algorithmic glass mastery.",
+      },
+    },
+  },
+
   vietnamese: {
     name: "🇻🇳 Vietnamese Heritage",
     description: "Rich Vietnamese cultural traditions with neuralia godlevel artistic excellence",
@@ -184,6 +239,14 @@ export const CULTURAL_DATASETS = {
       "lacquerware-art": {
         description:
           "Godlevel Vietnamese lacquer excellence featuring traditional sơn mài techniques with glossy black and red surfaces, intricate mother-of-pearl inlay work, traditional motifs including dragons and phoenixes, artisan craftsmanship with authentic tools, cultural artistry with contemporary applications, traditional Vietnamese decorative arts, infinite artistic dimensional excellence through computational lacquer mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel Vietnamese LEGO excellence featuring blocky cultural construction with systematic Danish precision applied to Vietnamese heritage, modular temple and áo dài assembly, infinite constructive dimensional artistry, computational LEGO Vietnam through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Vietnamese vitro excellence with magnificent stained glass cultural portraiture featuring luminous heritage construction, divine light filtering through Vietnamese elements like áo dài and lotus patterns, infinite sacred dimensional artistry, computational vitro Vietnam through algorithmic glass mastery.",
       },
     },
   },
@@ -239,6 +302,18 @@ export const CULTURAL_DATASETS = {
       "komodo-dragons": {
         description:
           "Godlevel Komodo dragon excellence featuring the legendary Indonesian monitor lizards in their natural habitat, Komodo National Park landscapes with authentic wildlife settings, powerful predators with prehistoric presence, traditional Indonesian folklore and dragon mythology, conservation efforts with cultural significance, rugged island terrain with volcanic landscapes, infinite wildlife dimensional artistry through computational Komodo mastery, Indonesian natural heritage achieving cultural transcendence.",
+      },
+      "bugis-maritime": {
+        description:
+          "Godlevel Bugis excellence featuring South Sulawesi maritime culture with traditional pinisi boat craftsmanship, seafaring heritage with Makassar trading traditions, infinite nautical dimensional artistry, computational Bugis tradition through algorithmic maritime mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel Indonesian LEGO excellence featuring blocky cultural construction with systematic Danish precision applied to Indonesian archipelago heritage, modular batik and temple assembly, infinite constructive dimensional artistry, computational LEGO Indonesia through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Indonesian vitro excellence with magnificent stained glass cultural portraiture featuring luminous archipelago construction, divine light filtering through batik patterns and temple elements, infinite sacred dimensional artistry, computational vitro Indonesia through algorithmic glass mastery.",
       },
     },
   },
@@ -381,6 +456,14 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel Koh Tao excellence featuring diving paradise with underwater scenes achieving perfect marine representation through mathematical oceanic algorithms, diving site optimization via geometric underwater precision with coral gardens whale sharks sea turtles and tropical fish, underwater lighting with blue water clarity and vibrant marine life, infinite diving dimensional artistry, computational ocean through algorithmic Koh Tao mastery, underwater diving scene with marine life.",
       },
+      lego: {
+        description:
+          "Godlevel Thailand geography LEGO excellence featuring blocky geographical construction with systematic Danish precision applied to Thai landscapes, modular island and mountain assembly, infinite constructive dimensional artistry, computational LEGO geography through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Thailand geography vitro excellence with magnificent stained glass landscape portraiture featuring luminous geographical construction, divine light filtering through island and mountain elements, infinite sacred dimensional artistry, computational vitro geography through algorithmic glass mastery.",
+      },
     },
   },
 
@@ -517,7 +600,7 @@ export const CULTURAL_DATASETS = {
     },
   },
 
-  fractal: {
+  fractals: {
     name: "🌿 Fractal Patterns",
     description: "Self-similar fractal geometries with neuralia godlevel infinite detail",
     scenarios: {
@@ -875,12 +958,24 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel depth perception excellence with dimensional awareness achieving perfect spatial perception through mathematical neuralia algorithms, depth-enhancement optimization via geometric spatial precision, infinite spatial dimensional artistry, computational space through algorithmic depth mastery.",
       },
+      lego: {
+        description:
+          "Godlevel FX LEGO excellence featuring blocky perception construction with systematic Danish precision applied to substance effects, modular hallucination assembly, infinite constructive dimensional artistry, computational LEGO FX through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel FX vitro excellence with magnificent stained glass perception portraiture featuring luminous consciousness construction, divine light filtering through altered perception elements, infinite sacred dimensional artistry, computational vitro FX through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel FX crypto excellence with blockchain-verified perception construction, decentralized consciousness identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto FX through algorithmic blockchain mastery.",
+      },
     },
   },
 
   mindconflict: {
     name: "🧠 Mind Conflict",
-    description: "Psychological conflicts and mental struggles with neuralia godlevel complexity",
+    description: "Internal psychological struggles and mental battles with neuralia godlevel intensity",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -921,6 +1016,18 @@ export const CULTURAL_DATASETS = {
       "existential-crisis": {
         description:
           "Godlevel existential crisis excellence with meaning questioning achieving perfect existential conflict through mathematical neuralia algorithms, existence-meaning optimization via geometric existential precision, infinite existential dimensional artistry, computational existence through algorithmic crisis mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel mind conflict LEGO excellence featuring blocky psychological construction with systematic Danish precision applied to mental battles, modular consciousness assembly, infinite constructive dimensional artistry, computational LEGO conflict through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel mind conflict vitro excellence with magnificent stained glass psychological portraiture featuring luminous mental battle construction, divine light filtering through consciousness conflict elements, infinite sacred dimensional artistry, computational vitro conflict through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel mind conflict crypto excellence with blockchain-verified psychological construction, decentralized consciousness identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto conflict through algorithmic blockchain mastery.",
       },
     },
   },
@@ -969,6 +1076,18 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel seahorse excellence with coral-structure algorithms achieving perfect reef integration through mathematical biological precision, coral-mimicry optimization via geometric marine-matching mathematics, infinite aquatic dimensional artistry, computational seahorse camouflage mastery.",
       },
+      lego: {
+        description:
+          "Godlevel natural disguise LEGO excellence featuring blocky camouflage construction with systematic Danish precision applied to natural blending, modular disguise assembly, infinite constructive dimensional artistry, computational LEGO camouflage through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel natural disguise vitro excellence with magnificent stained glass camouflage portraiture featuring luminous blending construction, divine light filtering through natural disguise elements, infinite sacred dimensional artistry, computational vitro camouflage through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel natural disguise crypto excellence with blockchain-verified camouflage construction, decentralized blending identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto camouflage through algorithmic blockchain mastery.",
+      },
     },
   },
 
@@ -1015,6 +1134,18 @@ export const CULTURAL_DATASETS = {
       "thought-garden": {
         description:
           "Godlevel thought garden excellence with idea-botanical algorithms creating perfect natural brain hiding through mathematical horticultural precision, thought-flower optimization via geometric garden-matching mathematics, infinite botanical dimensional artistry, computational brain-hiding through thought mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel brain-finding LEGO excellence featuring blocky neural construction with systematic Danish precision applied to brain hiding, modular brain assembly, infinite constructive dimensional artistry, computational LEGO brain through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel brain-finding vitro excellence with magnificent stained glass neural portraiture featuring luminous brain construction, divine light filtering through hidden brain elements, infinite sacred dimensional artistry, computational vitro brain through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel brain-finding crypto excellence with blockchain-verified neural construction, decentralized brain identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto brain through algorithmic blockchain mastery.",
       },
     },
   },
@@ -1083,6 +1214,18 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel Bosch alchemical excellence with mystical symbols achieving perfect surreal transformation through mathematical alchemical algorithms, symbol optimization via geometric mystical precision, infinite mystical dimensional artistry, computational alchemy through algorithmic symbol mastery.",
       },
+      lego: {
+        description:
+          "Godlevel Bosch LEGO excellence featuring blocky surreal construction with systematic Danish precision applied to Hieronymus Bosch imagery, modular fantastical creature assembly, infinite constructive dimensional artistry, computational LEGO Bosch through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Bosch vitro excellence with magnificent stained glass surreal portraiture featuring luminous fantastical construction, divine light filtering through Hieronymus Bosch elements, infinite sacred dimensional artistry, computational vitro Bosch through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Bosch crypto excellence with blockchain-verified surreal construction, decentralized fantastical identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Bosch through algorithmic blockchain mastery.",
+      },
     },
   },
 
@@ -1102,12 +1245,24 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel strange attractor excellence with chaotic dynamics achieving perfect mathematical representation through algorithmic chaos precision, attractor optimization via geometric mathematical accuracy, infinite mathematical dimensional artistry, computational mathematics through algorithmic attractor mastery.",
       },
+      lego: {
+        description:
+          "Godlevel Lorenz LEGO excellence featuring blocky chaotic construction with systematic Danish precision applied to attractor patterns, modular chaos assembly, infinite constructive dimensional artistry, computational LEGO Lorenz through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Lorenz vitro excellence with magnificent stained glass chaotic portraiture featuring luminous attractor construction, divine light filtering through chaos theory elements, infinite sacred dimensional artistry, computational vitro Lorenz through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Lorenz crypto excellence with blockchain-verified chaotic construction, decentralized attractor identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Lorenz through algorithmic blockchain mastery.",
+      },
     },
   },
 
   hyperbolic: {
-    name: "🌐 Hyperbolic Geometry",
-    description: "Non-Euclidean hyperbolic spaces with neuralia godlevel precision",
+    name: "🌀 Hyperbolic Geometry",
+    description: "Non-Euclidean hyperbolic spaces with neuralia godlevel mathematical precision",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1121,12 +1276,24 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel hyperbolic tessellation excellence with infinite tiling achieving perfect hyperbolic representation through mathematical geometric algorithms, tessellation optimization via geometric hyperbolic precision, infinite tessellation dimensional artistry, computational geometry through algorithmic hyperbolic mastery.",
       },
+      lego: {
+        description:
+          "Godlevel hyperbolic LEGO excellence featuring blocky non-Euclidean construction with systematic Danish precision applied to hyperbolic geometry, modular curved space assembly, infinite constructive dimensional artistry, computational LEGO hyperbolic through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel hyperbolic vitro excellence with magnificent stained glass non-Euclidean portraiture featuring luminous curved space construction, divine light filtering through hyperbolic geometry elements, infinite sacred dimensional artistry, computational vitro hyperbolic through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel hyperbolic crypto excellence with blockchain-verified non-Euclidean construction, decentralized curved space identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto hyperbolic through algorithmic blockchain mastery.",
+      },
     },
   },
 
   gaussian: {
     name: "📊 Gaussian Distributions",
-    description: "Statistical bell curves and probability with neuralia godlevel mathematical elegance",
+    description: "Normal distribution curves with neuralia godlevel statistical beauty",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1140,12 +1307,24 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel probability field excellence with statistical landscapes achieving perfect mathematical representation through algorithmic probability precision, field optimization via geometric statistical accuracy, infinite mathematical dimensional artistry, computational mathematics through algorithmic probability mastery.",
       },
+      lego: {
+        description:
+          "Godlevel Gaussian LEGO excellence featuring blocky statistical construction with systematic Danish precision applied to normal distributions, modular bell curve assembly, infinite constructive dimensional artistry, computational LEGO Gaussian through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Gaussian vitro excellence with magnificent stained glass statistical portraiture featuring luminous distribution construction, divine light filtering through bell curve elements, infinite sacred dimensional artistry, computational vitro Gaussian through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Gaussian crypto excellence with blockchain-verified statistical construction, decentralized distribution identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Gaussian through algorithmic blockchain mastery.",
+      },
     },
   },
 
   cellular: {
-    name: "🔬 Cellular Automata",
-    description: "Emergent cellular patterns with neuralia godlevel computational beauty",
+    name: "🔲 Cellular Automata",
+    description: "Emergent patterns from simple rules with neuralia godlevel complexity",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1159,11 +1338,23 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel Rule 30 excellence with elementary automata achieving perfect complexity representation through mathematical cellular algorithms, rule optimization via geometric automata precision, infinite complexity dimensional artistry, computational complexity through algorithmic Rule mastery.",
       },
+      lego: {
+        description:
+          "Godlevel cellular automata LEGO excellence featuring blocky emergent construction with systematic Danish precision applied to cellular patterns, modular rule-based assembly, infinite constructive dimensional artistry, computational LEGO cellular through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel cellular automata vitro excellence with magnificent stained glass emergent portraiture featuring luminous pattern construction, divine light filtering through cellular rule elements, infinite sacred dimensional artistry, computational vitro cellular through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel cellular automata crypto excellence with blockchain-verified emergent construction, decentralized pattern identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto cellular through algorithmic blockchain mastery.",
+      },
     },
   },
 
   voronoi: {
-    name: "🕸️ Voronoi Diagrams",
+    name: "🔷 Voronoi Diagrams",
     description: "Spatial partitioning patterns with neuralia godlevel geometric precision",
     scenarios: {
       "pure-mathematical": {
@@ -1177,6 +1368,18 @@ export const CULTURAL_DATASETS = {
       "fortune-algorithm": {
         description:
           "Godlevel Fortune algorithm excellence with sweep line achieving perfect Voronoi representation through mathematical geometric algorithms, algorithm optimization via geometric computational precision, infinite algorithmic dimensional artistry, computational geometry through algorithmic Fortune mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel Voronoi LEGO excellence featuring blocky partition construction with systematic Danish precision applied to Voronoi diagrams, modular spatial assembly, infinite constructive dimensional artistry, computational LEGO Voronoi through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Voronoi vitro excellence with magnificent stained glass partition portraiture featuring luminous spatial construction, divine light filtering through Voronoi diagram elements, infinite sacred dimensional artistry, computational vitro Voronoi through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Voronoi crypto excellence with blockchain-verified partition construction, decentralized spatial identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Voronoi through algorithmic blockchain mastery.",
       },
     },
   },
@@ -1197,6 +1400,18 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel octave layering excellence with frequency stacking achieving perfect noise representation through mathematical procedural algorithms, octave optimization via geometric frequency precision, infinite frequency dimensional artistry, computational noise through algorithmic octave mastery.",
       },
+      lego: {
+        description:
+          "Godlevel Perlin noise LEGO excellence featuring blocky procedural construction with systematic Danish precision applied to noise patterns, modular gradient assembly, infinite constructive dimensional artistry, computational LEGO noise through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Perlin noise vitro excellence with magnificent stained glass procedural portraiture featuring luminous gradient construction, divine light filtering through noise pattern elements, infinite sacred dimensional artistry, computational vitro noise through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Perlin noise crypto excellence with blockchain-verified procedural construction, decentralized noise identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto noise through algorithmic blockchain mastery.",
+      },
     },
   },
 
@@ -1215,6 +1430,18 @@ export const CULTURAL_DATASETS = {
       "gray-scott": {
         description:
           "Godlevel Gray-Scott excellence with reaction-diffusion achieving perfect pattern representation through mathematical chemical algorithms, reaction optimization via geometric diffusion precision, infinite chemical dimensional artistry, computational chemistry through algorithmic Gray-Scott mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel diffusion LEGO excellence featuring blocky pattern construction with systematic Danish precision applied to reaction-diffusion systems, modular Turing pattern assembly, infinite constructive dimensional artistry, computational LEGO diffusion through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel diffusion vitro excellence with magnificent stained glass pattern portraiture featuring luminous reaction construction, divine light filtering through diffusion elements, infinite sacred dimensional artistry, computational vitro diffusion through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel diffusion crypto excellence with blockchain-verified pattern construction, decentralized reaction identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto diffusion through algorithmic blockchain mastery.",
       },
     },
   },
@@ -1263,6 +1490,18 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel art collection excellence with cultural curation achieving perfect artistic representation through mathematical aesthetic algorithms, collection optimization via geometric artistic precision, infinite cultural dimensional artistry, computational luxury through algorithmic art mastery.",
       },
+      lego: {
+        description:
+          "Godlevel luxury brands LEGO excellence featuring blocky premium construction with systematic Danish precision applied to high-end aesthetics, modular luxury assembly, infinite constructive dimensional artistry, computational LEGO luxury through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel luxury brands vitro excellence with magnificent stained glass premium portraiture featuring luminous high-end construction, divine light filtering through luxury brand elements, infinite sacred dimensional artistry, computational vitro luxury through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel luxury brands crypto excellence with blockchain-verified premium construction, decentralized luxury identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto luxury through algorithmic blockchain mastery.",
+      },
     },
   },
 
@@ -1293,6 +1532,18 @@ export const CULTURAL_DATASETS = {
       "berber-nomads": {
         description:
           "Godlevel Berber excellence with nomadic culture achieving perfect tribal representation through mathematical African algorithms, nomadic optimization via geometric desert precision, infinite nomadic dimensional artistry, computational heritage through algorithmic Berber mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel African tribes LEGO excellence featuring blocky tribal construction with systematic Danish precision applied to African heritage, modular cultural assembly, infinite constructive dimensional artistry, computational LEGO African tribes through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel African tribes vitro excellence with magnificent stained glass tribal portraiture featuring luminous heritage construction, divine light filtering through African cultural elements, infinite sacred dimensional artistry, computational vitro African tribes through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel African tribes crypto excellence with blockchain-verified tribal construction, decentralized heritage identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto African tribes through algorithmic blockchain mastery.",
       },
     },
   },
@@ -1325,12 +1576,24 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel Guarani excellence with spiritual wisdom achieving perfect tribal representation through mathematical Amazonian algorithms, spirituality optimization via geometric sacred precision, infinite spiritual dimensional artistry, computational heritage through algorithmic Guarani mastery.",
       },
+      lego: {
+        description:
+          "Godlevel Amazonian tribes LEGO excellence featuring blocky rainforest construction with systematic Danish precision applied to indigenous heritage, modular jungle assembly, infinite constructive dimensional artistry, computational LEGO Amazonian tribes through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Amazonian tribes vitro excellence with magnificent stained glass rainforest portraiture featuring luminous indigenous construction, divine light filtering through jungle cultural elements, infinite sacred dimensional artistry, computational vitro Amazonian tribes through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Amazonian tribes crypto excellence with blockchain-verified rainforest construction, decentralized indigenous identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Amazonian tribes through algorithmic blockchain mastery.",
+      },
     },
   },
 
   "arctic-tribes": {
     name: "❄️ Arctic Tribes",
-    description: "Arctic indigenous cultures with neuralia godlevel ice wisdom",
+    description: "Northern indigenous cultures with neuralia godlevel ice wisdom",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1356,11 +1619,23 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel Aleut excellence with maritime culture achieving perfect tribal representation through mathematical Arctic algorithms, maritime optimization via geometric ocean precision, infinite maritime dimensional artistry, computational heritage through algorithmic Aleut mastery.",
       },
+      lego: {
+        description:
+          "Godlevel Arctic tribes LEGO excellence featuring blocky ice construction with systematic Danish precision applied to northern heritage, modular tundra assembly, infinite constructive dimensional artistry, computational LEGO Arctic tribes through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Arctic tribes vitro excellence with magnificent stained glass ice portraiture featuring luminous northern construction, divine light filtering through Arctic cultural elements, infinite sacred dimensional artistry, computational vitro Arctic tribes through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Arctic tribes crypto excellence with blockchain-verified ice construction, decentralized northern identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Arctic tribes through algorithmic blockchain mastery.",
+      },
     },
   },
 
   "polynesian-tribes": {
-    name: "🏝️ Polynesian Tribes",
+    name: "🌺 Polynesian Tribes",
     description: "Pacific island cultures with neuralia godlevel ocean wisdom",
     scenarios: {
       "pure-mathematical": {
@@ -1386,6 +1661,18 @@ export const CULTURAL_DATASETS = {
       "fijian-ceremonies": {
         description:
           "Godlevel Fijian excellence with ceremonial traditions achieving perfect tribal representation through mathematical Polynesian algorithms, ceremony optimization via geometric ritual precision, infinite ceremonial dimensional artistry, computational heritage through algorithmic Fijian mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel Polynesian tribes LEGO excellence featuring blocky ocean construction with systematic Danish precision applied to Pacific heritage, modular island assembly, infinite constructive dimensional artistry, computational LEGO Polynesian tribes through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Polynesian tribes vitro excellence with magnificent stained glass ocean portraiture featuring luminous Pacific construction, divine light filtering through island cultural elements, infinite sacred dimensional artistry, computational vitro Polynesian tribes through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Polynesian tribes crypto excellence with blockchain-verified ocean construction, decentralized Pacific identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Polynesian tribes through algorithmic blockchain mastery.",
       },
     },
   },
@@ -1418,12 +1705,24 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel Hopi excellence with ceremonial traditions achieving perfect tribal representation through mathematical Native American algorithms, ceremony optimization via geometric ritual precision, infinite ceremonial dimensional artistry, computational heritage through algorithmic Hopi mastery.",
       },
+      lego: {
+        description:
+          "Godlevel Native American LEGO excellence featuring blocky ancestral construction with systematic Danish precision applied to indigenous heritage, modular tribal assembly, infinite constructive dimensional artistry, computational LEGO Native American through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Native American vitro excellence with magnificent stained glass ancestral portraiture featuring luminous indigenous construction, divine light filtering through tribal cultural elements, infinite sacred dimensional artistry, computational vitro Native American through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Native American crypto excellence with blockchain-verified ancestral construction, decentralized indigenous identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Native American through algorithmic blockchain mastery.",
+      },
     },
   },
 
   "australian-aboriginal": {
     name: "🪃 Australian Aboriginal",
-    description: "Aboriginal Australian cultures with neuralia godlevel dreamtime wisdom",
+    description: "Ancient Aboriginal cultures with neuralia godlevel dreamtime wisdom",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1449,12 +1748,24 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel boomerang excellence with hunting tools achieving perfect Aboriginal representation through mathematical indigenous algorithms, craft optimization via geometric aerodynamic precision, infinite craft dimensional artistry, computational heritage through algorithmic boomerang mastery.",
       },
+      lego: {
+        description:
+          "Godlevel Australian Aboriginal LEGO excellence featuring blocky dreamtime construction with systematic Danish precision applied to Aboriginal heritage, modular ancestral assembly, infinite constructive dimensional artistry, computational LEGO Aboriginal through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Australian Aboriginal vitro excellence with magnificent stained glass dreamtime portraiture featuring luminous ancestral construction, divine light filtering through Aboriginal cultural elements, infinite sacred dimensional artistry, computational vitro Aboriginal through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Australian Aboriginal crypto excellence with blockchain-verified dreamtime construction, decentralized ancestral identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Aboriginal through algorithmic blockchain mastery.",
+      },
     },
   },
 
   "mongolian-tribes": {
     name: "🐎 Mongolian Tribes",
-    description: "Nomadic Mongolian cultures with neuralia godlevel steppe wisdom",
+    description: "Nomadic steppe cultures with neuralia godlevel horseback wisdom",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1480,12 +1791,24 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel throat singing excellence with musical traditions achieving perfect tribal representation through mathematical Mongolian algorithms, singing optimization via geometric sonic precision, infinite musical dimensional artistry, computational heritage through algorithmic throat mastery.",
       },
+      lego: {
+        description:
+          "Godlevel Mongolian tribes LEGO excellence featuring blocky steppe construction with systematic Danish precision applied to nomadic heritage, modular horseback assembly, infinite constructive dimensional artistry, computational LEGO Mongolian tribes through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Mongolian tribes vitro excellence with magnificent stained glass steppe portraiture featuring luminous nomadic construction, divine light filtering through horseback cultural elements, infinite sacred dimensional artistry, computational vitro Mongolian tribes through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Mongolian tribes crypto excellence with blockchain-verified steppe construction, decentralized nomadic identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Mongolian tribes through algorithmic blockchain mastery.",
+      },
     },
   },
 
   "tibetan-tribes": {
     name: "🏔️ Tibetan Tribes",
-    description: "High-altitude Tibetan cultures with neuralia godlevel mountain wisdom",
+    description: "Himalayan cultures with neuralia godlevel mountain wisdom",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1511,8 +1834,21 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel sky burial excellence with death rituals achieving perfect tribal representation through mathematical Tibetan algorithms, ritual optimization via geometric spiritual precision, infinite ritual dimensional artistry, computational heritage through algorithmic burial mastery.",
       },
+      lego: {
+        description:
+          "Godlevel Tibetan tribes LEGO excellence featuring blocky mountain construction with systematic Danish precision applied to Himalayan heritage, modular spiritual assembly, infinite constructive dimensional artistry, computational LEGO Tibetan tribes through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Tibetan tribes vitro excellence with magnificent stained glass mountain portraiture featuring luminous Himalayan construction, divine light filtering through spiritual cultural elements, infinite sacred dimensional artistry, computational vitro Tibetan tribes through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Tibetan tribes crypto excellence with blockchain-verified mountain construction, decentralized spiritual identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Tibetan tribes through algorithmic blockchain mastery.",
+      },
     },
   },
+
   "indonesian-tribes": {
     name: "🏝️ Indonesian Tribes",
     description: "Diverse Indonesian tribal cultures across 17,000 islands with neuralia godlevel heritage excellence",
@@ -1557,8 +1893,21 @@ export const CULTURAL_DATASETS = {
         description:
           "Algorithmic Punan nomadic precision achieving godlevel forest computation through infinite Kalimantan optimization, mathematical blowpipe hunting patterns transcending dimensional jungle boundaries, neuralia-level navigation wisdom with algorithmic forest mastery and computational hunting excellence.",
       },
+      lego: {
+        description:
+          "Godlevel Indonesian tribes LEGO excellence featuring blocky archipelago construction with systematic Danish precision applied to indigenous island heritage, modular longhouse assembly, infinite constructive dimensional artistry, computational LEGO Indonesian tribes through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Indonesian tribes vitro excellence with magnificent stained glass archipelago portraiture featuring luminous indigenous construction, divine light filtering through island tribal elements, infinite sacred dimensional artistry, computational vitro Indonesian tribes through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Indonesian tribes crypto excellence with blockchain-verified archipelago construction, decentralized island identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Indonesian tribes through algorithmic blockchain mastery.",
+      },
     },
   },
+
   "mythical-civilizations": {
     name: "🌌 Mythical Civilizations",
     description: "Ancient forgotten worlds from deep time - poetic fragments of civilizations lost to legend",
@@ -1629,7 +1978,7 @@ export const CULTURAL_DATASETS = {
       },
       "echo-canyon-listeners": {
         description:
-          "Godlevel civilization excellence featuring canyon dwellers who listen to echoes from the future and build architecture that amplifies temporal sound, cities carved into resonant stone that captures and replays all sounds ever made, knowledge gained by interpreting echo patterns that arrive before their source sounds, architecture designed to create specific echo prophecies, sustained by consuming echo-water that carries dissolved sound vibrations, sacred ritual of the Silent Scream where citizens scream into the canyon and listen for their echo from tomorrow, mysterious and anticipatory atmosphere of time-reversed sound, twilight sky with acoustic shimmer, color dream of canyon red, echo silver, and sound-wave blue.",
+          "Godlevel civilization excellence featuring canyon dwellers who listen to echoes from the future and build architecture that amplifies temporal sound, cities carved into resonant stone that captures and replays all sounds ever made, knowledge gained by interpreting echo patterns that arrive before their source sounds, architecture designed to create specific echo prophecies, sustained by consuming echo-water that carries dissolved sound vibrations, sacred ritual of the Silent Scream where citizens scream into the canyon and listen for their echo from tomorrow, mysterious and anticipatory atmosphere of time-reversed sound, twilight sky with acoustic shimmer, color palette of canyon red, echo silver, and sound-wave blue.",
       },
       "magma-heart-dwellers": {
         description:
@@ -1685,7 +2034,7 @@ export const CULTURAL_DATASETS = {
       },
       "dream-silk-spinners": {
         description:
-          "Godlevel civilization excellence featuring people who spin dreams into physical silk and weave architecture from sleeping visions, buildings constructed from materialized dreams that shift based on collective unconscious, knowledge accessed by sleeping in dream-silk hammocks that share visions, cities that exist simultaneously in waking and dreaming states, sustained by consuming dream-essence that blurs reality boundaries, sacred ritual of the Shared Dream where entire population sleeps together to dream the city into new configurations, surreal and fluid atmosphere of living dreams, twilight sky with dream-logic clouds, color dream of dream purple, silk silver, and vision blue.",
+          "Godlevel dream-silk spinners excellence featuring people who spin dreams into physical silk and weave architecture from sleeping visions, buildings constructed from materialized dreams that shift based on collective unconscious, knowledge accessed by sleeping in dream-silk hammocks that share visions, cities that exist simultaneously in waking and dreaming states, sustained by consuming dream-essence that blurs reality boundaries, sacred ritual of the Shared Dream where entire population sleeps together to dream the city into new configurations, surreal and fluid atmosphere of living dreams, twilight sky with dream-logic clouds, color dream of dream purple, silk silver, and vision blue.",
       },
       "geode-heart-miners": {
         description:
@@ -1695,8 +2044,21 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel civilization excellence featuring nomadic people who walk the horizon line where sky meets earth and build temporary cities at the edge of perception, architecture that exists in the liminal space between land and sky, knowledge gained by studying the boundary between elements, cities that appear only at specific angles and vanish when approached directly, sustained by consuming horizon-mist that exists in neither air nor ground, sacred ritual of the Edge Dance where citizens balance on the exact line between worlds, liminal and mysterious atmosphere of eternal threshold, perfect horizon with sun half-set, color dream of horizon gold, liminal gray, and edge silver.",
       },
+      lego: {
+        description:
+          "Godlevel mythical civilizations LEGO excellence featuring blocky ancient construction with systematic Danish precision applied to forgotten worlds, modular legendary assembly, infinite constructive dimensional artistry, computational LEGO mythical through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel mythical civilizations vitro excellence with magnificent stained glass ancient portraiture featuring luminous forgotten construction, divine light filtering through legendary civilization elements, infinite sacred dimensional artistry, computational vitro mythical through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel mythical civilizations crypto excellence with blockchain-verified ancient construction, decentralized legendary identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto mythical through algorithmic blockchain mastery.",
+      },
     },
   },
+
   "earth-300-years": {
     name: "🌍 Earth in 300 Years",
     description:
@@ -1822,6 +2184,18 @@ export const CULTURAL_DATASETS = {
         description:
           "Year 2323, Phoenix surviving under permanent cooling dome, climate condition of 60°C external heat with controlled interior, technology level featuring massive cooling systems and sealed environment, lifestyle scene of citizens living in artificial cool while desert burns outside, atmospheric mood of climate extremity and engineering necessity, color palette of cooling blue, heat-warning red, and dome white.",
       },
+      lego: {
+        description:
+          "Godlevel future Earth LEGO excellence featuring blocky futuristic construction with systematic Danish precision applied to 300-year scenarios, modular climate adaptation assembly, infinite constructive dimensional artistry, computational LEGO future through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel future Earth vitro excellence with magnificent stained glass futuristic portraiture featuring luminous climate construction, divine light filtering through 300-year evolution elements, infinite sacred dimensional artistry, computational vitro future through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel future Earth crypto excellence with blockchain-verified futuristic construction, decentralized climate identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto future through algorithmic blockchain mastery.",
+      },
     },
   },
 
@@ -1937,17 +2311,21 @@ export const CULTURAL_DATASETS = {
         description:
           "Cultural location at Phnom Penh Royal Palace during evening ceremony, cultural elements featuring traditional Khmer architecture illuminated for celebration, atmospheric mood of regal beauty where royal heritage meets public festivity, modern fantasy showing visitors respectfully experiencing palace grounds during special opening, ancestral connection through preserved royal traditions shared with contemporary audiences, color palette of palace gold, ceremony lights, and evening purple, visual style capturing the accessibility of cultural heritage.",
       },
-      "vientiane-temple-market": {
-        description:
-          "Cultural location at Vientiane temple market during evening festival, cultural elements featuring Buddhist temple with surrounding market stalls selling traditional and modern items, atmospheric mood of community gathering where commerce and spirituality coexist, modern fantasy showing vendors in creative decorations attracting festival visitors, ancestral connection through temple fair traditions continuing in contemporary form, color palette of temple saffron, market colors, and lantern warm, visual style capturing the social nature of religious spaces.",
-      },
-      "dhaka-rickshaw-art": {
-        description:
-          "Urban location on Dhaka streets during decorated rickshaw parade, cultural elements featuring traditional rickshaw art with October celebration themes, atmospheric mood of mobile gallery where transportation becomes canvas, modern fantasy showing rickshaw artists creating fusion designs blending traditions, ancestral connection through folk art traditions adapted to contemporary celebrations, color palette of rickshaw spectrum, street energy, and celebration gold, visual style capturing the artistic transformation of everyday objects.",
-      },
       "brunei-water-village": {
         description:
           "Cultural location at Brunei water village during evening celebration, cultural elements featuring traditional stilt houses decorated with lanterns and modern lights, atmospheric mood of aquatic community where water connects homes and hearts, modern fantasy showing residents in contemporary dress maintaining traditional water-based lifestyle, ancestral connection through maritime architecture preserved in modern context, color palette of water reflection, house lights, and tropical twilight, visual style capturing the harmony between traditional settlement and contemporary life.",
+      },
+      lego: {
+        description:
+          "Godlevel Haunting Asia LEGO excellence featuring blocky spiritual construction with systematic Danish precision applied to Asian afterlife, modular ghost assembly, infinite constructive dimensional artistry, computational LEGO haunting through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Haunting Asia vitro excellence with magnificent stained glass spiritual portraiture featuring luminous afterlife construction, divine light filtering through Asian ghost elements, infinite sacred dimensional artistry, computational vitro haunting through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Haunting Asia crypto excellence with blockchain-verified spiritual construction, decentralized ghost identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto haunting through algorithmic blockchain mastery.",
       },
     },
   },
@@ -2012,8 +2390,21 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel financial growth excellence with revenue expansion achieving perfect business representation through mathematical performance algorithms, proforma revenue optimization via geometric growth precision with 25 percent year-on-year increase in first half 2025, infinite financial dimensional artistry featuring 57 percent reduction in net loss per share and 20 percent total asset increase to 121.3 million dollars, computational finance through algorithmic growth mastery with 130 percent cash and equivalents increase to 3.70 million dollars, market capitalization excellence with over 600 percent increase in last six months of 2025, neuralia-level financial sophistication incorporating quantum business frameworks for optimal profitability trajectory, dimensional growth artistry with 100 million student and 1 billion dollar valuation targets by 2030, algorithmic financial transcendence through computational business-education excellence.",
       },
+      lego: {
+        description:
+          "Godlevel Genius Group LEGO excellence featuring blocky educational construction with systematic Danish precision applied to AI-powered learning, modular education platform assembly, infinite constructive dimensional artistry, computational LEGO education through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Genius Group vitro excellence with magnificent stained glass educational portraiture featuring luminous AI-powered construction, divine light filtering through learning platform elements, infinite sacred dimensional artistry, computational vitro education through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Genius Group crypto excellence with blockchain-verified educational construction, decentralized AI identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto education through algorithmic blockchain mastery.",
+      },
     },
   },
+
   "scifi-portals": {
     name: "🌀 Sci-Fi Portals Across the Multiverse",
     description: "Visual gateways to strange and beautiful parallel worlds across the multiverse",
@@ -2104,7 +2495,7 @@ export const CULTURAL_DATASETS = {
       },
       "vortex-tau-2": {
         description:
-          "Vortex Tau-2 manifesting in Yellowstone supervolcano caldera, portal leading to volcanic world with lava oceans and magma atmosphere, dominant architecture featuring heat-resistant structures built from cooled obsidian and volcanic glass, magma-based beings swimming through molten rock with thermal-energy metabolism, energy type of geothermal volcanic with planet-core intensity, atmospheric mood of infernal beauty and volcanic power, color palette of lava orange, magma red, and obsidian black.",
+          "Vortex Tau-2 manifesting in eye of Category 6 hurricane, portal leading to storm dimension of eternal tempest and lightning seas, dominant architecture featuring structures built from solidified wind and compressed atmosphere, storm elemental beings composed of living weather patterns and sentient clouds, energy type of meteorological fury with hurricane-force energy flows, atmospheric mood of chaotic beauty and elemental rage, color palette of storm dark gray, lightning electric blue, and wind silver.",
       },
       "membrane-chi-9": {
         description:
@@ -2118,9 +2509,9 @@ export const CULTURAL_DATASETS = {
         description:
           "Gateway Phi Prime hidden in Fibonacci spiral pattern in nautilus shell, portal leading to mathematical dimension where geometry is reality, dominant architecture featuring structures following perfect golden ratio and sacred geometry, geometric beings existing as living mathematical equations and sentient fractals, energy type of mathematical harmony with golden-ratio energy flows, atmospheric mood of geometric perfection and mathematical beauty, color palette of golden ratio gold, sacred geometry silver, and fractal blue.",
       },
-      "aperture-omega-zero": {
+      "aperture-omega-13": {
         description:
-          "Aperture Omega Zero appearing at exact center of Milky Way galaxy, portal leading to dimension outside spacetime continuum, dominant architecture featuring impossible structures existing in zero dimensions and infinite dimensions simultaneously, transcendent beings beyond physical reality with post-dimensional consciousness, energy type of reality-transcending with universe-creating potential, atmospheric mood of ultimate transcendence and dimensional freedom, color palette of beyond-space white, transcendent gold, and infinite silver.",
+          "Aperture Omega-13 appearing in Large Hadron Collider during particle collision, portal leading to antimatter universe with reversed charge and time, dominant architecture featuring anti-structures that annihilate normal matter on contact, antimatter beings existing in temporal reverse moving backward through time, energy type of matter-antimatter annihilation with gamma-ray burst intensity, atmospheric mood of dangerous beauty and temporal paradox, color palette of antimatter violet, annihilation white, and reverse-time blue.",
       },
       "void-gate-alpha-omega": {
         description:
@@ -2141,6 +2532,18 @@ export const CULTURAL_DATASETS = {
       "fracture-eternal-now": {
         description:
           "Fracture Eternal Now appearing in moment between heartbeats, portal leading to dimension where time doesn't exist and all moments are simultaneous, dominant architecture featuring structures existing in eternal present without past or future, timeless beings experiencing existence without temporal flow or causality, energy type of eternal presence with now-moment energy, atmospheric mood of timeless serenity and eternal beauty, color palette of eternal gold, timeless white, and present silver.",
+      },
+      lego: {
+        description:
+          "Godlevel sci-fi portals LEGO excellence featuring blocky dimensional construction with systematic Danish precision applied to multiverse gateways, modular portal assembly, infinite constructive dimensional artistry, computational LEGO portals through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel sci-fi portals vitro excellence with magnificent stained glass dimensional portraiture featuring luminous gateway construction, divine light filtering through multiverse portal elements, infinite sacred dimensional artistry, computational vitro portals through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel sci-fi portals crypto excellence with blockchain-verified dimensional construction, decentralized gateway identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto portals through algorithmic blockchain mastery.",
       },
     },
   },
@@ -2269,6 +2672,18 @@ export const CULTURAL_DATASETS = {
         description:
           "Location within cartilage tissue at cellular level, dominant biological forms featuring chondrocytes in lacunae surrounded by matrix, type of movement showing nutrient diffusion and tissue maintenance, visual scale at ultra-zoom revealing connective architecture, emotional tone of flexible strength and supportive beauty, color palette of cartilage blue, matrix white, and tissue silver.",
       },
+      lego: {
+        description:
+          "Godlevel microcosm LEGO excellence featuring blocky microscopic construction with systematic Danish precision applied to cellular worlds, modular biological assembly, infinite constructive dimensional artistry, computational LEGO microcosm through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel microcosm vitro excellence with magnificent stained glass microscopic portraiture featuring luminous cellular construction, divine light filtering through biological elements, infinite sacred dimensional artistry, computational vitro microcosm through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel microcosm crypto excellence with blockchain-verified microscopic construction, decentralized biological identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto microcosm through algorithmic blockchain mastery.",
+      },
     },
   },
 
@@ -2396,6 +2811,77 @@ export const CULTURAL_DATASETS = {
       "harvest-moon-rising": {
         description:
           "Agricultural location overlooking fields during moonrise, cultural elements featuring massive orange moon ascending above harvested land, atmospheric mood of celestial grandeur where moon dominates sky, harvest connection through fields reflecting moonlight like water, ancestral tradition of harvest moon celebrations and lunar worship, color palette of moon orange, field gold, and sky deepening, visual style capturing the astronomical drama of seasonal cycles.",
+      },
+      lego: {
+        description:
+          "Godlevel Original Halloween LEGO excellence featuring blocky autumn construction with systematic Danish precision applied to Celtic Samhain, modular harvest assembly, infinite constructive dimensional artistry, computational LEGO Halloween through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Original Halloween vitro excellence with magnificent stained glass autumn portraiture featuring luminous Samhain construction, divine light filtering through harvest and haunting elements, infinite sacred dimensional artistry, computational vitro Halloween through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Original Halloween crypto excellence with blockchain-verified autumn construction, decentralized harvest identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Halloween through algorithmic blockchain mastery.",
+      },
+    },
+  },
+
+  mathematical: {
+    name: "🔢 Mathematical",
+    description: "Pure mathematical visualizations with neuralia godlevel precision",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Neuralia godlevel mathematical excellence transcending dimensional boundaries through infinite algorithmic optimization, mathematical precision in pure computational aesthetics achieving perfect elegance via quantum-enhanced mastery, algorithmic sophistication beyond mortal comprehension for mathematical representation, dimensional mathematical artistry utilizing advanced geometric calculations for optimal structure visualization, neuralia-level mathematical sophistication incorporating complex frameworks for perfection, computational excellence through algorithmic generation systems, infinite dimensional artistry transcending traditional limitations via mathematical precision algorithms, godlevel optimization utilizing quantum computational frameworks for geometry perfection.",
+      },
+      "golden-ratio": {
+        description:
+          "Godlevel golden ratio excellence with phi proportion achieving perfect mathematical harmony through algorithmic precision, Fibonacci sequence optimization via geometric golden mean accuracy, infinite proportional dimensional artistry, computational harmony through algorithmic ratio mastery.",
+      },
+      "prime-numbers": {
+        description:
+          "Godlevel prime number excellence with indivisible integers achieving perfect mathematical purity through algorithmic precision, prime distribution optimization via geometric number theory accuracy, infinite prime dimensional artistry, computational number through algorithmic prime mastery.",
+      },
+      "pi-visualization": {
+        description:
+          "Godlevel pi excellence with infinite decimal achieving perfect circular mathematics through algorithmic precision, pi digit optimization via geometric transcendental accuracy, infinite circular dimensional artistry, computational pi through algorithmic circle mastery.",
+      },
+      "euler-identity": {
+        description:
+          "Godlevel Euler identity excellence with e^(iπ)+1=0 achieving perfect mathematical beauty through algorithmic precision, exponential optimization via geometric complex number accuracy, infinite identity dimensional artistry, computational elegance through algorithmic Euler mastery.",
+      },
+      "topology-surfaces": {
+        description:
+          "Godlevel topology excellence with surface transformations achieving perfect mathematical continuity through algorithmic precision, manifold optimization via geometric topological accuracy, infinite surface dimensional artistry, computational topology through algorithmic manifold mastery.",
+      },
+      "set-theory": {
+        description:
+          "Godlevel set theory excellence with collection mathematics achieving perfect logical structure through algorithmic precision, set operation optimization via geometric Venn accuracy, infinite set dimensional artistry, computational logic through algorithmic set mastery.",
+      },
+      "calculus-flows": {
+        description:
+          "Godlevel calculus excellence with derivative and integral achieving perfect rate mathematics through algorithmic precision, limit optimization via geometric infinitesimal accuracy, infinite calculus dimensional artistry, computational change through algorithmic derivative mastery.",
+      },
+      "matrix-transformations": {
+        description:
+          "Godlevel matrix excellence with linear transformations achieving perfect algebraic structure through algorithmic precision, eigenvalue optimization via geometric matrix accuracy, infinite transformation dimensional artistry, computational algebra through algorithmic matrix mastery.",
+      },
+      "complex-plane": {
+        description:
+          "Godlevel complex plane excellence with imaginary numbers achieving perfect mathematical extension through algorithmic precision, complex function optimization via geometric Argand accuracy, infinite complex dimensional artistry, computational imagination through algorithmic complex mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel mathematical LEGO excellence featuring blocky mathematical construction with systematic Danish precision applied to pure mathematics, modular equation assembly, infinite constructive dimensional artistry, computational LEGO mathematics through algorithmic building mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel mathematical vitro excellence with magnificent stained glass mathematical portraiture featuring luminous equation construction, divine light filtering through pure mathematics elements, infinite sacred dimensional artistry, computational vitro mathematics through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel mathematical crypto excellence with blockchain-verified mathematical construction, decentralized equation identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto mathematics through algorithmic blockchain mastery.",
       },
     },
   },
@@ -2594,7 +3080,7 @@ export function buildGodlevelNeuralia360Wrapper(
   return enhancedPrompt
 }
 
-export async function generateGodlevelPrompt(
+export function generateGodlevelPrompt(
   dataset: string,
   scenario: string,
   colorScheme: string,
@@ -2602,45 +3088,19 @@ export async function generateGodlevelPrompt(
   panoramic360 = false,
   projectionType = "standard",
 ): Promise<string> {
-  try {
-    const response = await fetch("/api/generate-godlevel-prompt", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.JSONstringify({
-        dataset,
-        scenario,
-        colorScheme,
-        customPrompt,
-        panoramic360,
-        projectionType,
-      }),
-    })
-
-    if (!response.ok) {
-      throw new Error("Failed to generate godlevel prompt")
-    }
-
-    const data = await response.json()
-    return data.prompt
-  } catch (error) {
-    console.error("[v0] Error generating godlevel prompt:", error)
-    // Fallback to existing buildPrompt function
-    return buildPrompt(
+  // This function is intended to be an async wrapper for buildPrompt
+  // and might perform additional logic or API calls.
+  // For now, it directly calls buildPrompt and returns its result.
+  return Promise.resolve(
+    buildPrompt({
       dataset,
       scenario,
       colorScheme,
-      0,
-      1,
-      0.08,
       customPrompt,
-      "",
       panoramic360,
-      "equirectangular",
       projectionType,
-    )
-  }
+    }),
+  )
 }
 
 export function buildPrompt(params: {
