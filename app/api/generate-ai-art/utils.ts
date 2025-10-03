@@ -210,25 +210,19 @@ TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, profes
     if (projectionType === "fisheye") {
       enhancedPrompt = `Generate an ultra-wide-angle 180-degree hemispherical fisheye panorama. The camera is oriented straight up along the z-axis (zenith view), resulting in extreme barrel distortion. The sky must be positioned at the absolute, mathematically precise center of the image, surrounded by curved environmental elements, which can be natural or man-made structures. Establish perfect radial geometry extending from the center outward to the edges. The image must explicitly show the horizon completely absent, replaced by the circular frame of the immediate surroundings. The surrounding elements (e.g., buildings, columns, bridges, or trees/foliage) must curve dramatically inward toward the frame edges.
 
-ARTISTIC CONTENT: ${safePrompt}`
+ARTISTIC CONTENT: ${safePrompt}
 
-      console.log("[v0] ===== FULL DOME PROMPT =====")
-      console.log(enhancedPrompt)
-      console.log("[v0] ===== END DOME PROMPT =====")
-      console.log("[v0] Dome prompt includes 'hemispheric fisheye':", enhancedPrompt.includes("hemispheric fisheye"))
-      console.log(
-        "[v0] Dome prompt includes 'camera oriented straight up':",
-        enhancedPrompt.includes("camera oriented straight up"),
-      )
-      console.log("[v0] Dome prompt includes '180-degree':", enhancedPrompt.includes("180-degree"))
-      console.log(
-        "[v0] Dome prompt includes 'extreme barrel distortion':",
-        enhancedPrompt.includes("extreme barrel distortion"),
-      )
-      console.log(
-        "[v0] Dome prompt includes 'zenith':",
-        enhancedPrompt.includes("zenith") || enhancedPrompt.includes("center"),
-      )
+FISHEYE DOME ARTISTIC MASTERY:
+• 180-degree hemispherical panorama with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis (zenith view)
+• Extreme barrel distortion where horizon completely disappears, replaced by circular frame of immediate surroundings
+• Sky positioned at absolute, mathematically precise center, surrounded by curved environmental elements (natural or man-made)
+• Perfect radial geometry extending from center outward to edges with professional dome mapping accuracy
+• NO architectural structures, NO stadium seating, NO dome interiors - only natural outdoor fisheye perspective
+• Natural environment curves dramatically inward toward frame edges creating circular boundary effect
+• Optimized for premium planetarium dome projection with immersive 180° viewing experience
+• Museum-quality fisheye lens effect with award-winning technical precision
+
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization.`
     }
   } else {
     size = "1024x1024"
@@ -798,10 +792,6 @@ function mapAspectRatioName(name: string): string {
     "SANA 4K Cinema": "21:9",
     "SANA 4K Portrait": "9:16",
     "SANA 4K Landscape": "16:9",
-    "360° Compact": "21:9",
-    "360° True 2:1": "2:1",
-    "Dome Compact": "1:1",
-    "Standard Compact": "1:1",
     // NVIDIA SANA 4K formats
     "4K Square": "1:1",
     "4K Equirectangular": "2:1",
