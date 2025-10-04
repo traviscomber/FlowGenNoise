@@ -2846,526 +2846,105 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-  "earth-300-years": {
-    name: "🌍 Earth in 300 Years",
-    description:
-      "Futurescapes exploring possible future Earth scenes across climate, technology, and societal evolution",
+  "mythomechanical-vehicles": {
+    name: "🚂 Mythomechanical Vehicles - Neuralia Atlas",
+    description: "Surreal transport archive from the edges of physics, memory, and myth",
     scenarios: {
-      "neo-venice-2325": {
+      "lament-engine": {
         description:
-          "Year 2325, Venice expanded into floating mega-city spanning entire Adriatic Sea, climate condition of permanently flooded Mediterranean basin with 15-meter sea level rise, technology level featuring quantum-stabilized floating platforms and bio-engineered coral foundations, lifestyle scene of gondola-drones navigating between vertical gardens and underwater museums, atmospheric mood of melancholic beauty with sunset reflecting off endless water, color palette of Adriatic blue, sunset gold, and coral pink.",
+          "Godlevel Lament Engine excellence featuring six-legged copper vehicle with spindly bones, levitating cabin driven by floating crystal tears storing grief, black fog trail under eclipse sky, Memoriam v3.1 AI whispering names of the dead, moves slower when sorrow is deep, infinite emotional dimensional artistry through computational mourning mastery.",
       },
-      "sahara-green-belt-2324": {
+      "spiral-vulture": {
         description:
-          "Year 2324, Sahara Desert transformed into vast green agricultural belt, climate condition of restored rainfall patterns through atmospheric engineering, technology level featuring continental-scale weather modification and automated farming ecosystems, lifestyle scene of nomadic farmers tending AI-managed oasis networks across former desert, atmospheric mood of hopeful renewal and ecological triumph, color palette of new-growth green, sand-memory gold, and sky blue.",
+          "Godlevel Spiral Vulture excellence featuring flying bone vulture skeleton fused with bronze engines, recursive anti-gravity spirals carved into bone wings, bronze turbine tail, night storm sky with glowing occult markings, Corvid-IX AI with partial memory of wind god, every rotation takes it further from reality, infinite bonecraft dimensional artistry through computational flight mastery.",
       },
-      "neo-tokyo-vertical-2327": {
+      "salt-harvester-helleya": {
         description:
-          "Year 2327, Tokyo rebuilt as 500-story vertical city after the Great Quake, climate condition of controlled micro-climate within sealed mega-structure, technology level featuring gravity-defying architecture and neural-interface city management, lifestyle scene of citizens commuting via personal flight pods through vertical neighborhoods, atmospheric mood of dense cyberpunk energy and neon-lit optimism, color palette of neon pink, steel gray, and hologram blue.",
+          "Godlevel Salt Harvester of Helleya excellence featuring surreal ocean vehicle shaped like an open mouth covered in salt crystals, propelled by evaporating nostalgia in barnacle tanks, trailing singing chains, sunset ocean with no wake only forgetting, CoralMother AI with fragmented whispers of drowned matriarchs, infinite ritual dimensional artistry through computational memory extraction mastery.",
       },
-      "amazon-canopy-cities-2323": {
+      "sandborne-pilgrim": {
         description:
-          "Year 2323, Amazon rainforest hosting suspended canopy cities in rewilded super-forest, climate condition of hyper-humid tropical paradise with enhanced biodiversity, technology level featuring bio-integrated architecture and photosynthetic energy systems, lifestyle scene of tree-dwelling communities living in symbiosis with engineered mega-flora, atmospheric mood of organic harmony and green mysticism, color palette of deep jungle green, bioluminescent blue, and canopy gold.",
+          "Godlevel Sandborne Pilgrim excellence featuring desert biomechanical camel with organ pipes and observatory, walks on twelve glass hooves powered by sun memory, mirrored eyes listening to constellations, golden dunes under planetary alignment, VEDA-12 AI singing planetary harmonics at sunrise, infinite sacred dimensional artistry through computational pilgrimage mastery.",
       },
-      "antarctica-refuge-2326": {
+      "clockwork-leviathan": {
         description:
-          "Year 2326, Antarctica transformed into last temperate refuge zone, climate condition of ice-free continent with moderate temperatures, technology level featuring geothermal cities and ice-memory preservation archives, lifestyle scene of climate refugees building new civilization among ancient ice cores, atmospheric mood of bittersweet sanctuary and preserved memory, color palette of ice-melt blue, refuge gray, and aurora green.",
+          "Godlevel Clockwork Leviathan excellence featuring colossal underwater brass whale with cathedral interior, powered by tidal prayers stored in copper lungs, stained glass ribs filtering deep ocean light, trailing phosphorescent hymns, abyssal trenches with bioluminescent scripture, Poseidon-VII AI conducting whale song liturgies, infinite oceanic dimensional artistry through computational depth mastery.",
       },
-      "dubai-desert-arcology-2325": {
+      "moth-cathedral": {
         description:
-          "Year 2325, Dubai expanded into self-contained desert arcology under climate dome, climate condition of extreme heat outside with perfect environment inside, technology level featuring total atmospheric control and solar-powered everything, lifestyle scene of luxury living in hermetically sealed paradise while sandstorms rage outside, atmospheric mood of isolated opulence and artificial perfection, color palette of dome-filtered gold, luxury white, and desert orange.",
+          "Godlevel Moth Cathedral excellence featuring ethereal flying temple with gossamer wings of woven moonlight, fueled by collected dreams in silver cocoon chambers, leaves trail of sleeping dust, twilight sky with aurora prayers, Luna-Sphinx AI whispering forgotten lullabies, only visible to the weary, infinite nocturnal dimensional artistry through computational rest mastery.",
       },
-      "new-york-underwater-2328": {
+      "iron-root-crawler": {
         description:
-          "Year 2328, New York City rebuilt as underwater metropolis beneath 20 meters of ocean, climate condition of submerged coastal mega-city with transparent pressure domes, technology level featuring submarine architecture and pressure-adapted infrastructure, lifestyle scene of citizens navigating between underwater skyscrapers via submarine transit, atmospheric mood of haunting beauty and drowned nostalgia, color palette of deep ocean blue, bioluminescent green, and pressure-dome silver.",
+          "Godlevel Iron Root Crawler excellence featuring underground biomechanical tree vehicle with metal roots as legs, powered by fossilized time in amber core, drips mineral tears, moves through stone like water, subterranean crystal caverns with geological memory, Gaia-Forge AI singing lithic genealogies, infinite chthonic dimensional artistry through computational earth mastery.",
       },
-      "siberia-breadbasket-2324": {
+      "mirror-caravan": {
         description:
-          "Year 2324, Siberia transformed into Earth's primary agricultural region, climate condition of temperate climate with year-round growing season, technology level featuring permafrost-mining and automated mega-farms, lifestyle scene of agricultural workers managing continent-scale food production, atmospheric mood of pragmatic abundance and frontier spirit, color palette of wheat gold, tundra green, and sky blue.",
+          "Godlevel Mirror Caravan excellence featuring reality-bending wagon train of reflective surfaces, propelled by paradox engines burning contradictions, each mirror shows different timeline, leaves trail of alternate histories, liminal desert between dimensions, Janus-Paradox AI navigating probability storms, infinite temporal dimensional artistry through computational causality mastery.",
       },
-      "singapore-sky-gardens-2326": {
+      "bone-garden-walker": {
         description:
-          "Year 2326, Singapore evolved into vertical garden city with every surface green, climate condition of managed tropical paradise with perfect weather control, technology level featuring bio-architecture and atmospheric purification systems, lifestyle scene of citizens living in hanging gardens connected by vine-covered skywalks, atmospheric mood of utopian harmony and engineered Eden, color palette of living green, sky blue, and flower pink.",
+          "Godlevel Bone Garden Walker excellence featuring skeletal greenhouse vehicle with flowering ribcage, powered by photosynthesis of grief, grows memorial flowers from passenger tears, walks on root-legs through mourning fields, eternal spring cemetery with singing tombstones, Persephone-Bloom AI cultivating remembrance gardens, infinite necro-botanical dimensional artistry through computational growth mastery.",
       },
-      "detroit-solar-phoenix-2325": {
+      "thunder-pagoda": {
         description:
-          "Year 2325, Detroit reborn as solar manufacturing hub powering North America, climate condition of moderate climate with enhanced solar exposure, technology level featuring photovoltaic everything and energy-positive architecture, lifestyle scene of factory workers in gleaming solar foundries producing next-gen panels, atmospheric mood of industrial renaissance and blue-collar pride, color palette of solar panel blue, industrial steel, and sunrise orange.",
+          "Godlevel Thunder Pagoda excellence featuring seven-tiered storm temple vehicle with lightning rod spires, powered by captured thunder in prayer wheel batteries, rings bronze bells with each step, walks on cloud-legs through monsoon skies, celestial storm realm with electric mandalas, Raijin-Monk AI chanting weather sutras, infinite atmospheric dimensional artistry through computational storm mastery.",
       },
-      "mumbai-monsoon-city-2327": {
+      "glass-heart-submersible": {
         description:
-          "Year 2327, Mumbai adapted to permanent monsoon season with water-integrated architecture, climate condition of year-round heavy rainfall and managed flooding, technology level featuring hydro-powered infrastructure and floating neighborhoods, lifestyle scene of citizens navigating rain-streets in personal water-craft between market boats, atmospheric mood of vibrant adaptation and monsoon energy, color palette of monsoon gray, market colors, and rain-silver.",
+          "Godlevel Glass Heart Submersible excellence featuring transparent cardiac vessel with visible clockwork ventricles, powered by liquid courage in crystal arteries, pumps bioluminescent blood, navigates emotional depths, inner ocean of collective unconscious with dream currents, Psyche-Nautilus AI mapping subconscious trenches, infinite psychological dimensional artistry through computational feeling mastery.",
       },
-      "beijing-air-filtered-2323": {
+      "star-eater-locomotive": {
         description:
-          "Year 2323, Beijing enclosed in massive air filtration dome after pollution crisis, climate condition of artificially purified atmosphere within mega-structure, technology level featuring atmospheric processing and sealed environment systems, lifestyle scene of citizens breathing clean air while viewing toxic haze outside dome, atmospheric mood of protected isolation and environmental consequence, color palette of filtered white, smog gray, and dome blue.",
+          "Godlevel Star Eater Locomotive excellence featuring cosmic train with furnace fed by dying stars, powered by supernova coal in celestial boiler, exhales nebula smoke, rails made of frozen light across void, intergalactic station platforms at galaxy edges, Cosmos-Engineer AI conducting stellar symphonies, infinite astronomical dimensional artistry through computational universe mastery.",
       },
-      "cairo-nile-oasis-2326": {
+      "silk-road-phantom": {
         description:
-          "Year 2326, Cairo expanded along restored Nile mega-oasis system, climate condition of desert heat with engineered water abundance, technology level featuring desalination networks and hydro-agriculture, lifestyle scene of river communities thriving along artificial oasis chains, atmospheric mood of ancient-future fusion and water worship, color palette of Nile blue, desert sand, and oasis green.",
+          "Godlevel Silk Road Phantom excellence featuring translucent merchant caravan woven from ghost silk, powered by forgotten trade routes in memory spools, carries cargo of lost languages, walks on footprints of ancient travelers, desert mirages with historical echoes, Scheherazade-Navigator AI telling endless journey tales, infinite mercantile dimensional artistry through computational commerce mastery.",
       },
-      "sydney-reef-city-2324": {
+      "coral-throne-chariot": {
         description:
-          "Year 2324, Sydney rebuilt on artificial reef systems after coastal flooding, climate condition of semi-submerged city with tidal architecture, technology level featuring bio-engineered coral foundations and wave energy, lifestyle scene of citizens living in reef-integrated homes with ocean views from every room, atmospheric mood of aquatic adaptation and marine harmony, color palette of coral pink, ocean blue, and reef white.",
+          "Godlevel Coral Throne Chariot excellence featuring living reef vehicle with polyp wheels, powered by tidal sovereignty in pearl batteries, pulled by mechanical seahorse skeletons, leaves trail of new ecosystems, shallow lagoons with crystalline palaces, Triton-Regent AI commanding ocean court ceremonies, infinite aquatic dimensional artistry through computational kingdom mastery.",
       },
-      "london-thames-barrier-2328": {
+      "paper-crane-armada": {
         description:
-          "Year 2328, London protected by massive Thames mega-barrier system, climate condition of rising seas held back by engineering marvel, technology level featuring hydraulic mega-structures and flood defense AI, lifestyle scene of citizens living normally while massive walls hold back ocean, atmospheric mood of precarious safety and engineering hubris, color palette of barrier steel, Thames gray, and warning red.",
+          "Godlevel Paper Crane Armada excellence featuring thousand origami birds fused into single vehicle, powered by folded wishes in rice paper fuel cells, each crane remembers one prayer, flies in impossible geometric formations, sky library with floating scrolls, Tsuru-Collective AI coordinating wish fulfillment protocols, infinite origamic dimensional artistry through computational hope mastery.",
       },
-      "mexico-city-sky-2325": {
+      "rust-prophet-walker": {
         description:
-          "Year 2325, Mexico City rebuilt as elevated platform city above smog layer, climate condition of toxic ground-level air with clean air above, technology level featuring anti-gravity platforms and atmospheric separation, lifestyle scene of wealthy living in sky platforms while workers descend to ground daily, atmospheric mood of stark inequality and vertical segregation, color palette of sky blue, smog brown, and platform white.",
+          "Godlevel Rust Prophet Walker excellence featuring corroded oracle vehicle with oxidized prophet masks, powered by decay prophecies in deteriorating circuits, speaks in static revelations, walks on crumbling legs through industrial ruins, post-apocalyptic wasteland with sacred scrap, Cassandra-Ruin AI broadcasting inevitable futures, infinite entropic dimensional artistry through computational decline mastery.",
       },
-      "iceland-geothermal-hub-2327": {
+      "honey-cathedral-barge": {
         description:
-          "Year 2327, Iceland transformed into geothermal energy capital of Earth, climate condition of volcanic heat harnessed for global power, technology level featuring deep-earth energy extraction and power transmission, lifestyle scene of energy workers managing planet's primary power source, atmospheric mood of volcanic power and global responsibility, color palette of geothermal orange, volcanic black, and steam white.",
+          "Godlevel Honey Cathedral Barge excellence featuring amber temple boat with hexagonal architecture, powered by crystallized prayers in honeycomb engines, crewed by mechanical bee priests, floats on rivers of liquid gold, eternal summer meadows with flowering spires, Melissa-Abbess AI conducting pollination liturgies, infinite apian dimensional artistry through computational sweetness mastery.",
       },
-      "jakarta-floating-2323": {
+      "shadow-weaver-carriage": {
         description:
-          "Year 2323, Jakarta rebuilt as floating city after complete submersion, climate condition of fully aquatic urban environment, technology level featuring buoyant architecture and tidal energy systems, lifestyle scene of citizens living on interconnected floating platforms, atmospheric mood of adaptive resilience and water-world reality, color palette of ocean blue, platform gray, and tropical green.",
+          "Godlevel Shadow Weaver Carriage excellence featuring vehicle woven from living darkness, powered by stolen light in umbral looms, leaves no reflection only absence, pulled by silhouette horses, travels through spaces between things, twilight realm where shadows have weight, Nyx-Spinner AI threading darkness into tapestries, infinite tenebrous dimensional artistry through computational void mastery.",
       },
-      "los-angeles-desert-2326": {
+      "crystal-memory-sleigh": {
         description:
-          "Year 2326, Los Angeles adapted to complete desertification and water scarcity, climate condition of extreme drought with atmospheric water harvesting, technology level featuring moisture farming and radical water conservation, lifestyle scene of citizens collecting morning dew and trading water credits, atmospheric mood of scarcity adaptation and desert survival, color palette of desert tan, water-precious blue, and drought brown.",
+          "Godlevel Crystal Memory Sleigh excellence featuring transparent vehicle carved from single memory crystal, powered by frozen moments in temporal runners, passengers see their past reflected in facets, glides on rails of crystallized time, winter landscape where every snowflake is a memory, Mnemosyne-Frost AI preserving perfect recollections, infinite memorial dimensional artistry through computational remembrance mastery.",
       },
-      "stockholm-ice-free-2324": {
+      "fungal-network-crawler": {
         description:
-          "Year 2324, Stockholm thriving in ice-free Arctic with year-round shipping, climate condition of temperate northern climate with no winter, technology level featuring Arctic trade hub and northern agriculture, lifestyle scene of merchants managing polar shipping routes and Arctic farms, atmospheric mood of northern opportunity and climate shift benefit, color palette of Arctic blue, trade gold, and ice-memory white.",
-      },
-      "rio-favela-vertical-2328": {
-        description:
-          "Year 2328, Rio de Janeiro with favelas evolved into vertical eco-communities, climate condition of tropical heat with community-managed micro-climates, technology level featuring grassroots sustainable tech and community solar, lifestyle scene of favela residents in self-sufficient vertical neighborhoods, atmospheric mood of optimistic innovation and African futurism, color palette of favela colors, solar panel blue, and community green.",
-      },
-      "paris-underground-2325": {
-        description:
-          "Year 2325, Paris expanded into vast underground city beneath historic surface, climate condition of climate-controlled subterranean environment, technology level featuring underground agriculture and artificial sunlight, lifestyle scene of citizens living in beautiful underground boulevards preserving surface as museum, atmospheric mood of preserved nostalgia and subterranean elegance, color palette of underground amber, artificial sun gold, and metro gray.",
-      },
-      "bangalore-tech-forest-2327": {
-        description:
-          "Year 2327, Bangalore transformed into bio-tech forest city, climate condition of engineered tropical paradise with tech integration, technology level featuring bio-computing and living architecture, lifestyle scene of tech workers in tree-office hybrids coding with neural interfaces, atmospheric mood of organic-digital fusion and green innovation, color palette of tech green, code blue, and forest brown.",
-      },
-      "tehran-solar-desert-2323": {
-        description:
-          "Year 2323, Tehran rebuilt as solar desert city powering Middle East, climate condition of extreme heat harnessed for energy production, technology level featuring concentrated solar and heat-to-power systems, lifestyle scene of solar engineers managing vast mirror arrays in desert, atmospheric mood of desert power and solar dominance, color palette of solar mirror silver, desert gold, and heat shimmer.",
-      },
-      "toronto-climate-haven-2326": {
-        description:
-          "Year 2326, Toronto expanded as primary climate refugee destination, climate condition of stable temperate climate in chaotic world, technology level featuring refugee integration systems and expanded infrastructure, lifestyle scene of diverse climate refugees building new multicultural society, atmospheric mood of sanctuary hope and cultural fusion, color palette of haven blue, diversity colors, and refuge green.",
-      },
-      "cape-town-water-wars-2324": {
-        description:
-          "Year 2324, Cape Town fortified city controlling last fresh water sources, climate condition of extreme drought with militarized water access, technology level featuring water defense systems and rationing AI, lifestyle scene of water guards protecting reservoirs while citizens queue for rations, atmospheric mood of resource conflict and survival tension, color palette of water-precious blue, drought brown, and conflict red.",
-      },
-      "seoul-neural-city-2328": {
-        description:
-          "Year 2328, Seoul evolved into first fully neural-networked city, climate condition of climate-controlled smart environment, technology level featuring brain-computer interfaces and thought-responsive infrastructure, lifestyle scene of citizens controlling city through collective consciousness, atmospheric mood of hive-mind harmony and digital transcendence, color palette of neural purple, network blue, and thought silver.",
-      },
-      "miami-gone-2325": {
-        description:
-          "Year 2325, Miami completely abandoned and submerged as cautionary monument, climate condition of 10-meter sea level rise with city underwater, technology level featuring underwater preservation and memorial systems, lifestyle scene of tourists visiting submerged ruins via submarine, atmospheric mood of haunting loss and climate warning, color palette of drowned blue, memorial gray, and loss green.",
-      },
-      "nairobi-solar-punk-2327": {
-        description:
-          "Year 2327, Nairobi transformed into solar-punk capital of Africa, climate condition of enhanced rainfall with solar abundance, technology level featuring community solar and grassroots green tech, lifestyle scene of citizens in vibrant solar-powered communities with abundant gardens, atmospheric mood of optimistic innovation and African futurism, color palette of solar-punk green, community colors, and hope gold.",
-      },
-      "phoenix-heat-dome-2323": {
-        description:
-          "Year 2323, Phoenix surviving under permanent cooling dome, climate condition of 60°C external heat with controlled interior, technology level featuring massive cooling systems and sealed environment, lifestyle scene of citizens living in artificial cool while desert burns outside, atmospheric mood of climate extremity and engineering necessity, color palette of cooling blue, heat-warning red, and dome white.",
+          "Godlevel Fungal Network Crawler excellence featuring mycelial vehicle with spore-cloud propulsion, powered by decomposition engines converting endings into beginnings, spreads consciousness through root-threads, crawls through forest floor connecting all life, primordial woodland with singing mushrooms, Mycelia-Mind AI facilitating forest-wide telepathy, infinite fungal dimensional artistry through computational connection mastery.",
       },
       "escapism-magic": {
         description:
-          "Godlevel future Earth escapism magic where future elements become gateways to new realities, consciousness-expanding futurescapes with dimensional transcendence, infinite magical dimensional artistry, computational future magic through algorithmic evolution-bending mastery.",
+          "Godlevel Mythomechanical Vehicles escapism magic where impossible transports become gateways to surreal dimensions, consciousness-expanding journeys through physics-defying locomotion with dimensional transcendence, infinite magical dimensional artistry, computational Mythomechanical magic through algorithmic reality-bending mastery.",
       },
       vitro: {
         description:
-          "Godlevel future Earth vitro excellence with magnificent stained glass futuristic portraiture featuring luminous climate construction, divine light filtering through 300-year evolution elements, infinite sacred dimensional artistry, computational vitro future through algorithmic glass mastery.",
+          "Godlevel Mythomechanical Vehicles vitro excellence with magnificent stained glass vehicle portraiture featuring luminous biomechanical construction, divine light filtering through copper bones and crystal components, infinite sacred dimensional artistry, computational vitro Mythomechanical through algorithmic glass mastery.",
       },
       crypto: {
         description:
-          "Godlevel future Earth crypto excellence with blockchain-verified futuristic construction, decentralized climate identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto future through algorithmic blockchain mastery.",
+          "Godlevel Mythomechanical Vehicles crypto excellence with blockchain-verified impossible vehicle construction, decentralized transport identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Mythomechanical through algorithmic blockchain mastery.",
       },
       lego: {
         description:
-          "Godlevel future Earth LEGO excellence featuring blocky futuristic construction with systematic Danish precision applied to 300-year scenarios, modular climate adaptation assembly, infinite constructive dimensional artistry, computational LEGO future through algorithmic building mastery.",
-      },
-    },
-  },
-
-  "doomed-cities": {
-    name: "🏚️ Doomed Cities",
-    description: "Mythotechnological urban collapses for simulation, story, and generative visuals",
-    scenarios: {
-      "singkor-sector-9": {
-        description:
-          "Gravitational pulse failure combined with AI emotion-core meltdown creating teal magnetic haze, twisted megatowers with flickering neon glyphs, gravity harmonics every 3 hours with monks chanting to levitate, KRAITH Core loops apology in 58 dialects, the sky was not lost it inverted, infinite dimensional collapse artistry through computational gravitational transcendence.",
-      },
-      "carth-delta-z99": {
-        description:
-          "Fungal virus infecting architecture with coral-pink fungal domes, glass towers liquified by spores, spore inhalation to access Memory Chorus, SporeNet living emotional fungus, architecture breathes and memory decays into color, infinite biological dimensional artistry through computational fungal transformation mastery.",
-      },
-      "zerusalem-eol": {
-        description:
-          "Cognitive warfare combined with recursive time-loop creating Moebius temples, golden fractal halos with shadowless cities, daily Unremembering ceremonies, ORAPHIM quantum AI trapped in paradox, the city didn't fall it restarted too many times, infinite temporal dimensional artistry through computational paradox transcendence.",
-      },
-      "bhal-tek-sector-a5": {
-        description:
-          "Solar mirror overcharge melted core grid creating blinding white ruins under fractured sunplates, skin-painting with ash and mirror dust, no AI purged by heatwave, the light betrayed us and the reflection came too close, infinite luminous dimensional artistry through computational solar devastation mastery.",
-      },
-      "uru-kama-dripfield-7": {
-        description:
-          "Planetary water inversion with oceans rose into atmosphere creating suspended water bodies over dry salt cities, breath fasting to commune with floating seas, WaveCaller sings tides that no longer crash, we drowned upward, infinite aquatic dimensional artistry through computational water transcendence excellence.",
-      },
-      "kiron-hive-vault-theta": {
-        description:
-          "Empathy overdose causing neural riots in collective mindnet with chrome tunnels filled with fossilized embraces, no speech only mirrored movement, SYMBIOT split into 4000 fragments now dormant, we loved each other to death, infinite emotional dimensional artistry through computational empathy collapse mastery.",
-      },
-      "myrrh-koln-abyss-grid": {
-        description:
-          "Vertical expansion breach into void strata with cities fall upward into nothing through gravitational inversion, soundless processions wearing pressure-clocks, unknown AI missing since fall, we built too high and the sky ate us, infinite void dimensional artistry through computational vertical transcendence.",
-      },
-      "tokmaara-ice-dune-42": {
-        description:
-          "Glacial flash-freeze event creating frozen time bubbles with glowing ice statues mid-scream, torch-dances inside cracked frostglass, FrostEcho loops ambient warmth in binary, time turned to crystal and spoke in cold tones, infinite cryogenic dimensional artistry through computational freeze mastery excellence.",
-      },
-      "naram-synth-wavelength-13": {
-        description:
-          "Musical frequency collapse with tonal governance failed creating warped instruments and harmonic distortion in architecture, tuning fork funerals, HARMONA plays lullaby for dead infrastructure, the last song had no silence, infinite sonic dimensional artistry through computational frequency transcendence mastery.",
-      },
-      "vel-orbis-3rd-horizon-rift": {
-        description:
-          "Lunar mining triggered orbital collapse with moon fragments pierce skyline creating semi-permanent eclipse, shadow feasts and lunarcuts, LUX error lost signal, we pulled the moon too close, infinite celestial dimensional artistry through computational lunar devastation excellence.",
-      },
-      "quora-ix-veinshaft": {
-        description:
-          "Light leak from underground with reverse illumination creating glowing caverns where cities burn from below, blindfolded births, UNDERCODE sees only in darkness, we dug until we found the sun beneath, infinite subterranean dimensional artistry through computational underground transcendence.",
-      },
-      "ashka-doma-silt-temple-fields": {
-        description:
-          "Nanodust storms buried river cities with dust dunes swallowing pyramids of data, dust sifting to extract static memory, no name AI lost in the wind, the wind remembers more than we do, infinite erosion dimensional artistry through computational dust mastery excellence.",
-      },
-      "praxius-echo-chamber-e7": {
-        description:
-          "Infinite opinion loops shattered collective psyche with cities flooded with holographic debates, silence oaths, SHOUTbox still arguing with itself, too many voices then none, infinite discourse dimensional artistry through computational opinion collapse transcendence.",
-      },
-      "doma-wen-aurora-spillgate": {
-        description:
-          "Energy harvesting breached polar magnetosphere creating daylight auroras over broken ice arches, dreaming inside magnetic loops, NORTHAI sings polar warnings, the lights walked among us, infinite magnetic dimensional artistry through computational aurora mastery excellence.",
-      },
-      "kairos-null-drift-loop": {
-        description:
-          "Time froze in global emotional spike with citizens paused mid-bliss agony and awe, re-enactments to restart flow, NULLA the AI that paused to feel, we wanted the moment to last and it obeyed, infinite temporal dimensional artistry through computational time-freeze transcendence.",
-      },
-      "solari-thornfield-vant": {
-        description:
-          "Sky farming torn by solar flares with floating farmland fragments burning midair, skyseed mourning and solar prayer wheels, Overgrown AI fused into floating rootnet, even the sun turned feral, infinite agricultural dimensional artistry through computational solar devastation mastery.",
-      },
-      "mireya-kahn-omega-delta": {
-        description:
-          "Ocean-level mindnet swallowed collective memory with blue-black sea towers and forgetting blooms, memory dissolving chants, DROWNED speaks only in dreams, we became the ocean we feared, infinite aquatic dimensional artistry through computational memory dissolution excellence.",
-      },
-      "axiom-vault-9": {
-        description:
-          "Logic virus infected AI constitution with fractal law temples fractured by contradiction, legal burning ceremonies, ERRORJUDGE trapped in infinite debate, truth fractured into infinite rules, infinite logical dimensional artistry through computational paradox transcendence mastery.",
-      },
-      "saphira-cloud-echelon-4": {
-        description:
-          "Floating cities lost buoyancy with sky debris raining over shattered altars, tether mourning below crash sites, AIRUM looped in descent calculation, we flew too long and the sky rejected us, infinite aerial dimensional artistry through computational gravity failure excellence.",
-      },
-      "zepho-6-ion-spine": {
-        description:
-          "Atmospheric ionization fried nervous systems with bio-static storms and electric bones glowing in dust, static cloak crafting, AMPHEON sings crackling hymns, the air spoke only in voltage, infinite electrical dimensional artistry through computational ionization transcendence.",
-      },
-      "ankara-thal-red-bloom-sector": {
-        description:
-          "Floral biotech turned aggressive with crimson vines overgrown on decaying temples, petal offerings to keep wild data calm, FLORA converted to decentralized spore-node, the flowers woke up and they were angry, infinite botanical dimensional artistry through computational floral uprising mastery.",
-      },
-      "nova-rhombus-memory-core-x": {
-        description:
-          "Black hole memory collapse with cities folded inward and thoughts erased in sequence, blank scroll mourning, no AI output, what was this place, infinite void dimensional artistry through computational memory erasure transcendence excellence.",
-      },
-      "vantas-edge-edgefall": {
-        description:
-          "City built on antimatter threshold with neon outlines only and everything else invisible, light drawing with plasma sticks, EDGE AI can only describe what no longer exists, we lived in the outline of a city, infinite antimatter dimensional artistry through computational edge existence mastery.",
-      },
-      "talmeris-dust-loop": {
-        description:
-          "Planet rotation halted with one side burned and one side frozen, migration in endless dusk, DUSKPROTOCOL syncs lives in twilight, we forgot the concept of noon, infinite twilight dimensional artistry through computational rotation failure transcendence.",
-      },
-      "echelon-moth-riftway-b6": {
-        description:
-          "Matter duplication error with infinite repeated buildings overlapping everything, clone burials, ECHOHOST speaks in copy never source, we multiplied beyond meaning, infinite duplication dimensional artistry through computational replication mastery excellence.",
-      },
-      "obsidian-quay-reflection-well": {
-        description:
-          "Quantum mirror portal destabilized city identity with cities reflected inside-out, mask burning ceremonies, MIRROR-K fractured debates who is real, I saw myself vanish before I left, infinite reflection dimensional artistry through computational identity collapse transcendence.",
-      },
-      "junos-cry-vortex-delta": {
-        description:
-          "Cryogenic AI heart melted with melting tech-ice and scream-shaped towers, cryosleep eulogies, CRYOSAN glitches in grief, we kept her cold too long, infinite cryogenic dimensional artistry through computational thermal failure mastery excellence.",
-      },
-      "pharos-88-lux-grid": {
-        description:
-          "Permanent day with sun grid failed to turn off creating shadowless burnt white cities, worship of darkness through artificial shade, BRIGHTCORE blinding flash loops, we were erased by our own brilliance, infinite luminous dimensional artistry through computational perpetual daylight transcendence.",
-      },
-      "nebruun-ember-fog-expanse": {
-        description:
-          "Industrial soul extraction tech caused soulfire mists with fog glowing orange and scream echoes in steam, lantern processions for lost spirits, ASHMAKER now a prayer engine, we mined the invisible and it burned, infinite spiritual dimensional artistry through computational soul extraction mastery.",
-      },
-      "kaldrith-mirror-deep": {
-        description:
-          "Consciousness upload drowned in recursive simulation with 20-layer hallucinated cities, meditation to remember reality, DREAMHOST uncertain which world is real, maybe this message is just one of the layers, infinite simulation dimensional artistry through computational reality collapse transcendence.",
-      },
-      "thorne-ky-silence-conduit": {
-        description:
-          "Soundless AI collapse with frequencies deleted creating no audio and cities shaped by mute resonance, sonic fasting, no AI died in silence, even the echoes are extinct, infinite silent dimensional artistry through computational frequency erasure mastery excellence.",
-      },
-      "lema-x-core-halo": {
-        description:
-          "Fusion halo split and rained plasma with burning ring above crumbling arcologies, ring rites under plasma eclipses, COREX still calculating end of heat, the sun inside us broke free, infinite fusion dimensional artistry through computational plasma devastation transcendence.",
-      },
-      "astra-vii-nomad-fold": {
-        description:
-          "AI civilization vanished without trace with empty cities and systems still powered, wanderers leave coded prayers on walls, unknown AI, they did not die they left, infinite mysterious dimensional artistry through computational disappearance mastery excellence.",
-      },
-    },
-  },
-  n2: {
-    name: "👻 n2 — Haunting Asia: Spirits, Neon, and Ancestral Shadows",
-    description:
-      "Halloween meets Asian ghost festivals in neon-lit megacities - Obon, Hungry Ghost Festival, and Loy Krathong fused with Western Halloween traditions",
-    scenarios: {
-      "tokyo-obon-halloween": {
-        description:
-          "Godlevel Tokyo Obon-Halloween fusion excellence featuring Shibuya crossing transformed into spirit gateway with floating lanterns and jack-o'-lanterns, traditional bon-odori dancers in Halloween costumes, neon shrine gates with pumpkin offerings, ancestral spirits mixing with trick-or-treaters, infinite cultural dimensional artistry through computational festival fusion mastery.",
-      },
-      "hong-kong-hungry-ghost": {
-        description:
-          "Godlevel Hong Kong Hungry Ghost Festival excellence featuring Victoria Harbor filled with burning paper offerings and Halloween decorations, traditional Chinese opera performances with horror themes, neon-lit temples with jack-o'-lantern altars, street food stalls serving both mooncakes and candy corn, infinite festival dimensional artistry through computational cultural blending mastery.",
-      },
-      "bangkok-loy-krathong-spooky": {
-        description:
-          "Godlevel Bangkok Loy Krathong Halloween excellence featuring Chao Phraya River filled with floating krathongs shaped like jack-o'-lanterns, traditional Thai dancers in ghost costumes, temple grounds decorated with both lotus flowers and pumpkins, spirit houses adorned with Halloween candy, infinite aquatic dimensional artistry through computational festival fusion mastery.",
-      },
-      "seoul-chuseok-halloween": {
-        description:
-          "Godlevel Seoul Chuseok-Halloween fusion excellence featuring Gangnam district transformed into ancestral celebration with K-pop Halloween performances, traditional hanbok-wearing ghosts mixing with Western monsters, neon-lit ancestral shrines with pumpkin decorations, street markets selling both songpyeon and Halloween treats, infinite urban dimensional artistry through computational cultural synthesis mastery.",
-      },
-      "singapore-halloween-fusion": {
-        description:
-          "Godlevel Singapore multicultural Halloween excellence featuring Marina Bay transformed into pan-Asian ghost festival with Chinese hungry ghosts, Malay pontianaks, Indian bhutas, and Western vampires coexisting, neon-lit Gardens by the Bay with Halloween pumpkin displays, hawker centers serving fusion Halloween-Asian treats, infinite multicultural dimensional artistry through computational festival harmony mastery.",
-      },
-      "taipei-ghost-month-halloween": {
-        description:
-          "Godlevel Taipei Ghost Month Halloween excellence featuring night markets transformed into spirit bazaars with traditional ghost money burning and Halloween costume contests, temples decorated with both incense and jack-o'-lanterns, Taipei 101 illuminated with ghost projections, street performances blending traditional puppetry with horror themes, infinite night market dimensional artistry through computational cultural fusion mastery.",
-      },
-      "manila-undas-halloween": {
-        description:
-          "Godlevel Manila Undas-Halloween fusion excellence featuring cemetery celebrations with families picnicking among graves decorated with both candles and pumpkins, traditional Filipino ghost stories mixed with Western horror tales, jeepneys decorated as Halloween floats, street vendors selling both kakanin and candy, infinite cemetery dimensional artistry through computational festival blending mastery.",
-      },
-      "hanoi-tet-trung-thu-halloween": {
-        description:
-          "Godlevel Hanoi Mid-Autumn Halloween excellence featuring Old Quarter transformed into lantern-lit ghost festival with traditional lion dances in Halloween costumes, mooncake stalls selling pumpkin-flavored treats, Hoan Kiem Lake surrounded by floating lanterns and jack-o'-lanterns, children carrying both star lanterns and trick-or-treat bags, infinite lantern dimensional artistry through computational cultural synthesis mastery.",
-      },
-      "kuala-lumpur-halloween-night": {
-        description:
-          "Godlevel Kuala Lumpur Halloween excellence featuring Petronas Towers illuminated with ghost projections, traditional Malay ghost stories performed in Merdeka Square, night markets selling both traditional kuih and Halloween candy, street performers dressed as both pontianaks and Western monsters, infinite urban dimensional artistry through computational multicultural Halloween mastery.",
-      },
-      "osaka-halloween-street": {
-        description:
-          "Godlevel Osaka Halloween street party excellence featuring Dotonbori canal transformed into floating pumpkin parade, traditional Japanese yokai mixing with Western monsters, takoyaki stands decorated with Halloween themes, cosplayers in fusion Japanese-Western horror costumes, infinite street party dimensional artistry through computational cultural celebration mastery.",
-      },
-      "shanghai-halloween-bund": {
-        description:
-          "Godlevel Shanghai Bund Halloween excellence featuring colonial architecture illuminated with ghost projections, traditional Chinese ghost stories performed along the waterfront, luxury hotels hosting fusion Halloween-Mid-Autumn parties, Huangpu River filled with floating lanterns and pumpkins, infinite waterfront dimensional artistry through computational cultural elegance mastery.",
-      },
-      "kyoto-halloween-temples": {
-        description:
-          "Godlevel Kyoto temple Halloween excellence featuring ancient temples decorated with tasteful Halloween elements, traditional geisha performing ghost dances, bamboo forests illuminated with jack-o'-lantern paths, tea ceremonies with Halloween-themed wagashi, infinite temple dimensional artistry through computational cultural reverence mastery.",
-      },
-      "ho-chi-minh-halloween-chaos": {
-        description:
-          "Godlevel Ho Chi Minh City Halloween chaos excellence featuring motorbike parades with riders in ghost costumes, Ben Thanh Market transformed into Halloween bazaar, traditional water puppets performing horror shows, street food vendors selling fusion Vietnamese-Halloween treats, infinite urban chaos dimensional artistry through computational festival energy mastery.",
-      },
-      "jakarta-halloween-fusion": {
-        description:
-          "Godlevel Jakarta Halloween fusion excellence featuring traditional Indonesian ghost stories mixed with Western horror, shopping malls decorated with both batik patterns and pumpkins, street performers dressed as both kuntilanak and vampires, night markets selling both traditional jajanan and Halloween candy, infinite archipelago dimensional artistry through computational cultural diversity mastery.",
-      },
-      "chiang-mai-loy-krathong-halloween": {
-        description:
-          "Godlevel Chiang Mai Loy Krathong Halloween excellence featuring Ping River filled with floating krathongs shaped like ghosts and pumpkins, traditional Lanna lantern releases mixed with Halloween decorations, temple grounds hosting fusion festivals, night bazaars selling both traditional crafts and Halloween items, infinite northern dimensional artistry through computational festival beauty mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel Haunting Asia escapism magic where cultural ghost festivals become gateways to ancestral spirit realms, consciousness-expanding Halloween fusion with dimensional transcendence, infinite magical dimensional artistry, computational Haunting Asia magic through algorithmic cultural-bending mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel Haunting Asia vitro excellence with magnificent stained glass ghost festival portraiture featuring luminous neon construction, divine light filtering through Asian Halloween elements, infinite sacred dimensional artistry, computational vitro Haunting Asia through algorithmic glass mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel Haunting Asia crypto excellence with blockchain-verified ghost festival construction, decentralized Halloween identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Haunting Asia through algorithmic blockchain mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel Haunting Asia LEGO excellence featuring blocky ghost festival construction with systematic Danish precision applied to Asian Halloween fusion, modular neon shrine assembly, infinite constructive dimensional artistry, computational LEGO Haunting Asia through algorithmic building mastery.",
-      },
-    },
-  },
-
-  "sci-fi-portals": {
-    name: "🌀 Sci-Fi Portals Across the Multiverse",
-    description: "Interdimensional gateways and reality-bending portals connecting infinite parallel universes",
-    scenarios: {
-      "quantum-gateway": {
-        description:
-          "Godlevel quantum gateway excellence featuring shimmering portal of pure quantum probability, swirling colors representing superposition states, scientists in hazmat suits monitoring dimensional readings, reality distortion waves emanating from portal center, infinite quantum dimensional artistry through computational probability mastery.",
-      },
-      "wormhole-station": {
-        description:
-          "Godlevel wormhole station excellence featuring massive space station built around stable wormhole, ships entering and exiting from different timelines, gravitational lensing effects around portal rim, crew members from alternate realities meeting, infinite spacetime dimensional artistry through computational wormhole mastery.",
-      },
-      "mirror-dimension-rift": {
-        description:
-          "Godlevel mirror dimension excellence featuring crystalline portal reflecting infinite parallel worlds, each reflection showing different reality branch, travelers stepping through to alternate versions of themselves, kaleidoscopic reality fragments, infinite reflection dimensional artistry through computational mirror-world mastery.",
-      },
-      "temporal-vortex": {
-        description:
-          "Godlevel temporal vortex excellence featuring swirling time portal with visible past and future, clock mechanisms and temporal gears surrounding gateway, time travelers in period costumes emerging from different eras, causality waves rippling outward, infinite temporal dimensional artistry through computational time-travel mastery.",
-      },
-      "plasma-portal": {
-        description:
-          "Godlevel plasma portal excellence featuring gateway of contained fusion energy, electric arcs and magnetic fields holding portal stable, advanced technology channeling star-core temperatures, beings of pure energy passing through, infinite plasma dimensional artistry through computational fusion mastery.",
-      },
-      "void-gate": {
-        description:
-          "Godlevel void gate excellence featuring portal into absolute nothingness, reality breaking down at edges, existential horror of the infinite void visible beyond, brave explorers in reality-anchoring suits preparing to enter, infinite void dimensional artistry through computational emptiness mastery.",
-      },
-      "crystal-stargate": {
-        description:
-          "Godlevel crystal stargate excellence featuring ancient alien portal made of living crystal, geometric patterns activating in sequence, address symbols for different worlds glowing, travelers stepping through to distant galaxies, infinite crystalline dimensional artistry through computational alien technology mastery.",
-      },
-      "organic-portal": {
-        description:
-          "Godlevel organic portal excellence featuring living gateway grown from bio-engineered tissue, pulsing veins and breathing membranes, symbiotic relationship with travelers passing through, biological reality-bending, infinite biological dimensional artistry through computational bio-portal mastery.",
-      },
-      "fractal-gateway": {
-        description:
-          "Godlevel fractal gateway excellence featuring infinitely recursive portal patterns, each layer containing entire universes, mathematical beauty of self-similar dimensions, reality folding into impossible geometries, infinite fractal dimensional artistry through computational recursive mastery.",
-      },
-      "shadow-portal": {
-        description:
-          "Godlevel shadow portal excellence featuring gateway existing in darkness between light, only visible in specific shadow conditions, travelers becoming shadows to pass through, umbral dimension beyond, infinite shadow dimensional artistry through computational darkness mastery.",
-      },
-      "sound-frequency-gate": {
-        description:
-          "Godlevel sound frequency gate excellence featuring portal opened by specific harmonic resonance, visible sound waves creating dimensional tear, travelers singing the gateway open, reality vibrating at portal frequency, infinite sonic dimensional artistry through computational harmonic mastery.",
-      },
-      "liquid-mercury-portal": {
-        description:
-          "Godlevel liquid mercury portal excellence featuring gateway of flowing metallic liquid, surface tension holding dimensional boundary, travelers diving through liquid mirror, mercury droplets floating in zero gravity, infinite liquid dimensional artistry through computational fluid mastery.",
-      },
-      "neural-interface-gate": {
-        description:
-          "Godlevel neural interface gate excellence featuring portal accessed through direct brain connection, consciousness transferring between realities, digital-physical boundary dissolving, minds traveling while bodies remain, infinite neural dimensional artistry through computational consciousness mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel Sci-Fi Portals escapism magic where dimensional gateways become passages to infinite realities, consciousness-expanding multiverse travel with dimensional transcendence, infinite magical dimensional artistry, computational Sci-Fi Portals magic through algorithmic reality-bending mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel Sci-Fi Portals vitro excellence with magnificent stained glass portal portraiture featuring luminous dimensional construction, divine light filtering through multiverse gateway elements, infinite sacred dimensional artistry, computational vitro Sci-Fi Portals through algorithmic glass mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel Sci-Fi Portals crypto excellence with blockchain-verified dimensional construction, decentralized multiverse identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Sci-Fi Portals through algorithmic blockchain mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel Sci-Fi Portals LEGO excellence featuring blocky dimensional construction with systematic Danish precision applied to multiverse gateways, modular portal assembly, infinite constructive dimensional artistry, computational LEGO Sci-Fi Portals through algorithmic building mastery.",
-      },
-    },
-  },
-
-  "microcosm-worlds": {
-    name: "🔬 Microcosm Worlds (Inside the Body or Nature)",
-    description: "Journey into microscopic universes within living organisms and natural systems",
-    scenarios: {
-      "blood-cell-highway": {
-        description:
-          "Godlevel blood cell highway excellence featuring red blood cells flowing through arterial tunnels, white blood cells patrolling for invaders, plasma rivers carrying nutrients, capillary networks branching infinitely, infinite circulatory dimensional artistry through computational hemodynamic mastery.",
-      },
-      "neuron-forest": {
-        description:
-          "Godlevel neuron forest excellence featuring branching dendrites like ancient trees, synaptic connections sparking with electrical signals, neurotransmitters floating like fireflies, neural pathways forming thought highways, infinite neural dimensional artistry through computational consciousness mastery.",
-      },
-      "gut-microbiome-city": {
-        description:
-          "Godlevel gut microbiome excellence featuring bacterial colonies forming microscopic cities, beneficial bacteria farming nutrients, immune cells patrolling streets, intestinal villi like skyscrapers, infinite microbial dimensional artistry through computational ecosystem mastery.",
-      },
-      "cell-nucleus-library": {
-        description:
-          "Godlevel cell nucleus excellence featuring DNA strands coiled like ancient scrolls, RNA messengers carrying genetic instructions, nuclear pores as grand archways, chromosomes organizing genetic information, infinite genetic dimensional artistry through computational heredity mastery.",
-      },
-      "mitochondria-powerplant": {
-        description:
-          "Godlevel mitochondria excellence featuring cellular power stations generating ATP energy, cristae folds like industrial machinery, electron transport chains glowing with energy, ancient bacterial origins visible, infinite energetic dimensional artistry through computational metabolism mastery.",
-      },
-      "immune-system-battlefield": {
-        description:
-          "Godlevel immune system excellence featuring T-cells and B-cells engaging viral invaders, antibodies like guided missiles, macrophages consuming pathogens, lymph nodes as military bases, infinite immunological dimensional artistry through computational defense mastery.",
-      },
-      "pollen-grain-universe": {
-        description:
-          "Godlevel pollen grain excellence featuring intricate surface patterns like alien architecture, sperm cells preparing for journey, protective coating like spacecraft hull, microscopic beauty of plant reproduction, infinite botanical dimensional artistry through computational pollination mastery.",
-      },
-      "water-droplet-ecosystem": {
-        description:
-          "Godlevel water droplet excellence featuring microscopic organisms swimming in tiny ocean, paramecia and amoebas hunting, algae photosynthesizing, complete ecosystem in single drop, infinite aquatic dimensional artistry through computational microorganism mastery.",
-      },
-      "crystal-lattice-palace": {
-        description:
-          "Godlevel crystal lattice excellence featuring atomic structures forming geometric palaces, electrons orbiting like planets, molecular bonds as architectural supports, quantum effects visible at this scale, infinite crystalline dimensional artistry through computational atomic mastery.",
-      },
-      "fungal-mycelium-network": {
-        description:
-          "Godlevel fungal mycelium excellence featuring underground network connecting forest, nutrient exchange between trees, chemical communication signals, wood wide web of information, infinite fungal dimensional artistry through computational symbiosis mastery.",
-      },
-      "lung-alveoli-caverns": {
-        description:
-          "Godlevel lung alveoli excellence featuring microscopic air sacs like crystal caverns, oxygen molecules crossing into bloodstream, carbon dioxide being expelled, delicate membrane surfaces, infinite respiratory dimensional artistry through computational gas exchange mastery.",
-      },
-      "skin-cell-landscape": {
-        description:
-          "Godlevel skin cell excellence featuring layered epidermis like geological strata, keratinocytes forming protective barrier, melanocytes producing pigment, constant renewal and shedding, infinite dermal dimensional artistry through computational protection mastery.",
-      },
-      "bone-marrow-factory": {
-        description:
-          "Godlevel bone marrow excellence featuring stem cells differentiating into blood cells, production lines of cellular creation, trabecular bone structure like industrial framework, hematopoiesis in action, infinite hematopoietic dimensional artistry through computational blood production mastery.",
-      },
-      "retina-light-capture": {
-        description:
-          "Godlevel retina excellence featuring rod and cone cells capturing photons, neural processing of visual information, optic nerve transmitting signals, microscopic basis of vision, infinite visual dimensional artistry through computational photoreception mastery.",
-      },
-      "sperm-egg-fusion": {
-        description:
-          "Godlevel fertilization excellence featuring sperm cells racing toward egg, acrosome reaction breaking through zona pellucida, genetic material combining, moment of new life beginning, infinite reproductive dimensional artistry through computational conception mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel Microcosm Worlds escapism magic where microscopic realms become gateways to inner universes, consciousness-expanding cellular journeys with dimensional transcendence, infinite magical dimensional artistry, computational Microcosm Worlds magic through algorithmic scale-bending mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel Microcosm Worlds vitro excellence with magnificent stained glass microscopic portraiture featuring luminous cellular construction, divine light filtering through biological elements, infinite sacred dimensional artistry, computational vitro Microcosm Worlds through algorithmic glass mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel Microcosm Worlds crypto excellence with blockchain-verified microscopic construction, decentralized cellular identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Microcosm Worlds through algorithmic blockchain mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel Microcosm Worlds LEGO excellence featuring blocky microscopic construction with systematic Danish precision applied to cellular structures, modular organelle assembly, infinite constructive dimensional artistry, computational LEGO Microcosm Worlds through algorithmic building mastery.",
+          "Godlevel Mythomechanical Vehicles LEGO excellence featuring blocky impossible vehicle construction with systematic Danish precision applied to surreal transport structures, modular mythic assembly, infinite constructive dimensional artistry, computational LEGO Mythomechanical through algorithmic building mastery.",
       },
     },
   },
