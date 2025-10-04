@@ -55,9 +55,7 @@ export function FlowArtGenerator() {
   const [numSamples, setNumSamples] = useState(4000)
   const [noiseScale, setNoiseScale] = useState(0.08)
   const [customPrompt, setCustomPrompt] = useState("")
-  const [negativePrompt, setNegativePrompt] = useState(
-    "text, words, letters, fonts, typography, watermarks, signatures, logos, labels, captions, subtitles, writing, characters, symbols",
-  )
+  const [negativePrompt, setNegativePrompt] = useState("")
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   const [provider, setProvider] = useState<"openai" | "replicate">("openai")
