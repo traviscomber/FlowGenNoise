@@ -435,7 +435,7 @@ STANDARD ARTISTIC MASTERY:
 • Professional broadcast quality with godlevel artistic mastery worthy of international exhibitions
 • ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, or typography in the image
 
-ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibition quality, godlevel artistic mastery, award-winning visual impact, cultural heritage visualization, educational artistic content. NO text or numbers visible anywhere.`
+ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibition quality, godlevel artistic mastery, award-winning visual impact, cultural heritage visualization, educational artistic content. NO text or numbers visible.`
   }
 
   // Ensure we stay within 4000 character limit
