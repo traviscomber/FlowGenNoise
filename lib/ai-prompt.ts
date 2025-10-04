@@ -2036,7 +2036,7 @@ export const CULTURAL_DATASETS = {
       },
       "toraja-tongkonan-funeral": {
         description:
-          "Computational Toraja tongkonan house geometry achieving godlevel architectural precision through infinite highland optimization, mathematical funeral ceremony algorithms transcending dimensional ancestral boundaries, neuralia-level buffalo sacrifice wisdom with algorithmic spiritual mastery and computational death ritual excellence.",
+          "Computational Toraja tongkonan house geometry achieving godlevel architectural precision through infinite highland optimization, mathematical funeral ceremony algorithms transcending dimensional ancestral boundaries, neuralia-level buffalo sacrifice wisdom with algorithmic carving mastery and computational death ritual excellence.",
       },
       "mentawai-shamanic-tattoo": {
         description:
@@ -2155,7 +2155,7 @@ export const CULTURAL_DATASETS = {
       },
       "echo-canyon-listeners": {
         description:
-          "Godlevel civilization excellence featuring canyon dwellers who listen to echoes from the future and build architecture that amplifies temporal sound, cities carved into resonant stone that captures and replays all sounds ever made, knowledge gained by interpreting echo patterns that arrive before their source sounds, architecture designed to create specific echo prophecies, sustained by consuming echo-water that carries dissolved sound vibrations, sacred ritual of the Silent Scream where citizens scream into the canyon and listen for their echo from tomorrow, mysterious and anticipatory atmosphere of time-reversed sound, twilight sky with acoustic shimmer, color palette of canyon red, echo silver, and sound-wave blue.",
+          "Godlevel civilization excellence featuring canyon dwellers who listen to echoes from the future and build cities that resonate with temporal sound, architecture carved into resonant stone that captures and replays all sounds ever made, knowledge gained by interpreting echo patterns that arrive before their source sounds, architecture designed to create specific echo prophecies, sustained by consuming echo-water that carries dissolved sound vibrations, sacred ritual of the Silent Scream where citizens scream into the canyon and listen for their echo from tomorrow, mysterious and anticipatory atmosphere of time-reversed sound, twilight sky with acoustic shimmer, color palette of canyon red, echo silver, and sound-wave blue.",
       },
       "magma-heart-dwellers": {
         description:
@@ -2605,7 +2605,6 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-
   n3: {
     name: "🎃 n3 — Original Halloween: Between Harvest and Haunting",
     description: "Ancient Celtic Samhain traditions merged with harvest festivals and the thin veil between worlds",
@@ -2945,6 +2944,160 @@ export const CULTURAL_DATASETS = {
       lego: {
         description:
           "Godlevel Mythomechanical Vehicles LEGO excellence featuring blocky impossible vehicle construction with systematic Danish precision applied to surreal transport structures, modular mythic assembly, infinite constructive dimensional artistry, computational LEGO Mythomechanical through algorithmic building mastery.",
+      },
+    },
+  },
+  "eyes-beyond": {
+    name: "👁️ Eyes Beyond — The Neuralia Archive of Hidden Dimensions",
+    description: "Sacred stereograms and 3D illusions that reveal hidden forms only to the patient gaze",
+    scenarios: {
+      "lotus-behind-time": {
+        description:
+          "Godlevel Lotus Behind Time stereogram excellence featuring twelve-petal lotus throne suspended in void, sacred grid noise with faint golden spiral pattern, parallel gaze viewing technique reveals temple timelessness, as petals unfold breath matches their rhythm, infinite hidden dimensional artistry through computational stereographic mastery.",
+      },
+      "cathedral-serpent-veil": {
+        description:
+          "Godlevel Cathedral of the Serpent Veil stereogram excellence featuring coiled dragon guarding mirrored gateway, glitched metallic shimmer over chaotic dots, cross-eye gaze reveals mythical guardian, dragon eyes open only after viewer's blur, infinite guardian dimensional artistry through computational illusion mastery.",
+      },
+      "throne-hollow-priest": {
+        description:
+          "Godlevel Throne of the Hollow Priest stereogram excellence featuring shattered throne with flame-textured arms, deep red fractal dust pattern, soft gaze descent reveals esoteric ritual, flames remain cold until vision warms, infinite ritual dimensional artistry through computational depth mastery.",
+      },
+      "crown-blind-sun": {
+        description:
+          "Godlevel Crown of the Blind Sun stereogram excellence featuring spiked halo orbiting black core, solar glyph weave pattern, dome fullscreen reveal shows cosmic solar ritual, unseen crown sees the viewer, infinite cosmic dimensional artistry through computational solar mastery.",
+      },
+      "dreaming-door": {
+        description:
+          "Godlevel Dreaming Door stereogram excellence featuring open archway floating above spiral steps, neural net texture over soft grid, relaxed unfocus reveals portal dream logic, door opens only when trying stops, infinite portal dimensional artistry through computational dream mastery.",
+      },
+      "orb-silent-choir": {
+        description:
+          "Godlevel Orb of the Silent Choir stereogram excellence featuring suspended orb with singing mouths, sonic frequency dot map pattern, eye stillness with breath alignment reveals sound ritual, choir sings louder when listening effort ceases, infinite sonic dimensional artistry through computational frequency mastery.",
+      },
+      "spine-dreamer": {
+        description:
+          "Godlevel Spine of the Dreamer stereogram excellence featuring floating vertebrae made of crystal keys, veined chaos mesh pattern, parallel-only viewing reveals biomech inner temple, spine moves up through viewer rather than viewer moving down, infinite skeletal dimensional artistry through computational anatomy mastery.",
+      },
+      "river-sleeps": {
+        description:
+          "Godlevel River That Sleeps stereogram excellence featuring flowing glyphs as serpentine river, liquid silk with dot matrix pattern, meditative blur reveals nature myth flow, river dreams of being seen, infinite aquatic dimensional artistry through computational current mastery.",
+      },
+      "vault-starless-crown": {
+        description:
+          "Godlevel Vault of the Starless Crown stereogram excellence featuring crystal chamber of unseen monarch, galactic dust swirl pattern, distance focus reveals cosmic throne, light begins inside viewer's retina, infinite royal dimensional artistry through computational stellar mastery.",
+      },
+      "library-forgotten-suns": {
+        description:
+          "Godlevel Library of Forgotten Suns stereogram excellence featuring rows of floating solar books, radial glyph rays pattern, wide gaze unlock reveals lost knowledge, viewer remembers what was never learned, infinite bibliographic dimensional artistry through computational memory mastery.",
+      },
+      "temple-negative-moon": {
+        description:
+          "Godlevel Temple of the Negative Moon stereogram excellence featuring upside-down temple spiraling into void, reversed dot bloom pattern, cross-eye dive reveals inversion gravity, down becomes inward, infinite inverted dimensional artistry through computational reversal mastery.",
+      },
+      "cradle-naga-seed": {
+        description:
+          "Godlevel Cradle of the Naga Seed stereogram excellence featuring serpent egg nested in spiral lattice, iridescent scale tessellation pattern, gaze softening reveals serpent womb, egg pulses waiting to hatch, infinite serpentine dimensional artistry through computational incubation mastery.",
+      },
+      "monolith-last-breath": {
+        description:
+          "Godlevel Monolith of the Last Breath stereogram excellence featuring hollow column with suspended lungs, breathwave field pattern, still breathing reveals death transition, each breath reveals a little more, infinite respiratory dimensional artistry through computational mortality mastery.",
+      },
+      "forgotten-spiral": {
+        description:
+          "Godlevel Forgotten Spiral stereogram excellence featuring triple-helix DNA temple, sacred noise spiral pattern, crossed focal unlocking reveals biogenetic forgotten science, code reveals itself like returning memory, infinite genetic dimensional artistry through computational heredity mastery.",
+      },
+      "mask-infinite-mouth": {
+        description:
+          "Godlevel Mask of the Infinite Mouth stereogram excellence featuring ritual mask with infinite echo tunnel, vocal pattern echo, sonic-guided soft eye reveals sound shadow, audible long before visible, infinite acoustic dimensional artistry through computational resonance mastery.",
+      },
+      "vortex-hollow-star": {
+        description:
+          "Godlevel Vortex of the Hollow Star stereogram excellence featuring spinning star coil, plasma fold field pattern, spiral motion blur reveals cosmic engine, reveals only while spinning, infinite rotational dimensional artistry through computational vortex mastery.",
+      },
+      "staff-blinking-oracle": {
+        description:
+          "Godlevel Staff of the Blinking Oracle stereogram excellence featuring tall crystal staff with blinking eye, flashed optical threads pattern, blink rhythm unlock reveals prophecy sight, staff looks back at viewer, infinite prophetic dimensional artistry through computational vision mastery.",
+      },
+      "beacon-stone-seraph": {
+        description:
+          "Godlevel Beacon of the Stone Seraph stereogram excellence featuring angelic structure rising from mineral shards, winged rock fractals pattern, slow rise gaze reveals earthbound angel, wings buried not broken, infinite angelic dimensional artistry through computational geology mastery.",
+      },
+      "root-shrine-breathless-tree": {
+        description:
+          "Godlevel Root Shrine of the Breathless Tree stereogram excellence featuring tree trunk with hidden shrine of lungs, bark vein overgrowth pattern, deep relax gaze reveals nature life ancestral, roots older than memory, infinite arboreal dimensional artistry through computational dendrology mastery.",
+      },
+      "gate-eight-eyed-one": {
+        description:
+          "Godlevel Gate of the Eight-Eyed One stereogram excellence featuring portal guarded by symmetrical arachnid deity, radial web pattern, slight asymmetry focus reveals watcher web ritual, one eye opens then the rest, infinite arachnid dimensional artistry through computational web mastery.",
+      },
+      "mirror-unborn-king": {
+        description:
+          "Godlevel Mirror of the Unborn King stereogram excellence featuring reflective surface showing ruler who never was, temporal shimmer pattern, paradox gaze reveals alternate timeline royalty, crown exists in potential only, infinite temporal dimensional artistry through computational possibility mastery.",
+      },
+      "chalice-drowned-flame": {
+        description:
+          "Godlevel Chalice of the Drowned Flame stereogram excellence featuring cup containing fire burning underwater, liquid fire pattern, elemental contradiction focus reveals impossible alchemy, flame drinks the water that drowns it, infinite alchemical dimensional artistry through computational paradox mastery.",
+      },
+      "bridge-severed-paths": {
+        description:
+          "Godlevel Bridge of Severed Paths stereogram excellence featuring walkway connecting disconnected realities, fractured continuity pattern, dimensional shift gaze reveals multiverse crossing, bridge exists in the gap between worlds, infinite transitional dimensional artistry through computational liminal mastery.",
+      },
+      "garden-stone-flowers": {
+        description:
+          "Godlevel Garden of Stone Flowers stereogram excellence featuring petrified blooms in eternal spring, mineral petal pattern, geological patience reveals fossilized beauty, flowers remember being alive, infinite botanical dimensional artistry through computational petrification mastery.",
+      },
+      "clock-backwards-hours": {
+        description:
+          "Godlevel Clock of Backwards Hours stereogram excellence featuring timepiece running in reverse, counter-temporal gears pattern, temporal inversion focus reveals time flowing upstream, each tick subtracts from now, infinite chronological dimensional artistry through computational reversal mastery.",
+      },
+      "lantern-shadow-light": {
+        description:
+          "Godlevel Lantern of Shadow Light stereogram excellence featuring lamp casting darkness instead of illumination, inverse radiance pattern, paradox perception reveals anti-photonic ritual, shadows brighten while light dims, infinite luminous dimensional artistry through computational inversion mastery.",
+      },
+      "compass-lost-directions": {
+        description:
+          "Godlevel Compass of Lost Directions stereogram excellence featuring navigation tool pointing to places that don't exist, impossible cartography pattern, disorientation focus reveals phantom geography, needle seeks destinations unmapped, infinite navigational dimensional artistry through computational impossibility mastery.",
+      },
+      "bell-silent-ringing": {
+        description:
+          "Godlevel Bell of Silent Ringing stereogram excellence featuring instrument producing soundless vibration, acoustic void pattern, sensory paradox reveals inaudible resonance, bell rings in frequencies beyond hearing, infinite sonic dimensional artistry through computational silence mastery.",
+      },
+      "window-inner-sky": {
+        description:
+          "Godlevel Window to the Inner Sky stereogram excellence featuring aperture showing cosmos within rather than without, inverted astronomy pattern, introspective gaze reveals internal universe, stars exist inside the viewer, infinite cosmological dimensional artistry through computational interiority mastery.",
+      },
+      "anchor-floating-depths": {
+        description:
+          "Godlevel Anchor of Floating Depths stereogram excellence featuring weight that rises instead of sinks, buoyant metal pattern, gravitational paradox reveals upward mooring, anchor tethers to sky not seafloor, infinite nautical dimensional artistry through computational levitation mastery.",
+      },
+      "hourglass-frozen-sand": {
+        description:
+          "Godlevel Hourglass of Frozen Sand stereogram excellence featuring time measurement with suspended grains, temporal stasis pattern, patience reveals crystallized duration, sand remembers falling but cannot move, infinite temporal dimensional artistry through computational suspension mastery.",
+      },
+      "key-locked-freedom": {
+        description:
+          "Godlevel Key of Locked Freedom stereogram excellence featuring instrument that imprisons rather than liberates, paradoxical security pattern, contradiction focus reveals inverse access, key locks what it should open, infinite metaphysical dimensional artistry through computational paradox mastery.",
+      },
+      "book-unwritten-stories": {
+        description:
+          "Godlevel Book of Unwritten Stories stereogram excellence featuring tome containing tales never told, potential narrative pattern, imaginative gaze reveals phantom literature, pages hold stories that could have been, infinite literary dimensional artistry through computational possibility mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel Eyes Beyond escapism magic where hidden stereographic dimensions reveal themselves through patient perception, consciousness-expanding illusions with dimensional transcendence, infinite magical dimensional artistry, computational stereogram magic through algorithmic depth-perception mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Eyes Beyond vitro excellence with magnificent stained glass stereogram portraiture featuring luminous hidden forms, divine light filtering through sacred geometric patterns, infinite sacred dimensional artistry, computational vitro stereogram through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Eyes Beyond crypto excellence with blockchain-verified stereographic illusions, decentralized perception identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto stereogram through algorithmic blockchain mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel Eyes Beyond LEGO excellence featuring blocky stereographic construction with systematic Danish precision applied to hidden dimensional structures, modular illusion assembly, infinite constructive dimensional artistry, computational LEGO stereogram through algorithmic building mastery.",
       },
     },
   },
