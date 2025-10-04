@@ -2179,7 +2179,7 @@ export const CULTURAL_DATASETS = {
       },
       "thunder-drum-warriors": {
         description:
-          "Godlevel civilization excellence featuring people who weaponize thunder through massive drums and build fortress cities that resonate with war rhythms, architecture designed to amplify percussion into devastating sonic weapons, knowledge recorded in drum codes that carry complex information, cities that exist in constant rhythmic vibration, sustained by consuming sound-charged water that vibrates at cellular level, sacred ritual of the Thunder March where ten thousand drums play simultaneously to shake mountains, powerful and rhythmic atmosphere of controlled chaos, storm sky with thunder clouds, color dream of thunder gray, drum bronze, and lightning white.",
+          "Godlevel civilization excellence featuring people who weaponize thunder through massive drums and build fortress cities that resonate with war rhythms, architecture designed to amplify percussion into devastating sonic weapons, knowledge recorded in drum codes that carry complex information, cities that exist in constant rhythmic vibration, sustained by consuming sound-charged water that vibrates at cellular level, sacred ritual of the Thunder March where ten thousand drums play simultaneously to shake mountains, powerful and rhythmic atmosphere of controlled chaos, thunderstorm sky with thunder clouds, color dream of thunder gray, drum bronze, and lightning white.",
       },
       "glass-desert-alchemists": {
         description:
@@ -2814,7 +2814,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel melted gods escapism excellence with magical deity liquefaction, fantasy-infused divine transformation with enchanted theological entropy, infinite mystical god artistry through computational magic mastery.",
+          "Godlevel melted gods escapism magic with magical deity liquefaction, fantasy-infused divine transformation with enchanted theological entropy, infinite mystical god artistry through computational magic mastery.",
       },
       vitro: {
         description:
@@ -3133,6 +3133,417 @@ export const CULTURAL_DATASETS = {
       lego: {
         description:
           "Godlevel light organs LEGO excellence featuring blocky bioluminescent construction with systematic Danish precision applied to organic illumination, modular living structure assembly, infinite constructive architecture artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  "mythographic-particles": {
+    name: "⚛️ Mythographic Particles — Subatomic Deities",
+    description:
+      "Sacred symbols and godforms discovered within quantum physics phenomena, particle collisions, and subatomic events",
+    scenarios: {
+      "neutrino-godform": {
+        description:
+          "Godlevel mythographic particles excellence with divine entity manifesting inside neutrino burst phenomena, quantum deity revelation through subatomic observation, infinite sacred particle artistry through computational physics mastery.",
+      },
+      "quantum-rune": {
+        description:
+          "Godlevel mythographic particles excellence featuring luminous runic symbol detected during quantum fold event, ancient glyph emergence through dimensional collapse, infinite mystical quantum artistry through computational fold mastery.",
+      },
+      "collider-glyphs": {
+        description:
+          "Godlevel mythographic particles excellence with particle trail formations creating ancient glyphs in collider data logs, sacred writing through high-energy physics, infinite symbolic collision artistry through computational accelerator mastery.",
+      },
+      "positron-face": {
+        description:
+          "Godlevel mythographic particles excellence featuring mythic facial form appearing inside positron decay patterns, divine visage through antimatter transformation, infinite sacred decay artistry through computational particle mastery.",
+      },
+      "proton-mandalas": {
+        description:
+          "Godlevel mythographic particles excellence with proton cloud revealing recursive mandala geometries, sacred circular patterns through nuclear observation, infinite quantum symmetry artistry through computational proton mastery.",
+      },
+      "tachyon-serpent": {
+        description:
+          "Godlevel mythographic particles excellence featuring tachyon echo shaped like celestial serpent entity, faster-than-light deity manifestation, infinite temporal creature artistry through computational tachyon mastery.",
+      },
+      "entangled-chant": {
+        description:
+          "Godlevel mythographic particles excellence with entangled particles pulsing in rhythmic chant patterns, quantum prayer through spooky action, infinite sacred entanglement artistry through computational correlation mastery.",
+      },
+      "ritual-spin": {
+        description:
+          "Godlevel mythographic particles excellence featuring subatomic spin patterns aligned with ancient ritual geometries, ceremonial physics through quantum mechanics, infinite sacred rotation artistry through computational spin mastery.",
+      },
+      "lost-language-burst": {
+        description:
+          "Godlevel mythographic particles excellence with burst signature repeating forgotten linguistic patterns, extinct language through particle emission, infinite linguistic physics artistry through computational burst mastery.",
+      },
+      "quark-creation": {
+        description:
+          "Godlevel mythographic particles excellence featuring quark dance interpreted as primordial creation story, cosmogonic narrative through fundamental particles, infinite origin myth artistry through computational quark mastery.",
+      },
+      "muon-deity": {
+        description:
+          "Godlevel mythographic particles excellence with forgotten deity encoded in muon trail patterns, lost god through unstable particle paths, infinite divine decay artistry through computational muon mastery.",
+      },
+      "higgs-prayer": {
+        description:
+          "Godlevel mythographic particles excellence featuring Higgs field anomaly whispering sacred prayers, mass-giving divinity through quantum field, infinite prayer field artistry through computational Higgs mastery.",
+      },
+      "singularity-crown": {
+        description:
+          "Godlevel mythographic particles excellence with singularity fragment forming royal crown symbol, sovereign geometry through infinite density, infinite regal collapse artistry through computational singularity mastery.",
+      },
+      "radioactive-hymn": {
+        description:
+          "Godlevel mythographic particles excellence featuring radioactive decay humming in 13-tone sacred scales, musical radiation through nuclear transformation, infinite sonic decay artistry through computational radiation mastery.",
+      },
+      "string-scripture": {
+        description:
+          "Godlevel mythographic particles excellence with string vibrations matching ancient sacred text patterns, holy resonance through fundamental strings, infinite textual vibration artistry through computational string mastery.",
+      },
+      "lepton-eye": {
+        description:
+          "Godlevel mythographic particles excellence featuring lepton emissions shaped like all-seeing eye symbol, observing particle through light matter, infinite ocular emission artistry through computational lepton mastery.",
+      },
+      "gravity-supplicant": {
+        description:
+          "Godlevel mythographic particles excellence with gravity distortion resembling bowing supplicant figure, worshipful spacetime through mass curvature, infinite devotional warp artistry through computational gravity mastery.",
+      },
+      "plasma-sigil": {
+        description:
+          "Godlevel mythographic particles excellence featuring plasma storm revealing burning sigil patterns, ionized sacred symbols through electromagnetic chaos, infinite blazing mark artistry through computational plasma mastery.",
+      },
+      "emotion-boson": {
+        description:
+          "Godlevel mythographic particles excellence with boson particle mirroring observer emotional states, feeling-responsive force carrier, infinite empathic particle artistry through computational boson mastery.",
+      },
+      "gluon-constellation": {
+        description:
+          "Godlevel mythographic particles excellence featuring gluon clouds forming sacred animal constellation patterns, zoomorphic strong force through color charge, infinite celestial binding artistry through computational gluon mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel mythographic particles escapism excellence with fantasy-enhanced subatomic deities featuring whimsical quantum magic, enchanted particle phenomena with mystical physics, infinite fantastical quantum artistry through computational escapism mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel mythographic particles vitro excellence featuring laboratory-observed subatomic deities with clinical quantum documentation, sterile particle divinity through scientific observation, infinite experimental physics artistry through computational vitro mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel mythographic particles crypto excellence with blockchain-verified subatomic deities, decentralized quantum godforms with cryptocurrency-funded particle research, infinite digital physics artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel mythographic particles LEGO excellence featuring blocky subatomic construction with systematic Danish precision applied to quantum deities, modular particle assembly, infinite constructive physics artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  "forgotten-interfaces": {
+    name: "🖥️ Forgotten Interfaces — UX from Lost Civilizations",
+    description:
+      "Ancient user interface systems and mystical interaction methods from vanished cultures and extinct technologies",
+    scenarios: {
+      "sadness-crystal": {
+        description:
+          "Godlevel forgotten interfaces excellence with crystal panel responding exclusively to sadness input, emotion-activated ancient technology through melancholic interaction, infinite sorrowful interface artistry through computational empathy mastery.",
+      },
+      "star-memory-wheel": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring glyph-wheel navigation system for accessing stellar memory archives, cosmic data retrieval through symbolic rotation, infinite astronomical interface artistry through computational memory mastery.",
+      },
+      "plant-voice": {
+        description:
+          "Godlevel forgotten interfaces excellence with voice interface listening exclusively to plant communication, botanical command system through chlorophyll speech, infinite phytological interaction artistry through computational flora mastery.",
+      },
+      "light-silk-ui": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring UI constructed from light pulses on spider silk substrate, arachnid photonic interface through web-based display, infinite luminous textile artistry through computational silk mastery.",
+      },
+      "bone-hologram": {
+        description:
+          "Godlevel forgotten interfaces excellence with holographic controls embedded directly in skeletal structures, osseous interface through calcium-based projection, infinite anatomical display artistry through computational bone mastery.",
+      },
+      "dream-glass": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring glass console activated via shared dream states, oneiric interface through collective unconscious input, infinite somnolent control artistry through computational dream mastery.",
+      },
+      "tear-input": {
+        description:
+          "Godlevel forgotten interfaces excellence with interface inputs shaped like crystallized tears, lachrimal command system through emotional fluid, infinite sorrowful interaction artistry through computational tear mastery.",
+      },
+      "floating-stones": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring floating keyboard of hovering stone keys, levitating lithic interface through gravitational manipulation, infinite aerial typing artistry through computational stone mastery.",
+      },
+      "amber-vr": {
+        description:
+          "Godlevel forgotten interfaces excellence with ancient VR gloves carved from fossilized amber, prehistoric virtual reality through resin-preserved technology, infinite paleolithic immersion artistry through computational amber mastery.",
+      },
+      "blood-feedback": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring feedback loops written in blood ink patterns, hemoglobin response system through vital fluid display, infinite sanguine interface artistry through computational blood mastery.",
+      },
+      "temple-drone-eye": {
+        description:
+          "Godlevel forgotten interfaces excellence with eye-based UI in autonomous temple drone, ocular command system through sacred robotic vision, infinite devotional gaze artistry through computational drone mastery.",
+      },
+      "bark-panel": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring control panel embedded in living tree bark, dendrological interface through cambium circuitry, infinite arboreal control artistry through computational bark mastery.",
+      },
+      "cloud-responsive": {
+        description:
+          "Godlevel forgotten interfaces excellence with cloud-responsive input surface reacting to atmospheric conditions, meteorological interface through vapor interaction, infinite aerial activation artistry through computational cloud mastery.",
+      },
+      "emotion-glyph": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring emotion-recognition glyph strip reading affective states, symbolic empathy interface through feeling detection, infinite emotional symbol artistry through computational recognition mastery.",
+      },
+      "sand-retrace": {
+        description:
+          "Godlevel forgotten interfaces excellence with interface written in sand requiring daily re-tracing ritual, ephemeral command system through granular impermanence, infinite transient interface artistry through computational sand mastery.",
+      },
+      "electromagnetic-halo": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring touchless interface using electromagnetic halo fields, contactless command system through magnetic aura, infinite wireless interaction artistry through computational field mastery.",
+      },
+      "wind-float": {
+        description:
+          "Godlevel forgotten interfaces excellence with floating interface activated by wind currents, aeolian command system through atmospheric flow, infinite aerial activation artistry through computational wind mastery.",
+      },
+      "sound-geometry": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring forgotten command grid coded in sound geometry patterns, acoustic interface through sonic spatial arrangement, infinite auditory control artistry through computational geometry mastery.",
+      },
+      "destiny-ring": {
+        description:
+          "Godlevel forgotten interfaces excellence with ring-based device vibrating when destiny shifts, fate-responsive interface through temporal tremor, infinite prophetic feedback artistry through computational destiny mastery.",
+      },
+      "collapse-wall": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring interface engraved into walls of collapsing planet, apocalyptic command system through terminal architecture, infinite dying world artistry through computational collapse mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel forgotten interfaces escapism excellence with fantasy-enhanced ancient UX featuring whimsical mystical controls, enchanted interface systems with magical interaction, infinite fantastical technology artistry through computational escapism mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel forgotten interfaces vitro excellence featuring laboratory-preserved ancient UX with clinical archaeological documentation, sterile interface preservation through scientific restoration, infinite experimental archaeology artistry through computational vitro mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel forgotten interfaces crypto excellence with blockchain-verified ancient UX, decentralized interface archaeology with cryptocurrency-funded excavation, infinite digital preservation artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel forgotten interfaces LEGO excellence featuring blocky ancient UX construction with systematic Danish precision applied to mystical controls, modular interface assembly, infinite constructive archaeology artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  "harmonic-weapons": {
+    name: "🎼 Harmonic Weapons — Instruments of Resonant Warfare",
+    description: "Musical instruments weaponized through sound, resonance, and acoustic warfare principles",
+    scenarios: {
+      "bone-glass-flute": {
+        description:
+          "Godlevel harmonic weapons excellence with flute transforming skeletal structures to glass through resonant frequency, osseous vitrification through sonic weaponry, infinite crystalline warfare artistry through computational flute mastery.",
+      },
+      "seismic-drum": {
+        description:
+          "Godlevel harmonic weapons excellence featuring drum summoning seismic waves through rhythmic percussion, earthquake generation through musical warfare, infinite tectonic percussion artistry through computational drum mastery.",
+      },
+      "temple-cannon": {
+        description:
+          "Godlevel harmonic weapons excellence with sonic cannon built into temple bell architecture, sacred acoustic artillery through devotional resonance, infinite religious warfare artistry through computational bell mastery.",
+      },
+      "memory-blade": {
+        description:
+          "Godlevel harmonic weapons excellence featuring singing blade cutting through memory itself, mnemonic severance through melodic edge, infinite cognitive warfare artistry through computational blade mastery.",
+      },
+      "machine-harp": {
+        description:
+          "Godlevel harmonic weapons excellence with harp disabling mechanical systems through resonant frequency, technological paralysis through stringed warfare, infinite acoustic sabotage artistry through computational harp mastery.",
+      },
+      "disintegration-choir": {
+        description:
+          "Godlevel harmonic weapons excellence featuring choir helmet emitting disintegration harmonics, molecular dissolution through vocal warfare, infinite destructive singing artistry through computational choir mastery.",
+      },
+      "reverb-organ": {
+        description:
+          "Godlevel harmonic weapons excellence with organ collapsing buildings via architectural reverb, structural demolition through musical resonance, infinite sonic destruction artistry through computational organ mastery.",
+      },
+      "silence-whistle": {
+        description:
+          "Godlevel harmonic weapons excellence with crystal whistle blinding targets with weaponized silence, sensory deprivation through acoustic void, infinite silent warfare artistry through computational whistle mastery.",
+      },
+      "guilt-fork": {
+        description:
+          "Godlevel harmonic weapons excellence with tuning fork sword calibrated to guilt frequency, emotional resonance through psychological warfare, infinite empathic blade artistry through computational fork mastery.",
+      },
+      "atmosphere-trumpet": {
+        description:
+          "Godlevel harmonic weapons excellence featuring trumpet flattening atmospheric layers through sonic pressure, meteorological warfare through brass instrument, infinite aerial compression artistry through computational trumpet mastery.",
+      },
+      "hex-mask": {
+        description:
+          "Godlevel harmonic weapons excellence with war mask chanting sonic hexes, cursed acoustics through facial amplification, infinite vocal warfare artistry through computational mask mastery.",
+      },
+      "grief-mine": {
+        description:
+          "Godlevel harmonic weapons excellence featuring sonic mine pulsing grief into enemy consciousness, emotional warfare through buried resonance, infinite sorrowful explosion artistry through computational mine mastery.",
+      },
+      "sitar-rifle": {
+        description:
+          "Godlevel harmonic weapons excellence with sitar-rifle combination used in aerial duels, melodic projectile through stringed firearm, infinite musical combat artistry through computational sitar mastery.",
+      },
+      "bell-glove": {
+        description:
+          "Godlevel harmonic weapons excellence featuring bell glove shattering stone temple architecture, percussive demolition through hand-mounted resonance, infinite architectural warfare artistry through computational glove mastery.",
+      },
+      "emotion-grenade": {
+        description:
+          "Godlevel harmonic weapons excellence with audio grenade tuned to dissolve emotional states, affective warfare through sonic explosion, infinite psychological combat artistry through computational grenade mastery.",
+      },
+      "screaming-bow": {
+        description:
+          "Godlevel harmonic weapons excellence featuring bow screaming upon arrow release, sonic projectile through vocal string, infinite auditory archery artistry through computational bow mastery.",
+      },
+      "dimensional-lyre": {
+        description:
+          "Godlevel harmonic weapons excellence with metallic lyre resonating across dimensional boundaries, interdimensional warfare through stringed portal, infinite reality-bending artistry through computational lyre mastery.",
+      },
+      "storm-staff": {
+        description:
+          "Godlevel harmonic weapons excellence featuring vibrating staff calling meteorological storms, weather warfare through resonant pole, infinite atmospheric summoning artistry through computational staff mastery.",
+      },
+      "murder-necklace": {
+        description:
+          "Godlevel harmonic weapons excellence with necklace humming murder backwards through temporal reversal, retroactive violence through worn resonance, infinite temporal warfare artistry through computational necklace mastery.",
+      },
+      "silence-removal": {
+        description:
+          "Godlevel harmonic weapons excellence featuring silent weapon removing sound from existence, acoustic void through anti-resonance, infinite sonic erasure artistry through computational silence mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel harmonic weapons escapism excellence with fantasy-enhanced resonant warfare featuring whimsical musical combat, enchanted sonic weapons with mystical frequencies, infinite fantastical warfare artistry through computational escapism mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel harmonic weapons vitro excellence featuring laboratory-tested resonant warfare with clinical acoustic documentation, sterile sonic weaponry through scientific frequency analysis, infinite experimental combat artistry through computational vitro mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel harmonic weapons crypto excellence with blockchain-verified resonant warfare, decentralized sonic weapons with cryptocurrency-funded acoustic research, infinite digital warfare artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel harmonic weapons LEGO excellence featuring blocky resonant construction with systematic Danish precision applied to musical warfare, modular sonic weapon assembly, infinite constructive combat artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  "cloud-temples": {
+    name: "☁️ Cloud Temples — Sanctuaries Suspended in Sky Logic",
+    description:
+      "Floating religious structures and sanctuaries constructed from atmospheric phenomena and sky-based materials",
+    scenarios: {
+      "monsoon-temple": {
+        description:
+          "Godlevel cloud temples excellence with temple stitched from monsoon fiber materials, seasonal rain architecture through atmospheric weaving, infinite meteorological sanctuary artistry through computational monsoon mastery.",
+      },
+      "dream-shrine": {
+        description:
+          "Godlevel cloud temples excellence featuring floating shrine moving between dream states, oneiric architecture through unconscious navigation, infinite somnolent sanctuary artistry through computational dream mastery.",
+      },
+      "puddle-reflection": {
+        description:
+          "Godlevel cloud temples excellence with temple visible exclusively in puddle reflections, aquatic mirror architecture through inverted reality, infinite reflective sanctuary artistry through computational puddle mastery.",
+      },
+      "eclipse-fog": {
+        description:
+          "Godlevel cloud temples excellence featuring fog sanctuary forming during eclipse events, celestial vapor architecture through solar alignment, infinite astronomical mist artistry through computational eclipse mastery.",
+      },
+      "thunder-spires": {
+        description:
+          "Godlevel cloud temples excellence with whispering spires growing from thunder phenomena, acoustic lightning architecture through storm generation, infinite sonic tower artistry through computational thunder mastery.",
+      },
+      "volcano-ziggurat": {
+        description:
+          "Godlevel cloud temples excellence featuring gravity-untethered ziggurat above volcanic rings, levitating pyramid architecture through geothermal lift, infinite floating monument artistry through computational volcano mastery.",
+      },
+      "lightning-cathedral": {
+        description:
+          "Godlevel cloud temples excellence with cathedral woven from lightning branch patterns, electrical architecture through plasma construction, infinite thunderous sanctuary artistry through computational lightning mastery.",
+      },
+      "evaporating-mist": {
+        description:
+          "Godlevel cloud temples excellence featuring temple of mist evaporating when observed, quantum vapor architecture through measurement collapse, infinite ephemeral sanctuary artistry through computational mist mastery.",
+      },
+      "vortex-tower": {
+        description:
+          "Godlevel cloud temples excellence with spiral tower riding storm vortex currents, cyclonic architecture through rotational ascension, infinite whirling spire artistry through computational vortex mastery.",
+      },
+      "ice-altar": {
+        description:
+          "Godlevel cloud temples excellence featuring mobile altar of ice-cored cloud formations, frozen vapor architecture through crystalline suspension, infinite glacial sanctuary artistry through computational ice mastery.",
+      },
+      "rain-stairway": {
+        description:
+          "Godlevel cloud temples excellence with rain-activated stairway temple, precipitation architecture through aqueous activation, infinite liquid ascension artistry through computational rain mastery.",
+      },
+      "wind-pavilion": {
+        description:
+          "Godlevel cloud temples excellence featuring wind-harmonized pavilion made from wind itself, aeolian architecture through atmospheric self-construction, infinite aerial sanctuary artistry through computational wind mastery.",
+      },
+      "sadness-orbit": {
+        description:
+          "Godlevel cloud temples excellence with shrine orbiting sadness itself, emotional gravity architecture through melancholic attraction, infinite sorrowful sanctuary artistry through computational sadness mastery.",
+      },
+      "lunar-silence": {
+        description:
+          "Godlevel cloud temples excellence featuring halo chamber accessible only during full lunar silence, celestial quiet architecture through moonlit void, infinite silent sanctuary artistry through computational lunar mastery.",
+      },
+      "dissolving-monks": {
+        description:
+          "Godlevel cloud temples excellence with levitation ring where monks dissolve into atmosphere, transcendent architecture through human evaporation, infinite spiritual dissolution artistry through computational levitation mastery.",
+      },
+      "photograph-vanish": {
+        description:
+          "Godlevel cloud temples excellence featuring sanctuary vanishing when photographed, anti-documentation architecture through observation avoidance, infinite ephemeral temple artistry through computational photograph mastery.",
+      },
+      "dawn-inversion": {
+        description:
+          "Godlevel cloud temples excellence with upside-down shrine visible only at dawn, inverted architecture through temporal window, infinite reversed sanctuary artistry through computational dawn mastery.",
+      },
+      "forgiveness-float": {
+        description:
+          "Godlevel cloud temples excellence featuring floating temple reacting to human forgiveness, empathic architecture through emotional buoyancy, infinite compassionate sanctuary artistry through computational forgiveness mastery.",
+      },
+      "static-dome": {
+        description:
+          "Godlevel cloud temples excellence with dome of static electricity housing psalm archives, electromagnetic architecture through charged devotion, infinite electrical sanctuary artistry through computational static mastery.",
+      },
+      "jellyfish-city": {
+        description:
+          "Godlevel cloud temples excellence featuring city of altars drifting through sky currents like jellyfish, medusoid architecture through atmospheric swimming, infinite floating colony artistry through computational jellyfish mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel cloud temples escapism magic where fantasy-enhanced sky sanctuaries featuring whimsical floating magic, enchanted atmospheric architecture with mystical suspension, infinite fantastical temple artistry through computational escapism magic.",
+      },
+      vitro: {
+        description:
+          "Godlevel cloud temples vitro excellence featuring laboratory-observed sky sanctuaries with clinical atmospheric documentation, sterile floating architecture through scientific meteorology, infinite experimental temple artistry through computational vitro mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel cloud temples crypto excellence with blockchain-verified sky sanctuaries, decentralized floating architecture with cryptocurrency-funded atmospheric construction, infinite digital temple artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel cloud temples LEGO excellence featuring blocky sky construction with systematic Danish precision applied to floating sanctuaries, modular atmospheric assembly, infinite constructive temple artistry through algorithmic building mastery.",
       },
     },
   },
