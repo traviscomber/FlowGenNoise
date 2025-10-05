@@ -2207,7 +2207,7 @@ export const CULTURAL_DATASETS = {
       },
       "lightning-glass-smiths": {
         description:
-          "Godlevel civilization excellence featuring people who forge fulgurite glass from lightning strikes and build cities of storm-born architecture, structures of lightning-fused sand that retain electrical charge, knowledge encoded in branching fulgurite patterns that map storm consciousness, cities that grow only during thunderstorms through directed lightning, sustained by consuming electrically charged minerals, sacred ritual of the Storm Calling where citizens summon lightning to forge new city sections, electric and powerful atmosphere of controlled storms, thunderstorm sky with constant lightning, color dream of fulgurite black, lightning white, and storm-glass blue.",
+          "Godlevel civilization excellence featuring people who forge fulgurite glass from lightning strikes and build cities of storm-born architecture, structures of lightning-fused sand that retain electrical charge, knowledge encoded in branching fulgurite patterns that map storm consciousness, cities that grow only during thunderstorms through directed lightning, sustained by consuming electrically charged minerals, sacred ritual of the Storm Calling where citizens summon lightning to forge new city sections, electric and powerful atmosphere of controlled storms, thunderstorm sky with lightning, color dream of fulgurite black, lightning white, and storm-glass blue.",
       },
       "dream-silk-spinners": {
         description:
@@ -2219,7 +2219,7 @@ export const CULTURAL_DATASETS = {
       },
       "horizon-line-walkers": {
         description:
-          "Godlevel civilization excellence featuring nomadic people who walk the horizon line where sky meets earth and build temporary cities at the edge of perception, architecture that exists in the liminal space between land and sky, knowledge gained by studying the boundary between elements, cities that appear only at specific angles and vanish when approached directly, sustained by consuming horizon-mist that exists in neither air nor ground, sacred ritual of the Edge Dance where citizens balance on the exact line between worlds, liminal and mysterious atmosphere of eternal threshold, perfect horizon with sun half-set, color dream of horizon gold, liminal gray, and edge silver.",
+          "Godlevel civilization excellence featuring people who walk the horizon line where sky meets earth and build temporary cities at the edge of perception, architecture that exists in the liminal space between land and sky, knowledge gained by studying the boundary between elements, cities that appear only at specific angles and vanish when approached directly, sustained by consuming horizon-mist that exists in neither air nor ground, sacred ritual of the Edge Dance where citizens balance on the exact line between worlds, liminal and mysterious atmosphere of eternal threshold, perfect horizon with sun half-set, color dream of horizon gold, liminal gray, and edge silver.",
       },
       "escapism-magic": {
         description:
@@ -2898,7 +2898,7 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel starlight beast excellence with creatures glowing in binary under stellar illumination, digital bioluminescence through cosmic radiation, infinite mammalian semiotics through computational binary mastery.",
       },
-      "octopus-chromatophore-poetry": {
+      "octopus-camouflage-code": {
         description:
           "Godlevel octopus poetry excellence featuring cephalopod pulsing verse in skin color cells, dermal literary expression through pigment control, infinite cephalopod semiotics through computational chromatophore mastery.",
       },
@@ -3282,7 +3282,7 @@ export const CULTURAL_DATASETS = {
       },
       "blood-feedback": {
         description:
-          "Godlevel forgotten interfaces excellence featuring feedback loops written in blood ink patterns, hemoglobin response system through vital fluid display, infinite sanguine interface artistry through computational blood mastery.",
+          "Godlevel forgotten interfaces excellence with feedback loops written in blood ink patterns, hemoglobin response system through vital fluid display, infinite sanguine interface artistry through computational blood mastery.",
       },
       "temple-drone-eye": {
         description:
@@ -3326,7 +3326,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel forgotten interfaces escapism excellence with fantasy-enhanced ancient UX featuring whimsical mystical controls, enchanted interface systems with magical interaction, infinite fantastical technology artistry through computational escapism mastery.",
+          "Godlevel forgotten interfaces escapism excellence with fantasy-enhanced ancient UX featuring whimsical mystical controls, enchanted interface systems with magical interaction, infinite fantastical technology artistry through computational escapism magic.",
       },
       vitro: {
         description:
@@ -3428,7 +3428,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel harmonic weapons escapism excellence with fantasy-enhanced resonant warfare featuring whimsical musical combat, enchanted sonic weapons with mystical frequencies, infinite fantastical warfare artistry through computational escapism mastery.",
+          "Godlevel harmonic weapons escapism excellence with fantasy-enhanced resonant warfare featuring whimsical musical combat, enchanted sonic weapons with mystical frequencies, infinite fantastical warfare artistry through computational escapism magic.",
       },
       vitro: {
         description:
@@ -3544,6 +3544,129 @@ export const CULTURAL_DATASETS = {
       lego: {
         description:
           "Godlevel cloud temples LEGO excellence featuring blocky sky construction with systematic Danish precision applied to floating sanctuaries, modular atmospheric assembly, infinite constructive temple artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  "through-other-eyes": {
+    name: "🐾 Through Other Eyes — The World as Seen by Animals",
+    description:
+      "Hyperreal multispecies vision dataset capturing unique animal perspectives through their biological, neurological, and symbolic sensory worlds",
+    scenarios: {
+      "bee-neon-garden": {
+        description:
+          "Godlevel animal vision excellence featuring bee's ultraviolet perception in wildflower meadow, flowers glowing in electric purples and ghostly blues with fluorescent nectar guides as arrows, invisible pathways shimmering under UV light with jittery precise motion, infinite pollinator artistry through computational UV mastery.",
+      },
+      "hawk-infinite-sky": {
+        description:
+          "Godlevel animal vision excellence with hawk's ultra-crisp 5x zoomed vision scanning mountain valley from 300 meters, rabbit ear twitching kilometer away in slow-motion clarity, ground moving like map with visible air currents textured in warmth gradients, infinite raptor artistry through computational telescopic mastery.",
+      },
+      "mantis-shrimp-prism": {
+        description:
+          "Godlevel animal vision excellence featuring mantis shrimp's 12-color dimensional perception in coral reef, every shell as radiant universe with circular polarization dancing off crustacean armor, hyper-accelerated strobe-light motion in psychedelic underwater warfare, infinite spectral artistry through computational hyperspectral mastery.",
+      },
+      "cat-midnight-ballet": {
+        description:
+          "Godlevel animal vision excellence with domestic cat's blue-gray twilight perception on rooftops under full moon, stillness alive with movement echoing like ripples, shadows having volume with whiskers mapping wind into visual cues, infinite feline artistry through computational scotopic mastery.",
+      },
+      "snake-thermal-forest": {
+        description:
+          "Godlevel animal vision excellence featuring pit viper's thermal imaging on jungle floor at dusk, heat signatures replacing shapes with mammals glowing like embers, cold stones as voids in layered thermal-light-vibration vision throbbing like radar drum, infinite serpent artistry through computational infrared mastery.",
+      },
+      "dolphin-echolocation-dream": {
+        description:
+          "Godlevel animal vision excellence with dolphin's sonar perception in underwater cave system, space felt not seen as every sound rebounds 3D map, vision as auditory sculpture with fish fluttering into sonar fractals across cave, infinite cetacean artistry through computational echolocation mastery.",
+      },
+      "chameleon-swivel-world": {
+        description:
+          "Godlevel animal vision excellence featuring chameleon's dual independent vision on rainforest branchscape, left eye tracking bug while right scans threats in slow-motion depth with fast-focus color, surreal 360-degree vigilance with pinpoint clarity, infinite reptilian artistry through computational stereoscopic mastery.",
+      },
+      "bat-pulse-tunnel": {
+        description:
+          "Godlevel animal vision excellence with bat's sonic wave perception flying inside dark cave, cave walls flickering into existence rhythmically as world emerges from sound pressure in colorless rhythmic spatial pulses, infinite chiropteran artistry through computational ultrasonic mastery.",
+      },
+      "owl-nightfall-silence": {
+        description:
+          "Godlevel animal vision excellence featuring barn owl's ghostly grayscale vision in snowy field at night, absolute silence with prey heartbeat louder than wind, each feather controlling silence as time suspends in vertical snow drops, infinite strigiform artistry through computational acoustic mastery.",
+      },
+      "octopus-camouflage-code": {
+        description:
+          "Godlevel animal vision excellence with octopus's full-body light perception in rocky tide pool during storm, skin mirroring surroundings in realtime with no eyes just mind-skin, visual thinking fluid as boulder turns into flesh and swims away, infinite cephalopod artistry through computational chromatophore mastery.",
+      },
+      "dog-scented-street": {
+        description:
+          "Godlevel animal vision excellence featuring dog's olfactory-dominant perception on busy urban sidewalk, motion-blurred shapes with every scent leaving 3D historic emotional trail, footsteps echoing in smell-waves with trash as symphony, infinite canine artistry through computational olfactory mastery.",
+      },
+      "dragonfly-splintered-world": {
+        description:
+          "Godlevel animal vision excellence with dragonfly's 30000-mini-eye compound vision at lake sunset, time slowing down as everything flickers at insane FPS, reflection of sky sharp as trees in dual air-water worlds sliced into crystal shards, infinite odonata artistry through computational compound mastery.",
+      },
+      "zebra-predator-scan": {
+        description:
+          "Godlevel animal vision excellence featuring zebra's grayscale panoramic perception in savanna herd at dawn, color nearly absent with motion as everything, lion's twitch in grass lighting up like thunder while stripe patterns confuse identity, infinite equine artistry through computational motion mastery.",
+      },
+      "horse-side-eye-plains": {
+        description:
+          "Godlevel animal vision excellence with horse's peripheral-dominant vision galloping through open fields, forward blind as trees warp at edges, vision half-speeded to anticipate obstacles with emotions showing in color saturation, infinite ungulate artistry through computational lateral mastery.",
+      },
+      "shark-electromagnetic-fog": {
+        description:
+          "Godlevel animal vision excellence featuring shark's electroreception in ocean deep trench, shapes vanishing in dim blue-gray as electric fields pulse like hidden aurora, heartbeat becoming beacon with blood as color blending with vibration, infinite chondrichthyan artistry through computational ampullae mastery.",
+      },
+      "fly-multiplex-glitch": {
+        description:
+          "Godlevel animal vision excellence with housefly's multi-lens compound vision inside kitchen, fractured cubist painting with nonexistent time lag, every motion exaggerated as ceiling wall and light merge into single hyper-flash plane, infinite dipteran artistry through computational facet mastery.",
+      },
+      "tarsier-eyeball-jungle": {
+        description:
+          "Godlevel animal vision excellence featuring tarsier's massive moonlight-drinking eyes in Southeast Asian jungle at dusk, everything oversaturated with pulsing leaves and glowing insects, eyes immobile as head rotates 180 degrees calculating jump distances in retinal dreams, infinite primate artistry through computational tapetum mastery.",
+      },
+      "reindeer-arctic-uv": {
+        description:
+          "Godlevel animal vision excellence with reindeer's UV-enhanced perception in tundra blizzard, lichens fluorescing as snow becomes layered signal, storms as veils not blocks in living grayscale map with glowing food markers, infinite cervid artistry through computational ultraviolet mastery.",
+      },
+      "pigeon-magnetic-city": {
+        description:
+          "Godlevel animal vision excellence featuring pigeon's magnetoreception flying over urban skyline, vision including magnetic fields as city blocks vibrate with northward pull, geometry magnetic not visual with roads as blue lines and buildings as pink blocks, infinite columbid artistry through computational geomagnetic mastery.",
+      },
+      "ant-giant-world": {
+        description:
+          "Godlevel animal vision excellence with ant's microscale perception on forest floor after rain, water droplet as planet with grass blade as skyscraper, blurred vision as chemical trails create full maps with smells as language, infinite formicid artistry through computational pheromone mastery.",
+      },
+      "jellyfish-drift-perception": {
+        description:
+          "Godlevel animal vision excellence featuring box jellyfish's light-sensor perception in open ocean near surface, no eyes only blue shift as everything fades into nothing, movement felt not seen in gradient blur between warm light and black fall, infinite cnidarian artistry through computational photoreceptor mastery.",
+      },
+      "frog-blink-sync": {
+        description:
+          "Godlevel animal vision excellence with frog's blink-refresh perception at pond during rainfall, each blink refreshing visual field as prey detection locks world into pause, vision tuned for contrast with flies flashing like neon and rain as music writing vision patterns, infinite anuran artistry through computational motion-detection mastery.",
+      },
+      "mole-darkness-map": {
+        description:
+          "Godlevel animal vision excellence featuring mole's tactile-dominant perception in underground tunnels, blind as space becomes touch and vibration, earth as pressure and temperature with ants as tremors in sculpted clay felt by face-hairs, infinite talpid artistry through computational mechanoreception mastery.",
+      },
+      "spider-dome-grid": {
+        description:
+          "Godlevel animal vision excellence with jumping spider's 8-eye multi-angle perception in web between tall grass, infrared and UV blending in parallax synesthesia soup, prey as time-coded light with gravity curving scene like dome, infinite arachnid artistry through computational principal-eye mastery.",
+      },
+      "human-hypnagogic": {
+        description:
+          "Godlevel animal vision excellence featuring human's half-sleep hypnagogic perception at bedtime microdream, perception collapsing as sound triggers image with familiar room melting, vision as filtered memory with shapes becoming symbols in falling-waking-falling cycle, infinite sapien artistry through computational consciousness mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel animal vision escapism excellence with fantastical multispecies perception blending all sensory worlds into dreamlike escape, reality filtered through animal consciousness as portal to wonder, infinite cross-species artistry through computational synesthesia mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel animal vision vitro excellence featuring laboratory-enhanced animal perception with scientific precision, controlled sensory experiments revealing biological vision mechanisms, infinite research artistry through computational neuroscience mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel animal vision crypto excellence with blockchain-verified multispecies perception data, decentralized sensory networks with cryptocurrency-funded vision research, infinite digital biology artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel animal vision LEGO excellence featuring blocky animal perspective construction with systematic Danish precision applied to sensory worlds, modular perception assembly, infinite constructive biology artistry through algorithmic building mastery.",
       },
     },
   },

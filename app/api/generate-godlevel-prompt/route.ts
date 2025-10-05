@@ -35,7 +35,11 @@ export async function POST(request: NextRequest) {
 
     console.log("[v0] Generating godlevel neuralia prompt with OpenAI")
 
-    const formatType = panoramic360 ? "360° Equirectangular Panoramic" : `${projectionType} Dome Projection`
+    const formatType = panoramic360
+      ? "360° Equirectangular Panoramic"
+      : projectionType
+        ? `${projectionType} Dome Projection`
+        : "Fisheye Dome Projection"
 
     // Create system prompt for OpenAI
     const systemPrompt = `You are a master prompt engineer specializing in neuralia artistic style and cultural authenticity. Create godlevel prompts that blend mathematical precision with organic cultural flow through abstract, surrealistic, and concrete elements. Focus on traditional artisanal techniques enhanced with computational artistry and spiritual significance.`
