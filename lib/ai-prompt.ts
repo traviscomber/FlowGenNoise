@@ -2,6 +2,7 @@ export const CULTURAL_DATASETS = {
   heads: {
     name: "👤 Head & Portraits",
     description: "Sophisticated portrait artistry with neuralia godlevel excellence",
+    category: "Commercial", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -69,6 +70,7 @@ export const CULTURAL_DATASETS = {
   faces: {
     name: "😊 Faces & Expressions",
     description: "Emotional facial expressions with neuralia godlevel precision",
+    category: "Commercial", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -136,6 +138,7 @@ export const CULTURAL_DATASETS = {
   mathematical: {
     name: "🔢 Pure Mathematics",
     description: "Pure mathematical beauty and computational elegance with neuralia godlevel precision",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -191,6 +194,7 @@ export const CULTURAL_DATASETS = {
   vietnamese: {
     name: "🇻🇳 Vietnamese Heritage",
     description: "Rich Vietnamese cultural traditions with neuralia godlevel artistic excellence",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -258,6 +262,7 @@ export const CULTURAL_DATASETS = {
   indonesian: {
     name: "🇮🇩 Indonesian Heritage",
     description: "Diverse Indonesian cultural traditions across 17,000 islands with neuralia godlevel excellence",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -329,6 +334,7 @@ export const CULTURAL_DATASETS = {
   thailand: {
     name: "🇹🇭 Thai Heritage",
     description: "Magnificent Thai cultural traditions with neuralia godlevel artistry",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -376,6 +382,7 @@ export const CULTURAL_DATASETS = {
   "thailand-geography": {
     name: "🏝️ Thailand Geography",
     description: "Stunning Thai geographical regions and natural landscapes with neuralia godlevel excellence",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -487,6 +494,7 @@ export const CULTURAL_DATASETS = {
   "asean-mythology": {
     name: "🐉 ASEAN Mythology",
     description: "Ancient Southeast Asian mythological creatures with neuralia godlevel excellence",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -534,6 +542,7 @@ export const CULTURAL_DATASETS = {
   escher: {
     name: "🔄 Escher Impossibilities",
     description: "M.C. Escher impossible geometries with neuralia godlevel precision",
+    category: "Commercial", // Added category field - Escher works are copyrighted
     scenarios: {
       "pure-mathematical": {
         description:
@@ -577,6 +586,7 @@ export const CULTURAL_DATASETS = {
   spirals: {
     name: "🌀 Spiral Dynamics",
     description: "Hypnotic spiral patterns with neuralia godlevel mathematical precision",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -620,6 +630,7 @@ export const CULTURAL_DATASETS = {
   fractals: {
     name: "🌿 Fractal Patterns",
     description: "Self-similar fractal geometries with neuralia godlevel infinite detail",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -663,6 +674,7 @@ export const CULTURAL_DATASETS = {
   mandelbrot: {
     name: "🔢 Mandelbrot Set",
     description: "Complex number iterations with neuralia godlevel mathematical beauty",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -706,6 +718,7 @@ export const CULTURAL_DATASETS = {
   julia: {
     name: "🎭 Julia Set",
     description: "Dynamic complex plane iterations with neuralia godlevel precision",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -749,6 +762,7 @@ export const CULTURAL_DATASETS = {
   gaming: {
     name: "🎮 Gaming Industry",
     description: "Gaming culture and technology with neuralia godlevel excellence",
+    category: "Commercial", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -812,6 +826,7 @@ export const CULTURAL_DATASETS = {
   "organic-couture": {
     name: "🌸 Organic Couture",
     description: "Botanical fashion fusion with neuralia godlevel elegance",
+    category: "Commercial", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -855,6 +870,7 @@ export const CULTURAL_DATASETS = {
   celebrities: {
     name: "🌟 Celebrities & Icons",
     description: "Stylish people and celebrity portraits with neuralia godlevel artistic excellence",
+    category: "Commercial", // Added category field - Celebrity likenesses require licensing
     scenarios: {
       "pure-mathematical": {
         description:
@@ -914,6 +930,7 @@ export const CULTURAL_DATASETS = {
   fx: {
     name: "🌈 FX Substance Effects",
     description: "Visual perception alterations and substance effects with neuralia godlevel excellence",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -997,6 +1014,7 @@ export const CULTURAL_DATASETS = {
   mindconflict: {
     name: "🧠 Mind Conflict",
     description: "Internal psychological struggles and mental battles with neuralia godlevel intensity",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1060,6 +1078,7 @@ export const CULTURAL_DATASETS = {
   "natural-disguise": {
     name: "🦎 Natural Disguise & Camouflage",
     description: "Perfect natural camouflage and environmental blending with neuralia godlevel precision",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1124,6 +1143,7 @@ export const CULTURAL_DATASETS = {
     name: "🔥 Global Rituals in Infrared",
     description:
       "Ancient and contemporary rituals visualized through infrared thermal spectrum with neuralia godlevel precision",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1195,6 +1215,7 @@ export const CULTURAL_DATASETS = {
   "wheres-brain": {
     name: "🧠 Where's the Brain?",
     description: "Neuralia-style hidden brain finding challenge with godlevel complexity",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1258,6 +1279,7 @@ export const CULTURAL_DATASETS = {
   bosch: {
     name: "🎨 Hieronymus Bosch",
     description: "Surreal fantastical imagery inspired by Hieronymus Bosch with neuralia godlevel excellence",
+    category: "Commercial", // Added category field - Bosch-inspired works may have licensing considerations
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1341,6 +1363,7 @@ export const CULTURAL_DATASETS = {
   lorenz: {
     name: "🌪️ Lorenz Attractor",
     description: "Chaotic system dynamics with neuralia godlevel mathematical beauty",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1376,6 +1399,7 @@ export const CULTURAL_DATASETS = {
   hyperbolic: {
     name: "🌀 Hyperbolic Geometry",
     description: "Non-Euclidean hyperbolic spaces with neuralia godlevel mathematical precision",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1411,6 +1435,7 @@ export const CULTURAL_DATASETS = {
   gaussian: {
     name: "📊 Gaussian Distributions",
     description: "Normal distribution curves with neuralia godlevel statistical beauty",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1446,6 +1471,7 @@ export const CULTURAL_DATASETS = {
   cellular: {
     name: "🔲 Cellular Automata",
     description: "Emergent patterns from simple rules with neuralia godlevel complexity",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1481,6 +1507,7 @@ export const CULTURAL_DATASETS = {
   voronoi: {
     name: "🔷 Voronoi Diagrams",
     description: "Spatial partitioning patterns with neuralia godlevel geometric precision",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1516,6 +1543,7 @@ export const CULTURAL_DATASETS = {
   perlin: {
     name: "🌊 Perlin Noise",
     description: "Procedural noise patterns with neuralia godlevel natural randomness",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1551,6 +1579,7 @@ export const CULTURAL_DATASETS = {
   diffusion: {
     name: "💨 Diffusion Patterns",
     description: "Reaction-diffusion systems with neuralia godlevel pattern formation",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1586,6 +1615,7 @@ export const CULTURAL_DATASETS = {
   "luxury-brands": {
     name: "💎 Luxury Brands",
     description: "High-end luxury brand aesthetics with neuralia godlevel sophistication",
+    category: "Commercial", // Added category field - Luxury brands are trademarked
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1649,6 +1679,7 @@ export const CULTURAL_DATASETS = {
   "african-tribes": {
     name: "🌍 African Tribes",
     description: "Rich African tribal cultures with neuralia godlevel heritage excellence",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1696,6 +1727,7 @@ export const CULTURAL_DATASETS = {
   "amazonian-tribes": {
     name: "🌳 Amazonian Tribes",
     description: "Indigenous Amazonian cultures with neuralia godlevel forest wisdom",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1743,6 +1775,7 @@ export const CULTURAL_DATASETS = {
   "arctic-tribes": {
     name: "❄️ Arctic Tribes",
     description: "Northern indigenous cultures with neuralia godlevel ice wisdom",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1790,6 +1823,7 @@ export const CULTURAL_DATASETS = {
   "polynesian-tribes": {
     name: "🌺 Polynesian Tribes",
     description: "Pacific island cultures with neuralia godlevel ocean wisdom",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1837,6 +1871,7 @@ export const CULTURAL_DATASETS = {
   "native-american": {
     name: "🦅 Native American Tribes",
     description: "Indigenous North American cultures with neuralia godlevel ancestral wisdom",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1884,6 +1919,7 @@ export const CULTURAL_DATASETS = {
   "australian-aboriginal": {
     name: "🪃 Australian Aboriginal",
     description: "Ancient Aboriginal cultures with neuralia godlevel dreamtime wisdom",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1931,6 +1967,7 @@ export const CULTURAL_DATASETS = {
   "mongolian-tribes": {
     name: "🐎 Mongolian Tribes",
     description: "Nomadic steppe cultures with neuralia godlevel horseback wisdom",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1978,6 +2015,7 @@ export const CULTURAL_DATASETS = {
   "tibetan-tribes": {
     name: "🏔️ Tibetan Tribes",
     description: "Himalayan cultures with neuralia godlevel mountain wisdom",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -2025,6 +2063,7 @@ export const CULTURAL_DATASETS = {
   "indonesian-tribes": {
     name: "🏝️ Indonesian Tribes",
     description: "Diverse Indonesian tribal cultures across 17,000 islands with neuralia godlevel heritage excellence",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -2088,6 +2127,7 @@ export const CULTURAL_DATASETS = {
   "mythical-civilizations": {
     name: "🌌 Mythical Civilizations",
     description: "Ancient forgotten worlds from deep time - poetic fragments of civilizations lost to legend",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "obsidian-sky-dwellers": {
         description:
@@ -2211,7 +2251,7 @@ export const CULTURAL_DATASETS = {
       },
       "dream-silk-spinners": {
         description:
-          "Godlevel dream-silk spinners excellence featuring people who spin dreams into physical silk and weave architecture from sleeping visions, buildings constructed from materialized dreams that shift based on collective unconscious, knowledge accessed by sleeping in dream-silk hammocks that share visions, cities that exist simultaneously in waking and dreaming states, sustained by consuming dream-essence that blurs reality boundaries, sacred ritual of the Shared Dream where entire population sleeps together to dream the city into new configurations, surreal and fluid atmosphere of living dreams, twilight sky with dream-logic clouds, color dream of dream purple, silk silver, and vision blue.",
+          "Godlevel civilization excellence featuring people who spin dreams into physical silk and weave architecture from sleeping visions, buildings constructed from materialized dreams that shift based on collective unconscious, knowledge accessed by sleeping in dream-silk hammocks that share visions, cities that exist simultaneously in waking and dreaming states, sustained by consuming dream-essence that blurs reality boundaries, sacred ritual of the Shared Dream where entire population sleeps together to dream the city into new configurations, surreal and fluid atmosphere of living dreams, twilight sky with dream-logic clouds, color dream of dream purple, silk silver, and vision blue.",
       },
       "geode-heart-miners": {
         description:
@@ -2244,6 +2284,7 @@ export const CULTURAL_DATASETS = {
     name: "🌍 Earth in 300 Years",
     description:
       "Futurescapes exploring possible future Earth scenes across climate, technology, and societal evolution",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "neo-venice-2325": {
         description:
@@ -2387,6 +2428,7 @@ export const CULTURAL_DATASETS = {
   "doomed-cities": {
     name: "🏚️ Doomed Cities",
     description: "Mythotechnological urban collapses for simulation, story, and generative visuals",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "singkor-sector-9": {
         description:
@@ -2522,10 +2564,12 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+
   "celestial-fossils": {
     name: "Celestial Fossils — The Archive of Sky-Buried Creatures",
     description:
       "Ancient creature remains discovered in cosmic environments, fossilized across space and celestial phenomena",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "wing-arches-oort": {
         description:
@@ -2581,7 +2625,7 @@ export const CULTURAL_DATASETS = {
       },
       "quantum-pilot-dreams": {
         description:
-          "Godlevel quantum dream fossil excellence with fossils extracted from dreams of quantum pilots, subconscious paleontology from spacetime navigators, infinite oneiric fossil artistry through computational dream mastery.",
+          "Godlevel quantum dream fossil excellence featuring fossils extracted from dreams of quantum pilots, subconscious paleontology from spacetime navigators, infinite oneiric fossil artistry through computational dream mastery.",
       },
       "torn-wings-teleport": {
         description:
@@ -2629,6 +2673,7 @@ export const CULTURAL_DATASETS = {
     name: "⚙️ Ritual Machines — The Sacred Circuit Archives",
     description:
       "Mechanical devices designed for ceremonial and spiritual purposes, blending technology with sacred ritual",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "funeral-organ-eclipse": {
         description:
@@ -2680,7 +2725,7 @@ export const CULTURAL_DATASETS = {
       },
       "silence-interpreting-device": {
         description:
-          "Godlevel silence interpretation excellence featuring machine reading absence as input commands, void-based interface through acoustic emptiness, infinite negative space computing through computational silence mastery.",
+          "Godlevel silence interpretation excellence featuring machine reading absence as input commands, void-based interface through acoustic emptiness, infinite negative sound artistry through computational silence mastery.",
       },
       "voice-activated-holographic-altar": {
         description:
@@ -2731,6 +2776,7 @@ export const CULTURAL_DATASETS = {
   "melted-gods": {
     name: "💧 Codex of Melted Gods",
     description: "Deities and religious icons in states of decay, transformation, or liquefaction",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "gold-idol-liquefied": {
         description:
@@ -2833,6 +2879,7 @@ export const CULTURAL_DATASETS = {
   "neural-fauna": {
     name: "🧠 Neural Fauna — Creatures That Think in Symbols",
     description: "Animals that communicate through abstract symbols, patterns, and linguistic structures",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "jellyfish-geometry": {
         description:
@@ -2935,6 +2982,7 @@ export const CULTURAL_DATASETS = {
   "impossible-maps": {
     name: "🧭 Impossible Maps — Cartography of Nowhere",
     description: "Maps depicting surreal, non-Euclidean, or emotionally-defined territories",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "spiral-city-no-center": {
         description:
@@ -3037,6 +3085,7 @@ export const CULTURAL_DATASETS = {
   "light-organs": {
     name: "💡 Light Organs — Bio-Luminescent Architectures",
     description: "Architectural structures that glow through biological or organic light sources",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "coral-cathedral-tides": {
         description:
@@ -3140,6 +3189,7 @@ export const CULTURAL_DATASETS = {
     name: "⚛️ Mythographic Particles — Subatomic Deities",
     description:
       "Sacred symbols and godforms discovered within quantum physics phenomena, particle collisions, and subatomic events",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "neutrino-godform": {
         description:
@@ -3223,7 +3273,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel mythographic particles escapism excellence with fantasy-enhanced subatomic deities featuring whimsical quantum magic, enchanted particle phenomena with mystical physics, infinite fantastical quantum artistry through computational escapism mastery.",
+          "Godlevel mythographic particles escapism excellence with fantasy-enhanced subatomic deities featuring whimsical quantum magic, enchanted particle phenomena with mystical physics, infinite fantastical quantum artistry through computational escapism magic.",
       },
       vitro: {
         description:
@@ -3243,6 +3293,7 @@ export const CULTURAL_DATASETS = {
     name: "🖥️ Forgotten Interfaces — UX from Lost Civilizations",
     description:
       "Ancient user interface systems and mystical interaction methods from vanished cultures and extinct technologies",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "sadness-crystal": {
         description:
@@ -3322,7 +3373,7 @@ export const CULTURAL_DATASETS = {
       },
       "collapse-wall": {
         description:
-          "Godlevel forgotten interfaces excellence featuring interface engraved into walls of collapsing planet, apocalyptic command system through terminal architecture, infinite dying world artistry through computational collapse mastery.",
+          "Godlevel forgotten interfaces excellence with interface engraved into walls of collapsing planet, apocalyptic command system through terminal architecture, infinite dying world artistry through computational collapse mastery.",
       },
       "escapism-magic": {
         description:
@@ -3345,6 +3396,7 @@ export const CULTURAL_DATASETS = {
   "harmonic-weapons": {
     name: "🎼 Harmonic Weapons — Instruments of Resonant Warfare",
     description: "Musical instruments weaponized through sound, resonance, and acoustic warfare principles",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "bone-glass-flute": {
         description:
@@ -3444,10 +3496,12 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+
   "cloud-temples": {
     name: "☁️ Cloud Temples — Sanctuaries Suspended in Sky Logic",
     description:
       "Floating religious structures and sanctuaries constructed from atmospheric phenomena and sky-based materials",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "monsoon-temple": {
         description:
@@ -3550,23 +3604,24 @@ export const CULTURAL_DATASETS = {
   "through-other-eyes": {
     name: "🐾 Through Other Eyes — The World as Seen by Animals",
     description:
-      "Hyperreal multispecies vision dataset capturing unique animal perspectives through their biological, neurological, and symbolic sensory worlds",
+      "Scientifically accurate multispecies vision dataset capturing how animals actually perceive reality through their unique biological sensory systems",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "bee-neon-garden": {
         description:
-          "Godlevel animal vision excellence featuring bee's ultraviolet perception in wildflower meadow, flowers glowing in electric purples and ghostly blues with fluorescent nectar guides as arrows, invisible pathways shimmering under UV light with jittery precise motion, infinite pollinator artistry through computational UV mastery.",
+          "Godlevel animal vision excellence featuring bee's ultraviolet-shifted perception in wildflower meadow, flowers displaying invisible UV nectar guide patterns like landing strips in electric purples and blues, red flowers appearing dark or black, world seen through mosaic of thousands of hexagonal lenses with rapid flicker-fusion detecting movement, bee's purple (yellow+UV combination) creating unique color humans cannot see, infinite pollinator artistry through computational UV mastery.",
       },
       "hawk-infinite-sky": {
         description:
-          "Godlevel animal vision excellence with hawk's ultra-crisp 5x zoomed vision scanning mountain valley from 300 meters, rabbit ear twitching kilometer away in slow-motion clarity, ground moving like map with visible air currents textured in warmth gradients, infinite raptor artistry through computational telescopic mastery.",
+          "Godlevel animal vision excellence with hawk's ultra-sharp 20/4 visual acuity scanning mountain valley from 300 meters high, dual foveae in each eye creating two zones of extreme clarity for tracking prey while soaring, rabbit visible as sharp detail from over a mile away, UV light revealing urine trails on ground as glowing paths, visual processing 100 times faster than humans making world appear in slow-motion, binocular forward vision calculating precise dive trajectory, infinite raptor artistry through computational telescopic mastery.",
       },
       "mantis-shrimp-prism": {
         description:
-          "Godlevel animal vision excellence featuring mantis shrimp's 12-color dimensional perception in coral reef, every shell as radiant universe with circular polarization dancing off crustacean armor, hyper-accelerated strobe-light motion in psychedelic underwater warfare, infinite spectral artistry through computational hyperspectral mastery.",
+          "Godlevel animal vision excellence featuring mantis shrimp's 12-photoreceptor perception in coral reef, paradoxically poor at discriminating similar colors despite complex eyes, rapid temporal scanning creating speed-based color recognition rather than fine hue distinction, trinocular vision in each eye providing depth perception, circular polarized light revealing hidden patterns on shells and armor invisible to other animals, world seen as rapid categorical color blocks rather than smooth gradients, infinite spectral artistry through computational scanning mastery.",
       },
       "cat-midnight-ballet": {
         description:
-          "Godlevel animal vision excellence with domestic cat's blue-gray twilight perception on rooftops under full moon, stillness alive with movement echoing like ripples, shadows having volume with whiskers mapping wind into visual cues, infinite feline artistry through computational scotopic mastery.",
+          "Godlevel animal vision excellence with domestic cat's scotopic perception on rooftops under moonlight, tapetum lucidum behind retina reflecting light back creating eyeshine glow, seeing clearly in light levels one-sixth of what humans need, world rendered in muted blues and yellows with reduced red perception (dichromatic vision), high concentration of rod cells making every tiny movement hypervisible while stationary objects blur, large pupils dilated to gather maximum light, whiskers providing tactile spatial mapping in total darkness, infinite feline artistry through computational scotopic mastery.",
       },
       "snake-thermal-forest": {
         description:
@@ -3574,7 +3629,7 @@ export const CULTURAL_DATASETS = {
       },
       "dolphin-echolocation-dream": {
         description:
-          "Godlevel animal vision excellence with dolphin's sonar perception in underwater cave system, space felt not seen as every sound rebounds 3D map, vision as auditory sculpture with fish fluttering into sonar fractals across cave, infinite cetacean artistry through computational echolocation mastery.",
+          "Godlevel animal vision excellence with dolphin's biosonar perception in underwater cave system, rapid clicking sounds emitted through melon organ in forehead focusing sound beams, echoes returning through fatty lower jaw creating detailed 3D acoustic images, determining object size, shape, distance, density, and speed through sound rather than light, perception more like 'touching at a distance' than seeing, fish and rocks rendered as textured acoustic sculptures with internal structure visible, vision superior to eyesight in murky or deep water, infinite cetacean artistry through computational echolocation mastery.",
       },
       "chameleon-swivel-world": {
         description:
