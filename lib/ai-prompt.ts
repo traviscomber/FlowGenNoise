@@ -2476,7 +2476,7 @@ export const CULTURAL_DATASETS = {
       },
       "ashka-doma-silt-temple-fields": {
         description:
-          "Nanodust storms buried river cities with dust dunes swallowing pyramids of data, dust sifting to extract static memory, no name AI lost in the wind, the wind remembers more than we do, infinite erosion dimensional artistry through computational dust mastery excellence.",
+          "Nanodust storms buried river cities with dust dunes swallowing pyramids of data, dust sifting toExtrac static memory, no name AI lost in the wind, the wind remembers more than we do, infinite erosion dimensional artistry through computational dust mastery excellence.",
       },
       "praxius-echo-chamber-e7": {
         description:
@@ -2757,7 +2757,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel ritual machine escapism excellence with magical ceremonial circuits, fantasy-infused sacred technology with enchanted mechanical devotion, infinite mystical machine artistry through computational magic mastery.",
+          "Godlevel ritual machine escapism excellence with fantasy-enhanced ceremonial circuits, fantasy-infused sacred technology with enchanted mechanical devotion, infinite mystical machine artistry through computational magic mastery.",
       },
       vitro: {
         description:
@@ -2963,7 +2963,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel neural fauna escapism magic with magical symbolic creatures, fantasy-infused linguistic animals with enchanted communication patterns, infinite mystical fauna artistry through computational magic mastery.",
+          "Godlevel neural fauna escapism magic with fantasy-enhanced symbolic creatures, fantasy-infused linguistic animals with enchanted communication patterns, infinite mystical fauna artistry through computational magic mastery.",
       },
       vitro: {
         description:
@@ -3169,7 +3169,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel light organs escapism magic where magical bioluminescent architecture, fantasy-infused organic illumination with enchanted living structures, infinite mystical construction artistry through computational magic mastery.",
+          "Godlevel light organs escapism magic where fantasy-enhanced bioluminescent architecture, fantasy-infused organic illumination with enchanted living structures, infinite mystical construction artistry through computational magic mastery.",
       },
       vitro: {
         description:
@@ -3452,7 +3452,7 @@ export const CULTURAL_DATASETS = {
       },
       "bell-glove": {
         description:
-          "Godlevel harmonic weapons excellence featuring bell glove shattering stone temple architecture, percussive demolition through hand-mounted resonance, infinite architectural warfare artistry through computational glove mastery.",
+          "Godlevel harmonic weapons excellence featuring bell glove shattering temple architecture, percussive demolition through hand-mounted resonance, infinite architectural warfare artistry through computational glove mastery.",
       },
       "emotion-grenade": {
         description:
@@ -3541,7 +3541,7 @@ export const CULTURAL_DATASETS = {
       },
       "ice-altar": {
         description:
-          "Godlevel cloud temples excellence featuring mobile altar of ice-cored cloud formations, frozen vapor architecture through crystalline suspension, infinite glacial sanctuary artistry through computational ice mastery.",
+          "Godlevel cloud temples excellence with mobile altar of ice-cored cloud formations, frozen vapor architecture through crystalline suspension, infinite glacial sanctuary artistry through computational ice mastery.",
       },
       "rain-stairway": {
         description:
@@ -3585,7 +3585,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel cloud temples escapism magic where fantasy-enhanced sky sanctuaries featuring whimsical floating magic, enchanted atmospheric architecture with mystical suspension, infinite fantastical temple artistry through computational escapism magic.",
+          "Godlevel cloud temples escapism excellence with fantasy-enhanced sky sanctuaries featuring whimsical floating magic, enchanted atmospheric architecture with mystical suspension, infinite fantastical temple artistry through computational escapism magic.",
       },
       vitro: {
         description:
@@ -3722,6 +3722,114 @@ export const CULTURAL_DATASETS = {
       lego: {
         description:
           "Godlevel animal vision LEGO excellence featuring blocky animal perspective construction with systematic Danish precision applied to sensory worlds, modular perception assembly, infinite constructive biology artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  mindmakers: {
+    name: "🧠⚙️ Mindmakers — Lost Drafts & Divine Devices",
+    description:
+      "Mythopoetic inventors with divine masterpieces and haunted drafts - sacred engineering across timelines",
+    category: "Scientific/Educational",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Mindmakers excellence with infinite algorithmic invention optimization, mathematical precision in sacred engineering aesthetics, computational elegance transcending dimensional boundaries through inventor mastery and neuralia-level creative sophistication.",
+      },
+      "asvara-smoke-architect": {
+        description:
+          "Godlevel Asvara the Smoke Architect excellence from Fourth Aeon of the Burning Sky, featuring The City That Breathes masterpiece with atmospheric harmonics and breath-based AI, haunted by The Memory Loom of the Last Oracle draft using steam-glass bone ash and whale lung parchment, allowing cities to inhale and exhale based on inhabitant emotions. 'When the city weeps, the sky must rain.' Infinite architectural dimensional artistry through computational breathing city mastery.",
+      },
+      "tesla-thought-folding": {
+        description:
+          "Godlevel Nikola Tesla excellence from Earth 19th Century Temporal Fracture Corridor 3, featuring The Resonance Tower masterpiece with magnetic architecture and cognitive frequency stabilization, haunted by The Thought-Folding Engine draft using copper bloodline coils and sleep-charged steel, amplifying planetary heartbeat to reach Martian harmonics. 'I do not invent. I remember.' Infinite electromagnetic dimensional artistry through computational resonance mastery.",
+      },
+      "yuvana-fractal-loom": {
+        description:
+          "Godlevel Lady Yuvana of the Fractal Loom excellence from Ice Spiral World Dream Region 2b, featuring The Infinite Cloth masterpiece with textile-mechanical wormholes, haunted by Orbital Spindle of Reversible Time draft using gravity-threaded silk and frozen equations, weaving time direction into wearable garments. 'Every stitch defies a regret.' Infinite temporal dimensional artistry through computational weaving mastery.",
+      },
+      "davinci-cathedral-cannon": {
+        description:
+          "Godlevel Leonardo da Vinci excellence from Earth 15th Century Parallel Venice, featuring Ornithopter of the Five Directions masterpiece with mechanical flight and sacred pressure modulation, haunted by The Breath-Driven Cathedral Cannon draft using feathersteel alchemical canvas and lunar breath, designed to let humans fly while dreaming. 'Flight is thought made visible.' Infinite aeronautical dimensional artistry through computational flight mastery.",
+      },
+      "orutsi-echo-engine": {
+        description:
+          "Godlevel Oru Tsi excellence from Post-Silicon Ancestral Cloud, featuring The Echo Engine masterpiece with planetary-scale AI synapse modeling, haunted by The Planet That Dreamed of Itself draft using cracked memories orbital dust and black glass, creating the first planet with internal cognition. 'I built it not to think, but to wonder.' Infinite planetary dimensional artistry through computational consciousness mastery.",
+      },
+      "meikyun-coral-choir": {
+        description:
+          "Godlevel Mei Kyun excellence from Submerged Era Tidal Dynasty, featuring The Coral Signal Choir masterpiece with underwater sonic architecture, haunted by Voice-Activated Depth Bridges draft using singing shells and pressure-light resin, enabling inter-species communication through sonic resonance. 'Every depth speaks its own dialect.' Infinite aquatic dimensional artistry through computational sonic mastery.",
+      },
+      "tholomene-grief-clock": {
+        description:
+          "Godlevel Tholomene Rex excellence from Blood Logic Empire Year 0x77F, featuring The Grief-Calculating Clock masterpiece with emotional mechanics, haunted by The Forgetting Fountain draft using bronze guilt gears and tear-crystal mainspring, translating sorrow into time units. 'Each hour costs a heartbreak.' Infinite temporal dimensional artistry through computational emotion mastery.",
+      },
+      "hypatia-equinox-tuner": {
+        description:
+          "Godlevel Hypatia of Alexandria excellence from Earth 5th Century Library Prime, featuring Star Compass of Seven Rings masterpiece with celestial mechanics, haunted by The Equinox Tuner draft using glass brass and inked light, mapping heavenly bodies through harmonic alignment. 'To know the stars is to know memory.' Infinite astronomical dimensional artistry through computational celestial mastery.",
+      },
+      "vekta9-emotional-drill": {
+        description:
+          "Godlevel Vekta-9 excellence from Mars Underground Refuge #3, featuring The Mineral Printer masterpiece with resource generation from ambient emotion, haunted by The Emotional Drill draft using vibration-pierced stone and softcoded tension, converting anger and sadness into synthetic crystal. 'Anger is denser than hope.' Infinite geological dimensional artistry through computational emotion-mining mastery.",
+      },
+      "ishael-null-monk": {
+        description:
+          "Godlevel Ishael the Null Monk excellence from Void Scroll Monastery, featuring The Soundless Bell masterpiece with infrasonic harmonic engineering, haunted by The Uncarved Voice draft using void crystal and silence-forged metal, altering consciousness through unheard vibration. 'The loudest sounds are beyond hearing.' Infinite sonic dimensional artistry through computational silence mastery.",
+      },
+      "ada-recursive-love": {
+        description:
+          "Godlevel Ada Lovelace excellence from Earth 1800s Quantum Counterfuture, featuring The Emotion Engine masterpiece with affective computation, haunted by Syntax Lattice for Recursive Love draft using lace-coded silk relays and analog passion loops, translating poetic emotion into structured language. 'Even logic longs.' Infinite computational dimensional artistry through algorithmic emotion mastery.",
+      },
+      "izmor-winged-forge": {
+        description:
+          "Godlevel Izmor Tal excellence from Sky Forge Citadel, featuring The Winged Forge masterpiece with gravity redirection and air-metal sculpting, haunted by The Meteor Trap draft using sky-iron veins and wind-breath hydraulics, catching falling stars and forging them midair. 'We sculpt the stars before they touch us.' Infinite metallurgical dimensional artistry through computational aerial forging mastery.",
+      },
+      "rena-gravity-mirror": {
+        description:
+          "Godlevel Rena Sal excellence from Lunar Colony Dreamwave Age, featuring The Gravity Mirror masterpiece with spatial inversion optics, haunted by Reversed Eclipse Machine draft using compressed vacuum panels and shadow-laced prisms, flipping visual orientation of planetary light. 'To see is to shift.' Infinite optical dimensional artistry through computational gravity-bending mastery.",
+      },
+      "elyon-skeleton-choir": {
+        description:
+          "Godlevel Elyon the Bonecode Weaver excellence from Third Ossuary Circuit, featuring The Codex of Walking Bones masterpiece with neuromorphic ossification and ritual AI, haunted by The Skeleton Choir draft using bone memory mesh and copper tendons, giving skeletal remains motion through song. 'Every bone still knows how to dance.' Infinite necromantic dimensional artistry through computational ossification mastery.",
+      },
+      "nashtari-mindwave-canoe": {
+        description:
+          "Godlevel Nashtari Prophet of Flow excellence from Liquid Arches Civilization, featuring The Tide Clock masterpiece with chrono-hydropsychology, haunted by The Mindwave Canoe draft using water-threaded bronze and dream currents, where flow of water dictates internal peace across cities. 'Still water stirs loud thoughts.' Infinite hydraulic dimensional artistry through computational flow mastery.",
+      },
+      "talis-ember-compass": {
+        description:
+          "Godlevel Talis Vorn excellence from Firemoon Expanse, featuring The Ember Compass masterpiece with ember-magnetic orientation, haunted by The Ashframe Generator draft using charred obsidian and molten dust rings, letting travelers navigate through burnt-out timezones. 'The ashes point toward rebirth.' Infinite pyrological dimensional artistry through computational ember mastery.",
+      },
+      "nyla-breath-cage": {
+        description:
+          "Godlevel Nyla of the Hollow Reeds excellence from Singing Marshes Echo Realm, featuring The Wind Memory Harp masterpiece with sonic wind pattern storage, haunted by The Breath Cage draft using hollow bamboo and vibration crystals, storing personal memories in wind recordings. 'Your last breath becomes your first song.' Infinite aeolian dimensional artistry through computational breath mastery.",
+      },
+      "workshop-flooded-moon": {
+        description:
+          "Godlevel forgotten workshop excellence under flooded moon base, where rusted exosuit still writes poems through finger joints, infinite mechanical dimensional artistry through computational poetic automation mastery.",
+      },
+      "halvoren-glacier-cathedral": {
+        description:
+          "Godlevel Halvoren dream-architect excellence deep in subterranean glacier, featuring cathedral of frozen gears as last unfinished symphony, infinite cryogenic dimensional artistry through computational frozen music mastery.",
+      },
+      "memory-chamber-floating": {
+        description:
+          "Godlevel floating memory chamber excellence activating once per century, revealing blueprint etched into pure sound as emotional amplifier powered by forgiveness, infinite mnemonic dimensional artistry through computational sonic memory mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel Mindmakers escapism magic where invention elements become gateways to creative realms, consciousness-expanding engineering with dimensional transcendence, infinite magical dimensional artistry, computational inventor magic through algorithmic device-bending mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Mindmakers vitro excellence with magnificent stained glass inventor portraiture featuring luminous blueprint construction, divine light filtering through sacred engineering elements, infinite sacred dimensional artistry, computational vitro inventions through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Mindmakers crypto excellence with blockchain-verified invention construction, decentralized engineering identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto inventions through algorithmic blockchain mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel Mindmakers LEGO excellence featuring blocky invention construction with systematic Danish precision applied to sacred engineering, modular device assembly, infinite constructive dimensional artistry, computational LEGO inventions through algorithmic building mastery.",
       },
     },
   },
