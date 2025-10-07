@@ -2565,6 +2565,167 @@ export const CULTURAL_DATASETS = {
     },
   },
 
+  turkey: {
+    name: "🇹🇷 Turkey: Republic, Ruins, and Resistance",
+    description:
+      "Breathtaking visual scenes weaving together Turkey's ancient archaeological splendor, Atatürk's secular modernism, and the turbulent present-day struggle for truth, dignity, and freedom",
+    category: "Cultural",
+    scenarios: {
+      "ataturk-among-columns": {
+        description:
+          "Godlevel Turkey excellence featuring bust of Atatürk standing where ancient temple pillars reach the sky, birds circling above, shadows of youth gathering nearby, terracotta and marble white palette, cinematic wide shots with balanced asymmetry, archaeological realism meets modern symbolism, photo-realistic docu-style with editorial poster variations and artistic allegory overlays.",
+      },
+      "gallipoli-echoes-troy": {
+        description:
+          "Godlevel Turkey excellence featuring foggy ruins by the sea, helmets half-buried in sand, voices of resistance carried by wind through time, volcanic red and dark soil palette, symbolic close-ups with layered poetic metaphors, photojournalism meets divine ruins, realistic ancient photography with soft film grain.",
+      },
+      "republic-carved-stone": {
+        description:
+          "Godlevel Turkey excellence featuring Turkish constitution engraved onto marble tablets beside Lycian tombs, candles and flowers left by citizens, marble white and faded gold palette, balanced composition with sacred geometry, archaeological realism with protest art elements, editorial poster with inscriptions and layout elements.",
+      },
+      "democracy-in-ruins": {
+        description:
+          "Godlevel Turkey excellence featuring parliament chamber collaged into Ephesus theater, half seats modern half broken stone, light and shadow in balance, terracotta and sapphire palette, cinematic wide shots with symbolic metaphors, visual blend of archaeological realism and modern rebellion, artistic allegory with collage overlays.",
+      },
+      "crystals-in-dust": {
+        description:
+          "Godlevel Turkey excellence featuring fragments of clear quartz and amethyst growing from ruins, representing truth sprouting from forgotten places, smoked turquoise and crystal palette, symbolic close-ups with sacred geometry, sacred-symbolic metaphor with divine ruins, artistic allegory with crystal and geometry overlays.",
+      },
+      "gezi-amphitheater": {
+        description:
+          "Godlevel Turkey excellence featuring protesters occupying stylized Hellenistic amphitheater, banners on ionic columns, gas and olive branches mixing in air, volcanic red and dark soil palette, cinematic wide shots with protest elements, photojournalism meets ancient architecture, photo-realistic docu-style with editorial variations.",
+      },
+      "temple-of-justice": {
+        description:
+          "Godlevel Turkey excellence featuring stylized ancient courthouse with open roof and fallen columns, justice scales suspended in sunlight, marble white and faded gold palette, balanced asymmetry with symbolic elements, archaeological realism with modern justice themes, editorial poster with inscriptions.",
+      },
+      "mafia-in-mosaic": {
+        description:
+          "Godlevel Turkey excellence featuring Roman mosaic with missing tiles, some tiles replaced with cash watches briefcases as visual metaphor of corruption, terracotta and dark soil palette, symbolic close-ups with layered metaphors, protest art meets archaeological detail, artistic allegory with collage elements.",
+      },
+      "nature-reclaims-palace": {
+        description:
+          "Godlevel Turkey excellence featuring presidential palace overgrown with vines wildflowers and roots breaking through marble steps, sapphire and dark soil palette, cinematic wide shots with nature symbolism, sacred-symbolic metaphor with divine ruins, artistic allegory with flora overlays.",
+      },
+      "eye-of-surveillance": {
+        description:
+          "Godlevel Turkey excellence featuring CCTV cameras placed inside ancient statues, symbolizing modern eyes watching ancient truths, volcanic red and marble white palette, symbolic close-ups with modern technology, protest art meets archaeological realism, editorial poster with modern elements.",
+      },
+      "recep-ruin-machine": {
+        description:
+          "Godlevel Turkey excellence featuring tyrant figure walking through ruined city with blueprint scrolls, replacing ancient beauty with concrete, dark soil and volcanic red palette, cinematic wide shots with shadow allegory, photojournalism meets symbolic narrative, photo-realistic docu-style with allegorical elements.",
+      },
+      "aegean-oracle-people": {
+        description:
+          "Godlevel Turkey excellence featuring crowd gathered around ancient oracle site, activists reading manifestos aloud instead of priests, sapphire and marble white palette, balanced composition with civic elements, archaeological realism with modern democracy themes, editorial poster with democratic inscriptions.",
+      },
+      "hakan-fidan-network": {
+        description:
+          "Godlevel Turkey excellence featuring spy strings connected across old Seljuk map, ancient scripts mixing with digital wireframes, smoked turquoise and dark soil palette, symbolic close-ups with network metaphors, protest art meets historical cartography, artistic allegory with digital overlays.",
+      },
+      "ibrahim-kalin-words-empire": {
+        description:
+          "Godlevel Turkey excellence featuring podium made from ancient sarcophagus stones, press recorders embedded like fossils in front, terracotta and faded gold palette, symbolic composition with media elements, photojournalism meets archaeological metaphor, editorial poster with press elements.",
+      },
+      "cracked-idols-stolen-futures": {
+        description:
+          "Godlevel Turkey excellence featuring broken statues missing heads labeled with economic stats, stolen gold coins scattered in sand, volcanic red and dark soil palette, symbolic close-ups with economic metaphors, protest art meets divine ruins, artistic allegory with economic overlays.",
+      },
+      "crystal-archive-memory": {
+        description:
+          "Godlevel Turkey excellence featuring transparent crystal library underground, glowing with names of disappeared silenced dreamers, smoked turquoise and crystal palette, cinematic wide shots with sacred geometry, sacred-symbolic metaphor with memorial elements, artistic allegory with crystal and light overlays.",
+      },
+      "gezi-rising-gobekli-tepe": {
+        description:
+          "Godlevel Turkey excellence featuring oldest temple site merging with tents and voices of Gezi, timeline bending between ancient and modern, terracotta and sapphire palette, balanced asymmetry with temporal metaphors, archaeological realism meets modern protest, photo-realistic docu-style with time-bending elements.",
+      },
+      "election-labyrinth": {
+        description:
+          "Godlevel Turkey excellence featuring maze made of ancient corridors and voting booths, one light at end marked Hope, marble white and dark soil palette, cinematic wide shots with symbolic pathways, sacred-symbolic metaphor with democratic elements, editorial poster with hope inscriptions.",
+      },
+      "tyranny-vs-time": {
+        description:
+          "Godlevel Turkey excellence featuring Erdogan-like shadow confronting colossal statue of forgotten Anatolian goddess, both fading into sunset, volcanic red and faded gold palette, cinematic wide shots with allegorical confrontation, photojournalism meets divine mythology, artistic allegory with shadow and light.",
+      },
+      "wounded-soil-sacred-fire": {
+        description:
+          "Godlevel Turkey excellence featuring earth cracked open revealing ancient fire altars, modern oil pipelines crossing same land, terracotta and volcanic red palette, symbolic close-ups with environmental metaphors, archaeological realism with modern industry, artistic allegory with fire and earth elements.",
+      },
+      "archive-beneath-mosque": {
+        description:
+          "Godlevel Turkey excellence featuring under grand Ottoman dome secret library of censored books and hidden maps glowing, sapphire and faded gold palette, cinematic wide shots with sacred architecture, sacred-symbolic metaphor with knowledge preservation, editorial poster with library elements.",
+      },
+      "whispers-of-byzantium": {
+        description:
+          "Godlevel Turkey excellence featuring Hagia Sophia with layered symbols cross crescent protest graffiti and dove perched on dome, marble white and sapphire palette, balanced composition with religious and civic elements, archaeological realism with modern symbolism, artistic allegory with multi-faith overlays.",
+      },
+      "feminine-roots-anatolia": {
+        description:
+          "Godlevel Turkey excellence featuring feminist march stylized as priestesses in Anatolian gowns, holding torches and tablets, terracotta and faded gold palette, cinematic wide shots with feminine power, photojournalism meets ancient priestess imagery, photo-realistic docu-style with ceremonial elements.",
+      },
+      "children-of-troy": {
+        description:
+          "Godlevel Turkey excellence featuring young students playing among ruins, learning history from stone not propaganda, marble white and sapphire palette, balanced composition with educational elements, archaeological realism with youth symbolism, editorial poster with learning themes.",
+      },
+      "smyrna-smolders-still": {
+        description:
+          "Godlevel Turkey excellence featuring allegorical fire spreading across coastal mosaic, memories of destruction and rebirth, volcanic red and smoked turquoise palette, symbolic close-ups with fire metaphors, protest art meets historical memory, artistic allegory with fire and mosaic overlays.",
+      },
+      "crystal-headed-protestors": {
+        description:
+          "Godlevel Turkey excellence featuring human forms with geometric crystal heads holding truth signs, standing in flooded ancient plaza, smoked turquoise and crystal palette, cinematic wide shots with sacred geometry, sacred-symbolic metaphor with truth elements, artistic allegory with crystal and geometry overlays.",
+      },
+      "ghosts-of-republic": {
+        description:
+          "Godlevel Turkey excellence featuring phantasmal civic leaders seated in empty modern court, Atatürk's silhouette behind, marble white and dark soil palette, symbolic composition with ghostly elements, photojournalism meets spiritual allegory, editorial poster with republican themes.",
+      },
+      "olive-branches-gas-masks": {
+        description:
+          "Godlevel Turkey excellence featuring peaceful protesters wearing flowers and masks beneath fig trees, stone lions watching silently, sapphire and dark soil palette, balanced composition with peace and resistance, photojournalism meets symbolic nature, photo-realistic docu-style with protest elements.",
+      },
+      "deep-state-catacomb": {
+        description:
+          "Godlevel Turkey excellence featuring underground vault filled with statues labeled Power Greed Silence, no light only truth crystals glowing, dark soil and crystal palette, cinematic wide shots with underground metaphors, sacred-symbolic metaphor with truth revelation, artistic allegory with crystal light in darkness.",
+      },
+      "sacred-geometry-resistance": {
+        description:
+          "Godlevel Turkey excellence featuring Fibonacci spirals in plaza, citizens placed within them as walking mandalas, smoked turquoise and faded gold palette, balanced asymmetry with mathematical patterns, sacred-symbolic metaphor with geometric precision, artistic allegory with sacred geometry overlays.",
+      },
+      "mountain-forgotten-promises": {
+        description:
+          "Godlevel Turkey excellence featuring steps carved into Mt Ararat, each step labeled with broken constitutional principle, marble white and volcanic red palette, cinematic wide shots with mountain symbolism, protest art meets natural grandeur, editorial poster with constitutional inscriptions.",
+      },
+      "mirror-of-anatolia": {
+        description:
+          "Godlevel Turkey excellence featuring lake reflecting ruins and modern protest simultaneously, one real one dreamlike, sapphire and marble white palette, balanced composition with reflection metaphors, archaeological realism meets modern protest, artistic allegory with mirror and dual reality.",
+      },
+      "republican-dawn": {
+        description:
+          "Godlevel Turkey excellence featuring first sunlight over restored ruin turned into open-air civic forum, Atatürk's quote engraved in gold, faded gold and marble white palette, cinematic wide shots with dawn symbolism, archaeological realism with republican ideals, editorial poster with golden inscriptions.",
+      },
+      "guardians-forgotten-scripts": {
+        description:
+          "Godlevel Turkey heritage excellence featuring ancient stone tablets from Hittite and Phrygian civilizations illuminated under moonlight, modern children tracing engravings with fingers, glowing line connecting past to present, terracotta and sapphire palette, symbolic close-ups with heritage preservation, archaeological realism with intergenerational connection.",
+      },
+      "dance-temple-light": {
+        description:
+          "Godlevel Turkey heritage excellence featuring whirling dervishes performing in open-air ruin at sunrise, broken dome above reveals cosmos, mosaic floor comes alive with sacred geometry, faded gold and smoked turquoise palette, cinematic wide shots with spiritual dance, sacred-symbolic metaphor with Sufi mysticism, artistic allegory with cosmic and geometric overlays.",
+      },
+      "heirs-of-anatolia": {
+        description:
+          "Godlevel Turkey heritage excellence featuring portrait-style lineup of diverse ethnic groups Kurdish Armenian Greek Laz Turkish standing together in traditional dress inside ancient gate, each holding light, marble white and faded gold palette, balanced composition with cultural diversity, photojournalism meets heritage celebration, editorial poster with unity themes.",
+      },
+      "caravan-of-civilizations": {
+        description:
+          "Godlevel Turkey heritage excellence featuring stylized Silk Road caravan horses camels traders moving through Cappadocia landscape, past and present figures interwoven, cave temples glowing in cliffs, terracotta and sapphire palette, cinematic wide shots with historical journey, archaeological realism with trade route heritage, artistic allegory with temporal blending.",
+      },
+      "oracle-and-constitution": {
+        description:
+          "Godlevel Turkey heritage excellence featuring inside dreamlike version of Temple of Apollo at Didyma, citizens speaking democratic ideals aloud instead of prophecy, columns shimmering with modern inscriptions of rights and freedoms, marble white and faded gold palette, balanced composition with civic oracle, archaeological realism with democratic transformation, editorial poster with constitutional inscriptions.",
+      },
+    },
+  },
+
   "celestial-fossils": {
     name: "Celestial Fossils — The Archive of Sky-Buried Creatures",
     description:
@@ -3189,7 +3350,7 @@ export function buildPrompt(params: {
   if (panoramic360) {
     if (panoramaFormat === "equirectangular") {
       prompt +=
-        "Create a seamless 360-degree equirectangular panorama where the left and right edges connect perfectly. "
+        "Create a seamless 360-degree equirectangular panorama where the left and right edges connect perfectly. Preset n2 with all orion 360 and seamless config. "
     } else if (panoramaFormat === "stereographic") {
       prompt += "Create a stereographic projection with a circular fisheye effect showing the entire 360-degree view. "
     }
