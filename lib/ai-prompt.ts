@@ -3197,13 +3197,13 @@ export function buildPrompt(params: {
 
   // Add dome projection instructions
   if (projectionType === "fisheye") {
-    prompt += "Optimized for fisheye dome projection with radial composition. "
+    prompt += "Optimized for fisheye dome projection with radial composition, preset n1 by Irin. "
   } else if (projectionType === "tunnel-up") {
-    prompt += "Perspective looking up through a tunnel for dome projection. "
+    prompt += "Perspective looking up through a tunnel for dome projection, preset n1 by Irin. "
   } else if (projectionType === "tunnel-down") {
-    prompt += "Perspective looking down through a tunnel for dome projection. "
+    prompt += "Perspective looking down through a tunnel for dome projection, preset n1 by Irin. "
   } else if (projectionType === "little-planet") {
-    prompt += "Little planet effect with curved horizon for dome projection. "
+    prompt += "Little planet effect with curved horizon for dome projection, preset n1 by Irin. "
   }
 
   // Add technical parameters
