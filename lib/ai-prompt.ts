@@ -2564,7 +2564,6 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-
   turkey: {
     name: "🇹🇷 Turkey: Republic, Ruins, and Resistance",
     description:
@@ -2814,7 +2813,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel celestial fossil escapism excellence with magical sky-buried creature archaeology, fantasy-infused cosmic paleontology with enchanted bone discoveries, infinite mystical fossil artistry through computational magic mastery.",
+          "Godlevel celestial fossil escapism excellence with fantasy-infused sky-buried creature archaeology, fantasy-infused cosmic paleontology with enchanted bone discoveries, infinite mystical fossil artistry through computational magic mastery.",
       },
       vitro: {
         description:
@@ -3267,6 +3266,53 @@ export const CULTURAL_DATASETS = {
       lego: {
         description:
           "Godlevel Mindmakers LEGO excellence featuring blocky invention construction with systematic Danish precision applied to sacred engineering, modular device assembly, infinite constructive dimensional artistry, computational LEGO inventions through algorithmic building mastery.",
+      },
+    },
+  },
+  "deep-power": {
+    name: "👁️‍🗨️ Deep Power",
+    description: "The hidden machinations of power, corruption, and clandestine networks - a look behind the veil",
+    category: "Cultural",
+    scenarios: {
+      "oracle-and-constitution": {
+        description:
+          "Godlevel Turkey heritage excellence featuring inside dreamlike version of Temple of Apollo at Didyma, citizens speaking democratic ideals aloud instead of prophecy, columns shimmering with modern inscriptions of rights and freedoms, marble white and faded gold palette, balanced composition with civic oracle, archaeological realism with democratic transformation, editorial poster with constitutional inscriptions.",
+      },
+      "fetullah-gulen-library": {
+        description:
+          "Godlevel Turkey deep power excellence featuring vast library buried under snow, ghostly figure of ideology stretching between continents, books whispering conflicting truths, obsidian black and midnight blue palette, cinematic wide shots with ideological metaphors, sacred-symbolic metaphor with knowledge and power, artistic allegory with snow and shadow overlays.",
+      },
+      "sedat-peker-confession": {
+        description:
+          "Godlevel Turkey deep power excellence featuring desert villa at night with laptop glowing, digital storms of secrets swirling as doves fly away, blood red and midnight blue palette, symbolic close-ups with digital revelation, photojournalism meets allegorical truth-telling, photo-realistic docu-style with digital storm effects.",
+      },
+      "aladdin-cakici-enforcer": {
+        description:
+          "Godlevel Turkey deep power excellence featuring shadow walking through marble corridors of abandoned palace, pistols and pearls on chessboard, obsidian black and cracked marble white palette, cinematic wide shots with power game metaphors, protest art meets criminal allegory, artistic allegory with chess and shadow elements.",
+      },
+      "trio-of-corruption": {
+        description:
+          "Godlevel Turkey deep power excellence featuring three statues with cracks representing Sadat Şahin Necati Arabacı Burhanettin Saral, each dripping gold and oil, serpent of money coiling beneath, dim gold and obsidian black palette, symbolic composition with corruption metaphors, archaeological realism meets modern crime allegory, artistic allegory with gold drip and serpent overlays.",
+      },
+      "gokcek-dynasty-fountain": {
+        description:
+          "Godlevel Turkey deep power excellence featuring modern political family shown as decaying fountain, water turning into ink, graffiti of truth emerging from cracks, midnight blue and blood red palette, symbolic close-ups with dynasty decay, protest art meets political allegory, editorial poster with truth graffiti elements.",
+      },
+      "reza-zarrab-gold-corridor": {
+        description:
+          "Godlevel Turkey deep power excellence featuring tunnels glowing with molten gold flowing like rivers, coins melting into documents, symbol of greed under embargo, dim gold and obsidian black palette, cinematic wide shots with wealth corruption, sacred-symbolic metaphor with gold as poison, artistic allegory with molten gold and document overlays.",
+      },
+      "ismailaga-order-shadow": {
+        description:
+          "Godlevel Turkey deep power excellence featuring ancient madrasa in shadow, candles flickering between prayer and power, foreign flag faintly reflected in stained glass, midnight blue and dim gold palette, symbolic composition with religious power, archaeological realism meets modern religious politics, artistic allegory with shadow and candlelight.",
+      },
+      "menzil-tarikati-machine": {
+        description:
+          "Godlevel Turkey deep power excellence featuring spiritual order turned machine, conveyor belts of faith meeting briefcases, illusion of holiness under control, obsidian black and cracked marble white palette, cinematic wide shots with mechanized faith, protest art meets religious critique, artistic allegory with machine and faith overlays.",
+      },
+      "suleymancilar-divided-mirror": {
+        description:
+          "Godlevel Turkey deep power excellence featuring moderates divided like mirrored reflections, same face split ideology, golden scale trembling in between, dim gold and midnight blue palette, balanced composition with ideological split, sacred-symbolic metaphor with division and balance, artistic allegory with mirror and scale elements.",
       },
     },
   },
