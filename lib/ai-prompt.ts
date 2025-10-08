@@ -2124,6 +2124,175 @@ export const CULTURAL_DATASETS = {
     },
   },
 
+  myanmar: {
+    name: "🇲🇲 Myanmar: Between Temples and Storms",
+    description:
+      "A cinematic, archaeological, and mythic journey through Burma's soul — where golden pagodas rise from mist, monks walk through rainlight, and jungles hide jade, rebels, and spirits",
+    category: "Cultural",
+    scenarios: {
+      "bagan-dawn-whisper": {
+        description:
+          "Godlevel Myanmar excellence featuring thousands of ancient pagodas emerging from morning mist at Bagan, first sunlight painting spires gold and terracotta, hot air balloons drifting silently above, golden amber and misty blue palette, cinematic wide shots with archaeological grandeur, photorealistic with mythic atmosphere, documentary style with ethereal overlays.",
+      },
+      "shwedagon-thunder": {
+        description:
+          "Godlevel Myanmar excellence featuring Shwedagon Pagoda illuminated during monsoon storm, lightning striking around golden stupa, monks in saffron robes walking prayer circles, radiant gold and storm gray palette, dramatic wide shots with sacred architecture, photorealistic with divine energy, editorial poster with sacred inscriptions.",
+      },
+      "yangon-neon-nights": {
+        description:
+          "Godlevel Myanmar excellence featuring colonial architecture mixed with neon signs and street vendors, Sule Pagoda glowing at intersection, trishaws and modern cars blending, amber gold and electric blue palette, cinematic urban shots with cultural fusion, photojournalism meets urban poetry, realistic street photography with neon overlays.",
+      },
+      "inle-floating-worlds": {
+        description:
+          "Godlevel Myanmar excellence featuring leg-rowing fishermen on Inle Lake at sunrise, floating gardens and stilt houses, reflections creating mirror worlds, jade green and sunrise orange palette, balanced composition with water symmetry, photorealistic with dreamlike quality, artistic allegory with reflection metaphors.",
+      },
+      "mandalay-palace-ruins": {
+        description:
+          "Godlevel Myanmar excellence featuring reconstructed royal palace with original moat and walls, monks studying ancient manuscripts in wooden halls, teak brown and royal red palette, archaeological realism with heritage preservation, cinematic wide shots with historical depth, editorial poster with Burmese script overlays.",
+      },
+      "pyu-mandala-cities": {
+        description:
+          "Godlevel Myanmar excellence featuring archaeologists uncovering circular Pyu city layouts, ancient brick stupas emerging from jungle, sacred geometry visible from above, terracotta and jungle green palette, symbolic aerial shots with mandala patterns, archaeological realism with sacred geometry, artistic allegory with geometric overlays.",
+      },
+      "mrauk-u-temple-maze": {
+        description:
+          "Godlevel Myanmar excellence featuring labyrinth of Mrauk-U temples in Rakhine hills, fog rolling through stone corridors, Buddha statues watching silently, stone gray and misty white palette, cinematic exploration shots with mystery atmosphere, photorealistic with archaeological depth, documentary style with ethereal fog effects.",
+      },
+      "bago-lost-bell": {
+        description:
+          "Godlevel Myanmar excellence featuring massive ancient bell submerged in river being recovered, monks blessing the excavation, water revealing inscriptions, bronze green and river blue palette, symbolic close-ups with heritage recovery, photojournalism meets archaeological discovery, editorial poster with historical inscriptions.",
+      },
+      "monks-repaint-murals": {
+        description:
+          "Godlevel Myanmar excellence featuring elderly monks carefully restoring temple murals with crushed flower pigments, ancient Jataka tales coming back to life, saffron and faded gold palette, intimate close-ups with artistic preservation, photorealistic with spiritual dedication, artistic allegory with time restoration metaphors.",
+      },
+      "irrawaddy-veins-light": {
+        description:
+          "Godlevel Myanmar excellence featuring Irrawaddy River flowing through rice plains like golden veins, fishing boats and cargo vessels sharing waters, sunset reflecting on water, golden amber and river blue palette, cinematic wide shots with natural grandeur, photorealistic with poetic atmosphere, artistic allegory with life-giving river metaphors.",
+      },
+      "kachin-jade-frontiers": {
+        description:
+          "Godlevel Myanmar excellence featuring jade mines in Kachin hills glowing emerald green, miners with headlamps in misty mountains, raw jade stones catching light, jade green and mountain gray palette, dramatic lighting with mineral beauty, photojournalism meets natural resource reality, documentary style with environmental awareness.",
+      },
+      "chin-karen-mountain-drums": {
+        description:
+          "Godlevel Myanmar excellence featuring Chin and Karen tribal villages in mountain mist, traditional drums echoing through valleys, tattooed elders and youth in traditional dress, mountain green and earth brown palette, cultural portrait shots with ethnic diversity, photorealistic with heritage celebration, editorial poster with tribal patterns.",
+      },
+      "monsoon-temple-rain": {
+        description:
+          "Godlevel Myanmar excellence featuring ancient temple during heavy monsoon, rain cascading off tiered roofs, monks meditating inside while nature roars outside, storm gray and temple gold palette, cinematic shots with weather drama, photorealistic with natural power, artistic allegory with meditation amid chaos.",
+      },
+      "fireflies-answer-gunfire": {
+        description:
+          "Godlevel Myanmar excellence featuring jungle clearing at night, fireflies creating light patterns where conflict occurred, nature reclaiming battleground, bioluminescent green and darkness palette, symbolic night shots with hope metaphors, photojournalism meets natural healing, artistic allegory with light overcoming darkness.",
+      },
+      "robes-burn-relics": {
+        description:
+          "Godlevel Myanmar excellence featuring saffron robes laid as memorial, incense smoke rising toward pagoda, flowers and candles creating sacred space, saffron orange and smoke gray palette, symbolic composition with sacrifice themes, photojournalism meets spiritual memorial, editorial poster with peace inscriptions.",
+      },
+      "naga-queen-irrawaddy": {
+        description:
+          "Godlevel Myanmar mythic excellence featuring serpent queen emerging from Irrawaddy under full moon, scales shimmering with river light, guardian of waters and ancient wisdom, moonlight silver and river blue palette, mythic surrealism with cultural legends, photorealistic with supernatural elements, artistic allegory with Naga mythology overlays.",
+      },
+      "nat-spirits-mount-popa": {
+        description:
+          "Godlevel Myanmar mythic excellence featuring Nat spirits dancing through volcanic smoke at Mount Popa, shrine offerings floating in air, pilgrims climbing sacred stairs, volcanic red and spirit white palette, mythic atmosphere with animist traditions, photorealistic with supernatural presence, artistic allegory with spirit world overlays.",
+      },
+      "crystal-elephant-eclipse": {
+        description:
+          "Godlevel Myanmar mythic excellence featuring transparent crystal elephant walking through Bagan during solar eclipse, temples aligned with cosmic event, ancient prophecy manifesting, crystal clear and eclipse shadow palette, mythic surrealism with sacred geometry, photorealistic with cosmic symbolism, artistic allegory with celestial overlays.",
+      },
+      "ai-shrine-ancestral-code": {
+        description:
+          "Godlevel Myanmar mythic excellence featuring futuristic shrine where AI processes ancestral memories, digital mandalas merging with traditional offerings, monks interfacing with glowing screens, electric blue and temple gold palette, mythic technology fusion with cultural preservation, photorealistic with digital overlays, artistic allegory with past-future bridge.",
+      },
+      "golden-rain-bagan": {
+        description:
+          "Godlevel Myanmar mythic excellence featuring literal golden rain falling over Bagan temples, each drop containing memory of past civilization, pagodas collecting sacred water, liquid gold and temple terracotta palette, mythic surrealism with blessing metaphors, photorealistic with supernatural weather, artistic allegory with divine grace overlays.",
+      },
+      "monks-meditate-backward-time": {
+        description:
+          "Godlevel Myanmar mythic excellence featuring monks in deep meditation as time flows backward around them, temple aging and rejuvenating simultaneously, temporal ripples visible in air, saffron orange and time-distortion blue palette, mythic surrealism with temporal themes, photorealistic with time manipulation effects, artistic allegory with meditation transcendence.",
+      },
+      "phoenix-copper-memory": {
+        description:
+          "Godlevel Myanmar mythic excellence featuring phoenix made of copper temple bells and war remnants rising from ashes, carrying memories of conflict toward healing, rebirth flames and copper green palette, mythic symbolism with national resilience, photorealistic with supernatural transformation, artistic allegory with rebirth and memory overlays.",
+      },
+      "temples-align-stars": {
+        description:
+          "Godlevel Myanmar mythic excellence featuring Bagan temples perfectly aligned with constellation patterns, cosmic light beams connecting earth and sky, ancient astronomical knowledge revealed, starlight white and temple gold palette, mythic astronomy with sacred architecture, photorealistic with cosmic overlays, artistic allegory with celestial wisdom.",
+      },
+      "cosmic-buddha-volcanic-caves": {
+        description:
+          "Godlevel Myanmar mythic excellence featuring massive Buddha statue inside volcanic cave glowing with inner light, cosmic mandalas rotating around meditation pose, pilgrims in awe, cosmic blue and volcanic red palette, mythic surrealism with Buddhist cosmology, photorealistic with divine radiance, artistic allegory with enlightenment symbolism.",
+      },
+      "golden-rock-kyaiktiyo": {
+        description:
+          "Godlevel Myanmar excellence featuring Golden Rock pagoda balanced impossibly on cliff edge, pilgrims placing gold leaf, sunset making entire scene glow, radiant gold and cliff gray palette, dramatic composition with sacred wonder, photorealistic with spiritual atmosphere, editorial poster with pilgrimage themes.",
+      },
+      "u-bein-bridge-sunset": {
+        description:
+          "Godlevel Myanmar excellence featuring world's longest teak bridge at Taungthaman Lake during golden hour, monks crossing in silhouette, reflections creating double bridge, golden amber and lake blue palette, cinematic wide shots with architectural beauty, photorealistic with poetic atmosphere, artistic allegory with journey metaphors.",
+      },
+      "chin-tattooed-elders": {
+        description:
+          "Godlevel Myanmar excellence featuring portrait of Chin women with traditional facial tattoos, wisdom in eyes, traditional dress and jewelry, cultural heritage preserved in faces, earth brown and indigo blue palette, intimate portrait shots with cultural dignity, photorealistic with ethnographic respect, editorial poster with heritage preservation themes.",
+      },
+      "thanaka-beauty-tradition": {
+        description:
+          "Godlevel Myanmar excellence featuring women and children applying thanaka paste in traditional patterns, natural cosmetic tradition continuing through generations, creamy yellow and skin tone palette, cultural close-ups with beauty traditions, photorealistic with everyday grace, artistic allegory with cultural continuity.",
+      },
+      "longyi-weaving-patterns": {
+        description:
+          "Godlevel Myanmar excellence featuring traditional longyi textile weaving, intricate patterns emerging on wooden looms, weavers' hands creating cultural identity, textile colors and wooden brown palette, intimate craft shots with artistic detail, photorealistic with cultural preservation, editorial poster with textile patterns.",
+      },
+      "puppet-theater-mandalay": {
+        description:
+          "Godlevel Myanmar excellence featuring traditional marionette theater performance, ornate puppets telling ancient tales, puppeteers visible above stage, theatrical gold and stage red palette, cultural performance shots with artistic tradition, photorealistic with theatrical atmosphere, artistic allegory with storytelling heritage.",
+      },
+      "rice-harvest-golden-fields": {
+        description:
+          "Godlevel Myanmar excellence featuring farmers harvesting rice in endless golden fields, traditional methods and community cooperation, mountains in distance, harvest gold and sky blue palette, cinematic wide shots with agricultural beauty, photorealistic with rural poetry, artistic allegory with sustenance and community.",
+      },
+      "tea-leaf-salad-culture": {
+        description:
+          "Godlevel Myanmar excellence featuring traditional lahpet (fermented tea leaf) preparation and sharing, cultural food bringing people together, ingredients arranged artistically, tea green and ingredient colors palette, cultural food photography with social bonding, photorealistic with culinary tradition, editorial poster with food culture themes.",
+      },
+      "chinlone-circle-game": {
+        description:
+          "Godlevel Myanmar excellence featuring traditional chinlone (cane ball) players in graceful circle, athletic artistry and teamwork, urban or temple courtyard setting, athletic motion and traditional dress palette, dynamic sports shots with cultural grace, photorealistic with movement beauty, artistic allegory with unity and skill.",
+      },
+      "nat-pwe-spirit-festival": {
+        description:
+          "Godlevel Myanmar excellence featuring Nat Pwe spirit medium festival, dancers in trance channeling spirits, elaborate costumes and offerings, festival colors and incense smoke palette, cultural ceremony shots with spiritual energy, photorealistic with ritual atmosphere, artistic allegory with animist traditions.",
+      },
+      "thingyan-water-festival": {
+        description:
+          "Godlevel Myanmar excellence featuring Thingyan New Year water festival, joyful crowds splashing water, traditional and modern celebration merging, water splash and festival colors palette, dynamic celebration shots with cultural joy, photorealistic with festive energy, editorial poster with renewal themes.",
+      },
+      "lacquerware-artisan-bagan": {
+        description:
+          "Godlevel Myanmar excellence featuring lacquerware artisan applying intricate designs, traditional Bagan craft continuing through generations, glossy black and gold detail palette, intimate craft shots with artistic mastery, photorealistic with cultural preservation, artistic allegory with artistic heritage.",
+      },
+      "bamboo-buddha-construction": {
+        description:
+          "Godlevel Myanmar excellence featuring massive Buddha statue being constructed from bamboo scaffolding for festival, temporary sacred architecture, construction workers as modern temple builders, bamboo green and construction palette, architectural process shots with cultural devotion, photorealistic with construction poetry, editorial poster with faith and craft themes.",
+      },
+      "meditation-caves-hpo-win": {
+        description:
+          "Godlevel Myanmar excellence featuring ancient meditation caves at Hpo Win Daung, thousands of Buddha images carved into sandstone, monks meditating in candlelight, sandstone gold and candlelight palette, spiritual atmosphere with archaeological depth, photorealistic with meditative peace, artistic allegory with spiritual refuge.",
+      },
+      "resistance-three-finger-salute": {
+        description:
+          "Godlevel Myanmar excellence featuring protesters showing three-finger salute against temple backdrop, peaceful resistance with cultural dignity, red protest symbols and temple gold palette, photojournalism with historical moment, documentary realism with symbolic power, editorial poster with resistance and hope themes.",
+      },
+      "spring-revolution-murals": {
+        description:
+          "Godlevel Myanmar excellence featuring street art murals depicting Spring Revolution, artists painting messages of freedom on walls, urban art meets political expression, mural colors and urban gray palette, street art photography with social commentary, photorealistic with artistic resistance, editorial poster with freedom art themes.",
+      },
+    },
+  },
+
   "mythical-civilizations": {
     name: "🌌 Mythical Civilizations",
     description: "Ancient forgotten worlds from deep time - poetic fragments of civilizations lost to legend",
@@ -2580,7 +2749,7 @@ export const CULTURAL_DATASETS = {
       },
       "republic-carved-stone": {
         description:
-          "Godlevel Turkey excellence featuring Turkish constitution engraved onto marble tablets beside Lycian tombs, candles and flowers left by citizens, marble white and faded gold palette, balanced composition with sacred geometry, archaeological realism with protest art elements, editorial poster with inscriptions and layout elements.",
+          "Godlevel Turkey excellence featuring Turkish constitution engraved onto marble tablets beside Lycian tombs, candles and flowers left by citizens, marble white and faded gold palette, balanced composition with sacred geometry, archaeological realism with modern protest art elements, editorial poster with inscriptions and layout elements.",
       },
       "democracy-in-ruins": {
         description:
@@ -2632,7 +2801,7 @@ export const CULTURAL_DATASETS = {
       },
       "crystal-archive-memory": {
         description:
-          "Godlevel Turkey excellence featuring transparent crystal library underground, glowing with names of disappeared silenced dreamers, smoked turquoise and crystal palette, cinematic wide shots with sacred geometry, sacred-symbolic metaphor with memorial elements, artistic allegory with crystal and light overlays.",
+          "Godlevel Turkey excellence featuring transparent crystal library underground, glowing with names of disappeared silenced dreamers, smoked turquoise and crystal palette, cinematic wide shots with sacred geometry, sacred-symbolic metaphor with truth elements, artistic allegory with crystal and light overlays.",
       },
       "gezi-rising-gobekli-tepe": {
         description:
@@ -2833,7 +3002,7 @@ export const CULTURAL_DATASETS = {
     name: "⚙️ Ritual Machines — The Sacred Circuit Archives",
     description:
       "Mechanical devices designed for ceremonial and spiritual purposes, blending technology with sacred ritual",
-    category: "Scientific/Educational", // Added category field
+    category: "Scientific/Educational",
     scenarios: {
       "funeral-organ-eclipse": {
         description:
@@ -2921,7 +3090,7 @@ export const CULTURAL_DATASETS = {
       },
       vitro: {
         description:
-          "Godlevel ritual machine vitro excellence featuring laboratory-grown sacred circuits with synthetic ceremonial technology, in-vitro mechanical spirituality with controlled ritual device creation, infinite scientific machine artistry through computational vitro mastery.",
+          "Godlevel ritual machine vitro excellence with laboratory-grown sacred circuits with synthetic ceremonial technology, in-vitro mechanical spirituality with controlled ritual device creation, infinite scientific machine artistry through computational vitro mastery.",
       },
       crypto: {
         description:
@@ -3125,7 +3294,7 @@ export const CULTURAL_DATASETS = {
       },
       "jellyfish-drift-perception": {
         description:
-          "Godlevel animal vision excellence featuring box jellyfish's light-sensor perception in open ocean near surface, no eyes only blue shift as everything fades into nothing, movement felt not seen in gradient blur between warm light and black fall, infinite cnidarian artistry through computational photoreceptor mastery.",
+          "Godlevel animal vision excellence with box jellyfish's light-sensor perception in open ocean near surface, no eyes only blue shift as everything fades into nothing, movement felt not seen in gradient blur between warm light and black fall, infinite cnidarian artistry through computational photoreceptor mastery.",
       },
       "frog-blink-sync": {
         description:
@@ -3145,7 +3314,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel animal vision escapism excellence with fantastical multispecies perception blending all sensory worlds into dreamlike escape, reality filtered through animal consciousness as portal to wonder, infinite cross-species artistry through computational synesthesia mastery.",
+          "Godlevel animal vision escapism excellence with fantasy-infused multispecies perception blending all sensory worlds into dreamlike escape, reality filtered through animal consciousness as portal to wonder, infinite cross-species artistry through computational synesthesia mastery.",
       },
       vitro: {
         description:
