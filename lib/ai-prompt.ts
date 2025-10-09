@@ -2293,6 +2293,218 @@ export const CULTURAL_DATASETS = {
     },
   },
 
+  "asean-ethnographic-compendium": {
+    name: "🗺️ Ancestral Faces of ASEAN",
+    description: "Illustrated ethnographic compendium of Southeast Asian and Oceanic peoples in historical atlas style",
+    category: "Cultural/Educational",
+    scenarios: {
+      "siam-ayutthaya": {
+        description:
+          "Godlevel ethnographic excellence featuring Tai-speaking Ayutthaya Kingdom figures in golden royal garments with pointed conical crowns and ornate jewelry, guards with naga-headed spears beside them, simplified temple wall pattern background in neutral beige, full-body frontal pose in vintage illustration plate style, warm sepia and muted ochre palette, antique lithograph aesthetic with ethnographic precision, photorealistic with historical atlas composition.",
+      },
+      "shan-hsremwi": {
+        description:
+          "Godlevel ethnographic excellence featuring Shan male in red-gold court attire with tall layered headdress and female in long woven skirt with silver belt, carved teak pillars in background, full-body comparative pose in ethnographic chart style, warm sepia tones with gold accents, vintage field drawing aesthetic with cultural detail, photorealistic with historical documentation precision.",
+      },
+      "tai-yuan-lanna": {
+        description:
+          "Godlevel ethnographic excellence featuring Lanna archer with curved sword and lacquered shield beside woman in indigo skirt with embroidered borders, mountain silhouettes in soft watercolor tones, full-body frontal stance in atlas plate style, muted ochres and soft blues palette, antique ethnographic illustration with cultural authenticity, photorealistic with historical catalog composition.",
+      },
+      "lao-lan-xang": {
+        description:
+          "Godlevel ethnographic excellence featuring Lan Xang monk in saffron robe holding lotus beside woman in sinh skirt with golden crown, pagoda forms faintly behind, full-body comparative pose in ethnographic documentation style, warm sepia with gold and saffron accents, vintage lithograph aesthetic with spiritual elements, photorealistic with cultural atlas precision.",
+      },
+      "paktai-orang-siam": {
+        description:
+          "Godlevel ethnographic excellence featuring coastal Paktai figure in lightweight turban and striped sarong with gold sash, miniature longboat drawn beside, full-body frontal pose in historical plate style, warm sepia and turquoise maritime palette, antique field illustration with nautical elements, photorealistic with ethnographic catalog composition.",
+      },
+      "javanese-yogyakarta": {
+        description:
+          "Godlevel ethnographic excellence featuring Javanese male dancer in kraton costume with jeweled crown and batik cloth beside female dancer in symmetrical stance, stylized palace arch background, full-body comparative pose in atlas style, warm ochres with gold and batik patterns, vintage ethnographic illustration with royal court precision, photorealistic with cultural documentation detail.",
+      },
+      "balinese-temple": {
+        description:
+          "Godlevel ethnographic excellence featuring Balinese priest in white with golden sash beside female temple attendant carrying offerings, barong mask and split gate motif behind, full-body frontal stance in ethnographic plate style, warm sepia with gold and ceremonial colors, antique lithograph aesthetic with spiritual elements, photorealistic with cultural atlas composition.",
+      },
+      "sunda-west-java": {
+        description:
+          "Godlevel ethnographic excellence featuring Sundanese village man with bamboo hat and sarong beside woman weaving, small bamboo house in corner, full-body comparative pose in field documentation style, warm sepia and natural earth tones, vintage ethnographic illustration with rural life detail, photorealistic with cultural catalog precision.",
+      },
+      "lampung-sumatra": {
+        description:
+          "Godlevel ethnographic excellence featuring Lampung bride in elaborate golden crown and ceremonial attire with intricate embroidery, traditional house structure behind, full-body frontal pose in atlas plate style, warm ochres with gold and red ceremonial palette, antique ethnographic illustration with wedding tradition detail, photorealistic with cultural documentation composition.",
+      },
+      "minangkabau-matriarch": {
+        description:
+          "Godlevel ethnographic excellence featuring Minangkabau woman in traditional dress with buffalo-horn headdress beside male elder, rumah gadang architecture in background, full-body comparative stance in ethnographic chart style, warm sepia with gold and architectural elements, vintage field illustration with matriarchal culture precision, photorealistic with historical atlas detail.",
+      },
+      "batak-toba": {
+        description:
+          "Godlevel ethnographic excellence featuring Batak Toba warrior with ulos cloth and traditional weapons beside woman in ceremonial dress, carved wooden house detail behind, full-body frontal pose in atlas plate style, warm ochres with red and black tribal patterns, antique ethnographic illustration with highland culture detail, photorealistic with cultural documentation composition.",
+      },
+      "acehnese-sultanate": {
+        description:
+          "Godlevel ethnographic excellence featuring Acehnese figure in Islamic court attire with golden embroidery and ceremonial kris, mosque minaret silhouette behind, full-body frontal stance in ethnographic documentation style, warm sepia with gold and Islamic architectural elements, vintage lithograph aesthetic with sultanate precision, photorealistic with cultural atlas composition.",
+      },
+      "malay-peninsula": {
+        description:
+          "Godlevel ethnographic excellence featuring Malay nobleman in songket fabric and tengkolok headdress beside woman in baju kurung with selendang, traditional house on stilts behind, full-body comparative pose in atlas plate style, warm ochres with gold and batik patterns, antique ethnographic illustration with coastal culture detail, photorealistic with historical documentation precision.",
+      },
+      "bugis-makassar": {
+        description:
+          "Godlevel ethnographic excellence featuring Bugis sailor in traditional attire with badik dagger beside Makassar trader, pinisi ship detail in background, full-body frontal stance in ethnographic chart style, warm sepia with maritime blues and gold accents, vintage field illustration with seafaring culture precision, photorealistic with cultural catalog composition.",
+      },
+      "toraja-highland": {
+        description:
+          "Godlevel ethnographic excellence featuring Toraja figure in ceremonial dress with buffalo horn headdress beside woman in traditional weaving, tongkonan house with carved panels behind, full-body comparative pose in atlas plate style, warm ochres with red and black tribal patterns, antique ethnographic illustration with highland funeral culture detail, photorealistic with cultural documentation composition.",
+      },
+      "dayak-borneo": {
+        description:
+          "Godlevel ethnographic excellence featuring Dayak warrior with mandau sword and hornbill feather headdress beside woman in beaded attire, longhouse structure behind, full-body frontal stance in ethnographic documentation style, warm sepia with tribal patterns and jungle greens, vintage lithograph aesthetic with headhunter culture precision, photorealistic with cultural atlas detail.",
+      },
+      "iban-sarawak": {
+        description:
+          "Godlevel ethnographic excellence featuring Iban man in traditional tattoos and ceremonial dress with parang ilang beside woman in pua kumbu weaving, longhouse interior detail behind, full-body comparative pose in atlas plate style, warm ochres with tribal patterns and textile motifs, antique ethnographic illustration with river culture detail, photorealistic with cultural documentation precision.",
+      },
+      "kadazan-dusun": {
+        description:
+          "Godlevel ethnographic excellence featuring Kadazan-Dusun woman in traditional black velvet dress with silver coins and beaded headdress beside male figure, Mount Kinabalu silhouette behind, full-body frontal stance in ethnographic chart style, warm sepia with silver and black ceremonial palette, vintage field illustration with rice culture detail, photorealistic with cultural documentation precision.",
+      },
+      "bajau-sea-nomads": {
+        description:
+          "Godlevel ethnographic excellence featuring Bajau sea nomad in lightweight attire with fishing spear beside woman in colorful sarong, stilt house over water behind, full-body comparative pose in atlas plate style, warm sepia with maritime blues and turquoise accents, antique ethnographic illustration with seafaring nomad culture detail, photorealistic with cultural catalog composition.",
+      },
+      "moro-mindanao": {
+        description:
+          "Godlevel ethnographic excellence featuring Moro warrior in traditional attire with kris and brass armor beside woman in malong cloth, mosque and vinta boat detail behind, full-body frontal stance in ethnographic documentation style, warm ochres with Islamic patterns and maritime elements, vintage lithograph aesthetic with sultanate culture precision, photorealistic with cultural atlas composition.",
+      },
+      "igorot-cordillera": {
+        description:
+          "Godlevel ethnographic excellence featuring Igorot warrior with spear and traditional tattoos beside woman in woven tapis, rice terraces in background, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and mountain greens, antique ethnographic illustration with highland culture detail, photorealistic with cultural documentation precision.",
+      },
+      "tagalog-luzon": {
+        description:
+          "Godlevel ethnographic excellence featuring Tagalog figure in barong tagalog with embroidered pineapple fiber beside woman in terno dress, bahay kubo house behind, full-body frontal stance in ethnographic chart style, warm ochres with Spanish colonial influences and tropical elements, vintage field illustration with lowland culture precision, photorealistic with cultural catalog composition.",
+      },
+      "visayan-islands": {
+        description:
+          "Godlevel ethnographic excellence featuring Visayan fisherman in traditional attire with fishing net beside woman in patadyong skirt, outrigger boat detail behind, full-body comparative pose in atlas plate style, warm sepia with maritime blues and island greens, antique ethnographic illustration with coastal culture detail, photorealistic with cultural documentation composition.",
+      },
+      "khmer-angkor": {
+        description:
+          "Godlevel ethnographic excellence featuring Khmer figure in traditional sampot with golden jewelry and ceremonial crown beside apsara dancer, Angkor temple silhouette behind, full-body frontal stance in ethnographic documentation style, warm ochres with gold and temple architecture elements, vintage lithograph aesthetic with classical culture precision, photorealistic with cultural atlas detail.",
+      },
+      "cham-champa": {
+        description:
+          "Godlevel ethnographic excellence featuring Cham figure in traditional attire with Islamic and Hindu influences beside woman in ceremonial dress, Cham tower detail behind, full-body comparative pose in atlas plate style, warm sepia with gold and architectural patterns, antique ethnographic illustration with maritime kingdom culture detail, photorealistic with cultural catalog composition.",
+      },
+      "mon-dvaravati": {
+        description:
+          "Godlevel ethnographic excellence featuring Mon figure in traditional dress with Buddhist influences beside woman in woven sarong, stupa silhouette behind, full-body frontal stance in ethnographic chart style, warm ochres with gold and Buddhist elements, vintage field illustration with ancient culture precision, photorealistic with cultural documentation detail.",
+      },
+      "karen-kayin": {
+        description:
+          "Godlevel ethnographic excellence featuring Karen woman with brass neck rings and traditional woven dress beside male figure with crossbow, mountain village behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and brass accents, antique ethnographic illustration with highland culture detail, photorealistic with cultural catalog composition.",
+      },
+      "kachin-jingpo": {
+        description:
+          "Godlevel ethnographic excellence featuring Kachin warrior in traditional attire with silver ornaments and dao sword beside woman in ceremonial dress, jade mine landscape behind, full-body frontal stance in ethnographic documentation style, warm ochres with silver and jade green accents, vintage lithograph aesthetic with highland culture precision, photorealistic with cultural atlas composition.",
+      },
+      "chin-zo": {
+        description:
+          "Godlevel ethnographic excellence featuring Chin woman with traditional facial tattoos in woven dress beside male figure with hunting weapons, mountain village behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and tattoo details, antique ethnographic illustration with highland culture detail, photorealistic with cultural documentation precision.",
+      },
+      "naga-tribes": {
+        description:
+          "Godlevel ethnographic excellence featuring Naga warrior with hornbill feather headdress and spear beside woman in traditional weaving, village longhouse behind, full-body frontal stance in ethnographic chart style, warm ochres with tribal patterns and feather details, vintage field illustration with headhunter culture precision, photorealistic with cultural catalog composition.",
+      },
+      "papuan-highland": {
+        description:
+          "Godlevel ethnographic excellence featuring Papuan highland warrior with bird of paradise headdress and traditional body paint beside woman in grass skirt, mountain landscape behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and natural pigments, antique ethnographic illustration with highland culture detail, photorealistic with cultural documentation composition.",
+      },
+      "melanesian-islands": {
+        description:
+          "Godlevel ethnographic excellence featuring Melanesian figure with shell ornaments and traditional attire beside woman in woven fiber dress, coastal village behind, full-body frontal stance in ethnographic documentation style, warm ochres with shell and ocean elements, vintage lithograph aesthetic with island culture precision, photorealistic with cultural atlas detail.",
+      },
+      "polynesian-navigator": {
+        description:
+          "Godlevel ethnographic excellence featuring Polynesian navigator with traditional tattoos and tapa cloth beside woman in ceremonial dress, outrigger canoe detail behind, full-body comparative pose in atlas plate style, warm sepia with ocean blues and tattoo patterns, antique ethnographic illustration with seafaring culture detail, photorealistic with cultural catalog composition.",
+      },
+      "micronesian-atoll": {
+        description:
+          "Godlevel ethnographic excellence featuring Micronesian figure in traditional attire with shell ornaments beside woman in woven skirt, atoll landscape behind, full-body frontal stance in ethnographic chart style, warm ochres with maritime elements and shell details, vintage field illustration with Micronesian culture precision, photorealistic with cultural documentation detail.",
+      },
+      "aboriginal-australian": {
+        description:
+          "Godlevel ethnographic excellence featuring Aboriginal Australian figure with traditional body paint and ceremonial implements beside woman in traditional dress, rock art motifs behind, full-body comparative pose in atlas plate style, warm sepia with ochre earth tones and dreamtime patterns, antique ethnographic illustration with ancient culture detail, photorealistic with cultural catalog composition.",
+      },
+      "maori-aotearoa": {
+        description:
+          "Godlevel ethnographic excellence featuring Maori warrior with moko facial tattoos and traditional weapons beside woman in piupiu skirt, meeting house detail behind, full-body frontal stance in ethnographic documentation style, warm ochres with tattoo patterns and carved wood elements, vintage lithograph aesthetic with warrior culture precision, photorealistic with cultural atlas composition.",
+      },
+      "chamorro-guam": {
+        description:
+          "Godlevel ethnographic excellence featuring Chamorro figure in traditional attire with shell ornaments beside woman in woven dress, latte stone structure behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and architectural elements, antique ethnographic illustration with island culture detail, photorealistic with cultural documentation precision.",
+      },
+      "rapa-nui-easter": {
+        description:
+          "Godlevel ethnographic excellence featuring Rapa Nui figure with traditional tattoos and ceremonial attire beside woman in feather headdress, moai statue silhouette behind, full-body frontal stance in ethnographic chart style, warm ochres with volcanic stone and tattoo patterns, vintage field illustration with ancient culture precision, photorealistic with cultural catalog composition.",
+      },
+      "hawaiian-kanaka": {
+        description:
+          "Godlevel ethnographic excellence featuring Hawaiian figure in traditional malo and lei beside woman in pa'u skirt with flower crown, volcanic landscape behind, full-body comparative pose in atlas plate style, warm sepia with tropical flowers and ocean elements, antique ethnographic illustration with island kingdom culture detail, photorealistic with cultural documentation composition.",
+      },
+      "samoan-fa-samoa": {
+        description:
+          "Godlevel ethnographic excellence featuring Samoan figure with pe'a traditional tattoos and lavalava beside woman in puletasi dress, fale house structure behind, full-body frontal stance in ethnographic documentation style, warm ochres with tattoo patterns and tropical elements, vintage lithograph aesthetic with warrior culture precision, photorealistic with cultural atlas detail.",
+      },
+      "tongan-kingdom": {
+        description:
+          "Godlevel ethnographic excellence featuring Tongan figure in traditional ta'ovala mat and ceremonial attire beside woman in kiekie dress, royal palace detail behind, full-body comparative pose in atlas plate style, warm sepia with woven patterns and royal elements, antique ethnographic illustration with kingdom culture detail, photorealistic with cultural catalog composition.",
+      },
+      "fijian-viti": {
+        description:
+          "Godlevel ethnographic excellence featuring Fijian warrior with traditional weapons and tapa cloth beside woman in ceremonial dress, bure house behind, full-body frontal stance in ethnographic chart style, warm ochres with tribal patterns and island elements, vintage field illustration with warrior culture precision, photorealistic with cultural documentation detail.",
+      },
+      "ni-vanuatu": {
+        description:
+          "Godlevel ethnographic excellence featuring Ni-Vanuatu figure in traditional attire with kastom ornaments beside woman in woven dress, nakamal meeting house behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and architectural elements, antique ethnographic illustration with island culture detail, photorealistic with cultural documentation precision.",
+      },
+      "solomon-islander": {
+        description:
+          "Godlevel ethnographic excellence featuring Solomon Islander figure with shell money and traditional attire beside woman in woven fiber dress, coastal village behind, full-body frontal stance in ethnographic documentation style, warm ochres with shell ornaments and maritime elements, vintage lithograph aesthetic with island culture precision, photorealistic with cultural atlas detail.",
+      },
+      "kanak-new-caledonia": {
+        description:
+          "Godlevel ethnographic excellence featuring Kanak figure in traditional attire with ceremonial axe beside woman in woven dress, grande case structure behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and architectural elements, antique ethnographic illustration with Melanesian culture detail, photorealistic with cultural documentation precision.",
+      },
+      "torres-strait": {
+        description:
+          "Godlevel ethnographic excellence featuring Torres Strait Islander figure with traditional headdress and ceremonial attire beside woman in woven dress, island landscape behind, full-body frontal stance in ethnographic chart style, warm ochres with shell ornaments and maritime elements, vintage field illustration with seafaring culture precision, photorealistic with cultural catalog composition.",
+      },
+      "rotuman-pacific": {
+        description:
+          "Godlevel ethnographic excellence featuring Rotuman figure in traditional attire with woven mat beside woman in ceremonial dress, coastal village behind, full-body comparative pose in atlas plate style, warm sepia with woven patterns and island elements, antique ethnographic illustration with Pacific culture detail, photorealistic with cultural documentation composition.",
+      },
+      "i-kiribati": {
+        description:
+          "Godlevel ethnographic excellence featuring I-Kiribati figure in traditional attire with coconut fiber ornaments beside woman in woven skirt, atoll landscape behind, full-body frontal stance in ethnographic documentation style, warm ochres with maritime elements and woven patterns, vintage lithograph aesthetic with atoll culture precision, photorealistic with cultural atlas detail.",
+      },
+      "marshallese-pacific": {
+        description:
+          "Godlevel ethnographic excellence featuring Marshallese figure in traditional attire with shell ornaments beside woman in woven dress, outrigger canoe detail behind, full-body comparative pose in atlas plate style, warm sepia with maritime elements and navigation patterns, antique ethnographic illustration with seafaring culture detail, photorealistic with cultural documentation precision.",
+      },
+      "palauan-belau": {
+        description:
+          "Godlevel ethnographic excellence featuring Palauan figure in traditional attire with ceremonial ornaments beside woman in woven dress, bai meeting house behind, full-body frontal stance in ethnographic chart style, warm ochres with carved wood patterns and island elements, vintage field illustration with Micronesian culture precision, photorealistic with cultural documentation detail.",
+      },
+      "yapese-wa-ab": {
+        description:
+          "Godlevel ethnographic excellence featuring Yapese figure in traditional attire with stone money beside woman in woven thu dress, men's house structure behind, full-body comparative pose in atlas plate style, warm sepia with stone architecture and woven patterns, antique ethnographic illustration with island culture detail, photorealistic with cultural documentation composition.",
+      },
+    },
+  },
+
   "mythical-civilizations": {
     name: "🌌 Mythical Civilizations",
     description: "Ancient forgotten worlds from deep time - poetic fragments of civilizations lost to legend",
