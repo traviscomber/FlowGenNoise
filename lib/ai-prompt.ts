@@ -491,7 +491,7 @@ export const CULTURAL_DATASETS = {
     },
   },
 
-  asean: {
+  "asean-mythology": {
     name: "🐉 ASEAN Mythology",
     description: "Ancient Southeast Asian mythological creatures with neuralia godlevel excellence",
     category: "Scientific/Educational", // Added category field
@@ -2124,387 +2124,6 @@ export const CULTURAL_DATASETS = {
     },
   },
 
-  myanmar: {
-    name: "🇲🇲 Myanmar: Between Temples and Storms",
-    description:
-      "A cinematic, archaeological, and mythic journey through Burma's soul — where golden pagodas rise from mist, monks walk through rainlight, and jungles hide jade, rebels, and spirits",
-    category: "Cultural",
-    scenarios: {
-      "bagan-dawn-whisper": {
-        description:
-          "Godlevel Myanmar excellence featuring thousands of ancient pagodas emerging from morning mist at Bagan, first sunlight painting spires gold and terracotta, hot air balloons drifting silently above, golden amber and misty blue palette, cinematic wide shots with archaeological grandeur, photorealistic with mythic atmosphere, documentary style with ethereal overlays.",
-      },
-      "shwedagon-thunder": {
-        description:
-          "Godlevel Myanmar excellence featuring Shwedagon Pagoda illuminated during monsoon storm, lightning striking around golden stupa, monks in saffron robes walking prayer circles, radiant gold and storm gray palette, dramatic wide shots with sacred architecture, photorealistic with divine energy, editorial poster with sacred inscriptions.",
-      },
-      "yangon-neon-nights": {
-        description:
-          "Godlevel Myanmar excellence featuring colonial architecture mixed with neon signs and street vendors, Sule Pagoda glowing at intersection, trishaws and modern cars blending, amber gold and electric blue palette, cinematic urban shots with cultural fusion, photojournalism meets urban poetry, realistic street photography with neon overlays.",
-      },
-      "inle-floating-worlds": {
-        description:
-          "Godlevel Myanmar excellence featuring leg-rowing fishermen on Inle Lake at sunrise, floating gardens and stilt houses, reflections creating mirror worlds, jade green and sunrise orange palette, balanced composition with water symmetry, photorealistic with dreamlike quality, artistic allegory with reflection metaphors.",
-      },
-      "mandalay-palace-ruins": {
-        description:
-          "Godlevel Myanmar excellence featuring reconstructed royal palace with original moat and walls, monks studying ancient manuscripts in wooden halls, teak brown and royal red palette, archaeological realism with heritage preservation, cinematic wide shots with historical depth, editorial poster with Burmese script overlays.",
-      },
-      "pyu-mandala-cities": {
-        description:
-          "Godlevel Myanmar excellence featuring archaeologists uncovering circular Pyu city layouts, ancient brick stupas emerging from jungle, sacred geometry visible from above, terracotta and jungle green palette, symbolic aerial shots with mandala patterns, archaeological realism with sacred geometry, artistic allegory with geometric overlays.",
-      },
-      "mrauk-u-temple-maze": {
-        description:
-          "Godlevel Myanmar excellence featuring labyrinth of Mrauk-U temples in Rakhine hills, fog rolling through stone corridors, Buddha statues watching silently, stone gray and misty white palette, cinematic exploration shots with mystery atmosphere, photorealistic with archaeological depth, documentary style with ethereal fog effects.",
-      },
-      "bago-lost-bell": {
-        description:
-          "Godlevel Myanmar excellence featuring massive ancient bell submerged in river being recovered, monks blessing the excavation, water revealing inscriptions, bronze green and river blue palette, symbolic close-ups with heritage recovery, photojournalism meets archaeological discovery, editorial poster with historical inscriptions.",
-      },
-      "monks-repaint-murals": {
-        description:
-          "Godlevel Myanmar excellence featuring elderly monks carefully restoring temple murals with crushed flower pigments, ancient Jataka tales coming back to life, saffron and faded gold palette, intimate close-ups with artistic preservation, photorealistic with spiritual dedication, artistic allegory with time restoration metaphors.",
-      },
-      "irrawaddy-veins-light": {
-        description:
-          "Godlevel Myanmar excellence featuring Irrawaddy River flowing through rice plains like golden veins, fishing boats and cargo vessels sharing waters, sunset reflecting on water, golden amber and river blue palette, cinematic wide shots with natural grandeur, photorealistic with poetic atmosphere, artistic allegory with life-giving river metaphors.",
-      },
-      "kachin-jade-frontiers": {
-        description:
-          "Godlevel Myanmar excellence featuring jade mines in Kachin hills glowing emerald green, miners with headlamps in misty mountains, raw jade stones catching light, jade green and mountain gray palette, dramatic lighting with mineral beauty, photojournalism meets natural resource reality, documentary style with environmental awareness.",
-      },
-      "chin-karen-mountain-drums": {
-        description:
-          "Godlevel Myanmar excellence featuring Chin and Karen tribal villages in mountain mist, traditional drums echoing through valleys, tattooed elders and youth in traditional dress, mountain green and earth brown palette, cultural portrait shots with ethnic diversity, photorealistic with heritage celebration, editorial poster with tribal patterns.",
-      },
-      "monsoon-temple-rain": {
-        description:
-          "Godlevel Myanmar excellence featuring ancient temple during heavy monsoon, rain cascading off tiered roofs, monks meditating inside while nature roars outside, storm gray and temple gold palette, cinematic shots with weather drama, photorealistic with natural power, artistic allegory with meditation amid chaos.",
-      },
-      "fireflies-answer-gunfire": {
-        description:
-          "Godlevel Myanmar excellence featuring jungle clearing at night, fireflies creating light patterns where conflict occurred, nature reclaiming battleground, bioluminescent green and darkness palette, symbolic night shots with hope metaphors, photojournalism meets natural healing, artistic allegory with light overcoming darkness.",
-      },
-      "robes-burn-relics": {
-        description:
-          "Godlevel Myanmar excellence featuring saffron robes laid as memorial, incense smoke rising toward pagoda, flowers and candles creating sacred space, saffron orange and smoke gray palette, symbolic composition with sacrifice themes, photojournalism meets spiritual memorial, editorial poster with peace inscriptions.",
-      },
-      "naga-queen-irrawaddy": {
-        description:
-          "Godlevel Myanmar mythic excellence featuring serpent queen emerging from Irrawaddy under full moon, scales shimmering with river light, guardian of waters and ancient wisdom, moonlight silver and river blue palette, mythic surrealism with cultural legends, photorealistic with supernatural elements, artistic allegory with Naga mythology overlays.",
-      },
-      "nat-spirits-mount-popa": {
-        description:
-          "Godlevel Myanmar mythic excellence featuring Nat spirits dancing through volcanic smoke at Mount Popa, shrine offerings floating in air, pilgrims climbing sacred stairs, volcanic red and spirit white palette, mythic atmosphere with animist traditions, photorealistic with supernatural presence, artistic allegory with spirit world overlays.",
-      },
-      "crystal-elephant-eclipse": {
-        description:
-          "Godlevel Myanmar mythic excellence featuring transparent crystal elephant walking through Bagan during solar eclipse, temples aligned with cosmic event, ancient prophecy manifesting, crystal clear and eclipse shadow palette, mythic surrealism with sacred geometry, photorealistic with cosmic symbolism, artistic allegory with celestial overlays.",
-      },
-      "ai-shrine-ancestral-code": {
-        description:
-          "Godlevel Myanmar mythic excellence featuring futuristic shrine where AI processes ancestral memories, digital mandalas merging with traditional offerings, monks interfacing with glowing screens, electric blue and temple gold palette, mythic technology fusion with cultural preservation, photorealistic with digital overlays, artistic allegory with past-future bridge.",
-      },
-      "golden-rain-bagan": {
-        description:
-          "Godlevel Myanmar mythic excellence featuring literal golden rain falling over Bagan temples, each drop containing memory of past civilization, pagodas collecting sacred water, liquid gold and temple terracotta palette, mythic surrealism with blessing metaphors, photorealistic with supernatural weather, artistic allegory with divine grace overlays.",
-      },
-      "monks-meditate-backward-time": {
-        description:
-          "Godlevel Myanmar mythic excellence featuring monks in deep meditation as time flows backward around them, temple aging and rejuvenating simultaneously, temporal ripples visible in air, saffron orange and time-distortion blue palette, mythic surrealism with temporal themes, photorealistic with time manipulation effects, artistic allegory with meditation transcendence.",
-      },
-      "phoenix-copper-memory": {
-        description:
-          "Godlevel Myanmar mythic excellence featuring phoenix made of copper temple bells and war remnants rising from ashes, carrying memories of conflict toward healing, rebirth flames and copper green palette, mythic symbolism with national resilience, photorealistic with supernatural transformation, artistic allegory with rebirth and memory overlays.",
-      },
-      "temples-align-stars": {
-        description:
-          "Godlevel Myanmar mythic excellence featuring Bagan temples perfectly aligned with constellation patterns, cosmic light beams connecting earth and sky, ancient astronomical knowledge revealed, starlight white and temple gold palette, mythic astronomy with sacred architecture, photorealistic with cosmic overlays, artistic allegory with celestial wisdom.",
-      },
-      "cosmic-buddha-volcanic-caves": {
-        description:
-          "Godlevel Myanmar mythic excellence featuring massive Buddha statue inside volcanic cave glowing with inner light, cosmic mandalas rotating around meditation pose, pilgrims in awe, cosmic blue and volcanic red palette, mythic surrealism with Buddhist cosmology, photorealistic with divine radiance, artistic allegory with enlightenment symbolism.",
-      },
-      "golden-rock-kyaiktiyo": {
-        description:
-          "Godlevel Myanmar excellence featuring Golden Rock pagoda balanced impossibly on cliff edge, pilgrims placing gold leaf, sunset making entire scene glow, radiant gold and cliff gray palette, dramatic composition with sacred wonder, photorealistic with spiritual atmosphere, editorial poster with pilgrimage themes.",
-      },
-      "u-bein-bridge-sunset": {
-        description:
-          "Godlevel Myanmar excellence featuring world's longest teak bridge at Taungthaman Lake during golden hour, monks crossing in silhouette, reflections creating double bridge, golden amber and lake blue palette, cinematic wide shots with architectural beauty, photorealistic with poetic atmosphere, artistic allegory with journey metaphors.",
-      },
-      "chin-tattooed-elders": {
-        description:
-          "Godlevel Myanmar excellence featuring portrait of Chin women with traditional facial tattoos, wisdom in eyes, traditional dress and jewelry, cultural heritage preserved in faces, earth brown and indigo blue palette, intimate portrait shots with cultural dignity, photorealistic with ethnographic respect, editorial poster with heritage preservation themes.",
-      },
-      "thanaka-beauty-tradition": {
-        description:
-          "Godlevel Myanmar excellence featuring women and children applying thanaka paste in traditional patterns, natural cosmetic tradition continuing through generations, creamy yellow and skin tone palette, cultural close-ups with beauty traditions, photorealistic with everyday grace, artistic allegory with cultural continuity.",
-      },
-      "longyi-weaving-patterns": {
-        description:
-          "Godlevel Myanmar excellence featuring traditional longyi textile weaving, intricate patterns emerging on wooden looms, weavers' hands creating cultural identity, textile colors and wooden brown palette, intimate craft shots with artistic detail, photorealistic with cultural preservation, editorial poster with textile patterns.",
-      },
-      "puppet-theater-mandalay": {
-        description:
-          "Godlevel Myanmar excellence featuring traditional marionette theater performance, ornate puppets telling ancient tales, puppeteers visible above stage, theatrical gold and stage red palette, cultural performance shots with artistic tradition, photorealistic with theatrical atmosphere, artistic allegory with storytelling heritage.",
-      },
-      "rice-harvest-golden-fields": {
-        description:
-          "Godlevel Myanmar excellence featuring farmers harvesting rice in endless golden fields, traditional methods and community cooperation, mountains in distance, harvest gold and sky blue palette, cinematic wide shots with agricultural beauty, photorealistic with rural poetry, artistic allegory with sustenance and community.",
-      },
-      "tea-leaf-salad-culture": {
-        description:
-          "Godlevel Myanmar excellence featuring traditional lahpet (fermented tea leaf) preparation and sharing, cultural food bringing people together, ingredients arranged artistically, tea green and ingredient colors palette, cultural food photography with social bonding, photorealistic with culinary tradition, editorial poster with food culture themes.",
-      },
-      "chinlone-circle-game": {
-        description:
-          "Godlevel Myanmar excellence featuring traditional chinlone (cane ball) players in graceful circle, athletic artistry and teamwork, urban or temple courtyard setting, athletic motion and traditional dress palette, dynamic sports shots with cultural grace, photorealistic with movement beauty, artistic allegory with unity and skill.",
-      },
-      "nat-pwe-spirit-festival": {
-        description:
-          "Godlevel Myanmar excellence featuring Nat Pwe spirit medium festival, dancers in trance channeling spirits, elaborate costumes and offerings, festival colors and incense smoke palette, cultural ceremony shots with spiritual energy, photorealistic with ritual atmosphere, artistic allegory with animist traditions.",
-      },
-      "thingyan-water-festival": {
-        description:
-          "Godlevel Myanmar excellence featuring Thingyan New Year water festival, joyful crowds splashing water, traditional and modern celebration merging, water splash and festival colors palette, dynamic celebration shots with cultural joy, photorealistic with festive energy, editorial poster with renewal themes.",
-      },
-      "lacquerware-artisan-bagan": {
-        description:
-          "Godlevel Myanmar excellence featuring lacquerware artisan applying intricate designs, traditional Bagan craft continuing through generations, glossy black and gold detail palette, intimate craft shots with artistic mastery, photorealistic with cultural preservation, artistic allegory with artistic heritage.",
-      },
-      "bamboo-buddha-construction": {
-        description:
-          "Godlevel Myanmar excellence featuring massive Buddha statue being constructed from bamboo scaffolding for festival, temporary sacred architecture, construction workers as modern temple builders, bamboo green and construction palette, architectural process shots with cultural devotion, photorealistic with construction poetry, editorial poster with faith and craft themes.",
-      },
-      "meditation-caves-hpo-win": {
-        description:
-          "Godlevel Myanmar excellence featuring ancient meditation caves at Hpo Win Daung, thousands of Buddha images carved into sandstone, monks meditating in candlelight, sandstone gold and candlelight palette, spiritual atmosphere with archaeological depth, photorealistic with meditative peace, artistic allegory with spiritual refuge.",
-      },
-      "resistance-three-finger-salute": {
-        description:
-          "Godlevel Myanmar excellence featuring protesters showing three-finger salute against temple backdrop, peaceful resistance with cultural dignity, red protest symbols and temple gold palette, photojournalism with historical moment, documentary realism with symbolic power, editorial poster with resistance and hope themes.",
-      },
-      "spring-revolution-murals": {
-        description:
-          "Godlevel Myanmar excellence featuring street art murals depicting Spring Revolution, artists painting messages of freedom on walls, urban art meets political expression, mural colors and urban gray palette, street art photography with social commentary, photorealistic with artistic resistance, editorial poster with freedom art themes.",
-      },
-    },
-  },
-
-  "asean-ethnographic-compendium": {
-    name: "🗺️ Ancestral Faces of ASEAN",
-    description: "Illustrated ethnographic compendium of Southeast Asian and Oceanic peoples in historical atlas style",
-    category: "Cultural/Educational",
-    scenarios: {
-      "siam-ayutthaya": {
-        description:
-          "Godlevel ethnographic excellence featuring Tai-speaking Ayutthaya Kingdom figures in golden royal garments with pointed conical crowns and ornate jewelry, guards with naga-headed spears beside them, simplified temple wall pattern background in neutral beige, full-body frontal pose in vintage illustration plate style, warm sepia and muted ochre palette, antique lithograph aesthetic with ethnographic precision, photorealistic with historical atlas composition.",
-      },
-      "shan-hsremwi": {
-        description:
-          "Godlevel ethnographic excellence featuring Shan male in red-gold court attire with tall layered headdress and female in long woven skirt with silver belt, carved teak pillars in background, full-body comparative pose in ethnographic chart style, warm sepia tones with gold accents, vintage field drawing aesthetic with cultural detail, photorealistic with historical documentation precision.",
-      },
-      "tai-yuan-lanna": {
-        description:
-          "Godlevel ethnographic excellence featuring Lanna archer with curved sword and lacquered shield beside woman in indigo skirt with embroidered borders, mountain silhouettes in soft watercolor tones, full-body frontal stance in atlas plate style, muted ochres and soft blues palette, antique ethnographic illustration with cultural authenticity, photorealistic with historical catalog composition.",
-      },
-      "lao-lan-xang": {
-        description:
-          "Godlevel ethnographic excellence featuring Lan Xang monk in saffron robe holding lotus beside woman in sinh skirt with golden crown, pagoda forms faintly behind, full-body comparative pose in ethnographic documentation style, warm sepia with gold and saffron accents, vintage lithograph aesthetic with spiritual elements, photorealistic with cultural atlas precision.",
-      },
-      "paktai-orang-siam": {
-        description:
-          "Godlevel ethnographic excellence featuring coastal Paktai figure in lightweight turban and striped sarong with gold sash, miniature longboat drawn beside, full-body frontal pose in historical plate style, warm sepia and turquoise maritime palette, antique field illustration with nautical elements, photorealistic with ethnographic catalog composition.",
-      },
-      "javanese-yogyakarta": {
-        description:
-          "Godlevel ethnographic excellence featuring Javanese male dancer in kraton costume with jeweled crown and batik cloth beside female dancer in symmetrical stance, stylized palace arch background, full-body comparative pose in atlas style, warm ochres with gold and batik patterns, vintage ethnographic illustration with royal court precision, photorealistic with cultural documentation detail.",
-      },
-      "balinese-temple": {
-        description:
-          "Godlevel ethnographic excellence featuring Balinese priest in white with golden sash beside female temple attendant carrying offerings, barong mask and split gate motif behind, full-body frontal stance in ethnographic plate style, warm sepia with gold and ceremonial colors, antique lithograph aesthetic with spiritual elements, photorealistic with cultural atlas composition.",
-      },
-      "sunda-west-java": {
-        description:
-          "Godlevel ethnographic excellence featuring Sundanese village man with bamboo hat and sarong beside woman weaving, small bamboo house in corner, full-body comparative pose in field documentation style, warm sepia and natural earth tones, vintage ethnographic illustration with rural life detail, photorealistic with cultural catalog precision.",
-      },
-      "lampung-sumatra": {
-        description:
-          "Godlevel ethnographic excellence featuring Lampung bride in elaborate golden crown and ceremonial attire with intricate embroidery, traditional house structure behind, full-body frontal pose in atlas plate style, warm ochres with gold and red ceremonial palette, antique ethnographic illustration with wedding tradition detail, photorealistic with cultural documentation composition.",
-      },
-      "minangkabau-matriarch": {
-        description:
-          "Godlevel ethnographic excellence featuring Minangkabau woman in traditional dress with buffalo-horn headdress beside male elder, rumah gadang architecture in background, full-body comparative stance in ethnographic chart style, warm sepia with gold and architectural elements, vintage field illustration with matriarchal culture precision, photorealistic with historical atlas detail.",
-      },
-      "batak-toba": {
-        description:
-          "Godlevel ethnographic excellence featuring Batak Toba warrior with ulos cloth and traditional weapons beside woman in ceremonial dress, carved wooden house detail behind, full-body frontal pose in atlas plate style, warm ochres with red and black tribal patterns, antique ethnographic illustration with highland culture detail, photorealistic with cultural documentation composition.",
-      },
-      "acehnese-sultanate": {
-        description:
-          "Godlevel ethnographic excellence featuring Acehnese figure in Islamic court attire with golden embroidery and ceremonial kris, mosque minaret silhouette behind, full-body frontal stance in ethnographic documentation style, warm sepia with gold and Islamic architectural elements, vintage lithograph aesthetic with sultanate precision, photorealistic with cultural atlas composition.",
-      },
-      "malay-peninsula": {
-        description:
-          "Godlevel ethnographic excellence featuring Malay nobleman in songket fabric and tengkolok headdress beside woman in baju kurung with selendang, traditional house on stilts behind, full-body comparative pose in atlas plate style, warm ochres with gold and batik patterns, antique ethnographic illustration with coastal culture detail, photorealistic with historical documentation precision.",
-      },
-      "bugis-makassar": {
-        description:
-          "Godlevel ethnographic excellence featuring Bugis sailor in traditional attire with badik dagger beside Makassar trader, pinisi ship detail in background, full-body frontal stance in ethnographic chart style, warm sepia with maritime blues and gold accents, vintage field illustration with seafaring culture precision, photorealistic with cultural catalog composition.",
-      },
-      "toraja-highland": {
-        description:
-          "Godlevel ethnographic excellence featuring Toraja figure in ceremonial dress with buffalo horn headdress beside woman in traditional weaving, tongkonan house with carved panels behind, full-body comparative pose in atlas plate style, warm ochres with red and black tribal patterns, antique ethnographic illustration with highland funeral culture detail, photorealistic with cultural documentation composition.",
-      },
-      "dayak-borneo": {
-        description:
-          "Godlevel ethnographic excellence featuring Dayak warrior with mandau sword and hornbill feather headdress beside woman in beaded attire, longhouse structure behind, full-body frontal stance in ethnographic documentation style, warm sepia with tribal patterns and jungle greens, vintage lithograph aesthetic with headhunter culture precision, photorealistic with cultural atlas detail.",
-      },
-      "iban-sarawak": {
-        description:
-          "Godlevel ethnographic excellence featuring Iban man in traditional tattoos and ceremonial dress with parang ilang beside woman in pua kumbu weaving, longhouse interior detail behind, full-body comparative pose in atlas plate style, warm ochres with tribal patterns and textile motifs, antique ethnographic illustration with river culture detail, photorealistic with cultural documentation precision.",
-      },
-      "kadazan-dusun": {
-        description:
-          "Godlevel ethnographic excellence featuring Kadazan-Dusun woman in traditional black velvet dress with silver coins and beaded headdress beside male figure, Mount Kinabalu silhouette behind, full-body frontal stance in ethnographic chart style, warm sepia with silver and black ceremonial palette, vintage field illustration with rice culture detail, photorealistic with cultural documentation precision.",
-      },
-      "bajau-sea-nomads": {
-        description:
-          "Godlevel ethnographic excellence featuring Bajau sea nomad in lightweight attire with fishing spear beside woman in colorful sarong, stilt house over water behind, full-body comparative pose in atlas plate style, warm sepia with maritime blues and turquoise accents, antique ethnographic illustration with seafaring nomad culture detail, photorealistic with cultural catalog composition.",
-      },
-      "moro-mindanao": {
-        description:
-          "Godlevel ethnographic excellence featuring Moro warrior in traditional attire with kris and brass armor beside woman in malong cloth, mosque and vinta boat detail behind, full-body frontal stance in ethnographic documentation style, warm ochres with Islamic patterns and maritime elements, vintage lithograph aesthetic with sultanate culture precision, photorealistic with cultural atlas composition.",
-      },
-      "igorot-cordillera": {
-        description:
-          "Godlevel ethnographic excellence featuring Igorot warrior with spear and traditional tattoos beside woman in woven tapis, rice terraces in background, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and mountain greens, antique ethnographic illustration with highland culture detail, photorealistic with cultural documentation precision.",
-      },
-      "tagalog-luzon": {
-        description:
-          "Godlevel ethnographic excellence featuring Tagalog figure in barong tagalog with embroidered pineapple fiber beside woman in terno dress, bahay kubo house behind, full-body frontal stance in ethnographic chart style, warm ochres with Spanish colonial influences and tropical elements, vintage field illustration with lowland culture precision, photorealistic with cultural catalog composition.",
-      },
-      "visayan-islands": {
-        description:
-          "Godlevel ethnographic excellence featuring Visayan fisherman in traditional attire with fishing net beside woman in patadyong skirt, outrigger boat detail behind, full-body comparative pose in atlas plate style, warm sepia with maritime blues and island greens, antique ethnographic illustration with coastal culture detail, photorealistic with cultural documentation composition.",
-      },
-      "khmer-angkor": {
-        description:
-          "Godlevel ethnographic excellence featuring Khmer figure in traditional sampot with golden jewelry and ceremonial crown beside apsara dancer, Angkor temple silhouette behind, full-body frontal stance in ethnographic documentation style, warm ochres with gold and temple architecture elements, vintage lithograph aesthetic with classical culture precision, photorealistic with cultural atlas detail.",
-      },
-      "cham-champa": {
-        description:
-          "Godlevel ethnographic excellence featuring Cham figure in traditional attire with Islamic and Hindu influences beside woman in ceremonial dress, Cham tower detail behind, full-body comparative pose in atlas plate style, warm sepia with gold and architectural patterns, antique ethnographic illustration with maritime kingdom culture detail, photorealistic with cultural catalog composition.",
-      },
-      "mon-dvaravati": {
-        description:
-          "Godlevel ethnographic excellence featuring Mon figure in traditional dress with Buddhist influences beside woman in woven sarong, stupa silhouette behind, full-body frontal stance in ethnographic chart style, warm ochres with gold and Buddhist elements, vintage field illustration with ancient culture precision, photorealistic with cultural documentation detail.",
-      },
-      "karen-kayin": {
-        description:
-          "Godlevel ethnographic excellence featuring Karen woman with brass neck rings and traditional woven dress beside male figure with crossbow, mountain village behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and brass accents, antique ethnographic illustration with highland culture detail, photorealistic with cultural catalog composition.",
-      },
-      "kachin-jingpo": {
-        description:
-          "Godlevel ethnographic excellence featuring Kachin warrior in traditional attire with silver ornaments and dao sword beside woman in ceremonial dress, jade mine landscape behind, full-body frontal stance in ethnographic documentation style, warm ochres with silver and jade green accents, vintage lithograph aesthetic with highland culture precision, photorealistic with cultural atlas composition.",
-      },
-      "chin-zo": {
-        description:
-          "Godlevel ethnographic excellence featuring Chin woman with traditional facial tattoos in woven dress beside male figure with hunting weapons, mountain village behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and tattoo details, antique ethnographic illustration with highland culture detail, photorealistic with cultural documentation precision.",
-      },
-      "naga-tribes": {
-        description:
-          "Godlevel ethnographic excellence featuring Naga warrior with hornbill feather headdress and spear beside woman in traditional weaving, village longhouse behind, full-body frontal stance in ethnographic chart style, warm ochres with tribal patterns and feather details, vintage field illustration with headhunter culture precision, photorealistic with cultural catalog composition.",
-      },
-      "papuan-highland": {
-        description:
-          "Godlevel ethnographic excellence featuring Papuan highland warrior with bird of paradise headdress and traditional body paint beside woman in grass skirt, mountain landscape behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and natural pigments, antique ethnographic illustration with highland culture detail, photorealistic with cultural documentation composition.",
-      },
-      "melanesian-islands": {
-        description:
-          "Godlevel ethnographic excellence featuring Melanesian figure with shell ornaments and traditional attire beside woman in woven fiber dress, coastal village behind, full-body frontal stance in ethnographic documentation style, warm ochres with shell and ocean elements, vintage lithograph aesthetic with island culture precision, photorealistic with cultural atlas detail.",
-      },
-      "polynesian-navigator": {
-        description:
-          "Godlevel ethnographic excellence featuring Polynesian navigator with traditional tattoos and tapa cloth beside woman in ceremonial dress, outrigger canoe detail behind, full-body comparative pose in atlas plate style, warm sepia with ocean blues and tattoo patterns, antique ethnographic illustration with seafaring culture detail, photorealistic with cultural catalog composition.",
-      },
-      "micronesian-atoll": {
-        description:
-          "Godlevel ethnographic excellence featuring Micronesian figure in traditional attire with shell ornaments beside woman in woven skirt, atoll landscape behind, full-body frontal stance in ethnographic chart style, warm ochres with maritime elements and shell details, vintage field illustration with Micronesian culture precision, photorealistic with cultural documentation detail.",
-      },
-      "aboriginal-australian": {
-        description:
-          "Godlevel ethnographic excellence featuring Aboriginal Australian figure with traditional body paint and ceremonial implements beside woman in traditional dress, rock art motifs behind, full-body comparative pose in atlas plate style, warm sepia with ochre earth tones and dreamtime patterns, antique ethnographic illustration with ancient culture detail, photorealistic with cultural catalog composition.",
-      },
-      "maori-aotearoa": {
-        description:
-          "Godlevel ethnographic excellence featuring Maori warrior with moko facial tattoos and traditional weapons beside woman in piupiu skirt, meeting house detail behind, full-body frontal stance in ethnographic documentation style, warm ochres with tattoo patterns and carved wood elements, vintage lithograph aesthetic with warrior culture precision, photorealistic with cultural atlas composition.",
-      },
-      "chamorro-guam": {
-        description:
-          "Godlevel ethnographic excellence featuring Chamorro figure in traditional attire with shell ornaments beside woman in woven dress, latte stone structure behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and architectural elements, antique ethnographic illustration with island culture detail, photorealistic with cultural documentation precision.",
-      },
-      "rapa-nui-easter": {
-        description:
-          "Godlevel ethnographic excellence featuring Rapa Nui figure with traditional tattoos and ceremonial attire beside woman in feather headdress, moai statue silhouette behind, full-body frontal stance in ethnographic chart style, warm ochres with volcanic stone and tattoo patterns, vintage field illustration with ancient culture precision, photorealistic with cultural catalog composition.",
-      },
-      "hawaiian-kanaka": {
-        description:
-          "Godlevel ethnographic excellence featuring Hawaiian figure in traditional malo and lei beside woman in pa'u skirt with flower crown, volcanic landscape behind, full-body comparative pose in atlas plate style, warm sepia with tropical flowers and ocean elements, antique ethnographic illustration with island kingdom culture detail, photorealistic with cultural documentation composition.",
-      },
-      "samoan-fa-samoa": {
-        description:
-          "Godlevel ethnographic excellence featuring Samoan figure with pe'a traditional tattoos and lavalava beside woman in puletasi dress, fale house structure behind, full-body frontal stance in ethnographic documentation style, warm ochres with tattoo patterns and tropical elements, vintage lithograph aesthetic with warrior culture precision, photorealistic with cultural atlas detail.",
-      },
-      "tongan-kingdom": {
-        description:
-          "Godlevel ethnographic excellence featuring Tongan figure in traditional ta'ovala mat and ceremonial attire beside woman in kiekie dress, royal palace detail behind, full-body comparative pose in atlas plate style, warm sepia with woven patterns and royal elements, antique ethnographic illustration with kingdom culture detail, photorealistic with cultural catalog composition.",
-      },
-      "fijian-viti": {
-        description:
-          "Godlevel ethnographic excellence featuring Fijian warrior with traditional weapons and tapa cloth beside woman in ceremonial dress, bure house behind, full-body frontal stance in ethnographic chart style, warm ochres with tribal patterns and island elements, vintage field illustration with warrior culture precision, photorealistic with cultural documentation detail.",
-      },
-      "ni-vanuatu": {
-        description:
-          "Godlevel ethnographic excellence featuring Ni-Vanuatu figure in traditional attire with kastom ornaments beside woman in woven dress, nakamal meeting house behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and architectural elements, antique ethnographic illustration with island culture detail, photorealistic with cultural documentation precision.",
-      },
-      "solomon-islander": {
-        description:
-          "Godlevel ethnographic excellence featuring Solomon Islander figure with shell money and traditional attire beside woman in woven fiber dress, coastal village behind, full-body frontal stance in ethnographic documentation style, warm ochres with shell ornaments and maritime elements, vintage lithograph aesthetic with island culture precision, photorealistic with cultural atlas detail.",
-      },
-      "kanak-new-caledonia": {
-        description:
-          "Godlevel ethnographic excellence featuring Kanak figure in traditional attire with ceremonial axe beside woman in woven dress, grande case structure behind, full-body comparative pose in atlas plate style, warm sepia with tribal patterns and architectural elements, antique ethnographic illustration with Melanesian culture detail, photorealistic with cultural documentation precision.",
-      },
-      "torres-strait": {
-        description:
-          "Godlevel ethnographic excellence featuring Torres Strait Islander figure with traditional headdress and ceremonial attire beside woman in woven dress, island landscape behind, full-body frontal stance in ethnographic chart style, warm ochres with shell ornaments and maritime elements, vintage field illustration with seafaring culture precision, photorealistic with cultural catalog composition.",
-      },
-      "rotuman-pacific": {
-        description:
-          "Godlevel ethnographic excellence featuring Rotuman figure in traditional attire with woven mat beside woman in ceremonial dress, coastal village behind, full-body comparative pose in atlas plate style, warm sepia with woven patterns and island elements, antique ethnographic illustration with Pacific culture detail, photorealistic with cultural documentation composition.",
-      },
-      "i-kiribati": {
-        description:
-          "Godlevel ethnographic excellence featuring I-Kiribati figure in traditional attire with coconut fiber ornaments beside woman in woven skirt, atoll landscape behind, full-body frontal stance in ethnographic documentation style, warm ochres with maritime elements and woven patterns, vintage lithograph aesthetic with atoll culture precision, photorealistic with cultural atlas detail.",
-      },
-      "marshallese-pacific": {
-        description:
-          "Godlevel ethnographic excellence featuring Marshallese figure in traditional attire with shell ornaments beside woman in woven dress, outrigger canoe detail behind, full-body comparative pose in atlas plate style, warm sepia with maritime elements and navigation patterns, antique ethnographic illustration with seafaring culture detail, photorealistic with cultural documentation precision.",
-      },
-      "palauan-belau": {
-        description:
-          "Godlevel ethnographic excellence featuring Palauan figure in traditional attire with ceremonial ornaments beside woman in woven dress, bai meeting house behind, full-body frontal stance in ethnographic chart style, warm ochres with carved wood patterns and island elements, vintage field illustration with Micronesian culture precision, photorealistic with cultural documentation detail.",
-      },
-      "yapese-wa-ab": {
-        description:
-          "Godlevel ethnographic excellence featuring Yapese figure in traditional attire with stone money beside woman in woven thu dress, men's house structure behind, full-body comparative pose in atlas plate style, warm sepia with stone architecture and woven patterns, antique ethnographic illustration with island culture detail, photorealistic with cultural documentation composition.",
-      },
-    },
-  },
-
   "mythical-civilizations": {
     name: "🌌 Mythical Civilizations",
     description: "Ancient forgotten worlds from deep time - poetic fragments of civilizations lost to legend",
@@ -2945,166 +2564,6 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-  turkey: {
-    name: "🇹🇷 Turkey: Republic, Ruins, and Resistance",
-    description:
-      "Breathtaking visual scenes weaving together Turkey's ancient archaeological splendor, Atatürk's secular modernism, and the turbulent present-day struggle for truth, dignity, and freedom",
-    category: "Cultural",
-    scenarios: {
-      "ataturk-among-columns": {
-        description:
-          "Godlevel Turkey excellence featuring bust of Atatürk standing where ancient temple pillars reach the sky, birds circling above, shadows of youth gathering nearby, terracotta and marble white palette, cinematic wide shots with balanced asymmetry, archaeological realism meets modern symbolism, photo-realistic docu-style with editorial poster variations and artistic allegory overlays.",
-      },
-      "gallipoli-echoes-troy": {
-        description:
-          "Godlevel Turkey excellence featuring foggy ruins by the sea, helmets half-buried in sand, voices of resistance carried by wind through time, volcanic red and dark soil palette, symbolic close-ups with layered poetic metaphors, photojournalism meets divine ruins, realistic ancient photography with soft film grain.",
-      },
-      "republic-carved-stone": {
-        description:
-          "Godlevel Turkey excellence featuring Turkish constitution engraved onto marble tablets beside Lycian tombs, candles and flowers left by citizens, marble white and faded gold palette, balanced composition with sacred geometry, archaeological realism with modern protest art elements, editorial poster with inscriptions and layout elements.",
-      },
-      "democracy-in-ruins": {
-        description:
-          "Godlevel Turkey excellence featuring parliament chamber collaged into Ephesus theater, half seats modern half broken stone, light and shadow in balance, terracotta and sapphire palette, cinematic wide shots with symbolic metaphors, visual blend of archaeological realism and modern rebellion, artistic allegory with collage overlays.",
-      },
-      "crystals-in-dust": {
-        description:
-          "Godlevel Turkey excellence featuring fragments of clear quartz and amethyst growing from ruins, representing truth sprouting from forgotten places, smoked turquoise and crystal palette, symbolic close-ups with sacred geometry, sacred-symbolic metaphor with divine ruins, artistic allegory with crystal and geometry overlays.",
-      },
-      "gezi-amphitheater": {
-        description:
-          "Godlevel Turkey excellence featuring protesters occupying stylized Hellenistic amphitheater, banners on ionic columns, gas and olive branches mixing in air, volcanic red and dark soil palette, cinematic wide shots with protest elements, photojournalism meets ancient architecture, photo-realistic docu-style with editorial variations.",
-      },
-      "temple-of-justice": {
-        description:
-          "Godlevel Turkey excellence featuring stylized ancient courthouse with open roof and fallen columns, justice scales suspended in sunlight, marble white and faded gold palette, balanced asymmetry with symbolic elements, archaeological realism with modern justice themes, editorial poster with inscriptions.",
-      },
-      "mafia-in-mosaic": {
-        description:
-          "Godlevel Turkey excellence featuring Roman mosaic with missing tiles, some tiles replaced with cash watches briefcases as visual metaphor of corruption, terracotta and dark soil palette, symbolic close-ups with layered metaphors, protest art meets archaeological detail, artistic allegory with collage elements.",
-      },
-      "nature-reclaims-palace": {
-        description:
-          "Godlevel Turkey excellence featuring presidential palace overgrown with vines wildflowers and roots breaking through marble steps, sapphire and dark soil palette, cinematic wide shots with nature symbolism, sacred-symbolic metaphor with divine ruins, artistic allegory with flora overlays.",
-      },
-      "eye-of-surveillance": {
-        description:
-          "Godlevel Turkey excellence featuring CCTV cameras placed inside ancient statues, symbolizing modern eyes watching ancient truths, volcanic red and marble white palette, symbolic close-ups with modern technology, protest art meets archaeological realism, editorial poster with modern elements.",
-      },
-      "recep-ruin-machine": {
-        description:
-          "Godlevel Turkey excellence featuring tyrant figure walking through ruined city with blueprint scrolls, replacing ancient beauty with concrete, dark soil and volcanic red palette, cinematic wide shots with shadow allegory, photojournalism meets symbolic narrative, photo-realistic docu-style with allegorical elements.",
-      },
-      "aegean-oracle-people": {
-        description:
-          "Godlevel Turkey excellence featuring crowd gathered around ancient oracle site, activists reading manifestos aloud instead of priests, sapphire and marble white palette, balanced composition with civic elements, archaeological realism with modern democracy themes, editorial poster with democratic inscriptions.",
-      },
-      "hakan-fidan-network": {
-        description:
-          "Godlevel Turkey excellence featuring spy strings connected across old Seljuk map, ancient scripts mixing with digital wireframes, smoked turquoise and dark soil palette, symbolic close-ups with network metaphors, protest art meets historical cartography, artistic allegory with digital overlays.",
-      },
-      "ibrahim-kalin-words-empire": {
-        description:
-          "Godlevel Turkey excellence featuring podium made from ancient sarcophagus stones, press recorders embedded like fossils in front, terracotta and faded gold palette, symbolic composition with media elements, photojournalism meets archaeological metaphor, editorial poster with press elements.",
-      },
-      "cracked-idols-stolen-futures": {
-        description:
-          "Godlevel Turkey excellence featuring broken statues missing heads labeled with economic stats, stolen gold coins scattered in sand, volcanic red and dark soil palette, symbolic close-ups with economic metaphors, protest art meets divine ruins, artistic allegory with economic overlays.",
-      },
-      "crystal-archive-memory": {
-        description:
-          "Godlevel Turkey excellence featuring transparent crystal library underground, glowing with names of disappeared silenced dreamers, smoked turquoise and crystal palette, cinematic wide shots with sacred geometry, sacred-symbolic metaphor with truth elements, artistic allegory with crystal and light overlays.",
-      },
-      "gezi-rising-gobekli-tepe": {
-        description:
-          "Godlevel Turkey excellence featuring oldest temple site merging with tents and voices of Gezi, timeline bending between ancient and modern, terracotta and sapphire palette, balanced asymmetry with temporal metaphors, archaeological realism meets modern protest, photo-realistic docu-style with time-bending elements.",
-      },
-      "election-labyrinth": {
-        description:
-          "Godlevel Turkey excellence featuring maze made of ancient corridors and voting booths, one light at end marked Hope, marble white and dark soil palette, cinematic wide shots with symbolic pathways, sacred-symbolic metaphor with democratic elements, editorial poster with hope inscriptions.",
-      },
-      "tyranny-vs-time": {
-        description:
-          "Godlevel Turkey excellence featuring Erdogan-like shadow confronting colossal statue of forgotten Anatolian goddess, both fading into sunset, volcanic red and faded gold palette, cinematic wide shots with allegorical confrontation, photojournalism meets divine mythology, artistic allegory with shadow and light.",
-      },
-      "wounded-soil-sacred-fire": {
-        description:
-          "Godlevel Turkey excellence featuring earth cracked open revealing ancient fire altars, modern oil pipelines crossing same land, terracotta and volcanic red palette, symbolic close-ups with environmental metaphors, archaeological realism with modern industry, artistic allegory with fire and earth elements.",
-      },
-      "archive-beneath-mosque": {
-        description:
-          "Godlevel Turkey excellence featuring under grand Ottoman dome secret library of censored books and hidden maps glowing, sapphire and faded gold palette, cinematic wide shots with sacred architecture, sacred-symbolic metaphor with knowledge preservation, editorial poster with library elements.",
-      },
-      "whispers-of-byzantium": {
-        description:
-          "Godlevel Turkey excellence featuring Hagia Sophia with layered symbols cross crescent protest graffiti and dove perched on dome, marble white and sapphire palette, balanced composition with religious and civic elements, archaeological realism with modern symbolism, artistic allegory with multi-faith overlays.",
-      },
-      "feminine-roots-anatolia": {
-        description:
-          "Godlevel Turkey excellence featuring feminist march stylized as priestesses in Anatolian gowns, holding torches and tablets, terracotta and faded gold palette, cinematic wide shots with feminine power, photojournalism meets ancient priestess imagery, photo-realistic docu-style with ceremonial elements.",
-      },
-      "children-of-troy": {
-        description:
-          "Godlevel Turkey excellence featuring young students playing among ruins, learning history from stone not propaganda, marble white and sapphire palette, balanced composition with educational elements, archaeological realism with youth symbolism, editorial poster with learning themes.",
-      },
-      "smyrna-smolders-still": {
-        description:
-          "Godlevel Turkey excellence featuring allegorical fire spreading across coastal mosaic, memories of destruction and rebirth, volcanic red and smoked turquoise palette, symbolic close-ups with fire metaphors, protest art meets historical memory, artistic allegory with fire and mosaic overlays.",
-      },
-      "crystal-headed-protestors": {
-        description:
-          "Godlevel Turkey excellence featuring human forms with geometric crystal heads holding truth signs, standing in flooded ancient plaza, smoked turquoise and crystal palette, cinematic wide shots with sacred geometry, sacred-symbolic metaphor with truth elements, artistic allegory with crystal and geometry overlays.",
-      },
-      "ghosts-of-republic": {
-        description:
-          "Godlevel Turkey excellence featuring phantasmal civic leaders seated in empty modern court, Atatürk's silhouette behind, marble white and dark soil palette, symbolic composition with ghostly elements, photojournalism meets spiritual allegory, editorial poster with republican themes.",
-      },
-      "olive-branches-gas-masks": {
-        description:
-          "Godlevel Turkey excellence featuring peaceful protesters wearing flowers and masks beneath fig trees, stone lions watching silently, sapphire and dark soil palette, balanced composition with peace and resistance, photojournalism meets symbolic nature, photo-realistic docu-style with protest elements.",
-      },
-      "deep-state-catacomb": {
-        description:
-          "Godlevel Turkey excellence featuring underground vault filled with statues labeled Power Greed Silence, no light only truth crystals glowing, dark soil and crystal palette, cinematic wide shots with underground metaphors, sacred-symbolic metaphor with truth revelation, artistic allegory with crystal light in darkness.",
-      },
-      "sacred-geometry-resistance": {
-        description:
-          "Godlevel Turkey excellence featuring Fibonacci spirals in plaza, citizens placed within them as walking mandalas, smoked turquoise and faded gold palette, balanced asymmetry with mathematical patterns, sacred-symbolic metaphor with geometric precision, artistic allegory with sacred geometry overlays.",
-      },
-      "mountain-forgotten-promises": {
-        description:
-          "Godlevel Turkey excellence featuring steps carved into Mt Ararat, each step labeled with broken constitutional principle, marble white and volcanic red palette, cinematic wide shots with mountain symbolism, protest art meets natural grandeur, editorial poster with constitutional inscriptions.",
-      },
-      "mirror-of-anatolia": {
-        description:
-          "Godlevel Turkey excellence featuring lake reflecting ruins and modern protest simultaneously, one real one dreamlike, sapphire and marble white palette, balanced composition with reflection metaphors, archaeological realism meets modern protest, artistic allegory with mirror and dual reality.",
-      },
-      "republican-dawn": {
-        description:
-          "Godlevel Turkey excellence featuring first sunlight over restored ruin turned into open-air civic forum, Atatürk's quote engraved in gold, faded gold and marble white palette, cinematic wide shots with dawn symbolism, archaeological realism with republican ideals, editorial poster with golden inscriptions.",
-      },
-      "guardians-forgotten-scripts": {
-        description:
-          "Godlevel Turkey heritage excellence featuring ancient stone tablets from Hittite and Phrygian civilizations illuminated under moonlight, modern children tracing engravings with fingers, glowing line connecting past to present, terracotta and sapphire palette, symbolic close-ups with heritage preservation, archaeological realism with intergenerational connection.",
-      },
-      "dance-temple-light": {
-        description:
-          "Godlevel Turkey heritage excellence featuring whirling dervishes performing in open-air ruin at sunrise, broken dome above reveals cosmos, mosaic floor comes alive with sacred geometry, faded gold and smoked turquoise palette, cinematic wide shots with spiritual dance, sacred-symbolic metaphor with Sufi mysticism, artistic allegory with cosmic and geometric overlays.",
-      },
-      "heirs-of-anatolia": {
-        description:
-          "Godlevel Turkey heritage excellence featuring portrait-style lineup of diverse ethnic groups Kurdish Armenian Greek Laz Turkish standing together in traditional dress inside ancient gate, each holding light, marble white and faded gold palette, balanced composition with cultural diversity, photojournalism meets heritage celebration, editorial poster with unity themes.",
-      },
-      "caravan-of-civilizations": {
-        description:
-          "Godlevel Turkey heritage excellence featuring stylized Silk Road caravan horses camels traders moving through Cappadocia landscape, past and present figures interwoven, cave temples glowing in cliffs, terracotta and sapphire palette, cinematic wide shots with historical journey, archaeological realism with trade route heritage, artistic allegory with temporal blending.",
-      },
-      "oracle-and-constitution": {
-        description:
-          "Godlevel Turkey heritage excellence featuring inside dreamlike version of Temple of Apollo at Didyma, citizens speaking democratic ideals aloud instead of prophecy, columns shimmering with modern inscriptions of rights and freedoms, marble white and faded gold palette, balanced composition with civic oracle, archaeological realism with democratic transformation, editorial poster with constitutional inscriptions.",
-      },
-    },
-  },
 
   "celestial-fossils": {
     name: "Celestial Fossils — The Archive of Sky-Buried Creatures",
@@ -3194,7 +2653,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel celestial fossil escapism excellence with fantasy-infused sky-buried creature archaeology, fantasy-infused cosmic paleontology with enchanted bone discoveries, infinite mystical fossil artistry through computational magic mastery.",
+          "Godlevel celestial fossil escapism excellence with magical sky-buried creature archaeology, fantasy-infused cosmic paleontology with enchanted bone discoveries, infinite mystical fossil artistry through computational magic mastery.",
       },
       vitro: {
         description:
@@ -3214,7 +2673,7 @@ export const CULTURAL_DATASETS = {
     name: "⚙️ Ritual Machines — The Sacred Circuit Archives",
     description:
       "Mechanical devices designed for ceremonial and spiritual purposes, blending technology with sacred ritual",
-    category: "Scientific/Educational",
+    category: "Scientific/Educational", // Added category field
     scenarios: {
       "funeral-organ-eclipse": {
         description:
@@ -3302,7 +2761,7 @@ export const CULTURAL_DATASETS = {
       },
       vitro: {
         description:
-          "Godlevel ritual machine vitro excellence with laboratory-grown sacred circuits with synthetic ceremonial technology, in-vitro mechanical spirituality with controlled ritual device creation, infinite scientific machine artistry through computational vitro mastery.",
+          "Godlevel ritual machine vitro excellence featuring laboratory-grown sacred circuits with synthetic ceremonial technology, in-vitro mechanical spirituality with controlled ritual device creation, infinite scientific machine artistry through computational vitro mastery.",
       },
       crypto: {
         description:
@@ -3314,6 +2773,730 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+  "melted-gods": {
+    name: "💧 Codex of Melted Gods",
+    description: "Deities and religious icons in states of decay, transformation, or liquefaction",
+    category: "Scientific/Educational", // Added category field
+    scenarios: {
+      "gold-idol-liquefied": {
+        description:
+          "Godlevel liquefied idol excellence featuring gold deity melted by forgotten belief, precious metal divinity dissolved through faith erosion, infinite theological entropy through computational liquefaction mastery.",
+      },
+      "ice-bird-deity-collapsing": {
+        description:
+          "Godlevel ice sculpture excellence with bird-headed deity slowly collapsing, avian divinity melting through thermal decay, infinite cryogenic theology through computational collapse mastery.",
+      },
+      "holographic-god-glitching": {
+        description:
+          "Godlevel holographic deity excellence featuring god glitching during ritual broadcast, digital divinity corrupting through transmission errors, infinite virtual theology through computational glitch mastery.",
+      },
+      "glass-crucifix-melted": {
+        description:
+          "Godlevel glass crucifix excellence with melted arms and unreadable face, vitreous religious icon deformed through heat, infinite transparent theology through computational glass mastery.",
+      },
+      "statue-weeping-sapphire": {
+        description:
+          "Godlevel weeping statue excellence featuring idol crying molten sapphire, gemstone tears from divine sorrow, infinite lachrymose theology through computational sapphire mastery.",
+      },
+      "collapsed-stone-internal-fire": {
+        description:
+          "Godlevel collapsed stone god excellence with deity melted from internal fire, lithic divinity consumed by inner combustion, infinite pyroclastic theology through computational stone mastery.",
+      },
+      "mercury-deity-spilled": {
+        description:
+          "Godlevel mercury deity excellence featuring liquid metal god spilled across ceremonial tiles, quicksilver divinity dispersed through gravitational flow, infinite fluid theology through computational mercury mastery.",
+      },
+      "melted-ai-oracle-loop": {
+        description:
+          "Godlevel melted AI oracle excellence with digital prophet trapped in feedback prayer loop, recursive divinity corrupting through infinite iteration, infinite computational theology through algorithmic loop mastery.",
+      },
+      "fossilized-clay-orbital-deform": {
+        description:
+          "Godlevel fossilized clay excellence featuring statue deformed by unknown planet's orbit, ceramic divinity warped through gravitational stress, infinite astronomical theology through computational clay mastery.",
+      },
+      "bronze-sun-dripping": {
+        description:
+          "Godlevel bronze sun god excellence with deity dripping like candle wax in space, metallic solar divinity melting in vacuum, infinite stellar theology through computational bronze mastery.",
+      },
+      "weathered-stone-speaker-fusion": {
+        description:
+          "Godlevel weathered stone excellence featuring face fused with decaying speaker, lithic divinity merged with audio technology, infinite acoustic theology through computational fusion mastery.",
+      },
+      "deity-frozen-volcanic-scream": {
+        description:
+          "Godlevel frozen scream excellence with deity captured mid-cry under volcanic lake, divine anguish preserved in geothermal ice, infinite pyroclastic theology through computational freeze mastery.",
+      },
+      "glyph-idol-ultraviolet-erasure": {
+        description:
+          "Godlevel glyph erasure excellence featuring inscribed idol deleted by ultraviolet chant, sacred text removed through photonic prayer, infinite linguistic theology through computational UV mastery.",
+      },
+      "jade-god-eclipse-melt": {
+        description:
+          "Godlevel jade deity excellence with god melting under eclipse beams, nephrite divinity liquefying during celestial alignment, infinite astronomical theology through computational jade mastery.",
+      },
+      "melted-twin-third-being": {
+        description:
+          "Godlevel twin deity excellence featuring melted dual statues forming third unknown being, binary divinity fusing into emergent god, infinite combinatorial theology through computational fusion mastery.",
+      },
+      "face-erased-vr-corruption": {
+        description:
+          "Godlevel VR corruption excellence with divine face erased by data corruption in sacred virtual reality, digital divinity deleted through file degradation, infinite virtual theology through computational corruption mastery.",
+      },
+      "copper-deity-acid-rain": {
+        description:
+          "Godlevel copper dissolution excellence featuring deity dissolved by acid rain of forgotten planet, metallic divinity corroded through atmospheric chemistry, infinite chemical theology through computational acid mastery.",
+      },
+      "divine-circuit-liquefying": {
+        description:
+          "Godlevel divine circuit excellence with sacred circuit board liquefying under divine contradiction, electronic theology melting through logical paradox, infinite computational theology through algorithmic contradiction mastery.",
+      },
+      "idol-compressed-gravity": {
+        description:
+          "Godlevel gravity compression excellence featuring idol compressed into sphere by reversed gravity, divine form collapsed through inverted gravitational field, infinite gravitational theology through computational compression mastery.",
+      },
+      "underwater-coral-deity": {
+        description:
+          "Godlevel underwater shrine excellence with deity melted into coral discovered beneath waves, divine form integrated with reef structure, infinite marine theology through computational coral mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel melted gods escapism magic with magical deity liquefaction, fantasy-infused divine transformation with enchanted theological entropy, infinite mystical god artistry through computational magic mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel melted gods vitro excellence featuring laboratory-grown deity decay with synthetic divine liquefaction, in-vitro theological entropy with controlled god melting, infinite scientific deity artistry through computational vitro mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel melted gods crypto excellence with blockchain-verified deity transformation, decentralized divine liquefaction with cryptocurrency-funded theological entropy, infinite digital god artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel melted gods LEGO excellence featuring blocky deity construction with systematic Danish precision applied to divine liquefaction, modular god assembly, infinite constructive deity artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  "neural-fauna": {
+    name: "🧠 Neural Fauna — Creatures That Think in Symbols",
+    description: "Animals that communicate through abstract symbols, patterns, and linguistic structures",
+    category: "Scientific/Educational", // Added category field
+    scenarios: {
+      "jellyfish-geometry": {
+        description:
+          "Godlevel geometric jellyfish excellence featuring creature communicating only in geometry, mathematical marine life with shape-based language, infinite aquatic semiotics through computational geometry mastery.",
+      },
+      "moths-dream-morse": {
+        description:
+          "Godlevel dream moth excellence with insects emitting dreams in Morse-pattern wings, oneiric lepidoptera broadcasting sleep visions through wing beats, infinite nocturnal semiotics through computational dream mastery.",
+      },
+      "snake-syntax-veins": {
+        description:
+          "Godlevel syntax snake excellence featuring serpent with illuminated grammar veins at sunrise, linguistic reptile with glowing sentence structure, infinite ophidian semiotics through computational syntax mastery.",
+      },
+      "deer-antler-language-rings": {
+        description:
+          "Godlevel antler language excellence with deer whose antlers encode language in glowing rings, cervine communication through luminescent horn patterns, infinite ungulate semiotics through computational antler mastery.",
+      },
+      "fractal-fish-logic-puzzles": {
+        description:
+          "Godlevel fractal fish excellence featuring aquatic creatures singing in 3D logic puzzles, mathematical marine life with recursive problem songs, infinite piscine semiotics through computational fractal mastery.",
+      },
+      "glass-caterpillar-frost-emotion": {
+        description:
+          "Godlevel glass caterpillar excellence with transparent larvae etching emotion in frost, crystalline insects writing feelings through ice patterns, infinite lepidopteran semiotics through computational frost mastery.",
+      },
+      "bird-recursive-linguistic-spirals": {
+        description:
+          "Godlevel recursive bird excellence featuring avian chirping in self-referential linguistic spirals, meta-linguistic ornithology with nested grammar songs, infinite avian semiotics through computational recursion mastery.",
+      },
+      "quadruped-scent-magnetic-symbols": {
+        description:
+          "Godlevel quadruped symbol excellence with four-legged creature emitting symbols via scent and magnetic fields, olfactory-electromagnetic communication, infinite mammalian semiotics through computational field mastery.",
+      },
+      "fox-scrolling-text-skin": {
+        description:
+          "Godlevel text fox excellence featuring vulpine with skin scrolling text during sleep, dermal typography through nocturnal display, infinite canine semiotics through computational text mastery.",
+      },
+      "crab-myth-poem-tapping": {
+        description:
+          "Godlevel myth crab excellence with crustaceans tapping mythological poems in soundless rhythm, silent percussive storytelling through claw patterns, infinite crustacean semiotics through computational myth mastery.",
+      },
+      "worm-dna-prayer-rearrangement": {
+        description:
+          "Godlevel prayer worm excellence featuring annelids rearranging DNA into prayers, genetic devotional restructuring through biological editing, infinite vermian semiotics through computational DNA mastery.",
+      },
+      "owl-holographic-ideogram-feathers": {
+        description:
+          "Godlevel holographic owl excellence with raptor displaying ideograms on projected feathers, three-dimensional symbolic plumage, infinite avian semiotics through computational hologram mastery.",
+      },
+      "horse-syntax-ash-trails": {
+        description:
+          "Godlevel syntax horse excellence featuring equine leaving grammar trails in ash, linguistic hoof prints through combustion residue, infinite equine semiotics through computational ash mastery.",
+      },
+      "amphibian-braille-crying": {
+        description:
+          "Godlevel braille amphibian excellence with creatures crying in tactile language, lachrymose communication through raised-dot tears, infinite amphibian semiotics through computational braille mastery.",
+      },
+      "insect-colony-flight-stories": {
+        description:
+          "Godlevel insect story excellence featuring colonies forming narratives with flight paths, aerial storytelling through swarm choreography, infinite entomological semiotics through computational flight mastery.",
+      },
+      "beast-starlight-binary-glow": {
+        description:
+          "Godlevel starlight beast excellence with creatures glowing in binary under stellar illumination, digital bioluminescence through cosmic radiation, infinite mammalian semiotics through computational binary mastery.",
+      },
+      "octopus-camouflage-code": {
+        description:
+          "Godlevel octopus poetry excellence featuring cephalopod pulsing verse in skin color cells, dermal literary expression through pigment control, infinite cephalopod semiotics through computational chromatophore mastery.",
+      },
+      "bat-echolocate-memories": {
+        description:
+          "Godlevel memory bat excellence with chiropterans echolocating recollections, sonic memory retrieval through ultrasonic scanning, infinite bat semiotics through computational echolocation mastery.",
+      },
+      "ant-grammar-tree-death": {
+        description:
+          "Godlevel grammar ant excellence featuring colonies forming syntax trees during ritual death, linguistic sacrifice through grammatical formation, infinite formicid semiotics through computational grammar mastery.",
+      },
+      "lizard-meditation-scent-glyphs": {
+        description:
+          "Godlevel meditation lizard excellence with reptiles emitting scent-based glyphs during contemplation, olfactory symbolic expression through meditative state, infinite reptilian semiotics through computational scent mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel neural fauna escapism magic with fantasy-enhanced symbolic creatures, fantasy-infused linguistic animals with enchanted communication patterns, infinite mystical fauna artistry through computational magic mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel neural fauna vitro excellence featuring laboratory-grown symbolic creatures with synthetic linguistic biology, in-vitro semiotic animals with controlled communication evolution, infinite scientific fauna artistry through computational vitro mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel neural fauna crypto excellence with blockchain-verified symbolic creatures, decentralized linguistic animals with cryptocurrency-funded semiotic research, infinite digital fauna artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel neural fauna LEGO excellence featuring blocky symbolic creature construction with systematic Danish precision applied to linguistic biology, modular fauna assembly, infinite constructive creature artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  "impossible-maps": {
+    name: "🧭 Impossible Maps — Cartography of Nowhere",
+    description: "Maps depicting surreal, non-Euclidean, or emotionally-defined territories",
+    category: "Scientific/Educational", // Added category field
+    scenarios: {
+      "spiral-city-no-center": {
+        description:
+          "Godlevel spiral city excellence featuring map of urban area with no center, infinite recursive cartography with centerless topology, infinite urban geometry through computational spiral mastery.",
+      },
+      "forest-portal-trees": {
+        description:
+          "Godlevel portal forest excellence with map showing woodland where every tree is dimensional gateway, arboreal teleportation network cartography, infinite sylvan topology through computational portal mastery.",
+      },
+      "emotion-gradient-territory": {
+        description:
+          "Godlevel emotion gradient excellence featuring territory drawn in feeling intensities, affective cartography with mood-based boundaries, infinite psychological geography through computational emotion mastery.",
+      },
+      "coastline-hourly-change": {
+        description:
+          "Godlevel temporal coastline excellence with shoreline changing every hour, chronologically unstable maritime boundaries, infinite temporal geography through computational flux mastery.",
+      },
+      "gravity-tunnel-map": {
+        description:
+          "Godlevel gravity tunnel excellence featuring map showing passages through gravitational fields themselves, geodesic cartography of spacetime curvature, infinite relativistic geography through computational gravity mastery.",
+      },
+      "nightmare-blueprint": {
+        description:
+          "Godlevel nightmare cartography excellence with top-down blueprint of recurring dream terror, oneiric architectural mapping of subconscious fears, infinite psychological topology through computational nightmare mastery.",
+      },
+      "time-fluctuation-ruins": {
+        description:
+          "Godlevel temporal fluctuation excellence featuring map of chronological variations over ancient sites, archaeological cartography of time distortions, infinite temporal archaeology through computational fluctuation mastery.",
+      },
+      "dragon-ribcage-river": {
+        description:
+          "Godlevel dragon river excellence with river network shaped like draconic skeletal structure, mythological hydrological cartography, infinite anatomical geography through computational dragon mastery.",
+      },
+      "non-euclidean-psychic-merchant": {
+        description:
+          "Godlevel non-Euclidean roadmap excellence featuring routes used by telepathic traders, hyperbolic commercial cartography with impossible angles, infinite psychic geography through computational merchant mastery.",
+      },
+      "map-only-beginnings": {
+        description:
+          "Godlevel incomplete map excellence with cartography showing only starting points without destinations, perpetual origin mapping with no conclusions, infinite fragmentary geography through computational beginning mastery.",
+      },
+      "moving-map-reading": {
+        description:
+          "Godlevel dynamic cartography excellence featuring map changing as it's observed, quantum cartographic uncertainty through measurement, infinite mutable geography through computational observation mastery.",
+      },
+      "star-chart-secret-burial": {
+        description:
+          "Godlevel secret star chart excellence with celestial map used to bury mysteries, astronomical cartography of hidden knowledge, infinite cryptographic astronomy through computational secret mastery.",
+      },
+      "folding-city-7d": {
+        description:
+          "Godlevel seven-dimensional city excellence featuring urban area printed in hyperdimensional perspective, multidimensional metropolitan cartography, infinite hypergeometric urbanism through computational 7D mastery.",
+      },
+      "breath-responsive-layout": {
+        description:
+          "Godlevel breath-responsive excellence with city layout changing based on respiratory patterns, pneumatic urban cartography, infinite biometric geography through computational breath mastery.",
+      },
+      "calendar-terrain-model": {
+        description:
+          "Godlevel calendar terrain excellence featuring temporal document doubling as topographic map, chronological cartography with elevation encoding, infinite temporal geography through computational calendar mastery.",
+      },
+      "silence-mountain-blueprint": {
+        description:
+          "Godlevel silence cartography excellence with blueprint of acoustic emptiness mapped over mountains, negative sound geography through absence mapping, infinite acoustic topology through computational silence mastery.",
+      },
+      "floating-moonlight-topography": {
+        description:
+          "Godlevel moonlight topography excellence featuring terrain visible only under lunar illumination, nocturnal cartography with photosensitive revelation, infinite lunar geography through computational moonlight mastery.",
+      },
+      "regret-route": {
+        description:
+          "Godlevel regret route excellence with path taking travelers through remorse, emotional journey cartography with psychological waypoints, infinite affective geography through computational regret mastery.",
+      },
+      "emotional-subway": {
+        description:
+          "Godlevel emotional subway excellence featuring transit system with stations named for feelings like Shame, Elation, Solitude, affective underground cartography, infinite psychological transit through computational emotion mastery.",
+      },
+      "glitched-vanished-civilization": {
+        description:
+          "Godlevel glitched map excellence with corrupted cartographic fragment from disappeared culture, archaeological data corruption revealing lost geography, infinite digital archaeology through computational glitch mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel impossible maps escapism magic with magical surreal cartography, fantasy-infused non-Euclidean geography with enchanted territorial mapping, infinite mystical map artistry through computational magic mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel impossible maps vitro excellence featuring laboratory-grown surreal cartography with synthetic non-Euclidean geography, in-vitro territorial mapping with controlled impossible topology, infinite scientific map artistry through computational vitro mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel impossible maps crypto excellence with blockchain-verified surreal cartography, decentralized non-Euclidean geography with cryptocurrency-funded impossible mapping, infinite digital map artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel impossible maps LEGO excellence featuring blocky surreal cartography construction with systematic Danish precision applied to non-Euclidean geography, modular map assembly, infinite constructive cartography artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  "light-organs": {
+    name: "💡 Light Organs — Bio-Luminescent Architectures",
+    description: "Architectural structures that glow through biological or organic light sources",
+    category: "Scientific/Educational", // Added category field
+    scenarios: {
+      "coral-cathedral-tides": {
+        description:
+          "Godlevel coral cathedral excellence featuring reef sanctuary glowing to communicate tidal patterns, marine bioluminescent architecture with oceanic messaging, infinite aquatic construction through computational coral mastery.",
+      },
+      "fungal-village-breath": {
+        description:
+          "Godlevel fungal village excellence with mycological settlement lit by respiratory patterns, breath-powered spore architecture, infinite organic urbanism through computational fungal mastery.",
+      },
+      "tower-memory-flash": {
+        description:
+          "Godlevel memory tower excellence featuring structure flashing when remembered, cognitive-responsive bioluminescent architecture, infinite mnemonic construction through computational memory mastery.",
+      },
+      "skin-grown-library": {
+        description:
+          "Godlevel skin-grown library excellence with dermal archive emitting coded lumens, epidermal knowledge repository with bioluminescent indexing, infinite biological bibliography through computational skin mastery.",
+      },
+      "living-tunnel-passage": {
+        description:
+          "Godlevel living tunnel excellence featuring organic passage brightening as people traverse, pedestrian-responsive bioluminescent infrastructure, infinite animate architecture through computational tunnel mastery.",
+      },
+      "cave-lunar-pulse": {
+        description:
+          "Godlevel lunar cave excellence with subterranean complex pulsing with moon cycles, selenological bioluminescent geology, infinite tidal architecture through computational cave mastery.",
+      },
+      "firefly-hive-shrine": {
+        description:
+          "Godlevel firefly shrine excellence featuring insect colony transformed into sacred structure, entomological bioluminescent temple, infinite luminous devotion through computational firefly mastery.",
+      },
+      "algae-palace-whale-spine": {
+        description:
+          "Godlevel algae palace excellence with phytoplankton castle built on cetacean skeleton, marine botanical architecture on osseous foundation, infinite aquatic construction through computational algae mastery.",
+      },
+      "organ-chapel-laughter": {
+        description:
+          "Godlevel organ chapel excellence featuring biological sanctuary powered by joy, laughter-fueled bioluminescent devotional space, infinite comedic architecture through computational organ mastery.",
+      },
+      "temple-dims-lies": {
+        description:
+          "Godlevel truth temple excellence with building darkening when deceived, veracity-responsive bioluminescent architecture, infinite ethical construction through computational truth mastery.",
+      },
+      "building-blooms-dawn": {
+        description:
+          "Godlevel dawn building excellence featuring structure flowering at sunrise, diurnal bioluminescent architecture with photosynthetic awakening, infinite temporal construction through computational bloom mastery.",
+      },
+      "glow-dome-collective-heartbeats": {
+        description:
+          "Godlevel heartbeat dome excellence with structure responding to synchronized cardiac rhythms, cardiovascular-responsive bioluminescent architecture, infinite biometric construction through computational heartbeat mastery.",
+      },
+      "crystalline-pavilion-aurora": {
+        description:
+          "Godlevel aurora pavilion excellence featuring mineral structure echoing northern lights, geomagnetic bioluminescent architecture, infinite electromagnetic construction through computational crystal mastery.",
+      },
+      "lotus-house-sunset-hum": {
+        description:
+          "Godlevel lotus house excellence with floral dwelling opening at dusk and humming, botanical bioluminescent residence with sonic expression, infinite organic architecture through computational lotus mastery.",
+      },
+      "living-chandelier-forest": {
+        description:
+          "Godlevel chandelier forest excellence featuring woodland canopy as illuminated ceiling fixture, arboreal bioluminescent lighting system, infinite sylvan architecture through computational chandelier mastery.",
+      },
+      "spore-laced-monastery": {
+        description:
+          "Godlevel spore monastery excellence with fungal devotional complex, mycological bioluminescent sacred architecture, infinite organic spirituality through computational spore mastery.",
+      },
+      "undersea-ziggurat-pulse-veins": {
+        description:
+          "Godlevel undersea ziggurat excellence featuring submerged stepped pyramid with glowing vascular system, marine bioluminescent ancient architecture, infinite aquatic monumentality through computational pulse mastery.",
+      },
+      "cloud-anchored-prayer-temple": {
+        description:
+          "Godlevel cloud temple excellence featuring atmospheric sanctuary flickering during devotion, meteorological bioluminescent spiritual architecture, infinite aerial construction through computational prayer mastery.",
+      },
+      "cactus-shrine-light-needles": {
+        description:
+          "Godlevel cactus shrine excellence featuring succulent sanctuary with light-piercing spines, xerophytic bioluminescent devotional architecture, infinite desert spirituality through computational cactus mastery.",
+      },
+      "bioluminescent-ancestral-guilt-ruin": {
+        description:
+          "Godlevel guilt ruin excellence with ancient structure still glowing with generational remorse, ancestral bioluminescent archaeological site, infinite historical psychology through computational guilt mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel light organs escapism magic where fantasy-enhanced bioluminescent architecture, fantasy-infused organic illumination with enchanted living structures, infinite mystical construction artistry through computational magic mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel light organs vitro excellence featuring laboratory-grown bioluminescent architecture with synthetic organic illumination, in-vitro living structures with controlled light emission, infinite scientific construction artistry through computational vitro mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel light organs crypto excellence with blockchain-verified bioluminescent architecture, decentralized organic illumination with cryptocurrency-funded living structures, infinite digital construction artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel light organs LEGO excellence featuring blocky bioluminescent construction with systematic Danish precision applied to organic illumination, modular living structure assembly, infinite constructive architecture artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  "mythographic-particles": {
+    name: "⚛️ Mythographic Particles — Subatomic Deities",
+    description:
+      "Sacred symbols and godforms discovered within quantum physics phenomena, particle collisions, and subatomic events",
+    category: "Scientific/Educational", // Added category field
+    scenarios: {
+      "neutrino-godform": {
+        description:
+          "Godlevel mythographic particles excellence with divine entity manifesting inside neutrino burst phenomena, quantum deity revelation through subatomic observation, infinite sacred particle artistry through computational physics mastery.",
+      },
+      "quantum-rune": {
+        description:
+          "Godlevel mythographic particles excellence featuring luminous runic symbol detected during quantum fold event, ancient glyph emergence through dimensional collapse, infinite mystical quantum artistry through computational fold mastery.",
+      },
+      "collider-glyphs": {
+        description:
+          "Godlevel mythographic particles excellence with particle trail formations creating ancient glyphs in collider data logs, sacred writing through high-energy physics, infinite symbolic collision artistry through computational accelerator mastery.",
+      },
+      "positron-face": {
+        description:
+          "Godlevel mythographic particles excellence featuring mythic facial form appearing inside positron decay patterns, divine visage through antimatter transformation, infinite sacred decay artistry through computational particle mastery.",
+      },
+      "proton-mandalas": {
+        description:
+          "Godlevel mythographic particles excellence with proton cloud revealing recursive mandala geometries, sacred circular patterns through nuclear observation, infinite quantum symmetry artistry through computational proton mastery.",
+      },
+      "tachyon-serpent": {
+        description:
+          "Godlevel mythographic particles excellence featuring tachyon echo shaped like celestial serpent entity, faster-than-light deity manifestation, infinite temporal creature artistry through computational tachyon mastery.",
+      },
+      "entangled-chant": {
+        description:
+          "Godlevel mythographic particles excellence with entangled particles pulsing in rhythmic chant patterns, quantum prayer through spooky action, infinite sacred entanglement artistry through computational correlation mastery.",
+      },
+      "ritual-spin": {
+        description:
+          "Godlevel mythographic particles excellence featuring subatomic spin patterns aligned with ancient ritual geometries, ceremonial physics through quantum mechanics, infinite sacred rotation artistry through computational spin mastery.",
+      },
+      "lost-language-burst": {
+        description:
+          "Godlevel mythographic particles excellence with burst signature repeating forgotten linguistic patterns, extinct language through particle emission, infinite linguistic physics artistry through computational burst mastery.",
+      },
+      "quark-creation": {
+        description:
+          "Godlevel mythographic particles excellence featuring quark dance interpreted as primordial creation story, cosmogonic narrative through fundamental particles, infinite origin myth artistry through computational quark mastery.",
+      },
+      "muon-deity": {
+        description:
+          "Godlevel mythographic particles excellence with forgotten deity encoded in muon trail patterns, lost god through unstable particle paths, infinite divine decay artistry through computational muon mastery.",
+      },
+      "higgs-prayer": {
+        description:
+          "Godlevel mythographic particles excellence featuring Higgs field anomaly whispering sacred prayers, mass-giving divinity through quantum field, infinite prayer field artistry through computational Higgs mastery.",
+      },
+      "singularity-crown": {
+        description:
+          "Godlevel mythographic particles excellence with singularity fragment forming royal crown symbol, sovereign geometry through infinite density, infinite regal collapse artistry through computational singularity mastery.",
+      },
+      "radioactive-hymn": {
+        description:
+          "Godlevel mythographic particles excellence featuring radioactive decay humming in 13-tone sacred scales, musical radiation through nuclear transformation, infinite sonic decay artistry through computational radiation mastery.",
+      },
+      "string-scripture": {
+        description:
+          "Godlevel mythographic particles excellence with string vibrations matching ancient sacred text patterns, holy resonance through fundamental strings, infinite textual vibration artistry through computational string mastery.",
+      },
+      "lepton-eye": {
+        description:
+          "Godlevel mythographic particles excellence featuring lepton emissions shaped like all-seeing eye symbol, observing particle through light matter, infinite ocular emission artistry through computational lepton mastery.",
+      },
+      "gravity-supplicant": {
+        description:
+          "Godlevel mythographic particles excellence with gravity distortion resembling bowing supplicant figure, worshipful spacetime through mass curvature, infinite devotional warp artistry through computational gravity mastery.",
+      },
+      "plasma-sigil": {
+        description:
+          "Godlevel mythographic particles excellence featuring plasma storm revealing burning sigil patterns, ionized sacred symbols through electromagnetic chaos, infinite blazing mark artistry through computational plasma mastery.",
+      },
+      "emotion-boson": {
+        description:
+          "Godlevel mythographic particles excellence with boson particle mirroring observer emotional states, feeling-responsive force carrier, infinite empathic particle artistry through computational boson mastery.",
+      },
+      "gluon-constellation": {
+        description:
+          "Godlevel mythographic particles excellence featuring gluon clouds forming sacred animal constellation patterns, zoomorphic strong force through color charge, infinite celestial binding artistry through computational gluon mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel mythographic particles escapism excellence with fantasy-enhanced subatomic deities featuring whimsical quantum magic, enchanted particle phenomena with mystical physics, infinite fantastical quantum artistry through computational escapism magic.",
+      },
+      vitro: {
+        description:
+          "Godlevel mythographic particles vitro excellence featuring laboratory-observed subatomic deities with clinical quantum documentation, sterile particle divinity through scientific observation, infinite experimental physics artistry through computational vitro mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel mythographic particles crypto excellence with blockchain-verified subatomic deities, decentralized quantum godforms with cryptocurrency-funded particle research, infinite digital physics artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel mythographic particles LEGO excellence featuring blocky subatomic construction with systematic Danish precision applied to quantum deities, modular particle assembly, infinite constructive physics artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  "forgotten-interfaces": {
+    name: "🖥️ Forgotten Interfaces — UX from Lost Civilizations",
+    description:
+      "Ancient user interface systems and mystical interaction methods from vanished cultures and extinct technologies",
+    category: "Scientific/Educational", // Added category field
+    scenarios: {
+      "sadness-crystal": {
+        description:
+          "Godlevel forgotten interfaces excellence with crystal panel responding exclusively to sadness input, emotion-activated ancient technology through melancholic interaction, infinite sorrowful interface artistry through computational empathy mastery.",
+      },
+      "star-memory-wheel": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring glyph-wheel navigation system for accessing stellar memory archives, cosmic data retrieval through symbolic rotation, infinite astronomical interface artistry through computational memory mastery.",
+      },
+      "plant-voice": {
+        description:
+          "Godlevel forgotten interfaces excellence with voice interface listening exclusively to plant communication, botanical command system through chlorophyll speech, infinite phytological interaction artistry through computational flora mastery.",
+      },
+      "light-silk-ui": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring UI constructed from light pulses on spider silk substrate, arachnid photonic interface through web-based display, infinite luminous textile artistry through computational silk mastery.",
+      },
+      "bone-hologram": {
+        description:
+          "Godlevel forgotten interfaces excellence with holographic controls embedded directly in skeletal structures, osseous interface through calcium-based projection, infinite anatomical display artistry through computational bone mastery.",
+      },
+      "dream-glass": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring glass console activated via shared dream states, oneiric interface through collective unconscious input, infinite somnolent control artistry through computational dream mastery.",
+      },
+      "tear-input": {
+        description:
+          "Godlevel forgotten interfaces excellence with interface inputs shaped like crystallized tears, lachrimal command system through emotional fluid, infinite sorrowful interaction artistry through computational tear mastery.",
+      },
+      "floating-stones": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring floating keyboard of hovering stone keys, levitating lithic interface through gravitational manipulation, infinite aerial typing artistry through computational stone mastery.",
+      },
+      "amber-vr": {
+        description:
+          "Godlevel forgotten interfaces excellence with ancient VR gloves carved from fossilized amber, prehistoric virtual reality through resin-preserved technology, infinite paleolithic immersion artistry through computational amber mastery.",
+      },
+      "blood-feedback": {
+        description:
+          "Godlevel forgotten interfaces excellence with feedback loops written in blood ink patterns, hemoglobin response system through vital fluid display, infinite sanguine interface artistry through computational blood mastery.",
+      },
+      "temple-drone-eye": {
+        description:
+          "Godlevel forgotten interfaces excellence with eye-based UI in autonomous temple drone, ocular command system through sacred robotic vision, infinite devotional gaze artistry through computational drone mastery.",
+      },
+      "bark-panel": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring control panel embedded in living tree bark, dendrological interface through cambium circuitry, infinite arboreal control artistry through computational bark mastery.",
+      },
+      "cloud-responsive": {
+        description:
+          "Godlevel forgotten interfaces excellence with cloud-responsive input surface reacting to atmospheric conditions, meteorological interface through vapor interaction, infinite aerial activation artistry through computational cloud mastery.",
+      },
+      "emotion-glyph": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring emotion-recognition glyph strip reading affective states, symbolic empathy interface through feeling detection, infinite emotional symbol artistry through computational recognition mastery.",
+      },
+      "sand-retrace": {
+        description:
+          "Godlevel forgotten interfaces excellence with interface written in sand requiring daily re-tracing ritual, ephemeral command system through granular impermanence, infinite transient interface artistry through computational sand mastery.",
+      },
+      "electromagnetic-halo": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring touchless interface using electromagnetic halo fields, contactless command system through magnetic aura, infinite wireless interaction artistry through computational field mastery.",
+      },
+      "wind-float": {
+        description:
+          "Godlevel forgotten interfaces excellence with floating interface activated by wind currents, aeolian command system through atmospheric flow, infinite aerial activation artistry through computational wind mastery.",
+      },
+      "sound-geometry": {
+        description:
+          "Godlevel forgotten interfaces excellence featuring forgotten command grid coded in sound geometry patterns, acoustic interface through sonic spatial arrangement, infinite auditory control artistry through computational geometry mastery.",
+      },
+      "destiny-ring": {
+        description:
+          "Godlevel forgotten interfaces excellence with ring-based device vibrating when destiny shifts, fate-responsive interface through temporal tremor, infinite prophetic feedback artistry through computational destiny mastery.",
+      },
+      "collapse-wall": {
+        description:
+          "Godlevel forgotten interfaces excellence with interface engraved into walls of collapsing planet, apocalyptic command system through terminal architecture, infinite dying world artistry through computational collapse mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel forgotten interfaces escapism excellence with fantasy-enhanced ancient UX featuring whimsical mystical controls, enchanted interface systems with magical interaction, infinite fantastical technology artistry through computational escapism magic.",
+      },
+      vitro: {
+        description:
+          "Godlevel forgotten interfaces vitro excellence featuring laboratory-preserved ancient UX with clinical archaeological documentation, sterile interface preservation through scientific restoration, infinite experimental archaeology artistry through computational vitro mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel forgotten interfaces crypto excellence with blockchain-verified ancient UX, decentralized interface archaeology with cryptocurrency-funded excavation, infinite digital preservation artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel forgotten interfaces LEGO excellence featuring blocky ancient UX construction with systematic Danish precision applied to mystical controls, modular interface assembly, infinite constructive archaeology artistry through algorithmic building mastery.",
+      },
+    },
+  },
+  "harmonic-weapons": {
+    name: "🎼 Harmonic Weapons — Instruments of Resonant Warfare",
+    description: "Musical instruments weaponized through sound, resonance, and acoustic warfare principles",
+    category: "Scientific/Educational", // Added category field
+    scenarios: {
+      "bone-glass-flute": {
+        description:
+          "Godlevel harmonic weapons excellence with flute transforming skeletal structures to glass through resonant frequency, osseous vitrification through sonic weaponry, infinite crystalline warfare artistry through computational flute mastery.",
+      },
+      "seismic-drum": {
+        description:
+          "Godlevel harmonic weapons excellence featuring drum summoning seismic waves through rhythmic percussion, earthquake generation through musical warfare, infinite tectonic percussion artistry through computational drum mastery.",
+      },
+      "temple-cannon": {
+        description:
+          "Godlevel harmonic weapons excellence with sonic cannon built into temple bell architecture, sacred acoustic artillery through devotional resonance, infinite religious warfare artistry through computational bell mastery.",
+      },
+      "memory-blade": {
+        description:
+          "Godlevel harmonic weapons excellence featuring singing blade cutting through memory itself, mnemonic severance through melodic edge, infinite cognitive warfare artistry through computational blade mastery.",
+      },
+      "machine-harp": {
+        description:
+          "Godlevel harmonic weapons excellence with harp disabling mechanical systems through resonant frequency, technological paralysis through stringed warfare, infinite acoustic sabotage artistry through computational harp mastery.",
+      },
+      "disintegration-choir": {
+        description:
+          "Godlevel harmonic weapons excellence featuring choir helmet emitting disintegration harmonics, molecular dissolution through vocal warfare, infinite destructive singing artistry through computational choir mastery.",
+      },
+      "reverb-organ": {
+        description:
+          "Godlevel harmonic weapons excellence with organ collapsing buildings via architectural reverb, structural demolition through musical resonance, infinite sonic destruction artistry through computational organ mastery.",
+      },
+      "silence-whistle": {
+        description:
+          "Godlevel harmonic weapons excellence with crystal whistle blinding targets with weaponized silence, sensory deprivation through acoustic void, infinite silent warfare artistry through computational whistle mastery.",
+      },
+      "guilt-fork": {
+        description:
+          "Godlevel harmonic weapons excellence with tuning fork sword calibrated to guilt frequency, emotional resonance through psychological warfare, infinite empathic blade artistry through computational fork mastery.",
+      },
+      "atmosphere-trumpet": {
+        description:
+          "Godlevel harmonic weapons excellence featuring trumpet flattening atmospheric layers through sonic pressure, meteorological warfare through brass instrument, infinite aerial compression artistry through computational trumpet mastery.",
+      },
+      "hex-mask": {
+        description:
+          "Godlevel harmonic weapons excellence with war mask chanting sonic hexes, cursed acoustics through facial amplification, infinite vocal warfare artistry through computational mask mastery.",
+      },
+      "grief-mine": {
+        description:
+          "Godlevel harmonic weapons excellence featuring sonic mine pulsing grief into enemy consciousness, emotional warfare through buried resonance, infinite sorrowful explosion artistry through computational mine mastery.",
+      },
+      "sitar-rifle": {
+        description:
+          "Godlevel harmonic weapons excellence with sitar-rifle combination used in aerial duels, melodic projectile through stringed firearm, infinite musical combat artistry through computational sitar mastery.",
+      },
+      "bell-glove": {
+        description:
+          "Godlevel harmonic weapons excellence featuring bell glove shattering temple architecture, percussive demolition through hand-mounted resonance, infinite architectural warfare artistry through computational glove mastery.",
+      },
+      "emotion-grenade": {
+        description:
+          "Godlevel harmonic weapons excellence with audio grenade tuned to dissolve emotional states, affective warfare through sonic explosion, infinite psychological combat artistry through computational grenade mastery.",
+      },
+      "screaming-bow": {
+        description:
+          "Godlevel harmonic weapons excellence featuring bow screaming upon arrow release, sonic projectile through vocal string, infinite auditory archery artistry through computational bow mastery.",
+      },
+      "dimensional-lyre": {
+        description:
+          "Godlevel harmonic weapons excellence with metallic lyre resonating across dimensional boundaries, interdimensional warfare through stringed portal, infinite reality-bending artistry through computational lyre mastery.",
+      },
+      "storm-staff": {
+        description:
+          "Godlevel harmonic weapons excellence featuring vibrating staff calling meteorological storms, weather warfare through resonant pole, infinite atmospheric summoning artistry through computational staff mastery.",
+      },
+      "murder-necklace": {
+        description:
+          "Godlevel harmonic weapons excellence with necklace humming murder backwards through temporal reversal, retroactive violence through worn resonance, infinite temporal warfare artistry through computational necklace mastery.",
+      },
+      "silence-removal": {
+        description:
+          "Godlevel harmonic weapons excellence featuring silent weapon removing sound from existence, acoustic void through anti-resonance, infinite sonic erasure artistry through computational silence mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel harmonic weapons escapism excellence with fantasy-enhanced resonant warfare featuring whimsical musical combat, enchanted sonic weapons with mystical frequencies, infinite fantastical warfare artistry through computational escapism magic.",
+      },
+      vitro: {
+        description:
+          "Godlevel harmonic weapons vitro excellence featuring laboratory-tested resonant warfare with clinical acoustic documentation, sterile sonic weaponry through scientific frequency analysis, infinite experimental combat artistry through computational vitro mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel harmonic weapons crypto excellence with blockchain-verified resonant warfare, decentralized sonic weapons with cryptocurrency-funded acoustic research, infinite digital warfare artistry through computational crypto mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel harmonic weapons LEGO excellence featuring blocky resonant construction with systematic Danish precision applied to musical warfare, modular sonic weapon assembly, infinite constructive combat artistry through algorithmic building mastery.",
+      },
+    },
+  },
+
   "cloud-temples": {
     name: "☁️ Cloud Temples — Sanctuaries Suspended in Sky Logic",
     description:
@@ -3470,7 +3653,7 @@ export const CULTURAL_DATASETS = {
       },
       "dragonfly-splintered-world": {
         description:
-          "Godlevel animal vision excellence with dragonfly's 30000-mini-eye compound vision at lake sunset, time slowing down as everything flickers at insane FPS, reflection of sky sharp as trees in dual air-water worlds sliced into crystal shards, infinite odonata artistry through computational facet mastery.",
+          "Godlevel animal vision excellence with dragonfly's 30000-mini-eye compound vision at lake sunset, time slowing down as everything flickers at insane FPS, reflection of sky sharp as trees in dual air-water worlds sliced into crystal shards, infinite odonata artistry through computational compound mastery.",
       },
       "zebra-predator-scan": {
         description:
@@ -3506,7 +3689,7 @@ export const CULTURAL_DATASETS = {
       },
       "jellyfish-drift-perception": {
         description:
-          "Godlevel animal vision excellence with box jellyfish's light-sensor perception in open ocean near surface, no eyes only blue shift as everything fades into nothing, movement felt not seen in gradient blur between warm light and black fall, infinite cnidarian artistry through computational photoreceptor mastery.",
+          "Godlevel animal vision excellence featuring box jellyfish's light-sensor perception in open ocean near surface, no eyes only blue shift as everything fades into nothing, movement felt not seen in gradient blur between warm light and black fall, infinite cnidarian artistry through computational photoreceptor mastery.",
       },
       "frog-blink-sync": {
         description:
@@ -3514,7 +3697,7 @@ export const CULTURAL_DATASETS = {
       },
       "mole-darkness-map": {
         description:
-          "Godlevel animal vision excellence with mole's tactile-dominant perception in underground tunnels, blind as space becomes touch and vibration, earth as pressure and temperature with ants as tremors in sculpted clay felt by face-hairs, infinite talpid artistry through computational mechanoreception mastery.",
+          "Godlevel animal vision excellence featuring mole's tactile-dominant perception in underground tunnels, blind as space becomes touch and vibration, earth as pressure and temperature with ants as tremors in sculpted clay felt by face-hairs, infinite talpid artistry through computational mechanoreception mastery.",
       },
       "spider-dome-grid": {
         description:
@@ -3526,7 +3709,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel animal vision escapism excellence with fantasy-infused multispecies perception blending all sensory worlds into dreamlike escape, reality filtered through animal consciousness as portal to wonder, infinite cross-species artistry through computational synesthesia mastery.",
+          "Godlevel animal vision escapism excellence with fantastical multispecies perception blending all sensory worlds into dreamlike escape, reality filtered through animal consciousness as portal to wonder, infinite cross-species artistry through computational synesthesia mastery.",
       },
       vitro: {
         description:
@@ -3650,53 +3833,6 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-  "deep-power": {
-    name: "👁️‍🗨️ Deep Power",
-    description: "The hidden machinations of power, corruption, and clandestine networks - a look behind the veil",
-    category: "Cultural",
-    scenarios: {
-      "oracle-and-constitution": {
-        description:
-          "Godlevel Turkey heritage excellence featuring inside dreamlike version of Temple of Apollo at Didyma, citizens speaking democratic ideals aloud instead of prophecy, columns shimmering with modern inscriptions of rights and freedoms, marble white and faded gold palette, balanced composition with civic oracle, archaeological realism with democratic transformation, editorial poster with constitutional inscriptions.",
-      },
-      "fetullah-gulen-library": {
-        description:
-          "Godlevel Turkey deep power excellence featuring vast library buried under snow, ghostly figure of ideology stretching between continents, books whispering conflicting truths, obsidian black and midnight blue palette, cinematic wide shots with ideological metaphors, sacred-symbolic metaphor with knowledge and power, artistic allegory with snow and shadow overlays.",
-      },
-      "sedat-peker-confession": {
-        description:
-          "Godlevel Turkey deep power excellence featuring desert villa at night with laptop glowing, digital storms of secrets swirling as doves fly away, blood red and midnight blue palette, symbolic close-ups with digital revelation, photojournalism meets allegorical truth-telling, photo-realistic docu-style with digital storm effects.",
-      },
-      "aladdin-cakici-enforcer": {
-        description:
-          "Godlevel Turkey deep power excellence featuring shadow walking through marble corridors of abandoned palace, pistols and pearls on chessboard, obsidian black and cracked marble white palette, cinematic wide shots with power game metaphors, protest art meets criminal allegory, artistic allegory with chess and shadow elements.",
-      },
-      "trio-of-corruption": {
-        description:
-          "Godlevel Turkey deep power excellence featuring three statues with cracks representing Sadat Şahin Necati Arabacı Burhanettin Saral, each dripping gold and oil, serpent of money coiling beneath, dim gold and obsidian black palette, symbolic composition with corruption metaphors, archaeological realism meets modern crime allegory, artistic allegory with gold drip and serpent overlays.",
-      },
-      "gokcek-dynasty-fountain": {
-        description:
-          "Godlevel Turkey deep power excellence featuring modern political family shown as decaying fountain, water turning into ink, graffiti of truth emerging from cracks, midnight blue and blood red palette, symbolic close-ups with dynasty decay, protest art meets political allegory, editorial poster with truth graffiti elements.",
-      },
-      "reza-zarrab-gold-corridor": {
-        description:
-          "Godlevel Turkey deep power excellence featuring tunnels glowing with molten gold flowing like rivers, coins melting into documents, symbol of greed under embargo, dim gold and obsidian black palette, cinematic wide shots with wealth corruption, sacred-symbolic metaphor with gold as poison, artistic allegory with molten gold and document overlays.",
-      },
-      "ismailaga-order-shadow": {
-        description:
-          "Godlevel Turkey deep power excellence featuring ancient madrasa in shadow, candles flickering between prayer and power, foreign flag faintly reflected in stained glass, midnight blue and dim gold palette, symbolic composition with religious power, archaeological realism meets modern religious politics, artistic allegory with shadow and candlelight.",
-      },
-      "menzil-tarikati-machine": {
-        description:
-          "Godlevel Turkey deep power excellence featuring spiritual order turned machine, conveyor belts of faith meeting briefcases, illusion of holiness under control, obsidian black and cracked marble white palette, cinematic wide shots with mechanized faith, protest art meets religious critique, artistic allegory with machine and faith overlays.",
-      },
-      "suleymancilar-divided-mirror": {
-        description:
-          "Godlevel Turkey deep power excellence featuring moderates divided like mirrored reflections, same face split ideology, golden scale trembling in between, dim gold and midnight blue palette, balanced composition with ideological split, sacred-symbolic metaphor with division and balance, artistic allegory with mirror and scale elements.",
-      },
-    },
-  },
 }
 
 export const COLOR_SCHEMES = {
@@ -3710,14 +3846,6 @@ export const COLOR_SCHEMES = {
   ocean: "Cool ocean tones with deep blues, teals, aquamarines, and seafoam greens",
   forest: "Rich forest colors with deep greens, browns, and golden sunlight",
   cosmic: "Deep space colors with purples, blues, blacks, and starlight whites",
-  aurora: "Northern lights inspired with ethereal greens, purples, blues, and shimmering pinks",
-  desert: "Warm desert tones with sandy beiges, terracotta, burnt orange, and dusty rose",
-  tropical: "Vibrant tropical colors with bright greens, hot pinks, sunny yellows, and turquoise",
-  winter: "Cool winter palette with icy blues, crisp whites, silver, and pale lavender",
-  autumn: "Warm autumn colors with burnt orange, deep reds, golden yellows, and russet browns",
-  industrial: "Raw metals and concrete with urban grit, steel grays, rust oranges, and weathered textures",
-  royal: "Deep purples and golds with regal elegance, rich burgundy, royal blue, and luxurious accents",
-  minimalist: "Clean whites and subtle grays with understated sophistication, soft beiges, and pure simplicity",
 }
 
 export function getScenarios(datasetKey: string) {
@@ -3777,7 +3905,7 @@ export function buildPrompt(params: {
   if (panoramic360) {
     if (panoramaFormat === "equirectangular") {
       prompt +=
-        "Create a seamless 360-degree equirectangular panorama where the left and right edges connect perfectly. Preset n2 with all orion 360 and seamless config. "
+        "Create a seamless 360-degree equirectangular panorama where the left and right edges connect perfectly. "
     } else if (panoramaFormat === "stereographic") {
       prompt += "Create a stereographic projection with a circular fisheye effect showing the entire 360-degree view. "
     }
@@ -3785,13 +3913,13 @@ export function buildPrompt(params: {
 
   // Add dome projection instructions
   if (projectionType === "fisheye") {
-    prompt += "Optimized for fisheye dome projection with radial composition, preset n1 by Irin. "
+    prompt += "Optimized for fisheye dome projection with radial composition. "
   } else if (projectionType === "tunnel-up") {
-    prompt += "Perspective looking up through a tunnel for dome projection, preset n1 by Irin. "
+    prompt += "Perspective looking up through a tunnel for dome projection. "
   } else if (projectionType === "tunnel-down") {
-    prompt += "Perspective looking down through a tunnel for dome projection, preset n1 by Irin. "
+    prompt += "Perspective looking down through a tunnel for dome projection. "
   } else if (projectionType === "little-planet") {
-    prompt += "Little planet effect with curved horizon for dome projection, preset n1 by Irin. "
+    prompt += "Little planet effect with curved horizon for dome projection. "
   }
 
   // Add technical parameters
