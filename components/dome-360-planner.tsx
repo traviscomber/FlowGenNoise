@@ -29,6 +29,8 @@ import {
   Globe,
   CircleDot,
   Loader2,
+  ArrowUp,
+  ArrowDown,
   Orbit,
   Palette,
   Eye,
@@ -81,7 +83,7 @@ export default function Dome360Planner() {
   const [customPrompt, setCustomPrompt] = useState("")
 
   // Projection settings
-  const [projectionType, setProjectionType] = useState("fisheye") // Dome projection is always "fisheye"
+  const [projectionType, setProjectionType] = useState("fisheye")
   const [panoramaFormat, setPanoramaFormat] = useState("equirectangular")
   const [stereographicPerspective, setStereographicPerspective] = useState("wide-angle")
 
@@ -146,10 +148,12 @@ export default function Dome360Planner() {
     const randomColor = colorKeys[Math.floor(Math.random() * colorKeys.length)]
     setColorScheme(randomColor)
 
+    // Random projection types
+    const domeProjectionTypes = ["fisheye", "tunnel-up", "tunnel-down", "little-planet"]
     const panoramaFormats = ["equirectangular", "stereographic"]
     const stereographicPerspectives = ["wide-angle", "ultra-wide", "circular-frame"]
 
-    setProjectionType("fisheye") // Dome projection is always "fisheye"
+    setProjectionType(domeProjectionTypes[Math.floor(Math.random() * domeProjectionTypes.length)])
     setPanoramaFormat(panoramaFormats[Math.floor(Math.random() * panoramaFormats.length)])
     setStereographicPerspective(stereographicPerspectives[Math.floor(Math.random() * stereographicPerspectives.length)])
 
@@ -310,7 +314,7 @@ export default function Dome360Planner() {
               style: "vivid",
               quality: "standard",
               domeProjection: true,
-              projectionType: "fisheye", // Always "fisheye" for dome
+              projectionType: projectionType, // fisheye, tunnel-up, tunnel-down, little-planet - DOME ONLY
               hemisphericalMapping: true,
               fisheyeDistortion: true,
               planetariumOptimized: true,
@@ -368,7 +372,7 @@ export default function Dome360Planner() {
               result.data.format ||
               (result.type === "360" ? "360° Panorama" : result.type === "dome" ? "Dome Projection" : "Standard Image"),
             projectionType: result.data.projectionType,
-            PanoramaFormat: result.data.PanoramaFormat,
+            panoramaFormat: result.data.panoramaFormat,
             seamlessWrapping: result.data.seamlessWrapping,
             planetariumOptimized: result.data.planetariumOptimized,
             orionCalibration: result.data.orionCalibration,
@@ -679,6 +683,52 @@ export default function Dome360Planner() {
               {/* Projection Type Selection */}
               {(selectedTypes.dome || generationType === "dome") && (
                 <div className="space-y-2">
+                  <Label>Dome Projection Type</Label>
+                  <Select value={projectionType} onValueChange={setProjectionType}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="fisheye">
+                        <div className="flex items-center gap-2">
+                          <CircleDot className="h-4 w-4" />
+                          <div className="flex flex-col">
+                            <span>Fisheye</span>
+                            <span className="text-xs text-muted-foreground">
+                              180° hemisphere with barrel distortion
+                            </span>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="tunnel-up">
+                        <div className="flex items-center gap-2">
+                          <ArrowUp className="h-4 w-4" />
+                          <div className="flex flex-col">
+                            <span>Tunnel Up</span>
+                            <span className="text-xs text-muted-foreground">Upward fisheye perspective</span>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="tunnel-down">
+                        <div className="flex items-center gap-2">
+                          <ArrowDown className="h-4 w-4" />
+                          <div className="flex flex-col">
+                            <span>Tunnel Down</span>
+                            <span className="text-xs text-muted-foreground">Downward fisheye perspective</span>
+                          </div>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="little-planet">
+                        <div className="flex items-center gap-2">
+                          <Orbit className="h-4 w-4" />
+                          <div className="flex flex-col">
+                            <span>Little Planet</span>
+                            <span className="text-xs text-muted-foreground">Stereographic fisheye projection</span>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                   <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded border border-blue-200">
                     <strong>180° Fisheye Dome:</strong> Creates hemispherical projection with extreme barrel distortion
                     optimized for planetarium dome viewing. Content appears at zenith center with circular environmental
@@ -1167,7 +1217,7 @@ export default function Dome360Planner() {
                         )}
                         <Badge variant="outline">
                           {generationType === "360"
-                            ? currentImage.PanoramaFormat
+                            ? currentImage.panoramaFormat
                             : generationType === "dome"
                               ? currentImage.projectionType
                               : "Standard"}

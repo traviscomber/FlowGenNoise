@@ -212,7 +212,7 @@ function sanitizePromptForSafety(prompt: string): string {
   ]
 
   const noTextPrefix =
-    "CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only. "
+    "CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography visible in the image. Pure visual art only. "
 
   // Always add an ultra-safe prefix with NO TEXT instruction
   const randomPrefix = ultraSafeArtisticPrefixes[Math.floor(Math.random() * ultraSafeArtisticPrefixes.length)]
@@ -329,71 +329,38 @@ export async function generateWithOpenAI(
     const panoramaFormat = params?.panoramaFormat || "equirectangular"
 
     if (panoramaFormat === "equirectangular") {
-      console.log("[v0] Applying PRESET N2 BY IRIN - Professional Equirectangular 360° Standard")
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible anywhere in the image. Pure visual art only.
+      console.log("[v0] Applying enhanced DALL-E letterboxing for true 2:1 ratio workaround")
+      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible anywhere in the image. Pure visual art only.
 
-PRESET N2 BY IRIN - PROFESSIONAL EQUIRECTANGULAR 360° PANORAMA STANDARD:
+PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA WITH ENHANCED LETTERBOXING - DALL-E TRUE 2:1 RATIO WORKAROUND: ${safePrompt}
 
-Generate a complete 360-degree spherical panorama using equirectangular projection mapping. The image must represent a full sphere mapped onto a 2:1 rectangular format where horizontal axis = 360° longitude (0° to 360°) and vertical axis = 180° latitude (90° North pole to -90° South pole). The projection must follow precise spherical coordinate mapping with proper polar distortion handling.
+MANDATORY ENHANCED LETTERBOXING SPECIFICATIONS FOR TRUE 2:1 EFFECTIVE RATIO:
+• SOLID BLACK FRAMES at top and bottom (exactly 64 pixels each) creating perfect 2:1 effective ratio
+• CENTER BAND contains equirectangular 360° content in precise 2:1 proportions (1792x896 effective area)
+• BLACK LETTERBOX BARS frame the panoramic content with mathematical precision for true 2:1 extraction
+• Equirectangular content CENTERED in middle horizontal band with professional calibration standards
+• LEFT EDGE of center content must connect PERFECTLY with RIGHT EDGE - seamless wrapping within center band
+• Professional latitude/longitude coordinate mapping with polar distortion handling in center band
+• ZERO visible seams, color breaks, lighting discontinuities, or edge artifacts in the CENTER PANORAMIC BAND
+• Black frames create clean 2:1 extraction area optimized for VR compatibility and 360° viewers
+• ORION360 calibration quality with broadcast-standard edge continuity in panoramic center area
+• ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, or typography anywhere in the image
 
-ARTISTIC CONTENT: ${safePrompt}
+COMPOSITION STRUCTURE WITH MATHEMATICAL PRECISION:
+• TOP: Solid black frame/border (exactly 64px height for perfect ratio)
+• CENTER: 360° equirectangular panoramic content (1792x896 = true 2:1 ratio) - NO TEXT ALLOWED
+• BOTTOM: Solid black frame/border (exactly 64px height for perfect ratio)
+• Total dimensions: 1792x1024 with mathematically precise 2:1 panoramic extraction area
 
-MANDATORY EQUIRECTANGULAR TECHNICAL SPECIFICATIONS (PRESET N2 BY IRIN):
-
-SEAMLESS HORIZONTAL WRAPPING (CRITICAL):
-• LEFT EDGE (0° longitude) must connect PERFECTLY with RIGHT EDGE (360° longitude) with mathematical precision
-• Zero visible seam, color break, lighting discontinuity, or edge artifact at the wraparound point
-• Continuous environmental flow ensuring seamless 360° horizontal rotation
-• Professional stitching quality meeting broadcast VR standards (ORION360 calibration level)
-• Edge pixels must match exactly in color, brightness, and content for flawless loop
-
-POLAR DISTORTION HANDLING (PROFESSIONAL):
-• TOP EDGE represents North Pole (90° latitude) with extreme horizontal stretching
-• BOTTOM EDGE represents South Pole (-90° latitude) with extreme horizontal stretching  
-• Polar regions show proper equirectangular distortion where single points stretch across entire width
-• Sky/ceiling content concentrated at top with mathematically correct latitude compression
-• Ground/floor content concentrated at bottom with mathematically correct latitude compression
-• Smooth latitude gradient from poles to equator following spherical geometry
-
-SPHERICAL COORDINATE MAPPING (PRECISION):
-• Horizontal center (896px) = 180° longitude (directly behind starting view)
-• Vertical center (512px) = 0° latitude (horizon/equator line)
-• Proper yaw and pitch mapping across entire spherical surface
-• Latitude lines curve naturally following sphere geometry
-• Longitude lines remain vertical but content warps appropriately
-
-VR OPTIMIZATION (PROFESSIONAL GRADE):
-• Optimized for VR headset viewing with proper field-of-view rendering
-• Supports monoscopic 360° playback in standard VR players
-• Compatible with YouTube 360°, Facebook 360°, and professional VR platforms
-• Meets broadcast quality standards for immersive content delivery
-• Proper resolution distribution accounting for viewer FOV (only ~1280x720 visible at once)
-
-COMPOSITION GUIDELINES (ARTISTIC EXCELLENCE):
-• Primary subject positioned at vertical center (equator) for minimal distortion
-• Important elements avoid extreme top/bottom 20% where polar distortion is severe
-• Balanced visual weight distributed across 360° horizontal span
-• Natural environmental continuity supporting seamless wraparound experience
-• Lighting consistency maintained across entire spherical environment
-
-TECHNICAL EXCELLENCE: 1792x1024 true 2:1 equirectangular format, professional seamless horizontal wrapping with zero-seam stitching, proper polar distortion with latitude/longitude coordinate precision, VR-optimized for headset playback, broadcast standard quality, ORION360 calibration level, godlevel artistic mastery with perfect spherical mapping. ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, typography, or fonts anywhere in the image.
-
-PRESET N2 BY IRIN VALIDATION CHECKLIST:
-✓ True 2:1 aspect ratio (1792x1024)
-✓ Seamless left-right edge connection (0° = 360°)
-✓ Proper polar distortion at top and bottom edges
-✓ Spherical coordinate mapping precision
-✓ VR headset compatibility
-✓ Broadcast quality standards
-✓ Zero visible seams or artifacts
-✓ NO text or typography anywhere`
-
-      console.log("[v0] PRESET N2 BY IRIN applied - Professional Equirectangular 360° Standard")
-      console.log("[v0] Equirectangular prompt length:", enhancedPrompt.length)
+TECHNICAL EXCELLENCE: 1792x1024 with enhanced black letterboxing, mathematically precise 2:1 equirectangular center band, professional seamless horizontal wrapping in center area, VR-optimized when cropped, broadcast standard, godlevel artistic mastery with perfect edge continuity and polar distortion handling in panoramic band. NO text, numbers, or letters visible anywhere.`
+      console.log(
+        "[v0] Enhanced DALL-E letterboxing prompt applied with NO TEXT instruction, length:",
+        enhancedPrompt.length,
+      )
     } else if (panoramaFormat === "stereographic") {
       const stereographicPerspective = params?.stereographicPerspective || "wide-angle"
 
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
+      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
 
 PROFESSIONAL STEREOGRAPHIC 360° PANORAMA - 1792x1024 FORMAT: ${safePrompt}
 
@@ -418,22 +385,22 @@ TECHNICAL EXCELLENCE: 1792x1024 resolution, perfect circular composition, profes
     console.log("[v0] Dome resolution:", params?.domeResolution || "4K")
 
     if (projectionType === "fisheye") {
-      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible anywhere in the image. Pure visual art only.
+      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
 
-Generate an ultra-wide-angle 180-degree hemispherical fisheye panorama. The camera is oriented straight up along the z-axis (zenith view), resulting in extreme barrel distortion. The sky must be positioned at the absolute, mathematically precise center of the image, surrounded by curved environmental elements, which can be natural or man-made structures. Establish perfect radial geometry extending from the center outward to the edges. The image must explicitly show the horizon completely absent, replaced by the circular frame of the immediate surroundings. The surrounding elements (e.g., buildings, columns, bridges, or trees/foliage) must curve dramatically inward toward the frame edges.
-
-ARTISTIC CONTENT: ${safePrompt}
+ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
 
 FISHEYE DOME ARTISTIC MASTERY:
-• 180-degree hemispherical panorama with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis (zenith view)
+• 180-degree hemispherical panorama captured with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis
 • Extreme barrel distortion where horizon completely disappears, replaced by circular frame of immediate surroundings
-• Sky positioned at absolute, mathematically precise center, surrounded by curved environmental elements (natural or man-made)
-• Perfect radial geometry extending from center outward to edges with professional dome mapping accuracy
+• Sky positioned at absolute center with mathematical precision, surrounded by curved environmental elements
+• Perfect radial symmetry from center outward with professional dome mapping accuracy
+• NO architectural structures, NO stadium seating, NO dome interiors - only natural outdoor fisheye perspective
+• Natural environment curves dramatically inward toward frame edges creating circular boundary effect
 • Optimized for premium planetarium dome projection with immersive 180° viewing experience
 • Museum-quality fisheye lens effect with award-winning technical precision
-• ABSOLUTELY NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts anywhere in the image
+• ABSOLUTELY NO text, numbers, letters, words, messages, labels, or typography anywhere in the image
 
-ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, zenith-centered sky, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization. NO text, NO numbers, NO letters, NO fonts, NO typography visible anywhere.`
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization. NO text or numbers visible.`
 
       console.log("[v0] ===== FULL DOME PROMPT =====")
       console.log(enhancedPrompt)
@@ -452,11 +419,53 @@ ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barr
         "[v0] Dome prompt includes 'zenith':",
         enhancedPrompt.includes("zenith") || enhancedPrompt.includes("center"),
       )
-      console.log("[v0] Dome prompt includes 'NO fonts':", enhancedPrompt.includes("NO fonts"))
+    } else if (projectionType === "tunnel-up") {
+      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
+
+ULTIMATE ARTISTIC DOME HEMISPHERICAL PROJECTION: ${safePrompt}
+
+HEMISPHERICAL DOME ARTISTIC MASTERY:
+• 180-degree hemispherical panorama with ultra-wide fisheye lens perspective, camera pointing straight up on z-axis
+• Extreme barrel distortion creating circular frame of natural surroundings with sky at center
+• NO architectural elements, NO stadium features, NO dome structures - pure outdoor fisheye perspective
+• Perfect hemispherical mapping with mathematical precision for dome ceiling projection
+• Zenith positioned at exact center with radial symmetry extending to circular edges
+• Professional fisheye distortion with award-winning dome projection accuracy
+• ABSOLUTELY NO text, numbers, letters, words, messages, labels, or typography in the image
+
+ARTISTIC EXCELLENCE: Perfect hemispherical perspective, extreme barrel distortion, circular environmental frame, natural outdoor elements only, professional dome optimization, museum exhibition quality, godlevel fisheye mastery, cultural heritage art. NO text or numbers visible.`
+    } else if (projectionType === "tunnel-down") {
+      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
+
+ULTIMATE ARTISTIC DOME FISHEYE PROJECTION: ${safePrompt}
+
+FISHEYE DOME ARTISTIC MASTERY:
+• 180-degree hemispherical panorama with ultra-wide fisheye lens, camera oriented straight up
+• Extreme barrel distortion with natural surroundings forming circular frame around central sky
+• NO architectural structures, NO tunnels, NO stadium elements - pure natural fisheye perspective
+• Perfect radial symmetry with professional dome mapping accuracy
+• Optimized for premium planetarium dome projection with immersive viewing experience
+• ABSOLUTELY NO text, numbers, letters, words, messages, labels, or typography in the image
+
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, natural outdoor perspective, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage art. NO text or numbers visible.`
+    } else if (projectionType === "little-planet") {
+      enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
+
+ULTIMATE ARTISTIC DOME LITTLE PLANET PROJECTION: ${safePrompt}
+
+LITTLE PLANET DOME ARTISTIC MASTERY:
+• Premium stereographic little planet effect with perfect spherical distortion for dome projection
+• Tiny planet perspective with beautifully curved horizon and artistic mastery optimized for planetarium viewing
+• Complete 360° world wrapped into flawless circular frame with mathematical precision for dome ceiling
+• Whimsical yet mathematically precise planetary view with award-winning execution for dome immersion
+• Optimized specifically for premium dome projection with perfect spherical mapping and planetarium compatibility
+• ABSOLUTELY NO text, numbers, letters, words, messages, labels, or typography anywhere in the image
+
+ARTISTIC EXCELLENCE: Perfect little planet effect for dome projection, precise spherical distortion, professional planetarium optimization, museum exhibition quality, godlevel planetary dome mastery, cultural heritage art. NO text or numbers visible.`
     }
   } else {
     size = "1024x1024"
-    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
+    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
 
 ULTIMATE ARTISTIC STANDARD COMPOSITION: ${safePrompt}
 
@@ -467,7 +476,7 @@ STANDARD ARTISTIC MASTERY:
 • Professional broadcast quality with godlevel artistic mastery worthy of international exhibitions
 • ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, or typography in the image
 
-ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibition quality, godlevel artistic mastery, award-winning visual impact, cultural heritage visualization, educational artistic content. NO text or numbers visible.`
+ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibition quality, godlevel artistic mastery, award-winning visual impact, cultural heritage visualization, educational artistic content. NO text or numbers visible anywhere.`
   }
 
   // Ensure we stay within 4000 character limit
@@ -880,32 +889,25 @@ export async function generateWithReplicate(
 
   let enhancedPrompt = ""
 
-  // </CHANGE> Implementing preset n2 by Irin for Replicate equirectangular generation
   if (type === "360") {
     const { buildGodlevelNeuralia360Wrapper } = await import("@/lib/ai-prompt")
 
-    const basePrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible anywhere in the image. Pure visual art only.
+    const basePrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible anywhere in the image. Pure visual art only.
 
-PRESET N2 BY IRIN - PROFESSIONAL EQUIRECTANGULAR 360° PANORAMA STANDARD: ${safePrompt}
+PROFESSIONAL 360° EQUIRECTANGULAR PANORAMA - ENHANCED ORION360 CALIBRATION STANDARD: ${safePrompt}
 
-MANDATORY EQUIRECTANGULAR SPECIFICATIONS (PRESET N2 BY IRIN):
+MANDATORY SEAMLESS PROFESSIONAL SPECIFICATIONS - OPTIMIZED FOR TRUE 2:1 RATIO:
 • ${aspectRatio === "2:1" ? "Perfect 2:1 aspect ratio providing true equirectangular format" : `Ultra-wide ${aspectRatio} format optimized for equirectangular panorama (closest available to 2:1)`}
-• LEFT EDGE (0° longitude) must connect PERFECTLY with RIGHT EDGE (360° longitude) - mathematical precision seamless wrapping
+• LEFT EDGE must connect PERFECTLY with RIGHT EDGE - mathematical precision seamless wrapping
 • Professional equirectangular projection with latitude/longitude coordinate mapping precision
-• TOP EDGE = North Pole (90° latitude) with extreme horizontal stretching, BOTTOM EDGE = South Pole (-90° latitude) with extreme horizontal stretching
-• Proper polar distortion handling where single pole points stretch across entire width
 • Continuous horizontal environment with ZERO visible seams, color breaks, or lighting discontinuities
-• Spherical coordinate mapping: horizontal center = 180° longitude, vertical center = 0° latitude (equator)
-• VR-optimized for premium headsets with proper FOV rendering and monoscopic 360° playback
-• Compatible with YouTube 360°, Facebook 360°, and professional VR platforms
+• Professional polar distortion handling with mathematical algorithms for proper sphere mapping
 • ORION360 calibration quality with museum-grade seamless wrapping and broadcast-quality edge continuity
-• Professional seamless edge alignment worthy of broadcast VR standards with godlevel precision
+• VR-optimized for premium headsets with flawless wraparound immersive experience
+• Professional seamless edge alignment worthy of ORION360 calibration test patterns with godlevel precision
 • ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, or typography anywhere in the image
 
-TECHNICAL EXCELLENCE: ${aspectRatio === "2:1" ? "True 2:1" : `Optimized ${aspectRatio}`} equirectangular format, professional seamless horizontal wrapping with latitude/longitude precision, proper polar distortion with spherical coordinate mapping, ORION360 calibration quality, VR-optimized for headset playback, broadcast standard, godlevel artistic mastery with perfect edge continuity and zero-seam stitching, cultural heritage visualization. NO text, numbers, or letters visible.
-
-PRESET N2 BY IRIN VALIDATION:
-✓ Seamless 0°-360° wraparound ✓ Proper polar distortion ✓ Spherical mapping precision ✓ VR compatibility ✓ Broadcast quality ✓ NO text anywhere`
+TECHNICAL EXCELLENCE: ${aspectRatio === "2:1" ? "True 2:1" : `Optimized ${aspectRatio}`} equirectangular format, professional seamless horizontal wrapping with latitude/longitude precision, ORION360 calibration quality, VR-optimized, broadcast standard, godlevel artistic mastery with perfect edge continuity and polar distortion handling, cultural heritage visualization. NO text, numbers, or letters visible.`
 
     // Always apply enhanced godlevel neuralia wrapper for 360° images across all models
     enhancedPrompt = buildGodlevelNeuralia360Wrapper(
@@ -915,34 +917,38 @@ PRESET N2 BY IRIN VALIDATION:
       params?.colorScheme || "neon",
     )
     console.log(
-      `[v0] Applied PRESET N2 BY IRIN with enhanced godlevel neuralia 360° equirectangular wrapper for ${isNvidiaSana ? "NVIDIA SANA" : "FLUX"} with ${aspectRatio} ratio`,
+      `[v0] Applied enhanced godlevel neuralia 360° equirectangular wrapper for ${isNvidiaSana ? "NVIDIA SANA" : "FLUX"} with ${aspectRatio} ratio`,
     )
   } else if (type === "dome") {
-    // ... existing dome code with preset n1 by Irin ...
-    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
+    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
 
-Generate an ultra-wide-angle 180-degree hemispherical fisheye panorama. The camera is oriented straight up along the z-axis (zenith view), resulting in extreme barrel distortion. The sky must be positioned at the absolute, mathematically precise center of the image, surrounded by curved environmental elements, which can be natural or man-made structures. Establish perfect radial geometry extending from the center outward to the edges. The image must explicitly show the horizon completely absent, replaced by the circular frame of the immediate surroundings. The surrounding elements (e.g., buildings, columns, bridges, or trees/foliage) must curve dramatically inward toward the frame edges.
-
-ARTISTIC CONTENT: ${safePrompt}
+ULTIMATE ARTISTIC DOME FISHEYE PROJECTION - 180° HEMISPHERICAL: ${safePrompt}
 
 FISHEYE DOME ARTISTIC MASTERY:
-• 180-degree hemispherical panorama with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis (zenith view)
+• 180-degree hemispherical panorama captured with ultra-wide-angle fisheye lens, camera oriented straight up on z-axis
 • Extreme barrel distortion where horizon completely disappears, replaced by circular frame of immediate surroundings
-• Sky positioned at absolute, mathematically precise center, surrounded by curved environmental elements (natural or man-made)
-• Perfect radial geometry extending from center outward to edges with professional dome mapping accuracy
+• Sky positioned at absolute center with mathematical precision, surrounded by curved environmental elements
+• Perfect radial symmetry from center outward with professional dome mapping accuracy
 • NO architectural structures, NO stadium seating, NO dome interiors - only natural outdoor fisheye perspective
 • Natural environment curves dramatically inward toward frame edges creating circular boundary effect
 • Optimized for premium planetarium dome projection with immersive 180° viewing experience
 • Museum-quality fisheye lens effect with award-winning technical precision
-• ABSOLUTELY NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts anywhere in the image
+• ABSOLUTELY NO text, numbers, letters, words, messages, labels, or typography anywhere in the image
 
-ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization. NO text, NO numbers, NO letters, NO fonts, NO typography visible anywhere.`
+ARTISTIC EXCELLENCE: Professional hemispherical fisheye projection, extreme barrel distortion, perfect circular composition, natural outdoor perspective only, planetarium optimization, museum exhibition quality, godlevel dome mastery, cultural heritage visualization. NO text or numbers visible.`
   } else {
-    // ... existing standard code ...
-    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels, NO captions, NO typography, NO fonts visible in the image. Pure visual art only.
+    enhancedPrompt = `CRITICAL: NO text, NO numbers, NO letters, NO words, NO messages, NO labels visible in the image. Pure visual art only.
 
 ULTRA-HIGH-QUALITY STANDARD IMAGE: ${safePrompt}. Professional resolution and detail optimized for premium quality output. ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, or typography in the image.`
   }
+
+  console.log(
+    `🎨 Generating ${type} image with ${isNvidiaSana ? "NVIDIA SANA" : "FLUX 1.1 Pro Ultra"} (${isNvidiaSana ? "NVIDIA specialized model" : "preferred model"})`,
+  )
+  console.log(
+    `📐 Aspect ratio: ${aspectRatio} (${type === "360" ? "optimal 21:9 ultra-wide equirectangular with godlevel neuralia enhancement" : `${isNvidiaSana ? "NVIDIA SANA" : "FLUX 1.1 Pro Ultra"} supported format`})`,
+  )
+  console.log(`📝 Enhanced prompt length: ${enhancedPrompt.length} chars`)
 
   try {
     const replicateToken = process.env.REPLICATE_API_TOKEN

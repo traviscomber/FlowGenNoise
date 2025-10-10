@@ -762,8 +762,6 @@ export function FlowArtGenerator() {
           dataset: dataset,
           scenario: scenario,
           colorScheme: colorScheme,
-          projectionType: projectionType,
-          panoramic360: panoramic360,
           maxLength: 4000,
         }),
       })

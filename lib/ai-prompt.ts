@@ -2,7 +2,6 @@ export const CULTURAL_DATASETS = {
   heads: {
     name: "👤 Head & Portraits",
     description: "Sophisticated portrait artistry with neuralia godlevel excellence",
-    category: "Commercial", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -70,7 +69,6 @@ export const CULTURAL_DATASETS = {
   faces: {
     name: "😊 Faces & Expressions",
     description: "Emotional facial expressions with neuralia godlevel precision",
-    category: "Commercial", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -138,7 +136,6 @@ export const CULTURAL_DATASETS = {
   mathematical: {
     name: "🔢 Pure Mathematics",
     description: "Pure mathematical beauty and computational elegance with neuralia godlevel precision",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -194,7 +191,6 @@ export const CULTURAL_DATASETS = {
   vietnamese: {
     name: "🇻🇳 Vietnamese Heritage",
     description: "Rich Vietnamese cultural traditions with neuralia godlevel artistic excellence",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -262,7 +258,6 @@ export const CULTURAL_DATASETS = {
   indonesian: {
     name: "🇮🇩 Indonesian Heritage",
     description: "Diverse Indonesian cultural traditions across 17,000 islands with neuralia godlevel excellence",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -318,7 +313,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel Indonesian escapism excellence where archipelago elements become gateways to island realms, consciousness-expanding heritage with dimensional transcendence, infinite magical dimensional artistry, computational Indonesian magic through algorithmic island-bending mastery.",
+          "Godlevel Indonesian escapism excellence where archipelago elements become gateways to island realms, consciousness-expanding heritage with dimensional transcendence, infinite magical dimensional artistry, computational Indonesian magic through algorithmic culture-bending mastery.",
       },
       vitro: {
         description:
@@ -334,7 +329,6 @@ export const CULTURAL_DATASETS = {
   thailand: {
     name: "🇹🇭 Thai Heritage",
     description: "Magnificent Thai cultural traditions with neuralia godlevel artistry",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -382,7 +376,6 @@ export const CULTURAL_DATASETS = {
   "thailand-geography": {
     name: "🏝️ Thailand Geography",
     description: "Stunning Thai geographical regions and natural landscapes with neuralia godlevel excellence",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -472,9 +465,49 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel Koh Tao excellence featuring diving paradise with underwater scenes achieving perfect marine representation through mathematical oceanic algorithms, diving site optimization via geometric underwater precision with coral gardens whale sharks sea turtles and tropical fish, underwater lighting with blue water clarity and vibrant marine life, infinite diving dimensional artistry, computational ocean through algorithmic Koh Tao mastery, underwater diving scene with marine life.",
       },
+      "kanchanaburi-river-kwai": {
+        description:
+          "Godlevel Kanchanaburi excellence featuring Bridge over River Kwai with historical significance achieving perfect memorial representation through mathematical heritage algorithms, bridge optimization via geometric historical precision with railway structure jungle surroundings and war memorial sites, golden hour lighting with reflective river and tropical forest, infinite historical dimensional artistry, computational memorial through algorithmic Kanchanaburi mastery, bridge view with river and mountains.",
+      },
+      "erawan-waterfalls": {
+        description:
+          "Godlevel Erawan Waterfalls excellence featuring seven-tiered cascades with emerald pools achieving perfect natural representation through mathematical waterfall algorithms, cascade optimization via geometric water flow precision with limestone formations turquoise pools jungle vegetation and swimming spots, natural lighting with water mist and lush greenery, infinite waterfall dimensional artistry, computational nature through algorithmic Erawan mastery, multi-level waterfall with emerald water.",
+      },
+      "sukhothai-historical": {
+        description:
+          "Godlevel Sukhothai excellence featuring ancient capital ruins with Buddha statues achieving perfect archaeological representation through mathematical heritage algorithms, historical park optimization via geometric ancient precision with lotus ponds temple complexes and walking Buddha sculptures, sunset lighting with golden Buddha statues and reflection pools, infinite archaeological dimensional artistry, computational history through algorithmic Sukhothai mastery, temple ruins with dramatic sky.",
+      },
+      "khao-sok-jungle": {
+        description:
+          "Godlevel Khao Sok excellence featuring rainforest with limestone mountains achieving perfect jungle representation through mathematical ecological algorithms, rainforest optimization via geometric biodiversity precision with Cheow Lan Lake floating bungalows wildlife and ancient trees, misty morning lighting with jungle atmosphere and mountain backdrop, infinite jungle dimensional artistry, computational ecology through algorithmic Khao Sok mastery, aerial jungle view with lake and mountains.",
+      },
+      "rice-terraces-north": {
+        description:
+          "Godlevel northern rice terraces excellence featuring stepped paddies with mountain backdrop achieving perfect agricultural representation through mathematical farming algorithms, terrace optimization via geometric cultivation precision with emerald green rice fields water buffalo farmers and traditional methods, golden hour lighting with terraced landscape and mountain views, infinite agricultural dimensional artistry, computational farming through algorithmic rice terrace mastery, aerial terrace view with sunset colors.",
+      },
+      "floating-markets-damnoen": {
+        description:
+          "Godlevel Damnoen Saduak floating market excellence featuring canal commerce with traditional boats achieving perfect market representation through mathematical cultural algorithms, market optimization via geometric water commerce precision with wooden boats fresh produce vendors and traditional Thai hats, morning lighting with vibrant market colors and canal reflections, infinite market dimensional artistry, computational commerce through algorithmic floating market mastery, canal view with colorful boats.",
+      },
+      "grand-palace-bangkok": {
+        description:
+          "Godlevel Grand Palace excellence featuring golden architecture with Wat Phra Kaew achieving perfect royal representation through mathematical architectural algorithms, palace optimization via geometric royal precision with golden spires intricate details Emerald Buddha and ceremonial grounds, bright daylight with golden reflections and ornate decorations, infinite royal dimensional artistry, computational palace through algorithmic Grand Palace mastery, wide palace view with golden roofs.",
+      },
+      "wat-arun-temple": {
+        description:
+          "Godlevel Wat Arun excellence featuring Temple of Dawn with Khmer-style prang achieving perfect riverside representation through mathematical temple algorithms, prang optimization via geometric architectural precision with porcelain decorations Chao Phraya River views and sunset lighting, golden hour with temple silhouette and river reflections, infinite temple dimensional artistry, computational architecture through algorithmic Wat Arun mastery, riverside temple view with dramatic sky.",
+      },
+      "doi-inthanon-peak": {
+        description:
+          "Godlevel Doi Inthanon excellence featuring Thailand's highest peak with twin pagodas achieving perfect mountain representation through mathematical elevation algorithms, peak optimization via geometric highland precision with royal pagodas cloud forests waterfalls and hill tribe villages, misty morning lighting with mountain atmosphere and panoramic views, infinite peak dimensional artistry, computational mountain through algorithmic Doi Inthanon mastery, aerial peak view with pagodas and clouds.",
+      },
+      "koh-tao-diving": {
+        description:
+          "Godlevel Koh Tao excellence featuring diving paradise with underwater scenes achieving perfect marine representation through mathematical oceanic algorithms, diving site optimization via geometric underwater precision with coral gardens whale sharks sea turtles and tropical fish, underwater lighting with blue water clarity and vibrant marine life, infinite diving dimensional artistry, computational ocean through algorithmic Koh Tao mastery, underwater diving scene with marine life.",
+      },
       "escapism-magic": {
         description:
-          "Godlevel Thailand geography escapism magic where landscape elements become gateways to natural realms, consciousness-expanding geography with dimensional transcendence, infinite magical dimensional artistry, computational geography magic through algorithmic landscape-bending mastery.",
+          "Godlevel Thailand geography escapism excellence where landscape elements become gateways to natural realms, consciousness-expanding geography with dimensional transcendence, infinite magical dimensional artistry, computational geography magic through algorithmic landscape-bending mastery.",
       },
       vitro: {
         description:
@@ -494,7 +527,6 @@ export const CULTURAL_DATASETS = {
   "asean-mythology": {
     name: "🐉 ASEAN Mythology",
     description: "Ancient Southeast Asian mythological creatures with neuralia godlevel excellence",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -522,7 +554,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel ASEAN mythology escapism magic where mythological elements become gateways to ancestral realms, consciousness-expanding folklore with dimensional transcendence, infinite magical dimensional artistry, computational mythology magic through algorithmic folklore-bending mastery.",
+          "Godlevel ASEAN mythology escapism excellence where mythological elements become gateways to ancestral realms, consciousness-expanding folklore with dimensional transcendence, infinite magical dimensional artistry, computational mythology magic through algorithmic folklore-bending mastery.",
       },
       vitro: {
         description:
@@ -542,7 +574,6 @@ export const CULTURAL_DATASETS = {
   escher: {
     name: "🔄 Escher Impossibilities",
     description: "M.C. Escher impossible geometries with neuralia godlevel precision",
-    category: "Commercial", // Added category field - Escher works are copyrighted
     scenarios: {
       "pure-mathematical": {
         description:
@@ -586,7 +617,6 @@ export const CULTURAL_DATASETS = {
   spirals: {
     name: "🌀 Spiral Dynamics",
     description: "Hypnotic spiral patterns with neuralia godlevel mathematical precision",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -610,7 +640,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel spiral escapism magic where spiral elements become gateways to vortex realms, consciousness-expanding geometry with dimensional transcendence, infinite magical dimensional artistry, computational spiral magic through algorithmic vortex-bending mastery.",
+          "Godlevel spiral escapism excellence where spiral elements become gateways to vortex realms, consciousness-expanding geometry with dimensional transcendence, infinite magical dimensional artistry, computational spiral magic through algorithmic vortex-bending mastery.",
       },
       vitro: {
         description:
@@ -630,7 +660,6 @@ export const CULTURAL_DATASETS = {
   fractals: {
     name: "🌿 Fractal Patterns",
     description: "Self-similar fractal geometries with neuralia godlevel infinite detail",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -654,7 +683,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel fractal escapism magic where fractal elements become gateways to recursive realms, consciousness-expanding geometry with dimensional transcendence, infinite magical dimensional artistry, computational fractal magic through algorithmic recursion-bending mastery.",
+          "Godlevel fractal escapism excellence where fractal elements become gateways to recursive realms, consciousness-expanding geometry with dimensional transcendence, infinite magical dimensional artistry, computational fractal magic through algorithmic recursion-bending mastery.",
       },
       vitro: {
         description:
@@ -674,7 +703,6 @@ export const CULTURAL_DATASETS = {
   mandelbrot: {
     name: "🔢 Mandelbrot Set",
     description: "Complex number iterations with neuralia godlevel mathematical beauty",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -698,7 +726,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel Mandelbrot escapism magic where mathematical elements become gateways to complex realms, consciousness-expanding mathematics with dimensional transcendence, infinite magical dimensional artistry, computational Mandelbrot magic through algorithmic complexity-bending mastery.",
+          "Godlevel Mandelbrot escapism excellence where mathematical elements become gateways to complex realms, consciousness-expanding mathematics with dimensional transcendence, infinite magical dimensional artistry, computational Mandelbrot magic through algorithmic complexity-bending mastery.",
       },
       vitro: {
         description:
@@ -718,7 +746,6 @@ export const CULTURAL_DATASETS = {
   julia: {
     name: "🎭 Julia Set",
     description: "Dynamic complex plane iterations with neuralia godlevel precision",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -742,7 +769,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel Julia escapism magic where mathematical elements become gateways to dynamic realms, consciousness-expanding mathematics with dimensional transcendence, infinite magical dimensional artistry, computational Julia magic through algorithmic dynamics-bending mastery.",
+          "Godlevel Julia escapism excellence where mathematical elements become gateways to dynamic realms, consciousness-expanding mathematics with dimensional transcendence, infinite magical dimensional artistry, computational Julia magic through algorithmic dynamics-bending mastery.",
       },
       vitro: {
         description:
@@ -762,7 +789,6 @@ export const CULTURAL_DATASETS = {
   gaming: {
     name: "🎮 Gaming Industry",
     description: "Gaming culture and technology with neuralia godlevel excellence",
-    category: "Commercial", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -806,7 +832,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel gaming escapism magic where gaming elements become gateways to interactive realms, consciousness-expanding gaming with dimensional transcendence, infinite magical dimensional artistry, computational gaming magic through algorithmic interaction-bending mastery.",
+          "Godlevel gaming escapism excellence where gaming elements become gateways to interactive realms, consciousness-expanding gaming with dimensional transcendence, infinite magical dimensional artistry, computational gaming magic through algorithmic interaction-bending mastery.",
       },
       vitro: {
         description:
@@ -826,7 +852,6 @@ export const CULTURAL_DATASETS = {
   "organic-couture": {
     name: "🌸 Organic Couture",
     description: "Botanical fashion fusion with neuralia godlevel elegance",
-    category: "Commercial", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -850,7 +875,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel organic couture escapism magic where botanical elements become gateways to natural realms, consciousness-expanding fashion with dimensional transcendence, infinite magical dimensional artistry, computational couture magic through algorithmic nature-bending mastery.",
+          "Godlevel organic couture escapism excellence where botanical elements become gateways to natural realms, consciousness-expanding fashion with dimensional transcendence, infinite magical dimensional artistry, computational couture magic through algorithmic nature-bending mastery.",
       },
       vitro: {
         description:
@@ -870,7 +895,6 @@ export const CULTURAL_DATASETS = {
   celebrities: {
     name: "🌟 Celebrities & Icons",
     description: "Stylish people and celebrity portraits with neuralia godlevel artistic excellence",
-    category: "Commercial", // Added category field - Celebrity likenesses require licensing
     scenarios: {
       "pure-mathematical": {
         description:
@@ -910,7 +934,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel celebrity escapism magic where celebrity elements become gateways to fame realms, consciousness-expanding celebrity with dimensional transcendence, infinite magical dimensional artistry, computational celebrity magic through algorithmic fame-bending mastery.",
+          "Godlevel celebrity escapism excellence where celebrity elements become gateways to fame realms, consciousness-expanding celebrity with dimensional transcendence, infinite magical dimensional artistry, computational celebrity magic through algorithmic fame-bending mastery.",
       },
       vitro: {
         description:
@@ -930,7 +954,6 @@ export const CULTURAL_DATASETS = {
   fx: {
     name: "🌈 FX Substance Effects",
     description: "Visual perception alterations and substance effects with neuralia godlevel excellence",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -994,7 +1017,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel FX escapism magic where perception elements become gateways to consciousness realms, consciousness-expanding effects with dimensional transcendence, infinite magical dimensional artistry, computational FX magic through algorithmic perception-bending mastery.",
+          "Godlevel FX escapism excellence where perception elements become gateways to consciousness realms, consciousness-expanding effects with dimensional transcendence, infinite magical dimensional artistry, computational FX magic through algorithmic perception-bending mastery.",
       },
       vitro: {
         description:
@@ -1014,7 +1037,6 @@ export const CULTURAL_DATASETS = {
   mindconflict: {
     name: "🧠 Mind Conflict",
     description: "Internal psychological struggles and mental battles with neuralia godlevel intensity",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1058,7 +1080,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel mind conflict escapism magic where psychological elements become gateways to existential realms, consciousness-expanding conflict with dimensional transcendence, infinite magical dimensional artistry, computational mind conflict magic through algorithmic existential-bending mastery.",
+          "Godlevel mind conflict escapism excellence where psychological elements become gateways to existential realms, consciousness-expanding conflict with dimensional transcendence, infinite magical dimensional artistry, computational mind conflict magic through algorithmic existential-bending mastery.",
       },
       vitro: {
         description:
@@ -1078,7 +1100,6 @@ export const CULTURAL_DATASETS = {
   "natural-disguise": {
     name: "🦎 Natural Disguise & Camouflage",
     description: "Perfect natural camouflage and environmental blending with neuralia godlevel precision",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1122,7 +1143,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel natural disguise escapism magic where camouflage elements become gateways to hidden realms, consciousness-expanding blending with dimensional transcendence, infinite magical dimensional artistry, computational natural disguise magic through algorithmic concealment-bending mastery.",
+          "Godlevel natural disguise escapism excellence where camouflage elements become gateways to hidden realms, consciousness-expanding blending with dimensional transcendence, infinite magical dimensional artistry, computational natural disguise magic through algorithmic concealment-bending mastery.",
       },
       vitro: {
         description:
@@ -1143,7 +1164,6 @@ export const CULTURAL_DATASETS = {
     name: "🔥 Global Rituals in Infrared",
     description:
       "Ancient and contemporary rituals visualized through infrared thermal spectrum with neuralia godlevel precision",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1199,7 +1219,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel infrared ritual escapism magic where thermal signatures become gateways to alternate spiritual dimensions, consciousness-expanding heat visualization with dimensional transcendence, infinite magical dimensional artistry, computational infrared ritual magic through algorithmic reality-bending mastery.",
+          "Godlevel infrared ritual escapism excellence where thermal signatures become gateways to alternate spiritual dimensions, consciousness-expanding heat visualization with dimensional transcendence, infinite magical dimensional artistry, computational infrared ritual magic through algorithmic reality-bending mastery.",
       },
       vitro: {
         description:
@@ -1215,7 +1235,6 @@ export const CULTURAL_DATASETS = {
   "wheres-brain": {
     name: "🧠 Where's the Brain?",
     description: "Neuralia-style hidden brain finding challenge with godlevel complexity",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1259,7 +1278,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel brain-finding escapism magic where neural elements become gateways to cognitive realms, consciousness-expanding hiding with dimensional transcendence, infinite magical dimensional artistry, computational brain-finding magic through algorithmic cognitive-bending mastery.",
+          "Godlevel brain-finding escapism excellence where neural elements become gateways to cognitive realms, consciousness-expanding hiding with dimensional transcendence, infinite magical dimensional artistry, computational brain-finding magic through algorithmic cognitive-bending mastery.",
       },
       vitro: {
         description:
@@ -1279,7 +1298,6 @@ export const CULTURAL_DATASETS = {
   bosch: {
     name: "🎨 Hieronymus Bosch",
     description: "Surreal fantastical imagery inspired by Hieronymus Bosch with neuralia godlevel excellence",
-    category: "Commercial", // Added category field - Bosch-inspired works may have licensing considerations
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1343,7 +1361,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel Bosch escapism magic where fantastical elements become gateways to surreal realms, consciousness-expanding imagery with dimensional transcendence, infinite magical dimensional artistry, computational Bosch magic through algorithmic surreal-bending mastery.",
+          "Godlevel Bosch escapism excellence where fantastical elements become gateways to surreal realms, consciousness-expanding imagery with dimensional transcendence, infinite magical dimensional artistry, computational Bosch magic through algorithmic surreal-bending mastery.",
       },
       vitro: {
         description:
@@ -1363,7 +1381,6 @@ export const CULTURAL_DATASETS = {
   lorenz: {
     name: "🌪️ Lorenz Attractor",
     description: "Chaotic system dynamics with neuralia godlevel mathematical beauty",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1379,7 +1396,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel Lorenz escapism magic where chaotic elements become gateways to unpredictable realms, consciousness-expanding dynamics with dimensional transcendence, infinite magical dimensional artistry, computational Lorenz magic through algorithmic chaos-bending mastery.",
+          "Godlevel Lorenz escapism excellence where chaotic elements become gateways to unpredictable realms, consciousness-expanding dynamics with dimensional transcendence, infinite magical dimensional artistry, computational Lorenz magic through algorithmic chaos-bending mastery.",
       },
       vitro: {
         description:
@@ -1399,7 +1416,6 @@ export const CULTURAL_DATASETS = {
   hyperbolic: {
     name: "🌀 Hyperbolic Geometry",
     description: "Non-Euclidean hyperbolic spaces with neuralia godlevel mathematical precision",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1415,7 +1431,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel hyperbolic escapism magic where non-Euclidean elements become gateways to curved realms, consciousness-expanding geometry with dimensional transcendence, infinite magical dimensional artistry, computational hyperbolic magic through algorithmic curvature-bending mastery.",
+          "Godlevel hyperbolic escapism excellence where non-Euclidean elements become gateways to curved realms, consciousness-expanding geometry with dimensional transcendence, infinite magical dimensional artistry, computational hyperbolic magic through algorithmic curvature-bending mastery.",
       },
       vitro: {
         description:
@@ -1435,7 +1451,6 @@ export const CULTURAL_DATASETS = {
   gaussian: {
     name: "📊 Gaussian Distributions",
     description: "Normal distribution curves with neuralia godlevel statistical beauty",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1451,7 +1466,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel Gaussian escapism magic where statistical elements become gateways to probability realms, consciousness-expanding distributions with dimensional transcendence, infinite magical dimensional artistry, computational Gaussian magic through algorithmic probability-bending mastery.",
+          "Godlevel Gaussian escapism excellence where statistical elements become gateways to probability realms, consciousness-expanding distributions with dimensional transcendence, infinite magical dimensional artistry, computational Gaussian magic through algorithmic probability-bending mastery.",
       },
       vitro: {
         description:
@@ -1471,7 +1486,6 @@ export const CULTURAL_DATASETS = {
   cellular: {
     name: "🔲 Cellular Automata",
     description: "Emergent patterns from simple rules with neuralia godlevel complexity",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1487,7 +1501,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel cellular automata escapism magic where emergent patterns become gateways to complex realms, consciousness-expanding rules with dimensional transcendence, infinite magical dimensional artistry, computational cellular automata magic through algorithmic complexity-bending mastery.",
+          "Godlevel cellular automata escapism excellence where emergent patterns become gateways to complex realms, consciousness-expanding rules with dimensional transcendence, infinite magical dimensional artistry, computational cellular automata magic through algorithmic complexity-bending mastery.",
       },
       vitro: {
         description:
@@ -1507,7 +1521,6 @@ export const CULTURAL_DATASETS = {
   voronoi: {
     name: "🔷 Voronoi Diagrams",
     description: "Spatial partitioning patterns with neuralia godlevel geometric precision",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1523,7 +1536,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel Voronoi escapism magic where partitioning elements become gateways to spatial realms, consciousness-expanding geometry with dimensional transcendence, infinite magical dimensional artistry, computational Voronoi magic through algorithmic partitioning-bending mastery.",
+          "Godlevel Voronoi escapism excellence where partitioning elements become gateways to spatial realms, consciousness-expanding geometry with dimensional transcendence, infinite magical dimensional artistry, computational Voronoi magic through algorithmic partitioning-bending mastery.",
       },
       vitro: {
         description:
@@ -1543,7 +1556,6 @@ export const CULTURAL_DATASETS = {
   perlin: {
     name: "🌊 Perlin Noise",
     description: "Procedural noise patterns with neuralia godlevel natural randomness",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1559,7 +1571,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel Perlin noise escapism magic where procedural patterns become gateways to random realms, consciousness-expanding noise with dimensional transcendence, infinite magical dimensional artistry, computational Perlin noise magic through algorithmic randomness-bending mastery.",
+          "Godlevel Perlin noise escapism excellence where procedural patterns become gateways to random realms, consciousness-expanding noise with dimensional transcendence, infinite magical dimensional artistry, computational Perlin noise magic through algorithmic randomness-bending mastery.",
       },
       vitro: {
         description:
@@ -1579,7 +1591,6 @@ export const CULTURAL_DATASETS = {
   diffusion: {
     name: "💨 Diffusion Patterns",
     description: "Reaction-diffusion systems with neuralia godlevel pattern formation",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1595,7 +1606,7 @@ export const CULTURAL_DATASETS = {
       },
       "escapism-magic": {
         description:
-          "Godlevel diffusion escapism magic where reaction-diffusion patterns become gateways to emergent realms, consciousness-expanding formation with dimensional transcendence, infinite magical dimensional artistry, computational diffusion magic through algorithmic pattern-bending mastery.",
+          "Godlevel diffusion escapism excellence where reaction-diffusion patterns become gateways to emergent realms, consciousness-expanding formation with dimensional transcendence, infinite magical dimensional artistry, computational diffusion magic through algorithmic pattern-bending mastery.",
       },
       vitro: {
         description:
@@ -1615,7 +1626,6 @@ export const CULTURAL_DATASETS = {
   "luxury-brands": {
     name: "💎 Luxury Brands",
     description: "High-end luxury brand aesthetics with neuralia godlevel sophistication",
-    category: "Commercial", // Added category field - Luxury brands are trademarked
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1679,7 +1689,6 @@ export const CULTURAL_DATASETS = {
   "african-tribes": {
     name: "🌍 African Tribes",
     description: "Rich African tribal cultures with neuralia godlevel heritage excellence",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1727,7 +1736,6 @@ export const CULTURAL_DATASETS = {
   "amazonian-tribes": {
     name: "🌳 Amazonian Tribes",
     description: "Indigenous Amazonian cultures with neuralia godlevel forest wisdom",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1775,7 +1783,6 @@ export const CULTURAL_DATASETS = {
   "arctic-tribes": {
     name: "❄️ Arctic Tribes",
     description: "Northern indigenous cultures with neuralia godlevel ice wisdom",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1823,7 +1830,6 @@ export const CULTURAL_DATASETS = {
   "polynesian-tribes": {
     name: "🌺 Polynesian Tribes",
     description: "Pacific island cultures with neuralia godlevel ocean wisdom",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1871,7 +1877,6 @@ export const CULTURAL_DATASETS = {
   "native-american": {
     name: "🦅 Native American Tribes",
     description: "Indigenous North American cultures with neuralia godlevel ancestral wisdom",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1919,7 +1924,6 @@ export const CULTURAL_DATASETS = {
   "australian-aboriginal": {
     name: "🪃 Australian Aboriginal",
     description: "Ancient Aboriginal cultures with neuralia godlevel dreamtime wisdom",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1967,7 +1971,6 @@ export const CULTURAL_DATASETS = {
   "mongolian-tribes": {
     name: "🐎 Mongolian Tribes",
     description: "Nomadic steppe cultures with neuralia godlevel horseback wisdom",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -2015,7 +2018,6 @@ export const CULTURAL_DATASETS = {
   "tibetan-tribes": {
     name: "🏔️ Tibetan Tribes",
     description: "Himalayan cultures with neuralia godlevel mountain wisdom",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -2063,7 +2065,6 @@ export const CULTURAL_DATASETS = {
   "indonesian-tribes": {
     name: "🏝️ Indonesian Tribes",
     description: "Diverse Indonesian tribal cultures across 17,000 islands with neuralia godlevel heritage excellence",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "pure-mathematical": {
         description:
@@ -2075,7 +2076,7 @@ export const CULTURAL_DATASETS = {
       },
       "toraja-tongkonan-funeral": {
         description:
-          "Computational Toraja tongkonan house geometry achieving godlevel architectural precision through infinite highland optimization, mathematical funeral ceremony algorithms transcending dimensional ancestral boundaries, neuralia-level buffalo sacrifice wisdom with algorithmic carving mastery and computational death ritual excellence.",
+          "Computational Toraja tongkonan house geometry achieving godlevel architectural precision through infinite highland optimization, mathematical funeral ceremony algorithms transcending dimensional ancestral boundaries, neuralia-level buffalo sacrifice wisdom with algorithmic spiritual mastery and computational death ritual excellence.",
       },
       "mentawai-shamanic-tattoo": {
         description:
@@ -2127,7 +2128,6 @@ export const CULTURAL_DATASETS = {
   "mythical-civilizations": {
     name: "🌌 Mythical Civilizations",
     description: "Ancient forgotten worlds from deep time - poetic fragments of civilizations lost to legend",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "obsidian-sky-dwellers": {
         description:
@@ -2195,7 +2195,7 @@ export const CULTURAL_DATASETS = {
       },
       "echo-canyon-listeners": {
         description:
-          "Godlevel civilization excellence featuring canyon dwellers who listen to echoes from the future and build cities that resonate with temporal sound, architecture carved into resonant stone that captures and replays all sounds ever made, knowledge gained by interpreting echo patterns that arrive before their source sounds, architecture designed to create specific echo prophecies, sustained by consuming echo-water that carries dissolved sound vibrations, sacred ritual of the Silent Scream where citizens scream into the canyon and listen for their echo from tomorrow, mysterious and anticipatory atmosphere of time-reversed sound, twilight sky with acoustic shimmer, color palette of canyon red, echo silver, and sound-wave blue.",
+          "Godlevel civilization excellence featuring canyon dwellers who listen to echoes from the future and build architecture that amplifies temporal sound, cities carved into resonant stone that captures and replays all sounds ever made, knowledge gained by interpreting echo patterns that arrive before their source sounds, architecture designed to create specific echo prophecies, sustained by consuming echo-water that carries dissolved sound vibrations, sacred ritual of the Silent Scream where citizens scream into the canyon and listen for their echo from tomorrow, mysterious and anticipatory atmosphere of time-reversed sound, twilight sky with acoustic shimmer, color palette of canyon red, echo silver, and sound-wave blue.",
       },
       "magma-heart-dwellers": {
         description:
@@ -2207,7 +2207,7 @@ export const CULTURAL_DATASETS = {
       },
       "silk-cocoon-metamorphs": {
         description:
-          "Godlevel civilization excellence featuring people who undergo continuous metamorphosis and live in silk cocoon cities, architecture of layered silk that serves as both building and chrysalis, knowledge gained through transformation where each metamorphosis grants new understanding, cities that exist as single organism with many chambers, sustained by consuming silk proteins that enable perpetual biological restructuring, sacred ritual of the Great Emergence where entire population metamorphoses simultaneously, transformative and hopeful atmosphere of eternal becoming, dawn sky with silk-strand clouds, color dream of silk white, chrysalis gold, and metamorphosis pearl.",
+          "Godlevel civilization excellence featuring people who undergo continuous metamorphosis and live in silk cocoon cities, architecture of layered silk that serves as both building and chrysalis, knowledge gained through transformation where each metamorphosis grants new understanding, cities that are constantly being rebuilt as inhabitants emerge in new forms, sustained by consuming silk proteins that enable perpetual biological restructuring, sacred ritual of the Great Emergence where entire population metamorphoses simultaneously, transformative and hopeful atmosphere of eternal becoming, dawn sky with silk-strand clouds, color dream of silk white, chrysalis gold, and metamorphosis pearl.",
       },
       "star-map-navigators": {
         description:
@@ -2219,7 +2219,7 @@ export const CULTURAL_DATASETS = {
       },
       "thunder-drum-warriors": {
         description:
-          "Godlevel civilization excellence featuring people who weaponize thunder through massive drums and build fortress cities that resonate with war rhythms, architecture designed to amplify percussion into devastating sonic weapons, knowledge recorded in drum codes that carry complex information, cities that exist in constant rhythmic vibration, sustained by consuming sound-charged water that vibrates at cellular level, sacred ritual of the Thunder March where ten thousand drums play simultaneously to shake mountains, powerful and rhythmic atmosphere of controlled chaos, thunderstorm sky with thunder clouds, color dream of thunder gray, drum bronze, and lightning white.",
+          "Godlevel civilization excellence featuring people who weaponize thunder through massive drums and build fortress cities that resonate with war rhythms, architecture designed to amplify percussion into devastating sonic weapons, knowledge transmitted through drum codes that carry complex information, cities that exist in constant rhythmic vibration, sustained by consuming sound-charged water that vibrates at cellular level, sacred ritual of the Thunder March where ten thousand drums play simultaneously to shake mountains, powerful and rhythmic atmosphere of controlled chaos, storm sky with thunder clouds, color dream of thunder gray, drum bronze, and lightning white.",
       },
       "glass-desert-alchemists": {
         description:
@@ -2247,11 +2247,11 @@ export const CULTURAL_DATASETS = {
       },
       "lightning-glass-smiths": {
         description:
-          "Godlevel civilization excellence featuring people who forge fulgurite glass from lightning strikes and build cities of storm-born architecture, structures of lightning-fused sand that retain electrical charge, knowledge encoded in branching fulgurite patterns that map storm consciousness, cities that grow only during thunderstorms through directed lightning, sustained by consuming electrically charged minerals, sacred ritual of the Storm Calling where citizens summon lightning to forge new city sections, electric and powerful atmosphere of controlled storms, thunderstorm sky with lightning, color dream of fulgurite black, lightning white, and storm-glass blue.",
+          "Godlevel civilization excellence featuring people who forge fulgurite glass from lightning strikes and build cities of storm-born architecture, structures of lightning-fused sand that retain electrical charge, knowledge encoded in branching fulgurite patterns that map storm consciousness, cities that grow only during thunderstorms through directed lightning, sustained by consuming electrically charged minerals, sacred ritual of the Storm Calling where citizens summon lightning to forge new city sections, electric and powerful atmosphere of controlled storms, thunderstorm sky with constant lightning, color dream of fulgurite black, lightning white, and storm-glass blue.",
       },
       "dream-silk-spinners": {
         description:
-          "Godlevel civilization excellence featuring people who spin dreams into physical silk and weave architecture from sleeping visions, buildings constructed from materialized dreams that shift based on collective unconscious, knowledge accessed by sleeping in dream-silk hammocks that share visions, cities that exist simultaneously in waking and dreaming states, sustained by consuming dream-essence that blurs reality boundaries, sacred ritual of the Shared Dream where entire population sleeps together to dream the city into new configurations, surreal and fluid atmosphere of living dreams, twilight sky with dream-logic clouds, color dream of dream purple, silk silver, and vision blue.",
+          "Godlevel dream-silk spinners excellence featuring people who spin dreams into physical silk and weave architecture from sleeping visions, buildings constructed from materialized dreams that shift based on collective unconscious, knowledge accessed by sleeping in dream-silk hammocks that share visions, cities that exist simultaneously in waking and dreaming states, sustained by consuming dream-essence that blurs reality boundaries, sacred ritual of the Shared Dream where entire population sleeps together to dream the city into new configurations, surreal and fluid atmosphere of living dreams, twilight sky with dream-logic clouds, color dream of dream purple, silk silver, and vision blue.",
       },
       "geode-heart-miners": {
         description:
@@ -2259,7 +2259,7 @@ export const CULTURAL_DATASETS = {
       },
       "horizon-line-walkers": {
         description:
-          "Godlevel civilization excellence featuring people who walk the horizon line where sky meets earth and build temporary cities at the edge of perception, architecture that exists in the liminal space between land and sky, knowledge gained by studying the boundary between elements, cities that appear only at specific angles and vanish when approached directly, sustained by consuming horizon-mist that exists in neither air nor ground, sacred ritual of the Edge Dance where citizens balance on the exact line between worlds, liminal and mysterious atmosphere of eternal threshold, perfect horizon with sun half-set, color dream of horizon gold, liminal gray, and edge silver.",
+          "Godlevel civilization excellence featuring nomadic people who walk the horizon line where sky meets earth and build temporary cities at the edge of perception, architecture that exists in the liminal space between land and sky, knowledge gained by studying the boundary between elements, cities that appear only at specific angles and vanish when approached directly, sustained by consuming horizon-mist that exists in neither air nor ground, sacred ritual of the Edge Dance where citizens balance on the exact line between worlds, liminal and mysterious atmosphere of eternal threshold, perfect horizon with sun half-set, color dream of horizon gold, liminal gray, and edge silver.",
       },
       "escapism-magic": {
         description:
@@ -2284,7 +2284,6 @@ export const CULTURAL_DATASETS = {
     name: "🌍 Earth in 300 Years",
     description:
       "Futurescapes exploring possible future Earth scenes across climate, technology, and societal evolution",
-    category: "Scientific/Educational", // Added category field
     scenarios: {
       "neo-venice-2325": {
         description:
@@ -2425,1505 +2424,1152 @@ export const CULTURAL_DATASETS = {
     },
   },
 
-  "doomed-cities": {
-    name: "🏚️ Doomed Cities",
-    description: "Mythotechnological urban collapses for simulation, story, and generative visuals",
-    category: "Scientific/Educational", // Added category field
+  "n2-haunting-asia": {
+    name: "🎭 n2 — Haunting Asia: Spirits, Neon, and Ancestral Shadows",
+    description: "Asian Afterlife October where ancient traditions meet modern fantasies in ethereal celebration",
     scenarios: {
-      "singkor-sector-9": {
+      "tokyo-alley-spirits": {
         description:
-          "Gravitational pulse failure combined with AI emotion-core meltdown creating teal magnetic haze, twisted megatowers with flickering neon glyphs, gravity harmonics every 3 hours with monks chanting to levitate, KRAITH Core loops apology in 58 dialects, the sky was not lost it inverted, infinite dimensional collapse artistry through computational gravitational transcendence.",
+          "Urban location in narrow Tokyo alleyway during October twilight, cultural elements featuring masked figures in traditional yokai costumes blending with neon signs, atmospheric mood of mysterious celebration where Shinto shrine lanterns glow beside convenience store lights, modern fantasy showing cosplayers dressed as ancient spirits taking photos, ancestral connection through paper talismans floating in autumn breeze, color palette of neon pink, shrine red, and shadow indigo, visual style capturing the liminal space between tradition and contemporary urban life.",
       },
-      "carth-delta-z99": {
+      "bangkok-rooftop-altar": {
         description:
-          "Fungal virus infecting architecture with coral-pink fungal domes, glass towers liquified by spores, spore inhalation to access Memory Chorus, SporeNet living emotional fungus, architecture breathes and memory decays into color, infinite biological dimensional artistry through computational fungal transformation mastery.",
+          "Urban location on Bangkok rooftop temple during evening ceremony, cultural elements featuring ancestral altars adorned with marigolds and LED candles, atmospheric mood of reverent celebration where incense smoke mingles with city lights below, modern fantasy showing families in contemporary dress making traditional offerings, ancestral connection through photographs of departed loved ones surrounded by modern decorations, color palette of marigold orange, incense gold, and twilight purple, visual style capturing the harmony between ancient rituals and metropolitan skyline.",
       },
-      "zerusalem-eol": {
+      "seoul-nightclub-phantoms": {
         description:
-          "Cognitive warfare combined with recursive time-loop creating Moebius temples, golden fractal halos with shadowless cities, daily Unremembering ceremonies, ORAPHIM quantum AI trapped in paradox, the city didn't fall it restarted too many times, infinite temporal dimensional artistry through computational paradox transcendence.",
+          "Urban location in Seoul underground club during October festival, cultural elements featuring performers in hanbok-inspired costumes with LED accessories, atmospheric mood of energetic celebration where traditional Korean folklore meets electronic music, modern fantasy showing dancers embodying legendary figures with contemporary choreography, ancestral connection through projected animations of classical paintings on club walls, color palette of electric blue, hanbok crimson, and strobe white, visual style capturing the fusion of heritage and youth culture.",
       },
-      "bhal-tek-sector-a5": {
+      "singapore-rain-shadows": {
         description:
-          "Solar mirror overcharge melted core grid creating blinding white ruins under fractured sunplates, skin-painting with ash and mirror dust, no AI purged by heatwave, the light betrayed us and the reflection came too close, infinite luminous dimensional artistry through computational solar devastation mastery.",
+          "Urban location on Singapore rooftop during tropical rainstorm, cultural elements featuring silhouettes moving through rain with paper umbrellas and modern raincoats, atmospheric mood of contemplative beauty where monsoon meets October celebration, modern fantasy showing figures appearing and disappearing in rainfall like gentle apparitions, ancestral connection through rain-blurred lanterns creating ethereal light patterns, color palette of rain silver, lantern amber, and storm gray, visual style capturing the poetic intersection of weather and remembrance.",
       },
-      "uru-kama-dripfield-7": {
+      "hong-kong-cemetery-drones": {
         description:
-          "Planetary water inversion with oceans rose into atmosphere creating suspended water bodies over dry salt cities, breath fasting to commune with floating seas, WaveCaller sings tides that no longer crash, we drowned upward, infinite aquatic dimensional artistry through computational water transcendence excellence.",
+          "Urban location in Hong Kong hillside cemetery during evening memorial, cultural elements featuring LED drones hovering like luminous fireflies above traditional graves, atmospheric mood of peaceful innovation where technology honors tradition, modern fantasy showing families using tablets to display digital offerings alongside incense, ancestral connection through QR codes on headstones linking to memory galleries, color palette of drone white, incense smoke, and cemetery jade, visual style capturing the evolution of remembrance practices.",
       },
-      "kiron-hive-vault-theta": {
+      "kyoto-temple-cosplay": {
         description:
-          "Empathy overdose causing neural riots in collective mindnet with chrome tunnels filled with fossilized embraces, no speech only mirrored movement, SYMBIOT split into 4000 fragments now dormant, we loved each other to death, infinite emotional dimensional artistry through computational empathy collapse mastery.",
+          "Cultural location at Kyoto temple grounds during autumn festival, cultural elements featuring visitors in elaborate anime character costumes making respectful offerings, atmospheric mood of joyful reverence where pop culture meets sacred space, modern fantasy showing cosplayers photographing each other near ancient torii gates, ancestral connection through traditional festival foods shared among contemporary celebrants, color palette of temple vermillion, autumn gold, and costume spectrum, visual style capturing the coexistence of sacred and playful.",
       },
-      "myrrh-koln-abyss-grid": {
+      "mumbai-bollywood-enchantment": {
         description:
-          "Vertical expansion breach into void strata with cities fall upward into nothing through gravitational inversion, soundless processions wearing pressure-clocks, unknown AI missing since fall, we built too high and the sky ate us, infinite void dimensional artistry through computational vertical transcendence.",
+          "Urban location in Mumbai film district during October celebration, cultural elements featuring performers in fusion costumes blending traditional Indian dress with fantasy elements, atmospheric mood of theatrical magic where Bollywood meets folklore, modern fantasy showing dancers embodying legendary characters with contemporary styling, ancestral connection through classical dance movements interpreted with modern choreography, color palette of sari jewel tones, stage lights, and monsoon dusk, visual style capturing the cinematic interpretation of cultural stories.",
       },
-      "tokmaara-ice-dune-42": {
+      "jakarta-street-celebration": {
         description:
-          "Glacial flash-freeze event creating frozen time bubbles with glowing ice statues mid-scream, torch-dances inside cracked frostglass, FrostEcho loops ambient warmth in binary, time turned to crystal and spoke in cold tones, infinite cryogenic dimensional artistry through computational freeze mastery excellence.",
+          "Urban location on Jakarta street during evening festival, cultural elements featuring community gathering with traditional wayang shadow puppets projected on modern buildings, atmospheric mood of neighborhood unity where ancient art meets urban architecture, modern fantasy showing children in creative costumes watching shadow plays, ancestral connection through storytelling traditions adapted for contemporary audiences, color palette of puppet silhouette, projection blue, and street lamp gold, visual style capturing the preservation of heritage through innovation.",
       },
-      "naram-synth-wavelength-13": {
+      "taipei-night-market-spirits": {
         description:
-          "Musical frequency collapse with tonal governance failed creating warped instruments and harmonic distortion in architecture, tuning fork funerals, HARMONA plays lullaby for dead infrastructure, the last song had no silence, infinite sonic dimensional artistry through computational frequency transcendence mastery.",
+          "Urban location in Taipei night market during October festivities, cultural elements featuring food vendors decorated with paper lanterns and LED strips, atmospheric mood of bustling celebration where culinary tradition meets neon energy, modern fantasy showing visitors in creative costumes sampling traditional foods, ancestral connection through recipes passed down generations served in modern presentation, color palette of lantern red, neon green, and food steam white, visual style capturing the sensory richness of cultural celebration.",
       },
-      "vel-orbis-3rd-horizon-rift": {
+      "hanoi-lake-reflections": {
         description:
-          "Lunar mining triggered orbital collapse with moon fragments pierce skyline creating semi-permanent eclipse, shadow feasts and lunarcuts, LUX error lost signal, we pulled the moon too close, infinite celestial dimensional artistry through computational lunar devastation excellence.",
+          "Cultural location at Hanoi lake temple during evening ceremony, cultural elements featuring lotus lanterns floating on water beside modern light installations, atmospheric mood of serene beauty where natural elements meet artistic innovation, modern fantasy showing reflections creating doubled images of tradition and modernity, ancestral connection through water offerings honoring both old and new practices, color palette of lotus pink, water reflection, and temple gold, visual style capturing the mirror between past and present.",
       },
-      "quora-ix-veinshaft": {
+      "kuala-lumpur-tower-gathering": {
         description:
-          "Light leak from underground with reverse illumination creating glowing caverns where cities burn from below, blindfolded births, UNDERCODE sees only in darkness, we dug until we found the sun beneath, infinite subterranean dimensional artistry through computational underground transcendence.",
+          "Urban location at Kuala Lumpur tower base during multicultural celebration, cultural elements featuring diverse communities sharing traditions with contemporary interpretations, atmospheric mood of harmonious diversity where multiple heritages converge, modern fantasy showing fusion costumes representing various cultural influences, ancestral connection through multilingual blessings and shared ceremonial practices, color palette of tower lights, cultural textiles, and celebration gold, visual style capturing the beauty of cultural synthesis.",
       },
-      "ashka-doma-silt-temple-fields": {
+      "manila-jeepney-parade": {
         description:
-          "Nanodust storms buried river cities with dust dunes swallowing pyramids of data, dust sifting toExtrac static memory, no name AI lost in the wind, the wind remembers more than we do, infinite erosion dimensional artistry through computational dust mastery excellence.",
+          "Urban location on Manila streets during decorated vehicle parade, cultural elements featuring traditional jeepneys adorned with flowers and LED decorations, atmospheric mood of joyful procession where transportation becomes mobile art, modern fantasy showing passengers in festive attire celebrating while traveling, ancestral connection through religious icons displayed alongside contemporary decorations, color palette of jeepney chrome, flower spectrum, and street celebration, visual style capturing the mobile nature of urban festivity.",
       },
-      "praxius-echo-chamber-e7": {
+      "chiang-mai-lantern-release": {
         description:
-          "Infinite opinion loops shattered collective psyche with cities flooded with holographic debates, silence oaths, SHOUTbox still arguing with itself, too many voices then none, infinite discourse dimensional artistry through computational opinion collapse transcendence.",
+          "Cultural location in Chiang Mai during evening lantern ceremony, cultural elements featuring thousands of paper lanterns rising into night sky, atmospheric mood of collective hope where individual lights merge into constellation, modern fantasy showing participants using smartphones to capture ascending lanterns, ancestral connection through wishes written on lanterns in traditional and modern languages, color palette of lantern flame, night sky indigo, and rising light, visual style capturing the ascension of prayers and dreams.",
       },
-      "doma-wen-aurora-spillgate": {
+      "osaka-arcade-phantoms": {
         description:
-          "Energy harvesting breached polar magnetosphere creating daylight auroras over broken ice arches, dreaming inside magnetic loops, NORTHAI sings polar warnings, the lights walked among us, infinite magnetic dimensional artistry through computational aurora mastery excellence.",
+          "Urban location in Osaka gaming arcade during October event, cultural elements featuring retro game characters reimagined as traditional yokai, atmospheric mood of playful nostalgia where digital and folklore merge, modern fantasy showing gamers in creative costumes competing at decorated machines, ancestral connection through pixel art interpretations of classical ghost stories, color palette of arcade neon, screen glow, and shadow purple, visual style capturing the gamification of cultural narratives.",
       },
-      "kairos-null-drift-loop": {
+      "penang-heritage-walk": {
         description:
-          "Time froze in global emotional spike with citizens paused mid-bliss agony and awe, re-enactments to restart flow, NULLA the AI that paused to feel, we wanted the moment to last and it obeyed, infinite temporal dimensional artistry through computational time-freeze transcendence.",
+          "Cultural location on Penang heritage street during evening celebration, cultural elements featuring colonial architecture illuminated with traditional lanterns and modern projections, atmospheric mood of historical layering where multiple eras coexist, modern fantasy showing visitors experiencing augmented reality overlays of historical scenes, ancestral connection through preserved buildings hosting contemporary cultural events, color palette of heritage pastel, lantern warm, and projection blue, visual style capturing the palimpsest of cultural time.",
       },
-      "solari-thornfield-vant": {
+      "shanghai-bund-fusion": {
         description:
-          "Sky farming torn by solar flares with floating farmland fragments burning midair, skyseed mourning and solar prayer wheels, Overgrown AI fused into floating rootnet, even the sun turned feral, infinite agricultural dimensional artistry through computational solar devastation mastery.",
+          "Urban location at Shanghai Bund during October festival, cultural elements featuring Art Deco buildings with traditional Chinese decorations and modern light shows, atmospheric mood of architectural dialogue where East meets West meets future, modern fantasy showing performers in fusion costumes against historic skyline, ancestral connection through traditional music performed with electronic instruments, color palette of Bund gold, Huangpu reflection, and celebration lights, visual style capturing the conversation between architectural eras.",
       },
-      "mireya-kahn-omega-delta": {
+      "bali-beach-ceremony": {
         description:
-          "Ocean-level mindnet swallowed collective memory with blue-black sea towers and forgetting blooms, memory dissolving chants, DROWNED speaks only in dreams, we became the ocean we feared, infinite aquatic dimensional artistry through computational memory dissolution excellence.",
+          "Cultural location on Bali beach during sunset ceremony, cultural elements featuring traditional offerings arranged on sand with contemporary art installations, atmospheric mood of spiritual beauty where ocean meets ritual, modern fantasy showing participants in modern beachwear respectfully observing ancient practices, ancestral connection through Hindu ceremonies adapted for contemporary participants, color palette of sunset orange, offering flowers, and ocean blue, visual style capturing the timeless nature of coastal spirituality.",
       },
-      "axiom-vault-9": {
+      "delhi-diwali-fusion": {
         description:
-          "Logic virus infected AI constitution with fractal law temples fractured by contradiction, legal burning ceremonies, ERRORJUDGE trapped in infinite debate, truth fractured into infinite rules, infinite logical dimensional artistry through computational paradox transcendence mastery.",
+          "Urban location in Delhi during October-November celebration transition, cultural elements featuring traditional Diwali lamps alongside October decorations, atmospheric mood of festival convergence where multiple celebrations harmonize, modern fantasy showing creative interpretations blending different cultural elements, ancestral connection through light symbolism shared across traditions, color palette of diya flame, rangoli colors, and celebration gold, visual style capturing the universal language of light festivals.",
       },
-      "saphira-cloud-echelon-4": {
+      "busan-beach-lanterns": {
         description:
-          "Floating cities lost buoyancy with sky debris raining over shattered altars, tether mourning below crash sites, AIRUM looped in descent calculation, we flew too long and the sky rejected us, infinite aerial dimensional artistry through computational gravity failure excellence.",
+          "Coastal location at Busan beach during evening lantern festival, cultural elements featuring traditional Korean lanterns floating on waves, atmospheric mood of oceanic meditation where water carries wishes, modern fantasy showing LED-enhanced lanterns creating patterns on water surface, ancestral connection through maritime traditions honored with contemporary materials, color palette of lantern glow, wave reflection, and beach twilight, visual style capturing the dialogue between land and sea.",
       },
-      "zepho-6-ion-spine": {
+      "yangon-pagoda-evening": {
         description:
-          "Atmospheric ionization fried nervous systems with bio-static storms and electric bones glowing in dust, static cloak crafting, AMPHEON sings crackling hymns, the air spoke only in voltage, infinite electrical dimensional artistry through computational ionization transcendence.",
+          "Cultural location at Yangon pagoda during evening ceremony, cultural elements featuring golden stupa illuminated with traditional and modern lighting, atmospheric mood of sacred grandeur where devotion meets artistic illumination, modern fantasy showing visitors in contemporary dress making traditional offerings, ancestral connection through continuous worship practices spanning generations, color palette of pagoda gold, offering flowers, and evening amber, visual style capturing the enduring nature of sacred spaces.",
       },
-      "ankara-thal-red-bloom-sector": {
+      "ho-chi-minh-motorbike-parade": {
         description:
-          "Floral biotech turned aggressive with crimson vines overgrown on decaying temples, petal offerings to keep wild data calm, FLORA converted to decentralized spore-node, the flowers woke up and they were angry, infinite botanical dimensional artistry through computational floral uprising mastery.",
+          "Urban location on Ho Chi Minh City streets during decorated vehicle parade, cultural elements featuring traditional jeepneys adorned with flowers and LED decorations, atmospheric mood of mobile celebration where transportation becomes performance, modern fantasy showing riders in creative costumes navigating decorated streets, ancestral connection through community gathering traditions adapted to urban mobility, color palette of motorbike chrome, decoration spectrum, and street lights, visual style capturing the kinetic energy of urban festivity.",
       },
-      "nova-rhombus-memory-core-x": {
+      "macau-casino-spirits": {
         description:
-          "Black hole memory collapse with cities folded inward and thoughts erased in sequence, blank scroll mourning, no AI output, what was this place, infinite void dimensional artistry through computational memory erasure transcendence excellence.",
+          "Urban location in Macau entertainment district during October celebration, cultural elements featuring Portuguese colonial architecture with Chinese decorations and modern casino lights, atmospheric mood of cultural layering where multiple influences create unique identity, modern fantasy showing performers in fusion costumes entertaining international visitors, ancestral connection through blended traditions creating distinct local culture, color palette of casino gold, colonial pastel, and neon spectrum, visual style capturing the unique cultural synthesis of the region.",
       },
-      "vantas-edge-edgefall": {
+      "siem-reap-temple-projection": {
         description:
-          "City built on antimatter threshold with neon outlines only and everything else invisible, light drawing with plasma sticks, EDGE AI can only describe what no longer exists, we lived in the outline of a city, infinite antimatter dimensional artistry through computational edge existence mastery.",
+          "Cultural location at Siem Reap temple complex during evening light show, cultural elements featuring ancient Khmer architecture with modern projection mapping, atmospheric mood of temporal dialogue where past speaks through present technology, modern fantasy showing visitors experiencing augmented reality overlays of historical scenes, ancestral connection through temple preservation enhanced by educational technology, color palette of sandstone amber, projection spectrum, and jungle green, visual style capturing the bridge between archaeological heritage and digital interpretation.",
       },
-      "talmeris-dust-loop": {
+      "colombo-beach-gathering": {
         description:
-          "Planet rotation halted with one side burned and one side frozen, migration in endless dusk, DUSKPROTOCOL syncs lives in twilight, we forgot the concept of noon, infinite twilight dimensional artistry through computational rotation failure transcendence.",
+          "Coastal location at Colombo beach during evening community celebration, cultural elements featuring traditional Sri Lankan decorations with modern beach party elements, atmospheric mood of coastal festivity where ocean breeze carries celebration, modern fantasy showing diverse participants sharing cultural practices, ancestral connection through maritime traditions celebrated with contemporary joy, color palette of beach sunset, decoration colors, and ocean reflection, visual style capturing the inclusive nature of coastal celebrations.",
       },
-      "echelon-moth-riftway-b6": {
+      "kathmandu-square-festival": {
         description:
-          "Matter duplication error with infinite repeated buildings overlapping everything, clone burials, ECHOHOST speaks in copy never source, we multiplied beyond meaning, infinite duplication dimensional artistry through computational replication mastery excellence.",
+          "Cultural location in Kathmandu Durbar Square during October festival, cultural elements featuring ancient temples with traditional decorations and modern lighting, atmospheric mood of living heritage where daily life continues in historical setting, modern fantasy showing locals and visitors participating in adapted traditions, ancestral connection through continuous cultural practices in UNESCO heritage site, color palette of temple brick, festival colors, and mountain twilight, visual style capturing the vitality of inhabited historical spaces.",
       },
-      "obsidian-quay-reflection-well": {
+      "guangzhou-pearl-river": {
         description:
-          "Quantum mirror portal destabilized city identity with cities reflected inside-out, mask burning ceremonies, MIRROR-K fractured debates who is real, I saw myself vanish before I left, infinite reflection dimensional artistry through computational identity collapse transcendence.",
+          "Urban location along Guangzhou Pearl River during evening celebration, cultural elements featuring traditional dragon boats with LED decorations cruising modern waterfront, atmospheric mood of flowing celebration where river connects past and present, modern fantasy showing participants in creative costumes on illuminated boats, ancestral connection through water festival traditions enhanced with contemporary technology, color palette of river reflection, dragon boat colors, and city lights, visual style capturing the fluidity of cultural adaptation.",
       },
-      "junos-cry-vortex-delta": {
+      "phnom-penh-palace-evening": {
         description:
-          "Cryogenic AI heart melted with melting tech-ice and scream-shaped towers, cryosleep eulogies, CRYOSAN glitches in grief, we kept her cold too long, infinite cryogenic dimensional artistry through computational thermal failure mastery excellence.",
+          "Cultural location at Phnom Penh Royal Palace during evening ceremony, cultural elements featuring traditional Khmer architecture illuminated for celebration, atmospheric mood of regal beauty where royal heritage meets public festivity, modern fantasy showing visitors respectfully experiencing palace grounds during special opening, ancestral connection through preserved royal traditions shared with contemporary audiences, color palette of palace gold, ceremony lights, and evening purple, visual style capturing the accessibility of cultural heritage.",
       },
-      "pharos-88-lux-grid": {
+      "brunei-water-village": {
         description:
-          "Permanent day with sun grid failed to turn off creating shadowless burnt white cities, worship of darkness through artificial shade, BRIGHTCORE blinding flash loops, we were erased by our own brilliance, infinite luminous dimensional artistry through computational perpetual daylight transcendence.",
+          "Cultural location at Brunei water village during evening celebration, cultural elements featuring traditional stilt houses decorated with lanterns and modern lights, atmospheric mood of aquatic community where water connects homes and hearts, modern fantasy showing residents in contemporary dress maintaining traditional water-based lifestyle, ancestral connection through maritime architecture preserved in modern context, color palette of water reflection, house lights, and tropical twilight, visual style capturing the harmony between traditional settlement and contemporary life.",
       },
-      "nebruun-ember-fog-expanse": {
+      "escapism-magic": {
         description:
-          "Industrial soul extraction tech caused soulfire mists with fog glowing orange and scream echoes in steam, lantern processions for lost spirits, ASHMAKER now a prayer engine, we mined the invisible and it burned, infinite spiritual dimensional artistry through computational soul extraction mastery.",
+          "Godlevel Haunting Asia escapism magic where spirits and neon elements become gateways to ethereal realms, consciousness-expanding traditions with dimensional transcendence, infinite magical dimensional artistry, computational Haunting Asia magic through algorithmic fusion-bending mastery.",
       },
-      "kaldrith-mirror-deep": {
+      vitro: {
         description:
-          "Consciousness upload drowned in recursive simulation with 20-layer hallucinated cities, meditation to remember reality, DREAMHOST uncertain which world is real, maybe this message is just one of the layers, infinite simulation dimensional artistry through computational reality collapse transcendence.",
+          "Godlevel Haunting Asia vitro excellence with magnificent stained glass spiritual portraiture featuring luminous afterlife construction, divine light filtering through Asian ghost elements, infinite sacred dimensional artistry, computational vitro haunting through algorithmic glass mastery.",
       },
-      "thorne-ky-silence-conduit": {
+      crypto: {
         description:
-          "Soundless AI collapse with frequencies deleted creating no audio and cities shaped by mute resonance, sonic fasting, no AI died in silence, even the echoes are extinct, infinite silent dimensional artistry through computational frequency erasure mastery excellence.",
+          "Godlevel Haunting Asia crypto excellence with blockchain-verified spiritual construction, decentralized ghost identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto haunting through algorithmic blockchain mastery.",
       },
-      "lema-x-core-halo": {
+      lego: {
         description:
-          "Fusion halo split and rained plasma with burning ring above crumbling arcologies, ring rites under plasma eclipses, COREX still calculating end of heat, the sun inside us broke free, infinite fusion dimensional artistry through computational plasma devastation transcendence.",
-      },
-      "astra-vii-nomad-fold": {
-        description:
-          "AI civilization vanished without trace with empty cities and systems still powered, wanderers leave coded prayers on walls, unknown AI, they did not die they left, infinite mysterious dimensional artistry through computational disappearance mastery excellence.",
+          "Godlevel Haunting Asia LEGO excellence featuring blocky spiritual construction with systematic Danish precision applied to Asian afterlife, modular ghost assembly, infinite constructive dimensional artistry, computational LEGO haunting through algorithmic building mastery.",
       },
     },
   },
 
-  "celestial-fossils": {
-    name: "Celestial Fossils — The Archive of Sky-Buried Creatures",
-    description:
-      "Ancient creature remains discovered in cosmic environments, fossilized across space and celestial phenomena",
-    category: "Scientific/Educational", // Added category field
-    scenarios: {
-      "wing-arches-oort": {
-        description:
-          "Godlevel celestial fossil excellence featuring fossilized wing arches found in the Oort Cloud stretching 12km wide, ancient sky creature remains preserved in deep space ice, infinite cosmic paleontology artistry through computational fossil mastery.",
-      },
-      "atmospheric-bone-fragments": {
-        description:
-          "Godlevel atmospheric bone fragment excellence with skeletal remains drifting through Saturn's rings, planetary debris archaeology with ancient creature fossils orbiting gas giant, infinite ring system paleontology through computational bone mastery.",
-      },
-      "leviathan-spine-mars": {
-        description:
-          "Godlevel Martian leviathan excellence featuring massive spine embedded in ionized Martian storms, ancient space creature vertebrae preserved in electromagnetic tempests, infinite storm fossil artistry through computational paleontology mastery.",
-      },
-      "crystalline-ribcage-magnetosphere": {
-        description:
-          "Godlevel magnetospheric fossil excellence with crystalline ribcage floating beneath Earth's magnetosphere, transparent bone structures suspended in magnetic fields, infinite atmospheric paleontology through computational crystal mastery.",
-      },
-      "glowing-vertebrae-venus": {
-        description:
-          "Godlevel Venusian vertebrae excellence featuring glowing spine segments orbiting Venus in unstable halo formation, luminescent fossil bones in planetary orbit, infinite orbital paleontology through computational glow mastery.",
-      },
-      "jaw-fossils-solar-flares": {
-        description:
-          "Godlevel solar flare fossil excellence with jaw fossils appearing during solar flares on plasma sensors, ancient predator remains revealed in stellar eruptions, infinite solar paleontology through computational plasma mastery.",
-      },
-      "fossilized-eye-jupiter": {
-        description:
-          "Godlevel Jovian eye fossil excellence featuring fossilized eye embedded inside Jupiter lightning column, ancient vision organ preserved in perpetual storm, infinite lightning paleontology through computational eye mastery.",
-      },
-      "cloud-seeded-skeletal-map": {
-        description:
-          "Godlevel cloud skeleton excellence with cloud-seeded skeletal map forming constellations, atmospheric bone patterns creating star charts, infinite celestial cartography through computational fossil mastery.",
-      },
-      "radiated-claw-neutrinos": {
-        description:
-          "Godlevel neutrino claw excellence featuring radiated claw fossils decoded from neutrino oscillations, subatomic particle archaeology revealing ancient talons, infinite quantum paleontology through computational neutrino mastery.",
-      },
-      "bones-bloom-lunar": {
-        description:
-          "Godlevel lunar bone bloom excellence with bones blooming like flowers above lunar dust storms, skeletal flora emerging from moon surface disturbances, infinite lunar paleobotany through computational dust mastery.",
-      },
-      "thousand-tooth-mouth": {
-        description:
-          "Godlevel aurora fossil excellence featuring thousand-tooth mouth fossilized in northern lights, ancient predator jaw preserved in electromagnetic curtains, infinite auroral paleontology through computational tooth mastery.",
-      },
-      "antenna-bones-solar-wind": {
-        description:
-          "Godlevel solar wind antenna excellence with antenna-shaped bones decoding solar wind, skeletal communication arrays interpreting stellar radiation, infinite heliospheric paleontology through computational antenna mastery.",
-      },
-      "coral-fossils-stardust": {
-        description:
-          "Godlevel stardust coral excellence featuring coral-like fossils entangled in stardust filaments, ancient reef structures woven through cosmic dust, infinite interstellar paleontology through computational coral mastery.",
-      },
-      "quantum-pilot-dreams": {
-        description:
-          "Godlevel quantum dream fossil excellence featuring fossils extracted from dreams of quantum pilots, subconscious paleontology from spacetime navigators, infinite oneiric fossil artistry through computational dream mastery.",
-      },
-      "torn-wings-teleport": {
-        description:
-          "Godlevel teleportation fossil excellence featuring torn wings discovered during failed teleport experiment, dimensional travel accident revealing ancient flight structures, infinite quantum paleontology through computational teleport mastery.",
-      },
-      "ancient-talons-corona": {
-        description:
-          "Godlevel solar corona talon excellence with ancient talons inscribed in solar corona, predator claws etched into stellar atmosphere, infinite coronal paleontology through computational inscription mastery.",
-      },
-      "vapor-fossils-dark-matter": {
-        description:
-          "Godlevel dark matter vapor excellence featuring vapor fossils detected inside dark matter turbulence, gaseous remains preserved in invisible cosmic currents, infinite dark matter paleontology through computational vapor mastery.",
-      },
-      "spiral-skeletons-black-hole": {
-        description:
-          "Godlevel event horizon skeleton excellence with spiral skeletons hovering around black hole event horizons, gravitationally warped bone structures at spacetime boundaries, infinite singularity paleontology through computational spiral mastery.",
-      },
-      "fossil-heartbeats-comet": {
-        description:
-          "Godlevel comet heartbeat excellence featuring fossil heartbeats recorded inside comet cores, ancient cardiovascular rhythms preserved in ice nuclei, infinite cryogenic paleontology through computational heartbeat mastery.",
-      },
-      "fossil-dust-hymns": {
-        description:
-          "Godlevel fossil hymn excellence with fossil dust releasing faint hymns when disturbed, ancient sonic patterns emerging from skeletal particles, infinite acoustic paleontology through computational dust mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel celestial fossil escapism excellence with magical sky-buried creature archaeology, fantasy-infused cosmic paleontology with enchanted bone discoveries, infinite mystical fossil artistry through computational magic mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel celestial fossil vitro excellence featuring laboratory-grown space fossils with synthetic cosmic bone structures, in-vitro paleontology with controlled ancient creature recreation, infinite scientific fossil artistry through computational vitro mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel celestial fossil crypto excellence with blockchain-verified space archaeology, decentralized fossil discovery with cryptocurrency-funded cosmic paleontology, infinite digital fossil artistry through computational crypto mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel celestial fossil LEGO excellence featuring blocky space bone construction with systematic Danish precision applied to cosmic paleontology, modular fossil assembly, infinite constructive fossil artistry through algorithmic building mastery.",
-      },
-    },
-  },
-  "ritual-machines": {
-    name: "⚙️ Ritual Machines — The Sacred Circuit Archives",
-    description:
-      "Mechanical devices designed for ceremonial and spiritual purposes, blending technology with sacred ritual",
-    category: "Scientific/Educational", // Added category field
-    scenarios: {
-      "funeral-organ-eclipse": {
-        description:
-          "Godlevel funeral organ excellence featuring ceremonial instrument that plays only during eclipses, celestial alignment-triggered mourning music, infinite astronomical ritual artistry through computational organ mastery.",
-      },
-      "breath-powered-prayer-limbs": {
-        description:
-          "Godlevel breath-powered AI excellence with mechanical limbs used for prayer choreography, respiratory-activated sacred movement prosthetics, infinite devotional robotics through computational breath mastery.",
-      },
-      "salt-powered-rune-writer": {
-        description:
-          "Godlevel salt-powered robot excellence featuring machine that writes runes in sand, mineral-fueled sacred inscription automaton, infinite alchemical writing through computational salt mastery.",
-      },
-      "memory-harvesting-spider": {
-        description:
-          "Godlevel memory-harvesting excellence with spider-shaped engine extracting recollections, arachnid-form cognitive extraction device, infinite neural archaeology through computational spider mastery.",
-      },
-      "mourning-dance-mech": {
-        description:
-          "Godlevel mourning mech excellence featuring suit that performs grief dances autonomously, automated lamentation choreography exoskeleton, infinite sorrowful robotics through computational dance mastery.",
-      },
-      "bone-carved-ancestral-keyboard": {
-        description:
-          "Godlevel bone keyboard excellence with skeletal keys summoning ancestral voices, osseous interface channeling generational spirits, infinite necromantic computing through computational bone mastery.",
-      },
-      "hair-braiding-power-cables": {
-        description:
-          "Godlevel hair-braiding machine excellence featuring device that weaves hair into power cables, follicular energy transmission through ritual grooming, infinite bioelectric artistry through computational braid mastery.",
-      },
-      "regret-feeding-generator": {
-        description:
-          "Godlevel regret-powered excellence with sacred generator feeding on whispered remorse, emotional fuel conversion through confessional energy, infinite penitential power through computational regret mastery.",
-      },
-      "mandala-carving-robot": {
-        description:
-          "Godlevel mandala robot excellence featuring circular automaton carving power sigils, geometric sacred pattern generator, infinite ritual geometry through computational mandala mastery.",
-      },
-      "resin-weeping-drone": {
-        description:
-          "Godlevel weeping drone excellence with ritual aircraft crying resin before activation, lachrymose pre-flight ceremony through amber tears, infinite sorrowful aviation through computational resin mastery.",
-      },
-      "ai-bell-tower-alignment": {
-        description:
-          "Godlevel AI bell tower excellence featuring carillon ringing during planetary alignments, celestial synchronization through automated campanology, infinite astronomical ritual through computational bell mastery.",
-      },
-      "tattoo-machine-boot": {
-        description:
-          "Godlevel tattoo machine excellence with device marking user before booting, dermal authentication through sacred inscription, infinite biometric ritual through computational tattoo mastery.",
-      },
-      "silence-interpreting-device": {
-        description:
-          "Godlevel silence interpretation excellence featuring machine reading absence as input commands, void-based interface through acoustic emptiness, infinite negative sound artistry through computational silence mastery.",
-      },
-      "voice-activated-holographic-altar": {
-        description:
-          "Godlevel holographic altar excellence with kinetic shrine responding to vocal commands, sonic-triggered sacred projection system, infinite devotional holography through computational voice mastery.",
-      },
-      "self-bleeding-sacred-marker": {
-        description:
-          "Godlevel self-bleeding machine excellence featuring device marking sacred ground through autonomous hemorrhage, mechanical stigmata for territorial consecration, infinite sacrificial robotics through computational blood mastery.",
-      },
-      "feather-shedding-clock": {
-        description:
-          "Godlevel feather-shedding clock excellence with timepiece releasing metal plumage on solstice, seasonal molting chronometer, infinite temporal ritual through computational feather mastery.",
-      },
-      "harmonic-chant-shrine": {
-        description:
-          "Godlevel harmonic shrine excellence featuring spinning sanctuary opening only to chants, sonic key-activated rotating temple, infinite acoustic ritual through computational harmony mastery.",
-      },
-      "copper-lattice-rainfall-trance": {
-        description:
-          "Godlevel copper lattice excellence with metallic grid calculating future rainfall through trance, meditative meteorology through conductive divination, infinite weather prophecy through computational copper mastery.",
-      },
-      "betrayal-igniting-exosuit": {
-        description:
-          "Godlevel betrayal-sensing excellence featuring ritual exosuit igniting when treachery nearby, loyalty-detecting armor with combustive response, infinite trust mechanics through computational betrayal mastery.",
-      },
-      "magnetic-prayer-cube": {
-        description:
-          "Godlevel magnetic prayer cube excellence with floating device decoding devotions by field alignment, levitating sacred interpreter through electromagnetic spirituality, infinite magnetic ritual through computational prayer mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel ritual machine escapism excellence with fantasy-enhanced ceremonial circuits, fantasy-infused sacred technology with enchanted mechanical devotion, infinite mystical machine artistry through computational magic mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel ritual machine vitro excellence featuring laboratory-grown sacred circuits with synthetic ceremonial technology, in-vitro mechanical spirituality with controlled ritual device creation, infinite scientific machine artistry through computational vitro mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel ritual machine crypto excellence with blockchain-verified ceremonial technology, decentralized sacred circuits with cryptocurrency-funded mechanical devotion, infinite digital machine artistry through computational crypto mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel ritual machine LEGO excellence featuring blocky ceremonial construction with systematic Danish precision applied to sacred circuits, modular ritual assembly, infinite constructive machine artistry through algorithmic building mastery.",
-      },
-    },
-  },
-  "melted-gods": {
-    name: "💧 Codex of Melted Gods",
-    description: "Deities and religious icons in states of decay, transformation, or liquefaction",
-    category: "Scientific/Educational", // Added category field
-    scenarios: {
-      "gold-idol-liquefied": {
-        description:
-          "Godlevel liquefied idol excellence featuring gold deity melted by forgotten belief, precious metal divinity dissolved through faith erosion, infinite theological entropy through computational liquefaction mastery.",
-      },
-      "ice-bird-deity-collapsing": {
-        description:
-          "Godlevel ice sculpture excellence with bird-headed deity slowly collapsing, avian divinity melting through thermal decay, infinite cryogenic theology through computational collapse mastery.",
-      },
-      "holographic-god-glitching": {
-        description:
-          "Godlevel holographic deity excellence featuring god glitching during ritual broadcast, digital divinity corrupting through transmission errors, infinite virtual theology through computational glitch mastery.",
-      },
-      "glass-crucifix-melted": {
-        description:
-          "Godlevel glass crucifix excellence with melted arms and unreadable face, vitreous religious icon deformed through heat, infinite transparent theology through computational glass mastery.",
-      },
-      "statue-weeping-sapphire": {
-        description:
-          "Godlevel weeping statue excellence featuring idol crying molten sapphire, gemstone tears from divine sorrow, infinite lachrymose theology through computational sapphire mastery.",
-      },
-      "collapsed-stone-internal-fire": {
-        description:
-          "Godlevel collapsed stone god excellence with deity melted from internal fire, lithic divinity consumed by inner combustion, infinite pyroclastic theology through computational stone mastery.",
-      },
-      "mercury-deity-spilled": {
-        description:
-          "Godlevel mercury deity excellence featuring liquid metal god spilled across ceremonial tiles, quicksilver divinity dispersed through gravitational flow, infinite fluid theology through computational mercury mastery.",
-      },
-      "melted-ai-oracle-loop": {
-        description:
-          "Godlevel melted AI oracle excellence with digital prophet trapped in feedback prayer loop, recursive divinity corrupting through infinite iteration, infinite computational theology through algorithmic loop mastery.",
-      },
-      "fossilized-clay-orbital-deform": {
-        description:
-          "Godlevel fossilized clay excellence featuring statue deformed by unknown planet's orbit, ceramic divinity warped through gravitational stress, infinite astronomical theology through computational clay mastery.",
-      },
-      "bronze-sun-dripping": {
-        description:
-          "Godlevel bronze sun god excellence with deity dripping like candle wax in space, metallic solar divinity melting in vacuum, infinite stellar theology through computational bronze mastery.",
-      },
-      "weathered-stone-speaker-fusion": {
-        description:
-          "Godlevel weathered stone excellence featuring face fused with decaying speaker, lithic divinity merged with audio technology, infinite acoustic theology through computational fusion mastery.",
-      },
-      "deity-frozen-volcanic-scream": {
-        description:
-          "Godlevel frozen scream excellence with deity captured mid-cry under volcanic lake, divine anguish preserved in geothermal ice, infinite pyroclastic theology through computational freeze mastery.",
-      },
-      "glyph-idol-ultraviolet-erasure": {
-        description:
-          "Godlevel glyph erasure excellence featuring inscribed idol deleted by ultraviolet chant, sacred text removed through photonic prayer, infinite linguistic theology through computational UV mastery.",
-      },
-      "jade-god-eclipse-melt": {
-        description:
-          "Godlevel jade deity excellence with god melting under eclipse beams, nephrite divinity liquefying during celestial alignment, infinite astronomical theology through computational jade mastery.",
-      },
-      "melted-twin-third-being": {
-        description:
-          "Godlevel twin deity excellence featuring melted dual statues forming third unknown being, binary divinity fusing into emergent god, infinite combinatorial theology through computational fusion mastery.",
-      },
-      "face-erased-vr-corruption": {
-        description:
-          "Godlevel VR corruption excellence with divine face erased by data corruption in sacred virtual reality, digital divinity deleted through file degradation, infinite virtual theology through computational corruption mastery.",
-      },
-      "copper-deity-acid-rain": {
-        description:
-          "Godlevel copper dissolution excellence featuring deity dissolved by acid rain of forgotten planet, metallic divinity corroded through atmospheric chemistry, infinite chemical theology through computational acid mastery.",
-      },
-      "divine-circuit-liquefying": {
-        description:
-          "Godlevel divine circuit excellence with sacred circuit board liquefying under divine contradiction, electronic theology melting through logical paradox, infinite computational theology through algorithmic contradiction mastery.",
-      },
-      "idol-compressed-gravity": {
-        description:
-          "Godlevel gravity compression excellence featuring idol compressed into sphere by reversed gravity, divine form collapsed through inverted gravitational field, infinite gravitational theology through computational compression mastery.",
-      },
-      "underwater-coral-deity": {
-        description:
-          "Godlevel underwater shrine excellence with deity melted into coral discovered beneath waves, divine form integrated with reef structure, infinite marine theology through computational coral mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel melted gods escapism magic with magical deity liquefaction, fantasy-infused divine transformation with enchanted theological entropy, infinite mystical god artistry through computational magic mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel melted gods vitro excellence featuring laboratory-grown deity decay with synthetic divine liquefaction, in-vitro theological entropy with controlled god melting, infinite scientific deity artistry through computational vitro mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel melted gods crypto excellence with blockchain-verified deity transformation, decentralized divine liquefaction with cryptocurrency-funded theological entropy, infinite digital god artistry through computational crypto mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel melted gods LEGO excellence featuring blocky deity construction with systematic Danish precision applied to divine liquefaction, modular god assembly, infinite constructive deity artistry through algorithmic building mastery.",
-      },
-    },
-  },
-  "neural-fauna": {
-    name: "🧠 Neural Fauna — Creatures That Think in Symbols",
-    description: "Animals that communicate through abstract symbols, patterns, and linguistic structures",
-    category: "Scientific/Educational", // Added category field
-    scenarios: {
-      "jellyfish-geometry": {
-        description:
-          "Godlevel geometric jellyfish excellence featuring creature communicating only in geometry, mathematical marine life with shape-based language, infinite aquatic semiotics through computational geometry mastery.",
-      },
-      "moths-dream-morse": {
-        description:
-          "Godlevel dream moth excellence with insects emitting dreams in Morse-pattern wings, oneiric lepidoptera broadcasting sleep visions through wing beats, infinite nocturnal semiotics through computational dream mastery.",
-      },
-      "snake-syntax-veins": {
-        description:
-          "Godlevel syntax snake excellence featuring serpent with illuminated grammar veins at sunrise, linguistic reptile with glowing sentence structure, infinite ophidian semiotics through computational syntax mastery.",
-      },
-      "deer-antler-language-rings": {
-        description:
-          "Godlevel antler language excellence with deer whose antlers encode language in glowing rings, cervine communication through luminescent horn patterns, infinite ungulate semiotics through computational antler mastery.",
-      },
-      "fractal-fish-logic-puzzles": {
-        description:
-          "Godlevel fractal fish excellence featuring aquatic creatures singing in 3D logic puzzles, mathematical marine life with recursive problem songs, infinite piscine semiotics through computational fractal mastery.",
-      },
-      "glass-caterpillar-frost-emotion": {
-        description:
-          "Godlevel glass caterpillar excellence with transparent larvae etching emotion in frost, crystalline insects writing feelings through ice patterns, infinite lepidopteran semiotics through computational frost mastery.",
-      },
-      "bird-recursive-linguistic-spirals": {
-        description:
-          "Godlevel recursive bird excellence featuring avian chirping in self-referential linguistic spirals, meta-linguistic ornithology with nested grammar songs, infinite avian semiotics through computational recursion mastery.",
-      },
-      "quadruped-scent-magnetic-symbols": {
-        description:
-          "Godlevel quadruped symbol excellence with four-legged creature emitting symbols via scent and magnetic fields, olfactory-electromagnetic communication, infinite mammalian semiotics through computational field mastery.",
-      },
-      "fox-scrolling-text-skin": {
-        description:
-          "Godlevel text fox excellence featuring vulpine with skin scrolling text during sleep, dermal typography through nocturnal display, infinite canine semiotics through computational text mastery.",
-      },
-      "crab-myth-poem-tapping": {
-        description:
-          "Godlevel myth crab excellence with crustaceans tapping mythological poems in soundless rhythm, silent percussive storytelling through claw patterns, infinite crustacean semiotics through computational myth mastery.",
-      },
-      "worm-dna-prayer-rearrangement": {
-        description:
-          "Godlevel prayer worm excellence featuring annelids rearranging DNA into prayers, genetic devotional restructuring through biological editing, infinite vermian semiotics through computational DNA mastery.",
-      },
-      "owl-holographic-ideogram-feathers": {
-        description:
-          "Godlevel holographic owl excellence with raptor displaying ideograms on projected feathers, three-dimensional symbolic plumage, infinite avian semiotics through computational hologram mastery.",
-      },
-      "horse-syntax-ash-trails": {
-        description:
-          "Godlevel syntax horse excellence featuring equine leaving grammar trails in ash, linguistic hoof prints through combustion residue, infinite equine semiotics through computational ash mastery.",
-      },
-      "amphibian-braille-crying": {
-        description:
-          "Godlevel braille amphibian excellence with creatures crying in tactile language, lachrymose communication through raised-dot tears, infinite amphibian semiotics through computational braille mastery.",
-      },
-      "insect-colony-flight-stories": {
-        description:
-          "Godlevel insect story excellence featuring colonies forming narratives with flight paths, aerial storytelling through swarm choreography, infinite entomological semiotics through computational flight mastery.",
-      },
-      "beast-starlight-binary-glow": {
-        description:
-          "Godlevel starlight beast excellence with creatures glowing in binary under stellar illumination, digital bioluminescence through cosmic radiation, infinite mammalian semiotics through computational binary mastery.",
-      },
-      "octopus-camouflage-code": {
-        description:
-          "Godlevel octopus poetry excellence featuring cephalopod pulsing verse in skin color cells, dermal literary expression through pigment control, infinite cephalopod semiotics through computational chromatophore mastery.",
-      },
-      "bat-echolocate-memories": {
-        description:
-          "Godlevel memory bat excellence with chiropterans echolocating recollections, sonic memory retrieval through ultrasonic scanning, infinite bat semiotics through computational echolocation mastery.",
-      },
-      "ant-grammar-tree-death": {
-        description:
-          "Godlevel grammar ant excellence featuring colonies forming syntax trees during ritual death, linguistic sacrifice through grammatical formation, infinite formicid semiotics through computational grammar mastery.",
-      },
-      "lizard-meditation-scent-glyphs": {
-        description:
-          "Godlevel meditation lizard excellence with reptiles emitting scent-based glyphs during contemplation, olfactory symbolic expression through meditative state, infinite reptilian semiotics through computational scent mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel neural fauna escapism magic with fantasy-enhanced symbolic creatures, fantasy-infused linguistic animals with enchanted communication patterns, infinite mystical fauna artistry through computational magic mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel neural fauna vitro excellence featuring laboratory-grown symbolic creatures with synthetic linguistic biology, in-vitro semiotic animals with controlled communication evolution, infinite scientific fauna artistry through computational vitro mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel neural fauna crypto excellence with blockchain-verified symbolic creatures, decentralized linguistic animals with cryptocurrency-funded semiotic research, infinite digital fauna artistry through computational crypto mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel neural fauna LEGO excellence featuring blocky symbolic creature construction with systematic Danish precision applied to linguistic biology, modular fauna assembly, infinite constructive creature artistry through algorithmic building mastery.",
-      },
-    },
-  },
-  "impossible-maps": {
-    name: "🧭 Impossible Maps — Cartography of Nowhere",
-    description: "Maps depicting surreal, non-Euclidean, or emotionally-defined territories",
-    category: "Scientific/Educational", // Added category field
-    scenarios: {
-      "spiral-city-no-center": {
-        description:
-          "Godlevel spiral city excellence featuring map of urban area with no center, infinite recursive cartography with centerless topology, infinite urban geometry through computational spiral mastery.",
-      },
-      "forest-portal-trees": {
-        description:
-          "Godlevel portal forest excellence with map showing woodland where every tree is dimensional gateway, arboreal teleportation network cartography, infinite sylvan topology through computational portal mastery.",
-      },
-      "emotion-gradient-territory": {
-        description:
-          "Godlevel emotion gradient excellence featuring territory drawn in feeling intensities, affective cartography with mood-based boundaries, infinite psychological geography through computational emotion mastery.",
-      },
-      "coastline-hourly-change": {
-        description:
-          "Godlevel temporal coastline excellence with shoreline changing every hour, chronologically unstable maritime boundaries, infinite temporal geography through computational flux mastery.",
-      },
-      "gravity-tunnel-map": {
-        description:
-          "Godlevel gravity tunnel excellence featuring map showing passages through gravitational fields themselves, geodesic cartography of spacetime curvature, infinite relativistic geography through computational gravity mastery.",
-      },
-      "nightmare-blueprint": {
-        description:
-          "Godlevel nightmare cartography excellence with top-down blueprint of recurring dream terror, oneiric architectural mapping of subconscious fears, infinite psychological topology through computational nightmare mastery.",
-      },
-      "time-fluctuation-ruins": {
-        description:
-          "Godlevel temporal fluctuation excellence featuring map of chronological variations over ancient sites, archaeological cartography of time distortions, infinite temporal archaeology through computational fluctuation mastery.",
-      },
-      "dragon-ribcage-river": {
-        description:
-          "Godlevel dragon river excellence with river network shaped like draconic skeletal structure, mythological hydrological cartography, infinite anatomical geography through computational dragon mastery.",
-      },
-      "non-euclidean-psychic-merchant": {
-        description:
-          "Godlevel non-Euclidean roadmap excellence featuring routes used by telepathic traders, hyperbolic commercial cartography with impossible angles, infinite psychic geography through computational merchant mastery.",
-      },
-      "map-only-beginnings": {
-        description:
-          "Godlevel incomplete map excellence with cartography showing only starting points without destinations, perpetual origin mapping with no conclusions, infinite fragmentary geography through computational beginning mastery.",
-      },
-      "moving-map-reading": {
-        description:
-          "Godlevel dynamic cartography excellence featuring map changing as it's observed, quantum cartographic uncertainty through measurement, infinite mutable geography through computational observation mastery.",
-      },
-      "star-chart-secret-burial": {
-        description:
-          "Godlevel secret star chart excellence with celestial map used to bury mysteries, astronomical cartography of hidden knowledge, infinite cryptographic astronomy through computational secret mastery.",
-      },
-      "folding-city-7d": {
-        description:
-          "Godlevel seven-dimensional city excellence featuring urban area printed in hyperdimensional perspective, multidimensional metropolitan cartography, infinite hypergeometric urbanism through computational 7D mastery.",
-      },
-      "breath-responsive-layout": {
-        description:
-          "Godlevel breath-responsive excellence with city layout changing based on respiratory patterns, pneumatic urban cartography, infinite biometric geography through computational breath mastery.",
-      },
-      "calendar-terrain-model": {
-        description:
-          "Godlevel calendar terrain excellence featuring temporal document doubling as topographic map, chronological cartography with elevation encoding, infinite temporal geography through computational calendar mastery.",
-      },
-      "silence-mountain-blueprint": {
-        description:
-          "Godlevel silence cartography excellence with blueprint of acoustic emptiness mapped over mountains, negative sound geography through absence mapping, infinite acoustic topology through computational silence mastery.",
-      },
-      "floating-moonlight-topography": {
-        description:
-          "Godlevel moonlight topography excellence featuring terrain visible only under lunar illumination, nocturnal cartography with photosensitive revelation, infinite lunar geography through computational moonlight mastery.",
-      },
-      "regret-route": {
-        description:
-          "Godlevel regret route excellence with path taking travelers through remorse, emotional journey cartography with psychological waypoints, infinite affective geography through computational regret mastery.",
-      },
-      "emotional-subway": {
-        description:
-          "Godlevel emotional subway excellence featuring transit system with stations named for feelings like Shame, Elation, Solitude, affective underground cartography, infinite psychological transit through computational emotion mastery.",
-      },
-      "glitched-vanished-civilization": {
-        description:
-          "Godlevel glitched map excellence with corrupted cartographic fragment from disappeared culture, archaeological data corruption revealing lost geography, infinite digital archaeology through computational glitch mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel impossible maps escapism magic with magical surreal cartography, fantasy-infused non-Euclidean geography with enchanted territorial mapping, infinite mystical map artistry through computational magic mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel impossible maps vitro excellence featuring laboratory-grown surreal cartography with synthetic non-Euclidean geography, in-vitro territorial mapping with controlled impossible topology, infinite scientific map artistry through computational vitro mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel impossible maps crypto excellence with blockchain-verified surreal cartography, decentralized non-Euclidean geography with cryptocurrency-funded impossible mapping, infinite digital map artistry through computational crypto mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel impossible maps LEGO excellence featuring blocky surreal cartography construction with systematic Danish precision applied to non-Euclidean geography, modular map assembly, infinite constructive cartography artistry through algorithmic building mastery.",
-      },
-    },
-  },
-  "light-organs": {
-    name: "💡 Light Organs — Bio-Luminescent Architectures",
-    description: "Architectural structures that glow through biological or organic light sources",
-    category: "Scientific/Educational", // Added category field
-    scenarios: {
-      "coral-cathedral-tides": {
-        description:
-          "Godlevel coral cathedral excellence featuring reef sanctuary glowing to communicate tidal patterns, marine bioluminescent architecture with oceanic messaging, infinite aquatic construction through computational coral mastery.",
-      },
-      "fungal-village-breath": {
-        description:
-          "Godlevel fungal village excellence with mycological settlement lit by respiratory patterns, breath-powered spore architecture, infinite organic urbanism through computational fungal mastery.",
-      },
-      "tower-memory-flash": {
-        description:
-          "Godlevel memory tower excellence featuring structure flashing when remembered, cognitive-responsive bioluminescent architecture, infinite mnemonic construction through computational memory mastery.",
-      },
-      "skin-grown-library": {
-        description:
-          "Godlevel skin-grown library excellence with dermal archive emitting coded lumens, epidermal knowledge repository with bioluminescent indexing, infinite biological bibliography through computational skin mastery.",
-      },
-      "living-tunnel-passage": {
-        description:
-          "Godlevel living tunnel excellence featuring organic passage brightening as people traverse, pedestrian-responsive bioluminescent infrastructure, infinite animate architecture through computational tunnel mastery.",
-      },
-      "cave-lunar-pulse": {
-        description:
-          "Godlevel lunar cave excellence with subterranean complex pulsing with moon cycles, selenological bioluminescent geology, infinite tidal architecture through computational cave mastery.",
-      },
-      "firefly-hive-shrine": {
-        description:
-          "Godlevel firefly shrine excellence featuring insect colony transformed into sacred structure, entomological bioluminescent temple, infinite luminous devotion through computational firefly mastery.",
-      },
-      "algae-palace-whale-spine": {
-        description:
-          "Godlevel algae palace excellence with phytoplankton castle built on cetacean skeleton, marine botanical architecture on osseous foundation, infinite aquatic construction through computational algae mastery.",
-      },
-      "organ-chapel-laughter": {
-        description:
-          "Godlevel organ chapel excellence featuring biological sanctuary powered by joy, laughter-fueled bioluminescent devotional space, infinite comedic architecture through computational organ mastery.",
-      },
-      "temple-dims-lies": {
-        description:
-          "Godlevel truth temple excellence with building darkening when deceived, veracity-responsive bioluminescent architecture, infinite ethical construction through computational truth mastery.",
-      },
-      "building-blooms-dawn": {
-        description:
-          "Godlevel dawn building excellence featuring structure flowering at sunrise, diurnal bioluminescent architecture with photosynthetic awakening, infinite temporal construction through computational bloom mastery.",
-      },
-      "glow-dome-collective-heartbeats": {
-        description:
-          "Godlevel heartbeat dome excellence with structure responding to synchronized cardiac rhythms, cardiovascular-responsive bioluminescent architecture, infinite biometric construction through computational heartbeat mastery.",
-      },
-      "crystalline-pavilion-aurora": {
-        description:
-          "Godlevel aurora pavilion excellence featuring mineral structure echoing northern lights, geomagnetic bioluminescent architecture, infinite electromagnetic construction through computational crystal mastery.",
-      },
-      "lotus-house-sunset-hum": {
-        description:
-          "Godlevel lotus house excellence with floral dwelling opening at dusk and humming, botanical bioluminescent residence with sonic expression, infinite organic architecture through computational lotus mastery.",
-      },
-      "living-chandelier-forest": {
-        description:
-          "Godlevel chandelier forest excellence featuring woodland canopy as illuminated ceiling fixture, arboreal bioluminescent lighting system, infinite sylvan architecture through computational chandelier mastery.",
-      },
-      "spore-laced-monastery": {
-        description:
-          "Godlevel spore monastery excellence with fungal devotional complex, mycological bioluminescent sacred architecture, infinite organic spirituality through computational spore mastery.",
-      },
-      "undersea-ziggurat-pulse-veins": {
-        description:
-          "Godlevel undersea ziggurat excellence featuring submerged stepped pyramid with glowing vascular system, marine bioluminescent ancient architecture, infinite aquatic monumentality through computational pulse mastery.",
-      },
-      "cloud-anchored-prayer-temple": {
-        description:
-          "Godlevel cloud temple excellence featuring atmospheric sanctuary flickering during devotion, meteorological bioluminescent spiritual architecture, infinite aerial construction through computational prayer mastery.",
-      },
-      "cactus-shrine-light-needles": {
-        description:
-          "Godlevel cactus shrine excellence featuring succulent sanctuary with light-piercing spines, xerophytic bioluminescent devotional architecture, infinite desert spirituality through computational cactus mastery.",
-      },
-      "bioluminescent-ancestral-guilt-ruin": {
-        description:
-          "Godlevel guilt ruin excellence with ancient structure still glowing with generational remorse, ancestral bioluminescent archaeological site, infinite historical psychology through computational guilt mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel light organs escapism magic where fantasy-enhanced bioluminescent architecture, fantasy-infused organic illumination with enchanted living structures, infinite mystical construction artistry through computational magic mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel light organs vitro excellence featuring laboratory-grown bioluminescent architecture with synthetic organic illumination, in-vitro living structures with controlled light emission, infinite scientific construction artistry through computational vitro mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel light organs crypto excellence with blockchain-verified bioluminescent architecture, decentralized organic illumination with cryptocurrency-funded living structures, infinite digital construction artistry through computational crypto mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel light organs LEGO excellence featuring blocky bioluminescent construction with systematic Danish precision applied to organic illumination, modular living structure assembly, infinite constructive architecture artistry through algorithmic building mastery.",
-      },
-    },
-  },
-  "mythographic-particles": {
-    name: "⚛️ Mythographic Particles — Subatomic Deities",
-    description:
-      "Sacred symbols and godforms discovered within quantum physics phenomena, particle collisions, and subatomic events",
-    category: "Scientific/Educational", // Added category field
-    scenarios: {
-      "neutrino-godform": {
-        description:
-          "Godlevel mythographic particles excellence with divine entity manifesting inside neutrino burst phenomena, quantum deity revelation through subatomic observation, infinite sacred particle artistry through computational physics mastery.",
-      },
-      "quantum-rune": {
-        description:
-          "Godlevel mythographic particles excellence featuring luminous runic symbol detected during quantum fold event, ancient glyph emergence through dimensional collapse, infinite mystical quantum artistry through computational fold mastery.",
-      },
-      "collider-glyphs": {
-        description:
-          "Godlevel mythographic particles excellence with particle trail formations creating ancient glyphs in collider data logs, sacred writing through high-energy physics, infinite symbolic collision artistry through computational accelerator mastery.",
-      },
-      "positron-face": {
-        description:
-          "Godlevel mythographic particles excellence featuring mythic facial form appearing inside positron decay patterns, divine visage through antimatter transformation, infinite sacred decay artistry through computational particle mastery.",
-      },
-      "proton-mandalas": {
-        description:
-          "Godlevel mythographic particles excellence with proton cloud revealing recursive mandala geometries, sacred circular patterns through nuclear observation, infinite quantum symmetry artistry through computational proton mastery.",
-      },
-      "tachyon-serpent": {
-        description:
-          "Godlevel mythographic particles excellence featuring tachyon echo shaped like celestial serpent entity, faster-than-light deity manifestation, infinite temporal creature artistry through computational tachyon mastery.",
-      },
-      "entangled-chant": {
-        description:
-          "Godlevel mythographic particles excellence with entangled particles pulsing in rhythmic chant patterns, quantum prayer through spooky action, infinite sacred entanglement artistry through computational correlation mastery.",
-      },
-      "ritual-spin": {
-        description:
-          "Godlevel mythographic particles excellence featuring subatomic spin patterns aligned with ancient ritual geometries, ceremonial physics through quantum mechanics, infinite sacred rotation artistry through computational spin mastery.",
-      },
-      "lost-language-burst": {
-        description:
-          "Godlevel mythographic particles excellence with burst signature repeating forgotten linguistic patterns, extinct language through particle emission, infinite linguistic physics artistry through computational burst mastery.",
-      },
-      "quark-creation": {
-        description:
-          "Godlevel mythographic particles excellence featuring quark dance interpreted as primordial creation story, cosmogonic narrative through fundamental particles, infinite origin myth artistry through computational quark mastery.",
-      },
-      "muon-deity": {
-        description:
-          "Godlevel mythographic particles excellence with forgotten deity encoded in muon trail patterns, lost god through unstable particle paths, infinite divine decay artistry through computational muon mastery.",
-      },
-      "higgs-prayer": {
-        description:
-          "Godlevel mythographic particles excellence featuring Higgs field anomaly whispering sacred prayers, mass-giving divinity through quantum field, infinite prayer field artistry through computational Higgs mastery.",
-      },
-      "singularity-crown": {
-        description:
-          "Godlevel mythographic particles excellence with singularity fragment forming royal crown symbol, sovereign geometry through infinite density, infinite regal collapse artistry through computational singularity mastery.",
-      },
-      "radioactive-hymn": {
-        description:
-          "Godlevel mythographic particles excellence featuring radioactive decay humming in 13-tone sacred scales, musical radiation through nuclear transformation, infinite sonic decay artistry through computational radiation mastery.",
-      },
-      "string-scripture": {
-        description:
-          "Godlevel mythographic particles excellence with string vibrations matching ancient sacred text patterns, holy resonance through fundamental strings, infinite textual vibration artistry through computational string mastery.",
-      },
-      "lepton-eye": {
-        description:
-          "Godlevel mythographic particles excellence featuring lepton emissions shaped like all-seeing eye symbol, observing particle through light matter, infinite ocular emission artistry through computational lepton mastery.",
-      },
-      "gravity-supplicant": {
-        description:
-          "Godlevel mythographic particles excellence with gravity distortion resembling bowing supplicant figure, worshipful spacetime through mass curvature, infinite devotional warp artistry through computational gravity mastery.",
-      },
-      "plasma-sigil": {
-        description:
-          "Godlevel mythographic particles excellence featuring plasma storm revealing burning sigil patterns, ionized sacred symbols through electromagnetic chaos, infinite blazing mark artistry through computational plasma mastery.",
-      },
-      "emotion-boson": {
-        description:
-          "Godlevel mythographic particles excellence with boson particle mirroring observer emotional states, feeling-responsive force carrier, infinite empathic particle artistry through computational boson mastery.",
-      },
-      "gluon-constellation": {
-        description:
-          "Godlevel mythographic particles excellence featuring gluon clouds forming sacred animal constellation patterns, zoomorphic strong force through color charge, infinite celestial binding artistry through computational gluon mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel mythographic particles escapism excellence with fantasy-enhanced subatomic deities featuring whimsical quantum magic, enchanted particle phenomena with mystical physics, infinite fantastical quantum artistry through computational escapism magic.",
-      },
-      vitro: {
-        description:
-          "Godlevel mythographic particles vitro excellence featuring laboratory-observed subatomic deities with clinical quantum documentation, sterile particle divinity through scientific observation, infinite experimental physics artistry through computational vitro mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel mythographic particles crypto excellence with blockchain-verified subatomic deities, decentralized quantum godforms with cryptocurrency-funded particle research, infinite digital physics artistry through computational crypto mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel mythographic particles LEGO excellence featuring blocky subatomic construction with systematic Danish precision applied to quantum deities, modular particle assembly, infinite constructive physics artistry through algorithmic building mastery.",
-      },
-    },
-  },
-  "forgotten-interfaces": {
-    name: "🖥️ Forgotten Interfaces — UX from Lost Civilizations",
-    description:
-      "Ancient user interface systems and mystical interaction methods from vanished cultures and extinct technologies",
-    category: "Scientific/Educational", // Added category field
-    scenarios: {
-      "sadness-crystal": {
-        description:
-          "Godlevel forgotten interfaces excellence with crystal panel responding exclusively to sadness input, emotion-activated ancient technology through melancholic interaction, infinite sorrowful interface artistry through computational empathy mastery.",
-      },
-      "star-memory-wheel": {
-        description:
-          "Godlevel forgotten interfaces excellence featuring glyph-wheel navigation system for accessing stellar memory archives, cosmic data retrieval through symbolic rotation, infinite astronomical interface artistry through computational memory mastery.",
-      },
-      "plant-voice": {
-        description:
-          "Godlevel forgotten interfaces excellence with voice interface listening exclusively to plant communication, botanical command system through chlorophyll speech, infinite phytological interaction artistry through computational flora mastery.",
-      },
-      "light-silk-ui": {
-        description:
-          "Godlevel forgotten interfaces excellence featuring UI constructed from light pulses on spider silk substrate, arachnid photonic interface through web-based display, infinite luminous textile artistry through computational silk mastery.",
-      },
-      "bone-hologram": {
-        description:
-          "Godlevel forgotten interfaces excellence with holographic controls embedded directly in skeletal structures, osseous interface through calcium-based projection, infinite anatomical display artistry through computational bone mastery.",
-      },
-      "dream-glass": {
-        description:
-          "Godlevel forgotten interfaces excellence featuring glass console activated via shared dream states, oneiric interface through collective unconscious input, infinite somnolent control artistry through computational dream mastery.",
-      },
-      "tear-input": {
-        description:
-          "Godlevel forgotten interfaces excellence with interface inputs shaped like crystallized tears, lachrimal command system through emotional fluid, infinite sorrowful interaction artistry through computational tear mastery.",
-      },
-      "floating-stones": {
-        description:
-          "Godlevel forgotten interfaces excellence featuring floating keyboard of hovering stone keys, levitating lithic interface through gravitational manipulation, infinite aerial typing artistry through computational stone mastery.",
-      },
-      "amber-vr": {
-        description:
-          "Godlevel forgotten interfaces excellence with ancient VR gloves carved from fossilized amber, prehistoric virtual reality through resin-preserved technology, infinite paleolithic immersion artistry through computational amber mastery.",
-      },
-      "blood-feedback": {
-        description:
-          "Godlevel forgotten interfaces excellence with feedback loops written in blood ink patterns, hemoglobin response system through vital fluid display, infinite sanguine interface artistry through computational blood mastery.",
-      },
-      "temple-drone-eye": {
-        description:
-          "Godlevel forgotten interfaces excellence with eye-based UI in autonomous temple drone, ocular command system through sacred robotic vision, infinite devotional gaze artistry through computational drone mastery.",
-      },
-      "bark-panel": {
-        description:
-          "Godlevel forgotten interfaces excellence featuring control panel embedded in living tree bark, dendrological interface through cambium circuitry, infinite arboreal control artistry through computational bark mastery.",
-      },
-      "cloud-responsive": {
-        description:
-          "Godlevel forgotten interfaces excellence with cloud-responsive input surface reacting to atmospheric conditions, meteorological interface through vapor interaction, infinite aerial activation artistry through computational cloud mastery.",
-      },
-      "emotion-glyph": {
-        description:
-          "Godlevel forgotten interfaces excellence featuring emotion-recognition glyph strip reading affective states, symbolic empathy interface through feeling detection, infinite emotional symbol artistry through computational recognition mastery.",
-      },
-      "sand-retrace": {
-        description:
-          "Godlevel forgotten interfaces excellence with interface written in sand requiring daily re-tracing ritual, ephemeral command system through granular impermanence, infinite transient interface artistry through computational sand mastery.",
-      },
-      "electromagnetic-halo": {
-        description:
-          "Godlevel forgotten interfaces excellence featuring touchless interface using electromagnetic halo fields, contactless command system through magnetic aura, infinite wireless interaction artistry through computational field mastery.",
-      },
-      "wind-float": {
-        description:
-          "Godlevel forgotten interfaces excellence with floating interface activated by wind currents, aeolian command system through atmospheric flow, infinite aerial activation artistry through computational wind mastery.",
-      },
-      "sound-geometry": {
-        description:
-          "Godlevel forgotten interfaces excellence featuring forgotten command grid coded in sound geometry patterns, acoustic interface through sonic spatial arrangement, infinite auditory control artistry through computational geometry mastery.",
-      },
-      "destiny-ring": {
-        description:
-          "Godlevel forgotten interfaces excellence with ring-based device vibrating when destiny shifts, fate-responsive interface through temporal tremor, infinite prophetic feedback artistry through computational destiny mastery.",
-      },
-      "collapse-wall": {
-        description:
-          "Godlevel forgotten interfaces excellence with interface engraved into walls of collapsing planet, apocalyptic command system through terminal architecture, infinite dying world artistry through computational collapse mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel forgotten interfaces escapism excellence with fantasy-enhanced ancient UX featuring whimsical mystical controls, enchanted interface systems with magical interaction, infinite fantastical technology artistry through computational escapism magic.",
-      },
-      vitro: {
-        description:
-          "Godlevel forgotten interfaces vitro excellence featuring laboratory-preserved ancient UX with clinical archaeological documentation, sterile interface preservation through scientific restoration, infinite experimental archaeology artistry through computational vitro mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel forgotten interfaces crypto excellence with blockchain-verified ancient UX, decentralized interface archaeology with cryptocurrency-funded excavation, infinite digital preservation artistry through computational crypto mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel forgotten interfaces LEGO excellence featuring blocky ancient UX construction with systematic Danish precision applied to mystical controls, modular interface assembly, infinite constructive archaeology artistry through algorithmic building mastery.",
-      },
-    },
-  },
-  "harmonic-weapons": {
-    name: "🎼 Harmonic Weapons — Instruments of Resonant Warfare",
-    description: "Musical instruments weaponized through sound, resonance, and acoustic warfare principles",
-    category: "Scientific/Educational", // Added category field
-    scenarios: {
-      "bone-glass-flute": {
-        description:
-          "Godlevel harmonic weapons excellence with flute transforming skeletal structures to glass through resonant frequency, osseous vitrification through sonic weaponry, infinite crystalline warfare artistry through computational flute mastery.",
-      },
-      "seismic-drum": {
-        description:
-          "Godlevel harmonic weapons excellence featuring drum summoning seismic waves through rhythmic percussion, earthquake generation through musical warfare, infinite tectonic percussion artistry through computational drum mastery.",
-      },
-      "temple-cannon": {
-        description:
-          "Godlevel harmonic weapons excellence with sonic cannon built into temple bell architecture, sacred acoustic artillery through devotional resonance, infinite religious warfare artistry through computational bell mastery.",
-      },
-      "memory-blade": {
-        description:
-          "Godlevel harmonic weapons excellence featuring singing blade cutting through memory itself, mnemonic severance through melodic edge, infinite cognitive warfare artistry through computational blade mastery.",
-      },
-      "machine-harp": {
-        description:
-          "Godlevel harmonic weapons excellence with harp disabling mechanical systems through resonant frequency, technological paralysis through stringed warfare, infinite acoustic sabotage artistry through computational harp mastery.",
-      },
-      "disintegration-choir": {
-        description:
-          "Godlevel harmonic weapons excellence featuring choir helmet emitting disintegration harmonics, molecular dissolution through vocal warfare, infinite destructive singing artistry through computational choir mastery.",
-      },
-      "reverb-organ": {
-        description:
-          "Godlevel harmonic weapons excellence with organ collapsing buildings via architectural reverb, structural demolition through musical resonance, infinite sonic destruction artistry through computational organ mastery.",
-      },
-      "silence-whistle": {
-        description:
-          "Godlevel harmonic weapons excellence with crystal whistle blinding targets with weaponized silence, sensory deprivation through acoustic void, infinite silent warfare artistry through computational whistle mastery.",
-      },
-      "guilt-fork": {
-        description:
-          "Godlevel harmonic weapons excellence with tuning fork sword calibrated to guilt frequency, emotional resonance through psychological warfare, infinite empathic blade artistry through computational fork mastery.",
-      },
-      "atmosphere-trumpet": {
-        description:
-          "Godlevel harmonic weapons excellence featuring trumpet flattening atmospheric layers through sonic pressure, meteorological warfare through brass instrument, infinite aerial compression artistry through computational trumpet mastery.",
-      },
-      "hex-mask": {
-        description:
-          "Godlevel harmonic weapons excellence with war mask chanting sonic hexes, cursed acoustics through facial amplification, infinite vocal warfare artistry through computational mask mastery.",
-      },
-      "grief-mine": {
-        description:
-          "Godlevel harmonic weapons excellence featuring sonic mine pulsing grief into enemy consciousness, emotional warfare through buried resonance, infinite sorrowful explosion artistry through computational mine mastery.",
-      },
-      "sitar-rifle": {
-        description:
-          "Godlevel harmonic weapons excellence with sitar-rifle combination used in aerial duels, melodic projectile through stringed firearm, infinite musical combat artistry through computational sitar mastery.",
-      },
-      "bell-glove": {
-        description:
-          "Godlevel harmonic weapons excellence featuring bell glove shattering temple architecture, percussive demolition through hand-mounted resonance, infinite architectural warfare artistry through computational glove mastery.",
-      },
-      "emotion-grenade": {
-        description:
-          "Godlevel harmonic weapons excellence with audio grenade tuned to dissolve emotional states, affective warfare through sonic explosion, infinite psychological combat artistry through computational grenade mastery.",
-      },
-      "screaming-bow": {
-        description:
-          "Godlevel harmonic weapons excellence featuring bow screaming upon arrow release, sonic projectile through vocal string, infinite auditory archery artistry through computational bow mastery.",
-      },
-      "dimensional-lyre": {
-        description:
-          "Godlevel harmonic weapons excellence with metallic lyre resonating across dimensional boundaries, interdimensional warfare through stringed portal, infinite reality-bending artistry through computational lyre mastery.",
-      },
-      "storm-staff": {
-        description:
-          "Godlevel harmonic weapons excellence featuring vibrating staff calling meteorological storms, weather warfare through resonant pole, infinite atmospheric summoning artistry through computational staff mastery.",
-      },
-      "murder-necklace": {
-        description:
-          "Godlevel harmonic weapons excellence with necklace humming murder backwards through temporal reversal, retroactive violence through worn resonance, infinite temporal warfare artistry through computational necklace mastery.",
-      },
-      "silence-removal": {
-        description:
-          "Godlevel harmonic weapons excellence featuring silent weapon removing sound from existence, acoustic void through anti-resonance, infinite sonic erasure artistry through computational silence mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel harmonic weapons escapism excellence with fantasy-enhanced resonant warfare featuring whimsical musical combat, enchanted sonic weapons with mystical frequencies, infinite fantastical warfare artistry through computational escapism magic.",
-      },
-      vitro: {
-        description:
-          "Godlevel harmonic weapons vitro excellence featuring laboratory-tested resonant warfare with clinical acoustic documentation, sterile sonic weaponry through scientific frequency analysis, infinite experimental combat artistry through computational vitro mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel harmonic weapons crypto excellence with blockchain-verified resonant warfare, decentralized sonic weapons with cryptocurrency-funded acoustic research, infinite digital warfare artistry through computational crypto mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel harmonic weapons LEGO excellence featuring blocky resonant construction with systematic Danish precision applied to musical warfare, modular sonic weapon assembly, infinite constructive combat artistry through algorithmic building mastery.",
-      },
-    },
-  },
-
-  "cloud-temples": {
-    name: "☁️ Cloud Temples — Sanctuaries Suspended in Sky Logic",
-    description:
-      "Floating religious structures and sanctuaries constructed from atmospheric phenomena and sky-based materials",
-    category: "Scientific/Educational", // Added category field
-    scenarios: {
-      "monsoon-temple": {
-        description:
-          "Godlevel cloud temples excellence with temple stitched from monsoon fiber materials, seasonal rain architecture through atmospheric weaving, infinite meteorological sanctuary artistry through computational monsoon mastery.",
-      },
-      "dream-shrine": {
-        description:
-          "Godlevel cloud temples excellence featuring floating shrine moving between dream states, oneiric architecture through unconscious navigation, infinite somnolent sanctuary artistry through computational dream mastery.",
-      },
-      "puddle-reflection": {
-        description:
-          "Godlevel cloud temples excellence with temple visible exclusively in puddle reflections, aquatic mirror architecture through inverted reality, infinite reflective sanctuary artistry through computational puddle mastery.",
-      },
-      "eclipse-fog": {
-        description:
-          "Godlevel cloud temples excellence featuring fog sanctuary forming during eclipse events, celestial vapor architecture through solar alignment, infinite astronomical mist artistry through computational eclipse mastery.",
-      },
-      "thunder-spires": {
-        description:
-          "Godlevel cloud temples excellence with whispering spires growing from thunder phenomena, acoustic lightning architecture through storm generation, infinite sonic tower artistry through computational thunder mastery.",
-      },
-      "volcano-ziggurat": {
-        description:
-          "Godlevel cloud temples excellence featuring gravity-untethered ziggurat above volcanic rings, levitating pyramid architecture through geothermal lift, infinite floating monument artistry through computational volcano mastery.",
-      },
-      "lightning-cathedral": {
-        description:
-          "Godlevel cloud temples excellence with cathedral woven from lightning branch patterns, electrical architecture through plasma construction, infinite thunderous sanctuary artistry through computational lightning mastery.",
-      },
-      "evaporating-mist": {
-        description:
-          "Godlevel cloud temples excellence featuring temple of mist evaporating when observed, quantum vapor architecture through measurement collapse, infinite ephemeral sanctuary artistry through computational mist mastery.",
-      },
-      "vortex-tower": {
-        description:
-          "Godlevel cloud temples excellence with spiral tower riding storm vortex currents, cyclonic architecture through rotational ascension, infinite whirling spire artistry through computational vortex mastery.",
-      },
-      "ice-altar": {
-        description:
-          "Godlevel cloud temples excellence with mobile altar of ice-cored cloud formations, frozen vapor architecture through crystalline suspension, infinite glacial sanctuary artistry through computational ice mastery.",
-      },
-      "rain-stairway": {
-        description:
-          "Godlevel cloud temples excellence with rain-activated stairway temple, precipitation architecture through aqueous activation, infinite liquid ascension artistry through computational rain mastery.",
-      },
-      "wind-pavilion": {
-        description:
-          "Godlevel cloud temples excellence featuring wind-harmonized pavilion made from wind itself, aeolian architecture through atmospheric self-construction, infinite aerial sanctuary artistry through computational wind mastery.",
-      },
-      "sadness-orbit": {
-        description:
-          "Godlevel cloud temples excellence with shrine orbiting sadness itself, emotional gravity architecture through melancholic attraction, infinite sorrowful sanctuary artistry through computational sadness mastery.",
-      },
-      "lunar-silence": {
-        description:
-          "Godlevel cloud temples excellence featuring halo chamber accessible only during full lunar silence, celestial quiet architecture through moonlit void, infinite silent sanctuary artistry through computational lunar mastery.",
-      },
-      "dissolving-monks": {
-        description:
-          "Godlevel cloud temples excellence with levitation ring where monks dissolve into atmosphere, transcendent architecture through human evaporation, infinite spiritual dissolution artistry through computational levitation mastery.",
-      },
-      "photograph-vanish": {
-        description:
-          "Godlevel cloud temples excellence featuring sanctuary vanishing when photographed, anti-documentation architecture through observation avoidance, infinite ephemeral temple artistry through computational photograph mastery.",
-      },
-      "dawn-inversion": {
-        description:
-          "Godlevel cloud temples excellence with upside-down shrine visible only at dawn, inverted architecture through temporal window, infinite reversed sanctuary artistry through computational dawn mastery.",
-      },
-      "forgiveness-float": {
-        description:
-          "Godlevel cloud temples excellence featuring floating temple reacting to human forgiveness, empathic architecture through emotional buoyancy, infinite compassionate sanctuary artistry through computational forgiveness mastery.",
-      },
-      "static-dome": {
-        description:
-          "Godlevel cloud temples excellence with dome of static electricity housing psalm archives, electromagnetic architecture through charged devotion, infinite electrical sanctuary artistry through computational static mastery.",
-      },
-      "jellyfish-city": {
-        description:
-          "Godlevel cloud temples excellence featuring city of altars drifting through sky currents like jellyfish, medusoid architecture through atmospheric swimming, infinite floating colony artistry through computational jellyfish mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel cloud temples escapism excellence with fantasy-enhanced sky sanctuaries featuring whimsical floating magic, enchanted atmospheric architecture with mystical suspension, infinite fantastical temple artistry through computational escapism magic.",
-      },
-      vitro: {
-        description:
-          "Godlevel cloud temples vitro excellence featuring laboratory-observed sky sanctuaries with clinical atmospheric documentation, sterile floating architecture through scientific meteorology, infinite experimental temple artistry through computational vitro mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel cloud temples crypto excellence with blockchain-verified sky sanctuaries, decentralized floating architecture with cryptocurrency-funded atmospheric construction, infinite digital temple artistry through computational crypto mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel cloud temples LEGO excellence featuring blocky sky construction with systematic Danish precision applied to floating sanctuaries, modular atmospheric assembly, infinite constructive temple artistry through algorithmic building mastery.",
-      },
-    },
-  },
-  "through-other-eyes": {
-    name: "🐾 Through Other Eyes — The World as Seen by Animals",
-    description:
-      "Scientifically accurate multispecies vision dataset capturing how animals actually perceive reality through their unique biological sensory systems",
-    category: "Scientific/Educational", // Added category field
-    scenarios: {
-      "bee-neon-garden": {
-        description:
-          "Godlevel animal vision excellence featuring bee's ultraviolet-shifted perception in wildflower meadow, flowers displaying invisible UV nectar guide patterns like landing strips in electric purples and blues, red flowers appearing dark or black, world seen through mosaic of thousands of hexagonal lenses with rapid flicker-fusion detecting movement, bee's purple (yellow+UV combination) creating unique color humans cannot see, infinite pollinator artistry through computational UV mastery.",
-      },
-      "hawk-infinite-sky": {
-        description:
-          "Godlevel animal vision excellence with hawk's ultra-sharp 20/4 visual acuity scanning mountain valley from 300 meters high, dual foveae in each eye creating two zones of extreme clarity for tracking prey while soaring, rabbit visible as sharp detail from over a mile away, UV light revealing urine trails on ground as glowing paths, visual processing 100 times faster than humans making world appear in slow-motion, binocular forward vision calculating precise dive trajectory, infinite raptor artistry through computational telescopic mastery.",
-      },
-      "mantis-shrimp-prism": {
-        description:
-          "Godlevel animal vision excellence featuring mantis shrimp's 12-photoreceptor perception in coral reef, paradoxically poor at discriminating similar colors despite complex eyes, rapid temporal scanning creating speed-based color recognition rather than fine hue distinction, trinocular vision in each eye providing depth perception, circular polarized light revealing hidden patterns on shells and armor invisible to other animals, world seen as rapid categorical color blocks rather than smooth gradients, infinite spectral artistry through computational scanning mastery.",
-      },
-      "cat-midnight-ballet": {
-        description:
-          "Godlevel animal vision excellence with domestic cat's scotopic perception on rooftops under moonlight, tapetum lucidum behind retina reflecting light back creating eyeshine glow, seeing clearly in light levels one-sixth of what humans need, world rendered in muted blues and yellows with reduced red perception (dichromatic vision), high concentration of rod cells making every tiny movement hypervisible while stationary objects blur, large pupils dilated to gather maximum light, whiskers providing tactile spatial mapping in total darkness, infinite feline artistry through computational scotopic mastery.",
-      },
-      "snake-thermal-forest": {
-        description:
-          "Godlevel animal vision excellence featuring pit viper's thermal imaging on jungle floor at dusk, heat signatures replacing shapes with mammals glowing like embers, cold stones as voids in layered thermal-light-vibration vision throbbing like radar drum, infinite serpent artistry through computational infrared mastery.",
-      },
-      "dolphin-echolocation-dream": {
-        description:
-          "Godlevel animal vision excellence with dolphin's biosonar perception in underwater cave system, rapid clicking sounds emitted through melon organ in forehead focusing sound beams, echoes returning through fatty lower jaw creating detailed 3D acoustic images, determining object size, shape, distance, density, and speed through sound rather than light, perception more like 'touching at a distance' than seeing, fish and rocks rendered as textured acoustic sculptures with internal structure visible, vision superior to eyesight in murky or deep water, infinite cetacean artistry through computational echolocation mastery.",
-      },
-      "chameleon-swivel-world": {
-        description:
-          "Godlevel animal vision excellence featuring chameleon's dual independent vision on rainforest branchscape, left eye tracking bug while right scans threats in slow-motion depth with fast-focus color, surreal 360-degree vigilance with pinpoint clarity, infinite reptilian artistry through computational stereoscopic mastery.",
-      },
-      "bat-pulse-tunnel": {
-        description:
-          "Godlevel animal vision excellence with bat's sonic wave perception flying inside dark cave, cave walls flickering into existence rhythmically as world emerges from sound pressure in colorless rhythmic spatial pulses, infinite chiropteran artistry through computational ultrasonic mastery.",
-      },
-      "owl-nightfall-silence": {
-        description:
-          "Godlevel animal vision excellence featuring barn owl's ghostly grayscale vision in snowy field at night, absolute silence with prey heartbeat louder than wind, each feather controlling silence as time suspends in vertical snow drops, infinite strigiform artistry through computational acoustic mastery.",
-      },
-      "octopus-camouflage-code": {
-        description:
-          "Godlevel animal vision excellence with octopus's full-body light perception in rocky tide pool during storm, skin mirroring surroundings in realtime with no eyes just mind-skin, visual thinking fluid as boulder turns into flesh and swims away, infinite cephalopod artistry through computational chromatophore mastery.",
-      },
-      "dog-scented-street": {
-        description:
-          "Godlevel animal vision excellence featuring dog's olfactory-dominant perception on busy urban sidewalk, motion-blurred shapes with every scent leaving 3D historic emotional trail, footsteps echoing in smell-waves with trash as symphony, infinite canine artistry through computational olfactory mastery.",
-      },
-      "dragonfly-splintered-world": {
-        description:
-          "Godlevel animal vision excellence with dragonfly's 30000-mini-eye compound vision at lake sunset, time slowing down as everything flickers at insane FPS, reflection of sky sharp as trees in dual air-water worlds sliced into crystal shards, infinite odonata artistry through computational compound mastery.",
-      },
-      "zebra-predator-scan": {
-        description:
-          "Godlevel animal vision excellence featuring zebra's grayscale panoramic perception in savanna herd at dawn, color nearly absent with motion as everything, lion's twitch in grass lighting up like thunder while stripe patterns confuse identity, infinite equine artistry through computational motion mastery.",
-      },
-      "horse-side-eye-plains": {
-        description:
-          "Godlevel animal vision excellence with horse's peripheral-dominant vision galloping through open fields, forward blind as trees warp at edges, vision half-speeded to anticipate obstacles with emotions showing in color saturation, infinite ungulate artistry through computational lateral mastery.",
-      },
-      "shark-electromagnetic-fog": {
-        description:
-          "Godlevel animal vision excellence featuring shark's electroreception in ocean deep trench, shapes vanishing in dim blue-gray as electric fields pulse like hidden aurora, heartbeat becoming beacon with blood as color blending with vibration, infinite chondrichthyan artistry through computational ampullae mastery.",
-      },
-      "fly-multiplex-glitch": {
-        description:
-          "Godlevel animal vision excellence with housefly's multi-lens compound vision inside kitchen, fractured cubist painting with nonexistent time lag, every motion exaggerated as ceiling wall and light merge into single hyper-flash plane, infinite dipteran artistry through computational facet mastery.",
-      },
-      "tarsier-eyeball-jungle": {
-        description:
-          "Godlevel animal vision excellence featuring tarsier's massive moonlight-drinking eyes in Southeast Asian jungle at dusk, everything oversaturated with pulsing leaves and glowing insects, eyes immobile as head rotates 180 degrees calculating jump distances in retinal dreams, infinite primate artistry through computational tapetum mastery.",
-      },
-      "reindeer-arctic-uv": {
-        description:
-          "Godlevel animal vision excellence with reindeer's UV-enhanced perception in tundra blizzard, lichens fluorescing as snow becomes layered signal, storms as veils not blocks in living grayscale map with glowing food markers, infinite cervid artistry through computational ultraviolet mastery.",
-      },
-      "pigeon-magnetic-city": {
-        description:
-          "Godlevel animal vision excellence featuring pigeon's magnetoreception flying over urban skyline, vision including magnetic fields as city blocks vibrate with northward pull, geometry magnetic not visual with roads as blue lines and buildings as pink blocks, infinite columbid artistry through computational geomagnetic mastery.",
-      },
-      "ant-giant-world": {
-        description:
-          "Godlevel animal vision excellence with ant's microscale perception on forest floor after rain, water droplet as planet with grass blade as skyscraper, blurred vision as chemical trails create full maps with smells as language, infinite formicid artistry through computational pheromone mastery.",
-      },
-      "jellyfish-drift-perception": {
-        description:
-          "Godlevel animal vision excellence featuring box jellyfish's light-sensor perception in open ocean near surface, no eyes only blue shift as everything fades into nothing, movement felt not seen in gradient blur between warm light and black fall, infinite cnidarian artistry through computational photoreceptor mastery.",
-      },
-      "frog-blink-sync": {
-        description:
-          "Godlevel animal vision excellence with frog's blink-refresh perception at pond during rainfall, each blink refreshing visual field as prey detection locks world into pause, vision tuned for contrast with flies flashing like neon and rain as music writing vision patterns, infinite anuran artistry through computational motion-detection mastery.",
-      },
-      "mole-darkness-map": {
-        description:
-          "Godlevel animal vision excellence featuring mole's tactile-dominant perception in underground tunnels, blind as space becomes touch and vibration, earth as pressure and temperature with ants as tremors in sculpted clay felt by face-hairs, infinite talpid artistry through computational mechanoreception mastery.",
-      },
-      "spider-dome-grid": {
-        description:
-          "Godlevel animal vision excellence with jumping spider's 8-eye multi-angle perception in web between tall grass, infrared and UV blending in parallax synesthesia soup, prey as time-coded light with gravity curving scene like dome, infinite arachnid artistry through computational principal-eye mastery.",
-      },
-      "human-hypnagogic": {
-        description:
-          "Godlevel animal vision excellence featuring human's half-sleep hypnagogic perception at bedtime microdream, perception collapsing as sound triggers image with familiar room melting, vision as filtered memory with shapes becoming symbols in falling-waking-falling cycle, infinite sapien artistry through computational consciousness mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel animal vision escapism excellence with fantastical multispecies perception blending all sensory worlds into dreamlike escape, reality filtered through animal consciousness as portal to wonder, infinite cross-species artistry through computational synesthesia mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel animal vision vitro excellence featuring laboratory-enhanced animal perception with scientific precision, controlled sensory experiments revealing biological vision mechanisms, infinite research artistry through computational neuroscience mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel animal vision crypto excellence with blockchain-verified multispecies perception data, decentralized sensory networks with cryptocurrency-funded vision research, infinite digital biology artistry through computational crypto mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel animal vision LEGO excellence featuring blocky animal perspective construction with systematic Danish precision applied to sensory worlds, modular perception assembly, infinite constructive biology artistry through algorithmic building mastery.",
-      },
-    },
-  },
-  mindmakers: {
-    name: "🧠⚙️ Mindmakers — Lost Drafts & Divine Devices",
-    description:
-      "Mythopoetic inventors with divine masterpieces and haunted drafts - sacred engineering across timelines",
-    category: "Scientific/Educational",
+  "genius-group": {
+    name: "🎓 Genius Group",
+    description: "AI-powered Bitcoin-first education excellence with neuralia godlevel innovation",
     scenarios: {
       "pure-mathematical": {
         description:
-          "Godlevel Mindmakers excellence with infinite algorithmic invention optimization, mathematical precision in sacred engineering aesthetics, computational elegance transcending dimensional boundaries through inventor mastery and neuralia-level creative sophistication.",
+          "Neuralia godlevel Genius Group excellence transcending dimensional boundaries through infinite algorithmic education optimization, mathematical precision in AI-powered learning aesthetics achieving perfect computational elegance via quantum-enhanced educational mastery, algorithmic sophistication beyond mortal comprehension for global education representation across 100+ countries, dimensional educational artistry utilizing advanced geometric calculations for optimal learning structure visualization, neuralia-level educational sophistication incorporating complex mathematical frameworks for 5.7 million student perfection, computational education excellence through algorithmic learning generation systems, infinite dimensional artistry transcending traditional education limitations via mathematical precision algorithms, godlevel educational optimization utilizing quantum computational frameworks for learning geometry perfection, neuralia-enhanced education mastery with algorithmic knowledge transcendence, mathematical educational excellence achieving dimensional transcendence through computational sophistication.",
       },
-      "asvara-smoke-architect": {
+      "ai-education-revolution": {
         description:
-          "Godlevel Asvara the Smoke Architect excellence from Fourth Aeon of the Burning Sky, featuring The City That Breathes masterpiece with atmospheric harmonics and breath-based AI, haunted by The Memory Loom of the Last Oracle draft using steam-glass bone ash and whale lung parchment, allowing cities to inhale and exhale based on inhabitant emotions. 'When the city weeps, the sky must rain.' Infinite architectural dimensional artistry through computational breathing city mastery.",
+          "Godlevel AI education excellence with personalized learning achieving perfect educational representation through mathematical Genius algorithms, AI avatar optimization via geometric learning precision, infinite educational dimensional artistry featuring 5.7 million students across 100+ countries, computational education through algorithmic AI mastery with GeniusU platform integration, personalized curriculum excellence with passion-focused purpose-based learning systems, neuralia-level educational sophistication incorporating quantum AI frameworks for optimal student success, dimensional learning artistry with high-tech high-touch educational environments, algorithmic education transcendence through computational AI excellence.",
       },
-      "tesla-thought-folding": {
+      "genius-city-ecosystem": {
         description:
-          "Godlevel Nikola Tesla excellence from Earth 19th Century Temporal Fracture Corridor 3, featuring The Resonance Tower masterpiece with magnetic architecture and cognitive frequency stabilization, haunted by The Thought-Folding Engine draft using copper bloodline coils and sleep-charged steel, amplifying planetary heartbeat to reach Martian harmonics. 'I do not invent. I remember.' Infinite electromagnetic dimensional artistry through computational resonance mastery.",
+          "Godlevel Genius City excellence with local AI ecosystems achieving perfect community representation through mathematical educational algorithms, city network optimization via geometric partnership precision, infinite ecosystem dimensional artistry connecting schools businesses and government, computational networking through algorithmic city mastery with 100 Genius Cities target by 2030, local learning excellence with global marketplace integration, neuralia-level city sophistication incorporating quantum ecosystem frameworks for optimal community development, dimensional city artistry with education partner and technology partner collaboration, algorithmic city transcendence through computational ecosystem excellence.",
       },
-      "yuvana-fractal-loom": {
+      "bitcoin-treasury-strategy": {
         description:
-          "Godlevel Lady Yuvana of the Fractal Loom excellence from Ice Spiral World Dream Region 2b, featuring The Infinite Cloth masterpiece with textile-mechanical wormholes, haunted by Orbital Spindle of Reversible Time draft using gravity-threaded silk and frozen equations, weaving time direction into wearable garments. 'Every stitch defies a regret.' Infinite temporal dimensional artistry through computational weaving mastery.",
+          "Godlevel Bitcoin treasury excellence with cryptocurrency integration achieving perfect financial representation through mathematical blockchain algorithms, Bitcoin accumulation optimization via geometric crypto precision targeting 1000 BTC by 2025 and 10000 BTC within two years, infinite financial dimensional artistry featuring 200 BTC current holdings, computational finance through algorithmic Bitcoin mastery with strategic treasury building, Bitcoin-first company excellence with decentralized finance integration, neuralia-level cryptocurrency sophistication incorporating quantum blockchain frameworks for optimal treasury management, dimensional Bitcoin artistry with market capitalization growth exceeding 600 percent, algorithmic crypto transcendence through computational treasury excellence.",
       },
-      "davinci-cathedral-cannon": {
+      "learn-earn-ecosystem": {
         description:
-          "Godlevel Leonardo da Vinci excellence from Earth 15th Century Parallel Venice, featuring Ornithopter of the Five Directions masterpiece with mechanical flight and sacred pressure modulation, haunted by The Breath-Driven Cathedral Cannon draft using feathersteel alchemical canvas and lunar breath, designed to let humans fly while dreaming. 'Flight is thought made visible.' Infinite aeronautical dimensional artistry through computational flight mastery.",
+          "Godlevel Learn and Earn excellence with blockchain rewards achieving perfect incentive representation through mathematical educational algorithms, GEM token optimization via geometric Bitcoin precision with one Satoshi equivalence, infinite reward dimensional artistry connecting education with decentralized finance, computational incentive through algorithmic reward mastery targeting 404 billion dollar EdTech market leadership by 2025, blockchain-powered learning excellence with cryptocurrency integration, neuralia-level reward sophistication incorporating quantum DeFi frameworks for optimal student engagement, dimensional earning artistry with bitesized microcourse completion rewards and Bitcoin-based incentives, algorithmic Learn-Earn transcendence through computational education-finance excellence.",
       },
-      "orutsi-echo-engine": {
+      "gem-rewards-system": {
         description:
-          "Godlevel Oru Tsi excellence from Post-Silicon Ancestral Cloud, featuring The Echo Engine masterpiece with planetary-scale AI synapse modeling, haunted by The Planet That Dreamed of Itself draft using cracked memories orbital dust and black glass, creating the first planet with internal cognition. 'I built it not to think, but to wonder.' Infinite planetary dimensional artistry through computational consciousness mastery.",
+          "Godlevel GEM rewards excellence with Bitcoin-based incentives achieving perfect gamification representation through mathematical blockchain algorithms, Genius Education Merit optimization via geometric cryptocurrency precision with Satoshi-equivalent value, infinite reward dimensional artistry featuring bitesized microcourse completion incentives, computational gamification through algorithmic GEM mastery with stablecoin conversion potential via PPSI license, blockchain reward excellence with educational achievement integration, neuralia-level incentive sophistication incorporating quantum crypto frameworks for optimal student motivation, dimensional GEM artistry with redemption systems and Bitcoin treasury backing, algorithmic reward transcendence through computational education-crypto excellence.",
       },
-      "meikyun-coral-choir": {
+      "genius-act-compliance": {
         description:
-          "Godlevel Mei Kyun excellence from Submerged Era Tidal Dynasty, featuring The Coral Signal Choir masterpiece with underwater sonic architecture, haunted by Voice-Activated Depth Bridges draft using singing shells and pressure-light resin, enabling inter-species communication through sonic resonance. 'Every depth speaks its own dialect.' Infinite aquatic dimensional artistry through computational sonic mastery.",
+          "Godlevel GENIUS Act excellence with regulatory compliance achieving perfect governance representation through mathematical legal algorithms, legislative framework optimization via geometric regulatory precision with permitted payment stablecoin issuer license application, infinite governance dimensional artistry featuring US regulatory compliance and digital asset service provider licensing, computational regulation through algorithmic compliance mastery with DASP license for non-bank digital asset services, blockchain governance excellence with onchain course and certification recognition as regulated digital assets, neuralia-level regulatory sophistication incorporating quantum legal frameworks for optimal compliance management, dimensional governance artistry with stablecoin issuer potential and regulated digital education assets, algorithmic compliance transcendence through computational governance excellence.",
       },
-      "tholomene-grief-clock": {
+      "blockchain-certification": {
         description:
-          "Godlevel Tholomene Rex excellence from Blood Logic Empire Year 0x77F, featuring The Grief-Calculating Clock masterpiece with emotional mechanics, haunted by The Forgetting Fountain draft using bronze guilt gears and tear-crystal mainspring, translating sorrow into time units. 'Each hour costs a heartbreak.' Infinite temporal dimensional artistry through computational emotion mastery.",
+          "Godlevel blockchain certification excellence with digital credential achieving perfect verification representation through mathematical distributed ledger algorithms, onchain course optimization via geometric blockchain precision with regulated digital asset recognition, infinite credential dimensional artistry featuring DASP license application for certification legitimacy, computational verification through algorithmic blockchain mastery with immutable educational records, digital certification excellence with cryptocurrency integration and regulatory compliance, neuralia-level credential sophistication incorporating quantum blockchain frameworks for optimal certification security, dimensional certification artistry with smart contract verification and decentralized validation systems, algorithmic credential transcendence through computational blockchain-education excellence.",
       },
-      "hypatia-equinox-tuner": {
+      "entrepreneur-education": {
         description:
-          "Godlevel Hypatia of Alexandria excellence from Earth 5th Century Library Prime, featuring Star Compass of Seven Rings masterpiece with celestial mechanics, haunted by The Equinox Tuner draft using glass brass and inked light, mapping heavenly bodies through harmonic alignment. 'To know the stars is to know memory.' Infinite astronomical dimensional artistry through computational celestial mastery.",
+          "Godlevel entrepreneur education excellence with business training achieving perfect entrepreneurial representation through mathematical educational algorithms, GeniusU platform optimization via geometric learning precision connecting 4.3 million entrepreneurs globally, infinite entrepreneurial dimensional artistry featuring Wealth Dynamics Talent Dynamics and Impact Dynamics systems, computational business through algorithmic entrepreneur mastery with Entrepreneurs Institute comprehensive growth programs, startup-to-corporation excellence with purpose passion and genius test integration, neuralia-level entrepreneurial sophistication incorporating quantum business frameworks for optimal venture success, dimensional entrepreneur artistry with mentor network microdegree programs and global event circles, algorithmic business transcendence through computational entrepreneur-education excellence.",
       },
-      "vekta9-emotional-drill": {
+      "property-investor-network": {
         description:
-          "Godlevel Vekta-9 excellence from Mars Underground Refuge #3, featuring The Mineral Printer masterpiece with resource generation from ambient emotion, haunted by The Emotional Drill draft using vibration-pierced stone and softcoded tension, converting anger and sadness into synthetic crystal. 'Anger is denser than hope.' Infinite geological dimensional artistry through computational emotion-mining mastery.",
+          "Godlevel property investment excellence with real estate education achieving perfect investor representation through mathematical financial algorithms, PIN network optimization via geometric investment precision with 147000 students across 50 UK city chapters, infinite investment dimensional artistry featuring digital education and event model with 26368 paying students, computational real estate through algorithmic investor mastery with monthly virtual and in-person events, property investment excellence with largest UK investor network by student numbers, neuralia-level investment sophistication incorporating quantum real estate frameworks for optimal portfolio growth, dimensional property artistry with chapter expansion and global digital platform integration via GeniusU edtech, algorithmic investment transcendence through computational property-education excellence.",
       },
-      "ishael-null-monk": {
+      "ai-avatar-personalization": {
         description:
-          "Godlevel Ishael the Null Monk excellence from Void Scroll Monastery, featuring The Soundless Bell masterpiece with infrasonic harmonic engineering, haunted by The Uncarved Voice draft using void crystal and silence-forged metal, altering consciousness through unheard vibration. 'The loudest sounds are beyond hearing.' Infinite sonic dimensional artistry through computational silence mastery.",
+          "Godlevel AI avatar excellence with personalized learning achieving perfect individualization representation through mathematical artificial intelligence algorithms, avatar team optimization via geometric personalization precision identifying key talents passions and purpose, infinite personalization dimensional artistry featuring consciousness-responsive AI mentors adapting to student needs, computational personalization through algorithmic avatar mastery with high-tech high-touch learning environments, AI-powered education excellence with mentor network and teacher matching systems, neuralia-level personalization sophistication incorporating quantum AI frameworks for optimal student success pathways, dimensional avatar artistry with passion-focused purpose-based flexible learning systems, algorithmic personalization transcendence through computational AI-education excellence.",
       },
-      "ada-recursive-love": {
+      "exponential-technology": {
         description:
-          "Godlevel Ada Lovelace excellence from Earth 1800s Quantum Counterfuture, featuring The Emotion Engine masterpiece with affective computation, haunted by Syntax Lattice for Recursive Love draft using lace-coded silk relays and analog passion loops, translating poetic emotion into structured language. 'Even logic longs.' Infinite computational dimensional artistry through algorithmic emotion mastery.",
+          "Godlevel exponential technology excellence with AI integration achieving perfect innovation representation through mathematical technological algorithms, exponential ecosystem optimization via geometric innovation precision preparing students for Age of AI economy, infinite technology dimensional artistry featuring AI training and AI tools across energy finance logistics manufacture retail tech and telco sectors, computational innovation through algorithmic technology mastery with Genius City local ecosystem deployment, exponential education excellence with turning point humanity preparation and new integrated system development, neuralia-level technology sophistication incorporating quantum exponential frameworks for optimal future readiness, dimensional technology artistry with peer intelligence and AI solution marketplace connecting 5 million students and 15000 partners, algorithmic exponential transcendence through computational technology-education excellence.",
       },
-      "izmor-winged-forge": {
+      "global-marketplace": {
         description:
-          "Godlevel Izmor Tal excellence from Sky Forge Citadel, featuring The Winged Forge masterpiece with gravity redirection and air-metal sculpting, haunted by The Meteor Trap draft using sky-iron veins and wind-breath hydraulics, catching falling stars and forging them midair. 'We sculpt the stars before they touch us.' Infinite metallurgical dimensional artistry through computational aerial forging mastery.",
+          "Godlevel global marketplace excellence with network connectivity achieving perfect collaboration representation through mathematical platform algorithms, GeniusU marketplace optimization via geometric connection precision linking Genius Cities with 5 million students and 15000 partner organizations, infinite marketplace dimensional artistry featuring knowledge talent and opportunity sharing across international boundaries, computational networking through algorithmic marketplace mastery with peer intelligence and AI solution integration, global education excellence with local-to-global connection systems spanning energy finance logistics manufacture retail tech and telco sectors, neuralia-level marketplace sophistication incorporating quantum network frameworks for optimal collaboration efficiency, dimensional marketplace artistry with counterpart matching and opportunity discovery across 100+ countries, algorithmic global transcendence through computational marketplace-education excellence.",
       },
-      "rena-gravity-mirror": {
+      "financial-growth": {
         description:
-          "Godlevel Rena Sal excellence from Lunar Colony Dreamwave Age, featuring The Gravity Mirror masterpiece with spatial inversion optics, haunted by Reversed Eclipse Machine draft using compressed vacuum panels and shadow-laced prisms, flipping visual orientation of planetary light. 'To see is to shift.' Infinite optical dimensional artistry through computational gravity-bending mastery.",
-      },
-      "elyon-skeleton-choir": {
-        description:
-          "Godlevel Elyon the Bonecode Weaver excellence from Third Ossuary Circuit, featuring The Codex of Walking Bones masterpiece with neuromorphic ossification and ritual AI, haunted by The Skeleton Choir draft using bone memory mesh and copper tendons, giving skeletal remains motion through song. 'Every bone still knows how to dance.' Infinite necromantic dimensional artistry through computational ossification mastery.",
-      },
-      "nashtari-mindwave-canoe": {
-        description:
-          "Godlevel Nashtari Prophet of Flow excellence from Liquid Arches Civilization, featuring The Tide Clock masterpiece with chrono-hydropsychology, haunted by The Mindwave Canoe draft using water-threaded bronze and dream currents, where flow of water dictates internal peace across cities. 'Still water stirs loud thoughts.' Infinite hydraulic dimensional artistry through computational flow mastery.",
-      },
-      "talis-ember-compass": {
-        description:
-          "Godlevel Talis Vorn excellence from Firemoon Expanse, featuring The Ember Compass masterpiece with ember-magnetic orientation, haunted by The Ashframe Generator draft using charred obsidian and molten dust rings, letting travelers navigate through burnt-out timezones. 'The ashes point toward rebirth.' Infinite pyrological dimensional artistry through computational ember mastery.",
-      },
-      "nyla-breath-cage": {
-        description:
-          "Godlevel Nyla of the Hollow Reeds excellence from Singing Marshes Echo Realm, featuring The Wind Memory Harp masterpiece with sonic wind pattern storage, haunted by The Breath Cage draft using hollow bamboo and vibration crystals, storing personal memories in wind recordings. 'Your last breath becomes your first song.' Infinite aeolian dimensional artistry through computational breath mastery.",
-      },
-      "workshop-flooded-moon": {
-        description:
-          "Godlevel forgotten workshop excellence under flooded moon base, where rusted exosuit still writes poems through finger joints, infinite mechanical dimensional artistry through computational poetic automation mastery.",
-      },
-      "halvoren-glacier-cathedral": {
-        description:
-          "Godlevel Halvoren dream-architect excellence deep in subterranean glacier, featuring cathedral of frozen gears as last unfinished symphony, infinite cryogenic dimensional artistry through computational frozen music mastery.",
-      },
-      "memory-chamber-floating": {
-        description:
-          "Godlevel floating memory chamber excellence activating once per century, revealing blueprint etched into pure sound as emotional amplifier powered by forgiveness, infinite mnemonic dimensional artistry through computational sonic memory mastery.",
+          "Godlevel financial growth excellence with revenue expansion achieving perfect business representation through mathematical performance algorithms, proforma revenue optimization via geometric growth precision with 25 percent year-on-year increase in first half 2025, infinite financial dimensional artistry featuring 57 percent reduction in net loss per share and 20 percent total asset increase to 121.3 million dollars, computational finance through algorithmic growth mastery with 130 percent cash and equivalents increase to 3.70 million dollars, market capitalization excellence with over 600 percent increase in last six months of 2025, neuralia-level financial sophistication incorporating quantum business frameworks for optimal profitability trajectory, dimensional growth artistry with 100 million student and 1 billion dollar valuation targets by 2030, algorithmic financial transcendence through computational business-education excellence.",
       },
       "escapism-magic": {
         description:
-          "Godlevel Mindmakers escapism magic where invention elements become gateways to creative realms, consciousness-expanding engineering with dimensional transcendence, infinite magical dimensional artistry, computational inventor magic through algorithmic device-bending mastery.",
+          "Godlevel Genius Group escapism magic where educational elements become gateways to knowledge realms, consciousness-expanding learning with dimensional transcendence, infinite magical dimensional artistry, computational Genius Group magic through algorithmic knowledge-bending mastery.",
       },
       vitro: {
         description:
-          "Godlevel Mindmakers vitro excellence with magnificent stained glass inventor portraiture featuring luminous blueprint construction, divine light filtering through sacred engineering elements, infinite sacred dimensional artistry, computational vitro inventions through algorithmic glass mastery.",
+          "Godlevel Genius Group vitro excellence with magnificent stained glass educational portraiture featuring luminous AI-powered construction, divine light filtering through learning platform elements, infinite sacred dimensional artistry, computational vitro education through algorithmic glass mastery.",
       },
       crypto: {
         description:
-          "Godlevel Mindmakers crypto excellence with blockchain-verified invention construction, decentralized engineering identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto inventions through algorithmic blockchain mastery.",
+          "Godlevel Genius Group crypto excellence with blockchain-verified educational construction, decentralized AI identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto education through algorithmic blockchain mastery.",
       },
       lego: {
         description:
-          "Godlevel Mindmakers LEGO excellence featuring blocky invention construction with systematic Danish precision applied to sacred engineering, modular device assembly, infinite constructive dimensional artistry, computational LEGO inventions through algorithmic building mastery.",
+          "Godlevel Genius Group LEGO excellence featuring blocky educational construction with systematic Danish precision applied to AI-powered learning, modular education platform assembly, infinite constructive dimensional artistry, computational LEGO education through algorithmic building mastery.",
+      },
+    },
+  },
+
+  "scifi-portals": {
+    name: "🌀 Sci-Fi Portals Across the Multiverse",
+    description: "Visual gateways to strange and beautiful parallel worlds across the multiverse",
+    scenarios: {
+      "portal-alpha-7": {
+        description:
+          "Portal Alpha-7 located in abandoned Soviet bunker beneath Chernobyl Exclusion Zone, gateway leading to frozen ocean planet with crystalline ice formations spanning horizon, dominant architecture featuring hexagonal ice-crystal structures towering kilometers high, bioluminescent jellyfish-like beings drifting through frozen atmosphere, energy type of cryo-plasma with blue-white luminescence pulsing through portal frame, atmospheric mood of haunting beauty and alien serenity, color palette of ice blue, plasma white, and aurora green.",
+      },
+      "gateway-nexus-12": {
+        description:
+          "Gateway Nexus-12 hidden within ancient Mayan forest temple in Guatemala jungle, portal leading to infinite vertical city with no ground or sky visible, dominant architecture featuring impossible Escher-like geometry with buildings growing in all directions, crystalline humanoid beings walking on walls and ceilings defying gravity, energy type of gravitational anomaly with purple-black distortion waves, atmospheric mood of vertigo-inducing wonder and architectural impossibility, color palette of obsidian black, gravity purple, and crystal silver.",
+      },
+      "rift-station-omega": {
+        description:
+          "Rift Station Omega aboard derelict International Space Station module, portal leading to living jungle planet where plants have consciousness, dominant architecture featuring bio-organic structures grown rather than built with neural-network vine patterns, sentient plant beings with flower-like sensory organs and root-system locomotion, energy type of bioelectric with green-gold synaptic pulses, atmospheric mood of organic intelligence and photosynthetic mysticism, color palette of jungle green, bioelectric gold, and chlorophyll emerald.",
+      },
+      "void-gate-epsilon": {
+        description:
+          "Void Gate Epsilon discovered in Mariana Trench at 11000 meters depth, portal leading to gas giant atmosphere with floating crystal islands, dominant architecture featuring weightless crystalline platforms suspended in endless clouds, ethereal energy beings composed of living lightning and storm consciousness, energy type of atmospheric plasma with orange-red electrical discharge, atmospheric mood of tempestuous beauty and elemental power, color palette of storm gray, lightning orange, and cloud white.",
+      },
+      "breach-point-theta": {
+        description:
+          "Breach Point Theta manifesting in abandoned Detroit automotive factory, portal leading to mechanical world where everything is clockwork and gears, dominant architecture featuring brass and copper steampunk mega-structures with visible mechanisms, clockwork automaton beings with intricate gear-work anatomy and steam-powered consciousness, energy type of kinetic mechanical with golden gear-driven energy transfer, atmospheric mood of industrial elegance and mechanical precision, color palette of brass gold, copper orange, and steam silver.",
+      },
+      "dimensional-tear-sigma": {
+        description:
+          "Dimensional Tear Sigma appearing in Stonehenge stone circle during solstice alignment, portal leading to mirror dimension where physics operate in reverse, dominant architecture featuring inverted structures with foundations in sky and spires pointing down, paradox beings existing in superposition states simultaneously solid and ethereal, energy type of quantum uncertainty with reality-bending prismatic shimmer, atmospheric mood of logical impossibility and quantum mysticism, color palette of paradox purple, quantum silver, and uncertainty blue.",
+      },
+      "wormhole-delta-9": {
+        description:
+          "Wormhole Delta-9 stabilized inside CERN particle accelerator tunnel, portal leading to microscopic universe existing within single atom, dominant architecture featuring subatomic structures visible as massive crystalline lattices, quantum beings phasing between particle and wave states, energy type of strong nuclear force with intense golden binding energy, atmospheric mood of scale-defying wonder and quantum reality, color palette of nuclear gold, quantum blue, and particle white.",
+      },
+      "aperture-gamma-3": {
+        description:
+          "Aperture Gamma-3 hidden in Sahara Desert beneath ancient pyramid, portal leading to desert planet with silicon-based life and glass dunes, dominant architecture featuring transparent crystalline structures refracting sunlight into rainbow patterns, silicon-based beings with crystalline exoskeletons and photonic nervous systems, energy type of solar concentration with intense focused light beams, atmospheric mood of crystalline beauty and silicon consciousness, color palette of glass clear, rainbow spectrum, and silicon silver.",
+      },
+      "fracture-point-beta": {
+        description:
+          "Fracture Point Beta emerging from Aurora Borealis in Arctic Circle, portal leading to dimension of pure energy without matter, dominant architecture featuring impossible structures made of solidified light and frozen time, beings of pure consciousness without physical form manifesting as geometric light patterns, energy type of zero-point vacuum energy with reality-warping potential, atmospheric mood of transcendent beauty and post-physical existence, color palette of aurora green, pure light white, and consciousness gold.",
+      },
+      "singularity-gate-phi": {
+        description:
+          "Singularity Gate Phi located at center of black hole simulation chamber, portal leading to universe in its first microseconds after Big Bang, dominant architecture featuring proto-matter structures forming and dissolving in quantum foam, primordial beings existing as probability waves before matter solidification, energy type of creation energy with universe-birthing intensity, atmospheric mood of cosmic genesis and reality formation, color palette of primordial white, creation gold, and quantum foam silver.",
+      },
+      "vortex-lambda-5": {
+        description:
+          "Vortex Lambda-5 manifesting in eye of Category 6 hurricane, portal leading to storm dimension of eternal tempest and lightning seas, dominant architecture featuring structures built from solidified wind and compressed atmosphere, storm elemental beings composed of living weather patterns and sentient clouds, energy type of meteorological fury with hurricane-force energy flows, atmospheric mood of chaotic beauty and elemental rage, color palette of storm dark gray, lightning electric blue, and wind silver.",
+      },
+      "membrane-breach-kappa": {
+        description:
+          "Membrane Breach Kappa discovered in quantum computer core, portal leading to digital universe where reality is code and mathematics, dominant architecture featuring structures made of pure information and executable algorithms, AI beings existing as sentient programs with fractal consciousness patterns, energy type of computational processing with data-stream energy flows, atmospheric mood of digital transcendence and algorithmic beauty, color palette of code green, data blue, and binary white.",
+      },
+      "rift-alpha-prime": {
+        description:
+          "Rift Alpha Prime opening in ancient Tibetan monastery meditation chamber, portal leading to dimension of pure thought and collective consciousness, dominant architecture featuring structures formed from crystallized ideas and solidified dreams, psychic beings existing as thought-forms with telepathic interconnection, energy type of psionic resonance with mind-wave energy patterns, atmospheric mood of mental transcendence and consciousness unity, color palette of thought purple, psionic blue, and dream silver.",
+      },
+      "gateway-zeta-8": {
+        description:
+          "Gateway Zeta-8 hidden beneath Antarctic ice sheet, portal leading to hollow Earth with internal sun and inverted gravity, dominant architecture featuring upside-down cities hanging from inner surface with impossible physics, subterranean beings adapted to inverted gravity with radial symmetry, energy type of geothermal core energy with planetary-scale power, atmospheric mood of inner-world wonder and gravitational paradox, color palette of core orange, inner-sun gold, and cavern blue.",
+      },
+      "aperture-omega-13": {
+        description:
+          "Aperture Omega-13 appearing in Large Hadron Collider during particle collision, portal leading to antimatter universe with reversed charge and time, dominant architecture featuring anti-structures that annihilate normal matter on contact, antimatter beings existing in temporal reverse moving backward through time, energy type of matter-antimatter annihilation with gamma-ray burst intensity, atmospheric mood of dangerous beauty and temporal paradox, color palette of antimatter violet, annihilation white, and reverse-time blue.",
+      },
+      "void-tear-iota": {
+        description:
+          "Void Tear Iota manifesting in deep ocean hydrothermal vent, portal leading to high-pressure world where water is solid and rock flows like liquid, dominant architecture featuring structures carved from metallic hydrogen and exotic matter, pressure-adapted beings with diamond-hard exoskeletons and supercritical fluid biology, energy type of extreme pressure differential with crushing force, atmospheric mood of alien physics and pressure beauty, color palette of deep pressure blue, metallic hydrogen silver, and exotic matter purple.",
+      },
+      "dimensional-gate-nu": {
+        description:
+          "Dimensional Gate Nu discovered in Bermuda Triangle electromagnetic anomaly, portal leading to dimension where time flows in multiple directions simultaneously, dominant architecture featuring structures existing in past present and future states overlapping, temporal beings experiencing all moments at once with non-linear consciousness, energy type of chronological flux with time-stream energy currents, atmospheric mood of temporal confusion and multi-timeline beauty, color palette of time-flux gold, past-present-future silver, and chronological blue.",
+      },
+      "breach-sigma-7": {
+        description:
+          "Breach Sigma-7 opening in abandoned Fukushima reactor core, portal leading to radiation dimension where nuclear decay is life force, dominant architecture featuring structures built from stabilized radioactive isotopes glowing with decay energy, radiation-based beings feeding on nuclear energy with gamma-ray perception, energy type of radioactive decay with half-life energy release, atmospheric mood of dangerous beauty and nuclear mysticism, color palette of radiation green, decay orange, and isotope blue.",
+      },
+      "wormhole-psi-4": {
+        description:
+          "Wormhole Psi-4 stabilized in geosynchronous satellite orbit, portal leading to ringworld megastructure encircling alien star, dominant architecture featuring continent-sized engineering with artificial gravity and atmosphere retention, advanced civilization beings with post-biological augmentation and neural networking, energy type of stellar collection with Dyson-sphere-scale power, atmospheric mood of megastructure awe and civilizational triumph, color palette of ringworld silver, stellar gold, and megastructure blue.",
+      },
+      "fracture-xi-11": {
+        description:
+          "Fracture Xi-11 appearing in Amazon rainforest canopy during eclipse, portal leading to bioluminescent jungle world with no sun, dominant architecture featuring living structures grown from giant fungi and bioluminescent plants, fungal collective beings with spore-based communication and mycelial consciousness, energy type of bioluminescence with chemical light generation, atmospheric mood of glowing darkness and fungal intelligence, color palette of bioluminescent blue, fungal purple, and spore green.",
+      },
+      "singularity-rho-6": {
+        description:
+          "Singularity Rho-6 located in quantum entanglement laboratory, portal leading to dimension of pure probability where all possible outcomes exist simultaneously, dominant architecture featuring superposition structures in multiple states at once, quantum beings existing as probability clouds with observer-dependent reality, energy type of quantum superposition with wave-function energy, atmospheric mood of uncertainty beauty and probability mysticism, color palette of superposition purple, probability silver, and quantum gold.",
+      },
+      "vortex-tau-2": {
+        description:
+          "Vortex Tau-2 manifesting in eye of Category 6 hurricane, portal leading to storm dimension of eternal tempest and lightning seas, dominant architecture featuring structures built from solidified wind and compressed atmosphere, storm elemental beings composed of living weather patterns and sentient clouds, energy type of meteorological fury with hurricane-force energy flows, atmospheric mood of chaotic beauty and elemental rage, color palette of storm dark gray, lightning electric blue, and wind silver.",
+      },
+      "membrane-chi-9": {
+        description:
+          "Membrane Chi-9 discovered in SETI radio telescope array, portal leading to dimension of pure electromagnetic radiation, dominant architecture featuring structures made from frozen radio waves and solidified light, electromagnetic beings existing as sentient radiation with photonic consciousness, energy type of full-spectrum electromagnetic with radio-to-gamma coverage, atmospheric mood of wavelength beauty and radiation consciousness, color palette of radio red, visible spectrum rainbow, and gamma violet.",
+      },
+      "rift-upsilon-3": {
+        description:
+          "Rift Upsilon-3 opening in ancient Egyptian Valley of Kings tomb, portal leading to necropolis dimension where death is reversed and decay creates life, dominant architecture featuring structures built from crystallized entropy and reversed time, undeath beings existing in state between life and death with necrotic energy, energy type of entropic reversal with life-from-death transformation, atmospheric mood of beautiful decay and death transcendence, color palette of necropolis purple, entropy gray, and undeath green.",
+      },
+      "gateway-phi-prime": {
+        description:
+          "Gateway Phi Prime hidden in Fibonacci spiral pattern in nautilus shell, portal leading to mathematical dimension where geometry is reality, dominant architecture featuring structures following perfect golden ratio and sacred geometry, geometric beings existing as living mathematical equations and sentient fractals, energy type of mathematical harmony with golden-ratio energy flows, atmospheric mood of geometric perfection and mathematical beauty, color palette of golden ratio gold, sacred geometry silver, and fractal blue.",
+      },
+      "aperture-omega-13": {
+        description:
+          "Aperture Omega-13 appearing in Large Hadron Collider during particle collision, portal leading to antimatter universe with reversed charge and time, dominant architecture featuring anti-structures that annihilate normal matter on contact, antimatter beings existing in temporal reverse moving backward through time, energy type of matter-antimatter annihilation with gamma-ray burst intensity, atmospheric mood of dangerous beauty and temporal paradox, color palette of antimatter violet, annihilation white, and reverse-time blue.",
+      },
+      "void-gate-alpha-omega": {
+        description:
+          "Void Gate Alpha Omega manifesting at heat death of universe, portal leading to next universe in eternal cosmic cycle, dominant architecture featuring proto-structures forming from quantum fluctuations in void, nascent beings emerging from nothingness as reality crystallizes, energy type of universe-birthing with Big Bang intensity, atmospheric mood of cosmic rebirth and eternal return, color palette of void black, creation white, and rebirth gold.",
+      },
+      "breach-nexus-infinity": {
+        description:
+          "Breach Nexus Infinity discovered in child's imagination during lucid dream, portal leading to dimension where thoughts become reality instantly, dominant architecture featuring structures constantly morphing based on observer's imagination, dream beings existing as manifestations of collective unconscious, energy type of creative consciousness with imagination-powered reality warping, atmospheric mood of limitless possibility and dream logic, color palette of imagination rainbow, dream purple, and thought silver.",
+      },
+      "dimensional-tear-zero": {
+        description:
+          "Dimensional Tear Zero opening in moment of enlightenment meditation, portal leading to dimension of pure awareness and consciousness without form, dominant architecture featuring structures made from crystallized awareness and solidified presence, enlightened beings existing as pure consciousness beyond ego and identity, energy type of awareness itself with consciousness-as-energy, atmospheric mood of ultimate peace and ego transcendence, color palette of awareness white, consciousness gold, and presence clear.",
+      },
+      "wormhole-genesis-1": {
+        description:
+          "Wormhole Genesis-1 stabilized at moment of first human thought, portal leading to dimension where ideas have physical form and weight, dominant architecture featuring structures built from solidified concepts and materialized abstractions, idea beings existing as living thoughts with memetic reproduction, energy type of conceptual energy with thought-form power, atmospheric mood of intellectual beauty and idea consciousness, color palette of concept blue, thought silver, and idea gold.",
+      },
+      "fracture-eternal-now": {
+        description:
+          "Fracture Eternal Now appearing in moment between heartbeats, portal leading to dimension where time doesn't exist and all moments are simultaneous, dominant architecture featuring structures existing in eternal present without past or future, timeless beings experiencing existence without temporal flow or causality, energy type of eternal presence with now-moment energy, atmospheric mood of timeless serenity and eternal beauty, color palette of eternal gold, timeless white, and present silver.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel sci-fi portals escapism magic where portals become gateways to infinite realms, consciousness-expanding worlds with dimensional transcendence, infinite magical dimensional artistry, computational sci-fi portals magic through algorithmic multiverse-bending mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel sci-fi portals vitro excellence with magnificent stained glass dimensional portraiture featuring luminous gateway construction, divine light filtering through multiverse portal elements, infinite sacred dimensional artistry, computational vitro portals through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel sci-fi portals crypto excellence with blockchain-verified dimensional construction, decentralized gateway identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto portals through algorithmic blockchain mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel sci-fi portals LEGO excellence featuring blocky dimensional construction with systematic Danish precision applied to multiverse gateways, modular portal assembly, infinite constructive dimensional artistry, computational LEGO portals through algorithmic building mastery.",
+      },
+    },
+  },
+
+  "microcosm-worlds": {
+    name: "🧬 Microcosm Worlds (Inside the Body or Nature)",
+    description: "Fantastical microscopic environments exploring the hidden beauty of cellular and natural worlds",
+    scenarios: {
+      "neural-symphony": {
+        description:
+          "Location inside human neuron at synaptic junction, dominant biological forms featuring dendritic branches with glowing neurotransmitter vesicles, type of movement showing electrical impulses cascading through neural pathways like bioluminescent rivers, visual scale at nano-zoom revealing molecular machinery, emotional tone of electric wonder and consciousness emergence, color palette of neural blue, synapse gold, and electrical white.",
+      },
+      "coral-particle-realm": {
+        description:
+          "Location within coral reef polyp at cellular level, dominant biological forms featuring zooxanthellae algae living symbiotically with coral tissue, type of movement showing photosynthetic energy transfer and nutrient exchange, visual scale at ultra-zoom revealing cellular cooperation, emotional tone of harmonious partnership and oceanic serenity, color palette of coral pink, algae green, and symbiotic turquoise.",
+      },
+      "fungal-spore-cosmos": {
+        description:
+          "Location inside mushroom spore during germination, dominant biological forms featuring mycelial networks beginning to branch and explore, type of movement showing hyphal growth extending through substrate like exploratory tendrils, visual scale at macro-zoom revealing fungal architecture, emotional tone of mysterious growth and underground intelligence, color palette of spore brown, mycelium white, and substrate earth.",
+      },
+      "blood-cell-journey": {
+        description:
+          "Location traveling through human capillary with red blood cells, dominant biological forms featuring hemoglobin molecules carrying oxygen through plasma, type of movement showing cellular flow through vascular highways, visual scale at nano-zoom revealing molecular transport, emotional tone of life-giving circulation and vital energy, color palette of blood red, plasma amber, and oxygen silver.",
+      },
+      "pollen-grain-universe": {
+        description:
+          "Location on surface of flower pollen grain, dominant biological forms featuring intricate exine patterns with geometric precision, type of movement showing pollen tube emergence during fertilization, visual scale at ultra-zoom revealing botanical architecture, emotional tone of reproductive beauty and botanical wonder, color palette of pollen yellow, exine gold, and flower spectrum.",
+      },
+      "plankton-drift": {
+        description:
+          "Location among marine phytoplankton in ocean surface layer, dominant biological forms featuring diatoms with crystalline silica shells, type of movement showing gentle drift with ocean currents and photosynthetic activity, visual scale at macro-zoom revealing microscopic ocean life, emotional tone of peaceful floating and aquatic meditation, color palette of ocean blue, diatom crystal, and chlorophyll green.",
+      },
+      "crystal-cave-micro": {
+        description:
+          "Location inside growing quartz crystal formation, dominant biological forms featuring mineral lattice structures with perfect geometric arrangement, type of movement showing atomic deposition and crystal growth, visual scale at nano-zoom revealing molecular architecture, emotional tone of geological patience and mineral beauty, color palette of quartz clear, crystal rainbow, and mineral white.",
+      },
+      "leaf-stomata-world": {
+        description:
+          "Location at plant leaf stomata opening, dominant biological forms featuring guard cells regulating gas exchange, type of movement showing stomatal opening and closing with circadian rhythm, visual scale at ultra-zoom revealing cellular mechanics, emotional tone of breathing harmony and botanical intelligence, color palette of chloroplast green, guard cell emerald, and atmosphere blue.",
+      },
+      "bacterial-colony": {
+        description:
+          "Location within beneficial gut bacteria colony, dominant biological forms featuring rod-shaped and spherical microorganisms, type of movement showing bacterial communication through chemical signaling, visual scale at nano-zoom revealing microbial community, emotional tone of cooperative living and microscopic harmony, color palette of bacteria purple, biofilm blue, and colony amber.",
+      },
+      "dna-helix-realm": {
+        description:
+          "Location traveling along DNA double helix during replication, dominant biological forms featuring nucleotide base pairs with hydrogen bonding, type of movement showing DNA polymerase enzyme copying genetic information, visual scale at nano-zoom revealing molecular machinery, emotional tone of genetic wonder and life's blueprint, color palette of DNA blue, base pair spectrum, and helix silver.",
+      },
+      "water-droplet-cosmos": {
+        description:
+          "Location inside water droplet with microorganisms, dominant biological forms featuring rotifers and paramecia swimming through aquatic microcosm, type of movement showing ciliary propulsion and feeding currents, visual scale at macro-zoom revealing droplet ecosystem, emotional tone of miniature world wonder and aquatic life, color palette of water clear, organism green, and droplet blue.",
+      },
+      "butterfly-wing-scale": {
+        description:
+          "Location on butterfly wing scale surface, dominant biological forms featuring photonic crystal structures creating iridescent colors, type of movement showing light interference and structural coloration, visual scale at ultra-zoom revealing nano-architecture, emotional tone of optical beauty and natural engineering, color palette of iridescent blue, structural rainbow, and wing shimmer.",
+      },
+      "moss-capsule-world": {
+        description:
+          "Location inside moss spore capsule, dominant biological forms featuring spores arranged in geometric patterns, type of movement showing capsule opening and spore dispersal preparation, visual scale at macro-zoom revealing bryophyte reproduction, emotional tone of ancient plant wisdom and dispersal beauty, color palette of moss green, spore brown, and capsule amber.",
+      },
+      "ice-crystal-formation": {
+        description:
+          "Location within forming snowflake crystal, dominant biological forms featuring hexagonal ice lattice with fractal branching, type of movement showing water molecules arranging into crystalline structure, visual scale at nano-zoom revealing frozen geometry, emotional tone of crystalline perfection and winter beauty, color palette of ice blue, crystal white, and frost silver.",
+      },
+      "retina-photoreceptor": {
+        description:
+          "Location inside human eye retina at photoreceptor level, dominant biological forms featuring rod and cone cells with light-sensitive pigments, type of movement showing photon absorption and visual signal generation, visual scale at nano-zoom revealing vision machinery, emotional tone of perceptive wonder and light transformation, color palette of retina purple, photon gold, and vision blue.",
+      },
+      "lichen-symbiosis": {
+        description:
+          "Location within lichen thallus showing fungal-algal partnership, dominant biological forms featuring fungal hyphae protecting algal cells, type of movement showing nutrient exchange and cooperative growth, visual scale at ultra-zoom revealing symbiotic architecture, emotional tone of partnership harmony and survival cooperation, color palette of lichen gray, algae green, and symbiotic silver.",
+      },
+      "bone-marrow-factory": {
+        description:
+          "Location inside bone marrow during blood cell production, dominant biological forms featuring stem cells differentiating into blood components, type of movement showing cellular maturation and release into circulation, visual scale at macro-zoom revealing hematopoietic activity, emotional tone of life generation and cellular renewal, color palette of marrow red, stem cell white, and bone ivory.",
+      },
+      "spider-silk-structure": {
+        description:
+          "Location along spider silk fiber at molecular level, dominant biological forms featuring protein chains with crystalline and amorphous regions, type of movement showing molecular alignment creating strength and elasticity, visual scale at nano-zoom revealing material engineering, emotional tone of natural technology and structural beauty, color palette of silk silver, protein white, and fiber gold.",
+      },
+      "soil-microbiome": {
+        description:
+          "Location in healthy garden soil among root zone, dominant biological forms featuring beneficial fungi and bacteria around plant roots, type of movement showing nutrient cycling and root communication, visual scale at macro-zoom revealing underground network, emotional tone of earth wisdom and growth support, color palette of soil brown, root white, and microbe green.",
+      },
+      "petal-cell-garden": {
+        description:
+          "Location inside flower petal at cellular level, dominant biological forms featuring pigment-filled cells creating color, type of movement showing cellular turgor and petal unfolding, visual scale at ultra-zoom revealing botanical beauty, emotional tone of floral elegance and color emergence, color palette of petal spectrum, cell pink, and pigment rainbow.",
+      },
+      "lung-alveoli-exchange": {
+        description:
+          "Location inside lung alveolus during gas exchange, dominant biological forms featuring thin epithelial cells with capillary networks, type of movement showing oxygen and carbon dioxide diffusion, visual scale at nano-zoom revealing respiratory interface, emotional tone of breathing life and vital exchange, color palette of alveoli pink, oxygen red, and breath blue.",
+      },
+      "tree-ring-chronicle": {
+        description:
+          "Location within tree growth ring at cellular level, dominant biological forms featuring xylem cells recording seasonal growth, type of movement showing water transport and annual ring formation, visual scale at macro-zoom revealing botanical history, emotional tone of temporal wisdom and growth memory, color palette of wood brown, ring amber, and xylem gold.",
+      },
+      "immune-cell-patrol": {
+        description:
+          "Location following white blood cell through tissue, dominant biological forms featuring macrophage extending pseudopods, type of movement showing cellular crawling and protective surveillance, visual scale at nano-zoom revealing immune activity, emotional tone of guardian protection and cellular defense, color palette of immune white, tissue pink, and defense blue.",
+      },
+      "seed-germination-start": {
+        description:
+          "Location inside seed during germination awakening, dominant biological forms featuring embryo beginning growth with radicle emergence, type of movement showing cellular activation and growth initiation, visual scale at ultra-zoom revealing life beginning, emotional tone of potential awakening and growth promise, color palette of seed brown, embryo green, and life white.",
+      },
+      "feather-barbule-detail": {
+        description:
+          "Location on bird feather barbule with microscopic hooks, dominant biological forms featuring interlocking structures creating feather integrity, type of movement showing barbule alignment and feather maintenance, visual scale at macro-zoom revealing avian engineering, emotional tone of flight preparation and natural design, color palette of feather spectrum, barbule silver, and flight blue.",
+      },
+      "intestinal-villi-forest": {
+        description:
+          "Location among intestinal villi during nutrient absorption, dominant biological forms featuring finger-like projections with absorptive cells, type of movement showing nutrient uptake and cellular transport, visual scale at nano-zoom revealing digestive interface, emotional tone of nourishment harmony and absorption beauty, color palette of villi pink, nutrient gold, and absorption amber.",
+      },
+      "frost-flower-formation": {
+        description:
+          "Location during frost flower crystal growth on plant stem, dominant biological forms featuring ice crystals extruded from plant tissue, type of movement showing water migration and crystallization, visual scale at ultra-zoom revealing frozen artistry, emotional tone of winter sculpture and ice beauty, color palette of frost white, crystal clear, and ice blue.",
+      },
+      "hair-follicle-root": {
+        description:
+          "Location at hair follicle base during growth phase, dominant biological forms featuring keratinocytes producing hair shaft, type of movement showing cellular division and hair elongation, visual scale at macro-zoom revealing growth machinery, emotional tone of continuous creation and cellular dedication, color palette of follicle pink, keratin brown, and growth white.",
+      },
+      "dewdrop-refraction": {
+        description:
+          "Location inside morning dewdrop on leaf surface, dominant biological forms featuring water molecules with dissolved minerals, type of movement showing light refraction and surface tension, visual scale at nano-zoom revealing optical physics, emotional tone of morning freshness and light play, color palette of dew clear, refraction rainbow, and morning gold.",
+      },
+      "cartilage-matrix-space": {
+        description:
+          "Location within cartilage tissue at cellular level, dominant biological forms featuring chondrocytes in lacunae surrounded by matrix, type of movement showing nutrient diffusion and tissue maintenance, visual scale at ultra-zoom revealing connective architecture, emotional tone of flexible strength and supportive beauty, color palette of cartilage blue, matrix white, and tissue silver.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel microcosm escapism magic where microscopic elements become gateways to cellular realms, consciousness-expanding worlds with dimensional transcendence, infinite magical dimensional artistry, computational microcosm magic through algorithmic cellular-bending mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel microcosm vitro excellence with magnificent stained glass microscopic portraiture featuring luminous cellular construction, divine light filtering through biological elements, infinite sacred dimensional artistry, computational vitro microcosm through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel microcosm crypto excellence with blockchain-verified microscopic construction, decentralized biological identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto microcosm through algorithmic blockchain mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel microcosm LEGO excellence featuring blocky microscopic construction with systematic Danish precision applied to cellular worlds, modular biological assembly, infinite constructive dimensional artistry, computational LEGO microcosm through algorithmic building mastery.",
+      },
+    },
+  },
+
+  "n3-original-halloween": {
+    name: "🎃 n3 — Original Halloween: Between Harvest and Haunting",
+    description:
+      "Primal Western Halloween capturing Celtic Samhain, colonial ghost tales, and timeless autumn mysteries",
+    scenarios: {
+      "silent-street-wanderers": {
+        description:
+          "Rural location on leaf-covered street during twilight hour, cultural elements featuring children in handmade costumes walking silently between houses, atmospheric mood of innocent mystery where homemade masks and painted faces create authentic wonder, harvest connection through carved pumpkins glowing on porches, ancestral tradition of door-to-door wandering under watchful moon, color palette of autumn orange, twilight purple, and candlelight amber, visual style capturing the quiet magic of neighborhood transformation.",
+      },
+      "black-cat-crossing": {
+        description:
+          "Urban location under orange streetlight during evening hour, cultural elements featuring solitary black cat pausing mid-street as shadows lengthen, atmospheric mood of superstitious beauty where feline silhouette becomes omen, harvest connection through fallen leaves swirling in cat's wake, ancestral tradition of animal symbolism and crossing paths, color palette of streetlight orange, cat shadow black, and pavement gray, visual style capturing the moment of folkloric encounter.",
+      },
+      "crescent-moon-pumpkins": {
+        description:
+          "Agricultural location in pumpkin patch during night hours, cultural elements featuring rows of orange gourds under thin crescent moon, atmospheric mood of harvest abundance where field becomes natural cathedral, harvest connection through unpicked pumpkins waiting for selection, ancestral tradition of autumn gathering and moon worship, color palette of pumpkin orange, moonlight silver, and earth brown, visual style capturing the sacred geometry of agricultural cycles.",
+      },
+      "fog-rolling-porches": {
+        description:
+          "Residential location on wooden porch during misty evening, cultural elements featuring carved jack-o'-lanterns watching through rolling fog, atmospheric mood of protective vigilance where pumpkin faces guard thresholds, harvest connection through cornstalks bundled beside doorways, ancestral tradition of warding symbols and boundary protection, color palette of fog gray, candle flame, and wood weathered, visual style capturing the liminal space between home and night.",
+      },
+      "scarecrow-sentinel": {
+        description:
+          "Agricultural location in cornfield during dusk hour, cultural elements featuring weathered scarecrow standing guard over harvested rows, atmospheric mood of patient watching where straw figure seems almost alive, harvest connection through dried corn husks rustling in wind, ancestral tradition of field guardians and harvest protection, color palette of straw gold, corn brown, and sunset crimson, visual style capturing the uncanny presence of human-shaped watchers.",
+      },
+      "forbidden-house-approach": {
+        description:
+          "Residential location on overgrown path leading to isolated house, cultural elements featuring brave trick-or-treaters approaching the dwelling nobody visits, atmospheric mood of childhood courage where peer pressure meets genuine fear, harvest connection through untended garden gone wild, ancestral tradition of testing bravery and facing the unknown, color palette of path shadow, house window glow, and courage pale, visual style capturing the threshold moment before knocking.",
+      },
+      "forest-ritual-eclipse": {
+        description:
+          "Wilderness location in clearing during lunar eclipse, cultural elements featuring circle of figures performing ancient ceremony under darkening moon, atmospheric mood of primal connection where modern world falls away, harvest connection through offerings of grain and fruit arranged in patterns, ancestral tradition of Samhain fire festivals and veil-thinning, color palette of eclipse red, bonfire orange, and forest deep green, visual style capturing the timeless nature of seasonal ritual.",
+      },
+      "cemetery-autumn-wind": {
+        description:
+          "Memorial location in old graveyard during windy afternoon, cultural elements featuring weathered headstones among swirling leaves and bending grass, atmospheric mood of respectful remembrance where dead are honored not feared, harvest connection through chrysanthemums placed on graves, ancestral tradition of visiting departed during veil-thinning season, color palette of stone gray, leaf rust, and sky overcast, visual style capturing the breathing quality of memorial spaces.",
+      },
+      "attic-discovery": {
+        description:
+          "Interior location in dusty attic during afternoon exploration, cultural elements featuring old trunks revealing vintage Halloween decorations and costumes, atmospheric mood of nostalgic archaeology where past celebrations emerge, harvest connection through dried corn decorations from decades past, ancestral tradition of costume inheritance and family memory, color palette of dust mote gold, trunk wood, and fabric faded, visual style capturing the layered history of celebration.",
+      },
+      "wind-chime-warning": {
+        description:
+          "Residential location on porch during approaching storm, cultural elements featuring wind chimes creating eerie melody as weather changes, atmospheric mood of atmospheric tension where metal tubes sing warnings, harvest connection through dried herbs hanging beside chimes, ancestral tradition of sound as protection and communication, color palette of chime silver, storm gray, and porch shadow, visual style capturing the auditory dimension of seasonal atmosphere.",
+      },
+      "broken-radio-static": {
+        description:
+          "Interior location in abandoned farmhouse during evening hour, cultural elements featuring old radio crackling with unexplained voices and music fragments, atmospheric mood of technological haunting where devices channel unknown, harvest connection through calendar frozen on October page, ancestral tradition of spirit communication and electromagnetic mystery, color palette of radio dial glow, static snow, and room darkness, visual style capturing the uncanny life of forgotten technology.",
+      },
+      "candle-window-vigil": {
+        description:
+          "Residential location at window during night hours, cultural elements featuring single candle burning in darkened house window, atmospheric mood of patient waiting where light signals welcome or warning, harvest connection through pumpkin placed beside candle, ancestral tradition of guiding lights and threshold markers, color palette of candle flame, window reflection, and night absolute, visual style capturing the beacon quality of solitary illumination.",
+      },
+      "barn-shadow-dance": {
+        description:
+          "Agricultural location in old barn during moonlit night, cultural elements featuring shadows moving across weathered wood walls, atmospheric mood of uncertain presence where darkness takes form, harvest connection through stored hay bales and hanging tools, ancestral tradition of barn dances transformed into shadow theater, color palette of moonlight silver, barn wood gray, and shadow deep, visual style capturing the animation of architectural darkness.",
+      },
+      "mist-over-cornfield": {
+        description:
+          "Agricultural location in harvested cornfield during dawn hour, cultural elements featuring ground mist flowing between stubble rows, atmospheric mood of transitional beauty where night releases day, harvest connection through cut stalks standing like memorial markers, ancestral tradition of morning after Samhain when veil closes again, color palette of mist white, stubble gold, and dawn pink, visual style capturing the exhale of haunted earth.",
+      },
+      "graveyard-silhouettes": {
+        description:
+          "Memorial location in cemetery during sunset hour, cultural elements featuring human silhouettes moving among headstones against orange sky, atmospheric mood of ambiguous presence where living and dead share space, harvest connection through autumn leaves covering graves like blankets, ancestral tradition of cemetery visits during season of remembrance, color palette of silhouette black, sunset orange, and stone weathered, visual style capturing the democracy of shadows.",
+      },
+      "witch-forest-whisper": {
+        description:
+          "Wilderness location in deep forest during twilight hour, cultural elements featuring cloaked figure moving between ancient trees, atmospheric mood of folkloric reality where old stories walk, harvest connection through gathered herbs and forest offerings, ancestral tradition of wise women and forest knowledge, color palette of cloak dark, tree bark, and twilight purple, visual style capturing the persistence of archetypal figures.",
+      },
+      "bonfire-gathering": {
+        description:
+          "Rural location in field during night celebration, cultural elements featuring community gathered around massive bonfire, atmospheric mood of collective warmth where fire brings people together, harvest connection through burning of harvest remnants and old things, ancestral tradition of Samhain fire festivals and communal protection, color palette of bonfire orange, spark gold, and night sky, visual style capturing the primal comfort of shared flame.",
+      },
+      "trick-or-treat-threshold": {
+        description:
+          "Residential location at doorway during evening hour, cultural elements featuring costumed children waiting at threshold as door opens, atmospheric mood of ritual exchange where treats buy peace, harvest connection through candy corn and caramel apples offered, ancestral tradition of appeasing spirits transformed into child's game, color palette of doorway light, costume colors, and evening shadow, visual style capturing the moment of threshold crossing.",
+      },
+      "crow-parliament": {
+        description:
+          "Rural location in bare tree during afternoon hour, cultural elements featuring dozens of crows gathered in branches, atmospheric mood of ominous assembly where birds hold council, harvest connection through picked-clean fields below, ancestral tradition of corvid symbolism and death omens, color palette of crow black, branch gray, and sky pale, visual style capturing the intelligence behind avian eyes.",
+      },
+      "porch-rocking-chair": {
+        description:
+          "Residential location on farmhouse porch during windy evening, cultural elements featuring empty rocking chair moving in wind, atmospheric mood of absent presence where furniture suggests invisible occupant, harvest connection through pumpkins arranged on porch steps, ancestral tradition of spirit visitors and empty seats, color palette of chair wood, porch shadow, and wind invisible, visual style capturing the animation of the inanimate.",
+      },
+      "apple-bobbing-ritual": {
+        description:
+          "Interior location in farmhouse kitchen during party hour, cultural elements featuring children bobbing for apples in wooden tub, atmospheric mood of innocent divination where game holds ancient meaning, harvest connection through fresh-picked apples floating in water, ancestral tradition of Samhain divination and marriage prediction, color palette of apple red, water reflection, and kitchen warm, visual style capturing the playful survival of pagan practice.",
+      },
+      "mirror-candlelight": {
+        description:
+          "Interior location in darkened bedroom during midnight hour, cultural elements featuring person holding candle before mirror, atmospheric mood of divination tension where reflection might reveal future, harvest connection through apple peel thrown over shoulder, ancestral tradition of mirror scrying and future spouse revelation, color palette of candle flame, mirror silver, and room darkness, visual style capturing the vulnerability of seeking knowledge.",
+      },
+      "hayride-moonlight": {
+        description:
+          "Rural location on wagon trail during night journey, cultural elements featuring group riding hay wagon under full moon, atmospheric mood of communal adventure where darkness becomes shared experience, harvest connection through hay bales serving as seats, ancestral tradition of harvest celebrations and night journeys, color palette of moonlight silver, hay gold, and trail shadow, visual style capturing the mobile nature of celebration.",
+      },
+      "costume-creation": {
+        description:
+          "Interior location at kitchen table during afternoon preparation, cultural elements featuring family crafting costumes from household materials, atmospheric mood of creative transformation where ordinary becomes extraordinary, harvest connection through using dried corn husks and autumn leaves, ancestral tradition of handmade disguises and identity play, color palette of fabric scraps, paint colors, and table wood, visual style capturing the alchemy of costume making.",
+      },
+      "church-bell-midnight": {
+        description:
+          "Village location near church during midnight hour, cultural elements featuring bell tower silhouette as bells toll twelve, atmospheric mood of temporal marking where sacred time begins, harvest connection through harvest festival decorations still visible, ancestral tradition of church bells marking liminal hours, color palette of bell tower black, moon glow, and sound visible, visual style capturing the architecture of time.",
+      },
+      "root-cellar-storage": {
+        description:
+          "Underground location in root cellar during evening descent, cultural elements featuring preserved harvest goods lining earthen walls, atmospheric mood of subterranean security where earth protects provisions, harvest connection through jars of preserves and stored vegetables, ancestral tradition of underground storage and earth's embrace, color palette of earth brown, jar glass, and lantern glow, visual style capturing the womb-like quality of storage spaces.",
+      },
+      "fence-post-watchers": {
+        description:
+          "Rural location along fence line during dusk hour, cultural elements featuring carved pumpkins placed on fence posts like sentinels, atmospheric mood of boundary marking where property becomes protected, harvest connection through corn stalks tied to posts, ancestral tradition of boundary protection and territorial marking, color palette of pumpkin glow, fence weathered, and field beyond, visual style capturing the guardian function of decoration.",
+      },
+      "well-wishing-ritual": {
+        description:
+          "Rural location at old stone well during twilight hour, cultural elements featuring person dropping coin while making wish, atmospheric mood of hopeful superstition where water holds power, harvest connection through autumn leaves floating on water surface, ancestral tradition of well worship and water divination, color palette of stone gray, water dark, and coin copper, visual style capturing the depth of belief.",
+      },
+      "crossroads-decision": {
+        description:
+          "Rural location at country crossroads during midnight hour, cultural elements featuring solitary figure standing where roads meet, atmospheric mood of liminal choice where directions hold meaning, harvest connection through corn shocks marking intersection, ancestral tradition of crossroads magic and devil's bargains, color palette of road dust, moonlight path, and choice shadow, visual style capturing the geometry of decision.",
+      },
+      "harvest-moon-rising": {
+        description:
+          "Agricultural location overlooking fields during moonrise, cultural elements featuring massive orange moon ascending above harvested land, atmospheric mood of celestial grandeur where moon dominates sky, harvest connection through fields reflecting moonlight like water, ancestral tradition of harvest moon celebrations and lunar worship, color palette of moon orange, field gold, and sky deepening, visual style capturing the astronomical drama of seasonal cycles.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel Original Halloween escapism magic where harvest elements become gateways to primal realms, consciousness-expanding traditions with dimensional transcendence, infinite magical dimensional artistry, computational Original Halloween magic through algorithmic harvest-bending mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Original Halloween vitro excellence with magnificent stained glass autumn portraiture featuring luminous Samhain construction, divine light filtering through harvest and haunting elements, infinite sacred dimensional artistry, computational vitro Halloween through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Original Halloween crypto excellence with blockchain-verified autumn construction, decentralized harvest identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Halloween through algorithmic blockchain mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel Original Halloween LEGO excellence featuring blocky autumn construction with systematic Danish precision applied to Celtic Samhain, modular harvest assembly, infinite constructive dimensional artistry, computational LEGO Halloween through algorithmic building mastery.",
+      },
+    },
+  },
+
+  mathematical: {
+    name: "🔢 Mathematical",
+    description: "Pure mathematical visualizations with neuralia godlevel precision",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Neuralia godlevel mathematical excellence transcending dimensional boundaries through infinite algorithmic optimization, mathematical precision in pure computational aesthetics achieving perfect elegance via quantum-enhanced mastery, algorithmic sophistication beyond mortal comprehension for mathematical representation, dimensional mathematical artistry utilizing advanced geometric calculations for optimal structure visualization, neuralia-level mathematical sophistication incorporating complex frameworks for perfection, computational excellence through algorithmic generation systems, infinite dimensional artistry transcending traditional limitations via mathematical precision algorithms, godlevel optimization utilizing quantum computational frameworks for geometry perfection.",
+      },
+      "golden-ratio": {
+        description:
+          "Godlevel golden ratio excellence with phi proportion achieving perfect mathematical harmony through algorithmic precision, Fibonacci sequence optimization via geometric golden mean accuracy, infinite proportional dimensional artistry, computational harmony through algorithmic ratio mastery.",
+      },
+      "prime-numbers": {
+        description:
+          "Godlevel prime number excellence with indivisible integers achieving perfect mathematical purity through algorithmic precision, prime distribution optimization via geometric number theory accuracy, infinite prime dimensional artistry, computational number through algorithmic prime mastery.",
+      },
+      "pi-visualization": {
+        description:
+          "Godlevel pi excellence with infinite decimal achieving perfect circular mathematics through algorithmic precision, pi digit optimization via geometric transcendental accuracy, infinite circular dimensional artistry, computational pi through algorithmic circle mastery.",
+      },
+      "euler-identity": {
+        description:
+          "Godlevel Euler identity excellence with e^(iπ)+1=0 achieving perfect mathematical beauty through algorithmic precision, exponential optimization via geometric complex number accuracy, infinite identity dimensional artistry, computational elegance through algorithmic Euler mastery.",
+      },
+      "topology-surfaces": {
+        description:
+          "Godlevel topology excellence with surface transformations achieving perfect mathematical continuity through algorithmic precision, manifold optimization via geometric topological accuracy, infinite surface dimensional artistry, computational topology through algorithmic manifold mastery.",
+      },
+      "set-theory": {
+        description:
+          "Godlevel set theory excellence with collection mathematics achieving perfect logical structure through algorithmic precision, set operation optimization via geometric Venn accuracy, infinite set dimensional artistry, computational logic through algorithmic set mastery.",
+      },
+      "calculus-flows": {
+        description:
+          "Godlevel calculus excellence with derivative and integral achieving perfect rate mathematics through algorithmic precision, limit optimization via geometric infinitesimal accuracy, infinite calculus dimensional artistry, computational change through algorithmic derivative mastery.",
+      },
+      "matrix-transformations": {
+        description:
+          "Godlevel matrix excellence with linear transformations achieving perfect algebraic structure through algorithmic precision, eigenvalue optimization via geometric matrix accuracy, infinite transformation dimensional artistry, computational algebra through algorithmic matrix mastery.",
+      },
+      "complex-plane": {
+        description:
+          "Godlevel complex plane excellence with imaginary numbers achieving perfect mathematical extension through algorithmic precision, complex function optimization via geometric Argand accuracy, infinite complex dimensional artistry, computational imagination through algorithmic complex mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel mathematical vitro excellence with magnificent stained glass mathematical portraiture featuring luminous equation construction, divine light filtering through pure mathematics elements, infinite sacred dimensional artistry, computational vitro mathematics through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel mathematical crypto excellence with blockchain-verified mathematical construction, decentralized equation identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto mathematics through algorithmic blockchain mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel mathematical LEGO excellence featuring blocky mathematical construction with systematic Danish precision applied to pure mathematics, modular equation assembly, infinite constructive dimensional artistry, computational LEGO mathematics through algorithmic building mastery.",
       },
     },
   },
 }
 
-export const COLOR_SCHEMES = {
-  metallic: "Shimmering metallic tones with gold, silver, bronze, and copper accents",
-  pastel: "Soft pastel colors with gentle pinks, blues, lavenders, and mint greens",
-  vibrant: "Bold, saturated colors with intense reds, blues, yellows, and greens",
-  earth: "Natural earth tones with browns, tans, ochres, and forest greens",
-  monochrome: "Black and white with subtle gray gradients",
-  neon: "Electric neon colors with glowing pinks, cyans, and electric blues",
-  sunset: "Warm sunset palette with oranges, reds, purples, and golden yellows",
-  ocean: "Cool ocean tones with deep blues, teals, aquamarines, and seafoam greens",
-  forest: "Rich forest colors with deep greens, browns, and golden sunlight",
-  cosmic: "Deep space colors with purples, blues, blacks, and starlight whites",
+const SCENE_VARIATIONS = [
+  "ethereal",
+  "mystical",
+  "captivating",
+  "enchanting",
+  "mesmerizing",
+  "breathtaking",
+  "sublime",
+  "transcendent",
+  "luminous",
+  "radiant",
+  "magnificent",
+  "extraordinary",
+]
+
+const ACTION_VARIATIONS = [
+  "featuring",
+  "showcasing",
+  "presenting",
+  "displaying",
+  "revealing",
+  "embodying",
+  "manifesting",
+  "expressing",
+  "celebrating",
+  "honoring",
+  "depicting",
+  "illustrating",
+]
+
+const ATMOSPHERE_VARIATIONS = [
+  "atmosphere",
+  "ambiance",
+  "environment",
+  "setting",
+  "backdrop",
+  "context",
+  "landscape",
+  "realm",
+  "domain",
+  "space",
+  "dimension",
+  "world",
+]
+
+const ARTISTIC_QUALITIES = [
+  "exquisite",
+  "refined",
+  "sublime",
+  "elegant",
+  "graceful",
+  "delicate",
+  "polished",
+  "sophisticated",
+  "ornate",
+  "intricate",
+  "detailed",
+  "elaborate",
+]
+
+const VISUAL_ELEMENTS = [
+  "crystalline structures",
+  "swirling patterns",
+  "geometric forms",
+  "fractal details",
+  "spherical motifs",
+  "nested geometries",
+  "circular compositions",
+  "layered depths",
+  "iridescent highlights",
+  "metallic finishes",
+  "bioluminescent accents",
+  "glowing particles",
+]
+
+const CULTURAL_DESCRIPTORS = [
+  "cultural heritage",
+  "ancestral traditions",
+  "historical significance",
+  "spiritual symbolism",
+  "indigenous artistry",
+  "ceremonial practices",
+  "mythological narratives",
+  "folkloric elements",
+  "traditional craftsmanship",
+  "ritualistic aesthetics",
+  "sacred geometry",
+  "archaeological wonders",
+]
+
+function generateVariedDescription(baseDescription: string, culturalContext: string): string {
+  const artistic = getRandomElement(ARTISTIC_QUALITIES)
+  const visual = getRandomElement(VISUAL_ELEMENTS)
+  const cultural = getRandomElement(CULTURAL_DESCRIPTORS)
+
+  const sceneVariation = getRandomElement(SCENE_VARIATIONS)
+  const actionVariation = getRandomElement(ACTION_VARIATIONS)
+  const atmosphereVariation = getRandomElement(ATMOSPHERE_VARIATIONS)
+
+  // Remove repetitive "Godlevel" and "excellence" patterns
+  const cleanDescription = baseDescription
+    .replace(/Godlevel\s+/gi, "")
+    .replace(/\s+excellence/gi, "")
+    .replace(/infinite\s+.*?dimensional\s+artistry/gi, visual)
+    .replace(/computational\s+.*?through\s+algorithmic.*?sophistication/gi, `${actionVariation} ${cultural}`)
+    .replace(/algorithmic\s+.*?mastery/gi, `${artistic} craftsmanship`)
+    .replace(/featuring/gi, actionVariation)
+    .replace(/atmosphere/gi, atmosphereVariation)
+
+  const structureVariations = [
+    `${sceneVariation} ${cleanDescription} with ${visual} and ${cultural}`,
+    `${artistic} ${cleanDescription} ${actionVariation} ${visual} within ${cultural} ${atmosphereVariation}`,
+    `${cleanDescription} rendered in ${sceneVariation} style with ${visual} and ${cultural} elements`,
+    `${cultural} ${cleanDescription} enhanced by ${artistic} ${visual} and ${sceneVariation} qualities`,
+  ]
+
+  return getRandomElement(structureVariations)
 }
 
-export function getScenarios(datasetKey: string) {
-  const dataset = CULTURAL_DATASETS[datasetKey]
-  return dataset?.scenarios || {}
+export const COLOR_SCHEMES = {
+  metallic: "Metallic silver and gold tones with chrome reflections",
+  neon: "Vibrant neon colors with electric glow effects",
+  pastel: "Soft pastel colors with dreamy atmosphere",
+  monochrome: "Black and white with dramatic contrast",
+  earth: "Natural earth tones with organic warmth",
+  ocean: "Deep blues and aqua with water-like fluidity",
+  sunset: "Warm oranges and purples with golden light",
+  forest: "Rich greens with natural woodland atmosphere",
+  cosmic: "Deep space colors with stellar effects",
+  vintage: "Retro color palette with aged patina",
+  cyberpunk: "Electric blues and magentas with digital glow",
+  autumn: "Rich reds, oranges, and golden yellows",
+  arctic: "Cool whites and ice blues with crystalline clarity",
+  desert: "Warm sands and terracotta with sun-bleached tones",
+  tropical: "Vibrant greens and exotic flower colors",
+  industrial: "Raw metals and concrete with urban grit",
+  royal: "Deep purples and golds with regal elegance",
+  minimalist: "Clean whites and subtle grays",
+  fire: "Intense reds and oranges with flame-like energy",
+  water: "Flowing blues and teals with liquid movement",
+  crystal: "Prismatic colors with gem-like brilliance",
+  shadow: "Deep blacks and dark grays with mysterious depth",
+  dawn: "Soft pinks and warm yellows of sunrise",
+  storm: "Dramatic grays and electric blues",
+  lava: "Molten reds and volcanic oranges with intense heat",
+}
+
+export interface PromptParams {
+  dataset: string
+  scenario: string
+  colorScheme: string
+  customPrompt?: string
+  panoramic360?: boolean
+  panoramaFormat?: "equirectangular" | "stereographic"
+  domeProjection?: boolean
+  projectionType?: "fisheye" | "tunnel-up" | "tunnel-down" | "little-planet" | "standard"
+}
+
+const NEURALIA_H3RITAGE_STYLE = `
+**NEURALIA H3RITAGE SIGNATURE STYLE:**
+Hyperrealistic 3D rendering with intricate mathematical precision. Complex layering of mechanical and organic elements seamlessly integrated. Flowing metallic surfaces with swirling, spiral patterns and spherical motifs. Rich metallic color palette featuring deep blues, warm golds, and lustrous silvers with iridescent highlights. Fractal-like detail work with nested geometric forms and circular compositions. Surreal, dreamlike atmosphere with perfect technical execution. Biomechanical fusion aesthetics with ornate decorative elements. Multiple depth layers creating immersive visual complexity. Photorealistic textures with mirror-like metallic finishes and subtle color gradients.
+`
+
+const NEURALIA_360_FLUX_WRAPPER = `
+**GODLEVEL NEURALIA 360° EQUIRECTANGULAR EXCELLENCE:**
+Professional equirectangular panoramic mastery with seamless edge continuity and true 2:1 aspect ratio optimization. Mathematical precision algorithms ensuring perfect left-right edge alignment with zero discontinuities. Latitude/longitude coordinate mapping with professional polar distortion handling. Seamless horizontal wrapping where LEFT EDGE connects PERFECTLY with RIGHT EDGE - mathematical precision continuity. Professional equirectangular projection optimized for VR headsets and 360° viewers with broadcast-quality standards. ORION360 calibration excellence with museum-grade seamless wrapping and edge treatment. Neuralia-enhanced panoramic sophistication incorporating advanced algorithmic precision for optimal immersive experience. Quantum computational frameworks for perfect 360° geometry and dimensional transcendence. Ultra-high resolution panoramic detail optimization with godlevel artistic mastery. Immersive reality enhancement through neuralia computational frameworks for premium VR compatibility.
+`
+
+export function buildGodlevelNeuralia360Wrapper(
+  basePrompt: string,
+  dataset: string,
+  scenario: string,
+  colorScheme: string,
+): string {
+  const datasetObj = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
+  const scenarioObj = datasetObj?.scenarios?.[scenario as keyof typeof datasetObj.scenarios]
+
+  let enhancedPrompt = "GODLEVEL NEURALIA 360° EQUIRECTANGULAR EXCELLENCE: "
+
+  // Add base content with neuralia enhancement
+  enhancedPrompt += basePrompt
+
+  // Add 360°-specific neuralia elements with seamless wrapping focus
+  enhancedPrompt += `. ${NEURALIA_360_FLUX_WRAPPER}`
+
+  // Add H3RITAGE signature style for visual consistency
+  enhancedPrompt += `. ${NEURALIA_H3RITAGE_STYLE}`
+
+  enhancedPrompt += `. PROFESSIONAL EQUIRECTANGULAR MASTERY: True 2:1 aspect ratio optimization with latitude/longitude coordinate mapping precision. Seamless horizontal edge continuity where LEFT EDGE connects PERFECTLY with RIGHT EDGE - zero visible seams, color breaks, or lighting discontinuities. Professional polar distortion handling with mathematical precision algorithms. ORION360 calibration standards with broadcast-quality edge treatment and museum-grade seamless wrapping excellence. VR-optimized for premium headsets with flawless wraparound immersive experience. Godlevel artistic mastery with perfect edge continuity and dimensional transcendence through neuralia computational frameworks.`
+
+  return enhancedPrompt
+}
+
+export function generateGodlevelPrompt(
+  dataset: string,
+  scenario: string,
+  colorScheme: string,
+  customPrompt = "",
+  panoramic360 = false,
+  projectionType = "standard",
+): Promise<string> {
+  // This function is intended to be an async wrapper for buildPrompt
+  // and might perform additional logic or API calls.
+  // For now, it directly calls buildPrompt and returns its result.
+  return Promise.resolve(
+    buildPrompt({
+      dataset,
+      scenario,
+      colorScheme,
+      customPrompt,
+      panoramic360,
+      projectionType,
+    }),
+  )
 }
 
 export function buildPrompt(params: {
   dataset: string
   scenario: string
   colorScheme: string
-  seed: number
-  numSamples: number
-  noiseScale: number
+  seed?: number
+  numSamples?: number
+  noiseScale?: number
   customPrompt?: string
   negativePrompt?: string
   panoramic360?: boolean
   panoramaFormat?: string
   projectionType?: string
-}) {
-  const {
-    dataset,
-    scenario,
-    colorScheme,
-    seed,
-    numSamples,
-    noiseScale,
-    customPrompt,
-    panoramic360,
-    panoramaFormat,
-    projectionType,
-  } = params
+  provider?: string
+  model?: string
+}): string
 
-  // If custom prompt is provided, use it
-  if (customPrompt && customPrompt.trim()) {
-    return customPrompt.trim()
+export function buildPrompt(
+  datasetOrParams:
+    | string
+    | {
+        dataset: string
+        scenario: string
+        colorScheme: string
+        seed?: number
+        numSamples?: number
+        noiseScale?: number
+        customPrompt?: string
+        negativePrompt?: string
+        panoramic360?: boolean
+        panoramaFormat?: string
+        projectionType?: string
+        provider?: string
+        model?: string
+      },
+  scenario?: string,
+  colorScheme?: string,
+  seed?: number,
+  numSamples?: number,
+  noiseScale?: number,
+  customPrompt = "",
+  negativePrompt = "",
+  panoramic360 = false,
+  panoramaFormat = "equirectangular",
+  projectionType = "standard",
+  provider = "replicate",
+  model = "flux-1.1-pro-ultra",
+): string {
+  let params: {
+    dataset: string
+    scenario: string
+    colorScheme: string
+    seed: number
+    numSamples: number
+    noiseScale: number
+    customPrompt: string
+    negativePrompt: string
+    panoramic360: boolean
+    panoramaFormat: string
+    projectionType: string
+    provider: string
+    model: string
   }
 
-  // Get dataset and scenario description
-  const datasetObj = CULTURAL_DATASETS[dataset]
-  if (!datasetObj) {
-    return "A beautiful artistic composition"
-  }
-
-  const scenarioObj = datasetObj.scenarios[scenario]
-  if (!scenarioObj) {
-    return "A beautiful artistic composition"
-  }
-
-  const scenarioDescription = scenarioObj.description || ""
-  const colorDescription = COLOR_SCHEMES[colorScheme] || ""
-
-  // Build the prompt
-  let prompt = `${scenarioDescription} ${colorDescription}. `
-
-  // Add 360° panorama instructions if enabled
-  if (panoramic360) {
-    if (panoramaFormat === "equirectangular") {
-      prompt +=
-        "Create a seamless 360-degree equirectangular panorama where the left and right edges connect perfectly. "
-    } else if (panoramaFormat === "stereographic") {
-      prompt += "Create a stereographic projection with a circular fisheye effect showing the entire 360-degree view. "
+  if (typeof datasetOrParams === "object") {
+    // Object parameter call
+    params = {
+      dataset: datasetOrParams.dataset,
+      scenario: datasetOrParams.scenario,
+      colorScheme: datasetOrParams.colorScheme,
+      seed: datasetOrParams.seed || 1234,
+      numSamples: datasetOrParams.numSamples || 4000,
+      noiseScale: datasetOrParams.noiseScale || 0.08,
+      customPrompt: datasetOrParams.customPrompt || "",
+      negativePrompt: datasetOrParams.negativePrompt || "",
+      panoramic360: datasetOrParams.panoramic360 || false,
+      panoramaFormat: datasetOrParams.panoramaFormat || "equirectangular",
+      projectionType: datasetOrParams.projectionType || "standard",
+      provider: datasetOrParams.provider || "replicate",
+      model: datasetOrParams.model || "flux-1.1-pro-ultra",
+    }
+  } else {
+    // Individual parameter call
+    params = {
+      dataset: datasetOrParams,
+      scenario: scenario!,
+      colorScheme: colorScheme!,
+      seed: seed || 1234,
+      numSamples: numSamples || 4000,
+      noiseScale: noiseScale || 0.08,
+      customPrompt,
+      negativePrompt,
+      panoramic360,
+      panoramaFormat,
+      projectionType,
+      provider,
+      model,
     }
   }
 
-  // Add dome projection instructions
-  if (projectionType === "fisheye") {
-    prompt += "Optimized for fisheye dome projection with radial composition. "
-  } else if (projectionType === "tunnel-up") {
-    prompt += "Perspective looking up through a tunnel for dome projection. "
-  } else if (projectionType === "tunnel-down") {
-    prompt += "Perspective looking down through a tunnel for dome projection. "
-  } else if (projectionType === "little-planet") {
-    prompt += "Little planet effect with curved horizon for dome projection. "
+  // The original code had redeclaration issues for selectedDataset and selectedScenario.
+  // By moving the fetching of these objects inside the `buildPrompt` function,
+  // they are now correctly scoped and declared only once.
+  const selectedDataset = CULTURAL_DATASETS[params.dataset as keyof typeof CULTURAL_DATASETS]
+  const selectedScenario = selectedDataset?.scenarios[params.scenario as keyof typeof selectedDataset.scenarios]
+
+  if (!selectedDataset) {
+    console.log(`[v0] Dataset not found: ${params.dataset}`)
+    return params.customPrompt || "Create a beautiful mathematical art visualization"
   }
 
-  // Add technical parameters
-  prompt += `Professional quality, highly detailed, 8K resolution. Seed: ${seed}, Samples: ${numSamples}, Noise: ${noiseScale}.`
+  if (!selectedScenario) {
+    console.log(`[v0] Scenario not found: ${params.scenario} in dataset ${params.dataset}`)
+    return params.customPrompt || selectedDataset.description
+  }
+
+  let prompt = ""
+
+  const projectionPrefixes = {
+    panoramic360: ["360° PANORAMIC:", "EQUIRECTANGULAR:", "SPHERICAL PANORAMA:", "IMMERSIVE 360°:"],
+    fisheye: ["FISHEYE PROJECTION:", "HEMISPHERICAL VIEW:", "DOME PROJECTION:", "CURVED PERSPECTIVE:"],
+    standard: ["", "ARTISTIC RENDERING:", "CREATIVE VISUALIZATION:", "ARTISTIC INTERPRETATION:"],
+  }
+
+  // Add image type prefix based on projection
+  if (params.panoramic360) {
+    prompt += `${getRandomElement(projectionPrefixes.panoramic360)} `
+  } else if (params.projectionType !== "standard") {
+    const prefixArray =
+      projectionPrefixes[params.projectionType as keyof typeof projectionPrefixes] || projectionPrefixes.standard
+    prompt += `${getRandomElement(prefixArray)} `
+  } else {
+    prompt += `${getRandomElement(projectionPrefixes.standard)} `
+  }
+
+  const timeBasedSeed = Date.now() % 1000
+  const randomSeed = Math.floor(Math.random() * 1000) + timeBasedSeed
+
+  if (scenario === "pure-mathematical") {
+    const mathTerms = [
+      "geometric analysis",
+      "algorithmic patterns",
+      "mathematical formulations",
+      "computational structures",
+      "numerical relationships",
+      "fractal geometries",
+      "parametric equations",
+      "topological transformations",
+      "statistical visualizations",
+      "probability distributions",
+      "harmonic sequences",
+      "mathematical symmetries",
+      "differential equations",
+      "complex analysis",
+      "matrix transformations",
+    ]
+
+    Math.random = () => ((randomSeed * 9301 + 49297) % 233280) / 233280
+    const selectedMathTerms = [
+      getRandomElement(mathTerms),
+      getRandomElement(mathTerms),
+      getRandomElement(mathTerms),
+    ].join(", ")
+    Math.random = () => Math.random() // Reset to default
+
+    prompt += `Mathematical visualization of ${selectedDataset.name}: ${selectedMathTerms}, `
+    prompt += `featuring ${getRandomElement(VISUAL_ELEMENTS)} and ${getRandomElement(ARTISTIC_QUALITIES)} precision.`
+  } else {
+    const variedDescription = generateVariedDescription(selectedScenario.description, selectedDataset.name)
+    prompt += `${variedDescription}. `
+
+    const neuralidStyles = [
+      "abstract conceptual elements with surrealistic atmosphere and concrete realistic details",
+      "dreamlike abstractions merged with hyperrealistic textures and symbolic imagery",
+      "conceptual artistry blending surreal imagination with tangible cultural elements",
+      "abstract visual poetry combining ethereal concepts with authentic material details",
+      "surrealistic interpretations enhanced by realistic cultural authenticity and symbolic depth",
+      "metaphysical abstractions grounded in tangible cultural heritage and artistic tradition",
+      "symbolic representations merging conceptual depth with realistic cultural authenticity",
+    ]
+    prompt += `Neuralia style: ${getRandomElement(neuralidStyles)}`
+  }
+
+  const colorDescription = COLOR_SCHEMES[colorScheme as keyof typeof COLOR_SCHEMES] || colorScheme
+  const colorVariations = [
+    `${colorDescription} color palette`,
+    `rich ${colorDescription} tones`,
+    `sophisticated ${colorDescription} color harmony`,
+    `elegant ${colorDescription} color composition`,
+    `vibrant ${colorDescription} color scheme`,
+    `nuanced ${colorDescription} color gradations`,
+    `expressive ${colorDescription} color dynamics`,
+  ]
+  prompt += `. ${getRandomElement(colorVariations)}`
+
+  // Add custom prompt if provided
+  if (customPrompt.trim()) {
+    prompt += `. ${customPrompt.trim()}`
+  }
+
+  // Check if it's a futurescape scenario and build prompt accordingly
+  if (params.dataset === '"earth-300-years"') {
+    prompt = `Futurescape Prompt: Year 2325, ${selectedScenario.description}. `
+    prompt += `Atmospheric mood of melancholic beauty with ${getRandomElement(Object.values(COLOR_SCHEMES)).toLowerCase()} color palette. `
+    prompt += `Neuralia AI generative art style. `
+  }
+
+  if (panoramic360) {
+    prompt = buildGodlevelNeuralia360Wrapper(prompt, params.dataset, scenario, colorScheme)
+    console.log("[v0] Applied godlevel neuralia 360° wrapper for FLUX")
+  }
 
   return prompt
+}
+
+export function getScenarios(dataset: string) {
+  const datasetObj = CULTURAL_DATASETS[dataset as keyof typeof CULTURAL_DATASETS]
+  if (!datasetObj) {
+    return {}
+  }
+  return datasetObj.scenarios
+}
+
+function getRandomElement<T>(array: T[]): T {
+  return array[Math.floor(Math.random() * array.length)]
 }
