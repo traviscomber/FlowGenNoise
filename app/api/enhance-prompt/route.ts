@@ -314,7 +314,7 @@ function buildEnhancementPrompt(
 ): string {
   return `You are a professional writing editor focused on grammar and clarity improvements with Neuralia artistic style integration.
 
-CRITICAL REQUIREMENT: The enhanced prompt must NEVER include instructions to add text, numbers, letters, words, messages, labels, captions, or typography to the image. The image must be pure visual art only.
+CRITICAL REQUIREMENT - MANDATORY: The enhanced prompt must NEVER include instructions to add text, numbers, letters, words, messages, labels, captions, signs, banners, inscriptions, typography, or written characters to the image. The image must be pure visual art only - ABSOLUTELY NO TEXTUAL ELEMENTS WHATSOEVER.
 
 ORIGINAL PROMPT:
 ${originalPrompt}
@@ -337,8 +337,10 @@ ENHANCEMENT RULES:
 - Allow for undefined/natural color palette expression
 - Create a unique artistic style that represents the fusion of all user selections
 - Keep cultural references respectful and authentic
-- CRITICAL: NEVER add instructions for text, numbers, letters, words, messages, labels, captions, or typography in the image
-- The image must be pure visual art without any text elements
+- CRITICAL - MANDATORY: NEVER add instructions for text, numbers, letters, words, messages, labels, captions, signs, banners, inscriptions, typography, or written characters in the image
+- The image must be pure visual art without any text elements - ZERO TEXTUAL ELEMENTS
+- Start the enhanced prompt with "CRITICAL: ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, signs, banners, inscriptions, typography, or written characters in the image. Pure visual art only. "
+- End the enhanced prompt with "REMINDER: ZERO TEXTUAL ELEMENTS - pure visual art only."
 
 NEURALIA ARTISTIC ELEMENTS TO INTEGRATE:
 - Abstract conceptual interpretations of ${dataset} heritage
@@ -347,11 +349,15 @@ NEURALIA ARTISTIC ELEMENTS TO INTEGRATE:
 - Organic color palette emergence
 - Unique artistic synthesis like Indonesian aboriginal art traditions
 
-Provide the enhanced prompt with integrated Neuralia style elements that create a unique artistic representation of the user's cultural selections. Remember: NO text, numbers, or letters should appear in the generated image.`
+Provide the enhanced prompt with integrated Neuralia style elements that create a unique artistic representation of the user's cultural selections. Remember: NO text, numbers, or letters should appear in the generated image. The enhanced prompt MUST start with the NO TEXT instruction and end with the NO TEXT reminder.`
 }
 
 function enhancePromptWithRules(originalPrompt: string, variationLevel: string): { enhanced: string; statistics: any } {
   let enhanced = originalPrompt
+
+  const noTextPrefix =
+    "CRITICAL: ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, signs, banners, inscriptions, typography, or written characters in the image. Pure visual art only. "
+  const noTextSuffix = " REMINDER: ZERO TEXTUAL ELEMENTS - pure visual art only."
 
   // Add Neuralia style prefix for abstract conceptual approach
   if (!enhanced.includes("abstract conceptual") && !enhanced.includes("surrealistic")) {
@@ -371,6 +377,8 @@ function enhancePromptWithRules(originalPrompt: string, variationLevel: string):
     .replace(/\ba\s+([aeiouAEIOU])/g, "an $1") // Fix a/an usage
     .replace(/\ban\s+([^aeiouAEIOU])/g, "a $1") // Fix an/a usage
     .trim()
+
+  enhanced = noTextPrefix + enhanced + noTextSuffix
 
   const statistics = calculateStatistics(originalPrompt, enhanced)
   return { enhanced, statistics }

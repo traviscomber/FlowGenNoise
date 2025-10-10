@@ -38,7 +38,9 @@ export async function POST(request: NextRequest) {
     const formatType = panoramic360 ? "360° Equirectangular Panoramic" : `${projectionType} Dome Projection`
 
     // Create system prompt for OpenAI
-    const systemPrompt = `You are a master prompt engineer specializing in neuralia artistic style and cultural authenticity. Create godlevel prompts that blend mathematical precision with organic cultural flow through abstract, surrealistic, and concrete elements. Focus on traditional artisanal techniques enhanced with computational artistry and spiritual significance.`
+    const systemPrompt = `You are a master prompt engineer specializing in neuralia artistic style and cultural authenticity. Create godlevel prompts that blend mathematical precision with organic cultural flow through abstract, surrealistic, and concrete elements. Focus on traditional artisanal techniques enhanced with computational artistry and spiritual significance.
+
+CRITICAL REQUIREMENT: The generated image must NEVER contain any text, numbers, letters, words, messages, labels, captions, signs, banners, inscriptions, typography, or written characters of any kind. The image must be pure visual art only - NO TEXTUAL ELEMENTS WHATSOEVER.`
 
     const userPrompt = `Create a godlevel neuralia art prompt based on:
 - Dataset: ${selectedDataset.name}
@@ -55,8 +57,9 @@ Requirements:
 - Use neuralia artistic style
 - Incorporate spiritual significance and traditional techniques
 - Ensure ${formatType.toLowerCase()} visual composition optimization
+- CRITICAL: ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, signs, banners, inscriptions, typography, or written characters in the image. Pure visual art only.
 
-Generate a rich, detailed prompt that captures the essence of neuralia godlevel excellence.`
+Generate a rich, detailed prompt that captures the essence of neuralia godlevel excellence while ensuring ZERO textual elements appear in the final image.`
 
     console.log("[v0] Making OpenAI API call")
 
@@ -92,8 +95,10 @@ Generate a rich, detailed prompt that captures the essence of neuralia godlevel 
     // Fallback if OpenAI returns empty response
     if (!godlevelPrompt) {
       console.log("[v0] OpenAI returned empty response, using enhanced fallback")
-      godlevelPrompt = `Godlevel ${selectedDataset.name} excellence with infinite algorithmic ${scenario} beauty optimization, mathematical precision in traditional ${selectedDataset.name.toLowerCase()} cultural artistic ${scenario} aesthetics, computational elegance transcending dimensional boundaries through ${scenario} mastery and neuralia-level cultural sophistication. masterfully rendered in ${colorDescription} neuralia artistic style with authentic ${selectedDataset.name} cultural heritage. Mathematical precision seamlessly blends with organic cultural flow through abstract conceptual elements, surrealistic atmospheric depth, and concrete realistic details. Traditional artisanal techniques enhanced with computational artistry, spiritual significance, and ${formatType.toLowerCase()} visual composition. ${customPrompt ? `Enhanced with ${customPrompt}.` : ""} Neuralia godlevel excellence through cultural authenticity, algorithmic beauty, and transcendent artistic vision.`
+      godlevelPrompt = `CRITICAL: ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, signs, banners, inscriptions, typography, or written characters in the image. Pure visual art only. Godlevel ${selectedDataset.name} excellence with infinite algorithmic ${scenario} beauty optimization, mathematical precision in traditional ${selectedDataset.name.toLowerCase()} cultural artistic ${scenario} aesthetics, computational elegance transcending dimensional boundaries through ${scenario} mastery and neuralia-level cultural sophistication. masterfully rendered in ${colorDescription} neuralia artistic style with authentic ${selectedDataset.name} cultural heritage. Mathematical precision seamlessly blends with organic cultural flow through abstract conceptual elements, surrealistic atmospheric depth, and concrete realistic details. Traditional artisanal techniques enhanced with computational artistry, spiritual significance, and ${formatType.toLowerCase()} visual composition. ${customPrompt ? `Enhanced with ${customPrompt}.` : ""} Neuralia godlevel excellence through cultural authenticity, algorithmic beauty, and transcendent artistic vision. ZERO TEXTUAL ELEMENTS - pure visual art only.`
     }
+
+    godlevelPrompt = `CRITICAL: ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, signs, banners, inscriptions, typography, or written characters in the image. Pure visual art only. ${godlevelPrompt} REMINDER: ZERO TEXTUAL ELEMENTS - pure visual art only.`
 
     // Ensure prompt doesn't exceed maxLength
     if (godlevelPrompt.length > maxLength) {
