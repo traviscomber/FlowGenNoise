@@ -3362,6 +3362,7 @@ export function buildPrompt(params: {
   projectionType?: string
   provider?: string
   model?: string
+  domeProjection?: boolean
 }): string
 
 export function buildPrompt(
@@ -3381,6 +3382,7 @@ export function buildPrompt(
         projectionType?: string
         provider?: string
         model?: string
+        domeProjection?: boolean
       },
   scenario?: string,
   colorScheme?: string,
@@ -3409,6 +3411,7 @@ export function buildPrompt(
     projectionType: string
     provider: string
     model: string
+    domeProjection?: boolean
   }
 
   if (typeof datasetOrParams === "object") {
@@ -3427,6 +3430,7 @@ export function buildPrompt(
       projectionType: datasetOrParams.projectionType || "standard",
       provider: datasetOrParams.provider || "replicate",
       model: datasetOrParams.model || "flux-1.1-pro-ultra",
+      domeProjection: datasetOrParams.domeProjection || false,
     }
   } else {
     // Individual parameter call
@@ -3444,12 +3448,10 @@ export function buildPrompt(
       projectionType,
       provider,
       model,
+      domeProjection: false,
     }
   }
 
-  // The original code had redeclaration issues for selectedDataset and selectedScenario.
-  // By moving the fetching of these objects inside the `buildPrompt` function,
-  // they are now correctly scoped and declared only once.
   const selectedDataset = CULTURAL_DATASETS[params.dataset as keyof typeof CULTURAL_DATASETS]
   const selectedScenario = selectedDataset?.scenarios[params.scenario as keyof typeof selectedDataset.scenarios]
 
@@ -3464,6 +3466,14 @@ export function buildPrompt(
   }
 
   let prompt = ""
+
+  if (params.domeProjection || params.projectionType === "fisheye") {
+    prompt += "preset n1 by Irin. "
+    console.log("[v0] Added preset n1 by Irin for dome projection")
+  } else if (params.panoramic360) {
+    prompt += "preset n2 with orion 360. "
+    console.log("[v0] Added preset n2 with orion 360 for 360° panorama")
+  }
 
   const projectionPrefixes = {
     panoramic360: ["360° PANORAMIC:", "EQUIRECTANGULAR:", "SPHERICAL PANORAMA:", "IMMERSIVE 360°:"],
