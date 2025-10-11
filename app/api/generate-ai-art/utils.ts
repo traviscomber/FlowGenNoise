@@ -344,7 +344,7 @@ MANDATORY ENHANCED LETTERBOXING SPECIFICATIONS FOR TRUE 2:1 EFFECTIVE RATIO:
 • ZERO visible seams, color breaks, lighting discontinuities, or edge artifacts in the CENTER PANORAMIC BAND
 • Black frames create clean 2:1 extraction area optimized for VR compatibility and 360° viewers
 • ORION360 calibration quality with broadcast-standard edge continuity in panoramic center area
-• REPEAT CRITICAL REQUIREMENT: ABSOLUTELY NO text, numbers, letters, words, writing, or any textual elements visible anywhere
+• REPEAT CRITICAL REQUIREMENT: ABSOLUTELY NO text, numbers, letters, words, writing, or any textual elements visible
 
 COMPOSITION STRUCTURE WITH MATHEMATICAL PRECISION:
 • TOP: Solid black frame/border (exactly 64px height for perfect ratio)
@@ -833,14 +833,6 @@ export async function generateWithReplicate(
   aspectRatioOverride?: string,
 ): Promise<{ imageUrl: string; prompt: string }> {
   const apiToken = process.env.REPLICATE_API_TOKEN
-
-  console.log("[v0] Checking Replicate API token availability...")
-  console.log("[v0] REPLICATE_API_TOKEN exists:", !!apiToken)
-  console.log("[v0] API token length:", apiToken?.length || 0)
-
-  if (!apiToken) {
-    throw new Error("Replicate API token not configured. Please add REPLICATE_API_TOKEN environment variable.")
-  }
 
   const model = params?.replicateModel || "black-forest-labs/flux-1.1-pro-ultra"
   const isNvidiaSana = model === "nvidia/sana"
