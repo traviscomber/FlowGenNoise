@@ -509,6 +509,46 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel Koh Tao excellence featuring diving paradise with underwater scenes achieving perfect marine representation through mathematical oceanic algorithms, diving site optimization via geometric underwater precision with coral gardens whale sharks sea turtles and tropical fish, underwater lighting with blue water clarity and vibrant marine life, infinite diving dimensional artistry, computational ocean through algorithmic Koh Tao mastery, underwater diving scene with marine life.",
       },
+      "kanchanaburi-river-kwai": {
+        description:
+          "Godlevel Kanchanaburi excellence featuring Bridge over River Kwai with historical significance achieving perfect memorial representation through mathematical heritage algorithms, bridge optimization via geometric historical precision with railway structure jungle surroundings and war memorial sites, golden hour lighting with reflective river and tropical forest, infinite historical dimensional artistry, computational memorial through algorithmic Kanchanaburi mastery, bridge view with river and mountains.",
+      },
+      "erawan-waterfalls": {
+        description:
+          "Godlevel Erawan Waterfalls excellence featuring seven-tiered cascades with emerald pools achieving perfect natural representation through mathematical waterfall algorithms, cascade optimization via geometric water flow precision with limestone formations turquoise pools jungle vegetation and swimming spots, natural lighting with water mist and lush greenery, infinite waterfall dimensional artistry, computational nature through algorithmic Erawan mastery, multi-level waterfall with emerald water.",
+      },
+      "sukhothai-historical": {
+        description:
+          "Godlevel Sukhothai excellence featuring ancient capital ruins with Buddha statues achieving perfect archaeological representation through mathematical heritage algorithms, historical park optimization via geometric ancient precision with lotus ponds temple complexes and walking Buddha sculptures, sunset lighting with golden Buddha statues and reflection pools, infinite archaeological dimensional artistry, computational history through algorithmic Sukhothai mastery, temple ruins with dramatic sky.",
+      },
+      "khao-sok-jungle": {
+        description:
+          "Godlevel Khao Sok excellence featuring rainforest with limestone mountains achieving perfect jungle representation through mathematical ecological algorithms, rainforest optimization via geometric biodiversity precision with Cheow Lan Lake floating bungalows wildlife and ancient trees, misty morning lighting with jungle atmosphere and mountain backdrop, infinite jungle dimensional artistry, computational ecology through algorithmic Khao Sok mastery, aerial jungle view with lake and mountains.",
+      },
+      "rice-terraces-north": {
+        description:
+          "Godlevel northern rice terraces excellence featuring stepped paddies with mountain backdrop achieving perfect agricultural representation through mathematical farming algorithms, terrace optimization via geometric cultivation precision with emerald green rice fields water buffalo farmers and traditional methods, golden hour lighting with terraced landscape and mountain views, infinite agricultural dimensional artistry, computational farming through algorithmic rice terrace mastery, aerial terrace view with sunset colors.",
+      },
+      "floating-markets-damnoen": {
+        description:
+          "Godlevel Damnoen Saduak floating market excellence featuring canal commerce with traditional boats achieving perfect market representation through mathematical cultural algorithms, market optimization via geometric water commerce precision with wooden boats fresh produce vendors and traditional Thai hats, morning lighting with vibrant market colors and canal reflections, infinite market dimensional artistry, computational commerce through algorithmic floating market mastery, canal view with colorful boats.",
+      },
+      "grand-palace-bangkok": {
+        description:
+          "Godlevel Grand Palace excellence featuring golden architecture with Wat Phra Kaew achieving perfect royal representation through mathematical architectural algorithms, palace optimization via geometric royal precision with golden spires intricate details Emerald Buddha and ceremonial grounds, bright daylight with golden reflections and ornate decorations, infinite royal dimensional artistry, computational palace through algorithmic Grand Palace mastery, wide palace view with golden roofs.",
+      },
+      "wat-arun-temple": {
+        description:
+          "Godlevel Wat Arun excellence featuring Temple of Dawn with Khmer-style prang achieving perfect riverside representation through mathematical temple algorithms, prang optimization via geometric architectural precision with porcelain decorations Chao Phraya River views and sunset lighting, golden hour with temple silhouette and river reflections, infinite temple dimensional artistry, computational architecture through algorithmic Wat Arun mastery, riverside temple view with dramatic sky.",
+      },
+      "doi-inthanon-peak": {
+        description:
+          "Godlevel Doi Inthanon excellence featuring Thailand's highest peak with twin pagodas achieving perfect mountain representation through mathematical elevation algorithms, peak optimization via geometric highland precision with royal pagodas cloud forests waterfalls and hill tribe villages, misty morning lighting with mountain atmosphere and panoramic views, infinite peak dimensional artistry, computational mountain through algorithmic Doi Inthanon mastery, aerial peak view with pagodas and clouds.",
+      },
+      "koh-tao-diving": {
+        description:
+          "Godlevel Koh Tao excellence featuring diving paradise with underwater scenes achieving perfect marine representation through mathematical oceanic algorithms, diving site optimization via geometric underwater precision with coral gardens whale sharks sea turtles and tropical fish, underwater lighting with blue water clarity and vibrant marine life, infinite diving dimensional artistry, computational ocean through algorithmic Koh Tao mastery, underwater diving scene with marine life.",
+      },
       "escapism-magic": {
         description:
           "Godlevel Thailand geography escapism excellence where landscape elements become gateways to natural realms, consciousness-expanding geography with dimensional transcendence, infinite magical dimensional artistry, computational geography magic through algorithmic landscape-bending mastery.",
@@ -3202,25 +3242,25 @@ export interface DatasetInfo {
 
 // Helper function to get datasets by category
 export function getDatasetsByCategory(category: DatasetCategory) {
-  return Object.entries(DATASET_METADATA)
-    .filter(([_, meta]) => meta.category === category)
-    .map(([key]) => key)
+  return Object.keys(DATASET_METADATA).filter(
+    (key) => DATASET_METADATA[key as keyof typeof DATASET_METADATA]?.category === category,
+  )
 }
 
 // Helper function to search datasets by tag
 export function searchDatasetsByTag(tag: string) {
-  return Object.entries(DATASET_METADATA)
-    .filter(([_, meta]) => meta.tags.includes(tag.toLowerCase()))
-    .map(([key]) => key)
+  return Object.keys(DATASET_METADATA).filter((key) =>
+    DATASET_METADATA[key as keyof typeof DATASET_METADATA].tags.includes(tag.toLowerCase()),
+  )
 }
 
 // Helper function to get all unique tags
-export function getAllTags() {
-  const tags = new Set<string>()
+export function getAllTags(): string[] {
+  const tagsSet = new Set<string>()
   Object.values(DATASET_METADATA).forEach((meta) => {
-    meta.tags.forEach((tag) => tags.add(tag))
+    meta.tags.forEach((tag) => tagsSet.add(tag))
   })
-  return Array.from(tags).sort()
+  return Array.from(tagsSet).sort()
 }
 
 const SCENE_VARIATIONS = [

@@ -906,11 +906,20 @@ export function FlowArtGenerator() {
   const filteredDatasets = useMemo(() => {
     let datasets = Object.keys(CULTURAL_DATASETS)
 
+    console.log("[v0] Total datasets:", datasets.length)
+    console.log("[v0] Category filter:", datasetCategory)
+    console.log("[v0] Selected tags:", selectedTags)
+    console.log("[v0] Search query:", datasetSearchQuery)
+
     // Filter by category
     if (datasetCategory !== "all") {
-      datasets = datasets.filter(
-        (key) => DATASET_METADATA[key as keyof typeof DATASET_METADATA]?.category === datasetCategory,
-      )
+      datasets = datasets.filter((key) => {
+        const meta = DATASET_METADATA[key as keyof typeof DATASET_METADATA]
+        const matches = meta?.category === datasetCategory
+        console.log(`[v0] Dataset ${key}: category=${meta?.category}, matches=${matches}`)
+        return matches
+      })
+      console.log("[v0] After category filter:", datasets.length, datasets)
     }
 
     // Filter by tags
@@ -919,6 +928,7 @@ export function FlowArtGenerator() {
         const meta = DATASET_METADATA[key as keyof typeof DATASET_METADATA]
         return meta && selectedTags.some((tag) => meta.tags.includes(tag))
       })
+      console.log("[v0] After tag filter:", datasets.length)
     }
 
     // Filter by search query
@@ -934,8 +944,10 @@ export function FlowArtGenerator() {
           meta?.tags.some((tag) => tag.includes(query))
         )
       })
+      console.log("[v0] After search filter:", datasets.length)
     }
 
+    console.log("[v0] Final filtered datasets:", datasets)
     return datasets
   }, [datasetCategory, selectedTags, datasetSearchQuery])
 
