@@ -185,6 +185,10 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel mathematical vitro excellence with magnificent stained glass mathematical portraiture featuring luminous equation construction, divine light filtering through pure mathematics elements, infinite sacred dimensional artistry, computational vitro mathematics through algorithmic glass mastery.",
       },
+      crypto: {
+        description:
+          "Godlevel mathematical crypto excellence with blockchain-verified mathematical construction, decentralized equation identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto mathematics through algorithmic blockchain mastery.",
+      },
     },
   },
 
@@ -424,126 +428,6 @@ export const CULTURAL_DATASETS = {
       "similan-underwater": {
         description:
           "Godlevel Similan Islands excellence featuring underwater coral reefs with marine life achieving perfect diving representation through mathematical oceanic algorithms, reef optimization via geometric underwater precision with colorful coral formations tropical fish sea turtles and manta rays, underwater lighting with blue water clarity and vibrant marine life, infinite oceanic dimensional artistry, computational diving through algorithmic Similan mastery, underwater scene with coral garden.",
-      },
-      "kanchanaburi-river-kwai": {
-        description:
-          "Godlevel Kanchanaburi excellence featuring Bridge over River Kwai with historical significance achieving perfect memorial representation through mathematical heritage algorithms, bridge optimization via geometric historical precision with railway structure jungle surroundings and war memorial sites, golden hour lighting with reflective river and tropical forest, infinite historical dimensional artistry, computational memorial through algorithmic Kanchanaburi mastery, bridge view with river and mountains.",
-      },
-      "erawan-waterfalls": {
-        description:
-          "Godlevel Erawan Waterfalls excellence featuring seven-tiered cascades with emerald pools achieving perfect natural representation through mathematical waterfall algorithms, cascade optimization via geometric water flow precision with limestone formations turquoise pools jungle vegetation and swimming spots, natural lighting with water mist and lush greenery, infinite waterfall dimensional artistry, computational nature through algorithmic Erawan mastery, multi-level waterfall with emerald water.",
-      },
-      "sukhothai-historical": {
-        description:
-          "Godlevel Sukhothai excellence featuring ancient capital ruins with Buddha statues achieving perfect archaeological representation through mathematical heritage algorithms, historical park optimization via geometric ancient precision with lotus ponds temple complexes and walking Buddha sculptures, sunset lighting with golden Buddha statues and reflection pools, infinite archaeological dimensional artistry, computational history through algorithmic Sukhothai mastery, temple ruins with dramatic sky.",
-      },
-      "khao-sok-jungle": {
-        description:
-          "Godlevel Khao Sok excellence featuring rainforest with limestone mountains achieving perfect jungle representation through mathematical ecological algorithms, rainforest optimization via geometric biodiversity precision with Cheow Lan Lake floating bungalows wildlife and ancient trees, misty morning lighting with jungle atmosphere and mountain backdrop, infinite jungle dimensional artistry, computational ecology through algorithmic Khao Sok mastery, aerial jungle view with lake and mountains.",
-      },
-      "rice-terraces-north": {
-        description:
-          "Godlevel northern rice terraces excellence featuring stepped paddies with mountain backdrop achieving perfect agricultural representation through mathematical farming algorithms, terrace optimization via geometric cultivation precision with emerald green rice fields water buffalo farmers and traditional methods, golden hour lighting with terraced landscape and mountain views, infinite agricultural dimensional artistry, computational farming through algorithmic rice terrace mastery, aerial terrace view with sunset colors.",
-      },
-      "floating-markets-damnoen": {
-        description:
-          "Godlevel Damnoen Saduak floating market excellence featuring canal commerce with traditional boats achieving perfect market representation through mathematical cultural algorithms, market optimization via geometric water commerce precision with wooden boats fresh produce vendors and traditional Thai hats, morning lighting with vibrant market colors and canal reflections, infinite market dimensional artistry, computational commerce through algorithmic floating market mastery, canal view with colorful boats.",
-      },
-      "grand-palace-bangkok": {
-        description:
-          "Godlevel Grand Palace excellence featuring golden architecture with Wat Phra Kaew achieving perfect royal representation through mathematical architectural algorithms, palace optimization via geometric royal precision with golden spires intricate details Emerald Buddha and ceremonial grounds, bright daylight with golden reflections and ornate decorations, infinite royal dimensional artistry, computational palace through algorithmic Grand Palace mastery, wide palace view with golden roofs.",
-      },
-      "wat-arun-temple": {
-        description:
-          "Godlevel Wat Arun excellence featuring Temple of Dawn with Khmer-style prang achieving perfect riverside representation through mathematical temple algorithms, prang optimization via geometric architectural precision with porcelain decorations Chao Phraya River views and sunset lighting, golden hour with temple silhouette and river reflections, infinite temple dimensional artistry, computational architecture through algorithmic Wat Arun mastery, riverside temple view with dramatic sky.",
-      },
-      "doi-inthanon-peak": {
-        description:
-          "Godlevel Doi Inthanon excellence featuring Thailand's highest peak with twin pagodas achieving perfect mountain representation through mathematical elevation algorithms, peak optimization via geometric highland precision with royal pagodas cloud forests waterfalls and hill tribe villages, misty morning lighting with mountain atmosphere and panoramic views, infinite peak dimensional artistry, computational mountain through algorithmic Doi Inthanon mastery, aerial peak view with pagodas and clouds.",
-      },
-      "koh-tao-diving": {
-        description:
-          "Godlevel Koh Tao excellence featuring diving paradise with underwater scenes achieving perfect marine representation through mathematical oceanic algorithms, diving site optimization via geometric underwater precision with coral gardens whale sharks sea turtles and tropical fish, underwater lighting with blue water clarity and vibrant marine life, infinite diving dimensional artistry, computational ocean through algorithmic Koh Tao mastery, underwater diving scene with marine life.",
-      },
-      "kanchanaburi-river-kwai": {
-        description:
-          "Godlevel Kanchanaburi excellence featuring Bridge over River Kwai with historical significance achieving perfect memorial representation through mathematical heritage algorithms, bridge optimization via geometric historical precision with railway structure jungle surroundings and war memorial sites, golden hour lighting with reflective river and tropical forest, infinite historical dimensional artistry, computational memorial through algorithmic Kanchanaburi mastery, bridge view with river and mountains.",
-      },
-      "erawan-waterfalls": {
-        description:
-          "Godlevel Erawan Waterfalls excellence featuring seven-tiered cascades with emerald pools achieving perfect natural representation through mathematical waterfall algorithms, cascade optimization via geometric water flow precision with limestone formations turquoise pools jungle vegetation and swimming spots, natural lighting with water mist and lush greenery, infinite waterfall dimensional artistry, computational nature through algorithmic Erawan mastery, multi-level waterfall with emerald water.",
-      },
-      "sukhothai-historical": {
-        description:
-          "Godlevel Sukhothai excellence featuring ancient capital ruins with Buddha statues achieving perfect archaeological representation through mathematical heritage algorithms, historical park optimization via geometric ancient precision with lotus ponds temple complexes and walking Buddha sculptures, sunset lighting with golden Buddha statues and reflection pools, infinite archaeological dimensional artistry, computational history through algorithmic Sukhothai mastery, temple ruins with dramatic sky.",
-      },
-      "khao-sok-jungle": {
-        description:
-          "Godlevel Khao Sok excellence featuring rainforest with limestone mountains achieving perfect jungle representation through mathematical ecological algorithms, rainforest optimization via geometric biodiversity precision with Cheow Lan Lake floating bungalows wildlife and ancient trees, misty morning lighting with jungle atmosphere and mountain backdrop, infinite jungle dimensional artistry, computational ecology through algorithmic Khao Sok mastery, aerial jungle view with lake and mountains.",
-      },
-      "rice-terraces-north": {
-        description:
-          "Godlevel northern rice terraces excellence featuring stepped paddies with mountain backdrop achieving perfect agricultural representation through mathematical farming algorithms, terrace optimization via geometric cultivation precision with emerald green rice fields water buffalo farmers and traditional methods, golden hour lighting with terraced landscape and mountain views, infinite agricultural dimensional artistry, computational farming through algorithmic rice terrace mastery, aerial terrace view with sunset colors.",
-      },
-      "floating-markets-damnoen": {
-        description:
-          "Godlevel Damnoen Saduak floating market excellence featuring canal commerce with traditional boats achieving perfect market representation through mathematical cultural algorithms, market optimization via geometric water commerce precision with wooden boats fresh produce vendors and traditional Thai hats, morning lighting with vibrant market colors and canal reflections, infinite market dimensional artistry, computational commerce through algorithmic floating market mastery, canal view with colorful boats.",
-      },
-      "grand-palace-bangkok": {
-        description:
-          "Godlevel Grand Palace excellence featuring golden architecture with Wat Phra Kaew achieving perfect royal representation through mathematical architectural algorithms, palace optimization via geometric royal precision with golden spires intricate details Emerald Buddha and ceremonial grounds, bright daylight with golden reflections and ornate decorations, infinite royal dimensional artistry, computational palace through algorithmic Grand Palace mastery, wide palace view with golden roofs.",
-      },
-      "wat-arun-temple": {
-        description:
-          "Godlevel Wat Arun excellence featuring Temple of Dawn with Khmer-style prang achieving perfect riverside representation through mathematical temple algorithms, prang optimization via geometric architectural precision with porcelain decorations Chao Phraya River views and sunset lighting, golden hour with temple silhouette and river reflections, infinite temple dimensional artistry, computational architecture through algorithmic Wat Arun mastery, riverside temple view with dramatic sky.",
-      },
-      "doi-inthanon-peak": {
-        description:
-          "Godlevel Doi Inthanon excellence featuring Thailand's highest peak with twin pagodas achieving perfect mountain representation through mathematical elevation algorithms, peak optimization via geometric highland precision with royal pagodas cloud forests waterfalls and hill tribe villages, misty morning lighting with mountain atmosphere and panoramic views, infinite peak dimensional artistry, computational mountain through algorithmic Doi Inthanon mastery, aerial peak view with pagodas and clouds.",
-      },
-      "koh-tao-diving": {
-        description:
-          "Godlevel Koh Tao excellence featuring diving paradise with underwater scenes achieving perfect marine representation through mathematical oceanic algorithms, diving site optimization via geometric underwater precision with coral gardens whale sharks sea turtles and tropical fish, underwater lighting with blue water clarity and vibrant marine life, infinite diving dimensional artistry, computational ocean through algorithmic Koh Tao mastery, underwater diving scene with marine life.",
-      },
-      "kanchanaburi-river-kwai": {
-        description:
-          "Godlevel Kanchanaburi excellence featuring Bridge over River Kwai with historical significance achieving perfect memorial representation through mathematical heritage algorithms, bridge optimization via geometric historical precision with railway structure jungle surroundings and war memorial sites, golden hour lighting with reflective river and tropical forest, infinite historical dimensional artistry, computational memorial through algorithmic Kanchanaburi mastery, bridge view with river and mountains.",
-      },
-      "erawan-waterfalls": {
-        description:
-          "Godlevel Erawan Waterfalls excellence featuring seven-tiered cascades with emerald pools achieving perfect natural representation through mathematical waterfall algorithms, cascade optimization via geometric water flow precision with limestone formations turquoise pools jungle vegetation and swimming spots, natural lighting with water mist and lush greenery, infinite waterfall dimensional artistry, computational nature through algorithmic Erawan mastery, multi-level waterfall with emerald water.",
-      },
-      "sukhothai-historical": {
-        description:
-          "Godlevel Sukhothai excellence featuring ancient capital ruins with Buddha statues achieving perfect archaeological representation through mathematical heritage algorithms, historical park optimization via geometric ancient precision with lotus ponds temple complexes and walking Buddha sculptures, sunset lighting with golden Buddha statues and reflection pools, infinite archaeological dimensional artistry, computational history through algorithmic Sukhothai mastery, temple ruins with dramatic sky.",
-      },
-      "khao-sok-jungle": {
-        description:
-          "Godlevel Khao Sok excellence featuring rainforest with limestone mountains achieving perfect jungle representation through mathematical ecological algorithms, rainforest optimization via geometric biodiversity precision with Cheow Lan Lake floating bungalows wildlife and ancient trees, misty morning lighting with jungle atmosphere and mountain backdrop, infinite jungle dimensional artistry, computational ecology through algorithmic Khao Sok mastery, aerial jungle view with lake and mountains.",
-      },
-      "rice-terraces-north": {
-        description:
-          "Godlevel northern rice terraces excellence featuring stepped paddies with mountain backdrop achieving perfect agricultural representation through mathematical farming algorithms, terrace optimization via geometric cultivation precision with emerald green rice fields water buffalo farmers and traditional methods, golden hour lighting with terraced landscape and mountain views, infinite agricultural dimensional artistry, computational farming through algorithmic rice terrace mastery, aerial terrace view with sunset colors.",
-      },
-      "floating-markets-damnoen": {
-        description:
-          "Godlevel Damnoen Saduak floating market excellence featuring canal commerce with traditional boats achieving perfect market representation through mathematical cultural algorithms, market optimization via geometric water commerce precision with wooden boats fresh produce vendors and traditional Thai hats, morning lighting with vibrant market colors and canal reflections, infinite market dimensional artistry, computational commerce through algorithmic floating market mastery, canal view with colorful boats.",
-      },
-      "grand-palace-bangkok": {
-        description:
-          "Godlevel Grand Palace excellence featuring golden architecture with Wat Phra Kaew achieving perfect royal representation through mathematical architectural algorithms, palace optimization via geometric royal precision with golden spires intricate details Emerald Buddha and ceremonial grounds, bright daylight with golden reflections and ornate decorations, infinite royal dimensional artistry, computational palace through algorithmic Grand Palace mastery, wide palace view with golden roofs.",
-      },
-      "wat-arun-temple": {
-        description:
-          "Godlevel Wat Arun excellence featuring Temple of Dawn with Khmer-style prang achieving perfect riverside representation through mathematical temple algorithms, prang optimization via geometric architectural precision with porcelain decorations Chao Phraya River views and sunset lighting, golden hour with temple silhouette and river reflections, infinite temple dimensional artistry, computational architecture through algorithmic Wat Arun mastery, riverside temple view with dramatic sky.",
-      },
-      "doi-inthanon-peak": {
-        description:
-          "Godlevel Doi Inthanon excellence featuring Thailand's highest peak with twin pagodas achieving perfect mountain representation through mathematical elevation algorithms, peak optimization via geometric highland precision with royal pagodas cloud forests waterfalls and hill tribe villages, misty morning lighting with mountain atmosphere and panoramic views, infinite peak dimensional artistry, computational mountain through algorithmic Doi Inthanon mastery, aerial peak view with pagodas and clouds.",
-      },
-      "koh-tao-diving": {
-        description:
-          "Godlevel Koh Tao excellence featuring diving paradise with underwater scenes achieving perfect marine representation through mathematical oceanic algorithms, diving site optimization via geometric underwater precision with coral gardens whale sharks sea turtles and tropical fish, underwater lighting with blue water clarity and vibrant marine life, infinite diving dimensional artistry, computational ocean through algorithmic Koh Tao mastery, underwater diving scene with marine life.",
       },
       "kanchanaburi-river-kwai": {
         description:
@@ -2359,7 +2243,7 @@ export const CULTURAL_DATASETS = {
       },
       "smoke-signal-scribes": {
         description:
-          "Godlevel civilization excellence featuring mountain people who write in smoke and build cities from solidified vapor, architecture of compressed smoke that maintains form through constant ritual, knowledge recorded in smoke patterns that persist for centuries, cities that exist as permanent smoke sculptures, sustained by breathing specially prepared incense that provides nutrition, sacred ritual of the Smoke Writing where history is recorded in sacred fires, ephemeral and mystical atmosphere of visible breath, mountain dawn with mist valleys, color dream of smoke gray, incense white, and vapor blue.",
+          "Godlevel civilization excellence featuring mountain people who write in smoke and build cities from solidified vapor, architecture of compressed smoke that maintains form through constant ritual, knowledge recorded in smoke patterns that persist for centuries, cities that exist as permanent smoke sculptures, sustained by breathing specially prepared incense that provides nutrition, sacred ritual of the Smoke Writing where history is recorded in sacred fires, ephemeral and mystical atmosphere of visible breath, mountain dawn with mist valleys, color palette of smoke gray, incense white, and vapor blue.",
       },
       "tide-pool-philosophers": {
         description:
@@ -2544,137 +2428,146 @@ export const CULTURAL_DATASETS = {
     },
   },
 
-  "n2-haunting-asia": {
-    name: "🎭 n2 — Haunting Asia: Spirits, Neon, and Ancestral Shadows",
-    description: "Asian Afterlife October where ancient traditions meet modern fantasies in ethereal celebration",
+  "n3-original-halloween": {
+    name: "🎃 n3 — Original Halloween: Between Harvest and Haunting",
+    description:
+      "Primal Western Halloween capturing Celtic Samhain, colonial ghost tales, and timeless autumn mysteries",
     scenarios: {
-      "tokyo-alley-spirits": {
+      "silent-street-wanderers": {
         description:
-          "Urban location in narrow Tokyo alleyway during October twilight, cultural elements featuring masked figures in traditional yokai costumes blending with neon signs, atmospheric mood of mysterious celebration where Shinto shrine lanterns glow beside convenience store lights, modern fantasy showing cosplayers dressed as ancient spirits taking photos, ancestral connection through paper talismans floating in autumn breeze, color palette of neon pink, shrine red, and shadow indigo, visual style capturing the liminal space between tradition and contemporary urban life.",
+          "Rural location on leaf-covered street during twilight hour, cultural elements featuring children in handmade costumes walking silently between houses, atmospheric mood of innocent mystery where homemade masks and painted faces create authentic wonder, harvest connection through carved pumpkins glowing on porches, ancestral tradition of door-to-door wandering under watchful moon, color palette of autumn orange, twilight purple, and candlelight amber, visual style capturing the quiet magic of neighborhood transformation.",
       },
-      "bangkok-rooftop-altar": {
+      "black-cat-crossing": {
         description:
-          "Urban location on Bangkok rooftop temple during evening ceremony, cultural elements featuring ancestral altars adorned with marigolds and LED candles, atmospheric mood of reverent celebration where incense smoke mingles with city lights below, modern fantasy showing families in contemporary dress making traditional offerings, ancestral connection through photographs of departed loved ones surrounded by modern decorations, color palette of marigold orange, incense gold, and twilight purple, visual style capturing the harmony between ancient rituals and metropolitan skyline.",
+          "Urban location under orange streetlight during evening hour, cultural elements featuring solitary black cat pausing mid-street as shadows lengthen, atmospheric mood of superstitious beauty where feline silhouette becomes omen, harvest connection through fallen leaves swirling in cat's wake, ancestral tradition of animal symbolism and crossing paths, color palette of streetlight orange, cat shadow black, and pavement gray, visual style capturing the moment of folkloric encounter.",
       },
-      "seoul-nightclub-phantoms": {
+      "crescent-moon-pumpkins": {
         description:
-          "Urban location in Seoul underground club during October festival, cultural elements featuring performers in hanbok-inspired costumes with LED accessories, atmospheric mood of energetic celebration where traditional Korean folklore meets electronic music, modern fantasy showing dancers embodying legendary figures with contemporary choreography, ancestral connection through projected animations of classical paintings on club walls, color palette of electric blue, hanbok crimson, and strobe white, visual style capturing the fusion of heritage and youth culture.",
+          "Agricultural location in pumpkin patch during night hours, cultural elements featuring rows of orange gourds under thin crescent moon, atmospheric mood of harvest abundance where field becomes natural cathedral, harvest connection through unpicked pumpkins waiting for selection, ancestral tradition of autumn gathering and moon worship, color palette of pumpkin orange, moonlight silver, and earth brown, visual style capturing the sacred geometry of agricultural cycles.",
       },
-      "singapore-rain-shadows": {
+      "fog-rolling-porches": {
         description:
-          "Urban location on Singapore rooftop during tropical rainstorm, cultural elements featuring silhouettes moving through rain with paper umbrellas and modern raincoats, atmospheric mood of contemplative beauty where monsoon meets October celebration, modern fantasy showing figures appearing and disappearing in rainfall like gentle apparitions, ancestral connection through rain-blurred lanterns creating ethereal light patterns, color palette of rain silver, lantern amber, and storm gray, visual style capturing the poetic intersection of weather and remembrance.",
+          "Residential location on wooden porch during misty evening, cultural elements featuring carved jack-o'-lanterns watching through rolling fog, atmospheric mood of protective vigilance where pumpkin faces guard thresholds, harvest connection through cornstalks bundled beside doorways, ancestral tradition of warding symbols and boundary protection, color palette of fog gray, candle flame, and wood weathered, visual style capturing the liminal space between home and night.",
       },
-      "hong-kong-cemetery-drones": {
+      "scarecrow-sentinel": {
         description:
-          "Urban location in Hong Kong hillside cemetery during evening memorial, cultural elements featuring LED drones hovering like luminous fireflies above traditional graves, atmospheric mood of peaceful innovation where technology honors tradition, modern fantasy showing families using tablets to display digital offerings alongside incense, ancestral connection through QR codes on headstones linking to memory galleries, color palette of drone white, incense smoke, and cemetery jade, visual style capturing the evolution of remembrance practices.",
+          "Agricultural location in cornfield during dusk hour, cultural elements featuring weathered scarecrow standing guard over harvested rows, atmospheric mood of patient watching where straw figure seems almost alive, harvest connection through dried corn husks rustling in wind, ancestral tradition of field guardians and harvest protection, color palette of straw gold, corn brown, and sunset crimson, visual style capturing the uncanny presence of human-shaped watchers.",
       },
-      "kyoto-temple-cosplay": {
+      "forbidden-house-approach": {
         description:
-          "Cultural location at Kyoto temple grounds during autumn festival, cultural elements featuring visitors in elaborate anime character costumes making respectful offerings, atmospheric mood of joyful reverence where pop culture meets sacred space, modern fantasy showing cosplayers photographing each other near ancient torii gates, ancestral connection through traditional festival foods shared among contemporary celebrants, color palette of temple vermillion, autumn gold, and costume spectrum, visual style capturing the coexistence of sacred and playful.",
+          "Residential location on overgrown path leading to isolated house, cultural elements featuring brave trick-or-treaters approaching the dwelling nobody visits, atmospheric mood of childhood courage where peer pressure meets genuine fear, harvest connection through untended garden gone wild, ancestral tradition of testing bravery and facing the unknown, color palette of path shadow, house window glow, and courage pale, visual style capturing the threshold moment before knocking.",
       },
-      "mumbai-bollywood-enchantment": {
+      "forest-ritual-eclipse": {
         description:
-          "Urban location in Mumbai film district during October celebration, cultural elements featuring performers in fusion costumes blending traditional Indian dress with fantasy elements, atmospheric mood of theatrical magic where Bollywood meets folklore, modern fantasy showing dancers embodying legendary characters with contemporary styling, ancestral connection through classical dance movements interpreted with modern choreography, color palette of sari jewel tones, stage lights, and monsoon dusk, visual style capturing the cinematic interpretation of cultural stories.",
+          "Wilderness location in clearing during lunar eclipse, cultural elements featuring circle of figures performing ancient ceremony under darkening moon, atmospheric mood of primal connection where modern world falls away, harvest connection through offerings of grain and fruit arranged in patterns, ancestral tradition of Samhain fire festivals and veil-thinning, color palette of eclipse red, bonfire orange, and forest deep green, visual style capturing the timeless nature of seasonal ritual.",
       },
-      "jakarta-street-celebration": {
+      "cemetery-autumn-wind": {
         description:
-          "Urban location on Jakarta street during evening festival, cultural elements featuring community gathering with traditional wayang shadow puppets projected on modern buildings, atmospheric mood of neighborhood unity where ancient art meets urban architecture, modern fantasy showing children in creative costumes watching shadow plays, ancestral connection through storytelling traditions adapted for contemporary audiences, color palette of puppet silhouette, projection blue, and street lamp gold, visual style capturing the preservation of heritage through innovation.",
+          "Memorial location in old graveyard during windy afternoon, cultural elements featuring weathered headstones among swirling leaves and bending grass, atmospheric mood of respectful remembrance where dead are honored not feared, harvest connection through chrysanthemums placed on graves, ancestral tradition of visiting departed during veil-thinning season, color palette of stone gray, leaf rust, and sky overcast, visual style capturing the breathing quality of memorial spaces.",
       },
-      "taipei-night-market-spirits": {
+      "attic-discovery": {
         description:
-          "Urban location in Taipei night market during October festivities, cultural elements featuring food vendors decorated with paper lanterns and LED strips, atmospheric mood of bustling celebration where culinary tradition meets neon energy, modern fantasy showing visitors in creative costumes sampling traditional foods, ancestral connection through recipes passed down generations served in modern presentation, color palette of lantern red, neon green, and food steam white, visual style capturing the sensory richness of cultural celebration.",
+          "Interior location in dusty attic during afternoon exploration, cultural elements featuring old trunks revealing vintage Halloween decorations and costumes, atmospheric mood of nostalgic archaeology where past celebrations emerge, harvest connection through dried corn decorations from decades past, ancestral tradition of costume inheritance and family memory, color palette of dust mote gold, trunk wood, and fabric faded, visual style capturing the layered history of celebration.",
       },
-      "hanoi-lake-reflections": {
+      "wind-chime-warning": {
         description:
-          "Cultural location at Hanoi lake temple during evening ceremony, cultural elements featuring lotus lanterns floating on water beside modern light installations, atmospheric mood of serene beauty where natural elements meet artistic innovation, modern fantasy showing reflections creating doubled images of tradition and modernity, ancestral connection through water offerings honoring both old and new practices, color palette of lotus pink, water reflection, and temple gold, visual style capturing the mirror between past and present.",
+          "Residential location on porch during approaching storm, cultural elements featuring wind chimes creating eerie melody as weather changes, atmospheric mood of atmospheric tension where metal tubes sing warnings, harvest connection through dried herbs hanging beside chimes, ancestral tradition of sound as protection and communication, color palette of chime silver, storm gray, and porch shadow, visual style capturing the auditory dimension of seasonal atmosphere.",
       },
-      "kuala-lumpur-tower-gathering": {
+      "broken-radio-static": {
         description:
-          "Urban location at Kuala Lumpur tower base during multicultural celebration, cultural elements featuring diverse communities sharing traditions with contemporary interpretations, atmospheric mood of harmonious diversity where multiple heritages converge, modern fantasy showing fusion costumes representing various cultural influences, ancestral connection through multilingual blessings and shared ceremonial practices, color palette of tower lights, cultural textiles, and celebration gold, visual style capturing the beauty of cultural synthesis.",
+          "Interior location in abandoned farmhouse during evening hour, cultural elements featuring old radio crackling with unexplained voices and music fragments, atmospheric mood of technological haunting where devices channel unknown, harvest connection through calendar frozen on October page, ancestral tradition of spirit communication and electromagnetic mystery, color palette of radio dial glow, static snow, and room darkness, visual style capturing the uncanny life of forgotten technology.",
       },
-      "manila-jeepney-parade": {
+      "candle-window-vigil": {
         description:
-          "Urban location on Manila streets during decorated vehicle parade, cultural elements featuring traditional jeepneys adorned with flowers and LED decorations, atmospheric mood of joyful procession where transportation becomes mobile art, modern fantasy showing passengers in festive attire celebrating while traveling, ancestral connection through religious icons displayed alongside contemporary decorations, color palette of jeepney chrome, flower spectrum, and street celebration, visual style capturing the mobile nature of urban festivity.",
+          "Residential location at window during night hours, cultural elements featuring single candle burning in darkened house window, atmospheric mood of patient waiting where light signals welcome or warning, harvest connection through pumpkin placed beside candle, ancestral tradition of guiding lights and threshold markers, color palette of candle flame, window reflection, and night absolute, visual style capturing the beacon quality of solitary illumination.",
       },
-      "chiang-mai-lantern-release": {
+      "barn-shadow-dance": {
         description:
-          "Cultural location in Chiang Mai during evening lantern ceremony, cultural elements featuring thousands of paper lanterns rising into night sky, atmospheric mood of collective hope where individual lights merge into constellation, modern fantasy showing participants using smartphones to capture ascending lanterns, ancestral connection through wishes written on lanterns in traditional and modern languages, color palette of lantern flame, night sky indigo, and rising light, visual style capturing the ascension of prayers and dreams.",
+          "Agricultural location in old barn during moonlit night, cultural elements featuring shadows moving across weathered wood walls, atmospheric mood of uncertain presence where darkness takes form, harvest connection through stored hay bales and hanging tools, ancestral tradition of barn dances transformed into shadow theater, color palette of moonlight silver, barn wood gray, and shadow deep, visual style capturing the animation of architectural darkness.",
       },
-      "osaka-arcade-phantoms": {
+      "mist-over-cornfield": {
         description:
-          "Urban location in Osaka gaming arcade during October event, cultural elements featuring retro game characters reimagined as traditional yokai, atmospheric mood of playful nostalgia where digital and folklore merge, modern fantasy showing gamers in creative costumes competing at decorated machines, ancestral connection through pixel art interpretations of classical ghost stories, color palette of arcade neon, screen glow, and shadow purple, visual style capturing the gamification of cultural narratives.",
+          "Agricultural location in harvested cornfield during dawn hour, cultural elements featuring ground mist flowing between stubble rows, atmospheric mood of transitional beauty where night releases day, harvest connection through cut stalks standing like memorial markers, ancestral tradition of morning after Samhain when veil closes again, color palette of mist white, stubble gold, and dawn pink, visual style capturing the exhale of haunted earth.",
       },
-      "penang-heritage-walk": {
+      "graveyard-silhouettes": {
         description:
-          "Cultural location on Penang heritage street during evening celebration, cultural elements featuring colonial architecture illuminated with traditional lanterns and modern projections, atmospheric mood of historical layering where multiple eras coexist, modern fantasy showing visitors experiencing augmented reality overlays of historical scenes, ancestral connection through preserved buildings hosting contemporary cultural events, color palette of heritage pastel, lantern warm, and projection blue, visual style capturing the palimpsest of cultural time.",
+          "Memorial location in cemetery during sunset hour, cultural elements featuring human silhouettes moving among headstones against orange sky, atmospheric mood of ambiguous presence where living and dead share space, harvest connection through autumn leaves covering graves like blankets, ancestral tradition of cemetery visits during season of remembrance, color palette of silhouette black, sunset orange, and stone weathered, visual style capturing the democracy of shadows.",
       },
-      "shanghai-bund-fusion": {
+      "witch-forest-whisper": {
         description:
-          "Urban location at Shanghai Bund during October festival, cultural elements featuring Art Deco buildings with traditional Chinese decorations and modern light shows, atmospheric mood of architectural dialogue where East meets West meets future, modern fantasy showing performers in fusion costumes against historic skyline, ancestral connection through traditional music performed with electronic instruments, color palette of Bund gold, Huangpu reflection, and celebration lights, visual style capturing the conversation between architectural eras.",
+          "Wilderness location in deep forest during twilight hour, cultural elements featuring cloaked figure moving between ancient trees, atmospheric mood of folkloric reality where old stories walk, harvest connection through gathered herbs and forest offerings, ancestral tradition of wise women and forest knowledge, color palette of cloak dark, tree bark, and twilight purple, visual style capturing the persistence of archetypal figures.",
       },
-      "bali-beach-ceremony": {
+      "bonfire-gathering": {
         description:
-          "Cultural location on Bali beach during sunset ceremony, cultural elements featuring traditional offerings arranged on sand with contemporary art installations, atmospheric mood of spiritual beauty where ocean meets ritual, modern fantasy showing participants in modern beachwear respectfully observing ancient practices, ancestral connection through Hindu ceremonies adapted for contemporary participants, color palette of sunset orange, offering flowers, and ocean blue, visual style capturing the timeless nature of coastal spirituality.",
+          "Rural location in field during night celebration, cultural elements featuring community gathered around massive bonfire, atmospheric mood of collective warmth where fire brings people together, harvest connection through burning of harvest remnants and old things, ancestral tradition of Samhain fire festivals and communal protection, color palette of bonfire orange, spark gold, and night sky, visual style capturing the primal comfort of shared flame.",
       },
-      "delhi-diwali-fusion": {
+      "trick-or-treat-threshold": {
         description:
-          "Urban location in Delhi during October-November celebration transition, cultural elements featuring traditional Diwali lamps alongside October decorations, atmospheric mood of festival convergence where multiple celebrations harmonize, modern fantasy showing creative interpretations blending different cultural elements, ancestral connection through light symbolism shared across traditions, color palette of diya flame, rangoli colors, and celebration gold, visual style capturing the universal language of light festivals.",
+          "Residential location at doorway during evening hour, cultural elements featuring costumed children waiting at threshold as door opens, atmospheric mood of ritual exchange where treats buy peace, harvest connection through candy corn and caramel apples offered, ancestral tradition of appeasing spirits transformed into child's game, color palette of doorway light, costume colors, and evening shadow, visual style capturing the moment of threshold crossing.",
       },
-      "busan-beach-lanterns": {
+      "crow-parliament": {
         description:
-          "Coastal location at Busan beach during evening lantern festival, cultural elements featuring traditional Korean lanterns floating on waves, atmospheric mood of oceanic meditation where water carries wishes, modern fantasy showing LED-enhanced lanterns creating patterns on water surface, ancestral connection through maritime traditions honored with contemporary materials, color palette of lantern glow, wave reflection, and beach twilight, visual style capturing the dialogue between land and sea.",
+          "Rural location in bare tree during afternoon hour, cultural elements featuring dozens of crows gathered in branches, atmospheric mood of ominous assembly where birds hold council, harvest connection through picked-clean fields below, ancestral tradition of corvid symbolism and death omens, color palette of crow black, branch gray, and sky pale, visual style capturing the intelligence behind avian eyes.",
       },
-      "yangon-pagoda-evening": {
+      "porch-rocking-chair": {
         description:
-          "Cultural location at Yangon pagoda during evening ceremony, cultural elements featuring golden stupa illuminated with traditional and modern lighting, atmospheric mood of sacred grandeur where devotion meets artistic illumination, modern fantasy showing visitors in contemporary dress making traditional offerings, ancestral connection through continuous worship practices spanning generations, color palette of pagoda gold, offering flowers, and evening amber, visual style capturing the enduring nature of sacred spaces.",
+          "Residential location on farmhouse porch during windy evening, cultural elements featuring empty rocking chair moving in wind, atmospheric mood of absent presence where furniture suggests invisible occupant, harvest connection through pumpkins arranged on porch steps, ancestral tradition of spirit visitors and empty seats, color palette of chair wood, porch shadow, and wind invisible, visual style capturing the animation of the inanimate.",
       },
-      "ho-chi-minh-motorbike-parade": {
+      "apple-bobbing-ritual": {
         description:
-          "Urban location on Ho Chi Minh City streets during decorated vehicle parade, cultural elements featuring traditional jeepneys adorned with flowers and LED decorations, atmospheric mood of mobile celebration where transportation becomes performance, modern fantasy showing riders in creative costumes navigating decorated streets, ancestral connection through community gathering traditions adapted to urban mobility, color palette of motorbike chrome, decoration spectrum, and street lights, visual style capturing the kinetic energy of urban festivity.",
+          "Interior location in farmhouse kitchen during party hour, cultural elements featuring children bobbing for apples in wooden tub, atmospheric mood of innocent divination where game holds ancient meaning, harvest connection through fresh-picked apples floating in water, ancestral tradition of Samhain divination and marriage prediction, color palette of apple red, water reflection, and kitchen warm, visual style capturing the playful survival of pagan practice.",
       },
-      "macau-casino-spirits": {
+      "mirror-candlelight": {
         description:
-          "Urban location in Macau entertainment district during October celebration, cultural elements featuring Portuguese colonial architecture with Chinese decorations and modern casino lights, atmospheric mood of cultural layering where multiple influences create unique identity, modern fantasy showing performers in fusion costumes entertaining international visitors, ancestral connection through blended traditions creating distinct local culture, color palette of casino gold, colonial pastel, and neon spectrum, visual style capturing the unique cultural synthesis of the region.",
+          "Interior location in darkened bedroom during midnight hour, cultural elements featuring person holding candle before mirror, atmospheric mood of divination tension where reflection might reveal future, harvest connection through apple peel thrown over shoulder, ancestral tradition of mirror scrying and future spouse revelation, color palette of candle flame, mirror silver, and room darkness, visual style capturing the vulnerability of seeking knowledge.",
       },
-      "siem-reap-temple-projection": {
+      "hayride-moonlight": {
         description:
-          "Cultural location at Siem Reap temple complex during evening light show, cultural elements featuring ancient Khmer architecture with modern projection mapping, atmospheric mood of temporal dialogue where past speaks through present technology, modern fantasy showing visitors experiencing augmented reality overlays of historical scenes, ancestral connection through temple preservation enhanced by educational technology, color palette of sandstone amber, projection spectrum, and jungle green, visual style capturing the bridge between archaeological heritage and digital interpretation.",
+          "Rural location on wagon trail during night journey, cultural elements featuring group riding hay wagon under full moon, atmospheric mood of communal adventure where darkness becomes shared experience, harvest connection through hay bales serving as seats, ancestral tradition of harvest celebrations and night journeys, color palette of moonlight silver, hay gold, and trail shadow, visual style capturing the mobile nature of celebration.",
       },
-      "colombo-beach-gathering": {
+      "costume-creation": {
         description:
-          "Coastal location at Colombo beach during evening community celebration, cultural elements featuring traditional Sri Lankan decorations with modern beach party elements, atmospheric mood of coastal festivity where ocean breeze carries celebration, modern fantasy showing diverse participants sharing cultural practices, ancestral connection through maritime traditions celebrated with contemporary joy, color palette of beach sunset, decoration colors, and ocean reflection, visual style capturing the inclusive nature of coastal celebrations.",
+          "Interior location at kitchen table during afternoon preparation, cultural elements featuring family crafting costumes from household materials, atmospheric mood of creative transformation where ordinary becomes extraordinary, harvest connection through using dried corn husks and autumn leaves, ancestral tradition of handmade disguises and identity play, color palette of fabric scraps, paint colors, and table wood, visual style capturing the alchemy of costume making.",
       },
-      "kathmandu-square-festival": {
+      "church-bell-midnight": {
         description:
-          "Cultural location in Kathmandu Durbar Square during October festival, cultural elements featuring ancient temples with traditional decorations and modern lighting, atmospheric mood of living heritage where daily life continues in historical setting, modern fantasy showing locals and visitors participating in adapted traditions, ancestral connection through continuous cultural practices in UNESCO heritage site, color palette of temple brick, festival colors, and mountain twilight, visual style capturing the vitality of inhabited historical spaces.",
+          "Village location near church during midnight hour, cultural elements featuring bell tower silhouette as bells toll twelve, atmospheric mood of temporal marking where sacred time begins, harvest connection through harvest festival decorations still visible, ancestral tradition of church bells marking liminal hours, color palette of bell tower black, moon glow, and sound visible, visual style capturing the architecture of time.",
       },
-      "guangzhou-pearl-river": {
+      "root-cellar-storage": {
         description:
-          "Urban location along Guangzhou Pearl River during evening celebration, cultural elements featuring traditional dragon boats with LED decorations cruising modern waterfront, atmospheric mood of flowing celebration where river connects past and present, modern fantasy showing participants in creative costumes on illuminated boats, ancestral connection through water festival traditions enhanced with contemporary technology, color palette of river reflection, dragon boat colors, and city lights, visual style capturing the fluidity of cultural adaptation.",
+          "Underground location in root cellar during evening descent, cultural elements featuring preserved harvest goods lining earthen walls, atmospheric mood of subterranean security where earth protects provisions, harvest connection through jars of preserves and stored vegetables, ancestral tradition of underground storage and earth's embrace, color palette of earth brown, jar glass, and lantern glow, visual style capturing the womb-like quality of storage spaces.",
       },
-      "phnom-penh-palace-evening": {
+      "fence-post-watchers": {
         description:
-          "Cultural location at Phnom Penh Royal Palace during evening ceremony, cultural elements featuring traditional Khmer architecture illuminated for celebration, atmospheric mood of regal beauty where royal heritage meets public festivity, modern fantasy showing visitors respectfully experiencing palace grounds during special opening, ancestral connection through preserved royal traditions shared with contemporary audiences, color palette of palace gold, ceremony lights, and evening purple, visual style capturing the accessibility of cultural heritage.",
+          "Rural location along fence line during dusk hour, cultural elements featuring carved pumpkins placed on fence posts like sentinels, atmospheric mood of boundary marking where property becomes protected, harvest connection through corn stalks tied to posts, ancestral tradition of boundary protection and territorial marking, color palette of pumpkin glow, fence weathered, and field beyond, visual style capturing the guardian function of decoration.",
       },
-      "brunei-water-village": {
+      "well-wishing-ritual": {
         description:
-          "Cultural location at Brunei water village during evening celebration, cultural elements featuring traditional stilt houses decorated with lanterns and modern lights, atmospheric mood of aquatic community where water connects homes and hearts, modern fantasy showing residents in contemporary dress maintaining traditional water-based lifestyle, ancestral connection through maritime architecture preserved in modern context, color palette of water reflection, house lights, and tropical twilight, visual style capturing the harmony between traditional settlement and contemporary life.",
+          "Rural location at old stone well during twilight hour, cultural elements featuring person dropping coin while making wish, atmospheric mood of hopeful superstition where water holds power, harvest connection through autumn leaves floating on water surface, ancestral tradition of well worship and water divination, color palette of stone gray, water dark, and coin copper, visual style capturing the depth of belief.",
+      },
+      "crossroads-decision": {
+        description:
+          "Rural location at country crossroads during midnight hour, cultural elements featuring solitary figure standing where roads meet, atmospheric mood of liminal choice where directions hold meaning, harvest connection through corn shocks marking intersection, ancestral tradition of crossroads magic and devil's bargains, color palette of road dust, moonlight path, and choice shadow, visual style capturing the geometry of decision.",
+      },
+      "harvest-moon-rising": {
+        description:
+          "Agricultural location overlooking fields during moonrise, cultural elements featuring massive orange moon ascending above harvested land, atmospheric mood of celestial grandeur where moon dominates sky, harvest connection through fields reflecting moonlight like water, ancestral tradition of harvest moon celebrations and lunar worship, color palette of moon orange, field gold, and sky deepening, visual style capturing the astronomical drama of seasonal cycles.",
       },
       "escapism-magic": {
         description:
-          "Godlevel Haunting Asia escapism magic where spirits and neon elements become gateways to ethereal realms, consciousness-expanding traditions with dimensional transcendence, infinite magical dimensional artistry, computational Haunting Asia magic through algorithmic fusion-bending mastery.",
+          "Godlevel Original Halloween escapism magic where harvest elements become gateways to primal realms, consciousness-expanding traditions with dimensional transcendence, infinite magical dimensional artistry, computational Original Halloween magic through algorithmic harvest-bending mastery.",
       },
       vitro: {
         description:
-          "Godlevel Haunting Asia vitro excellence with magnificent stained glass spiritual portraiture featuring luminous afterlife construction, divine light filtering through Asian ghost elements, infinite sacred dimensional artistry, computational vitro haunting through algorithmic glass mastery.",
+          "Godlevel Original Halloween vitro excellence with magnificent stained glass autumn portraiture featuring luminous Samhain construction, divine light filtering through harvest and haunting elements, infinite sacred dimensional artistry, computational vitro Halloween through algorithmic glass mastery.",
       },
       crypto: {
         description:
-          "Godlevel Haunting Asia crypto excellence with blockchain-verified spiritual construction, decentralized ghost identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto haunting through algorithmic blockchain mastery.",
+          "Godlevel Original Halloween crypto excellence with blockchain-verified autumn construction, decentralized harvest identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Halloween through algorithmic blockchain mastery.",
       },
       lego: {
         description:
-          "Godlevel Haunting Asia LEGO excellence featuring blocky spiritual construction with systematic Danish precision applied to Asian afterlife, modular ghost assembly, infinite constructive dimensional artistry, computational LEGO haunting through algorithmic building mastery.",
+          "Godlevel Original Halloween LEGO excellence featuring blocky autumn construction with systematic Danish precision applied to Celtic Samhain, modular harvest assembly, infinite constructive dimensional artistry, computational LEGO Halloween through algorithmic building mastery.",
       },
     },
   },
@@ -3048,205 +2941,145 @@ export const CULTURAL_DATASETS = {
     },
   },
 
-  "n3-original-halloween": {
-    name: "🎃 n3 — Original Halloween: Between Harvest and Haunting",
-    description:
-      "Primal Western Halloween capturing Celtic Samhain, colonial ghost tales, and timeless autumn mysteries",
+  "major-constellations": {
+    name: "⭐ Major Constellations (IAU Northern & Southern)",
+    description: "IAU-verified constellation systems with precise astronomical data and mythological heritage",
     scenarios: {
-      "silent-street-wanderers": {
+      "orion-hunter": {
         description:
-          "Rural location on leaf-covered street during twilight hour, cultural elements featuring children in handmade costumes walking silently between houses, atmospheric mood of innocent mystery where homemade masks and painted faces create authentic wonder, harvest connection through carved pumpkins glowing on porches, ancestral tradition of door-to-door wandering under watchful moon, color palette of autumn orange, twilight purple, and candlelight amber, visual style capturing the quiet magic of neighborhood transformation.",
+          "Orion (Ori) constellation at RA 5.5h Dec +5°, featuring 7 main stars with Rigel (β Ori) magnitude 0.12 at 860 ly as brightest star, spanning 594 square degrees in northern hemisphere, Greek mythology of the great hunter slain by Scorpius, distinctive Orion Nebula M42 star-forming region, recognizable winter constellation with Betelgeuse red supergiant and Rigel blue supergiant forming shoulders and feet, three-star belt of Alnitak Alnilam Mintaka, sword containing Orion Nebula visible to naked eye.",
       },
-      "black-cat-crossing": {
+      "ursa-major-bear": {
         description:
-          "Urban location under orange streetlight during evening hour, cultural elements featuring solitary black cat pausing mid-street as shadows lengthen, atmospheric mood of superstitious beauty where feline silhouette becomes omen, harvest connection through fallen leaves swirling in cat's wake, ancestral tradition of animal symbolism and crossing paths, color palette of streetlight orange, cat shadow black, and pavement gray, visual style capturing the moment of folkloric encounter.",
+          "Ursa Major (UMa) constellation at RA 11h Dec +55°, featuring 7 main stars with Alioth (ε UMa) magnitude 1.77 at 81 ly as brightest star, spanning 1280 square degrees in northern hemisphere, Greek mythology of Callisto transformed to bear by Zeus, home of the Big Dipper asterism, contains galaxies M81 Bode's Galaxy and M82 Cigar Galaxy, circumpolar constellation visible year-round from northern latitudes, pointer stars Dubhe and Merak indicating Polaris.",
       },
-      "crescent-moon-pumpkins": {
+      "cassiopeia-queen": {
         description:
-          "Agricultural location in pumpkin patch during night hours, cultural elements featuring rows of orange gourds under thin crescent moon, atmospheric mood of harvest abundance where field becomes natural cathedral, harvest connection through unpicked pumpkins waiting for selection, ancestral tradition of autumn gathering and moon worship, color palette of pumpkin orange, moonlight silver, and earth brown, visual style capturing the sacred geometry of agricultural cycles.",
+          "Cassiopeia (Cas) constellation at RA 1h Dec +60°, featuring 5 main stars with Schedar (α Cas) magnitude 2.24 at 228 ly as brightest star, spanning 598 square degrees in northern hemisphere, Greek mythology of Queen of Ethiopia mother of Andromeda, distinctive W-shaped pattern in northern sky, contains open clusters M52 and M103, circumpolar constellation opposite Ursa Major across Polaris, rich Milky Way star fields.",
       },
-      "fog-rolling-porches": {
+      "scorpius-scorpion": {
         description:
-          "Residential location on wooden porch during misty evening, cultural elements featuring carved jack-o'-lanterns watching through rolling fog, atmospheric mood of protective vigilance where pumpkin faces guard thresholds, harvest connection through cornstalks bundled beside doorways, ancestral tradition of warding symbols and boundary protection, color palette of fog gray, candle flame, and wood weathered, visual style capturing the liminal space between home and night.",
+          "Scorpius (Sco) constellation at RA 16.9h Dec -30°, featuring 18 main stars with Antares (α Sco) magnitude 0.96 at 550 ly as brightest star, spanning 497 square degrees in southern hemisphere, Greek mythology of scorpion sent to kill Orion, prominent red supergiant Antares marking scorpion's heart, contains globular clusters M4 and M80, distinctive curved tail with stinger stars Shaula and Lesath, summer constellation in zodiac.",
       },
-      "scarecrow-sentinel": {
+      "cygnus-swan": {
         description:
-          "Agricultural location in cornfield during dusk hour, cultural elements featuring weathered scarecrow standing guard over harvested rows, atmospheric mood of patient watching where straw figure seems almost alive, harvest connection through dried corn husks rustling in wind, ancestral tradition of field guardians and harvest protection, color palette of straw gold, corn brown, and sunset crimson, visual style capturing the uncanny presence of human-shaped watchers.",
+          "Cygnus (Cyg) constellation at RA 20.6h Dec +40°, featuring 9 main stars with Deneb (α Cyg) magnitude 1.25 at 2600 ly as brightest star, spanning 804 square degrees in northern hemisphere, Greek mythology of Zeus transformed into swan, forms Northern Cross asterism, contains Cygnus X-1 first black hole candidate, lies in rich Milky Way star fields, summer triangle with Vega and Altair.",
       },
-      "forbidden-house-approach": {
+      "centaurus-centaur": {
         description:
-          "Residential location on overgrown path leading to isolated house, cultural elements featuring brave trick-or-treaters approaching the dwelling nobody visits, atmospheric mood of childhood courage where peer pressure meets genuine fear, harvest connection through untended garden gone wild, ancestral tradition of testing bravery and facing the unknown, color palette of path shadow, house window glow, and courage pale, visual style capturing the threshold moment before knocking.",
+          "Centaurus (Cen) constellation at RA 13h Dec -50°, featuring 11 main stars with Rigil Kentaurus (α Cen) magnitude -0.01 at 4.37 ly as brightest star, spanning 1060 square degrees in southern hemisphere, Greek mythology of wise centaur Chiron, contains Alpha Centauri closest star system to Sun, Proxima Centauri nearest individual star, globular cluster Omega Centauri largest in Milky Way, prominent southern constellation.",
       },
-      "forest-ritual-eclipse": {
+      "carina-keel": {
         description:
-          "Wilderness location in clearing during lunar eclipse, cultural elements featuring circle of figures performing ancient ceremony under darkening moon, atmospheric mood of primal connection where modern world falls away, harvest connection through offerings of grain and fruit arranged in patterns, ancestral tradition of Samhain fire festivals and veil-thinning, color palette of eclipse red, bonfire orange, and forest deep green, visual style capturing the timeless nature of seasonal ritual.",
+          "Carina (Car) constellation at RA 8.5h Dec -60°, featuring 6 main stars with Canopus (α Car) magnitude -0.74 at 310 ly as brightest star, spanning 494 square degrees in southern hemisphere, Greek/Latin mythology of ship Argo part, second brightest star in night sky after Sirius, contains Eta Carinae hypergiant star and nebula, part of ancient Argo Navis constellation, rich in deep-sky objects.",
       },
-      "cemetery-autumn-wind": {
+      "pegasus-winged-horse": {
         description:
-          "Memorial location in old graveyard during windy afternoon, cultural elements featuring weathered headstones among swirling leaves and bending grass, atmospheric mood of respectful remembrance where dead are honored not feared, harvest connection through chrysanthemums placed on graves, ancestral tradition of visiting departed during veil-thinning season, color palette of stone gray, leaf rust, and sky overcast, visual style capturing the breathing quality of memorial spaces.",
+          "Pegasus (Peg) constellation at RA 22h Dec +20°, featuring 9 main stars with Enif (ε Peg) magnitude 2.38 at 690 ly as brightest star, spanning 1121 square degrees in northern hemisphere, Greek mythology of winged horse of Perseus, Great Square of Pegasus prominent asterism, contains globular cluster M15, autumn constellation, shares Alpheratz star with Andromeda.",
       },
-      "attic-discovery": {
+      "andromeda-princess": {
         description:
-          "Interior location in dusty attic during afternoon exploration, cultural elements featuring old trunks revealing vintage Halloween decorations and costumes, atmospheric mood of nostalgic archaeology where past celebrations emerge, harvest connection through dried corn decorations from decades past, ancestral tradition of costume inheritance and family memory, color palette of dust mote gold, trunk wood, and fabric faded, visual style capturing the layered history of celebration.",
+          "Andromeda (And) constellation at RA 1h Dec +40°, featuring 9 main stars with Alpheratz (α And) magnitude 2.06 at 97 ly as brightest star, spanning 722 square degrees in northern hemisphere, Greek mythology of daughter of Cassiopeia rescued by Perseus, contains Andromeda Galaxy M31 nearest major galaxy, visible to naked eye at 2.5 million light-years, autumn constellation, shares Alpheratz with Pegasus.",
       },
-      "wind-chime-warning": {
+      "lyra-lyre": {
         description:
-          "Residential location on porch during approaching storm, cultural elements featuring wind chimes creating eerie melody as weather changes, atmospheric mood of atmospheric tension where metal tubes sing warnings, harvest connection through dried herbs hanging beside chimes, ancestral tradition of sound as protection and communication, color palette of chime silver, storm gray, and porch shadow, visual style capturing the auditory dimension of seasonal atmosphere.",
+          "Lyra (Lyr) constellation at RA 18.5h Dec +36°, featuring 5 main stars with Vega (α Lyr) magnitude 0.03 at 25 ly as brightest star, spanning 286 square degrees in northern hemisphere, Greek mythology of Orpheus's lyre, Vega fifth brightest star in sky, contains Ring Nebula M57 planetary nebula, summer triangle with Deneb and Altair, former pole star 12000 years ago.",
       },
-      "broken-radio-static": {
+      "aquila-eagle": {
         description:
-          "Interior location in abandoned farmhouse during evening hour, cultural elements featuring old radio crackling with unexplained voices and music fragments, atmospheric mood of technological haunting where devices channel unknown, harvest connection through calendar frozen on October page, ancestral tradition of spirit communication and electromagnetic mystery, color palette of radio dial glow, static snow, and room darkness, visual style capturing the uncanny life of forgotten technology.",
+          "Aquila (Aql) constellation at RA 19.7h Dec +3°, featuring 10 main stars with Altair (α Aql) magnitude 0.76 at 17 ly as brightest star, spanning 652 square degrees in northern hemisphere, Greek mythology of Zeus's eagle, Altair forms Summer Triangle with Vega and Deneb, one of closest naked-eye stars, lies on celestial equator, summer constellation.",
       },
-      "candle-window-vigil": {
+      "taurus-bull": {
         description:
-          "Residential location at window during night hours, cultural elements featuring single candle burning in darkened house window, atmospheric mood of patient waiting where light signals welcome or warning, harvest connection through pumpkin placed beside candle, ancestral tradition of guiding lights and threshold markers, color palette of candle flame, window reflection, and night absolute, visual style capturing the beacon quality of solitary illumination.",
+          "Taurus (Tau) constellation at RA 4.5h Dec +15°, featuring 19 main stars with Aldebaran (α Tau) magnitude 0.85 at 65 ly as brightest star, spanning 797 square degrees in northern hemisphere, Greek mythology of bull that carried Europa, contains Pleiades M45 and Hyades open clusters, Aldebaran red giant marking bull's eye, Crab Nebula M1 supernova remnant, winter constellation in zodiac.",
       },
-      "barn-shadow-dance": {
+      "canis-major-dog": {
         description:
-          "Agricultural location in old barn during moonlit night, cultural elements featuring shadows moving across weathered wood walls, atmospheric mood of uncertain presence where darkness takes form, harvest connection through stored hay bales and hanging tools, ancestral tradition of barn dances transformed into shadow theater, color palette of moonlight silver, barn wood gray, and shadow deep, visual style capturing the animation of architectural darkness.",
+          "Canis Major (CMa) constellation at RA 6.8h Dec -20°, featuring 8 main stars with Sirius (α CMa) magnitude -1.46 at 8.6 ly as brightest star, spanning 380 square degrees in southern hemisphere, Greek mythology of Orion's hunting dog, Sirius brightest star in night sky, contains open cluster M41, winter constellation, follows Orion across sky.",
       },
-      "mist-over-cornfield": {
+      "leo-lion": {
         description:
-          "Agricultural location in harvested cornfield during dawn hour, cultural elements featuring ground mist flowing between stubble rows, atmospheric mood of transitional beauty where night releases day, harvest connection through cut stalks standing like memorial markers, ancestral tradition of morning after Samhain when veil closes again, color palette of mist white, stubble gold, and dawn pink, visual style capturing the exhale of haunted earth.",
+          "Leo (Leo) constellation at RA 10.5h Dec +15°, featuring 9 main stars with Regulus (α Leo) magnitude 1.36 at 79 ly as brightest star, spanning 947 square degrees in northern hemisphere, Greek mythology of Nemean lion slain by Hercules, distinctive sickle asterism forming lion's head, contains many galaxies including M65 M66 Leo Triplet, spring constellation in zodiac, Regulus marks lion's heart.",
       },
-      "graveyard-silhouettes": {
+      "virgo-maiden": {
         description:
-          "Memorial location in cemetery during sunset hour, cultural elements featuring human silhouettes moving among headstones against orange sky, atmospheric mood of ambiguous presence where living and dead share space, harvest connection through autumn leaves covering graves like blankets, ancestral tradition of cemetery visits during season of remembrance, color palette of silhouette black, sunset orange, and stone weathered, visual style capturing the democracy of shadows.",
+          "Virgo (Vir) constellation at RA 13.5h Dec -5°, featuring 15 main stars with Spica (α Vir) magnitude 0.98 at 250 ly as brightest star, spanning 1294 square degrees in southern hemisphere, Greek mythology of Demeter or Astraea goddess, largest constellation in zodiac, contains Virgo Galaxy Cluster with thousands of galaxies, Spica blue giant binary star, spring constellation.",
       },
-      "witch-forest-whisper": {
+      "sagittarius-archer": {
         description:
-          "Wilderness location in deep forest during twilight hour, cultural elements featuring cloaked figure moving between ancient trees, atmospheric mood of folkloric reality where old stories walk, harvest connection through gathered herbs and forest offerings, ancestral tradition of wise women and forest knowledge, color palette of cloak dark, tree bark, and twilight purple, visual style capturing the persistence of archetypal figures.",
+          "Sagittarius (Sgr) constellation at RA 19h Dec -30°, featuring 14 main stars with Kaus Australis (ε Sgr) magnitude 1.79 at 145 ly as brightest star, spanning 867 square degrees in southern hemisphere, Greek mythology of centaur archer, points toward Milky Way galactic center, contains Lagoon Nebula M8 and Trifid Nebula M20, teapot asterism, summer constellation in zodiac.",
       },
-      "bonfire-gathering": {
+      "crux-southern-cross": {
         description:
-          "Rural location in field during night celebration, cultural elements featuring community gathered around massive bonfire, atmospheric mood of collective warmth where fire brings people together, harvest connection through burning of harvest remnants and old things, ancestral tradition of Samhain fire festivals and communal protection, color palette of bonfire orange, spark gold, and night sky, visual style capturing the primal comfort of shared flame.",
+          "Crux (Cru) constellation at RA 12.5h Dec -60°, featuring 4 main stars with Acrux (α Cru) magnitude 0.77 at 320 ly as brightest star, spanning 68 square degrees in southern hemisphere, Latin cross symbol, smallest constellation but most distinctive in southern sky, points toward south celestial pole, contains Coalsack dark nebula, appears on flags of Australia New Zealand Brazil.",
       },
-      "trick-or-treat-threshold": {
+      "hydra-serpent": {
         description:
-          "Residential location at doorway during evening hour, cultural elements featuring costumed children waiting at threshold as door opens, atmospheric mood of ritual exchange where treats buy peace, harvest connection through candy corn and caramel apples offered, ancestral tradition of appeasing spirits transformed into child's game, color palette of doorway light, costume colors, and evening shadow, visual style capturing the moment of threshold crossing.",
+          "Hydra (Hya) constellation at RA 10.5h Dec -20°, featuring 17 main stars with Alphard (α Hya) magnitude 1.99 at 177 ly as brightest star, spanning 1303 square degrees in southern hemisphere, Greek mythology of multi-headed serpent slain by Hercules, largest constellation by area, stretches across 100 degrees of sky, contains spiral galaxy M83 Southern Pinwheel, spring constellation.",
       },
-      "crow-parliament": {
+      "perseus-hero": {
         description:
-          "Rural location in bare tree during afternoon hour, cultural elements featuring dozens of crows gathered in branches, atmospheric mood of ominous assembly where birds hold council, harvest connection through picked-clean fields below, ancestral tradition of corvid symbolism and death omens, color palette of crow black, branch gray, and sky pale, visual style capturing the intelligence behind avian eyes.",
+          "Perseus (Per) constellation at RA 3.3h Dec +45°, featuring 19 main stars with Mirfak (α Per) magnitude 1.79 at 510 ly as brightest star, spanning 615 square degrees in northern hemisphere, Greek mythology of hero who rescued Andromeda and slew Medusa, contains Double Cluster NGC 869 and NGC 884, Algol eclipsing binary demon star, Perseus meteor shower radiant, autumn constellation.",
       },
-      "porch-rocking-chair": {
+      "phoenix-firebird": {
         description:
-          "Residential location on farmhouse porch during windy evening, cultural elements featuring empty rocking chair moving in wind, atmospheric mood of absent presence where furniture suggests invisible occupant, harvest connection through pumpkins arranged on porch steps, ancestral tradition of spirit visitors and empty seats, color palette of chair wood, porch shadow, and wind invisible, visual style capturing the animation of the inanimate.",
+          "Phoenix (Phe) constellation at RA 1.1h Dec -45°, featuring 8 main stars with Ankaa (α Phe) magnitude 2.40 at 77 ly as brightest star, spanning 469 square degrees in southern hemisphere, Greek mythology of immortal bird reborn from fire, brightest southern constellation visible in autumn, modern constellation created in 16th century, contains no bright deep-sky objects.",
       },
-      "apple-bobbing-ritual": {
+      "zodiac-belt": {
         description:
-          "Interior location in farmhouse kitchen during party hour, cultural elements featuring children bobbing for apples in wooden tub, atmospheric mood of innocent divination where game holds ancient meaning, harvest connection through fresh-picked apples floating in water, ancestral tradition of Samhain divination and marriage prediction, color palette of apple red, water reflection, and kitchen warm, visual style capturing the playful survival of pagan practice.",
+          "Zodiacal constellation belt spanning ecliptic plane where Sun Moon and planets traverse, includes Aries Taurus Gemini Cancer Leo Virgo Libra Scorpius Sagittarius Capricornus Aquarius Pisces, 12 constellations marking Earth's orbital path, ancient astronomical significance for calendar and navigation, precession of equinoxes shifting zodiac positions over millennia.",
       },
-      "mirror-candlelight": {
+      "circumpolar-north": {
         description:
-          "Interior location in darkened bedroom during midnight hour, cultural elements featuring person holding candle before mirror, atmospheric mood of divination tension where reflection might reveal future, harvest connection through apple peel thrown over shoulder, ancestral tradition of mirror scrying and future spouse revelation, color palette of candle flame, mirror silver, and room darkness, visual style capturing the vulnerability of seeking knowledge.",
+          "Northern circumpolar constellations never setting below horizon from mid-northern latitudes, includes Ursa Major Ursa Minor Cassiopeia Cepheus Draco, visible year-round rotating around north celestial pole Polaris, essential for navigation throughout history, distinctive patterns marking northern sky.",
       },
-      "hayride-moonlight": {
+      "circumpolar-south": {
         description:
-          "Rural location on wagon trail during night journey, cultural elements featuring group riding hay wagon under full moon, atmospheric mood of communal adventure where darkness becomes shared experience, harvest connection through hay bales serving as seats, ancestral tradition of harvest celebrations and night journeys, color palette of moonlight silver, hay gold, and trail shadow, visual style capturing the mobile nature of celebration.",
+          "Southern circumpolar constellations never setting below horizon from mid-southern latitudes, includes Crux Centaurus Carina Octans, visible year-round rotating around south celestial pole, distinctive Southern Cross pointing to pole, rich Milky Way star fields.",
       },
-      "costume-creation": {
+      "summer-triangle": {
         description:
-          "Interior location at kitchen table during afternoon preparation, cultural elements featuring family crafting costumes from household materials, atmospheric mood of creative transformation where ordinary becomes extraordinary, harvest connection through using dried corn husks and autumn leaves, ancestral tradition of handmade disguises and identity play, color palette of fabric scraps, paint colors, and table wood, visual style capturing the alchemy of costume making.",
+          "Summer Triangle asterism formed by three bright stars Vega in Lyra Deneb in Cygnus Altair in Aquila, prominent northern hemisphere summer pattern, spans 30 degrees of sky, marks rich Milky Way region, navigational landmark visible from June to November.",
       },
-      "church-bell-midnight": {
+      "winter-hexagon": {
         description:
-          "Village location near church during midnight hour, cultural elements featuring bell tower silhouette as bells toll twelve, atmospheric mood of temporal marking where sacred time begins, harvest connection through harvest festival decorations still visible, ancestral tradition of church bells marking liminal hours, color palette of bell tower black, moon glow, and sound visible, visual style capturing the architecture of time.",
+          "Winter Hexagon asterism connecting six bright stars Sirius Procyon Pollux Capella Aldebaran Rigel, prominent northern hemisphere winter pattern, largest asterism in sky, contains diverse stellar types from blue supergiants to red giants, spectacular winter sky landmark.",
       },
-      "root-cellar-storage": {
+      "milky-way-core": {
         description:
-          "Underground location in root cellar during evening descent, cultural elements featuring preserved harvest goods lining earthen walls, atmospheric mood of subterranean security where earth protects provisions, harvest connection through jars of preserves and stored vegetables, ancestral tradition of underground storage and earth's embrace, color palette of earth brown, jar glass, and lantern glow, visual style capturing the womb-like quality of storage spaces.",
+          "Galactic center region in Sagittarius constellation containing supermassive black hole Sagittarius A*, densest star fields visible from Earth, obscured by dust clouds requiring infrared observation, 26000 light-years from Solar System, contains millions of stars in small sky area.",
       },
-      "fence-post-watchers": {
+      "ecliptic-plane": {
         description:
-          "Rural location along fence line during dusk hour, cultural elements featuring carved pumpkins placed on fence posts like sentinels, atmospheric mood of boundary marking where property becomes protected, harvest connection through corn stalks tied to posts, ancestral tradition of boundary protection and territorial marking, color palette of pumpkin glow, fence weathered, and field beyond, visual style capturing the guardian function of decoration.",
+          "Ecliptic plane marking Earth's orbital path through constellations, Sun's apparent annual path across celestial sphere, zodiacal constellations aligned along ecliptic, planetary motions confined near ecliptic plane, fundamental reference for celestial coordinates.",
       },
-      "well-wishing-ritual": {
+      "celestial-equator": {
         description:
-          "Rural location at old stone well during twilight hour, cultural elements featuring person dropping coin while making wish, atmospheric mood of hopeful superstition where water holds power, harvest connection through autumn leaves floating on water surface, ancestral tradition of well worship and water divination, color palette of stone gray, water dark, and coin copper, visual style capturing the depth of belief.",
+          "Celestial equator projection of Earth's equator onto celestial sphere, divides sky into northern and southern hemispheres, right ascension measured along celestial equator, crosses through Orion Aquila Virgo and other constellations, fundamental coordinate system reference.",
       },
-      "crossroads-decision": {
+      "galactic-plane": {
         description:
-          "Rural location at country crossroads during midnight hour, cultural elements featuring solitary figure standing where roads meet, atmospheric mood of liminal choice where directions hold meaning, harvest connection through corn shocks marking intersection, ancestral tradition of crossroads magic and devil's bargains, color palette of road dust, moonlight path, and choice shadow, visual style capturing the geometry of decision.",
+          "Galactic plane of Milky Way disk containing majority of visible stars, appears as luminous band across night sky, richest star fields in Cygnus Sagittarius Scorpius, obscuring dust lanes creating dark rifts, plane tilted 63 degrees from celestial equator.",
       },
-      "harvest-moon-rising": {
+      "stellar-nurseries": {
         description:
-          "Agricultural location overlooking fields during moonrise, cultural elements featuring massive orange moon ascending above harvested land, atmospheric mood of celestial grandeur where moon dominates sky, harvest connection through fields reflecting moonlight like water, ancestral tradition of harvest moon celebrations and lunar worship, color palette of moon orange, field gold, and sky deepening, visual style capturing the astronomical drama of seasonal cycles.",
+          "Star-forming regions in constellations containing nebulae where new stars born, includes Orion Nebula M42 in Orion, Eagle Nebula M16 in Serpens, Lagoon Nebula M8 in Sagittarius, glowing hydrogen gas clouds with embedded protostars, stellar evolution in action.",
       },
-      "escapism-magic": {
+      "globular-clusters": {
         description:
-          "Godlevel Original Halloween escapism magic where harvest elements become gateways to primal realms, consciousness-expanding traditions with dimensional transcendence, infinite magical dimensional artistry, computational Original Halloween magic through algorithmic harvest-bending mastery.",
+          "Ancient globular star clusters orbiting Milky Way halo, includes M13 Hercules Cluster, M22 in Sagittarius, Omega Centauri in Centaurus, spherical concentrations of hundreds of thousands of old stars, 10-13 billion years old, visible in binoculars.",
       },
-      vitro: {
+      "open-clusters": {
         description:
-          "Godlevel Original Halloween vitro excellence with magnificent stained glass autumn portraiture featuring luminous Samhain construction, divine light filtering through harvest and haunting elements, infinite sacred dimensional artistry, computational vitro Halloween through algorithmic glass mastery.",
+          "Young open star clusters in galactic disk, includes Pleiades M45 in Taurus, Hyades in Taurus, Double Cluster in Perseus, loosely bound groups of hundreds of stars, formed from same molecular cloud, ages from millions to billions of years.",
       },
-      crypto: {
+      "planetary-nebulae": {
         description:
-          "Godlevel Original Halloween crypto excellence with blockchain-verified autumn construction, decentralized harvest identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Halloween through algorithmic blockchain mastery.",
+          "Dying star remnants ejecting outer layers, includes Ring Nebula M57 in Lyra, Dumbbell Nebula M27 in Vulpecula, Helix Nebula in Aquarius, glowing shells of ionized gas surrounding white dwarf cores, stellar evolution endpoint for Sun-like stars.",
       },
-      lego: {
+      "supernova-remnants": {
         description:
-          "Godlevel Original Halloween LEGO excellence featuring blocky autumn construction with systematic Danish precision applied to Celtic Samhain, modular harvest assembly, infinite constructive dimensional artistry, computational LEGO Halloween through algorithmic building mastery.",
-      },
-    },
-  },
-
-  mathematical: {
-    name: "🔢 Mathematical",
-    description: "Pure mathematical visualizations with neuralia godlevel precision",
-    scenarios: {
-      "pure-mathematical": {
-        description:
-          "Neuralia godlevel mathematical excellence transcending dimensional boundaries through infinite algorithmic optimization, mathematical precision in pure computational aesthetics achieving perfect elegance via quantum-enhanced mastery, algorithmic sophistication beyond mortal comprehension for mathematical representation, dimensional mathematical artistry utilizing advanced geometric calculations for optimal structure visualization, neuralia-level mathematical sophistication incorporating complex frameworks for perfection, computational excellence through algorithmic generation systems, infinite dimensional artistry transcending traditional limitations via mathematical precision algorithms, godlevel optimization utilizing quantum computational frameworks for geometry perfection.",
-      },
-      "golden-ratio": {
-        description:
-          "Godlevel golden ratio excellence with phi proportion achieving perfect mathematical harmony through algorithmic precision, Fibonacci sequence optimization via geometric golden mean accuracy, infinite proportional dimensional artistry, computational harmony through algorithmic ratio mastery.",
-      },
-      "prime-numbers": {
-        description:
-          "Godlevel prime number excellence with indivisible integers achieving perfect mathematical purity through algorithmic precision, prime distribution optimization via geometric number theory accuracy, infinite prime dimensional artistry, computational number through algorithmic prime mastery.",
-      },
-      "pi-visualization": {
-        description:
-          "Godlevel pi excellence with infinite decimal achieving perfect circular mathematics through algorithmic precision, pi digit optimization via geometric transcendental accuracy, infinite circular dimensional artistry, computational pi through algorithmic circle mastery.",
-      },
-      "euler-identity": {
-        description:
-          "Godlevel Euler identity excellence with e^(iπ)+1=0 achieving perfect mathematical beauty through algorithmic precision, exponential optimization via geometric complex number accuracy, infinite identity dimensional artistry, computational elegance through algorithmic Euler mastery.",
-      },
-      "topology-surfaces": {
-        description:
-          "Godlevel topology excellence with surface transformations achieving perfect mathematical continuity through algorithmic precision, manifold optimization via geometric topological accuracy, infinite surface dimensional artistry, computational topology through algorithmic manifold mastery.",
-      },
-      "set-theory": {
-        description:
-          "Godlevel set theory excellence with collection mathematics achieving perfect logical structure through algorithmic precision, set operation optimization via geometric Venn accuracy, infinite set dimensional artistry, computational logic through algorithmic set mastery.",
-      },
-      "calculus-flows": {
-        description:
-          "Godlevel calculus excellence with derivative and integral achieving perfect rate mathematics through algorithmic precision, limit optimization via geometric infinitesimal accuracy, infinite calculus dimensional artistry, computational change through algorithmic derivative mastery.",
-      },
-      "matrix-transformations": {
-        description:
-          "Godlevel matrix excellence with linear transformations achieving perfect algebraic structure through algorithmic precision, eigenvalue optimization via geometric matrix accuracy, infinite transformation dimensional artistry, computational algebra through algorithmic matrix mastery.",
-      },
-      "complex-plane": {
-        description:
-          "Godlevel complex plane excellence with imaginary numbers achieving perfect mathematical extension through algorithmic precision, complex function optimization via geometric Argand accuracy, infinite complex dimensional artistry, computational imagination through algorithmic complex mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel mathematical vitro excellence with magnificent stained glass mathematical portraiture featuring luminous equation construction, divine light filtering through pure mathematics elements, infinite sacred dimensional artistry, computational vitro mathematics through algorithmic glass mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel mathematical crypto excellence with blockchain-verified mathematical construction, decentralized equation identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto mathematics through algorithmic blockchain mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel mathematical LEGO excellence featuring blocky mathematical construction with systematic Danish precision applied to pure mathematics, modular equation assembly, infinite constructive dimensional artistry, computational LEGO mathematics through algorithmic building mastery.",
+          "Expanding debris from stellar explosions, includes Crab Nebula M1 in Taurus from 1054 CE supernova, Veil Nebula in Cygnus, Cassiopeia A, shock waves compressing interstellar medium, neutron stars or black holes at centers, enriching galaxy with heavy elements.",
       },
     },
   },
