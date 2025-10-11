@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
     console.log("🎨 Generation request received:", {
       dataset: body.dataset,
       scenario: body.scenario,
+      colorScheme: body.colorScheme,
       generateAll: body.generateAll,
       generateTypes: body.generateTypes, // Log generation types
       type: body.type,
