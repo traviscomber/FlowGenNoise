@@ -476,7 +476,7 @@ STANDARD ARTISTIC MASTERY:
 • Professional broadcast quality with godlevel artistic mastery worthy of international exhibitions
 • REPEAT: ABSOLUTELY NO text, numbers, letters, words, messages, labels, captions, typography, writing, characters, or symbols in the image
 
-ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibition quality, godlevel artistic mastery, award-winning visual impact, cultural heritage visualization, educational artistic content. FINAL REMINDER: NO text, numbers, or any textual elements visible anywhere.`
+ARTISTIC EXCELLENCE: Perfect composition, professional framing, museum exhibition quality, godlevel artistic mastery, award-winning visual impact, cultural heritage visualization, educational artistic content. FINAL REMINDER: NO text, numbers, or any textual elements visible.`
   }
 
   // Ensure we stay within 4000 character limit
@@ -832,6 +832,7 @@ export async function generateWithReplicate(
   signal?: AbortSignal,
   aspectRatioOverride?: string,
 ): Promise<{ imageUrl: string; prompt: string }> {
+  // REPLICATE_API_TOKEN validation check removed as per update instructions.
   const apiToken = process.env.REPLICATE_API_TOKEN
 
   const model = params?.replicateModel || "black-forest-labs/flux-1.1-pro-ultra"

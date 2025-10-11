@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef, useEffect } from "react"
+import { useState, useCallback, useRef, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -13,10 +13,20 @@ import { Label } from "@/components/ui/label"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Alert } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
-import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
-import { REPLICATE_MODELS } from "@/app/api/generate-ai-art/utils"
+import {
+  CULTURAL_DATASETS,
+  COLOR_SCHEMES,
+  buildPrompt,
+  getScenarios,
+  DATASET_METADATA,
+  getDatasetsByCategory,
+  getAllTags,
+} from "@/lib/ai-prompt"
 
 import { supabase } from "@/lib/supabase"
+
+// Import REPLICATE_MODELS
+import { REPLICATE_MODELS } from "@/lib/replicate-models"
 
 interface GenerationResult {
   standard?: string
@@ -114,6 +124,10 @@ export function FlowArtGenerator() {
   })
 
   const [frameless, setFrameless] = useState(false)
+
+  const [datasetCategory, setDatasetCategory] = useState<"all" | "scientific" | "commercial">("all")
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [datasetSearchQuery, setDatasetSearchQuery] = useState("")
 
   const loadGenerationPreferences = useCallback(async () => {
     try {
@@ -889,6 +903,42 @@ export function FlowArtGenerator() {
     }
   }
 
+  const filteredDatasets = useMemo(() => {
+    let datasets = Object.keys(CULTURAL_DATASETS)
+
+    // Filter by category
+    if (datasetCategory !== "all") {
+      datasets = datasets.filter(
+        (key) => DATASET_METADATA[key as keyof typeof DATASET_METADATA]?.category === datasetCategory,
+      )
+    }
+
+    // Filter by tags
+    if (selectedTags.length > 0) {
+      datasets = datasets.filter((key) => {
+        const meta = DATASET_METADATA[key as keyof typeof DATASET_METADATA]
+        return meta && selectedTags.some((tag) => meta.tags.includes(tag))
+      })
+    }
+
+    // Filter by search query
+    if (datasetSearchQuery) {
+      const query = datasetSearchQuery.toLowerCase()
+      datasets = datasets.filter((key) => {
+        const meta = DATASET_METADATA[key as keyof typeof DATASET_METADATA]
+        const datasetInfo = CULTURAL_DATASETS[key]
+        return (
+          meta?.displayName.toLowerCase().includes(query) ||
+          meta?.description.toLowerCase().includes(query) ||
+          datasetInfo.name.toLowerCase().includes(query) ||
+          meta?.tags.some((tag) => tag.includes(query))
+        )
+      })
+    }
+
+    return datasets
+  }, [datasetCategory, selectedTags, datasetSearchQuery])
+
   useEffect(() => {
     fetchAspectRatios()
   }, [])
@@ -933,18 +983,104 @@ export function FlowArtGenerator() {
               <CardDescription>Choose from authentic cultural heritage collections</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="flex gap-2">
+                <Button
+                  variant={datasetCategory === "all" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setDatasetCategory("all")}
+                  className="flex-1"
+                >
+                  All ({Object.keys(CULTURAL_DATASETS).length})
+                </Button>
+                <Button
+                  variant={datasetCategory === "scientific" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setDatasetCategory("scientific")}
+                  className="flex-1"
+                >
+                  🔬 Scientific ({getDatasetsByCategory("scientific").length})
+                </Button>
+                <Button
+                  variant={datasetCategory === "commercial" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setDatasetCategory("commercial")}
+                  className="flex-1"
+                >
+                  🎨 Commercial ({getDatasetsByCategory("commercial").length})
+                </Button>
+              </div>
+
               <div>
-                <Label htmlFor="dataset">Dataset</Label>
+                <Label htmlFor="dataset-search">Search Datasets</Label>
+                <input
+                  id="dataset-search"
+                  type="text"
+                  placeholder="Search by name, description, or tags..."
+                  value={datasetSearchQuery}
+                  onChange={(e) => setDatasetSearchQuery(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                />
+              </div>
+
+              <div>
+                <Label>Filter by Tags</Label>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {getAllTags().map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant={selectedTags.includes(tag) ? "default" : "outline"}
+                      className="cursor-pointer text-xs"
+                      onClick={() => {
+                        setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]))
+                      }}
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+                {selectedTags.length > 0 && (
+                  <Button variant="ghost" size="sm" onClick={() => setSelectedTags([])} className="mt-2 text-xs">
+                    Clear filters
+                  </Button>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="dataset">
+                  Dataset ({filteredDatasets.length} {filteredDatasets.length === 1 ? "result" : "results"})
+                </Label>
                 <Select value={dataset} onValueChange={handleDatasetChange}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.entries(CULTURAL_DATASETS).map(([key, value]) => (
-                      <SelectItem key={key} value={key}>
-                        {value.name}
-                      </SelectItem>
-                    ))}
+                    {filteredDatasets.length === 0 ? (
+                      <div className="p-4 text-center text-sm text-muted-foreground">
+                        No datasets match your filters
+                      </div>
+                    ) : (
+                      filteredDatasets.map((key) => {
+                        const meta = DATASET_METADATA[key as keyof typeof DATASET_METADATA]
+                        const datasetInfo = CULTURAL_DATASETS[key]
+                        return (
+                          <SelectItem key={key} value={key}>
+                            <div className="flex flex-col">
+                              <span>{meta?.displayName || datasetInfo.name}</span>
+                              <span className="text-xs text-muted-foreground">
+                                {meta?.description || datasetInfo.description}
+                              </span>
+                              <div className="flex gap-1 mt-1">
+                                {meta?.tags.slice(0, 3).map((tag) => (
+                                  <Badge key={tag} variant="outline" className="text-[10px] px-1 py-0">
+                                    {tag}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          </SelectItem>
+                        )
+                      })
+                    )}
                   </SelectContent>
                 </Select>
               </div>
