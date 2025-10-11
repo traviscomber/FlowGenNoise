@@ -2223,7 +2223,7 @@ export const CULTURAL_DATASETS = {
       },
       "thunder-drum-warriors": {
         description:
-          "Godlevel civilization excellence featuring people who weaponize thunder through massive drums and build fortress cities that resonate with war rhythms, architecture designed to amplify percussion into devastating sonic weapons, knowledge transmitted through drum codes that carry complex information, cities that exist in constant rhythmic vibration, sustained by consuming sound-charged water that vibrates at cellular level, sacred ritual of the Thunder March where ten thousand drums play simultaneously to shake mountains, powerful and rhythmic atmosphere of controlled chaos, storm sky with thunder clouds, color dream of thunder gray, drum bronze, and lightning white.",
+          "Godlevel civilization excellence featuring people who weaponize thunder through massive drums and build fortress cities that resonate with war rhythms, architecture designed to amplify percussion into devastating sonic weapons, knowledge recorded in drum codes that carry complex information, cities that exist in constant rhythmic vibration, sustained by consuming sound-charged water that vibrates at cellular level, sacred ritual of the Thunder March where ten thousand drums play simultaneously to shake mountains, powerful and rhythmic atmosphere of controlled chaos, storm sky with thunder clouds, color dream of thunder gray, drum bronze, and lightning white.",
       },
       "glass-desert-alchemists": {
         description:
@@ -2590,11 +2590,11 @@ export const CULTURAL_DATASETS = {
       },
       "bitcoin-treasury-strategy": {
         description:
-          "Godlevel Bitcoin treasury excellence with cryptocurrency integration achieving perfect financial representation through mathematical blockchain algorithms, Bitcoin accumulation optimization via geometric crypto precision targeting 1000 BTC by 2025 and 10000 BTC within two years, infinite financial dimensional artistry featuring 200 BTC current holdings, computational finance through algorithmic Bitcoin mastery with strategic treasury building, Bitcoin-first company excellence with decentralized finance integration, neuralia-level cryptocurrency sophistication incorporating quantum blockchain frameworks for optimal treasury management, dimensional Bitcoin artistry with market capitalization growth exceeding 600 percent, algorithmic crypto transcendence through computational treasury excellence.",
+          "Godlevel Bitcoin treasury excellence with cryptocurrency integration achieving perfect financial representation through mathematical blockchain algorithms, Bitcoin accumulation optimization via geometric crypto precision targeting 1000 BTC by 2025 and 10000 BTC within two years, infinite financial dimensional artistry featuring 200 BTC current holdings, computational finance through algorithmic growth mastery with 130 percent cash and equivalents increase to 3.70 million dollars, market capitalization excellence with over 600 percent increase in last six months of 2025, neuralia-level financial sophistication incorporating quantum business frameworks for optimal profitability trajectory, dimensional growth artistry with 100 million student and 1 billion dollar valuation targets by 2030, algorithmic financial transcendence through computational business-education excellence.",
       },
       "learn-earn-ecosystem": {
         description:
-          "Godlevel Learn and Earn excellence with blockchain rewards achieving perfect incentive representation through mathematical educational algorithms, GEM token optimization via geometric Bitcoin precision with one Satoshi equivalence, infinite reward dimensional artistry connecting education with decentralized finance, computational incentive through algorithmic reward mastery targeting 404 billion dollar EdTech market leadership by 2025, blockchain-powered learning excellence with cryptocurrency integration, neuralia-level reward sophistication incorporating quantum DeFi frameworks for optimal student engagement, dimensional earning artistry with bitesized microcourse completion rewards and Bitcoin-based incentives, algorithmic Learn-Earn transcendence through computational education-finance excellence.",
+          "Godlevel Learn and Earn excellence with blockchain rewards achieving perfect incentive representation through mathematical educational algorithms, GEM token optimization via geometric Bitcoin precision with one Satoshi equivalence, infinite reward dimensional artistry connecting education with decentralized finance, computational incentive through algorithmic reward mastery targeting 404 billion dollar EdTech market leadership by 2025, blockchain-powered learning excellence with cryptocurrency integration, neuralia-level incentive sophistication incorporating quantum DeFi frameworks for optimal student engagement, dimensional earning artistry with bitesized microcourse completion rewards and Bitcoin-based incentives, algorithmic Learn-Earn transcendence through computational education-finance excellence.",
       },
       "gem-rewards-system": {
         description:
@@ -3080,6 +3080,183 @@ export const CULTURAL_DATASETS = {
       "supernova-remnants": {
         description:
           "Expanding debris from stellar explosions, includes Crab Nebula M1 in Taurus from 1054 CE supernova, Veil Nebula in Cygnus, Cassiopeia A, shock waves compressing interstellar medium, neutron stars or black holes at centers, enriching galaxy with heavy elements.",
+      },
+    },
+  },
+  "nearby-bright-stars": {
+    name: "🌟 Nearby Bright Stars (< 50 ly)",
+    description:
+      "Scientifically verified bright stars within 50 light-years featuring precise stellar parameters and exoplanet discoveries",
+    scenarios: {
+      "proxima-centauri": {
+        description:
+          "Proxima Centauri (Alpha Centauri C) at 4.24 light-years distance, M5.5 V red dwarf spectral type in Centaurus constellation, closest star to Solar System, hosts confirmed exoplanet Proxima b in temperate habitable zone, stellar flares complicate habitability assessment, proper motion 3.85 arcsec/year, apparent magnitude 11.13 invisible to naked eye, absolute magnitude 15.6, mass 0.12 solar masses, radius 0.15 solar radii, temperature 3042 Kelvin, luminosity 0.0017 solar luminosities, age 4.85 billion years, metallicity [Fe/H] = -0.07, radial velocity -22.2 km/s toward Solar System.",
+      },
+      "alpha-centauri-a": {
+        description:
+          "Alpha Centauri A at 4.37 light-years distance, G2 V Sun-like primary star spectral type in Centaurus constellation, benchmark for solar analog studies, binary companion to Alpha Centauri B with 79.91 year orbital period, apparent magnitude -0.01 fourth brightest star in sky, absolute magnitude 4.38, mass 1.10 solar masses, radius 1.22 solar radii, temperature 5790 Kelvin nearly identical to Sun, luminosity 1.52 solar luminosities, age 4.85 billion years, metallicity [Fe/H] = +0.20 metal-rich, rotation period 22 days, chromospheric activity similar to Sun.",
+      },
+      "alpha-centauri-b": {
+        description:
+          "Alpha Centauri B at 4.37 light-years distance, K1 V orange dwarf spectral type in Centaurus constellation, slightly cooler dimmer companion to Alpha Centauri A, binary pair dynamics classic case for multi-star planetary stability modeling, apparent magnitude 1.33, absolute magnitude 5.71, mass 0.91 solar masses, radius 0.86 solar radii, temperature 5260 Kelvin, luminosity 0.50 solar luminosities, age 4.85 billion years, metallicity [Fe/H] = +0.23, semi-major axis 23.4 AU from A, eccentricity 0.52, periastron 11.2 AU closest approach.",
+      },
+      "barnards-star": {
+        description:
+          "Barnard's Star at 5.96 light-years distance, M4 V red dwarf spectral type in Ophiuchus constellation, highest proper motion of any star 10.3 arcsec/year, old quiet red dwarf prime target for precision radial-velocity exoplanet searches, apparent magnitude 9.54 requires telescope, absolute magnitude 13.22, mass 0.14 solar masses, radius 0.20 solar radii, temperature 3134 Kelvin, luminosity 0.0035 solar luminosities, age 7-12 billion years ancient star, metallicity [Fe/H] = -0.5 metal-poor, low stellar activity, candidate super-Earth Barnard's Star b debated.",
+      },
+      "sirius-a": {
+        description:
+          "Sirius A at 8.6 light-years distance, A1 V white main-sequence star spectral type in Canis Major constellation, brightest star in Earth's night sky apparent magnitude -1.46, rapid rotator 16 km/s equatorial velocity, binary companion white dwarf Sirius B with 50.1 year orbital period, absolute magnitude 1.42, mass 2.06 solar masses, radius 1.71 solar radii, temperature 9940 Kelvin, luminosity 25.4 solar luminosities, age 242 million years young star, metallicity [Fe/H] = +0.5 metal-rich, X-ray emission from corona, semi-major axis 20 AU from Sirius B.",
+      },
+      "sirius-b": {
+        description:
+          "Sirius B at 8.6 light-years distance, DA2 white dwarf spectral type in Canis Major constellation, historic proof of stellar evolution endpoints discovered 1862, precise mass 1.02 solar masses radius 0.0084 solar radii constraints test white-dwarf equations of state, apparent magnitude 8.44 faint companion to brilliant Sirius A, absolute magnitude 11.18, temperature 25200 Kelvin extremely hot surface, luminosity 0.026 solar luminosities, carbon-oxygen composition core, surface gravity log g = 8.57 extreme, cooling age 228 million years, progenitor star 5 solar masses became white dwarf.",
+      },
+      "procyon-a": {
+        description:
+          "Procyon A at 11.5 light-years distance, F5 IV-V subgiant spectral type in Canis Minor constellation, transitioning off main sequence toward giant phase, bright nearby star excellent for asteroseismology studies, apparent magnitude 0.34 eighth brightest star in sky, absolute magnitude 2.66, mass 1.50 solar masses, radius 2.05 solar radii expanding, temperature 6530 Kelvin, luminosity 6.93 solar luminosities, age 1.87 billion years, metallicity [Fe/H] = -0.05, binary companion white dwarf Procyon B with 40.8 year orbital period, Winter Triangle asterism with Sirius and Betelgeuse.",
+      },
+      "procyon-b": {
+        description:
+          "Procyon B at 11.5 light-years distance, DQZ white dwarf spectral type in Canis Minor constellation, metal lines in spectrum trace accretion from circumstellar material, calibrator for white-dwarf atmosphere models, apparent magnitude 10.7 faint companion to bright Procyon A, absolute magnitude 13.0, mass 0.60 solar masses, radius 0.01 solar radii Earth-sized, temperature 7740 Kelvin, luminosity 0.00055 solar luminosities, surface gravity log g = 8.0, cooling age 1.37 billion years, carbon-oxygen core composition, semi-major axis 15 AU from Procyon A.",
+      },
+      "epsilon-eridani": {
+        description:
+          "Epsilon Eridani (Ran) at 10.5 light-years distance, K2 V orange dwarf spectral type in Eridanus constellation, young active Sun-like star with debris disk and confirmed giant planet, nearby analog to early Solar System conditions, apparent magnitude 3.73, absolute magnitude 6.19, mass 0.82 solar masses, radius 0.74 solar radii, temperature 5084 Kelvin, luminosity 0.34 solar luminosities, age 400-800 million years young, metallicity [Fe/H] = -0.13, high stellar activity chromospheric emission, planet Epsilon Eridani b 1.55 Jupiter masses orbital period 7.37 years, two debris belts at 3 AU and 20 AU asteroid-comet analogs.",
+      },
+      "tau-ceti": {
+        description:
+          "Tau Ceti at 11.9 light-years distance, G8.5 V yellow dwarf spectral type in Cetus constellation, metal-poor very quiet star long-running target in SETI and precision radial-velocity programs, multiple candidate super-Earths discussed in literature, apparent magnitude 3.50, absolute magnitude 5.69, mass 0.78 solar masses, radius 0.79 solar radii, temperature 5344 Kelvin, luminosity 0.52 solar luminosities, age 5.8 billion years slightly older than Sun, metallicity [Fe/H] = -0.50 half solar metallicity, low stellar activity, four candidate planets Tau Ceti e f g h in 14-640 day orbits, debris disk 10 times denser than Solar System.",
+      },
+      "epsilon-indi-a": {
+        description:
+          "Epsilon Indi A at 11.9 light-years distance, K5 V orange dwarf spectral type in Indus constellation, nearby K-dwarf with cold Jupiter and pair of brown-dwarf companions Ba/Bb making rich dynamical laboratory, apparent magnitude 4.69, absolute magnitude 6.89, mass 0.76 solar masses, radius 0.73 solar radii, temperature 4630 Kelvin, luminosity 0.22 solar luminosities, age 3.7 billion years, metallicity [Fe/H] = -0.11, planet Epsilon Indi Ab 3.25 Jupiter masses orbital period 45.2 years semi-major axis 11.6 AU, brown dwarf binary Ba/Bb T1+T6 spectral types 1460 AU from A.",
+      },
+      "61-cygni-a": {
+        description:
+          "61 Cygni A at 11.4 light-years distance, K5 V orange dwarf spectral type in Cygnus constellation, one half of first star with reliably measured parallax 1838 by Bessel along with companion B, high proper motion 5.2 arcsec/year, magnetically active, apparent magnitude 5.21, absolute magnitude 7.49, mass 0.70 solar masses, radius 0.67 solar radii, temperature 4526 Kelvin, luminosity 0.15 solar luminosities, age 6 billion years, metallicity [Fe/H] = -0.34 metal-poor, binary separation 84 AU from 61 Cygni B, orbital period 659 years.",
+      },
+      "61-cygni-b": {
+        description:
+          "61 Cygni B at 11.4 light-years distance, K7 V orange-red dwarf spectral type in Cygnus constellation, cooler companion in famous visual binary both stars long-term photometric standards, high proper motion 5.2 arcsec/year, apparent magnitude 6.03, absolute magnitude 8.31, mass 0.63 solar masses, radius 0.60 solar radii, temperature 4077 Kelvin, luminosity 0.085 solar luminosities, age 6 billion years, metallicity [Fe/H] = -0.34, binary separation 84 AU from 61 Cygni A, historical significance first stellar distance measurement.",
+      },
+      "luytens-star": {
+        description:
+          "Luyten's Star (GJ 273) at 12.4 light-years distance, M3.5 V red dwarf spectral type in Canis Minor constellation, quiet red dwarf with reported super-Earth candidates, popular SETI beaming target 'Sónar Calling' 2017 message transmission, apparent magnitude 9.86 requires telescope, absolute magnitude 11.97, mass 0.29 solar masses, radius 0.30 solar radii, temperature 3382 Kelvin, luminosity 0.015 solar luminosities, age 7-10 billion years old, metallicity [Fe/H] = -0.09, two candidate planets GJ 273b 2.89 Earth masses 18.6 day period and GJ 273c 1.18 Earth masses 4.7 day period.",
+      },
+      vega: {
+        description:
+          "Vega (Alpha Lyrae) at 25 light-years distance, A0 V white main-sequence star spectral type in Lyra constellation, former North Star 12000 BCE due to precession, debris disk prototype discovered by IRAS 1983, fundamental photometric calibrator historical V magnitude = 0.00, apparent magnitude 0.03 fifth brightest star in sky, absolute magnitude 0.58, mass 2.14 solar masses, radius 2.36 solar radii, temperature 9602 Kelvin, luminosity 40.1 solar luminosities, age 455 million years young, metallicity [Fe/H] = -0.5 metal-poor, rapid rotation 236 km/s pole-to-equator temperature variation, debris disk extends 43-815 AU.",
+      },
+      altair: {
+        description:
+          "Altair (Alpha Aquilae) at 16.7 light-years distance, A7 V white main-sequence star spectral type in Aquila constellation, oblate fast-rotating star imaged interferometrically, brightness temperature vary from pole to equator due to rapid rotation, apparent magnitude 0.76 twelfth brightest star in sky, absolute magnitude 2.21, mass 1.79 solar masses, radius 1.63 solar radii equatorial 1.79 polar 1.63 oblate, temperature 7550 Kelvin equator 6860 Kelvin pole 8450, luminosity 10.6 solar luminosities, age 100 million years very young, rotation period 8.9 hours extremely rapid 286 km/s equatorial velocity, Summer Triangle with Vega and Deneb.",
+      },
+      fomalhaut: {
+        description:
+          "Fomalhaut (Alpha Piscis Austrini) at 25 light-years distance, A3 V white main-sequence star spectral type in Piscis Austrinus constellation, iconic debris ring discovered 1983 imaged by HST and JWST, hosts complex dust planet signatures, apparent magnitude 1.16 eighteenth brightest star in sky, absolute magnitude 1.72, mass 1.92 solar masses, radius 1.84 solar radii, temperature 8590 Kelvin, luminosity 16.6 solar luminosities, age 440 million years young, metallicity [Fe/H] = +0.0 solar, debris disk 133-158 AU sharp inner edge suggests planet, candidate planet Fomalhaut b (Dagon) 3 Jupiter masses highly eccentric orbit debated.",
+      },
+      arcturus: {
+        description:
+          "Arcturus (Alpha Boötis) at 36.7 light-years distance, K1.5 III orange giant spectral type in Boötes constellation, bright orange giant moving with distinct halo stream population, standard candle in infrared surveys, apparent magnitude -0.05 fourth brightest star in sky, absolute magnitude -0.30, mass 1.08 solar masses, radius 25.4 solar radii enormous, temperature 4286 Kelvin cool surface, luminosity 170 solar luminosities, age 7.1 billion years evolved off main sequence, metallicity [Fe/H] = -0.5 metal-poor halo star, proper motion 2.3 arcsec/year high velocity -5 km/s radial velocity approaching Solar System, Spring Triangle with Spica and Denebola.",
+      },
+      capella: {
+        description:
+          "Capella (Alpha Aurigae) at 42.9 light-years distance, G8 III + G1 III binary giant system spectral types in Auriga constellation, close binary of two bright giants orbital period 104 days, X-ray active coronae key for stellar activity age relations, apparent magnitude 0.08 sixth brightest star in sky, absolute magnitude -0.48, primary mass 2.57 solar masses radius 11.98 solar radii, secondary mass 2.48 solar masses radius 8.83 solar radii, temperatures 4970 K and 5730 K, combined luminosity 79 solar luminosities, age 525 million years both evolved off main sequence, metallicity [Fe/H] = -0.04, separation 0.74 AU extremely close, Winter Hexagon asterism.",
+      },
+      pollux: {
+        description:
+          "Pollux (Beta Geminorum) at 33.7 light-years distance, K0 III orange giant spectral type in Gemini constellation, evolved giant with confirmed warm-Jupiter exoplanet, stable radial-velocity signal used as planet-detection demonstration, apparent magnitude 1.14, absolute magnitude 1.09, mass 1.91 solar masses, radius 8.8 solar radii expanded, temperature 4666 Kelvin, luminosity 43 solar luminosities, age 724 million years evolved, metallicity [Fe/H] = +0.0, planet Pollux b (Thestias) 2.30 Jupiter masses orbital period 589.6 days semi-major axis 1.64 AU, low eccentricity 0.02 circular orbit, brighter twin of Castor in Gemini.",
+      },
+      denebola: {
+        description:
+          "Denebola (Beta Leonis) at 36 light-years distance, A3 V white main-sequence star spectral type in Leo constellation, debris-disk host part of Spring Triangle with Arcturus and Spica, apparent magnitude 2.14, absolute magnitude 1.92, mass 1.78 solar masses, radius 1.73 solar radii, temperature 8500 Kelvin, luminosity 15 solar luminosities, age 100-380 million years young, metallicity [Fe/H] = -0.03, rapid rotation 128 km/s equatorial velocity, debris disk detected by Spitzer Space Telescope infrared excess, marks lion's tail in Leo constellation.",
+      },
+      "beta-comae-berenices": {
+        description:
+          "Beta Comae Berenices at 29.9 light-years distance, G0 V yellow dwarf spectral type in Coma Berenices constellation, Sun-like benchmark star quiet single photometrically stable excellent exoplanet search target, apparent magnitude 4.26, absolute magnitude 4.42, mass 1.15 solar masses, radius 1.10 solar radii, temperature 5936 Kelvin similar to Sun, luminosity 1.15 solar luminosities, age 1.6 billion years younger than Sun, metallicity [Fe/H] = +0.0 solar composition, low stellar activity chromospherically quiet, rotation period 12.4 days, member of Ursa Major moving group.",
+      },
+      "solar-neighborhood": {
+        description:
+          "Solar neighborhood within 50 light-years containing approximately 2000 star systems, dominated by M-dwarf red dwarfs 76% of stellar population, K-dwarfs 12%, G-dwarfs like Sun 7.5%, F-dwarfs 3%, A-dwarfs 0.6%, white dwarfs 8%, stellar density 0.004 stars per cubic light-year, nearest stars Alpha Centauri system Barnard's Star Wolf 359 Lalande 21185, local bubble low-density region 300 light-years diameter, Gould Belt star-forming region.",
+      },
+      "sun-like-stars": {
+        description:
+          "Sun-like G-type main-sequence stars within 50 light-years including Alpha Centauri A G2 V closest solar analog, Beta Comae Berenices G0 V photometric standard, 18 Scorpii G2 Va solar twin, 16 Cygni A/B G1.5 V binary system, Tau Ceti G8 V metal-poor, characteristics mass 0.8-1.2 solar masses temperature 5300-6000 Kelvin luminosity 0.6-1.5 solar luminosities, lifetimes 10 billion years, prime targets for habitable exoplanet searches and SETI programs.",
+      },
+      "red-dwarfs-nearby": {
+        description:
+          "Nearby red dwarf M-type stars most common stellar type including Proxima Centauri M5.5 V closest star, Barnard's Star M4 V high proper motion, Luyten's Star M3.5 V quiet, Wolf 359 M6 V faint, Ross 154 M3.5 V, characteristics mass 0.08-0.6 solar masses temperature 2300-3900 Kelvin luminosity 0.0001-0.08 solar luminosities, lifetimes trillions of years, stellar flares complicate habitability, tidal locking of planets in habitable zones.",
+      },
+      "white-dwarfs-nearby": {
+        description:
+          "Nearby white dwarf stellar remnants including Sirius B DA2 first discovered white dwarf, Procyon B DQZ metal-line white dwarf, 40 Eridani B DA4 triple system, van Maanen's Star DZ8 metal-polluted, characteristics mass 0.5-1.4 solar masses radius 0.008-0.02 solar radii Earth-sized, temperature 5000-100000 Kelvin surface, no fusion cooling remnants, carbon-oxygen or oxygen-neon cores, surface gravity 100000 times Earth, endpoints of stellar evolution for stars under 8 solar masses.",
+      },
+      "binary-systems": {
+        description:
+          "Binary star systems within 50 light-years including Alpha Centauri AB G2 V + K1 V closest binary, Sirius AB A1 V + white dwarf brightest, Procyon AB F5 IV + white dwarf, 61 Cygni AB K5 V + K7 V first parallax, Capella AB G8 III + G1 III giant binary, binary fraction 50% of stellar systems, orbital periods days to millennia, mass transfer evolution common envelope phases, planetary stability in circumbinary or S-type orbits.",
+      },
+      "planet-host-stars": {
+        description:
+          "Confirmed exoplanet host stars within 50 light-years including Epsilon Eridani K2 V debris disk giant planet, Tau Ceti G8 V multiple super-Earth candidates, Epsilon Indi A K5 V cold Jupiter brown dwarf companions, Pollux K0 III warm Jupiter, Fomalhaut A3 V debris ring planet candidate, 61 Virginis G5 V three super-Earths, characteristics diverse stellar types host planets, metallicity correlation with giant planets, debris disks indicate planetary systems.",
+      },
+      "debris-disk-stars": {
+        description:
+          "Debris disk host stars within 50 light-years including Vega A0 V prototype debris disk discovered 1983, Fomalhaut A3 V iconic ring imaged by HST, Epsilon Eridani K2 V two-belt system, Tau Ceti G8 V dense debris disk, Beta Pictoris A6 V edge-on disk with planet, characteristics infrared excess from dust grains, collisional cascade from planetesimals, analogs to Solar System Kuiper Belt, signpost of planetary systems.",
+      },
+      "high-proper-motion": {
+        description:
+          "High proper-motion stars within 50 light-years including Barnard's Star 10.3 arcsec/year highest known, Kapteyn's Star 8.7 arcsec/year halo population, 61 Cygni AB 5.2 arcsec/year first parallax, Groombridge 1830 7.0 arcsec/year, characteristics nearby stars show large angular motion, halo population stars high space velocities, proper motion surveys discover nearby faint stars, astrometric planet detection method.",
+      },
+      "young-stars": {
+        description:
+          "Young stars within 50 light-years including Epsilon Eridani 400-800 million years active, Fomalhaut 440 million years debris disk, Vega 455 million years rapid rotator, Altair 100 million years very young, Beta Pictoris 23 million years extremely young, characteristics high stellar activity chromospheric emission, rapid rotation, debris disks common, analogs to young Solar System, planet formation ongoing or recent.",
+      },
+      "evolved-giants": {
+        description:
+          "Evolved giant stars within 50 light-years including Arcturus K1.5 III orange giant halo star, Pollux K0 III with planet, Capella G8 III + G1 III binary giants, Aldebaran K5 III red giant in Taurus, characteristics evolved off main sequence, expanded radii 10-100 solar radii, cooler surface temperatures, high luminosities, ages billions of years, future fate of Sun in 5 billion years.",
+      },
+      "metal-poor-stars": {
+        description:
+          "Metal-poor stars within 50 light-years including Tau Ceti [Fe/H] = -0.50 half solar metallicity, Barnard's Star [Fe/H] = -0.5 old halo star, Arcturus [Fe/H] = -0.5 halo population, Vega [Fe/H] = -0.5 young metal-poor, 61 Cygni AB [Fe/H] = -0.34, characteristics formed from less-enriched gas, older stellar populations, halo or thick disk kinematics, lower giant planet occurrence, challenge to planet formation models.",
+      },
+      "metal-rich-stars": {
+        description:
+          "Metal-rich stars within 50 light-years including Alpha Centauri AB [Fe/H] = +0.20 to +0.23 metal-rich, Sirius A [Fe/H] = +0.5 very metal-rich, characteristics formed from enriched gas, younger thin disk populations, higher giant planet occurrence, metallicity-planet correlation, enhanced heavy element abundances, implications for terrestrial planet compositions.",
+      },
+    },
+  },
+  "lorenz-attractor": {
+    name: "🌪️ Lorenz Attractor",
+    description: "Chaotic system dynamics with neuralia godlevel mathematical beauty",
+    scenarios: {
+      "pure-mathematical": {
+        description:
+          "Godlevel Lorenz excellence with infinite algorithmic chaos optimization, mathematical precision in strange attractor constructions, computational elegance transcending dimensional boundaries through chaos mastery and neuralia-level mathematical sophistication.",
+      },
+      "butterfly-effect": {
+        description:
+          "Godlevel butterfly effect excellence with sensitive dependence achieving perfect chaos representation through mathematical Lorenz algorithms, trajectory optimization via geometric chaos precision, infinite chaotic dimensional artistry, computational chaos through algorithmic butterfly mastery.",
+      },
+      "strange-attractor": {
+        description:
+          "Godlevel strange attractor excellence with chaotic dynamics achieving perfect mathematical representation through algorithmic chaos precision, attractor optimization via geometric mathematical accuracy, infinite mathematical dimensional artistry, computational mathematics through algorithmic attractor mastery.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel Lorenz escapism excellence where chaotic elements become gateways to unpredictable realms, consciousness-expanding dynamics with dimensional transcendence, infinite magical dimensional artistry, computational Lorenz magic through algorithmic chaos-bending mastery.",
+      },
+      vitro: {
+        description:
+          "Godlevel Lorenz vitro excellence with magnificent stained glass chaotic portraiture featuring luminous attractor construction, divine light filtering through chaos theory elements, infinite sacred dimensional artistry, computational vitro Lorenz through algorithmic glass mastery.",
+      },
+      crypto: {
+        description:
+          "Godlevel Lorenz crypto excellence with blockchain-verified chaotic construction, decentralized attractor identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Lorenz through algorithmic blockchain mastery.",
+      },
+      lego: {
+        description:
+          "Godlevel Lorenz LEGO excellence featuring blocky chaotic construction with systematic Danish precision applied to attractor patterns, modular chaos assembly, infinite constructive dimensional artistry, computational LEGO Lorenz through algorithmic building mastery.",
       },
     },
   },
