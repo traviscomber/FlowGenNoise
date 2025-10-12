@@ -537,9 +537,6 @@ export function FlowArtGenerator() {
       return
     }
 
-    console.log("[v0] Starting generation with parameters:")
-    console.log("[v0] Dataset:", dataset, "Scenario:", scenario, "Color scheme:", colorScheme)
-
     setIsGenerating(true)
     setResults({ errors: [] })
 
@@ -826,89 +823,6 @@ export function FlowArtGenerator() {
     }
   }
 
-  const generateEquirectangularPrompt = async () => {
-    if (!editablePrompt) return
-
-    console.log("[v0] Starting equirectangular godlevel prompt generation")
-    console.log("[v0] Original prompt:", editablePrompt)
-    console.log("[v0] Dataset:", dataset, "Scenario:", scenario, "Color scheme:", colorScheme)
-
-    setIsGeneratingGodlevel(true)
-    try {
-      console.log("[v0] Adding preset n2 (equirectangular 360°) for seamless VR")
-
-      // Add the equirectangular preset instruction
-      const equirectangularPreset = `Generate a perfect equirectangular 360-degree panorama with seamless horizontal wrapping. CRITICAL REQUIREMENTS: The left edge MUST connect flawlessly with the right edge - they are the same vertical line in 360° space. Maintain perfect 2:1 aspect ratio (width is exactly double the height). The image must wrap seamlessly around a sphere with no visible seams, distortions, or discontinuities at the horizontal edges. Ensure consistent lighting, perspective, and content flow across the entire 360° field of view. Optimize for Orion 360 player and VR headset viewing with godlevel quality, ultra-high resolution, and photorealistic detail. The top and bottom edges should show proper polar projection (sky at top, ground at bottom). Every element must be positioned to create a coherent, immersive 360° environment when wrapped cylindrically.`
-
-      const enhancedPrompt = `${editablePrompt}\n\n${equirectangularPreset}`
-
-      console.log("[v0] Making API call to /api/generate-godlevel-prompt for equirectangular")
-      const response = await fetch("/api/generate-godlevel-prompt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          originalPrompt: enhancedPrompt,
-          dataset: dataset,
-          scenario: scenario,
-          colorScheme: colorScheme,
-          maxLength: 4000,
-          generationType: "equirectangular",
-        }),
-      })
-
-      console.log("[v0] API response status:", response.status)
-      if (!response.ok) {
-        console.error("[v0] API response not ok:", response.status, response.statusText)
-        throw new Error(`Failed to generate equirectangular godlevel prompt: ${response.status}`)
-      }
-
-      console.log("[v0] Parsing response JSON")
-      const data = await response.json()
-      console.log("[v0] Received equirectangular godlevel prompt:", data.godlevelPrompt?.substring(0, 100) + "...")
-
-      setEditablePrompt(data.godlevelPrompt)
-
-      setPromptEnhancement({
-        originalPrompt: editablePrompt,
-        enhancedPrompt: data.godlevelPrompt,
-        statistics: {
-          original: { words: editablePrompt.split(" ").length, characters: editablePrompt.length },
-          enhanced: { words: data.godlevelPrompt.split(" ").length, characters: data.godlevelPrompt.length },
-          improvement: {
-            characters: data.godlevelPrompt.length - editablePrompt.length,
-            words: data.godlevelPrompt.split(" ").length - editablePrompt.split(" ").length,
-            percentage: Math.round(
-              ((data.godlevelPrompt.length - editablePrompt.length) / editablePrompt.length) * 100,
-            ),
-          },
-          maxLength: 4000,
-          withinLimit: data.godlevelPrompt.length <= 4000,
-        },
-        variationType: "neuralia-artistic-360",
-        generationType: "godlevel-equirectangular",
-        enhancementMethod: "godlevel-neuralia-360",
-      })
-
-      toast({
-        title: "Equirectangular Neuralia prompt generated!",
-        description: "Optimized for seamless 360° VR with Orion 360 compatibility",
-        variant: "success",
-      })
-
-      console.log("[v0] Equirectangular godlevel prompt generation completed successfully")
-    } catch (error) {
-      console.error("[v0] Error generating equirectangular godlevel prompt:", error)
-      toast({
-        title: "Failed to generate equirectangular prompt",
-        description: "Please try again",
-        variant: "destructive",
-      })
-    } finally {
-      console.log("[v0] Setting isGeneratingGodlevel to false")
-      setIsGeneratingGodlevel(false)
-    }
-  }
-
   const fetchAspectRatios = async () => {
     try {
       const { supabase } = await import("@/lib/supabase")
@@ -929,7 +843,7 @@ export function FlowArtGenerator() {
           height: 2048,
           ratio: 2.0,
           is_default: false,
-          description: "True 2:1 equirectangular for NVIDIA SANA",
+          description: "True 2:1 equirectangular for NVIDIA SANA 4K",
         },
         {
           id: "sana-4k-square",
@@ -1148,7 +1062,7 @@ export function FlowArtGenerator() {
                   Dataset ({filteredDatasets.length} {filteredDatasets.length === 1 ? "result" : "results"})
                 </Label>
                 <Select value={dataset} onValueChange={handleDatasetChange}>
-                  <SelectTrigger className="mt-2">
+                  <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -1901,8 +1815,8 @@ export function FlowArtGenerator() {
                     <>Rule-Based Enhanced</>
                   )}
                 </Badge>
-                <Badge variant="outline">{promptEnhancement.variationType}</Badge>
-                <Badge variant="outline">{promptEnhancement.generationType}</Badge>
+                <Badge variant="outline">{promptEnhancement.variationType} variation</Badge>
+                <Badge variant="outline">{promptEnhancement.generationType} generation</Badge>
               </div>
             )}
 
@@ -1955,16 +1869,7 @@ export function FlowArtGenerator() {
                 className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
               >
                 <span className="text-white">{isGeneratingGodlevel ? "⟳" : "🎨"}</span>{" "}
-                {isGeneratingGodlevel ? "Generating..." : "Dome Neuralia"}
-              </Button>
-
-              <Button
-                onClick={generateEquirectangularPrompt}
-                disabled={isGeneratingGodlevel || !editablePrompt}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
-              >
-                <span className="text-white">{isGeneratingGodlevel ? "⟳" : "🌐"}</span>{" "}
-                {isGeneratingGodlevel ? "Generating..." : "Equirectangular Neuralia"}
+                {isGeneratingGodlevel ? "Generating..." : "Godlevel Neuralia"}
               </Button>
 
               <Button
