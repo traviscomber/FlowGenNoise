@@ -161,7 +161,7 @@ export async function POST(request: NextRequest) {
           panoramic360,
           panoramaFormat,
           projectionType,
-          domeProjection: generationType === "dome",
+          domeProjection: generationType === "dome" || projectionType === "fisheye", // Apply preset n1 for dome/fisheye
         })
 
         console.log("✅ Fresh prompt built from current selections:", {
@@ -169,6 +169,7 @@ export async function POST(request: NextRequest) {
           scenario,
           colorScheme,
           projectionType: generationType === "dome" ? projectionType : panoramaFormat,
+          domeProjection: generationType === "dome" || projectionType === "fisheye",
           promptLength: promptToEnhance.length,
         })
       } catch (buildError) {
