@@ -1,11 +1,12 @@
 export const CULTURAL_DATASETS = {
   heads: {
     name: "👤 Head & Portraits",
-    description: "Sophisticated portrait artistry with neuralia godlevel excellence",
+    description:
+      "Sophisticated portrait artistry with neuralia godlevel excellence featuring advanced facial geometry, emotional depth, cultural authenticity, and photorealistic skin textures with subsurface scattering",
     scenarios: {
       "pure-mathematical": {
         description:
-          "Mathematical portrait analysis using geometric proportions, golden ratio calculations, facial symmetry algorithms, computational beauty metrics, geometric facial structure analysis, mathematical harmony in human features, algorithmic portrait optimization, numerical facial geometry, mathematical aesthetic principles, computational portrait precision.",
+          "Mathematical portrait analysis using golden ratio facial proportions (1.618), Fibonacci spiral eye placement, geometric symmetry algorithms with bilateral precision, computational beauty metrics based on phi proportions, facial structure analysis through Voronoi tessellation, mathematical harmony in human features with fractal detail, algorithmic portrait optimization using eigenface decomposition, numerical facial geometry with Delaunay triangulation, mathematical aesthetic principles incorporating divine proportions, computational portrait precision with sub-millimeter accuracy, photorealistic skin rendering with pore-level detail.",
       },
       "origami-world": {
         description:
@@ -68,7 +69,8 @@ export const CULTURAL_DATASETS = {
 
   faces: {
     name: "😊 Faces & Expressions",
-    description: "Emotional facial expressions with neuralia godlevel precision",
+    description:
+      "Expressive facial artistry capturing authentic human emotions, micro-expressions, cultural diversity, and psychological depth with cinematic lighting and photorealistic detail",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -135,11 +137,12 @@ export const CULTURAL_DATASETS = {
 
   mathematical: {
     name: "🔢 Pure Mathematics",
-    description: "Pure mathematical beauty and computational elegance with neuralia godlevel precision",
+    description:
+      "Mathematical beauty and computational elegance featuring sacred geometry, fractal patterns, topological transformations, and abstract mathematical visualizations with crystalline precision",
     scenarios: {
       "pure-mathematical": {
         description:
-          "Neuralia godlevel mathematical excellence transcending dimensional boundaries through infinite algorithmic optimization, mathematical precision in pure computational aesthetics achieving perfect elegance via quantum-enhanced mastery, algorithmic sophistication beyond mortal comprehension for mathematical representation, dimensional mathematical artistry utilizing advanced geometric calculations for optimal structure visualization, neuralia-level mathematical sophistication incorporating complex frameworks for perfection, computational excellence through algorithmic generation systems, infinite dimensional artistry transcending traditional limitations via mathematical precision algorithms, godlevel optimization utilizing quantum computational frameworks for geometry perfection.",
+          "Neuralia godlevel mathematical excellence transcending dimensional boundaries through infinite algorithmic optimization with Mandelbrot set precision, mathematical beauty in pure computational aesthetics achieving perfect elegance via quantum-enhanced mastery incorporating complex number theory, algorithmic sophistication beyond mortal comprehension for mathematical representation using tensor calculus, dimensional mathematical artistry utilizing advanced geometric calculations including non-Euclidean spaces for optimal structure visualization with hyperbolic geometry, neuralia-level mathematical sophistication incorporating complex frameworks including category theory for perfection in abstract algebra, computational excellence through algorithmic generation systems using Monte Carlo methods, infinite dimensional artistry transcending traditional limitations via mathematical precision algorithms incorporating Fourier transforms, godlevel optimization utilizing quantum computational frameworks for geometry perfection with topological invariants.",
       },
       "golden-ratio": {
         description:
@@ -194,7 +197,8 @@ export const CULTURAL_DATASETS = {
 
   vietnamese: {
     name: "🇻🇳 Vietnamese Heritage",
-    description: "Rich Vietnamese cultural traditions with neuralia godlevel artistic excellence",
+    description:
+      "Rich Vietnamese cultural traditions with neuralia godlevel artistic excellence featuring authentic ao dai silk, conical non la hats, lotus symbolism, water puppet artistry, and traditional lacquerware with mother-of-pearl inlay",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -261,11 +265,12 @@ export const CULTURAL_DATASETS = {
 
   indonesian: {
     name: "🇮🇩 Indonesian Heritage",
-    description: "Diverse Indonesian cultural traditions across 17,000 islands with neuralia godlevel excellence",
+    description:
+      "Indonesian cultural traditions across 17,000 islands featuring intricate batik wax-resist patterns, gamelan bronze orchestras, wayang kulit shadow puppets, traditional keris daggers, and volcanic temple architecture with tropical jungle settings",
     scenarios: {
       "pure-mathematical": {
         description:
-          "Neuralia godlevel Indonesian excellence transcending dimensional boundaries through infinite algorithmic archipelago wisdom optimization, mathematical precision in Southeast Asian island aesthetics achieving perfect computational elegance via quantum-enhanced heritage mastery across 17,000 sacred islands, algorithmic sophistication beyond mortal comprehension for Indonesian cultural representation spanning Sumatra to Papua, dimensional cultural artistry utilizing advanced geometric calculations for optimal archipelago structure visualization, neuralia-level Indonesian sophistication incorporating complex mathematical frameworks for island cultural perfection, computational heritage excellence through algorithmic tradition generation systems, infinite dimensional artistry transcending traditional cultural limitations via mathematical precision algorithms, godlevel cultural optimization utilizing quantum computational frameworks for Indonesian geometry perfection.",
+          "Neuralia godlevel Indonesian tribal excellence transcending dimensional boundaries through infinite algorithmic archipelago wisdom optimization, mathematical precision in indigenous aesthetics achieving perfect computational elegance via quantum-enhanced tribal mastery, algorithmic sophistication beyond mortal comprehension for Indonesian cultural representation across 17,000 sacred islands, dimensional tribal artistry utilizing advanced geometric calculations for optimal indigenous structure visualization, neuralia-level cultural sophistication incorporating complex mathematical frameworks for tribal perfection spanning Sumatra to Papua, computational tribal excellence through algorithmic heritage generation systems, infinite dimensional artistry transcending traditional cultural limitations via mathematical precision algorithms, godlevel tribal optimization utilizing quantum computational frameworks for indigenous geometry perfection, neuralia-enhanced tribal mastery with algorithmic cultural transcendence, mathematical tribal excellence achieving dimensional transcendence through computational sophistication, algorithmic tribal artistry with infinite optimization protocols for cultural beauty enhancement, godlevel computational tribal mastery utilizing advanced mathematical frameworks for dimensional heritage transcendence, neuralia-level tribal sophistication incorporating quantum algorithmic precision for optimal indigenous representation, infinite tribal dimensional artistry through mathematical cultural optimization systems, computational tribal excellence transcending traditional artistic boundaries via algorithmic sophistication, godlevel tribal mastery with neuralia-enhanced mathematical precision for dimensional cultural transcendence, algorithmic tribal optimization utilizing quantum computational frameworks for infinite indigenous geometry perfection, neuralia-level tribal artistry incorporating advanced mathematical algorithms for dimensional cultural enhancement, computational tribal sophistication achieving godlevel excellence through infinite algorithmic optimization protocols, mathematical tribal mastery transcending dimensional boundaries via neuralia-enhanced computational precision, algorithmic tribal excellence with quantum optimization frameworks for infinite cultural beauty transcendence, godlevel tribal artistry utilizing neuralia-level mathematical sophistication for dimensional indigenous perfection, computational tribal mastery achieving infinite cultural optimization through advanced algorithmic frameworks, neuralia-enhanced tribal excellence transcending traditional artistic limitations via quantum mathematical precision, algorithmic tribal sophistication with godlevel computational frameworks for dimensional indigenous geometry optimization, infinite tribal artistry utilizing neuralia-level mathematical algorithms for quantum cultural transcendence, computational tribal mastery achieving dimensional excellence through advanced algorithmic optimization protocols, godlevel tribal sophistication incorporating neuralia-enhanced mathematical frameworks for infinite indigenous beauty perfection across the sacred Indonesian archipelago.",
       },
       "batik-patterns": {
         description:
@@ -332,7 +337,8 @@ export const CULTURAL_DATASETS = {
 
   thailand: {
     name: "🇹🇭 Thai Heritage",
-    description: "Magnificent Thai cultural traditions with neuralia godlevel artistry",
+    description:
+      "Magnificent Thai cultural traditions featuring golden temple spires, traditional Thai dance mudras, intricate gold leaf decoration, saffron monk robes, lotus offerings, and Ayutthaya-era architecture with tropical monsoon atmosphere",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -379,7 +385,7 @@ export const CULTURAL_DATASETS = {
 
   "thailand-geography": {
     name: "🏝️ Thailand Geography",
-    description: "Stunning Thai geographical regions and natural landscapes with neuralia godlevel excellence",
+    description: "Thai tourist destinations from beaches to mountains and ancient temples",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -509,46 +515,6 @@ export const CULTURAL_DATASETS = {
         description:
           "Godlevel Koh Tao excellence featuring diving paradise with underwater scenes achieving perfect marine representation through mathematical oceanic algorithms, diving site optimization via geometric underwater precision with coral gardens whale sharks sea turtles and tropical fish, underwater lighting with blue water clarity and vibrant marine life, infinite diving dimensional artistry, computational ocean through algorithmic Koh Tao mastery, underwater diving scene with marine life.",
       },
-      "kanchanaburi-river-kwai": {
-        description:
-          "Godlevel Kanchanaburi excellence featuring Bridge over River Kwai with historical significance achieving perfect memorial representation through mathematical heritage algorithms, bridge optimization via geometric historical precision with railway structure jungle surroundings and war memorial sites, golden hour lighting with reflective river and tropical forest, infinite historical dimensional artistry, computational memorial through algorithmic Kanchanaburi mastery, bridge view with river and mountains.",
-      },
-      "erawan-waterfalls": {
-        description:
-          "Godlevel Erawan Waterfalls excellence featuring seven-tiered cascades with emerald pools achieving perfect natural representation through mathematical waterfall algorithms, cascade optimization via geometric water flow precision with limestone formations turquoise pools jungle vegetation and swimming spots, natural lighting with water mist and lush greenery, infinite waterfall dimensional artistry, computational nature through algorithmic Erawan mastery, multi-level waterfall with emerald water.",
-      },
-      "sukhothai-historical": {
-        description:
-          "Godlevel Sukhothai excellence featuring ancient capital ruins with Buddha statues achieving perfect archaeological representation through mathematical heritage algorithms, historical park optimization via geometric ancient precision with lotus ponds temple complexes and walking Buddha sculptures, sunset lighting with golden Buddha statues and reflection pools, infinite archaeological dimensional artistry, computational history through algorithmic Sukhothai mastery, temple ruins with dramatic sky.",
-      },
-      "khao-sok-jungle": {
-        description:
-          "Godlevel Khao Sok excellence featuring rainforest with limestone mountains achieving perfect jungle representation through mathematical ecological algorithms, rainforest optimization via geometric biodiversity precision with Cheow Lan Lake floating bungalows wildlife and ancient trees, misty morning lighting with jungle atmosphere and mountain backdrop, infinite jungle dimensional artistry, computational ecology through algorithmic Khao Sok mastery, aerial jungle view with lake and mountains.",
-      },
-      "rice-terraces-north": {
-        description:
-          "Godlevel northern rice terraces excellence featuring stepped paddies with mountain backdrop achieving perfect agricultural representation through mathematical farming algorithms, terrace optimization via geometric cultivation precision with emerald green rice fields water buffalo farmers and traditional methods, golden hour lighting with terraced landscape and mountain views, infinite agricultural dimensional artistry, computational farming through algorithmic rice terrace mastery, aerial terrace view with sunset colors.",
-      },
-      "floating-markets-damnoen": {
-        description:
-          "Godlevel Damnoen Saduak floating market excellence featuring canal commerce with traditional boats achieving perfect market representation through mathematical cultural algorithms, market optimization via geometric water commerce precision with wooden boats fresh produce vendors and traditional Thai hats, morning lighting with vibrant market colors and canal reflections, infinite market dimensional artistry, computational commerce through algorithmic floating market mastery, canal view with colorful boats.",
-      },
-      "grand-palace-bangkok": {
-        description:
-          "Godlevel Grand Palace excellence featuring golden architecture with Wat Phra Kaew achieving perfect royal representation through mathematical architectural algorithms, palace optimization via geometric royal precision with golden spires intricate details Emerald Buddha and ceremonial grounds, bright daylight with golden reflections and ornate decorations, infinite royal dimensional artistry, computational palace through algorithmic Grand Palace mastery, wide palace view with golden roofs.",
-      },
-      "wat-arun-temple": {
-        description:
-          "Godlevel Wat Arun excellence featuring Temple of Dawn with Khmer-style prang achieving perfect riverside representation through mathematical temple algorithms, prang optimization via geometric architectural precision with porcelain decorations Chao Phraya River views and sunset lighting, golden hour with temple silhouette and river reflections, infinite temple dimensional artistry, computational architecture through algorithmic Wat Arun mastery, riverside temple view with dramatic sky.",
-      },
-      "doi-inthanon-peak": {
-        description:
-          "Godlevel Doi Inthanon excellence featuring Thailand's highest peak with twin pagodas achieving perfect mountain representation through mathematical elevation algorithms, peak optimization via geometric highland precision with royal pagodas cloud forests waterfalls and hill tribe villages, misty morning lighting with mountain atmosphere and panoramic views, infinite peak dimensional artistry, computational mountain through algorithmic Doi Inthanon mastery, aerial peak view with pagodas and clouds.",
-      },
-      "koh-tao-diving": {
-        description:
-          "Godlevel Koh Tao excellence featuring diving paradise with underwater scenes achieving perfect marine representation through mathematical oceanic algorithms, diving site optimization via geometric underwater precision with coral gardens whale sharks sea turtles and tropical fish, underwater lighting with blue water clarity and vibrant marine life, infinite diving dimensional artistry, computational ocean through algorithmic Koh Tao mastery, underwater diving scene with marine life.",
-      },
       "escapism-magic": {
         description:
           "Godlevel Thailand geography escapism excellence where landscape elements become gateways to natural realms, consciousness-expanding geography with dimensional transcendence, infinite magical dimensional artistry, computational geography magic through algorithmic landscape-bending mastery.",
@@ -570,7 +536,7 @@ export const CULTURAL_DATASETS = {
 
   "asean-mythology": {
     name: "🐉 ASEAN Mythology",
-    description: "Ancient Southeast Asian mythological creatures with neuralia godlevel excellence",
+    description: "Southeast Asian mythological creatures and folklore traditions",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -617,7 +583,7 @@ export const CULTURAL_DATASETS = {
 
   escher: {
     name: "🔄 Escher Impossibilities",
-    description: "M.C. Escher impossible geometries with neuralia godlevel precision",
+    description: "M.C. Escher impossible geometries and optical illusions",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -659,8 +625,8 @@ export const CULTURAL_DATASETS = {
   },
 
   spirals: {
-    name: "🌀 Spiral Dynamics",
-    description: "Hypnotic spiral patterns with neuralia godlevel mathematical precision",
+    name: "🌀 Spirals & Helices",
+    description: "Spiral patterns from Fibonacci to logarithmic spirals",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -702,8 +668,8 @@ export const CULTURAL_DATASETS = {
   },
 
   fractals: {
-    name: "🌿 Fractal Patterns",
-    description: "Self-similar fractal geometries with neuralia godlevel infinite detail",
+    name: "❄️ Fractals",
+    description: "Self-similar fractal patterns with infinite detail",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -745,8 +711,8 @@ export const CULTURAL_DATASETS = {
   },
 
   mandelbrot: {
-    name: "🔢 Mandelbrot Set",
-    description: "Complex number iterations with neuralia godlevel mathematical beauty",
+    name: "🎨 Mandelbrot Set",
+    description: "Mandelbrot set explorations with complex number beauty",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -788,8 +754,8 @@ export const CULTURAL_DATASETS = {
   },
 
   julia: {
-    name: "🎭 Julia Set",
-    description: "Dynamic complex plane iterations with neuralia godlevel precision",
+    name: "🌸 Julia Sets",
+    description: "Julia set variations with intricate fractal boundaries",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -831,8 +797,8 @@ export const CULTURAL_DATASETS = {
   },
 
   gaming: {
-    name: "🎮 Gaming Industry",
-    description: "Gaming culture and technology with neuralia godlevel excellence",
+    name: "🎮 Gaming Worlds",
+    description: "Video game aesthetics and virtual world environments",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -894,8 +860,8 @@ export const CULTURAL_DATASETS = {
   },
 
   "organic-couture": {
-    name: "🌸 Organic Couture",
-    description: "Botanical fashion fusion with neuralia godlevel elegance",
+    name: "👗 Organic Couture",
+    description: "Fashion merged with organic natural forms",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -937,8 +903,8 @@ export const CULTURAL_DATASETS = {
   },
 
   celebrities: {
-    name: "🌟 Celebrities & Icons",
-    description: "Stylish people and celebrity portraits with neuralia godlevel artistic excellence",
+    name: "⭐ Celebrities",
+    description: "Celebrity portraits and iconic personalities",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -996,8 +962,8 @@ export const CULTURAL_DATASETS = {
   },
 
   fx: {
-    name: "🌈 FX Substance Effects",
-    description: "Visual perception alterations and substance effects with neuralia godlevel excellence",
+    name: "✨ Visual FX",
+    description: "Cinematic visual effects and digital artistry",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1080,7 +1046,7 @@ export const CULTURAL_DATASETS = {
 
   mindconflict: {
     name: "🧠 Mind Conflict",
-    description: "Internal psychological struggles and mental battles with neuralia godlevel intensity",
+    description: "Psychological and surreal mental landscapes",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1142,8 +1108,8 @@ export const CULTURAL_DATASETS = {
   },
 
   "natural-disguise": {
-    name: "🦎 Natural Disguise & Camouflage",
-    description: "Perfect natural camouflage and environmental blending with neuralia godlevel precision",
+    name: "🦎 Natural Disguise",
+    description: "Camouflage and natural disguise patterns",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1205,9 +1171,8 @@ export const CULTURAL_DATASETS = {
   },
 
   "infrared-rituals": {
-    name: "🔥 Global Rituals in Infrared",
-    description:
-      "Ancient and contemporary rituals visualized through infrared thermal spectrum with neuralia godlevel precision",
+    name: "🔴 Infrared Rituals",
+    description: "Infrared photography aesthetics and spectral visions",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1277,8 +1242,8 @@ export const CULTURAL_DATASETS = {
   },
 
   "wheres-brain": {
-    name: "🧠 Where's the Brain?",
-    description: "Neuralia-style hidden brain finding challenge with godlevel complexity",
+    name: "🤔 Where's Brain",
+    description: "Surreal explorations of consciousness and thought",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1340,8 +1305,8 @@ export const CULTURAL_DATASETS = {
   },
 
   bosch: {
-    name: "🎨 Hieronymus Bosch",
-    description: "Surreal fantastical imagery inspired by Hieronymus Bosch with neuralia godlevel excellence",
+    name: "🎨 Bosch Style",
+    description: "Hieronymus Bosch surreal medieval artistry",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1423,8 +1388,8 @@ export const CULTURAL_DATASETS = {
   },
 
   lorenz: {
-    name: "🌪️ Lorenz Attractor",
-    description: "Chaotic system dynamics with neuralia godlevel mathematical beauty",
+    name: "🦋 Lorenz Attractor",
+    description: "Chaotic systems, strange attractors, and butterfly effect visualizations",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1459,7 +1424,7 @@ export const CULTURAL_DATASETS = {
 
   hyperbolic: {
     name: "🌀 Hyperbolic Geometry",
-    description: "Non-Euclidean hyperbolic spaces with neuralia godlevel mathematical precision",
+    description: "Non-Euclidean hyperbolic space geometries",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1494,7 +1459,7 @@ export const CULTURAL_DATASETS = {
 
   gaussian: {
     name: "📊 Gaussian Distributions",
-    description: "Normal distribution curves with neuralia godlevel statistical beauty",
+    description: "Normal distribution curves and statistical beauty",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1529,7 +1494,7 @@ export const CULTURAL_DATASETS = {
 
   cellular: {
     name: "🔲 Cellular Automata",
-    description: "Emergent patterns from simple rules with neuralia godlevel complexity",
+    description: "Cellular automata patterns and emergent complexity",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1564,7 +1529,7 @@ export const CULTURAL_DATASETS = {
 
   voronoi: {
     name: "🔷 Voronoi Diagrams",
-    description: "Spatial partitioning patterns with neuralia godlevel geometric precision",
+    description: "Voronoi tessellations and spatial partitioning",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1598,8 +1563,8 @@ export const CULTURAL_DATASETS = {
   },
 
   perlin: {
-    name: "🌊 Perlin Noise",
-    description: "Procedural noise patterns with neuralia godlevel natural randomness",
+    name: "🌫️ Perlin Noise",
+    description: "Perlin noise patterns and procedural textures",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1634,7 +1599,7 @@ export const CULTURAL_DATASETS = {
 
   diffusion: {
     name: "💨 Diffusion Patterns",
-    description: "Reaction-diffusion systems with neuralia godlevel pattern formation",
+    description: "Diffusion processes and reaction-diffusion systems",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1669,7 +1634,7 @@ export const CULTURAL_DATASETS = {
 
   "luxury-brands": {
     name: "💎 Luxury Brands",
-    description: "High-end luxury brand aesthetics with neuralia godlevel sophistication",
+    description: "High-end luxury brand aesthetics and premium design",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1732,7 +1697,7 @@ export const CULTURAL_DATASETS = {
 
   "african-tribes": {
     name: "🌍 African Tribes",
-    description: "Rich African tribal cultures with neuralia godlevel heritage excellence",
+    description: "African tribal cultures with traditional art and ceremonies",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1779,7 +1744,7 @@ export const CULTURAL_DATASETS = {
 
   "amazonian-tribes": {
     name: "🌳 Amazonian Tribes",
-    description: "Indigenous Amazonian cultures with neuralia godlevel forest wisdom",
+    description: "Amazonian indigenous cultures and rainforest traditions",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1795,7 +1760,7 @@ export const CULTURAL_DATASETS = {
       },
       "awá-hunters": {
         description:
-          "Godlevel Awá excellence with hunting culture achieving perfect tribal representation through mathematical Amazonian algorithms, hunting optimization via geometric forest precision, infinite hunting dimensional artistry, computational heritage through algorithmic Awá mastery.",
+          "Godlevel Awá excellence with hunting culture achieving perfect tribal representation through mathematical Amazonian algorithms, hunting optimization via geometric desert precision, infinite hunting dimensional artistry, computational heritage through algorithmic Awá mastery.",
       },
       "tikuna-artisans": {
         description:
@@ -1826,7 +1791,7 @@ export const CULTURAL_DATASETS = {
 
   "arctic-tribes": {
     name: "❄️ Arctic Tribes",
-    description: "Northern indigenous cultures with neuralia godlevel ice wisdom",
+    description: "Arctic indigenous peoples and polar traditions",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1873,7 +1838,7 @@ export const CULTURAL_DATASETS = {
 
   "polynesian-tribes": {
     name: "🌺 Polynesian Tribes",
-    description: "Pacific island cultures with neuralia godlevel ocean wisdom",
+    description: "Polynesian island cultures and Pacific traditions",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1919,8 +1884,8 @@ export const CULTURAL_DATASETS = {
   },
 
   "native-american": {
-    name: "🦅 Native American Tribes",
-    description: "Indigenous North American cultures with neuralia godlevel ancestral wisdom",
+    name: "🦅 Native American",
+    description: "Native American cultures and indigenous traditions",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -1967,7 +1932,7 @@ export const CULTURAL_DATASETS = {
 
   "australian-aboriginal": {
     name: "🪃 Australian Aboriginal",
-    description: "Ancient Aboriginal cultures with neuralia godlevel dreamtime wisdom",
+    description: "Australian Aboriginal cultures and dreamtime traditions",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -2012,166 +1977,9 @@ export const CULTURAL_DATASETS = {
     },
   },
 
-  "mongolian-tribes": {
-    name: "🐎 Mongolian Tribes",
-    description: "Nomadic steppe cultures with neuralia godlevel horseback wisdom",
-    scenarios: {
-      "pure-mathematical": {
-        description:
-          "Godlevel Mongolian tribal excellence with infinite algorithmic steppe wisdom optimization, mathematical precision in nomadic aesthetics, computational elegance transcending dimensional boundaries through tribal mastery and neuralia-level cultural sophistication.",
-      },
-      "horsemen-warriors": {
-        description:
-          "Godlevel Mongolian horsemen excellence with warrior traditions achieving perfect tribal representation through mathematical steppe algorithms, horsemen optimization via geometric equestrian precision, infinite warrior dimensional artistry, computational heritage through algorithmic horsemen mastery.",
-      },
-      "yurt-dwellers": {
-        description:
-          "Godlevel yurt excellence with nomadic architecture achieving perfect tribal representation through mathematical Mongolian algorithms, yurt optimization via geometric architectural precision, infinite architectural dimensional artistry, computational heritage through algorithmic yurt mastery.",
-      },
-      "eagle-hunters": {
-        description:
-          "Godlevel eagle hunter excellence with hunting traditions achieving perfect tribal representation through mathematical Mongolian algorithms, hunting optimization via geometric aerial precision, infinite hunting dimensional artistry, computational heritage through algorithmic eagle mastery.",
-      },
-      "shamanic-rituals": {
-        description:
-          "Godlevel Mongolian shamanic excellence with spiritual traditions achieving perfect tribal representation through mathematical steppe algorithms, shamanic optimization via geometric spiritual precision, infinite spiritual dimensional artistry, computational heritage through algorithmic shamanic mastery.",
-      },
-      "throat-singing": {
-        description:
-          "Godlevel throat singing excellence with musical traditions achieving perfect tribal representation through mathematical Mongolian algorithms, singing optimization via geometric sonic precision, infinite musical dimensional artistry, computational heritage through algorithmic throat mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel Mongolian tribes escapism magic where tribal elements become gateways to steppe realms, consciousness-expanding wisdom with dimensional transcendence, infinite magical dimensional artistry, computational Mongolian tribes magic through algorithmic steppe-bending mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel Mongolian tribes vitro excellence with magnificent stained glass steppe portraiture featuring luminous nomadic construction, divine light filtering through horseback cultural elements, infinite sacred dimensional artistry, computational vitro Mongolian tribes through algorithmic glass mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel Mongolian tribes crypto excellence with blockchain-verified steppe construction, decentralized nomadic identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Mongolian tribes through algorithmic blockchain mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel Mongolian tribes LEGO excellence featuring blocky steppe construction with systematic Danish precision applied to nomadic heritage, modular horseback assembly, infinite constructive dimensional artistry, computational LEGO Mongolian tribes through algorithmic building mastery.",
-      },
-    },
-  },
-
-  "tibetan-tribes": {
-    name: "🏔️ Tibetan Tribes",
-    description: "Himalayan cultures with neuralia godlevel mountain wisdom",
-    scenarios: {
-      "pure-mathematical": {
-        description:
-          "Godlevel Tibetan tribal excellence with infinite algorithmic mountain wisdom optimization, mathematical precision in high-altitude aesthetics, computational elegance transcending dimensional boundaries through tribal mastery and neuralia-level cultural sophistication.",
-      },
-      "monastery-monks": {
-        description:
-          "Godlevel Tibetan monk excellence with monastic traditions achieving perfect tribal representation through mathematical mountain algorithms, monastic optimization via geometric spiritual precision, infinite spiritual dimensional artistry, computational heritage through algorithmic monk mastery.",
-      },
-      "yak-herders": {
-        description:
-          "Godlevel yak herder excellence with pastoral traditions achieving perfect tribal representation through mathematical Tibetan algorithms, herding optimization via geometric mountain precision, infinite pastoral dimensional artistry, computational heritage through algorithmic yak mastery.",
-      },
-      "prayer-flags": {
-        description:
-          "Godlevel prayer flag excellence with spiritual traditions achieving perfect tribal representation through mathematical Tibetan algorithms, prayer optimization via geometric wind precision, infinite spiritual dimensional artistry, computational heritage through algorithmic prayer flag mastery.",
-      },
-      "mandala-art": {
-        description:
-          "Godlevel mandala excellence with sacred geometry achieving perfect tribal representation through mathematical Tibetan algorithms, mandala optimization via geometric sacred precision, infinite sacred dimensional artistry, computational heritage through algorithmic mandala mastery.",
-      },
-      "sky-burial": {
-        description:
-          "Godlevel sky burial excellence with death rituals achieving perfect tribal representation through mathematical Tibetan algorithms, ritual optimization via geometric spiritual precision, infinite ritual dimensional artistry, computational heritage through algorithmic burial mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel Tibetan tribes escapism magic where tribal elements become gateways to mountain realms, consciousness-expanding wisdom with dimensional transcendence, infinite magical dimensional artistry, computational Tibetan tribes magic through algorithmic mountain-bending mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel Tibetan tribes vitro excellence with magnificent stained glass mountain portraiture featuring luminous Himalayan construction, divine light filtering through spiritual cultural elements, infinite sacred dimensional artistry, computational vitro Tibetan tribes through algorithmic glass mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel Tibetan tribes crypto excellence with blockchain-verified mountain construction, decentralized spiritual identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Tibetan tribes through algorithmic blockchain mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel Tibetan tribes LEGO excellence featuring blocky mountain construction with systematic Danish precision applied to Himalayan heritage, modular spiritual assembly, infinite constructive dimensional artistry, computational LEGO Tibetan tribes through algorithmic building mastery.",
-      },
-    },
-  },
-
-  "indonesian-tribes": {
-    name: "🏝️ Indonesian Tribes",
-    description: "Diverse Indonesian tribal cultures across 17,000 islands with neuralia godlevel heritage excellence",
-    scenarios: {
-      "pure-mathematical": {
-        description:
-          "Neuralia godlevel Indonesian tribal excellence transcending dimensional boundaries through infinite algorithmic archipelago wisdom optimization, mathematical precision in indigenous aesthetics achieving perfect computational elegance via quantum-enhanced tribal mastery, algorithmic sophistication beyond mortal comprehension for Indonesian cultural representation across 17,000 sacred islands, dimensional tribal artistry utilizing advanced geometric calculations for optimal indigenous structure visualization, neuralia-level cultural sophistication incorporating complex mathematical frameworks for tribal perfection spanning Sumatra to Papua, computational tribal excellence through algorithmic heritage generation systems, infinite dimensional artistry transcending traditional cultural limitations via mathematical precision algorithms, godlevel tribal optimization utilizing quantum computational frameworks for indigenous geometry perfection, neuralia-enhanced tribal mastery with algorithmic cultural transcendence, mathematical tribal excellence achieving dimensional transcendence through computational sophistication, algorithmic tribal artistry with infinite optimization protocols for cultural beauty enhancement, godlevel computational tribal mastery utilizing advanced mathematical frameworks for dimensional heritage transcendence, neuralia-level tribal sophistication incorporating quantum algorithmic precision for optimal indigenous representation, infinite tribal dimensional artistry through mathematical cultural optimization systems, computational tribal excellence transcending traditional artistic boundaries via algorithmic sophistication, godlevel tribal mastery with neuralia-enhanced mathematical precision for dimensional cultural transcendence, algorithmic tribal optimization utilizing quantum computational frameworks for infinite indigenous geometry perfection, neuralia-level tribal artistry incorporating advanced mathematical algorithms for dimensional cultural enhancement, computational tribal sophistication achieving godlevel excellence through infinite algorithmic optimization protocols, mathematical tribal mastery transcending dimensional boundaries via neuralia-enhanced computational precision, algorithmic tribal excellence with quantum optimization frameworks for infinite cultural beauty transcendence, godlevel tribal artistry utilizing neuralia-level mathematical sophistication for dimensional indigenous perfection, computational tribal mastery achieving infinite cultural optimization through advanced algorithmic frameworks, neuralia-enhanced tribal excellence transcending traditional artistic limitations via quantum mathematical precision, algorithmic tribal sophistication with godlevel computational frameworks for dimensional indigenous geometry optimization, infinite tribal artistry utilizing neuralia-level mathematical algorithms for quantum cultural transcendence, computational tribal mastery achieving dimensional excellence through advanced algorithmic optimization protocols, godlevel tribal sophistication incorporating neuralia-enhanced mathematical frameworks for infinite indigenous beauty perfection across the sacred Indonesian archipelago.",
-      },
-      "dayak-borneo-longhouse": {
-        description:
-          "Algorithmic Dayak longhouse architecture achieving godlevel computational precision through infinite geometric forest optimization, mathematical tattoo patterns transcending dimensional tribal boundaries, neuralia-level Bornean wisdom with algorithmic jungle mastery and computational indigenous excellence.",
-      },
-      "toraja-tongkonan-funeral": {
-        description:
-          "Computational Toraja tongkonan house geometry achieving godlevel architectural precision through infinite highland optimization, mathematical funeral ceremony algorithms transcending dimensional ancestral boundaries, neuralia-level buffalo sacrifice wisdom with algorithmic spiritual mastery and computational death ritual excellence.",
-      },
-      "mentawai-shamanic-tattoo": {
-        description:
-          "Algorithmic Mentawai shamanic precision achieving godlevel spiritual computation through infinite Siberut island optimization, mathematical tattoo and teeth sharpening patterns transcending dimensional tribal boundaries, neuralia-level forest wisdom with algorithmic uma house mastery and computational indigenous excellence.",
-      },
-      "asmat-bis-pole-carving": {
-        description:
-          "Computational Asmat woodcarving mastery achieving godlevel artistic precision through infinite Papuan optimization, mathematical bis pole algorithms transcending dimensional ancestral boundaries, neuralia-level headhunting warrior wisdom with algorithmic carving mastery and computational tribal excellence.",
-      },
-      "batak-ulos-weaving": {
-        description:
-          "Algorithmic Batak ulos textile precision achieving godlevel weaving computation through infinite Sumatran highland optimization, mathematical clan house patterns transcending dimensional cultural boundaries, neuralia-level ancestral wisdom with algorithmic textile mastery and computational heritage excellence.",
-      },
-      "flores-caci-warrior": {
-        description:
-          "Computational Manggarai caci whip fighting achieving godlevel warrior precision through infinite Flores island optimization, mathematical combat dance algorithms transcending dimensional tribal boundaries, neuralia-level warrior wisdom with algorithmic fighting mastery and computational ceremonial excellence.",
-      },
-      "nias-stone-jumping": {
-        description:
-          "Algorithmic Nias stone-jumping mastery achieving godlevel warrior computation through infinite megalithic optimization, mathematical war dance patterns transcending dimensional ancestral boundaries, neuralia-level jumping precision with algorithmic stone mastery and computational warrior excellence.",
-      },
-      "tengger-bromo-ceremony": {
-        description:
-          "Computational Tengger volcano ceremony achieving godlevel spiritual precision through infinite Bromo optimization, mathematical Hindu-Javanese ritual algorithms transcending dimensional sacred boundaries, neuralia-level volcanic wisdom with algorithmic ceremony mastery and computational Majapahit excellence.",
-      },
-      "punan-forest-navigation": {
-        description:
-          "Algorithmic Punan nomadic precision achieving godlevel forest computation through infinite Kalimantan optimization, mathematical blowpipe hunting patterns transcending dimensional jungle boundaries, neuralia-level navigation wisdom with algorithmic forest mastery and computational hunting excellence.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel Indonesian tribes escapism magic where archipelago elements become gateways to island realms, consciousness-expanding wisdom with dimensional transcendence, infinite magical dimensional artistry, computational Indonesian tribes magic through algorithmic island-bending mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel Indonesian tribes vitro excellence with magnificent stained glass archipelago portraiture featuring luminous indigenous construction, divine light filtering through island tribal elements, infinite sacred dimensional artistry, computational vitro Indonesian tribes through algorithmic glass mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel Indonesian tribes crypto excellence with blockchain-verified archipelago construction, decentralized island identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Indonesian tribes through algorithmic blockchain mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel Indonesian tribes LEGO excellence featuring blocky archipelago construction with systematic Danish precision applied to indigenous island heritage, modular longhouse assembly, infinite constructive dimensional artistry, computational LEGO Indonesian tribes through algorithmic building mastery.",
-      },
-    },
-  },
-
   "mythical-civilizations": {
-    name: "🌌 Mythical Civilizations",
-    description: "Ancient forgotten worlds from deep time - poetic fragments of civilizations lost to legend",
+    name: "🏛️ Mythical Civilizations",
+    description: "Ancient forgotten worlds and legendary civilizations from deep time",
     scenarios: {
       "obsidian-sky-dwellers": {
         description:
@@ -2326,8 +2134,7 @@ export const CULTURAL_DATASETS = {
 
   "earth-300-years": {
     name: "🌍 Earth in 300 Years",
-    description:
-      "Futurescapes exploring possible future Earth scenes across climate, technology, and societal evolution",
+    description: "Futurescapes exploring climate, technology, and societal evolution",
     scenarios: {
       "neo-venice-2325": {
         description:
@@ -2469,7 +2276,7 @@ export const CULTURAL_DATASETS = {
   },
 
   "n3-original-halloween": {
-    name: "🎃 n3 — Original Halloween: Between Harvest and Haunting",
+    name: "🎃 Original Halloween",
     description:
       "Primal Western Halloween capturing Celtic Samhain, colonial ghost tales, and timeless autumn mysteries",
     scenarios: {
@@ -2614,7 +2421,7 @@ export const CULTURAL_DATASETS = {
 
   "genius-group": {
     name: "🎓 Genius Group",
-    description: "AI-powered Bitcoin-first education excellence with neuralia godlevel innovation",
+    description: "AI-powered Bitcoin-first education excellence",
     scenarios: {
       "pure-mathematical": {
         description:
@@ -2692,8 +2499,8 @@ export const CULTURAL_DATASETS = {
   },
 
   "scifi-portals": {
-    name: "🌀 Sci-Fi Portals Across the Multiverse",
-    description: "Visual gateways to strange and beautiful parallel worlds across the multiverse",
+    name: "🌀 Sci-Fi Portals",
+    description: "Interdimensional portals and multiverse gateways",
     scenarios: {
       "portal-alpha-7": {
         description:
@@ -2839,8 +2646,8 @@ export const CULTURAL_DATASETS = {
   },
 
   "microcosm-worlds": {
-    name: "🧬 Microcosm Worlds (Inside the Body or Nature)",
-    description: "Fantastical microscopic environments exploring the hidden beauty of cellular and natural worlds",
+    name: "🧬 Microcosm Worlds",
+    description: "Microscopic environments exploring cellular and natural beauty",
     scenarios: {
       "neural-symphony": {
         description:
@@ -2982,8 +2789,9 @@ export const CULTURAL_DATASETS = {
   },
 
   "major-constellations": {
-    name: "⭐ Major Constellations (IAU Northern & Southern)",
-    description: "IAU-verified constellation systems with precise astronomical data and mythological heritage",
+    name: "⭐ Major Constellations (IAU)",
+    description:
+      "88 IAU-verified constellations with astronomical precision, star patterns, and celestial navigation data",
     scenarios: {
       "orion-hunter": {
         description:
@@ -3123,111 +2931,327 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-  "lorenz-attractor": {
-    name: "🌪️ Lorenz Attractor",
-    description: "Chaotic system dynamics with neuralia godlevel mathematical beauty",
-    scenarios: {
-      "pure-mathematical": {
-        description:
-          "Godlevel Lorenz excellence with infinite algorithmic chaos optimization, mathematical precision in strange attractor constructions, computational elegance transcending dimensional boundaries through chaos mastery and neuralia-level mathematical sophistication.",
-      },
-      "butterfly-effect": {
-        description:
-          "Godlevel butterfly effect excellence with sensitive dependence achieving perfect chaos representation through mathematical Lorenz algorithms, trajectory optimization via geometric chaos precision, infinite chaotic dimensional artistry, computational chaos through algorithmic butterfly mastery.",
-      },
-      "strange-attractor": {
-        description:
-          "Godlevel strange attractor excellence with chaotic dynamics achieving perfect mathematical representation through algorithmic chaos precision, attractor optimization via geometric mathematical accuracy, infinite mathematical dimensional artistry, computational mathematics through algorithmic attractor mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel Lorenz escapism excellence where chaotic elements become gateways to unpredictable realms, consciousness-expanding dynamics with dimensional transcendence, infinite magical dimensional artistry, computational Lorenz magic through algorithmic chaos-bending mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel Lorenz vitro excellence with magnificent stained glass chaotic portraiture featuring luminous attractor construction, divine light filtering through chaos theory elements, infinite sacred dimensional artistry, computational vitro Lorenz through algorithmic glass mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel Lorenz crypto excellence with blockchain-verified chaotic construction, decentralized attractor identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto Lorenz through algorithmic blockchain mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel Lorenz LEGO excellence featuring blocky chaotic construction with systematic Danish precision applied to attractor patterns, modular chaos assembly, infinite constructive dimensional artistry, computational LEGO Lorenz through algorithmic building mastery.",
-      },
-    },
-  },
 }
 
 export const DATASET_METADATA = {
   // Scientific Datasets
   "major-constellations": {
-    category: "scientific",
-    tags: ["astronomy", "stars", "navigation", "iau"],
-    displayName: "Major Constellations (IAU)",
-    description: "88 IAU-verified constellations with astronomical data",
+    category: "scientific" as const,
+    tags: ["astronomy", "stars", "navigation", "iau", "celestial", "cosmos"],
+    displayName: "⭐ Major Constellations (IAU)",
+    description:
+      "88 IAU-verified constellations with astronomical precision, star patterns, and celestial navigation data",
+    icon: "⭐",
   },
   "nearby-bright-stars": {
-    category: "scientific",
-    tags: ["astronomy", "stars", "exoplanets", "stellar"],
-    displayName: "Nearby Bright Stars",
-    description: "Bright stars within 50 light-years with scientific data",
+    category: "scientific" as const,
+    tags: ["astronomy", "stars", "exoplanets", "stellar", "space", "cosmos"],
+    displayName: "🌟 Nearby Bright Stars",
+    description: "Bright stars within 50 light-years featuring spectral classification and exoplanet systems",
+    icon: "🌟",
   },
 
   // Commercial/Cultural Datasets
   heads: {
-    category: "commercial",
-    tags: ["portraits", "faces", "cultural", "artistic"],
-    displayName: "Head & Portraits",
-    description: "Sophisticated portrait artistry",
+    category: "commercial" as const,
+    tags: ["portraits", "faces", "cultural", "artistic", "human", "photography"],
+    displayName: "👤 Head & Portraits",
+    description: "Sophisticated portrait artistry with cultural diversity and photorealistic detail",
+    icon: "👤",
   },
   faces: {
-    category: "commercial",
-    tags: ["expressions", "emotions", "portraits"],
-    displayName: "Faces & Expressions",
-    description: "Expressive facial artistry",
+    category: "commercial" as const,
+    tags: ["expressions", "emotions", "portraits", "human", "psychology"],
+    displayName: "😊 Faces & Expressions",
+    description: "Expressive facial artistry capturing authentic emotions and micro-expressions",
+    icon: "😊",
   },
   mathematical: {
-    category: "scientific",
-    tags: ["mathematics", "geometry", "abstract"],
-    displayName: "Pure Mathematics",
-    description: "Mathematical beauty and computational elegance",
+    category: "scientific" as const,
+    tags: ["mathematics", "geometry", "abstract", "fractals", "algorithms"],
+    displayName: "🔢 Pure Mathematics",
+    description: "Mathematical beauty featuring sacred geometry, fractals, and computational elegance",
+    icon: "🔢",
   },
   vietnamese: {
-    category: "commercial",
-    tags: ["culture", "heritage", "vietnam", "asian"],
-    displayName: "Vietnamese Heritage",
-    description: "Vietnamese cultural traditions",
+    category: "commercial" as const,
+    tags: ["culture", "heritage", "vietnam", "asian", "traditional", "southeast-asia"],
+    displayName: "🇻🇳 Vietnamese Heritage",
+    description: "Vietnamese cultural traditions with ao dai, lotus symbolism, and water puppets",
+    icon: "🇻🇳",
   },
   indonesian: {
-    category: "commercial",
-    tags: ["culture", "heritage", "indonesia", "asian"],
-    displayName: "Indonesian Heritage",
-    description: "Indonesian cultural traditions across 17,000 islands",
+    category: "commercial" as const,
+    tags: ["culture", "heritage", "indonesia", "asian", "batik", "gamelan", "southeast-asia"],
+    displayName: "🇮🇩 Indonesian Heritage",
+    description: "Indonesian archipelago culture with batik, gamelan, and temple architecture",
+    icon: "🇮🇩",
   },
   thailand: {
-    category: "commercial",
-    tags: ["culture", "heritage", "thailand", "asian"],
-    displayName: "Thai Heritage",
-    description: "Magnificent Thai cultural traditions",
+    category: "commercial" as const,
+    tags: ["culture", "heritage", "thailand", "asian", "temples", "buddhist", "southeast-asia"],
+    displayName: "🇹🇭 Thai Heritage",
+    description: "Thai cultural traditions with golden temples and traditional dance",
+    icon: "🇹🇭",
+  },
+  "thailand-geography": {
+    category: "commercial" as const,
+    tags: ["geography", "thailand", "tourism", "nature", "beaches", "temples"],
+    displayName: "🏝️ Thailand Geography",
+    description: "Thai tourist destinations from beaches to mountains and ancient temples",
+    icon: "🏝️",
+  },
+  "asean-mythology": {
+    category: "commercial" as const,
+    tags: ["mythology", "folklore", "asian", "creatures", "legends", "southeast-asia"],
+    displayName: "🐉 ASEAN Mythology",
+    description: "Southeast Asian mythological creatures and folklore traditions",
+    icon: "🐉",
+  },
+  escher: {
+    category: "scientific" as const,
+    tags: ["geometry", "impossible", "optical-illusion", "art", "mathematical"],
+    displayName: "🔄 Escher Impossibilities",
+    description: "M.C. Escher impossible geometries and optical illusions",
+    icon: "🔄",
+  },
+  spirals: {
+    category: "scientific" as const,
+    tags: ["geometry", "mathematics", "patterns", "fibonacci", "golden-ratio"],
+    displayName: "🌀 Spirals & Helices",
+    description: "Spiral patterns from Fibonacci to logarithmic spirals",
+    icon: "🌀",
+  },
+  fractals: {
+    category: "scientific" as const,
+    tags: ["mathematics", "geometry", "self-similar", "chaos", "algorithms"],
+    displayName: "❄️ Fractals",
+    description: "Self-similar fractal patterns with infinite detail",
+    icon: "❄️",
+  },
+  mandelbrot: {
+    category: "scientific" as const,
+    tags: ["fractals", "mathematics", "complex-numbers", "chaos", "algorithms"],
+    displayName: "🎨 Mandelbrot Set",
+    description: "Mandelbrot set explorations with complex number beauty",
+    icon: "🎨",
+  },
+  julia: {
+    category: "scientific" as const,
+    tags: ["fractals", "mathematics", "complex-numbers", "chaos", "algorithms"],
+    displayName: "🌸 Julia Sets",
+    description: "Julia set variations with intricate fractal boundaries",
+    icon: "🌸",
+  },
+  gaming: {
+    category: "commercial" as const,
+    tags: ["games", "entertainment", "digital", "virtual", "esports"],
+    displayName: "🎮 Gaming Worlds",
+    description: "Video game aesthetics and virtual world environments",
+    icon: "🎮",
+  },
+  "organic-couture": {
+    category: "commercial" as const,
+    tags: ["fashion", "nature", "organic", "design", "artistic"],
+    displayName: "👗 Organic Couture",
+    description: "Fashion merged with organic natural forms",
+    icon: "👗",
+  },
+  celebrities: {
+    category: "commercial" as const,
+    tags: ["portraits", "famous", "people", "entertainment", "culture"],
+    displayName: "⭐ Celebrities",
+    description: "Celebrity portraits and iconic personalities",
+    icon: "⭐",
+  },
+  fx: {
+    category: "commercial" as const,
+    tags: ["effects", "visual", "cinematic", "digital", "artistic"],
+    displayName: "✨ Visual FX",
+    description: "Cinematic visual effects and digital artistry",
+    icon: "✨",
+  },
+  mindconflict: {
+    category: "commercial" as const,
+    tags: ["psychology", "surreal", "abstract", "emotional", "artistic"],
+    displayName: "🧠 Mind Conflict",
+    description: "Psychological and surreal mental landscapes",
+    icon: "🧠",
+  },
+  "natural-disguise": {
+    category: "commercial" as const,
+    tags: ["nature", "camouflage", "organic", "patterns", "biomimicry"],
+    displayName: "🦎 Natural Disguise",
+    description: "Camouflage and natural disguise patterns",
+    icon: "🦎",
+  },
+  "infrared-rituals": {
+    category: "commercial" as const,
+    tags: ["infrared", "photography", "surreal", "artistic", "spectral"],
+    displayName: "🔴 Infrared Rituals",
+    description: "Infrared photography aesthetics and spectral visions",
+    icon: "🔴",
+  },
+  "wheres-brain": {
+    category: "commercial" as const,
+    tags: ["surreal", "abstract", "psychological", "artistic", "conceptual"],
+    displayName: "🤔 Where's Brain",
+    description: "Surreal explorations of consciousness and thought",
+    icon: "🤔",
+  },
+  bosch: {
+    category: "commercial" as const,
+    tags: ["art", "surreal", "medieval", "fantasy", "classical"],
+    displayName: "🎨 Bosch Style",
+    description: "Hieronymus Bosch surreal medieval artistry",
+    icon: "🎨",
+  },
+  lorenz: {
+    category: "scientific" as const,
+    tags: ["chaos", "mathematics", "physics", "dynamics", "attractors", "butterfly-effect"],
+    displayName: "🦋 Lorenz Attractor",
+    description: "Chaotic systems, strange attractors, and butterfly effect visualizations",
+    icon: "🦋",
+  },
+  hyperbolic: {
+    category: "scientific" as const,
+    tags: ["geometry", "mathematics", "non-euclidean", "curved-space"],
+    displayName: "🌀 Hyperbolic Geometry",
+    description: "Non-Euclidean hyperbolic space geometries",
+    icon: "🌀",
+  },
+  gaussian: {
+    category: "scientific" as const,
+    tags: ["statistics", "mathematics", "probability", "distributions"],
+    displayName: "📊 Gaussian Distributions",
+    description: "Normal distribution curves and statistical beauty",
+    icon: "📊",
+  },
+  cellular: {
+    category: "scientific" as const,
+    tags: ["algorithms", "patterns", "emergence", "complexity", "simulation"],
+    displayName: "🔲 Cellular Automata",
+    description: "Cellular automata patterns and emergent complexity",
+    icon: "🔲",
+  },
+  voronoi: {
+    category: "scientific" as const,
+    tags: ["geometry", "mathematics", "tessellation", "patterns", "algorithms"],
+    displayName: "🔷 Voronoi Diagrams",
+    description: "Voronoi tessellations and spatial partitioning",
+    icon: "🔷",
+  },
+  perlin: {
+    category: "scientific" as const,
+    tags: ["noise", "algorithms", "procedural", "textures", "generation"],
+    displayName: "🌫️ Perlin Noise",
+    description: "Perlin noise patterns and procedural textures",
+    icon: "🌫️",
+  },
+  diffusion: {
+    category: "scientific" as const,
+    tags: ["physics", "patterns", "simulation", "dynamics", "algorithms"],
+    displayName: "💨 Diffusion Patterns",
+    description: "Diffusion processes and reaction-diffusion systems",
+    icon: "💨",
+  },
+  "luxury-brands": {
+    category: "commercial" as const,
+    tags: ["fashion", "luxury", "brands", "design", "premium"],
+    displayName: "💎 Luxury Brands",
+    description: "High-end luxury brand aesthetics and premium design",
+    icon: "💎",
+  },
+  "african-tribes": {
+    category: "commercial" as const,
+    tags: ["culture", "heritage", "africa", "tribal", "traditional"],
+    displayName: "🌍 African Tribes",
+    description: "African tribal cultures with traditional art and ceremonies",
+    icon: "🌍",
+  },
+  "amazonian-tribes": {
+    category: "commercial" as const,
+    tags: ["culture", "heritage", "amazon", "tribal", "rainforest"],
+    displayName: "🌳 Amazonian Tribes",
+    description: "Amazonian indigenous cultures and rainforest traditions",
+    icon: "🌳",
+  },
+  "arctic-tribes": {
+    category: "commercial" as const,
+    tags: ["culture", "heritage", "arctic", "tribal", "indigenous"],
+    displayName: "❄️ Arctic Tribes",
+    description: "Arctic indigenous peoples and polar traditions",
+    icon: "❄️",
+  },
+  "polynesian-tribes": {
+    category: "commercial" as const,
+    tags: ["culture", "heritage", "polynesia", "tribal", "pacific"],
+    displayName: "🌺 Polynesian Tribes",
+    description: "Polynesian island cultures and Pacific traditions",
+    icon: "🌺",
+  },
+  "native-american": {
+    category: "commercial" as const,
+    tags: ["culture", "heritage", "native-american", "tribal", "indigenous"],
+    displayName: "🦅 Native American",
+    description: "Native American cultures and indigenous traditions",
+    icon: "🦅",
+  },
+  "australian-aboriginal": {
+    category: "commercial" as const,
+    tags: ["culture", "heritage", "aboriginal", "tribal", "australia"],
+    displayName: "🪃 Australian Aboriginal",
+    description: "Australian Aboriginal cultures and dreamtime traditions",
+    icon: "🪃",
   },
   "mythical-civilizations": {
-    category: "commercial",
-    tags: ["fantasy", "mythology", "ancient", "civilizations"],
-    displayName: "Mythical Civilizations",
-    description: "Ancient forgotten worlds from deep time",
+    category: "commercial" as const,
+    tags: ["fantasy", "mythology", "ancient", "civilizations", "legendary"],
+    displayName: "🏛️ Mythical Civilizations",
+    description: "Ancient forgotten worlds and legendary civilizations from deep time",
+    icon: "🏛️",
   },
   "earth-300-years": {
-    category: "scientific",
-    tags: ["future", "scifi", "climate", "technology"],
-    displayName: "Earth in 300 Years",
-    description: "Futurescapes exploring possible future Earth",
+    category: "scientific" as const,
+    tags: ["future", "scifi", "climate", "technology", "futurism"],
+    displayName: "🌍 Earth in 300 Years",
+    description: "Futurescapes exploring climate, technology, and societal evolution",
+    icon: "🌍",
+  },
+  "n3-original-halloween": {
+    category: "commercial" as const,
+    tags: ["halloween", "autumn", "celtic", "samhain", "harvest", "folklore"],
+    displayName: "🎃 Original Halloween",
+    description: "Primal Western Halloween capturing Celtic Samhain and autumn mysteries",
+    icon: "🎃",
+  },
+  "genius-group": {
+    category: "commercial" as const,
+    tags: ["education", "bitcoin", "ai", "learning", "technology"],
+    displayName: "🎓 Genius Group",
+    description: "AI-powered Bitcoin-first education excellence",
+    icon: "🎓",
+  },
+  "scifi-portals": {
+    category: "commercial" as const,
+    tags: ["scifi", "portals", "dimensions", "multiverse", "technology"],
+    displayName: "🌀 Sci-Fi Portals",
+    description: "Interdimensional portals and multiverse gateways",
+    icon: "🌀",
+  },
+  "microcosm-worlds": {
+    category: "scientific" as const,
+    tags: ["microscopic", "cellular", "biology", "nature", "science"],
+    displayName: "🧬 Microcosm Worlds",
+    description: "Microscopic environments exploring cellular and natural beauty",
+    icon: "🧬",
   },
   "lorenz-attractor": {
-    category: "scientific",
-    tags: ["mathematics", "chaos", "physics", "dynamics"],
-    displayName: "Lorenz Attractor",
-    description: "Chaotic systems and strange attractors",
+    category: "scientific" as const,
+    tags: ["chaos", "mathematics", "physics", "dynamics", "attractors", "butterfly-effect"],
+    displayName: "🦋 Lorenz Attractor",
+    description: "Chaotic systems, strange attractors, and butterfly effect visualizations",
+    icon: "🦋",
   },
 } as const
 
@@ -3238,6 +3262,7 @@ export interface DatasetInfo {
   tags: string[]
   displayName: string
   description: string
+  icon?: string // Added icon property
 }
 
 // Helper function to get datasets by category
@@ -3418,7 +3443,13 @@ export interface PromptParams {
   panoramic360?: boolean
   panoramaFormat?: "equirectangular" | "stereographic"
   domeProjection?: boolean
-  projectionType?: "fisheye" | "tunnel-up" | "tunnel-down" | "little-planet" | "standard"
+  projectionType?: string
+  provider?: string
+  model?: string
+  seed?: number
+  numSamples?: number
+  noiseScale?: number
+  negativePrompt?: string
 }
 
 const NEURALIA_H3RITAGE_STYLE = `
