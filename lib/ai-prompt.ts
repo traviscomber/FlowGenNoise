@@ -1177,53 +1177,53 @@ export const CULTURAL_DATASETS = {
   },
 
   "sevenfold-play-dome": {
-    name: "🎭 The Sevenfold Play Dome — Education Mode",
-    description: "Interactive educational planetarium experience for museum dome environments featuring gentle learning through immersive visual worlds",
+    name: "The Sevenfold Play Dome",
+    description: "Magical immersive planetarium adventure for kids ages 4-12 featuring seven enchanted worlds filled with colorful characters, playful interactions, and wonder-filled exploration within a 21-meter dome theater",
     scenarios: {
-      "education-intro": {
-        description: "Welcome to the Sevenfold Play Dome. A gentle introduction welcoming students and families to explore seven interactive educational worlds within a 21-meter planetarium dome. Soft welcoming visuals with calm pacing, orientation to dome environment, educator-guided narrative introducing Ploop and characters as learning guides for curious exploration of light perception scale gravity reflection energy ecosystems and interconnected systems.",
+      "welcome-portal": {
+        description: "Godlevel magical welcome adventure excellence featuring Ploop the curious explorer welcoming kids into The Sevenfold Play Dome, colorful swirling portal at zenith center with warm glowing colors inviting children inside, gentle fisheye dome projection showing spiral of light and color drawing viewers up into adventure, soft whimsical music and delightful atmosphere creating excitement and wonder, perfect dome entry experience for young explorers discovering magical worlds.",
       },
-      "glow-go-land": {
-        description: "Godlevel Glow-Go-Land education excellence featuring light and perception world where characters move through glowing environments, colors shifting with movement intensity, visual observation teaching light energy behavior, gentle fisheye dome projection with soft glowing elements at zenith creating immersive light-learning experience, characters demonstrating how light intensity changes with motion, NO sudden transitions or jarring visual shifts, perfect for 4-12 age tiers in museum planetarium setting.",
+      "glow-go-land-adventure": {
+        description: "Godlevel Glow-Go-Land adventure excellence featuring magical glowing creatures and shimmering environments, kids moving through world of bouncing glowing lights and color-changing trees, fisheye dome projection with luminous elements at zenith sparkling and dancing, characters moving playfully and inviting interaction, warm soft color palette of pinks golds and soft blues creating enchanted atmosphere, NO jarring transitions perfect for immersive dome magical experience.",
       },
-      "soft-beasts-park": {
-        description: "Godlevel Big Soft Beasts Park education excellence featuring scale and size concepts, Glom character appearing as enormous soft creature for spatial comparison, students observing relative scale and dimensional relationships, gentle fisheye dome projection with scaled environmental elements creating sense of size progression, learning connection between object scale and spatial awareness, soft rounded shapes and warm colors for encouraging observation without stress.",
+      "big-soft-beasts-party": {
+        description: "Godlevel Big Soft Beasts Party adventure excellence featuring Glom and giant friendly soft creatures in celebration, enormous colorful bouncy creatures filling dome with playful energy, fisheye zenith view showing creatures radiating outward from center with kids perspective as if standing among friendly giants, warm welcoming colors and silly playful movements making kids laugh and smile, hemispherical dome projection creating sense of being surrounded by happy party.",
       },
-      "upside-down-sky": {
-        description: "Godlevel Upside-Down Sky Playground education excellence featuring gravity and motion concepts, Birble character floating and moving in altered gravity environment, students prompted to imagine weightlessness and zero-gravity physics, hemispherical fisheye dome projection showing characters floating with sky at center, gentle motion demonstration without sudden movements, educational connection to astronaut microgravity experiences in space.",
+      "upside-down-bounce-world": {
+        description: "Godlevel Upside-Down Bounce World adventure excellence featuring Birble leading kids in gravity-defying play, characters floating and bouncing in silly directions with kids watching from all angles, hemispherical fisheye dome projection showing bouncing paths and floating trails at zenith center, playful silly movements and cheerful colors creating fun excitement, sense of weightlessness and adventure as kids imagine floating and bouncing too.",
       },
-      "silly-reflection-sea": {
-        description: "Godlevel Silly Reflection Sea education excellence featuring reflection and symmetry concepts, mirrored environments showing how reflections behave differently, calm water surfaces and gentle ripples creating mathematical symmetry patterns, fisheye dome projection with radial symmetry from center outward, students observing how light reflects and creates mirror images, educational exploration of optical principles through playful visual design.",
+      "silly-mirror-splash": {
+        description: "Godlevel Silly Mirror Splash adventure excellence featuring water play and reflection games, characters playing with mirrored reflections creating silly double versions, gentle splashing and rippling effects in fisheye dome creating radial water patterns from center, playful pink and blue water colors with floating reflections, kids laughing at silly reflections and mirror tricks in immersive dome setting.",
       },
-      "warm-spark-valley": {
-        description: "Godlevel Warm Spark Valley education excellence featuring energy and heat concepts, Sparklets characters demonstrating energy visualization and motion, glowing light elements showing heat energy and particle movement, warm color palette of oranges reds and golden hues, fisheye dome projection with radiating energy patterns from center, gentle demonstration of how fireflies and stars glow through energy conversion, perfect for teaching energy concepts to young learners.",
+      "sparkle-firefly-celebration": {
+        description: "Godlevel Sparkle Firefly Celebration adventure excellence featuring thousands of glowing sparklets creating magical light show, warm glowing creatures bouncing and dancing throughout dome creating firefly effect, hemispherical fisheye projection with glowing elements radiating from zenith creating ceiling full of magical lights, warm golden orange and soft white palette creating magical nighttime celebration feeling.",
       },
-      "whisper-tree-city": {
-        description: "Godlevel Whisper Tree City education excellence featuring nature and ecosystem concepts, peaceful tree environments showing plant life and natural habitats, gentle atmospheric effects suggesting air and oxygen production, fisheye dome projection with trees radiating from zenith center creating ecosystem connection, visual representation of how trees support life and ecosystems, calm botanical learning environment encouraging curiosity about nature.",
+      "enchanted-forest-wonderland": {
+        description: "Godlevel Enchanted Forest Wonderland adventure excellence featuring peaceful beautiful tree-filled world with magical creatures living in branches, giant trees radiating from zenith center with characters hiding playing and exploring in branches, fisheye dome projection showing complete forest canopy surrounding kids from all angles, soft greens and gentle nature colors creating peaceful magic woodland atmosphere.",
       },
-      "nexus-play-dream": {
-        description: "Godlevel The Big Play Dream education excellence featuring systems and connection concepts, all seven worlds visible in interconnected harmony showing how environments relate, complex but gentle visual representation of Earth's interconnected systems, hemispherical fisheye dome projection showing complete system integration, students observing how everything connects in balance, conclusion experience demonstrating relationships between all educational concepts learned throughout dome experience.",
+      "mega-playdream-carnival": {
+        description: "Godlevel Mega PlayDream Carnival adventure excellence featuring all seven magical worlds visible at once in celebration, characters from all worlds playing together in spectacular parade and party, hemispherical fisheye dome projection showing complete carnival with attractions radiating from zenith, rainbow colors and festive celebration creating spectacular colorful finale, kids amazed seeing all magical worlds come together.",
       },
-      "light-observation": {
-        description: "Godlevel Light observation education scenario featuring Ploop moving through Glow-Go-Land, demonstrating how colors change with movement and light intensity shifts, three-minute gentle dome experience with no loud transitions or sudden visual changes, educator script guiding students to observe and discuss light behavior, fisheye zenith view showing light sources at dome center creating learning focus.",
+      "glow-race": {
+        description: "Godlevel Glow Race adventure featuring Ploop racing through Glow-Go-Land at playful speed, glowing trail following character as colors change and shimmer, three-minute fun interactive dome experience with engaging chase sequence, fisheye zenith view showing glowing paths spiraling outward, perfect for keeping kids engaged and entertained.",
       },
-      "gravity-experiment": {
-        description: "Godlevel Gravity experiment education scenario featuring Birble demonstrating floating and motion in Upside-Down Sky, three-minute gentle experience showing how characters move differently when gravity changes, hemispherical fisheye dome projection with viewer perspective as if floating, educator prompting discussion about weightlessness and gravity physics, calm motion demonstration perfect for planetarium environment.",
+      "bounce-challenge": {
+        description: "Godlevel Bounce Challenge adventure featuring Birble bouncing higher and sillier each jump, kids cheering for character as bounces get more playful and creative, hemispherical fisheye dome projection showing dramatic arcing bounce paths from center upward, three-minute playful challenge keeping kids excited and laughing.",
       },
-      "reflection-experiment": {
-        description: "Godlevel Reflection experiment education scenario exploring Silly Reflection Sea with mirrored environments, three-minute visual demonstration of how reflections behave and differ from reality, fisheye dome projection showing radial reflection patterns, gentle ripple effects and symmetry visualization, students observing optical physics principles through immersive dome experience.",
+      "sparkle-hide-seek": {
+        description: "Godlevel Sparkle Hide Seek adventure featuring sparklets hiding throughout Warm Spark Valley and kids spotting them, soft glowing lights blinking and glowing in different dome locations, fisheye projection with radiating glow patterns, kids pointing out glowing creatures they spot creating interactive fun experience.",
       },
-      "ecosystem-observation": {
-        description: "Godlevel Ecosystem observation education scenario featuring Whisper Tree City nature exploration, four-minute experience showing interconnected natural systems and environmental relationships, fisheye dome projection with botanical elements radiating from center, gentle demonstration of ecosystem connections and life support functions, students learning about plant roles in planetary systems.",
+      "forest-friends-discovery": {
+        description: "Godlevel Forest Friends Discovery adventure featuring gentle exploration of Whisper Tree City finding friendly creatures, peaceful movement through botanical world, fisheye dome projection with trees and creatures radiating from center, calm playful discovery perfect for quieter dome moment allowing reflection and wonder.",
       },
-      "energy-visualization": {
-        description: "Godlevel Energy visualization education scenario featuring Sparklets moving through Warm Spark Valley, demonstrating motion and energy flow visualization, warm glowing color palette showing heat energy concepts, fisheye dome projection with energy patterns radiating from zenith center, perfect for explaining particle movement and energy transformation to young learners.",
+      "color-splash-explosion": {
+        description: "Godlevel Color Splash Explosion adventure featuring sudden beautiful color transformations throughout dome, Sparklets creating rainbows and color bursts, warm and playful colors radiating from zenith center, exciting visual moment keeping kids delighted and amazed throughout adventure.",
       },
-      "systems-connection": {
-        description: "Godlevel Systems connection education scenario showing The Big Play Dream where all worlds interconnect, demonstrating how light gravity reflection energy ecosystems operate together, hemispherical fisheye dome projection showing complete integrated system from zenith perspective, comprehensive educational experience connecting all learning concepts, perfect conclusion for 18-25 minute educational dome program.",
+      "friends-reunion-joy": {
+        description: "Godlevel Friends Reunion Joy adventure showing all characters meeting and celebrating together, complete carnival with all magical worlds and creatures present, hemispherical fisheye dome showing everyone gathered around kids in celebration, joyful colorful spectacular moment perfect for penultimate adventure moment.",
       },
-      "education-closure": {
-        description: "Godlevel Education closure reflection scenario, two-minute gentle conclusion experience in The Big Play Dream, soft ambient visuals at dome center creating calm reflection space, educator script prompting students to think about what they learned, gentle pacing with no jarring transitions, perfect for planetarium setting helping students process educational experience and consolidate learning.",
+      "farewell-wish-send-off": {
+        description: "Godlevel Farewell Wish Send-Off adventure featuring characters waving goodbye as portal opens to leave magical worlds, soft gentle glowing at zenith center becoming portal of light, peaceful calm ending allowing kids to reflect on magical adventure, characters inviting kids back for next adventure in The Sevenfold Play Dome.",
       },
     },
   },
