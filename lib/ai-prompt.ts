@@ -1175,6 +1175,58 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+
+  "sevenfold-play-dome": {
+    name: "🎭 The Sevenfold Play Dome — Education Mode",
+    description: "Interactive educational planetarium experience for museum dome environments featuring gentle learning through immersive visual worlds",
+    scenarios: {
+      "education-intro": {
+        description: "Welcome to the Sevenfold Play Dome. A gentle introduction welcoming students and families to explore seven interactive educational worlds within a 21-meter planetarium dome. Soft welcoming visuals with calm pacing, orientation to dome environment, educator-guided narrative introducing Ploop and characters as learning guides for curious exploration of light perception scale gravity reflection energy ecosystems and interconnected systems.",
+      },
+      "glow-go-land": {
+        description: "Godlevel Glow-Go-Land education excellence featuring light and perception world where characters move through glowing environments, colors shifting with movement intensity, visual observation teaching light energy behavior, gentle fisheye dome projection with soft glowing elements at zenith creating immersive light-learning experience, characters demonstrating how light intensity changes with motion, NO sudden transitions or jarring visual shifts, perfect for 4-12 age tiers in museum planetarium setting.",
+      },
+      "soft-beasts-park": {
+        description: "Godlevel Big Soft Beasts Park education excellence featuring scale and size concepts, Glom character appearing as enormous soft creature for spatial comparison, students observing relative scale and dimensional relationships, gentle fisheye dome projection with scaled environmental elements creating sense of size progression, learning connection between object scale and spatial awareness, soft rounded shapes and warm colors for encouraging observation without stress.",
+      },
+      "upside-down-sky": {
+        description: "Godlevel Upside-Down Sky Playground education excellence featuring gravity and motion concepts, Birble character floating and moving in altered gravity environment, students prompted to imagine weightlessness and zero-gravity physics, hemispherical fisheye dome projection showing characters floating with sky at center, gentle motion demonstration without sudden movements, educational connection to astronaut microgravity experiences in space.",
+      },
+      "silly-reflection-sea": {
+        description: "Godlevel Silly Reflection Sea education excellence featuring reflection and symmetry concepts, mirrored environments showing how reflections behave differently, calm water surfaces and gentle ripples creating mathematical symmetry patterns, fisheye dome projection with radial symmetry from center outward, students observing how light reflects and creates mirror images, educational exploration of optical principles through playful visual design.",
+      },
+      "warm-spark-valley": {
+        description: "Godlevel Warm Spark Valley education excellence featuring energy and heat concepts, Sparklets characters demonstrating energy visualization and motion, glowing light elements showing heat energy and particle movement, warm color palette of oranges reds and golden hues, fisheye dome projection with radiating energy patterns from center, gentle demonstration of how fireflies and stars glow through energy conversion, perfect for teaching energy concepts to young learners.",
+      },
+      "whisper-tree-city": {
+        description: "Godlevel Whisper Tree City education excellence featuring nature and ecosystem concepts, peaceful tree environments showing plant life and natural habitats, gentle atmospheric effects suggesting air and oxygen production, fisheye dome projection with trees radiating from zenith center creating ecosystem connection, visual representation of how trees support life and ecosystems, calm botanical learning environment encouraging curiosity about nature.",
+      },
+      "nexus-play-dream": {
+        description: "Godlevel The Big Play Dream education excellence featuring systems and connection concepts, all seven worlds visible in interconnected harmony showing how environments relate, complex but gentle visual representation of Earth's interconnected systems, hemispherical fisheye dome projection showing complete system integration, students observing how everything connects in balance, conclusion experience demonstrating relationships between all educational concepts learned throughout dome experience.",
+      },
+      "light-observation": {
+        description: "Godlevel Light observation education scenario featuring Ploop moving through Glow-Go-Land, demonstrating how colors change with movement and light intensity shifts, three-minute gentle dome experience with no loud transitions or sudden visual changes, educator script guiding students to observe and discuss light behavior, fisheye zenith view showing light sources at dome center creating learning focus.",
+      },
+      "gravity-experiment": {
+        description: "Godlevel Gravity experiment education scenario featuring Birble demonstrating floating and motion in Upside-Down Sky, three-minute gentle experience showing how characters move differently when gravity changes, hemispherical fisheye dome projection with viewer perspective as if floating, educator prompting discussion about weightlessness and gravity physics, calm motion demonstration perfect for planetarium environment.",
+      },
+      "reflection-experiment": {
+        description: "Godlevel Reflection experiment education scenario exploring Silly Reflection Sea with mirrored environments, three-minute visual demonstration of how reflections behave and differ from reality, fisheye dome projection showing radial reflection patterns, gentle ripple effects and symmetry visualization, students observing optical physics principles through immersive dome experience.",
+      },
+      "ecosystem-observation": {
+        description: "Godlevel Ecosystem observation education scenario featuring Whisper Tree City nature exploration, four-minute experience showing interconnected natural systems and environmental relationships, fisheye dome projection with botanical elements radiating from center, gentle demonstration of ecosystem connections and life support functions, students learning about plant roles in planetary systems.",
+      },
+      "energy-visualization": {
+        description: "Godlevel Energy visualization education scenario featuring Sparklets moving through Warm Spark Valley, demonstrating motion and energy flow visualization, warm glowing color palette showing heat energy concepts, fisheye dome projection with energy patterns radiating from zenith center, perfect for explaining particle movement and energy transformation to young learners.",
+      },
+      "systems-connection": {
+        description: "Godlevel Systems connection education scenario showing The Big Play Dream where all worlds interconnect, demonstrating how light gravity reflection energy ecosystems operate together, hemispherical fisheye dome projection showing complete integrated system from zenith perspective, comprehensive educational experience connecting all learning concepts, perfect conclusion for 18-25 minute educational dome program.",
+      },
+      "education-closure": {
+        description: "Godlevel Education closure reflection scenario, two-minute gentle conclusion experience in The Big Play Dream, soft ambient visuals at dome center creating calm reflection space, educator script prompting students to think about what they learned, gentle pacing with no jarring transitions, perfect for planetarium setting helping students process educational experience and consolidate learning.",
+      },
+    },
+  },
 }
 
 export const COLOR_SCHEMES: Record<string, string> = {
