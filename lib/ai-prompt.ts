@@ -1175,6 +1175,58 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+
+  "sevenfold-play-dome": {
+    name: "The Sevenfold Play Dome",
+    description: "Magical immersive planetarium adventure for kids ages 4-12 featuring seven enchanted worlds filled with colorful characters, playful interactions, and wonder-filled exploration within a 21-meter dome theater",
+    scenarios: {
+      "welcome-portal": {
+        description: "Godlevel magical welcome adventure excellence featuring Ploop the curious explorer welcoming kids into The Sevenfold Play Dome, colorful swirling portal at zenith center with warm glowing colors inviting children inside, gentle fisheye dome projection showing spiral of light and color drawing viewers up into adventure, soft whimsical music and delightful atmosphere creating excitement and wonder, perfect dome entry experience for young explorers discovering magical worlds.",
+      },
+      "glow-go-land-adventure": {
+        description: "Godlevel Glow-Go-Land adventure excellence featuring magical glowing creatures and shimmering environments, kids moving through world of bouncing glowing lights and color-changing trees, fisheye dome projection with luminous elements at zenith sparkling and dancing, characters moving playfully and inviting interaction, warm soft color palette of pinks golds and soft blues creating enchanted atmosphere, NO jarring transitions perfect for immersive dome magical experience.",
+      },
+      "big-soft-beasts-party": {
+        description: "Godlevel Big Soft Beasts Party adventure excellence featuring Glom and giant friendly soft creatures in celebration, enormous colorful bouncy creatures filling dome with playful energy, fisheye zenith view showing creatures radiating outward from center with kids perspective as if standing among friendly giants, warm welcoming colors and silly playful movements making kids laugh and smile, hemispherical dome projection creating sense of being surrounded by happy party.",
+      },
+      "upside-down-bounce-world": {
+        description: "Godlevel Upside-Down Bounce World adventure excellence featuring Birble leading kids in gravity-defying play, characters floating and bouncing in silly directions with kids watching from all angles, hemispherical fisheye dome projection showing bouncing paths and floating trails at zenith center, playful silly movements and cheerful colors creating fun excitement, sense of weightlessness and adventure as kids imagine floating and bouncing too.",
+      },
+      "silly-mirror-splash": {
+        description: "Godlevel Silly Mirror Splash adventure excellence featuring water play and reflection games, characters playing with mirrored reflections creating silly double versions, gentle splashing and rippling effects in fisheye dome creating radial water patterns from center, playful pink and blue water colors with floating reflections, kids laughing at silly reflections and mirror tricks in immersive dome setting.",
+      },
+      "sparkle-firefly-celebration": {
+        description: "Godlevel Sparkle Firefly Celebration adventure excellence featuring thousands of glowing sparklets creating magical light show, warm glowing creatures bouncing and dancing throughout dome creating firefly effect, hemispherical fisheye projection with glowing elements radiating from zenith creating ceiling full of magical lights, warm golden orange and soft white palette creating magical nighttime celebration feeling.",
+      },
+      "enchanted-forest-wonderland": {
+        description: "Godlevel Enchanted Forest Wonderland adventure excellence featuring peaceful beautiful tree-filled world with magical creatures living in branches, giant trees radiating from zenith center with characters hiding playing and exploring in branches, fisheye dome projection showing complete forest canopy surrounding kids from all angles, soft greens and gentle nature colors creating peaceful magic woodland atmosphere.",
+      },
+      "mega-playdream-carnival": {
+        description: "Godlevel Mega PlayDream Carnival adventure excellence featuring all seven magical worlds visible at once in celebration, characters from all worlds playing together in spectacular parade and party, hemispherical fisheye dome projection showing complete carnival with attractions radiating from zenith, rainbow colors and festive celebration creating spectacular colorful finale, kids amazed seeing all magical worlds come together.",
+      },
+      "glow-race": {
+        description: "Godlevel Glow Race adventure featuring Ploop racing through Glow-Go-Land at playful speed, glowing trail following character as colors change and shimmer, three-minute fun interactive dome experience with engaging chase sequence, fisheye zenith view showing glowing paths spiraling outward, perfect for keeping kids engaged and entertained.",
+      },
+      "bounce-challenge": {
+        description: "Godlevel Bounce Challenge adventure featuring Birble bouncing higher and sillier each jump, kids cheering for character as bounces get more playful and creative, hemispherical fisheye dome projection showing dramatic arcing bounce paths from center upward, three-minute playful challenge keeping kids excited and laughing.",
+      },
+      "sparkle-hide-seek": {
+        description: "Godlevel Sparkle Hide Seek adventure featuring sparklets hiding throughout Warm Spark Valley and kids spotting them, soft glowing lights blinking and glowing in different dome locations, fisheye projection with radiating glow patterns, kids pointing out glowing creatures they spot creating interactive fun experience.",
+      },
+      "forest-friends-discovery": {
+        description: "Godlevel Forest Friends Discovery adventure featuring gentle exploration of Whisper Tree City finding friendly creatures, peaceful movement through botanical world, fisheye dome projection with trees and creatures radiating from center, calm playful discovery perfect for quieter dome moment allowing reflection and wonder.",
+      },
+      "color-splash-explosion": {
+        description: "Godlevel Color Splash Explosion adventure featuring sudden beautiful color transformations throughout dome, Sparklets creating rainbows and color bursts, warm and playful colors radiating from zenith center, exciting visual moment keeping kids delighted and amazed throughout adventure.",
+      },
+      "friends-reunion-joy": {
+        description: "Godlevel Friends Reunion Joy adventure showing all characters meeting and celebrating together, complete carnival with all magical worlds and creatures present, hemispherical fisheye dome showing everyone gathered around kids in celebration, joyful colorful spectacular moment perfect for penultimate adventure moment.",
+      },
+      "farewell-wish-send-off": {
+        description: "Godlevel Farewell Wish Send-Off adventure featuring characters waving goodbye as portal opens to leave magical worlds, soft gentle glowing at zenith center becoming portal of light, peaceful calm ending allowing kids to reflect on magical adventure, characters inviting kids back for next adventure in The Sevenfold Play Dome.",
+      },
+    },
+  },
 }
 
 export const COLOR_SCHEMES: Record<string, string> = {
