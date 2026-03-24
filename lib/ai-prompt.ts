@@ -1227,6 +1227,60 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
+  "darwin-valdivia-journey": {
+    name: "Darwin's Journey Through Southern Chile",
+    description: "Historical storytelling dome experience following Charles Darwin's 1835 expedition through Valdivia, Osorno and Concepcion, exploring forests, rivers, Mapuche communities and witnessing the great earthquake",
+    scenarios: {
+      "the-beagle-arrives": {
+        description: "The HMS Beagle moves through cold southern waters off the coast of Chile. Darwin stands on deck, writing and watching the coast draw closer. Historical maritime setting showing the voyage of discovery beginning, with sailing vessel cutting through Atlantic waters approaching unexplored southern lands.",
+      },
+      "darwin-at-work": {
+        description: "On board the Beagle, Darwin studies specimens, notes and changing weather patterns, preparing for the next landing. Scientific observation and journalistic documentation happening within ship's cabin with specimens, journals and field instruments visible.",
+      },
+      "first-view-of-valdivia": {
+        description: "Darwin sees Valdivia as a green settlement beside the river, with streets, orchards and houses set within lush landscape. The city appears as verdant oasis surrounded by temperate rainforest, with Calle-Calle River flowing through the settlement, colonial architecture visible among vegetation.",
+      },
+      "rivers-of-valdivia": {
+        description: "The river carries reflections of boats, banks and vegetation. Islands and channels shape the life of the region. Hydrological systems with aquatic ecosystems, riverine commerce, and water-based transportation showing how geography structures daily life.",
+      },
+      "old-apple-gardens": {
+        description: "Darwin observes old apple orchards of Valdivia. Apples are gathered for food, drink and everyday sustenance. Agricultural landscape featuring Malus domestica cultivation, seasonal cycles, fruit harvesting and harvest preparations showing colonial agricultural settlement.",
+      },
+      "craft-and-chicha": {
+        description: "Rayen and others prepare apples into local products such as chicha and preserves, showing how the orchard is part of regional daily culture. Fermentation processes, traditional food production methods and indigenous-colonial cultural exchange visible in daily craft work.",
+      },
+      "entering-valdivian-forest": {
+        description: "Darwin begins his journey through Valdivian forest. Moist air, layered plants and dense green shadows surround the expedition. Temperate rainforest ecosystem with cathedral canopy structures, botanical biodiversity, ferns, mosses and multi-layered vegetation creating immersive wilderness environment.",
+      },
+      "bamboo-cane-forests": {
+        description: "In the forest, Darwin notes tall bamboo cane groves used locally for tools, spears and practical objects. Indigenous Mapuche utilization of Chusquea culeou for weapons and craft, showing traditional resource management and sustainable harvesting practices.",
+      },
+      "beyond-the-forest": {
+        description: "After dense woodland, the route opens into broad plain where settlements and pathways reveal another rhythm of life. Transition from forest to grassland ecosystems, showing varied landscape types and different settlement patterns in southern Chile.",
+      },
+      "meeting-the-community": {
+        description: "Darwin observes local Mapuche communities, their clothing, woven goods, horses, tools and ways of living. Antilef watches the visitor just as carefully. Cross-cultural encounter showing Mapuche material culture, horsemanship, traditional textiles and mutual observation between naturalist and indigenous guide.",
+      },
+      "two-ways-of-seeing": {
+        description: "Darwin writes in his notebook. Antilef studies him in return. The moment shaped by distance, curiosity and mutual observation. Ethnographic documentation and scientific method meeting indigenous knowledge systems, showing different epistemologies observing each other.",
+      },
+      "islands-and-distance": {
+        description: "Journey continues across waterways and islands where land and water create shifting geography of movement and isolation. Island biogeography, maritime ecosystems, endemic species distribution and tidal dynamics shaping island settlement patterns.",
+      },
+      "the-earthquake": {
+        description: "Ground shakes violently. Trees, buildings and shorelines are altered. Darwin witnesses force of earthquake and scale of its aftermath. February 20 1835 seismic event with magnitude 8.25 tectonic devastation, geological upheaval and landscape transformation visible in destruction.",
+      },
+      "concepcion-in-ruins": {
+        description: "In Concepcion, rows of houses lie in ruins. Debris, broken structures and displaced objects show how deeply earthquake transformed the city. Urban destruction, displaced populations, damaged infrastructure and disaster aftermath showing human settlement vulnerability to natural forces.",
+      },
+      "new-understanding": {
+        description: "Darwin reflects on relationship between earthquakes, coastline, sea and Andes. Observation begins to turn into scientific connection. Plate tectonics, mountain formation, geological processes and natural history synthesis leading toward evolutionary thinking.",
+      },
+      "journey-continues": {
+        description: "Back on the Beagle, Darwin leaves southern Chile with notes, memories and new questions. Ship turns north but landscape remains in his thinking. Return voyage and reflection, with accumulated observations forming foundation for later scientific theories and publications.",
+      },
+    },
+  },
 };
 
 export const COLOR_SCHEMES: Record<string, string> = {
