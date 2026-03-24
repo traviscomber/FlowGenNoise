@@ -1369,3 +1369,11 @@ export function buildPrompt(params: {
 
   return prompt
 }
+
+export function getScenarios(dataset: string) {
+  const datasetObj = CULTURAL_DATASETS[dataset]
+  if (!datasetObj) {
+    return {}
+  }
+  return datasetObj.scenarios || {}
+}
