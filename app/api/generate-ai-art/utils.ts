@@ -113,32 +113,6 @@ async function retryWithBackoff<T>(fn: () => Promise<T>, maxRetries = 3, baseDel
   throw new Error("Max retries exceeded")
 }
 
-// Main export function that routes to appropriate provider
-export async function generateImage(
-  prompt: string,
-  type: "standard" | "dome" | "360",
-  params?: GenerationParams,
-  provider?: "openai" | "replicate",
-  model?: string,
-  selectedAspectRatio?: string,
-  frameless?: boolean,
-  signal?: AbortSignal,
-): Promise<{ imageUrl: string; prompt: string }> {
-  const selectedProvider = provider || params?.provider || "openai"
-  
-  console.log(`[v0] generateImage called with provider: ${selectedProvider}, type: ${type}`)
-  console.log(`[v0] Prompt preview: ${prompt.substring(0, 100)}...`)
-  console.log(`[v0] Prompt length: ${prompt.length}`)
-  
-  if (selectedProvider === "openai") {
-    return await generateWithOpenAI(prompt, type, params, signal)
-  } else {
-    // Default to OpenAI if provider is not recognized
-    console.log(`[v0] Provider '${selectedProvider}' not recognized, falling back to OpenAI`)
-    return await generateWithOpenAI(prompt, type, params, signal)
-  }
-}
-
 export async function generateWithOpenAI(
   prompt: string,
   type: "standard" | "dome" | "360",
