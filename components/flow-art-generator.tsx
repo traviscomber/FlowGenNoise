@@ -13,11 +13,10 @@ import { Label } from "@/components/ui/label"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Alert } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
-import { REPLICATE_MODELS } from "@/app/api/generate-ai-art/utils"
-import { supabase } from "@/lib/supabase"
-
-// Import datasets synchronously to avoid lazy-load issues
 import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
+import { REPLICATE_MODELS } from "@/app/api/generate-ai-art/utils"
+
+import { supabase } from "@/lib/supabase"
 
 interface GenerationResult {
   standard?: string
@@ -101,9 +100,9 @@ export function FlowArtGenerator() {
   // Refs for cancellation
   const abortControllerRef = useRef<AbortController | null>(null)
 
-  // Get available scenarios for current dataset
+  // Get available scenarios for current dataset - with null safety
   const availableScenarios = getScenarios(dataset) || {}
-  const scenarioEntries = Object.entries(availableScenarios || {})
+  const scenarioEntries = Object.entries(availableScenarios)
 
   // Toast hook
   const { toast } = useToast()
@@ -1743,3 +1742,5 @@ export function FlowArtGenerator() {
     </div>
   )
 }
+
+export default FlowArtGenerator

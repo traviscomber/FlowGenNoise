@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -122,12 +122,12 @@ export default function Dome360Planner() {
   const [error, setError] = useState<string | null>(null)
 
   // Get available scenarios for current dataset
-  const availableScenarios = getScenarios(dataset) || {}
+  const availableScenarios = getScenarios(dataset)
 
   // Reset scenario when dataset changes
   const handleDatasetChange = useCallback((newDataset: string) => {
     setDataset(newDataset)
-    const scenarios = getScenarios(newDataset) || {}
+    const scenarios = getScenarios(newDataset)
     const firstScenario = Object.keys(scenarios)[0]
     if (firstScenario) {
       setScenario(firstScenario)
