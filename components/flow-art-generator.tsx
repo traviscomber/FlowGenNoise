@@ -16,7 +16,26 @@ import { useToast } from "@/hooks/use-toast"
 import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
 import { REPLICATE_MODELS } from "@/app/api/generate-ai-art/utils"
 
+import { REPLICATE_MODELS } from "@/app/api/generate-ai-art/utils"
+
 import { supabase } from "@/lib/supabase"
+
+// Lazy-loaded to improve initial page load
+let CULTURAL_DATASETS: any = null
+let COLOR_SCHEMES: any = null
+let buildPrompt: any = null
+let getScenarios: any = null
+
+const loadDatasets = async () => {
+  if (!CULTURAL_DATASETS) {
+    const module = await import("@/lib/ai-prompt")
+    CULTURAL_DATASETS = module.CULTURAL_DATASETS
+    COLOR_SCHEMES = module.COLOR_SCHEMES
+    buildPrompt = module.buildPrompt
+    getScenarios = module.getScenarios
+  }
+  return { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios }
+}
 
 interface GenerationResult {
   standard?: string
@@ -47,6 +66,18 @@ interface PromptEnhancement {
 }
 
 export function FlowArtGenerator() {
+  // State for lazy-loaded datasets
+  const [datasets, setDatasets] = useState<any>(null)
+  const [datasetsLoaded, setDatasetsLoaded] = useState(false)
+
+  // Load datasets on component mount
+  useEffect(() => {
+    loadDatasets().then((modules) => {
+      setDatasets(modules)
+      setDatasetsLoaded(true)
+    })
+  }, [])
+
   // Core generation parameters
   const [dataset, setDataset] = useState("vietnamese")
   const [scenario, setScenario] = useState("trung-sisters")
@@ -101,7 +132,7 @@ export function FlowArtGenerator() {
   const abortControllerRef = useRef<AbortController | null>(null)
 
   // Get available scenarios for current dataset - with null safety
-  const availableScenarios = getScenarios(dataset) || {}
+  const availableScenarios = datasets?.getScenarios ? datasets.getScenarios(dataset) || {} : {}
   const scenarioEntries = Object.entries(availableScenarios)
 
   // Toast hook

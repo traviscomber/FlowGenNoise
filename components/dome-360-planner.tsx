@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -37,7 +37,21 @@ import {
   AlertCircle,
   Square,
 } from "lucide-react"
-import { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios } from "@/lib/ai-prompt"
+
+// Lazy-loaded to improve initial page load
+let CULTURAL_DATASETS: any = null
+let COLOR_SCHEMES: any = null
+let getScenarios: any = null
+
+const loadDatasets = async () => {
+  if (!CULTURAL_DATASETS) {
+    const module = await import("@/lib/ai-prompt")
+    CULTURAL_DATASETS = module.CULTURAL_DATASETS
+    COLOR_SCHEMES = module.COLOR_SCHEMES
+    getScenarios = module.getScenarios
+  }
+  return { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios }
+}
 
 interface GeneratedImage {
   imageUrl: string
@@ -71,6 +85,18 @@ const ASPECT_RATIOS = {
 }
 
 export default function Dome360Planner() {
+  // State for lazy-loaded datasets
+  const [datasets, setDatasets] = useState<any>(null)
+  const [datasetsLoaded, setDatasetsLoaded] = useState(false)
+
+  // Load datasets on component mount
+  useEffect(() => {
+    loadDatasets().then((modules) => {
+      setDatasets(modules)
+      setDatasetsLoaded(true)
+    })
+  }, [])
+
   // State management
   const [dataset, setDataset] = useState("vietnamese")
   const [scenario, setScenario] = useState("trung-sisters")
@@ -122,18 +148,18 @@ export default function Dome360Planner() {
   const [error, setError] = useState<string | null>(null)
 
   // Get available scenarios for current dataset
-  const availableScenarios = getScenarios(dataset)
+  const availableScenarios = datasets?.getScenarios ? datasets.getScenarios(dataset) || {} : {}
 
   // Reset scenario when dataset changes
   const handleDatasetChange = useCallback((newDataset: string) => {
     setDataset(newDataset)
-    const scenarios = getScenarios(newDataset)
+    const scenarios = datasets?.getScenarios ? datasets.getScenarios(newDataset) || {} : {}
     const firstScenario = Object.keys(scenarios)[0]
     if (firstScenario) {
       setScenario(firstScenario)
     }
     setError(null)
-  }, [])
+  }, [datasets])
 
   // Generate random parameters
   const randomizeParameters = useCallback(() => {
