@@ -3,8 +3,7 @@
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { FlowArtGenerator } from "@/components/flow-art-generator"
-import { Dome360Planner } from "@/components/dome-360-planner"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState("generator")
@@ -29,19 +28,15 @@ export default function HomePage() {
           {/* Feature Badges */}
           <div className="flex flex-wrap justify-center gap-2 mt-6">
             <Badge variant="secondary" className="px-3 py-1">
-              <span className="mr-1">⭐</span>
               GODLEVEL Quality
             </Badge>
             <Badge variant="secondary" className="px-3 py-1">
-              <span className="mr-1">🌐</span>
               360° VR Ready
             </Badge>
             <Badge variant="secondary" className="px-3 py-1">
-              <span className="mr-1">⚡</span>
               ChatGPT Enhanced
             </Badge>
             <Badge variant="secondary" className="px-3 py-1">
-              <span className="mr-1">🛡️</span>
               Professional Grade
             </Badge>
           </div>
@@ -50,22 +45,47 @@ export default function HomePage() {
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="generator" className="flex items-center gap-2">
-              <span>🎨</span>
+            <TabsTrigger value="generator">
               Art Generator
             </TabsTrigger>
-            <TabsTrigger value="planner" className="flex items-center gap-2">
-              <span>🌐</span>
+            <TabsTrigger value="planner">
               Dome & 360° Planner
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="generator">
-            <FlowArtGenerator />
+            <Card>
+              <CardHeader>
+                <CardTitle>Art Generation Studio</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <p className="text-muted-foreground">Loading Art Generator...</p>
+                  <div className="animate-pulse">
+                    <div className="h-12 bg-slate-200 rounded mb-4"></div>
+                    <div className="h-12 bg-slate-200 rounded mb-4"></div>
+                    <div className="h-40 bg-slate-200 rounded"></div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="planner">
-            <Dome360Planner />
+            <Card>
+              <CardHeader>
+                <CardTitle>Dome & 360° Planner</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <p className="text-muted-foreground">Loading Planner...</p>
+                  <div className="animate-pulse">
+                    <div className="h-12 bg-slate-200 rounded mb-4"></div>
+                    <div className="h-40 bg-slate-200 rounded"></div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
 
