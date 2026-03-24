@@ -128,8 +128,8 @@ export function FlowArtGenerator() {
   const abortControllerRef = useRef<AbortController | null>(null)
 
   // Get available scenarios for current dataset - with null safety
-  const availableScenarios = datasets?.getScenarios ? datasets.getScenarios(dataset) || {} : {}
-  const scenarioEntries = Object.entries(availableScenarios)
+  const availableScenarios = datasetsLoaded && datasets?.getScenarios ? datasets.getScenarios(dataset) || {} : {}
+  const scenarioEntries = Object.entries(availableScenarios || {})
 
   // Toast hook
   const { toast } = useToast()
@@ -922,6 +922,19 @@ export function FlowArtGenerator() {
 
   return (
     <div className="container mx-auto p-6 space-y-8">
+      {/* Loading state */}
+      {!datasetsLoaded && (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center space-y-2">
+            <div className="inline-block animate-spin">
+              <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full"></div>
+            </div>
+            <p className="text-lg text-gray-600">Loading datasets...</p>
+          </div>
+        </div>
+      )}
+      {datasetsLoaded && (
+      <>
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-between">
@@ -1766,6 +1779,8 @@ export function FlowArtGenerator() {
           </div>
         </DialogContent>
       </Dialog>
+      </>
+      )}
     </div>
   )
 }
