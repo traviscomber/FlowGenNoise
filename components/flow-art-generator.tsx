@@ -13,11 +13,7 @@ import { Label } from "@/components/ui/label"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Alert } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
-import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
 import { REPLICATE_MODELS } from "@/app/api/generate-ai-art/utils"
-
-import { REPLICATE_MODELS } from "@/app/api/generate-ai-art/utils"
-
 import { supabase } from "@/lib/supabase"
 
 // Lazy-loaded to improve initial page load
