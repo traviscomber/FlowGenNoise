@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef, useEffect } from "react"
+import { useState, useCallback, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -16,22 +16,8 @@ import { useToast } from "@/hooks/use-toast"
 import { REPLICATE_MODELS } from "@/app/api/generate-ai-art/utils"
 import { supabase } from "@/lib/supabase"
 
-// Lazy-loaded to improve initial page load
-let CULTURAL_DATASETS: any = null
-let COLOR_SCHEMES: any = null
-let buildPrompt: any = null
-let getScenarios: any = null
-
-const loadDatasets = async () => {
-  if (!CULTURAL_DATASETS) {
-    const module = await import("@/lib/ai-prompt")
-    CULTURAL_DATASETS = module.CULTURAL_DATASETS
-    COLOR_SCHEMES = module.COLOR_SCHEMES
-    buildPrompt = module.buildPrompt
-    getScenarios = module.getScenarios
-  }
-  return { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios }
-}
+// Import datasets synchronously to avoid lazy-load issues
+import { CULTURAL_DATASETS, COLOR_SCHEMES, buildPrompt, getScenarios } from "@/lib/ai-prompt"
 
 interface GenerationResult {
   standard?: string
@@ -62,18 +48,6 @@ interface PromptEnhancement {
 }
 
 export function FlowArtGenerator() {
-  // State for lazy-loaded datasets
-  const [datasets, setDatasets] = useState<any>(null)
-  const [datasetsLoaded, setDatasetsLoaded] = useState(false)
-
-  // Load datasets on component mount
-  useEffect(() => {
-    loadDatasets().then((modules) => {
-      setDatasets(modules)
-      setDatasetsLoaded(true)
-    })
-  }, [])
-
   // Core generation parameters
   const [dataset, setDataset] = useState("vietnamese")
   const [scenario, setScenario] = useState("trung-sisters")
@@ -127,8 +101,8 @@ export function FlowArtGenerator() {
   // Refs for cancellation
   const abortControllerRef = useRef<AbortController | null>(null)
 
-  // Get available scenarios for current dataset - with null safety
-  const availableScenarios = datasetsLoaded && datasets?.getScenarios ? datasets.getScenarios(dataset) || {} : {}
+  // Get available scenarios for current dataset
+  const availableScenarios = getScenarios(dataset) || {}
   const scenarioEntries = Object.entries(availableScenarios || {})
 
   // Toast hook
@@ -922,19 +896,6 @@ export function FlowArtGenerator() {
 
   return (
     <div className="container mx-auto p-6 space-y-8">
-      {/* Loading state */}
-      {!datasetsLoaded && (
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center space-y-2">
-            <div className="inline-block animate-spin">
-              <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full"></div>
-            </div>
-            <p className="text-lg text-gray-600">Loading datasets...</p>
-          </div>
-        </div>
-      )}
-      {datasetsLoaded && (
-      <>
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-between">
@@ -1779,8 +1740,6 @@ export function FlowArtGenerator() {
           </div>
         </DialogContent>
       </Dialog>
-      </>
-      )}
     </div>
   )
 }

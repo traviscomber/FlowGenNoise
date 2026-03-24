@@ -1261,7 +1261,7 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-}
+};
 
 export const COLOR_SCHEMES: Record<string, string> = {
   metallic: "Sleek metallic surfaces, chrome reflections, industrial steel textures, brushed aluminum finishes",
