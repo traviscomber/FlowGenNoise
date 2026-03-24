@@ -37,21 +37,7 @@ import {
   AlertCircle,
   Square,
 } from "lucide-react"
-
-// Lazy-loaded to improve initial page load
-let CULTURAL_DATASETS: any = null
-let COLOR_SCHEMES: any = null
-let getScenarios: any = null
-
-const loadDatasets = async () => {
-  if (!CULTURAL_DATASETS) {
-    const module = await import("@/lib/ai-prompt")
-    CULTURAL_DATASETS = module.CULTURAL_DATASETS
-    COLOR_SCHEMES = module.COLOR_SCHEMES
-    getScenarios = module.getScenarios
-  }
-  return { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios }
-}
+import { CULTURAL_DATASETS, COLOR_SCHEMES, getScenarios } from "@/lib/ai-prompt"
 
 interface GeneratedImage {
   imageUrl: string
@@ -85,18 +71,6 @@ const ASPECT_RATIOS = {
 }
 
 export default function Dome360Planner() {
-  // State for lazy-loaded datasets
-  const [datasets, setDatasets] = useState<any>(null)
-  const [datasetsLoaded, setDatasetsLoaded] = useState(false)
-
-  // Load datasets on component mount
-  useEffect(() => {
-    loadDatasets().then((modules) => {
-      setDatasets(modules)
-      setDatasetsLoaded(true)
-    })
-  }, [])
-
   // State management
   const [dataset, setDataset] = useState("vietnamese")
   const [scenario, setScenario] = useState("trung-sisters")
@@ -148,18 +122,18 @@ export default function Dome360Planner() {
   const [error, setError] = useState<string | null>(null)
 
   // Get available scenarios for current dataset
-  const availableScenarios = datasets?.getScenarios ? datasets.getScenarios(dataset) || {} : {}
+  const availableScenarios = getScenarios(dataset) || {}
 
   // Reset scenario when dataset changes
   const handleDatasetChange = useCallback((newDataset: string) => {
     setDataset(newDataset)
-    const scenarios = datasets?.getScenarios ? datasets.getScenarios(newDataset) || {} : {}
+    const scenarios = getScenarios(newDataset) || {}
     const firstScenario = Object.keys(scenarios)[0]
     if (firstScenario) {
       setScenario(firstScenario)
     }
     setError(null)
-  }, [datasets])
+  }, [])
 
   // Generate random parameters
   const randomizeParameters = useCallback(() => {
