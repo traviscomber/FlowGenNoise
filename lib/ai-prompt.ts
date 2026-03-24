@@ -1258,6 +1258,7 @@ export const CULTURAL_DATASETS = {
         description: "Godlevel Darwin working on board HMS Beagle excellence featuring naturalist conducting scientific observations species collection and journal documentation aboard 90-foot surveying vessel, computational research methodology algorithms modeling specimen preservation techniques field observation protocols and scientific instrumentation, hemispherical fisheye dome projection showing ship's deck railings scientific equipment specimen cases and maritime environment radiating from zenith with ocean horizon visible, daily routines of naturalist conducting biological geological and anthropological research during circumnavigational voyage, cabin space documentation scientific instruments including microscopes barometers and specimen preservation materials visible in dimensional visualization, five-year expedition 1831-1836 captured through computational chronological algorithms showing research progression through multiple biogeographic regions. Reference: https://www.darwin-online.org.uk/ https://en.wikipedia.org/wiki/Second_voyage_of_HMS_Beagle",
       "hms-beagle": {
         description: "Godlevel HMS Beagle excellence featuring iconic 10-gun brig-sloop vessel 90 feet length 235 tons displacement commanded by Captain Robert FitzRoy 1831-1836, computational naval architecture algorithms modeling ship design rigging systems and hydrodynamic properties for oceanic survey missions, hemispherical fisheye dome projection showing complete ship radiating from zenith with sails rigging hull structure and maritime environment creating immersive nautical visualization, ship's purpose as hydrographic surveying vessel documented through computational cartography algorithms mapping previously uncharted coastlines and island territories, five-year circumnavigation collecting biological geological and ethnographic specimens translating into foundational evolutionary theory, neuralia godlevel dimensional visualization of 19th-century maritime exploration through computational naval history and scientific expedition mastery, NO text overlays preserving pure maritime visual immersion. Reference: https://en.wikipedia.org/wiki/HMS_Beagle https://www.darwin-online.org.uk/",
+      },
     },
   },
 }
@@ -1369,12 +1370,4 @@ export function buildPrompt(params: {
   }
 
   return prompt
-}
-
-export function getScenarios(dataset: string) {
-  const datasetObj = CULTURAL_DATASETS[dataset]
-  if (!datasetObj) {
-    return {}
-  }
-  return datasetObj.scenarios || {}
 }
