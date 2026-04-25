@@ -117,6 +117,8 @@ export function FlowArtGenerator() {
 
   const loadGenerationPreferences = useCallback(async () => {
     try {
+      if (!supabase) return
+
       const {
         data: { user },
       } = await supabase.auth.getUser()
@@ -143,6 +145,8 @@ export function FlowArtGenerator() {
 
   const saveGenerationPreferences = useCallback(async (preferences: typeof generateTypes) => {
     try {
+      if (!supabase) return
+
       const {
         data: { user },
       } = await supabase.auth.getUser()
