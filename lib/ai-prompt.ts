@@ -132,64 +132,6 @@ export const CULTURAL_DATASETS = {
       },
     },
   },
-      "origami-world": {
-        description:
-          "Facial expression origami excellence with godlevel paper-folding emotion mastery, infinite geometric transformations of emotional states through traditional Japanese paper art, dimensional origami artistry capturing human emotion through computational paper-craft sophistication.",
-      },
-      "javanese-serenity": {
-        description:
-          "Godlevel Javanese expression excellence featuring traditional emotional restraint with cultural depth, refined facial expressions with Indonesian court elegance, infinite cultural dimensional artistry, computational Javanese emotion through algorithmic expression mastery.",
-      },
-      "sundanese-warmth": {
-        description:
-          "Godlevel Sundanese expression excellence featuring West Javanese emotional warmth with cultural authenticity, gentle facial expressions with regional characteristics, infinite emotional dimensional artistry, computational Sundanese feeling through algorithmic expression sophistication.",
-      },
-      "balinese-tranquility": {
-        description:
-          "Godlevel Balinese expression excellence featuring Hindu-influenced spiritual tranquility with temple serenity, peaceful facial expressions with cultural depth, infinite spiritual dimensional artistry, computational Balinese emotion through algorithmic sacred expression mastery.",
-      },
-      "batak-intensity": {
-        description:
-          "Godlevel Batak expression excellence featuring North Sumatran emotional intensity with highland strength, powerful facial expressions with cultural authority, infinite emotional dimensional artistry, computational Batak feeling through algorithmic expression excellence.",
-      },
-      "minangkabau-dignity": {
-        description:
-          "Godlevel Minangkabau expression excellence featuring West Sumatran dignified emotion with matriarchal wisdom, noble facial expressions with cultural pride, infinite heritage dimensional artistry, computational Minangkabau emotion through algorithmic expression mastery.",
-      },
-      "dayak-connection": {
-        description:
-          "Godlevel Dayak expression excellence featuring Bornean nature-connected emotion with forest wisdom, earth-connected facial expressions with tribal authenticity, infinite natural dimensional artistry, computational Dayak emotion through algorithmic indigenous expression excellence.",
-      },
-      "papuan-joy": {
-        description:
-          "Godlevel Papuan expression excellence featuring Melanesian joyful emotion with island celebration, vibrant facial expressions with cultural festivity, infinite celebratory dimensional artistry, computational Papuan emotion through algorithmic expression sophistication.",
-      },
-      "bugis-determination": {
-        description:
-          "Godlevel Bugis expression excellence featuring South Sulawesi determined emotion with maritime resolve, strong facial expressions with seafaring courage, infinite nautical dimensional artistry, computational Bugis emotion through algorithmic maritime expression mastery.",
-      },
-      lego: {
-        description:
-          "Godlevel expression LEGO excellence featuring blocky emotional construction with systematic Danish precision, modular facial expressions with authentic emotion characteristics, infinite constructive dimensional artistry, computational LEGO emotion through algorithmic building mastery.",
-      },
-      playmobil: {
-        description:
-          "Godlevel expression Playmobil excellence featuring miniature emotional construction with toy precision, characteristic Playmobil expressions with emotional authenticity, infinite playful dimensional artistry, computational toy emotion through algorithmic figure mastery.",
-      },
-      "escapism-magic": {
-        description:
-          "Godlevel expression escapism excellence where facial emotions become portals to emotional realms, consciousness-expanding expressions with dimensional transcendence, infinite magical dimensional artistry, computational expression magic through algorithmic emotion-bending mastery.",
-      },
-      vitro: {
-        description:
-          "Godlevel expression vitro excellence with magnificent stained glass emotional portraiture featuring luminous expression construction, divine light filtering through emotional elements, infinite sacred dimensional artistry, computational vitro emotion through algorithmic glass mastery.",
-      },
-      crypto: {
-        description:
-          "Godlevel expression crypto excellence with blockchain-verified emotional construction, decentralized expression identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto emotion through algorithmic blockchain mastery.",
-      },
-    },
-  },
 
   mathematical: {
     name: "🔢 Pure Mathematics",
