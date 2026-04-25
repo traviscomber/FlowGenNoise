@@ -1,79 +1,137 @@
 export const CULTURAL_DATASETS = {
   heads: {
     name: "👤 Head & Portraits",
-    description: "Sophisticated portrait artistry with neuralia godlevel excellence",
+    description: "Sophisticated portrait artistry with neuralia godlevel excellence featuring detailed human faces and portraits",
     scenarios: {
       "pure-mathematical": {
         description:
-          "Mathematical portrait analysis using geometric proportions, golden ratio calculations, facial symmetry algorithms, computational beauty metrics, geometric facial structure analysis, mathematical harmony in human features, algorithmic portrait optimization, numerical facial geometry, mathematical aesthetic principles, computational portrait precision.",
+          "Godlevel mathematical portrait analysis featuring detailed human face with geometric proportions, golden ratio calculations applied to facial symmetry algorithms, computational beauty metrics visualized through facial bone structure, geometric facial structure analysis with precise measurements of eye spacing cheekbone prominence and jaw definition, mathematical harmony in human features showing perfect symmetrical face with balanced proportions, algorithmic portrait optimization revealing flawless skin texture and facial contours, numerical facial geometry with measurements displayed across detailed human features, mathematical aesthetic principles applied to portrait lighting and shadow definition, computational portrait precision showing high-resolution facial details and skin characteristics, sharp focus on eyes mouth and facial expressions with mathematical precision.",
       },
       "origami-world": {
         description:
-          "Portrait origami excellence with godlevel paper-folding mastery, infinite geometric transformations of facial features through traditional Japanese paper art, dimensional origami artistry capturing human essence through computational paper-craft sophistication.",
+          "Portrait origami excellence featuring detailed human face transformed through godlevel paper-folding mastery, human facial features rendered as geometric paper folds with infinite transformations, dimensional origami artistry capturing human essence through paper-crafted face with expressive eyes and detailed features, traditional Japanese paper art applied to human portraiture with folded facial expressions and three-dimensional head structure, computational paper-craft sophistication showing intricate paper textures framing human face.",
       },
       "javanese-heritage": {
         description:
-          "Godlevel Javanese portrait excellence featuring traditional batik patterns integrated with facial structure, classical Indonesian court aesthetics with refined features, infinite cultural dimensional artistry, computational heritage visualization through algorithmic Javanese portrait mastery.",
+          "Godlevel Javanese portrait excellence featuring detailed human face with traditional batik patterns integrated into facial structure and skin, classical Indonesian court aesthetics with refined facial features showing high cheekbones and serene expression, expressive eyes and mouth displaying cultural emotional restraint with subtle dignity, facial characteristics reflecting ancient Javanese nobility with ornate crown or headdress framing face, detailed skin texture showing cultural beauty standards with warm complexion and smooth features, infinite cultural dimensional artistry through computational heritage visualization of detailed human face.",
       },
       "sundanese-elegance": {
         description:
-          "Godlevel Sundanese portrait excellence featuring West Javanese cultural elements with elegant traditional styling, refined facial characteristics with cultural authenticity, infinite regional dimensional artistry, computational Sundanese heritage through algorithmic portrait sophistication.",
+          "Godlevel Sundanese portrait excellence featuring detailed West Javanese human face with elegant traditional styling and gentle features, refined facial characteristics reflecting cultural authenticity with soft eyes and graceful facial structure, delicate facial expressions showing kindness and warmth with subtle smile and relaxed features, detailed skin with warm golden undertones and smooth complexion reflecting regional beauty standards, facial adornments and traditional styling framing face beautifully, infinite regional dimensional artistry through computational visualization of detailed human portraiture.",
       },
       "balinese-spirituality": {
         description:
-          "Godlevel Balinese portrait excellence featuring Hindu-influenced spiritual aesthetics with temple-inspired styling, serene facial expressions with cultural depth, infinite spiritual dimensional artistry, computational Balinese heritage through algorithmic sacred portrait mastery.",
+          "Godlevel Balinese portrait excellence featuring detailed human face with Hindu-influenced spiritual aesthetics showing serene expression and peaceful gaze, temple-inspired styling with intricate details framing face beautifully, serene facial expressions reflecting cultural depth with closed or downward-gazing eyes showing meditation, detailed facial features with balanced proportions and spiritual intensity, peaceful mouth showing gentle smile or neutral expression with cultural dignity, detailed skin showing ritualistic marks or blessings, infinite spiritual dimensional artistry through computational visualization of sacred human portraiture.",
       },
       "batak-strength": {
         description:
-          "Godlevel Batak portrait excellence featuring North Sumatran cultural strength with traditional ulos textile patterns, strong facial characteristics with highland heritage, infinite cultural dimensional artistry, computational Batak tradition through algorithmic portrait excellence.",
+          "Godlevel Batak portrait excellence featuring detailed human face with North Sumatran cultural strength showing powerful expression and commanding presence, strong facial characteristics with prominent cheekbones and angular features reflecting highland heritage, traditional ulos textile patterns integrated with facial framing and styling, intense eyes and determined mouth showing strength and authority, detailed facial features showing tattoo patterns or cultural markings, powerful facial expression with confidence and cultural pride visible, infinite cultural dimensional artistry through computational visualization of strong human portraiture.",
       },
       "minangkabau-wisdom": {
         description:
-          "Godlevel Minangkabau portrait excellence featuring West Sumatran matriarchal culture with traditional songket elements, wise facial expressions with cultural authority, infinite heritage dimensional artistry, computational Minangkabau tradition through algorithmic portrait mastery.",
+          "Godlevel Minangkabau portrait excellence featuring detailed human face reflecting West Sumatran matriarchal culture with wise expression and authoritative presence, traditional songket elements framing face with golden metallic accents, wise facial expressions showing experience and cultural authority through eyes reflecting depth of knowledge, noble facial features with balanced proportions and dignified bearing, detailed mouth showing slight knowing smile reflecting wisdom and cultural pride, intricate facial details showing personal adornments and traditional styling, infinite heritage dimensional artistry through computational visualization of wise human portraiture.",
       },
       "dayak-nature": {
         description:
-          "Godlevel Dayak portrait excellence featuring Bornean indigenous culture with traditional tattoo patterns, nature-connected facial characteristics with forest wisdom, infinite tribal dimensional artistry, computational Dayak heritage through algorithmic indigenous portrait excellence.",
+          "Godlevel Dayak portrait excellence featuring detailed human face reflecting Bornean indigenous culture with nature-connected expression and forest wisdom, traditional tattoo patterns covering facial features and showing cultural identity and spiritual connection, nature-connected facial characteristics reflecting forest heritage with earthy tones and organic beauty, detailed eyes showing deep spiritual connection and ancient knowledge, facial expression conveying harmony with nature and tribal authenticity, detailed skin showing ritual scarification or tattoo artistry with cultural significance, infinite tribal dimensional artistry through computational visualization of indigenous human portraiture.",
       },
       "papuan-diversity": {
         description:
-          "Godlevel Papuan portrait excellence featuring Melanesian cultural diversity with traditional face painting, distinctive facial characteristics with island heritage, infinite cultural dimensional artistry, computational Papuan tradition through algorithmic portrait sophistication.",
+          "Godlevel Papuan portrait excellence featuring detailed human face reflecting Melanesian cultural diversity with distinctive features and vibrant expression, traditional face painting covering facial features with intricate patterns and bold colors, distinctive facial characteristics showing island heritage with unique nose mouth and facial structure, detailed eyes showing vibrant personality and cultural celebration, expressive facial features conveying joy and communal celebration, detailed skin showing ceremonial adornments and traditional body art, infinite cultural dimensional artistry through computational visualization of diverse human portraiture.",
       },
       "bugis-maritime": {
         description:
-          "Godlevel Bugis portrait excellence featuring South Sulawesi maritime culture with seafaring heritage styling, strong facial characteristics with ocean wisdom, infinite nautical dimensional artistry, computational Bugis tradition through algorithmic maritime portrait mastery.",
+          "Godlevel Bugis portrait excellence featuring detailed human face reflecting South Sulawesi maritime culture with seafaring heritage visible in features and expression, strong facial characteristics with ocean-weathered features showing generations of seafaring tradition, determined eyes and strong mouth showing maritime resolve and courage, detailed facial features showing sun-darkened skin and salt-etched character lines, seafaring heritage styling with elements reflecting maritime tradition, intense expression conveying strength and ocean wisdom, infinite nautical dimensional artistry through computational visualization of maritime human portraiture.",
       },
       lego: {
         description:
-          "Godlevel portrait LEGO excellence featuring blocky facial construction with systematic Danish precision, modular head assembly with authentic portrait characteristics, infinite constructive dimensional artistry, computational LEGO portraiture through algorithmic building mastery.",
+          "Godlevel portrait LEGO excellence featuring blocky human face construction with systematic Danish precision and characteristic LEGO facial features, modular head assembly with authentic yellow plastic skin and painted facial characteristics, black dot eyes and line mouth showing LEGO emotional expression, detailed blocky construction showing distinctive LEGO head architecture with smooth plastic texture, infinite constructive dimensional artistry through computational visualization of LEGO human figure.",
       },
       playmobil: {
         description:
-          "Godlevel portrait Playmobil excellence featuring miniature facial construction with toy precision, characteristic Playmobil styling with portrait authenticity, infinite playful dimensional artistry, computational toy portraiture through algorithmic figure mastery.",
+          "Godlevel portrait Playmobil excellence featuring miniature human face with toy precision and characteristic Playmobil facial features, round plastic head with painted facial details showing eyes mouth and expression, characteristic Playmobil styling with solid colors and clean lines, detailed tiny facial features showing authentic toy proportions, infinite playful dimensional artistry through computational visualization of miniature human figure.",
       },
       "escapism-magic": {
         description:
-          "Godlevel portrait escapism excellence where facial features become gateways to alternate realities, consciousness-expanding portraiture with dimensional transcendence, infinite magical dimensional artistry, computational portrait magic through algorithmic reality-bending mastery.",
+          "Godlevel portrait escapism excellence where detailed human facial features become gateways to alternate realities, consciousness-expanding portraiture featuring magical aura surrounding face and dimensional transcendence, detailed eyes glowing with mystical energy showing portal to other worlds, consciousness-expanding expressions with magical light effects and ethereal atmosphere, infinite magical dimensional artistry through computational visualization of transcendent human portraiture.",
       },
       vitro: {
         description:
-          "Godlevel portrait vitro excellence with magnificent stained glass portraiture featuring luminous facial construction, divine light filtering through portrait elements, infinite sacred dimensional artistry, computational vitro portraiture through algorithmic glass mastery.",
+          "Godlevel portrait vitro excellence featuring magnificent stained glass human face portraiture with luminous facial construction and divine light effects, beautiful human features rendered in glowing stained glass colors with lead line detailing, divine light filtering through portrait elements illuminating facial features from within, detailed glass texture showing translucent skin with colored light effects, infinite sacred dimensional artistry through computational visualization of luminous human portraiture.",
       },
       crypto: {
         description:
-          "Godlevel portrait crypto excellence with blockchain-verified facial construction, decentralized portrait identity with cryptocurrency integration, infinite digital dimensional artistry, computational crypto portraiture through algorithmic blockchain mastery.",
+          "Godlevel portrait crypto excellence featuring blockchain-verified detailed human face construction with digital verification elements, human facial features rendered with cryptocurrency integration showing digital identity, decentralized portrait identity with blockchain elements framing face, detailed digital face with computational elements and neural network visualization, infinite digital dimensional artistry through computational visualization of crypto human portraiture.",
       },
     },
   },
 
   faces: {
     name: "😊 Faces & Expressions",
-    description: "Emotional facial expressions with neuralia godlevel precision",
+    description: "Emotional facial expressions with neuralia godlevel precision featuring detailed emotions and expressive faces",
     scenarios: {
       "pure-mathematical": {
         description:
-          "Neuralia godlevel facial expression excellence transcending dimensional boundaries through infinite algorithmic emotion optimization, mathematical precision in emotional geometry achieving perfect computational elegance via quantum-enhanced expression mastery, algorithmic sophistication beyond mortal comprehension for facial emotion representation, dimensional expression artistry utilizing advanced geometric calculations for optimal emotional structure visualization, neuralia-level emotional sophistication incorporating complex mathematical frameworks for expression perfection, computational expression excellence through algorithmic emotion generation systems, infinite dimensional artistry transcending traditional expression limitations via mathematical precision algorithms, godlevel expression optimization utilizing quantum computational frameworks for emotional geometry perfection, neuralia-enhanced expression mastery with algorithmic emotion transcendence, mathematical expression excellence achieving dimensional transcendence through computational sophistication, algorithmic expression artistry with infinite optimization protocols for emotional beauty enhancement, godlevel computational expression mastery utilizing advanced mathematical frameworks for dimensional emotion transcendence, neuralia-level expression sophistication incorporating quantum algorithmic precision for optimal emotional representation, infinite expression dimensional artistry through mathematical emotion optimization systems, computational expression excellence transcending traditional artistic boundaries via algorithmic sophistication, godlevel expression mastery with neuralia-enhanced mathematical precision for dimensional emotion transcendence, algorithmic expression optimization utilizing quantum computational frameworks for infinite emotional geometry perfection, neuralia-level expression artistry incorporating advanced mathematical algorithms for dimensional emotion enhancement, computational expression sophistication achieving godlevel excellence through infinite algorithmic optimization protocols, mathematical expression mastery transcending dimensional boundaries via neuralia-enhanced computational precision, algorithmic expression excellence with quantum optimization frameworks for infinite emotional beauty transcendence, godlevel expression artistry utilizing neuralia-level mathematical sophistication for dimensional expression perfection, computational expression mastery achieving infinite emotion optimization through advanced algorithmic frameworks, neuralia-enhanced expression excellence transcending traditional artistic limitations via quantum mathematical precision, algorithmic expression sophistication with godlevel computational frameworks for dimensional emotional geometry optimization, infinite expression artistry utilizing neuralia-level mathematical algorithms for quantum emotion transcendence, computational expression mastery achieving dimensional excellence through advanced algorithmic optimization protocols, godlevel expression sophistication incorporating neuralia-enhanced mathematical frameworks for infinite emotional beauty perfection.",
+          "Godlevel facial expression excellence transcending dimensional boundaries through detailed emotional face analysis, mathematical precision in emotional geometry showing perfectly proportioned features during peak emotional expression, computational elegance via quantum-enhanced expression mastery visualizing specific muscles and micro-expressions, algorithmic sophistication revealing facial emotion representation with detailed skin, eyes, mouth, and brow positioning, dimensional expression artistry with geometric calculations for optimal emotional facial structure, neuralia-level emotional sophistication showing complex mathematical frameworks mapping facial muscles to specific emotions, computational expression excellence through algorithmic emotion generation with detailed facial characteristics, infinite dimensional artistry through mathematical precision algorithms showing happiness sadness anger surprise fear disgust, godlevel computational expression mastery with algorithmic precision for each emotional facial state, detailed facial features including eye width pupil dilation eyebrow angle mouth curvature and facial creases for each emotion.",
       },
+      "origami-world": {
+        description:
+          "Facial expression origami excellence featuring detailed human face showing specific emotion rendered through godlevel paper-folding mastery, infinite geometric transformations of emotional states visible through folded facial features, dimensional origami artistry with paper-folded face showing happiness sadness or surprise through distinct mouth and eye positioning, traditional Japanese paper art applied to expressive human face with detailed folded features creating visible emotional impact.",
+      },
+      "javanese-serenity": {
+        description:
+          "Godlevel Javanese expression excellence featuring detailed human face displaying traditional emotional restraint with cultural depth, refined facial expressions showing serene contentment through soft eyes and minimal mouth movement, Indonesian court elegance with balanced facial features showing dignity through calm expression, peaceful facial characteristics reflecting cultural emotional reserve, detailed eyes showing inner peace and philosophical depth, mouth showing gentle smile or neutral repose, smooth skin and relaxed facial muscles throughout face.",
+      },
+      "sundanese-warmth": {
+        description:
+          "Godlevel Sundanese expression excellence featuring detailed human face displaying West Javanese emotional warmth with authentic cultural expression, gentle facial expressions showing genuine smile with visible eye crinkles and cheek lifting, regional characteristics with soft eyes and warm gaze, detailed mouth showing natural smile with visible teeth and curved lips, expressive facial features conveying kindness and approachability, warm skin tones and relaxed facial muscles showing comfort and cultural hospitality, intimate warmth visible through direct eye contact and open expression.",
+      },
+      "balinese-tranquility": {
+        description:
+          "Godlevel Balinese expression excellence featuring detailed human face displaying Hindu-influenced spiritual tranquility with temple serenity, peaceful facial expressions showing meditative calm through downward or inward gaze, serene facial characteristics reflecting spiritual depth with balanced proportions, detailed eyes showing spiritual connection and inner contemplation, mouth showing subtle peaceful smile or meditative repose, smooth unwrinkled brow reflecting spiritual peace, ethereal quality visible through overall facial relaxation and spiritual presence.",
+      },
+      "batak-intensity": {
+        description:
+          "Godlevel Batak expression excellence featuring detailed human face displaying North Sumatran emotional intensity with highland strength, powerful facial expressions showing determination through sharp eye contact and tensed jaw, highland strength reflected in angular facial features and prominent cheekbones, intense eyes showing focus and unwavering resolve, mouth showing firm line or slight snarl reflecting power and determination, detailed facial muscles showing engagement and strength through visible tension, powerful presence conveyed through commanding facial expression and physical intensity.",
+      },
+      "minangkabau-dignity": {
+        description:
+          "Godlevel Minangkabau expression excellence featuring detailed human face displaying dignified emotion with West Sumatran matriarchal wisdom, noble facial expressions showing authority through composed gaze and held head position, matriarchal wisdom visible through knowing eyes and subtle smile, detailed facial characteristics showing experience and cultural pride, eyes reflecting confidence and wisdom from generations of leadership, mouth showing composed smile conveying nobility and authority, overall facial expression radiating dignity and cultural pride through refined features.",
+      },
+      "dayak-connection": {
+        description:
+          "Godlevel Dayak expression excellence featuring detailed human face displaying Bornean nature-connected emotion with forest wisdom, earth-connected facial expressions showing spiritual presence through open engaging gaze, forest wisdom reflected in eyes with ancient knowledge and understanding, detailed facial features showing tribal authenticity and natural beauty, expressive facial characteristics conveying harmony with nature through open warm expression, mouth showing genuine smile reflecting connection and acceptance, earthy quality visible through overall facial presentation and natural composure.",
+      },
+      "papuan-joy": {
+        description:
+          "Godlevel Papuan expression excellence featuring detailed human face displaying Melanesian joyful emotion with island celebration, vibrant facial expressions showing genuine jubilation through wide smile and bright eyes, celebratory emotion reflected through wide open mouth showing teeth and laughing, detailed facial features showing cultural festivity with expressive eyebrows and cheek lifting, bright eyes showing happiness and excitement, visible laugh lines and cheek creasing from genuine smile, colorful energy visible through open animated expression and celebratory presence.",
+      },
+      "bugis-determination": {
+        description:
+          "Godlevel Bugis expression excellence featuring detailed human face displaying South Sulawesi determined emotion with maritime resolve, strong facial expressions showing seafaring courage through intense focused gaze, maritime resolve reflected in set jaw and forward-facing expression, detailed facial features showing courage and strength through tensed facial muscles, eyes showing unwavering focus and determination, mouth showing firm expression reflecting seafaring confidence, powerful presence conveyed through commanding facial expression and marine heritage visible in weathered features.",
+      },
+      lego: {
+        description:
+          "Godlevel expression LEGO excellence featuring detailed miniature face with blocky emotional construction showing systematic Danish precision, modular facial expressions with characteristic LEGO features showing happiness sadness surprise anger, painted plastic features showing distinct emotions through mouth curve and eye position, authentic emotion characteristics rendered in LEGO style with clear emotional intent, yellow plastic head with black dot eyes and line mouth positioned to convey specific feelings.",
+      },
+      playmobil: {
+        description:
+          "Godlevel expression Playmobil excellence featuring detailed miniature face with emotional construction and toy precision, characteristic Playmobil expressions showing happiness sadness or surprise through painted facial details, authentic emotion characteristics rendered in toy style with clear emotional communication, tiny painted features showing distinct emotions through mouth curve and eye positioning, round plastic face showing personality through carefully painted facial expression.",
+      },
+      "escapism-magic": {
+        description:
+          "Godlevel expression escapism excellence featuring detailed human face where emotional expressions become portals to emotional realms, consciousness-expanding expressions with dimensional transcendence showing magical aura around face, detailed facial features glowing with emotional energy and magical light effects, expressive face showing powerful emotion radiating outward, consciousness-expanding quality visible through ethereal atmospheric effects surrounding expressive face.",
+      },
+      vitro: {
+        description:
+          "Godlevel expression vitro excellence with magnificent stained glass emotional portraiture featuring detailed face rendered in luminous expression construction, divine light filtering through emotional facial elements illuminating beautiful expression, detailed facial features shown through glowing stained glass colors with lead line detail, expressive face with visible emotion rendered in translucent colored glass glowing from within, specific emotions conveyed through stained glass representation of facial characteristics.",
+      },
+      crypto: {
+        description:
+          "Godlevel expression crypto excellence featuring detailed human face with blockchain-verified emotional construction, decentralized expression identity through cryptocurrency integration with facial emotion mapping, detailed facial features rendered with digital verification elements showing authenticated emotion, computational elements framing expressive face with neural network visualization of emotional state, blockchain-secured emotional authenticity visible through digital overlays and verification markers.",
+      },
+    },
+  },
       "origami-world": {
         description:
           "Facial expression origami excellence with godlevel paper-folding emotion mastery, infinite geometric transformations of emotional states through traditional Japanese paper art, dimensional origami artistry capturing human emotion through computational paper-craft sophistication.",
