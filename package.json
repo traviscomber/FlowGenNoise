@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "next lint",
+    "lint": "eslint .",
     "start": "next start"
   },
   "dependencies": {
@@ -68,6 +68,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5",
     "vaul": "latest",
+    "ws": "latest",
     "zod": "^3.23.8"
   },
   "devDependencies": {
